@@ -22,8 +22,11 @@ import { buildTomorrowPlanPrompt, parseTomorrowPlanResponse } from "./tomorrow-p
 import type { TomorrowPlanInput } from "./tomorrow-plan.js";
 import { buildFamilyMessagePrompt, parseFamilyMessageResponse } from "./family-message.js";
 import type { FamilyMessageInput } from "./family-message.js";
-import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage } from "../memory/store.js";
-import { getRecentPlans, summarizeRecentPlans } from "../memory/retrieve.js";
+import { buildInterventionPrompt, parseInterventionResponse } from "./intervention.js";
+import type { InterventionInput } from "./intervention.js";
+import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention } from "../memory/store.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions } from "../memory/retrieve.js";
+import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
@@ -367,6 +370,98 @@ app.post("/api/family-message/approve", async (req, res) => {
     res.json({ approved: true, draft_id });
   } catch (err) {
     console.error("Approval error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Intervention Logging Route -----
+
+app.post("/api/intervention", async (req, res) => {
+  try {
+    const { classroom_id, student_refs, teacher_note, context } =
+      req.body as {
+        classroom_id: string;
+        student_refs: string[];
+        teacher_note: string;
+        context?: string;
+      };
+
+    if (!classroom_id || !student_refs?.length || !teacher_note) {
+      res.status(400).json({
+        error: "Missing required fields: classroom_id, student_refs, teacher_note",
+      });
+      return;
+    }
+
+    const classroom = loadClassroom(classroom_id);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+      return;
+    }
+
+    const route = getRoute("log_intervention");
+    const modelId = getModelId(route.model_tier);
+
+    const intInput: InterventionInput = {
+      classroom_id,
+      student_refs,
+      teacher_note,
+      context,
+    };
+    const prompt = buildInterventionPrompt(classroom, intInput);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        prompt_class: "log_intervention",
+        max_tokens: 1024,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      model_id: string;
+      latency_ms: number;
+    };
+
+    let record: InterventionRecord;
+    try {
+      record = parseInterventionResponse(inferenceData.text, classroom_id, intInput);
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as intervention record",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    // Persist to classroom memory
+    try {
+      saveIntervention(classroom_id, record, inferenceData.model_id || modelId);
+    } catch (memErr) {
+      console.warn("Memory save failed (intervention):", memErr);
+    }
+
+    res.json({
+      record,
+      model_id: inferenceData.model_id || modelId,
+      latency_ms: inferenceData.latency_ms,
+    });
+  } catch (err) {
+    console.error("Intervention logging error:", err);
     res.status(500).json({
       error: err instanceof Error ? err.message : "Internal server error",
     });
