@@ -1,4 +1,4 @@
-import type { TomorrowPlan, FamilyMessagePrefill } from "../types";
+import type { TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
 import "./PlanViewer.css";
 
 interface Props {
@@ -7,9 +7,10 @@ interface Props {
   latencyMs: number;
   modelId: string;
   onFollowupClick?: (prefill: FamilyMessagePrefill) => void;
+  onInterventionClick?: (prefill: InterventionPrefill) => void;
 }
 
-export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId, onFollowupClick }: Props) {
+export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId, onFollowupClick, onInterventionClick }: Props) {
   return (
     <div className="plan-viewer">
       <header className="plan-header">
@@ -57,6 +58,20 @@ export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId, 
                 <div className="plan-card-label">{s.student_ref}</div>
                 <p className="plan-card-reason">{s.reason}</p>
                 <p className="plan-card-action">{s.suggested_action}</p>
+                {onInterventionClick && (
+                  <button
+                    className="plan-card-intervention-link"
+                    onClick={() =>
+                      onInterventionClick({
+                        student_ref: s.student_ref,
+                        suggested_action: s.suggested_action,
+                        reason: s.reason,
+                      })
+                    }
+                  >
+                    Log Intervention
+                  </button>
+                )}
               </div>
             ))}
           </div>
