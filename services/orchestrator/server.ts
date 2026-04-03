@@ -188,7 +188,16 @@ app.post("/api/tomorrow-plan", async (req, res) => {
       const recentPlans = getRecentPlans(classroom_id, 3);
       memorySummary = summarizeRecentPlans(recentPlans);
     } catch (memErr) {
-      console.warn("Memory retrieval failed:", memErr);
+      console.warn("Memory retrieval failed (plans):", memErr);
+    }
+
+    // Retrieve recent interventions for memory injection
+    let interventionSummary = "";
+    try {
+      const recentInterventions = getRecentInterventions(classroom_id, 5);
+      interventionSummary = summarizeRecentInterventions(recentInterventions);
+    } catch (memErr) {
+      console.warn("Memory retrieval failed (interventions):", memErr);
     }
 
     // Build prompt
@@ -198,7 +207,7 @@ app.post("/api/tomorrow-plan", async (req, res) => {
       artifacts,
       teacher_goal,
     };
-    const prompt = buildTomorrowPlanPrompt(classroom, planInput, memorySummary);
+    const prompt = buildTomorrowPlanPrompt(classroom, planInput, memorySummary, interventionSummary);
 
     // Call inference service
     const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
