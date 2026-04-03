@@ -38,13 +38,22 @@ Output:
 - optional simplified student-facing summary
 
 ### D. Intervention log
+Route: `log_intervention`
+Model tier: live (gemma-4-4b-it)
+Thinking: off
+Retrieval: no
+Tool-call: no
+Schema version: 0.1.0
+
 Input:
-- teacher note
+- teacher note (free text)
 - tagged student(s)
-- action taken
+- optional context from plan support priority
 
 Output:
-- structured intervention record
+- structured intervention record (observation, action_taken, outcome, follow_up_needed)
+
+Retrieval downstream: recent interventions are summarized and injected into tomorrow plan prompts.
 
 ## Prompt design rules
 

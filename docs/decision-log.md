@@ -159,3 +159,33 @@ Use this file as a lightweight ADR register.
 - **Alternatives considered:** Email integration (too complex, privacy risk). SMS gateway (cost, privacy). Auto-send with approval toggle (violates safety principle).
 - **Consequences:** UI shows "Approve & Copy" rather than "Send". Approval timestamp is recorded for audit.
 - **What would change this:** A clear need for integrated messaging with proper consent infrastructure.
+
+---
+
+### 2026-04-03 — Intervention logging: model-structured approach
+
+- **Decision:** Interventions use a model-structured approach: teacher writes free-text, Gemma (live tier, no thinking) extracts observation, action_taken, outcome, and follow_up_needed into a structured InterventionRecord. Teacher reviews the structured result; it saves to classroom memory automatically.
+- **Why:** Matches the prompt-in/structured-out pattern of the other three workflows. Keeps the UX fast — teachers write naturally, not in forms. Demonstrates Gemma doing useful NLP work (structuring observations vs. just generating text).
+- **Alternatives considered:** Form-first with no model (no NLP value, more friction). Hybrid form + model (more UI complexity for marginal benefit).
+- **Consequences:** The mock response needs a prompt_class dispatch. Intervention records feed back into tomorrow plan prompts via retrieval injection.
+- **What would change this:** Evidence that teachers prefer structured forms over free-text, or that model structuring is unreliable with real Gemma output.
+
+---
+
+### 2026-04-03 — Intervention retrieval injection into tomorrow plans
+
+- **Decision:** Recent interventions are summarized and injected into the tomorrow plan prompt as a RECENT INTERVENTIONS section, alongside the existing CLASSROOM MEMORY section.
+- **Why:** This closes the MVP loop: plan → act → log → next plan informed by outcomes. Without this, interventions are a dead-end log. The spec explicitly requires "classroom memory that actually improves outputs."
+- **Alternatives considered:** No injection (simpler but breaks the loop). Full intervention detail injection (too much context, risk of prompt bloat).
+- **Consequences:** The tomorrow-plan prompt builder accepts an additional interventionSummary parameter. The server route retrieves recent interventions before building the prompt.
+- **What would change this:** Evidence that intervention context degrades plan quality, or that the prompt is too long with both plan and intervention summaries.
+
+---
+
+### 2026-04-03 — Plan-to-intervention UI bridge
+
+- **Decision:** PlanViewer support priority cards include a "Log Intervention" button that pre-fills the InterventionLogger with the student ref, suggested action, and reason from the plan.
+- **Why:** Mirrors the plan-to-message bridge from Sprint 3. Reduces friction in the plan → act → log loop. Teachers don't have to re-type context that already exists in the plan.
+- **Alternatives considered:** No bridge, standalone intervention tab only (simpler but more friction). Auto-logging from plans (violates teacher-in-the-loop principle).
+- **Consequences:** PlanViewer accepts an onInterventionClick callback. InterventionLogger accepts an optional prefill prop.
+- **What would change this:** User research showing the bridge is confusing or that teachers prefer to log interventions independently of plans.
