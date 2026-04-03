@@ -133,6 +133,7 @@ Use this file as a lightweight ADR register.
 ---
 
 ### 2026-04-03 — SQLite per-classroom memory files
+
 - **Decision:** Use one SQLite database file per classroom, stored in `data/memory/{classroom_id}.sqlite`, with three tables: generated_plans, generated_variants, family_messages.
 - **Why:** Per-classroom files align with local-first portability — a teacher can carry their classroom's entire history as a single file. JSON blobs in TEXT columns avoid relational joins while supporting recency-based retrieval via indexed columns.
 - **Alternatives considered:** Single shared database (loses portability story). JSON flat files (fragile for queries). PostgreSQL (requires a server).
@@ -142,6 +143,7 @@ Use this file as a lightweight ADR register.
 ---
 
 ### 2026-04-03 — prompt_class field for inference dispatch
+
 - **Decision:** Add a `prompt_class` string field to `GenerationRequest` so the mock backend can dispatch to the correct canned response per prompt class.
 - **Why:** Family messaging (no thinking, no tools, no images) would otherwise fall through to the differentiation mock response. Explicit dispatch by prompt class is more reliable than heuristic detection.
 - **Alternatives considered:** Detect from prompt content (fragile). Separate endpoints per prompt class (breaks the unified /generate interface).
@@ -151,6 +153,7 @@ Use this file as a lightweight ADR register.
 ---
 
 ### 2026-04-03 — Family message approval is UX audit, not access control
+
 - **Decision:** The `teacher_approved` field on `FamilyMessageDraft` is an audit record. There is no outbound messaging system to gate. The teacher manually copies the approved text to their own communication channel.
 - **Why:** Building a send system introduces complexity and safety risk beyond MVP scope. The safety governance doc requires "no external send without approval" — the simplest way to enforce this is to not have send functionality at all.
 - **Alternatives considered:** Email integration (too complex, privacy risk). SMS gateway (cost, privacy). Auto-send with approval toggle (violates safety principle).
