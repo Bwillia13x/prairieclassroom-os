@@ -167,3 +167,22 @@
 .plan-section--family h3 {
   color: #059669;
 }
+
+/* Clickable family followup cards */
+.plan-card--clickable {
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.plan-card--clickable:hover {
+  border-color: #10b981;
+  box-shadow: 0 0 0 1px #10b981;
+}
+
+.plan-card-action-hint {
+  display: block;
+  font-size: 0.78rem;
+  color: #059669;
+  margin-top: 0.4rem;
+  font-weight: 500;
+}

@@ -1,4 +1,4 @@
-import type { TomorrowPlan } from "../types";
+import type { TomorrowPlan, FamilyMessagePrefill } from "../types";
 import "./PlanViewer.css";
 
 interface Props {
@@ -6,9 +6,10 @@ interface Props {
   thinkingSummary: string | null;
   latencyMs: number;
   modelId: string;
+  onFollowupClick?: (prefill: FamilyMessagePrefill) => void;
 }
 
-export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId }: Props) {
+export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId, onFollowupClick }: Props) {
   return (
     <div className="plan-viewer">
       <header className="plan-header">
@@ -106,12 +107,30 @@ export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId }
           </h3>
           <div className="plan-cards">
             {plan.family_followups.map((f, i) => (
-              <div key={i} className="plan-card plan-card--family">
+              <div
+                key={i}
+                className={`plan-card plan-card--family${onFollowupClick ? " plan-card--clickable" : ""}`}
+                onClick={
+                  onFollowupClick
+                    ? () =>
+                        onFollowupClick({
+                          student_ref: f.student_ref,
+                          reason: f.reason,
+                          message_type: f.message_type,
+                        })
+                    : undefined
+                }
+                role={onFollowupClick ? "button" : undefined}
+                tabIndex={onFollowupClick ? 0 : undefined}
+              >
                 <div className="plan-card-label">
                   {f.student_ref}
                   <span className="plan-card-tag"> · {f.message_type.replace(/_/g, " ")}</span>
                 </div>
                 <p>{f.reason}</p>
+                {onFollowupClick && (
+                  <span className="plan-card-action-hint">Click to draft message</span>
+                )}
               </div>
             ))}
           </div>
