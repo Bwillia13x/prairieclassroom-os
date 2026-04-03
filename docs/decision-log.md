@@ -189,3 +189,93 @@ Use this file as a lightweight ADR register.
 - **Alternatives considered:** No bridge, standalone intervention tab only (simpler but more friction). Auto-logging from plans (violates teacher-in-the-loop principle).
 - **Consequences:** PlanViewer accepts an onInterventionClick callback. InterventionLogger accepts an optional prefill prop.
 - **What would change this:** User research showing the bridge is confusing or that teachers prefer to log interventions independently of plans.
+
+---
+
+### 2026-04-04 — Language tools use live tier with no thinking
+
+- **Decision:** Both `simplify_for_student` and `generate_vocab_cards` use the live model tier (gemma-4-4b-it) with thinking off and no retrieval.
+- **Why:** Simplification and vocab card generation are single-artifact transformations — no multi-step reasoning or memory required. Speed is critical since teachers use these in-class, not during planning.
+- **Alternatives considered:** Planning tier with thinking (unnecessary reasoning overhead for text transformation). Retrieval of student EAL profiles (useful future enhancement, but over-engineers Sprint 5 MVP).
+- **Consequences:** Both routes complete in <1 second on mock, expected <5s on real models. No SQLite persistence — outputs are ephemeral, generated on demand.
+- **What would change this:** Evidence that quality improves significantly with thinking, or a decision to persist simplified outputs per student for longitudinal tracking.
+
+---
+
+### 2026-04-04 — Support pattern detection uses planning tier with thinking
+
+- **Decision:** `detect_support_patterns` uses the planning model tier (gemma-4-27b-it) with thinking enabled, the same configuration as tomorrow-plan. It retrieves interventions, plans, and follow-up states from classroom memory.
+- **Why:** Pattern detection requires synthesizing across 10+ records to identify recurring themes, gaps, and trends. This is multi-step reasoning over accumulated data — the same class of problem that justified thinking mode for tomorrow-plan. The live tier lacks the context window and reasoning depth for cross-record synthesis.
+- **Alternatives considered:** Live tier without thinking (insufficient for multi-record synthesis). Live tier with thinking (small model may miss subtle cross-record patterns). No thinking on planning tier (loses the reasoning trace that helps teachers understand why a pattern was identified).
+- **Consequences:** Pattern reports take longer to generate (~5-10s real inference). Thinking summary is exposed in a disclosure element so teachers can review the model's reasoning. This is an end-of-day review tool, not a live-instruction tool, so latency is acceptable.
+- **What would change this:** Evidence that the planning tier's reasoning adds no quality over the live tier for pattern detection, or that teachers find the latency unacceptable.
+
+---
+
+### 2026-04-04 — Pattern detection framed as teacher-documentation reflection, not student inference
+
+- **Decision:** All pattern detection output uses observational language: "Your records show...", "You've documented..." Patterns are attributed to the teacher's own notes, not presented as model judgments about students. No diagnostic labels, risk scores, or clinical terminology.
+- **Why:** The safety governance doc explicitly flags "a feature that begins to infer student state" as requiring careful handling. Pattern detection is the first feature that reads across multiple records and could easily drift into pseudo-diagnosis territory. The framing as "reflecting your own documentation back to you" keeps the teacher as the expert and the system as a memory assistant.
+- **Alternatives considered:** Risk-scored output with student rankings (violates hard boundaries). Clinical pattern language like "behavioral regression" (violates safety governance). Neutral but unattributed patterns (ambiguous whether the system is diagnosing).
+- **Consequences:** Mock responses and prompt contract embed safety language throughout. Evals include explicit checks for 15+ forbidden clinical/diagnostic terms. The UI description emphasizes "This reflects your own documentation — not a diagnosis."
+- **What would change this:** A formal partnership with school psychologists who validate that the safety framing is sufficient, or evidence that the observational framing limits the feature's usefulness.
+
+---
+
+### 2026-04-04 — Pattern reports persisted for cross-feature data flow
+
+- **Decision:** Pattern reports (previously ephemeral in Sprint 6) are now persisted to a `pattern_reports` table in classroom SQLite. The most recent report is automatically retrieved and injected into tomorrow-plan prompts as a PATTERN INSIGHTS section.
+- **Why:** This closes the final data loop: interventions -> patterns -> plans -> interventions. Without persistence, pattern insights exist only during the teacher's review session and are lost before the next planning cycle. Persisting them makes the "classroom OS" metaphor real — the system connects findings across features.
+- **Alternatives considered:** On-the-fly pattern generation during plan building (double inference latency, defeats the purpose of the separate review step). Passing pattern report IDs manually (adds friction, breaks the seamless loop). No injection (patterns remain informational-only, no downstream impact on planning).
+- **Consequences:** The SQLite schema gains a 5th table. Tomorrow-plan prompts are longer when pattern context exists. The response includes `pattern_informed: boolean` for UI indication. A new GET endpoint (`/api/support-patterns/latest/:classroomId`) exposes persisted reports.
+- **What would change this:** Evidence that pattern injection degrades plan quality, or that teachers prefer to manually control which patterns inform the plan.
+
+---
+
+### 2026-04-04 — Pattern insight injection preserves safety framing through the chain
+
+- **Decision:** The `summarizePatternInsights()` function preserves the observational framing from Sprint 6 when injecting pattern context into tomorrow-plan prompts. All pattern summaries use "your records show" attribution, and the system prompt instructs the model to continue this framing.
+- **Why:** Pattern detection was carefully safety-framed (Sprint 6, ADR). That framing must carry through when pattern data crosses into planning — otherwise, the planning model could reframe observational patterns as diagnoses. The chain of safety must be unbroken: teacher documentation -> pattern detection (observational) -> plan injection (observational) -> plan output (observational).
+- **Alternatives considered:** Raw pattern data injection without framing (model might infer diagnostic language). Separate safety prompt for pattern-informed plans (duplicates safety rules, harder to maintain).
+- **Consequences:** The pattern summary is structured with clear sections (HIGH-PRIORITY FOCUS, RECURRING THEMES, etc.) that maintain attribution. Safety evals for pattern-informed plans include the same 15 forbidden terms as pattern detection evals.
+- **What would change this:** Evidence that the framing is insufficient and the planning model produces diagnostic language despite the safety prompt.
+
+---
+
+### 2026-04-03 — EA daily briefing uses live tier, no persistence
+
+- **Decision:** The EA briefing uses the live model tier (gemma-4-4b-it) with no thinking, and is not persisted to SQLite. It synthesizes data from three existing sources (plans, interventions, pattern reports).
+- **Why:** The briefing is a formatting/synthesis task, not deep reasoning — the planning tier already did the hard work. No persistence prevents briefings from becoming shadow student records. EAs regenerate on demand each morning.
+- **Alternatives considered:** Planning tier with thinking (unnecessary — the source data is already reasoned over). Persist to a `briefings` table (risk of briefings becoming quasi-reports about students). Cache with TTL (over-engineered for local-first app).
+- **Consequences:** No new SQLite table. Briefings pull from three existing tables via `buildEABriefingContext()`. The briefing is the second cross-feature synthesis view after pattern-informed planning.
+- **What would change this:** Evidence that synthesis quality requires the planning tier, or EA feedback requesting briefing history for shift handoffs.
+
+---
+
+### 2026-04-03 — EA briefing observational framing matches pattern chain
+
+- **Decision:** EA briefings use the same observational attribution as pattern reports and pattern-informed plans: "The teacher's plan notes..." rather than "This student has..." The same 15 forbidden diagnostic terms apply.
+- **Why:** The EA briefing reads pattern data and intervention records — the same data that Sprint 6/7 carefully safety-framed. The framing must carry through to the briefing or we'd break the safety chain at the final display layer.
+- **Alternatives considered:** Simplified safety rules for briefings (inconsistent, harder to maintain). No safety rules (dangerous — EA briefings about individual students need the same care as pattern reports).
+- **Consequences:** The prompt contract includes the full forbidden terms list. Safety evals check the briefing output for all 15 terms.
+- **What would change this:** Evidence that the observational framing makes briefings less useful for EAs, or school feedback that briefings need a different tone.
+
+---
+
+### 2026-04-04 — Simplification and vocab cards are ephemeral (not persisted)
+
+- **Decision:** Language tool outputs (SimplifiedOutput, VocabCardSet) are returned directly to the UI but not stored in classroom SQLite.
+- **Why:** These are on-demand transformations, not longitudinal records. A teacher simplifies a passage for today's lesson or generates vocab cards for this week — storing every generation adds complexity without MVP value.
+- **Alternatives considered:** Persist to a `language_outputs` table (premature for MVP). Cache in memory with TTL (over-engineered for local-first app).
+- **Consequences:** No retrieval injection of language tool history into tomorrow plans. Future sprints can add persistence if teachers want to reuse/share simplified content.
+- **What would change this:** Teacher feedback requesting "save this simplification for reuse" or a need to track which simplification levels students are receiving over time.
+
+---
+
+### 2026-04-03 — Demo seed data uses production store functions
+
+- **Decision:** The demo seed script (`data/demo/seed.ts`) populates classroom memory by calling the same `saveIntervention`, `savePlan`, `savePatternReport`, and `saveFamilyMessage` functions that the live system uses.
+- **Why:** If seed data bypassed the store layer (e.g., raw SQL inserts), the demo could work even if the store functions were broken. Using production code paths means the seed script is also an integration test — if the store functions have bugs, the seed will fail. This approach caught a real bug in `db.ts` where `import.meta.dirname` was undefined in tsx's CJS mode.
+- **Alternatives considered:** Raw SQLite inserts (faster but bypass validation). JSON fixture loading (simpler but doesn't test the real persistence path).
+- **Consequences:** Seed script depends on `services/memory/store.ts` and `services/memory/db.ts`. Any schema changes to the store layer require updating the seed data.
+- **What would change this:** A need for seed data that represents states the store functions can't produce (e.g., partially corrupted records for error-handling demos).
