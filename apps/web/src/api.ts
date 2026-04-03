@@ -6,6 +6,8 @@ import type {
   TomorrowPlanResponse,
   FamilyMessageRequest,
   FamilyMessageResponse,
+  InterventionRequest,
+  InterventionResponse,
 } from "./types";
 
 const API_BASE = "/api";
@@ -74,4 +76,19 @@ export async function approveFamilyMessage(
     const body = await res.text();
     throw new Error(`Approval failed (${res.status}): ${body}`);
   }
+}
+
+export async function logIntervention(
+  request: InterventionRequest,
+): Promise<InterventionResponse> {
+  const res = await fetch(`${API_BASE}/intervention`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Intervention logging failed (${res.status}): ${body}`);
+  }
+  return res.json();
 }

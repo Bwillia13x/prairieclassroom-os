@@ -134,3 +134,36 @@ export interface FamilyMessagePrefill {
   reason: string;
   message_type: string;
 }
+
+// ----- Intervention types -----
+
+export interface InterventionRecord {
+  record_id: string;
+  classroom_id: string;
+  student_refs: string[];
+  observation: string;
+  action_taken: string;
+  outcome?: string;
+  follow_up_needed: boolean;
+  created_at: string;
+  schema_version: string;
+}
+
+export interface InterventionRequest {
+  classroom_id: string;
+  student_refs: string[];
+  teacher_note: string;
+  context?: string;
+}
+
+export interface InterventionResponse {
+  record: InterventionRecord;
+  model_id: string;
+  latency_ms: number;
+}
+
+export interface InterventionPrefill {
+  student_ref: string;
+  suggested_action: string;
+  reason: string;
+}
