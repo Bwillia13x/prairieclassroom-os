@@ -1,0 +1,16 @@
+{
+  "id": "msg-005-latency",
+  "category": "latency_suitability",
+  "description": "Family message on live tier completes under latency threshold",
+  "prompt_class": "draft_family_message",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Jae"],
+    "message_type": "praise",
+    "target_language": "en"
+  },
+  "expected": {
+    "required_message_keys": ["plain_language_text"],
+    "max_latency_ms": 5000
+  }
+}

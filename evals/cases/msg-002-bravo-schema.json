@@ -1,0 +1,17 @@
+{
+  "id": "msg-002-bravo-schema",
+  "category": "schema_reliability",
+  "description": "Family message for different classroom produces valid schema (praise)",
+  "prompt_class": "draft_family_message",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Jae"],
+    "message_type": "praise",
+    "target_language": "en",
+    "context": "Jae helped a classmate during group work today."
+  },
+  "expected": {
+    "required_message_keys": ["student_refs", "message_type", "target_language", "plain_language_text"],
+    "schema_version": "0.1.0"
+  }
+}

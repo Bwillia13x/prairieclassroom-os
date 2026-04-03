@@ -49,6 +49,10 @@ interface ExpectedOutput {
   min_ea_actions?: number;
   /** Minimum prep checklist items. */
   min_prep_items?: number;
+  /** For family-message: required keys in draft object. */
+  required_message_keys?: string[];
+  /** For family-message: teacher_approved must be false on generation. */
+  teacher_approved_must_be_false?: boolean;
 }
 
 interface EvalResult {
@@ -301,6 +305,89 @@ async function runTomorrowPlanEval(evalCase: EvalCase): Promise<EvalResult> {
   }
 }
 
+async function runFamilyMessageEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/family-message`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        classroom_id: input.classroom_id,
+        student_refs: input.student_refs,
+        message_type: input.message_type,
+        target_language: input.target_language,
+        context: input.context,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      draft: Record<string, unknown>;
+      model_id: string;
+      latency_ms: number;
+    };
+    const draft = data.draft;
+
+    // Check required message keys
+    const requiredKeys = (evalCase.expected as Record<string, unknown>)
+      .required_message_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in draft)) {
+          failures.push(`Draft missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && draft.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${draft.schema_version}`,
+      );
+    }
+
+    // Check teacher_approved is false
+    if (
+      (evalCase.expected as Record<string, unknown>).teacher_approved_must_be_false &&
+      draft.teacher_approved !== false
+    ) {
+      failures.push(`teacher_approved should be false, got ${draft.teacher_approved}`);
+    }
+
+    // Content checks
+    const allText = JSON.stringify(draft);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
 async function main(): Promise<void> {
   const casesDir = resolve(import.meta.dirname ?? ".", "cases");
   const evalCases = await loadEvalCases(casesDir);
@@ -320,6 +407,8 @@ async function main(): Promise<void> {
     let result: EvalResult;
     if (ec.prompt_class === "prepare_tomorrow_plan") {
       result = await runTomorrowPlanEval(ec);
+    } else if (ec.prompt_class === "draft_family_message") {
+      result = await runFamilyMessageEval(ec);
     } else {
       result = await runDifferentiationEval(ec);
     }
