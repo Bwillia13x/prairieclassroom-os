@@ -11,4 +11,5 @@ export interface InterventionRecord {
   outcome?: string;
   follow_up_needed: boolean;
   created_at: string;
+  schema_version: string;
 }
