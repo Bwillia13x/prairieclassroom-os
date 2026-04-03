@@ -45,6 +45,7 @@ class GenerationRequest:
     tools: list[dict[str, Any]] | None = None
     model_tier: ModelTier = ModelTier.LIVE
     max_tokens: int = 2048
+    prompt_class: str | None = None
 
 
 @dataclass
@@ -179,6 +180,14 @@ MOCK_TOMORROW_THINKING = (
     "Prep: sentence starters, extension menus, schedule posting, step checklists, EA briefing."
 )
 
+MOCK_FAMILY_MESSAGE = json.dumps({
+    "student_refs": ["Ari"],
+    "message_type": "praise",
+    "target_language": "en",
+    "plain_language_text": "Hi! I wanted to share some good news about your child's progress this week. Ari has been showing real improvement in reading comprehension — during our guided reading session today, they were able to identify the main idea of a passage and explain it in their own words. This is a meaningful step forward. We will keep building on this with sentence starters and paired examples that have been working well. Thank you for your support at home!",
+    "simplified_student_text": "Great job this week! You did really well finding the main idea when we read together. Keep it up!"
+})
+
 MOCK_RESPONSES: dict[str, str] = {
     "text": MOCK_DIFFERENTIATION,
     "image_text": (
@@ -209,6 +218,8 @@ class MockBackend:
             return GenerationResponse(
                 text=text, tool_calls=tool_calls, model_id="mock"
             )
+        if request.prompt_class == "draft_family_message":
+            return GenerationResponse(text=MOCK_FAMILY_MESSAGE, model_id="mock")
         if request.thinking:
             return GenerationResponse(
                 text=MOCK_RESPONSES["thinking"],

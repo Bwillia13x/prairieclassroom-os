@@ -50,6 +50,7 @@ def generate():
         tools=body.get("tools"),
         model_tier=tier,
         max_tokens=body.get("max_tokens", 2048),
+        prompt_class=body.get("prompt_class"),
     )
 
     start = time.perf_counter()
