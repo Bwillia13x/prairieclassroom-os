@@ -7,6 +7,10 @@ import MessageComposer from "./components/MessageComposer";
 import MessageDraft from "./components/MessageDraft";
 import InterventionLogger from "./components/InterventionLogger";
 import InterventionCard from "./components/InterventionCard";
+import SimplifiedViewer from "./components/SimplifiedViewer";
+import VocabCardGrid from "./components/VocabCardGrid";
+import PatternReport from "./components/PatternReport";
+import EABriefingView from "./components/EABriefing";
 import {
   differentiate,
   listClassrooms,
@@ -14,6 +18,10 @@ import {
   draftFamilyMessage,
   approveFamilyMessage,
   logIntervention,
+  simplifyText,
+  generateVocabCards,
+  detectSupportPatterns,
+  generateEABriefing,
 } from "./api";
 import type {
   LessonArtifact,
@@ -24,10 +32,14 @@ import type {
   FamilyMessagePrefill,
   InterventionResponse,
   InterventionPrefill,
+  SimplifyResponse,
+  VocabCardsResponse,
+  SupportPatternsResponse,
+  EABriefingResponse,
 } from "./types";
 import "./App.css";
 
-type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message" | "log-intervention";
+type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message" | "log-intervention" | "language-tools" | "support-patterns" | "ea-briefing";
 
 export default function App() {
   const [classrooms, setClassrooms] = useState<ClassroomProfile[]>([]);
@@ -42,12 +54,26 @@ export default function App() {
   const [messagePrefill, setMessagePrefill] = useState<FamilyMessagePrefill | null>(null);
   const [interventionResult, setInterventionResult] = useState<InterventionResponse | null>(null);
   const [interventionPrefill, setInterventionPrefill] = useState<InterventionPrefill | null>(null);
+  const [simplifyResult, setSimplifyResult] = useState<SimplifyResponse | null>(null);
+  const [vocabResult, setVocabResult] = useState<VocabCardsResponse | null>(null);
+  const [patternResult, setPatternResult] = useState<SupportPatternsResponse | null>(null);
+  const [briefingResult, setBriefingResult] = useState<EABriefingResponse | null>(null);
 
   useEffect(() => {
     listClassrooms()
       .then((data) => {
         setClassrooms(data);
-        if (data.length > 0) setMsgClassroom(data[0].classroom_id);
+
+        // Demo mode: auto-select demo classroom when ?demo=true
+        const params = new URLSearchParams(window.location.search);
+        const isDemo = params.get("demo") === "true";
+        const demoClassroom = data.find((c) => c.classroom_id === "demo-okafor-grade34");
+
+        if (isDemo && demoClassroom) {
+          setMsgClassroom(demoClassroom.classroom_id);
+        } else if (data.length > 0) {
+          setMsgClassroom(data[0].classroom_id);
+        }
       })
       .catch(() => setError("Failed to load classrooms. Is the API server running?"));
   }, []);
@@ -178,6 +204,78 @@ export default function App() {
     setActiveTab("log-intervention");
   }
 
+  async function handleSimplify(sourceText: string, gradeBand: string, ealLevel: "beginner" | "intermediate" | "advanced") {
+    setLoading(true);
+    setError(null);
+    setSimplifyResult(null);
+
+    try {
+      const resp = await simplifyText({ source_text: sourceText, grade_band: gradeBand, eal_level: ealLevel });
+      setSimplifyResult(resp);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleVocabCards(artifactText: string, subject: string, targetLanguage: string, gradeBand: string) {
+    setLoading(true);
+    setError(null);
+    setVocabResult(null);
+
+    try {
+      const resp = await generateVocabCards({
+        artifact_text: artifactText,
+        subject,
+        target_language: targetLanguage,
+        grade_band: gradeBand,
+      });
+      setVocabResult(resp);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleEABriefing(classroomId: string, eaName?: string) {
+    setLoading(true);
+    setError(null);
+    setBriefingResult(null);
+
+    try {
+      const resp = await generateEABriefing({
+        classroom_id: classroomId,
+        ea_name: eaName,
+      });
+      setBriefingResult(resp);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSupportPatterns(classroomId: string, studentFilter?: string, timeWindow?: number) {
+    setLoading(true);
+    setError(null);
+    setPatternResult(null);
+
+    try {
+      const resp = await detectSupportPatterns({
+        classroom_id: classroomId,
+        student_filter: studentFilter,
+        time_window: timeWindow,
+      });
+      setPatternResult(resp);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -209,6 +307,24 @@ export default function App() {
           onClick={() => setActiveTab("log-intervention")}
         >
           Log Intervention
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "language-tools" ? "tab-btn--active" : ""}`}
+          onClick={() => setActiveTab("language-tools")}
+        >
+          Language Tools
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "support-patterns" ? "tab-btn--active" : ""}`}
+          onClick={() => setActiveTab("support-patterns")}
+        >
+          Support Patterns
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "ea-briefing" ? "tab-btn--active" : ""}`}
+          onClick={() => setActiveTab("ea-briefing")}
+        >
+          EA Briefing
         </button>
       </nav>
 
@@ -252,6 +368,7 @@ export default function App() {
               <PlanViewer
                 plan={planResult.plan}
                 thinkingSummary={planResult.thinking_summary}
+                patternInformed={planResult.pattern_informed}
                 latencyMs={planResult.latency_ms}
                 modelId={planResult.model_id}
                 onFollowupClick={handleFollowupClick}
@@ -304,6 +421,48 @@ export default function App() {
               />
             )}
           </>
+        )}
+
+        {activeTab === "language-tools" && (
+          <>
+            {error && simplifyResult === null && vocabResult === null && (
+              <div className="error-banner">{error}</div>
+            )}
+            <SimplifiedViewer
+              onSubmit={handleSimplify}
+              result={simplifyResult}
+              loading={loading}
+            />
+            <hr className="section-divider" />
+            <VocabCardGrid
+              onSubmit={handleVocabCards}
+              result={vocabResult}
+              loading={loading}
+            />
+          </>
+        )}
+        {activeTab === "support-patterns" && classrooms.length > 0 && (
+          <PatternReport
+            classrooms={classrooms}
+            students={studentStubs}
+            selectedClassroom={msgClassroom}
+            onClassroomChange={setMsgClassroom}
+            onSubmit={handleSupportPatterns}
+            loading={loading}
+            result={patternResult}
+            onInterventionClick={handleInterventionClick}
+            onFollowupClick={handleFollowupClick}
+          />
+        )}
+        {activeTab === "ea-briefing" && classrooms.length > 0 && (
+          <EABriefingView
+            classrooms={classrooms}
+            selectedClassroom={msgClassroom}
+            onClassroomChange={setMsgClassroom}
+            onSubmit={handleEABriefing}
+            loading={loading}
+            result={briefingResult}
+          />
         )}
       </main>
     </div>

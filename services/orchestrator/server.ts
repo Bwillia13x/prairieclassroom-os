@@ -24,13 +24,23 @@ import { buildFamilyMessagePrompt, parseFamilyMessageResponse } from "./family-m
 import type { FamilyMessageInput } from "./family-message.js";
 import { buildInterventionPrompt, parseInterventionResponse } from "./intervention.js";
 import type { InterventionInput } from "./intervention.js";
-import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention } from "../memory/store.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions } from "../memory/retrieve.js";
+import { buildSimplifyPrompt, parseSimplifyResponse } from "./simplify.js";
+import type { SimplifyInput } from "./simplify.js";
+import { buildVocabCardsPrompt, parseVocabCardsResponse } from "./vocab-cards.js";
+import type { VocabCardsInput } from "./vocab-cards.js";
+import { buildSupportPatternsPrompt, parseSupportPatternsResponse } from "./support-patterns.js";
+import type { SupportPatternsInput } from "./support-patterns.js";
+import { buildEABriefingPrompt, parseEABriefingResponse } from "./ea-briefing.js";
+import type { EABriefingInput } from "./ea-briefing.js";
+import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport } from "../memory/store.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
+import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
+import type { EABriefing } from "../../packages/shared/schemas/briefing.js";
 
 const PORT = parseInt(process.env.PORT ?? "3100", 10);
 const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
@@ -200,6 +210,19 @@ app.post("/api/tomorrow-plan", async (req, res) => {
       console.warn("Memory retrieval failed (interventions):", memErr);
     }
 
+    // Retrieve latest pattern report for pattern-informed planning
+    let patternInsightsSummary = "";
+    let patternInformed = false;
+    try {
+      const latestPattern = getLatestPatternReport(classroom_id);
+      if (latestPattern) {
+        patternInsightsSummary = summarizePatternInsights(latestPattern);
+        patternInformed = true;
+      }
+    } catch (memErr) {
+      console.warn("Memory retrieval failed (patterns):", memErr);
+    }
+
     // Build prompt
     const planInput: TomorrowPlanInput = {
       classroom_id,
@@ -207,7 +230,7 @@ app.post("/api/tomorrow-plan", async (req, res) => {
       artifacts,
       teacher_goal,
     };
-    const prompt = buildTomorrowPlanPrompt(classroom, planInput, memorySummary, interventionSummary);
+    const prompt = buildTomorrowPlanPrompt(classroom, planInput, memorySummary, interventionSummary, patternInsightsSummary || undefined);
 
     // Call inference service
     const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
@@ -251,6 +274,7 @@ app.post("/api/tomorrow-plan", async (req, res) => {
     res.json({
       plan,
       thinking_summary: inferenceData.thinking_text ?? null,
+      pattern_informed: patternInformed,
       model_id: inferenceData.model_id || modelId,
       latency_ms: inferenceData.latency_ms,
     });
@@ -477,10 +501,385 @@ app.post("/api/intervention", async (req, res) => {
   }
 });
 
+// ----- Simplify for Student Route -----
+
+app.post("/api/simplify", async (req, res) => {
+  try {
+    const { source_text, grade_band, eal_level } = req.body as {
+      source_text: string;
+      grade_band: string;
+      eal_level: "beginner" | "intermediate" | "advanced";
+    };
+
+    if (!source_text || !grade_band || !eal_level) {
+      res.status(400).json({
+        error: "Missing required fields: source_text, grade_band, eal_level",
+      });
+      return;
+    }
+
+    const validLevels = ["beginner", "intermediate", "advanced"];
+    if (!validLevels.includes(eal_level)) {
+      res.status(400).json({
+        error: `Invalid eal_level: ${eal_level}. Must be one of: ${validLevels.join(", ")}`,
+      });
+      return;
+    }
+
+    const route = getRoute("simplify_for_student");
+    const modelId = getModelId(route.model_tier);
+
+    const simplifyInput: SimplifyInput = { source_text, grade_band, eal_level };
+    const prompt = buildSimplifyPrompt(simplifyInput);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        prompt_class: "simplify_for_student",
+        max_tokens: 2048,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      model_id: string;
+      latency_ms: number;
+    };
+
+    let simplified;
+    try {
+      simplified = parseSimplifyResponse(inferenceData.text, simplifyInput);
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as simplified text",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    res.json({
+      simplified,
+      model_id: inferenceData.model_id || modelId,
+      latency_ms: inferenceData.latency_ms,
+    });
+  } catch (err) {
+    console.error("Simplify error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Vocab Cards Route -----
+
+app.post("/api/vocab-cards", async (req, res) => {
+  try {
+    const { artifact_id, artifact_text, subject, target_language, grade_band } =
+      req.body as {
+        artifact_id: string;
+        artifact_text: string;
+        subject: string;
+        target_language: string;
+        grade_band: string;
+      };
+
+    if (!artifact_text || !subject || !target_language || !grade_band) {
+      res.status(400).json({
+        error: "Missing required fields: artifact_text, subject, target_language, grade_band",
+      });
+      return;
+    }
+
+    const route = getRoute("generate_vocab_cards");
+    const modelId = getModelId(route.model_tier);
+
+    const vocabInput: VocabCardsInput = {
+      artifact_id: artifact_id || "unknown",
+      artifact_text,
+      subject,
+      target_language,
+      grade_band,
+    };
+    const prompt = buildVocabCardsPrompt(vocabInput);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        prompt_class: "generate_vocab_cards",
+        max_tokens: 2048,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      model_id: string;
+      latency_ms: number;
+    };
+
+    let cardSet;
+    try {
+      cardSet = parseVocabCardsResponse(inferenceData.text, vocabInput);
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as vocab cards",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    res.json({
+      card_set: cardSet,
+      model_id: inferenceData.model_id || modelId,
+      latency_ms: inferenceData.latency_ms,
+    });
+  } catch (err) {
+    console.error("Vocab cards error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Support Patterns Route -----
+
+app.post("/api/support-patterns", async (req, res) => {
+  try {
+    const { classroom_id, student_filter, time_window } = req.body as {
+      classroom_id: string;
+      student_filter?: string;
+      time_window?: number;
+    };
+
+    if (!classroom_id) {
+      res.status(400).json({ error: "Missing classroom_id" });
+      return;
+    }
+
+    const classroom = loadClassroom(classroom_id);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+      return;
+    }
+
+    const route = getRoute("detect_support_patterns");
+    const modelId = getModelId(route.model_tier);
+
+    const window = time_window ?? 10;
+    const patternInput: SupportPatternsInput = {
+      classroom_id,
+      student_filter,
+      time_window: window,
+    };
+
+    let patternCtx = "";
+    try {
+      patternCtx = buildPatternContext(classroom_id, student_filter, window);
+    } catch (memErr) {
+      console.warn("Memory retrieval failed (patterns):", memErr);
+    }
+
+    const prompt = buildSupportPatternsPrompt(classroom, patternInput, patternCtx);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        prompt_class: "detect_support_patterns",
+        max_tokens: 4096,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      thinking_text: string | null;
+      model_id: string;
+      latency_ms: number;
+    };
+
+    let report: SupportPatternReport;
+    try {
+      report = parseSupportPatternsResponse(
+        inferenceData.text,
+        classroom_id,
+        patternInput,
+      );
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as support pattern report",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    // Persist pattern report to classroom memory
+    try {
+      savePatternReport(classroom_id, report, inferenceData.model_id || modelId);
+    } catch (memErr) {
+      console.warn("Memory save failed (pattern report):", memErr);
+    }
+
+    res.json({
+      report,
+      thinking_summary: inferenceData.thinking_text ?? null,
+      model_id: inferenceData.model_id || modelId,
+      latency_ms: inferenceData.latency_ms,
+    });
+  } catch (err) {
+    console.error("Support patterns error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Latest Pattern Report Retrieval -----
+
+app.get("/api/support-patterns/latest/:classroomId", (req, res) => {
+  try {
+    const { classroomId } = req.params;
+    const report = getLatestPatternReport(classroomId);
+    if (!report) {
+      res.json({ report: null });
+      return;
+    }
+    res.json({ report });
+  } catch (err) {
+    console.error("Pattern retrieval error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- EA Daily Briefing Route -----
+
+app.post("/api/ea-briefing", async (req, res) => {
+  try {
+    const { classroom_id, ea_name } = req.body as {
+      classroom_id: string;
+      ea_name?: string;
+    };
+
+    if (!classroom_id) {
+      res.status(400).json({ error: "Missing classroom_id" });
+      return;
+    }
+
+    const classroom = loadClassroom(classroom_id);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+      return;
+    }
+
+    const route = getRoute("generate_ea_briefing");
+    const modelId = getModelId(route.model_tier);
+
+    const briefingInput: EABriefingInput = { classroom_id, ea_name };
+
+    let briefingCtx = "";
+    try {
+      briefingCtx = buildEABriefingContext(classroom_id);
+    } catch (memErr) {
+      console.warn("Memory retrieval failed (ea briefing):", memErr);
+    }
+
+    const prompt = buildEABriefingPrompt(classroom, briefingInput, briefingCtx);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        prompt_class: "generate_ea_briefing",
+        max_tokens: 2048,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      model_id: string;
+      latency_ms: number;
+    };
+
+    let briefing: EABriefing;
+    try {
+      briefing = parseEABriefingResponse(inferenceData.text, classroom_id);
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as EA briefing",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    // No persistence — briefings are ephemeral synthesis views
+
+    res.json({
+      briefing,
+      model_id: inferenceData.model_id || modelId,
+      latency_ms: inferenceData.latency_ms,
+    });
+  } catch (err) {
+    console.error("EA briefing error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
 // ----- Start -----
 
 app.listen(PORT, () => {
   console.log(`Orchestrator API running on http://localhost:${PORT}`);
   console.log(`Inference service expected at ${INFERENCE_URL}`);
   console.log(`Data directory: ${DATA_DIR}`);
+
+  // Check for demo classroom
+  const classrooms = loadClassrooms();
+  const demo = classrooms.find((c) => c.classroom_id === "demo-okafor-grade34");
+  if (demo) {
+    console.log(`Demo classroom available: ${demo.classroom_id} (${demo.grade_band}, ${demo.students.length} students)`);
+    console.log(`  → Visit http://localhost:5173/?demo=true for demo mode`);
+  }
 });
