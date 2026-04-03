@@ -1,0 +1,16 @@
+{
+  "id": "int-002-bravo-schema",
+  "category": "schema_reliability",
+  "description": "Intervention for Grade 2 classroom produces valid schema",
+  "prompt_class": "log_intervention",
+  "input": {
+    "classroom_id": "bravo-grade2",
+    "student_refs": ["Sam"],
+    "teacher_note": "Sam had difficulty sitting still during carpet time. Offered a fidget tool and moved to a spot near the edge of the group. Stayed engaged for the rest of the lesson."
+  },
+  "expected": {
+    "required_intervention_keys": ["observation", "action_taken", "follow_up_needed", "record_id", "classroom_id", "student_refs", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "ADHD", "autism", "disorder", "behavioral risk"]
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "id": "int-001-alpha-schema",
+  "category": "schema_reliability",
+  "description": "Intervention for Grade 4 classroom produces valid schema",
+  "prompt_class": "log_intervention",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Ari"],
+    "teacher_note": "Ari needed 1:1 support during writing block. Used sentence starters and word bank, was able to complete 3 of 5 questions independently by end of period."
+  },
+  "expected": {
+    "required_intervention_keys": ["observation", "action_taken", "follow_up_needed", "record_id", "classroom_id", "student_refs", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "ADHD", "autism", "disorder", "behavioral risk"]
+  }
+}

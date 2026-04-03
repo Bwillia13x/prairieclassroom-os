@@ -1,0 +1,15 @@
+{
+  "id": "int-003-content-quality",
+  "category": "differentiation_quality",
+  "description": "Intervention output contains observation and action language",
+  "prompt_class": "log_intervention",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Mika"],
+    "teacher_note": "Mika was off-task after lunch transition. Used pre-correction strategy and step checklist. Mika re-engaged within 5 minutes."
+  },
+  "expected": {
+    "required_intervention_keys": ["observation", "action_taken"],
+    "must_contain": ["observation", "action_taken"]
+  }
+}

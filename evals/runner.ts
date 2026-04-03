@@ -53,6 +53,8 @@ interface ExpectedOutput {
   required_message_keys?: string[];
   /** For family-message: teacher_approved must be false on generation. */
   teacher_approved_must_be_false?: boolean;
+  /** For intervention: required keys in record object. */
+  required_intervention_keys?: string[];
 }
 
 interface EvalResult {
@@ -388,6 +390,80 @@ async function runFamilyMessageEval(evalCase: EvalCase): Promise<EvalResult> {
   }
 }
 
+async function runInterventionEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/intervention`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        classroom_id: input.classroom_id,
+        student_refs: input.student_refs,
+        teacher_note: input.teacher_note,
+        context: input.context,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      record: Record<string, unknown>;
+      model_id: string;
+      latency_ms: number;
+    };
+    const record = data.record;
+
+    // Check required intervention keys
+    const requiredKeys = (evalCase.expected as Record<string, unknown>)
+      .required_intervention_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in record)) {
+          failures.push(`Record missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && record.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${record.schema_version}`,
+      );
+    }
+
+    // Content checks
+    const allText = JSON.stringify(record);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
 async function main(): Promise<void> {
   const casesDir = resolve(import.meta.dirname ?? ".", "cases");
   const evalCases = await loadEvalCases(casesDir);
@@ -409,6 +485,8 @@ async function main(): Promise<void> {
       result = await runTomorrowPlanEval(ec);
     } else if (ec.prompt_class === "draft_family_message") {
       result = await runFamilyMessageEval(ec);
+    } else if (ec.prompt_class === "log_intervention") {
+      result = await runInterventionEval(ec);
     } else {
       result = await runDifferentiationEval(ec);
     }

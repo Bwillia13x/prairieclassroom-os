@@ -1,0 +1,15 @@
+{
+  "id": "int-005-latency",
+  "category": "latency_suitability",
+  "description": "Intervention logging completes within 5000ms",
+  "prompt_class": "log_intervention",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Jae"],
+    "teacher_note": "Jae finished the core reading task early. Offered extension menu. Chose to write a deeper question about the topic."
+  },
+  "expected": {
+    "required_intervention_keys": ["observation", "action_taken"],
+    "max_latency_ms": 5000
+  }
+}
