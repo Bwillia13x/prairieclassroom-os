@@ -33,6 +33,7 @@ export interface TomorrowPlanInput {
 export function buildTomorrowPlanPrompt(
   classroom: ClassroomProfile,
   input: TomorrowPlanInput,
+  memorySummary?: string,
 ): TomorrowPlanPrompt {
   const system = `You are PrairieClassroom OS, a classroom planning assistant for Alberta K–6 teachers.
 
@@ -104,7 +105,7 @@ ${input.teacher_reflection}
 
 TOMORROW'S ARTIFACTS/MATERIALS:
 ${artifactContext}
-${input.teacher_goal ? `\nTEACHER GOAL FOR TOMORROW: ${input.teacher_goal}` : ""}
+${memorySummary ? `\nCLASSROOM MEMORY:\n${memorySummary}\n` : ""}${input.teacher_goal ? `\nTEACHER GOAL FOR TOMORROW: ${input.teacher_goal}` : ""}
 
 Produce a structured tomorrow plan as a JSON object.`;
 
