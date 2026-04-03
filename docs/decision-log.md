@@ -129,3 +129,30 @@ Use this file as a lightweight ADR register.
 - **Alternatives considered:** Hono (lighter but less ecosystem support for rapid prototyping). Fastify (more ceremony than needed). tRPC (type-safe but overkill when the primary consumer is a simple React app).
 - **Consequences:** CORS enabled for local dev. Vite proxy handles the browser-to-API path.
 - **What would change this:** Need for WebSocket support (would add socket.io or switch to a framework with built-in WS).
+
+---
+
+### 2026-04-03 — SQLite per-classroom memory files
+- **Decision:** Use one SQLite database file per classroom, stored in `data/memory/{classroom_id}.sqlite`, with three tables: generated_plans, generated_variants, family_messages.
+- **Why:** Per-classroom files align with local-first portability — a teacher can carry their classroom's entire history as a single file. JSON blobs in TEXT columns avoid relational joins while supporting recency-based retrieval via indexed columns.
+- **Alternatives considered:** Single shared database (loses portability story). JSON flat files (fragile for queries). PostgreSQL (requires a server).
+- **Consequences:** Connection manager caches open connections by classroom_id. Memory retrieval is by classroom + recency, not cross-classroom analytics.
+- **What would change this:** A need for cross-classroom queries or multi-user concurrent writes.
+
+---
+
+### 2026-04-03 — prompt_class field for inference dispatch
+- **Decision:** Add a `prompt_class` string field to `GenerationRequest` so the mock backend can dispatch to the correct canned response per prompt class.
+- **Why:** Family messaging (no thinking, no tools, no images) would otherwise fall through to the differentiation mock response. Explicit dispatch by prompt class is more reliable than heuristic detection.
+- **Alternatives considered:** Detect from prompt content (fragile). Separate endpoints per prompt class (breaks the unified /generate interface).
+- **Consequences:** Backward-compatible — prompt_class defaults to None, existing calls unchanged. Real model inference ignores this field.
+- **What would change this:** Moving to real model inference where the model determines output format from the prompt.
+
+---
+
+### 2026-04-03 — Family message approval is UX audit, not access control
+- **Decision:** The `teacher_approved` field on `FamilyMessageDraft` is an audit record. There is no outbound messaging system to gate. The teacher manually copies the approved text to their own communication channel.
+- **Why:** Building a send system introduces complexity and safety risk beyond MVP scope. The safety governance doc requires "no external send without approval" — the simplest way to enforce this is to not have send functionality at all.
+- **Alternatives considered:** Email integration (too complex, privacy risk). SMS gateway (cost, privacy). Auto-send with approval toggle (violates safety principle).
+- **Consequences:** UI shows "Approve & Copy" rather than "Send". Approval timestamp is recorded for audit.
+- **What would change this:** A clear need for integrated messaging with proper consent infrastructure.
