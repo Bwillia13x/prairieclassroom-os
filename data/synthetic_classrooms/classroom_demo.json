@@ -1,0 +1,70 @@
+{
+  "classroom_id": "demo-okafor-grade34",
+  "grade_band": "3-4",
+  "subject_focus": "cross_curricular",
+  "classroom_notes": [
+    "Split grade 3/4 class with 24 students.",
+    "EA (Ms. Fehr) available mornings only — afternoons are teacher-only.",
+    "Three EAL students at different proficiency levels.",
+    "Sensory corner set up near the window; one student uses it daily.",
+    "Math block is right after lunch — transitions are consistently hard."
+  ],
+  "routines": {
+    "morning": "bell work journal then calendar math",
+    "after_lunch": "body break then math block",
+    "end_of_day": "learning reflection then pack-up song"
+  },
+  "support_constraints": [
+    "EA available 8:30-12:00 only",
+    "No 1:1 aide — EA floats between 3 students",
+    "Speech-language consult available biweekly"
+  ],
+  "students": [
+    {
+      "student_id": "D1",
+      "alias": "Amira",
+      "eal_flag": true,
+      "support_tags": ["eal_level_2", "needs_visual_supports", "strong_math_reasoning"],
+      "known_successful_scaffolds": ["bilingual_word_walls", "visual_step_cards", "peer_buddy_system"],
+      "communication_notes": ["Family speaks Tagalog at home", "Mother prefers messages in English with simple vocabulary"]
+    },
+    {
+      "student_id": "D2",
+      "alias": "Brody",
+      "eal_flag": false,
+      "support_tags": ["attention_during_transitions", "sensory_needs", "benefits_from_pre_correction"],
+      "known_successful_scaffolds": ["advance_notice_of_transitions", "fidget_tools", "visual_timer", "sensory_break_before_math"],
+      "communication_notes": ["Father responsive to app messages", "Prefers brief, positive-first updates"]
+    },
+    {
+      "student_id": "D3",
+      "alias": "Chantal",
+      "eal_flag": false,
+      "support_tags": ["strong_reader", "needs_extension_tasks", "peer_mentor"],
+      "known_successful_scaffolds": ["independent_extension_menu", "leadership_roles_in_group_work"]
+    },
+    {
+      "student_id": "D4",
+      "alias": "Daniyal",
+      "eal_flag": true,
+      "support_tags": ["eal_level_1", "new_to_school_system", "needs_routine_support"],
+      "known_successful_scaffolds": ["visual_schedule", "simplified_instructions", "buddy_system"],
+      "communication_notes": ["Family speaks Urdu", "Older sibling translates for parent meetings"]
+    },
+    {
+      "student_id": "D5",
+      "alias": "Elena",
+      "eal_flag": false,
+      "support_tags": ["math_anxiety", "benefits_from_manipulatives", "quiet_contributor"],
+      "known_successful_scaffolds": ["concrete_manipulatives_first", "small_group_before_independent", "positive_self_talk_prompts"]
+    },
+    {
+      "student_id": "D6",
+      "alias": "Farid",
+      "eal_flag": true,
+      "support_tags": ["eal_level_3", "social_language_stronger_than_academic", "good_at_math"],
+      "known_successful_scaffolds": ["academic_vocabulary_previews", "sentence_frames_for_writing"],
+      "communication_notes": ["Family speaks Arabic", "Mother is comfortable with English communication"]
+    }
+  ]
+}
