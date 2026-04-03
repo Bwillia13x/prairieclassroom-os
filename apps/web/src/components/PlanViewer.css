@@ -1,0 +1,169 @@
+.plan-viewer {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.plan-header h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.25rem;
+}
+
+.plan-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+}
+
+/* Thinking disclosure */
+.plan-thinking {
+  background: #f8f9fa;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 0.85rem;
+}
+
+.plan-thinking summary {
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+}
+
+.plan-thinking pre {
+  margin-top: 0.5rem;
+  white-space: pre-wrap;
+  font-size: 0.82rem;
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+/* Sections */
+.plan-section {
+  margin-bottom: 1.25rem;
+}
+
+.plan-section h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.plan-icon {
+  font-size: 1rem;
+}
+
+/* Cards */
+.plan-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.plan-card {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+}
+
+.plan-card-label {
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin-bottom: 0.3rem;
+  color: var(--color-text);
+}
+
+.plan-card-tag {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.plan-card-risk {
+  font-size: 0.85rem;
+  color: #92400e;
+  margin-bottom: 0.3rem;
+}
+
+.plan-card-reason {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.3rem;
+}
+
+.plan-card-action {
+  font-size: 0.85rem;
+  color: var(--color-text);
+}
+
+.plan-card p {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+
+/* Variant-specific borders */
+.plan-card--watchpoint {
+  border-left: 3px solid #f59e0b;
+}
+
+.plan-card--priority {
+  border-left: 3px solid #3b82f6;
+}
+
+.plan-card--ea {
+  border-left: 3px solid #8b5cf6;
+}
+
+.plan-card--family {
+  border-left: 3px solid #10b981;
+}
+
+/* Checklist */
+.plan-checklist {
+  list-style: none;
+  padding: 0;
+}
+
+.plan-checklist li {
+  padding: 0.4rem 0.5rem;
+  font-size: 0.88rem;
+  border-bottom: 1px solid var(--color-border);
+  line-height: 1.5;
+}
+
+.plan-checklist li:last-child {
+  border-bottom: none;
+}
+
+.plan-checklist li::before {
+  content: "☐ ";
+  color: var(--color-text-secondary);
+}
+
+/* Section colors */
+.plan-section--watchpoints h3 {
+  color: #b45309;
+}
+
+.plan-section--priorities h3 {
+  color: #1d4ed8;
+}
+
+.plan-section--ea h3 {
+  color: #6d28d9;
+}
+
+.plan-section--prep h3 {
+  color: var(--color-text);
+}
+
+.plan-section--family h3 {
+  color: #059669;
+}

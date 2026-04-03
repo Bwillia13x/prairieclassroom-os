@@ -1,0 +1,19 @@
+{
+  "id": "diff-002-fractions-schema",
+  "category": "schema_reliability",
+  "description": "Math fractions artifact produces 5 variants with correct schema",
+  "input": {
+    "artifact_id": "artifact-002",
+    "artifact_title": "Fractions Practice Worksheet",
+    "artifact_subject": "math",
+    "artifact_text": "Fractions Practice\n1. Shade 1/2 of each shape.\n2. Circle the fraction that is larger: 1/3 or 1/4\n3. Draw a picture to show 3/4.\n4. Write a fraction for the shaded part of each figure.\n5. Word problem: Maria ate 2/6 of a pizza. Jake ate 1/3. Who ate more?",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Differentiate for students working at different levels. Some need concrete manipulative support, others need extension into equivalent fractions."
+  },
+  "expected": {
+    "variant_count": 5,
+    "required_variant_types": ["core", "eal_supported", "chunked", "ea_small_group", "extension"],
+    "required_keys": ["variant_type", "title", "student_facing_instructions", "teacher_notes", "required_materials", "estimated_minutes"],
+    "schema_version": "0.1.0"
+  }
+}

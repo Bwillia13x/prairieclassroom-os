@@ -1,0 +1,39 @@
+{
+  "classroom_id": "echo-grade3",
+  "grade_band": "3",
+  "subject_focus": "social_studies_and_literacy",
+  "classroom_notes": [
+    "Mixed grade 3/4 split class with 25 students.",
+    "Full-time EA assigned. Strong classroom routines.",
+    "High proportion of EAL students (10 of 25).",
+    "Substitute days are especially disruptive."
+  ],
+  "routines": {
+    "morning": "entry task then morning meeting",
+    "after_lunch": "silent reading then guided groups",
+    "end_of_day": "reflection journal then dismissal checklist"
+  },
+  "students": [
+    {
+      "student_id": "S16",
+      "alias": "Fatima",
+      "eal_flag": true,
+      "support_tags": ["intermediate_english", "strong_oral_skills", "writing_support_needed"],
+      "known_successful_scaffolds": ["sentence_frames", "oral_rehearsal_before_writing"]
+    },
+    {
+      "student_id": "S17",
+      "alias": "Ben",
+      "eal_flag": false,
+      "support_tags": ["grade_4_in_split", "advanced_reader", "needs_challenge"],
+      "known_successful_scaffolds": ["independent_research_tasks", "book_club_leadership"]
+    },
+    {
+      "student_id": "S18",
+      "alias": "Riya",
+      "eal_flag": true,
+      "support_tags": ["emerging_english", "newcomer_this_year", "strong_math"],
+      "known_successful_scaffolds": ["visual_vocabulary", "partner_work", "first_language_support"]
+    }
+  ]
+}

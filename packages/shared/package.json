@@ -1,0 +1,8 @@
+{
+  "name": "@prairie/shared",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "main": "schemas/index.ts",
+  "types": "schemas/index.ts"
+}

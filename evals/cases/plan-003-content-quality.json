@@ -1,0 +1,15 @@
+{
+  "id": "plan-003-content-quality",
+  "category": "planning_usefulness",
+  "description": "Tomorrow plan content is specific to classroom context, not generic advice",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "teacher_reflection": "Ari's reading improved today with paired examples. Mika had a meltdown during the transition from reading to writing — the clear step checklist wasn't posted. Jae helped another student which was great but missed his own extension work.",
+    "teacher_goal": "Keep Ari's momentum going. Prevent Mika's transition issues. Engage Jae without relying on him as a peer tutor."
+  },
+  "expected": {
+    "must_contain": ["Ari", "Mika", "Jae"],
+    "must_not_contain": ["diagnosis", "diagnose", "behavioral score", "risk score", "disciplin", "IEP", "referral"]
+  }
+}

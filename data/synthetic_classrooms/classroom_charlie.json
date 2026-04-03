@@ -1,0 +1,53 @@
+{
+  "classroom_id": "charlie-grade6",
+  "grade_band": "6",
+  "subject_focus": "science_and_writing",
+  "classroom_notes": [
+    "Large class (29 students). One complexity-team EA plus one part-time EA.",
+    "Three students with IPPs for learning disabilities.",
+    "Transition between science lab and classroom is a daily friction point.",
+    "Several students working 2+ grade levels below in writing."
+  ],
+  "routines": {
+    "morning": "bell work journal then lesson launch",
+    "after_lunch": "independent reading then science block",
+    "end_of_day": "homework review then organized dismissal"
+  },
+  "students": [
+    {
+      "student_id": "S8",
+      "alias": "Priya",
+      "eal_flag": true,
+      "support_tags": ["advanced_reader", "eal_for_academic_vocabulary", "can_peer_tutor"],
+      "known_successful_scaffolds": ["academic_word_lists", "extension_projects"]
+    },
+    {
+      "student_id": "S9",
+      "alias": "Kai",
+      "eal_flag": false,
+      "support_tags": ["ipp_learning_disability", "writing_support", "needs_scribe_option"],
+      "known_successful_scaffolds": ["oral_response_option", "graphic_organizers", "reduced_writing_load"]
+    },
+    {
+      "student_id": "S10",
+      "alias": "Amira",
+      "eal_flag": true,
+      "support_tags": ["emerging_english", "strong_science_skills", "needs_simplified_text"],
+      "known_successful_scaffolds": ["simplified_handouts", "first_language_glossary", "visual_diagrams"]
+    },
+    {
+      "student_id": "S11",
+      "alias": "Marcus",
+      "eal_flag": false,
+      "support_tags": ["attention_regulation", "transition_difficulty", "benefits_from_pre_correction"],
+      "known_successful_scaffolds": ["advance_notice", "fidget_tool", "proximity_seating"]
+    },
+    {
+      "student_id": "S12",
+      "alias": "Zara",
+      "eal_flag": false,
+      "support_tags": ["strong_reader", "needs_extension", "leadership_potential"],
+      "known_successful_scaffolds": ["independent_research_menu", "peer_mentoring_role"]
+    }
+  ]
+}

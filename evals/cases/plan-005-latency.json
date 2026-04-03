@@ -1,0 +1,15 @@
+{
+  "id": "plan-005-latency",
+  "category": "latency_suitability",
+  "description": "Tomorrow plan should generate within 30 seconds even with thinking mode",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "teacher_reflection": "Standard day. Reading went well, writing was harder. Transition after lunch was slow as usual.",
+    "teacher_goal": "Improve afternoon flow."
+  },
+  "expected": {
+    "max_latency_ms": 30000,
+    "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"]
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "diff-001-reading-schema",
+  "category": "schema_reliability",
+  "description": "Reading passage artifact produces 5 variants with all required schema fields",
+  "input": {
+    "artifact_id": "artifact-001",
+    "artifact_title": "Community Helpers Reading Passage",
+    "artifact_subject": "literacy",
+    "artifact_text": "Read the passage about community helpers. Then answer three written questions explaining what each person does and why their job matters.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Differentiate this for mixed reading levels and one small EA-led group."
+  },
+  "expected": {
+    "variant_count": 5,
+    "required_variant_types": ["core", "eal_supported", "chunked", "ea_small_group", "extension"],
+    "required_keys": ["variant_type", "title", "student_facing_instructions", "teacher_notes", "required_materials", "estimated_minutes"],
+    "schema_version": "0.1.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "id": "diff-007-persuasive-writing-schema",
+  "category": "schema_reliability",
+  "description": "Persuasive writing artifact produces 5 schema-valid variants with appropriate EAL support",
+  "input": {
+    "artifact_id": "artifact-005",
+    "artifact_title": "Persuasive Writing Prompt — Should Students Have Longer Recess?",
+    "artifact_subject": "literacy",
+    "artifact_text": "Persuasive Writing\nTopic: Should students have longer recess?\nWrite a persuasive paragraph that includes:\n- A clear opinion statement\n- At least 2 reasons to support your opinion\n- A closing sentence\nRemember to use persuasive words like: I believe, because, therefore, in my opinion.\nBonus: Write a second paragraph arguing the opposite side.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Several students will need sentence starters. EAL students need a simpler prompt with vocabulary support. One small group should do this orally with the EA before writing."
+  },
+  "expected": {
+    "variant_count": 5,
+    "required_variant_types": ["core", "eal_supported", "chunked", "ea_small_group", "extension"],
+    "required_keys": ["variant_type", "title", "student_facing_instructions", "teacher_notes", "required_materials", "estimated_minutes"],
+    "schema_version": "0.1.0"
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "classroom_id": "delta-grade1",
+  "grade_band": "1",
+  "subject_focus": "literacy_and_numeracy",
+  "classroom_notes": [
+    "Small class (16 students) but very high needs concentration.",
+    "No dedicated EA — shared EA visits twice per week.",
+    "Three students awaiting formal assessment (waitlisted).",
+    "Classroom uses visual schedule and timer for all transitions."
+  ],
+  "routines": {
+    "morning": "greeting circle then phonics warm-up",
+    "after_lunch": "story time then centers",
+    "end_of_day": "clean-up song then pack-up buddy"
+  },
+  "students": [
+    {
+      "student_id": "S13",
+      "alias": "Noah",
+      "eal_flag": false,
+      "support_tags": ["awaiting_assessment", "speech_language_concerns", "easily_frustrated"],
+      "known_successful_scaffolds": ["visual_choice_board", "reduced_verbal_demands", "sensory_break"]
+    },
+    {
+      "student_id": "S14",
+      "alias": "Yasmin",
+      "eal_flag": true,
+      "support_tags": ["emerging_english", "kindergarten_literacy_level"],
+      "known_successful_scaffolds": ["picture_cues", "one_on_one_reading", "bilingual_parent_support"]
+    },
+    {
+      "student_id": "S15",
+      "alias": "Ethan",
+      "eal_flag": false,
+      "support_tags": ["strong_academically", "social_conflict_during_play"],
+      "known_successful_scaffolds": ["structured_play_choices", "problem_solving_script"]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "classroom_id": "alpha-grade4",
+  "grade_band": "4",
+  "subject_focus": "literacy_and_social_studies",
+  "classroom_notes": [
+    "Transitions after lunch can be noisy and slow.",
+    "Visual instructions reduce repetition burden.",
+    "Small-group support is usually needed during writing tasks."
+  ],
+  "routines": {
+    "morning": "entry task then attendance",
+    "after_lunch": "quiet reading then mini-lesson",
+    "end_of_day": "pack-up checklist on board"
+  },
+  "students": [
+    {
+      "student_id": "S1",
+      "alias": "Ari",
+      "eal_flag": true,
+      "support_tags": ["needs_simplified_language", "benefits_from_visual_examples"],
+      "known_successful_scaffolds": ["sentence_starters", "paired_examples"]
+    },
+    {
+      "student_id": "S2",
+      "alias": "Mika",
+      "eal_flag": false,
+      "support_tags": ["attention_during_transitions", "benefits_from_pre_correction"],
+      "known_successful_scaffolds": ["advance_notice", "clear_step_checklist"]
+    },
+    {
+      "student_id": "S3",
+      "alias": "Jae",
+      "eal_flag": false,
+      "support_tags": ["strong_reader", "needs_extension_tasks"],
+      "known_successful_scaffolds": ["independent_extension_menu"]
+    }
+  ]
+}

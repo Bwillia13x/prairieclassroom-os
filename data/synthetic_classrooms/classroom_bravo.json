@@ -1,0 +1,45 @@
+{
+  "classroom_id": "bravo-grade2",
+  "grade_band": "2",
+  "subject_focus": "math_and_literacy",
+  "classroom_notes": [
+    "Heavy EAL class — 8 of 22 students have English as an Additional Language.",
+    "Morning routine is well-established; afternoon transitions are harder.",
+    "One EA available Monday through Thursday, none on Friday."
+  ],
+  "routines": {
+    "morning": "calendar math then read-aloud",
+    "after_lunch": "body break then guided practice",
+    "end_of_day": "reflection circle then pack-up"
+  },
+  "students": [
+    {
+      "student_id": "S4",
+      "alias": "Lina",
+      "eal_flag": true,
+      "support_tags": ["emerging_english", "strong_math_conceptually", "needs_visual_instructions"],
+      "known_successful_scaffolds": ["picture_cues", "first_language_math_vocab"]
+    },
+    {
+      "student_id": "S5",
+      "alias": "Devi",
+      "eal_flag": true,
+      "support_tags": ["intermediate_english", "benefits_from_sentence_frames"],
+      "known_successful_scaffolds": ["sentence_starters", "bilingual_word_wall"]
+    },
+    {
+      "student_id": "S6",
+      "alias": "Tomás",
+      "eal_flag": true,
+      "support_tags": ["emerging_english", "anxious_during_transitions", "strong_oral_presence"],
+      "known_successful_scaffolds": ["visual_schedule", "advance_warning", "partner_work"]
+    },
+    {
+      "student_id": "S7",
+      "alias": "Owen",
+      "eal_flag": false,
+      "support_tags": ["reading_below_grade", "benefits_from_chunked_tasks"],
+      "known_successful_scaffolds": ["step_by_step_checklists", "reduced_output_length"]
+    }
+  ]
+}

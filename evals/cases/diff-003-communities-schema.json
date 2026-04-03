@@ -1,0 +1,19 @@
+{
+  "id": "diff-003-communities-schema",
+  "category": "schema_reliability",
+  "description": "Social studies communities artifact produces 5 schema-valid variants",
+  "input": {
+    "artifact_id": "artifact-003",
+    "artifact_title": "Alberta Communities Social Studies Assignment",
+    "artifact_subject": "social_studies",
+    "artifact_text": "Choose one community in Alberta. Research and write a short report (3-4 paragraphs) that answers:\n1. Where is this community located?\n2. What makes this community special?\n3. How do people in this community help each other?\nInclude at least one map or drawing.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Need EAL-supported version with visual scaffolds, chunked version for struggling writers, and extension version for strong writers."
+  },
+  "expected": {
+    "variant_count": 5,
+    "required_variant_types": ["core", "eal_supported", "chunked", "ea_small_group", "extension"],
+    "required_keys": ["variant_type", "title", "student_facing_instructions", "teacher_notes", "required_materials", "estimated_minutes"],
+    "schema_version": "0.1.0"
+  }
+}

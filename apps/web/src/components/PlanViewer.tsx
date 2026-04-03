@@ -1,0 +1,122 @@
+import type { TomorrowPlan } from "../types";
+import "./PlanViewer.css";
+
+interface Props {
+  plan: TomorrowPlan;
+  thinkingSummary: string | null;
+  latencyMs: number;
+  modelId: string;
+}
+
+export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId }: Props) {
+  return (
+    <div className="plan-viewer">
+      <header className="plan-header">
+        <h2>Tomorrow's Support Plan</h2>
+        <p className="plan-meta">
+          {plan.classroom_id} · {Math.round(latencyMs)}ms · {modelId}
+          {plan.schema_version && ` · v${plan.schema_version}`}
+        </p>
+      </header>
+
+      {thinkingSummary && (
+        <details className="plan-thinking">
+          <summary>Model Thinking</summary>
+          <pre>{thinkingSummary}</pre>
+        </details>
+      )}
+
+      {/* Transition Watchpoints */}
+      {plan.transition_watchpoints.length > 0 && (
+        <section className="plan-section plan-section--watchpoints">
+          <h3>
+            <span className="plan-icon">⚠</span> Transition Watchpoints
+          </h3>
+          <div className="plan-cards">
+            {plan.transition_watchpoints.map((w, i) => (
+              <div key={i} className="plan-card plan-card--watchpoint">
+                <div className="plan-card-label">{w.time_or_activity}</div>
+                <p className="plan-card-risk">{w.risk_description}</p>
+                <p className="plan-card-action">{w.suggested_mitigation}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Support Priorities */}
+      {plan.support_priorities.length > 0 && (
+        <section className="plan-section plan-section--priorities">
+          <h3>
+            <span className="plan-icon">★</span> Support Priorities
+          </h3>
+          <div className="plan-cards">
+            {plan.support_priorities.map((s, i) => (
+              <div key={i} className="plan-card plan-card--priority">
+                <div className="plan-card-label">{s.student_ref}</div>
+                <p className="plan-card-reason">{s.reason}</p>
+                <p className="plan-card-action">{s.suggested_action}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* EA Actions */}
+      {plan.ea_actions.length > 0 && (
+        <section className="plan-section plan-section--ea">
+          <h3>
+            <span className="plan-icon">👤</span> EA Plan
+          </h3>
+          <div className="plan-cards">
+            {plan.ea_actions.map((e, i) => (
+              <div key={i} className="plan-card plan-card--ea">
+                <div className="plan-card-label">
+                  {e.timing}
+                  {e.student_refs.length > 0 && (
+                    <span className="plan-card-tag"> · {e.student_refs.join(", ")}</span>
+                  )}
+                </div>
+                <p>{e.description}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Prep Checklist */}
+      {plan.prep_checklist.length > 0 && (
+        <section className="plan-section plan-section--prep">
+          <h3>
+            <span className="plan-icon">✓</span> Prep Checklist
+          </h3>
+          <ul className="plan-checklist">
+            {plan.prep_checklist.map((item, i) => (
+              <li key={i}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Family Follow-ups */}
+      {plan.family_followups.length > 0 && (
+        <section className="plan-section plan-section--family">
+          <h3>
+            <span className="plan-icon">✉</span> Family Follow-ups
+          </h3>
+          <div className="plan-cards">
+            {plan.family_followups.map((f, i) => (
+              <div key={i} className="plan-card plan-card--family">
+                <div className="plan-card-label">
+                  {f.student_ref}
+                  <span className="plan-card-tag"> · {f.message_type.replace(/_/g, " ")}</span>
+                </div>
+                <p>{f.reason}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}

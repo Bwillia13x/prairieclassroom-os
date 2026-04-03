@@ -1,0 +1,17 @@
+{
+  "id": "diff-006-latency",
+  "category": "latency_suitability",
+  "description": "Differentiation should complete within 30 seconds on the live model route",
+  "input": {
+    "artifact_id": "artifact-004",
+    "artifact_title": "Plant Life Cycle Science Lesson",
+    "artifact_subject": "science",
+    "artifact_text": "Students will learn the stages of a plant's life cycle. Read pages 34-36, label the diagram, write 3 sentences about what plants need to grow.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "EA will lead a small group. EAL students need simplified vocabulary."
+  },
+  "expected": {
+    "variant_count": 5,
+    "max_latency_ms": 30000
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "plan-002-bravo-schema",
+  "category": "planning_usefulness",
+  "description": "Tomorrow plan for a different classroom also produces valid schema",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "bravo-grade2",
+    "teacher_reflection": "Math lesson on addition went okay, but three students needed manipulatives we didn't have enough of. The read-aloud was great — everyone was engaged. Two new EAL students seemed lost during the independent practice.",
+    "teacher_goal": "Need more hands-on materials ready for math. EAL support during independent work."
+  },
+  "expected": {
+    "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"],
+    "min_watchpoints": 1,
+    "min_priorities": 1,
+    "min_prep_items": 1,
+    "schema_version": "0.1.0"
+  }
+}
