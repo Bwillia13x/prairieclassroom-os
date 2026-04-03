@@ -180,6 +180,14 @@ MOCK_TOMORROW_THINKING = (
     "Prep: sentence starters, extension menus, schedule posting, step checklists, EA briefing."
 )
 
+MOCK_FAMILY_MESSAGE = json.dumps({
+    "student_refs": ["Ari"],
+    "message_type": "praise",
+    "target_language": "en",
+    "plain_language_text": "Hi! I wanted to share some good news about your child's progress this week. Ari has been showing real improvement in reading comprehension — during our guided reading session today, they were able to identify the main idea of a passage and explain it in their own words. This is a meaningful step forward. We will keep building on this with sentence starters and paired examples that have been working well. Thank you for your support at home!",
+    "simplified_student_text": "Great job this week! You did really well finding the main idea when we read together. Keep it up!"
+})
+
 MOCK_INTERVENTION = json.dumps({
     "observation": "Ari needed 1:1 support during the writing block. Had difficulty starting the first sentence and appeared frustrated when looking at the blank page.",
     "action_taken": "Used sentence starters and word bank from the EAL support kit. Modelled the first sentence together, then had Ari try the second independently.",
