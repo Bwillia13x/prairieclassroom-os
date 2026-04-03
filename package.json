@@ -16,8 +16,12 @@
     "eval": "tsx evals/runner.ts"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "tsx": "^4.19.0",
     "typescript": "^5.7.0",
-    "vitest": "^3.0.0",
-    "tsx": "^4.19.0"
+    "vitest": "^3.0.0"
+  },
+  "dependencies": {
+    "better-sqlite3": "^12.8.0"
   }
 }

@@ -44,3 +44,8 @@ logs/
 # Test coverage
 coverage/
 .nyc_output/
+
+# SQLite classroom memory
+data/memory/*.sqlite
+data/memory/*.sqlite-wal
+data/memory/*.sqlite-shm
