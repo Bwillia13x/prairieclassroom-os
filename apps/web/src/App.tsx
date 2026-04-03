@@ -5,12 +5,15 @@ import TeacherReflection from "./components/TeacherReflection";
 import PlanViewer from "./components/PlanViewer";
 import MessageComposer from "./components/MessageComposer";
 import MessageDraft from "./components/MessageDraft";
+import InterventionLogger from "./components/InterventionLogger";
+import InterventionCard from "./components/InterventionCard";
 import {
   differentiate,
   listClassrooms,
   generateTomorrowPlan,
   draftFamilyMessage,
   approveFamilyMessage,
+  logIntervention,
 } from "./api";
 import type {
   LessonArtifact,
@@ -19,10 +22,12 @@ import type {
   TomorrowPlanResponse,
   FamilyMessageResponse,
   FamilyMessagePrefill,
+  InterventionResponse,
+  InterventionPrefill,
 } from "./types";
 import "./App.css";
 
-type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message";
+type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message" | "log-intervention";
 
 export default function App() {
   const [classrooms, setClassrooms] = useState<ClassroomProfile[]>([]);
@@ -35,6 +40,8 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
   const [msgClassroom, setMsgClassroom] = useState("");
   const [messagePrefill, setMessagePrefill] = useState<FamilyMessagePrefill | null>(null);
+  const [interventionResult, setInterventionResult] = useState<InterventionResponse | null>(null);
+  const [interventionPrefill, setInterventionPrefill] = useState<InterventionPrefill | null>(null);
 
   useEffect(() => {
     listClassrooms()
@@ -140,6 +147,37 @@ export default function App() {
     setActiveTab("family-message");
   }
 
+  async function handleIntervention(
+    classroomId: string,
+    studentRefs: string[],
+    teacherNote: string,
+    context?: string,
+  ) {
+    setLoading(true);
+    setError(null);
+    setInterventionResult(null);
+
+    try {
+      const resp = await logIntervention({
+        classroom_id: classroomId,
+        student_refs: studentRefs,
+        teacher_note: teacherNote,
+        context,
+      });
+      setInterventionResult(resp);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleInterventionClick(prefill: InterventionPrefill) {
+    setInterventionPrefill(prefill);
+    setInterventionResult(null);
+    setActiveTab("log-intervention");
+  }
+
   return (
     <div className="app-shell">
       <header className="app-header">
@@ -165,6 +203,12 @@ export default function App() {
           onClick={() => setActiveTab("family-message")}
         >
           Family Message
+        </button>
+        <button
+          className={`tab-btn ${activeTab === "log-intervention" ? "tab-btn--active" : ""}`}
+          onClick={() => setActiveTab("log-intervention")}
+        >
+          Log Intervention
         </button>
       </nav>
 
@@ -211,6 +255,7 @@ export default function App() {
                 latencyMs={planResult.latency_ms}
                 modelId={planResult.model_id}
                 onFollowupClick={handleFollowupClick}
+                onInterventionClick={handleInterventionClick}
               />
             )}
           </>
@@ -234,6 +279,28 @@ export default function App() {
                 latencyMs={msgResult.latency_ms}
                 modelId={msgResult.model_id}
                 onApprove={handleApprove}
+              />
+            )}
+          </>
+        )}
+
+        {activeTab === "log-intervention" && classrooms.length > 0 && (
+          <>
+            <InterventionLogger
+              classrooms={classrooms}
+              students={studentStubs}
+              selectedClassroom={msgClassroom}
+              onClassroomChange={setMsgClassroom}
+              onSubmit={handleIntervention}
+              loading={loading}
+              prefill={interventionPrefill}
+            />
+            {error && interventionResult === null && <div className="error-banner">{error}</div>}
+            {interventionResult && (
+              <InterventionCard
+                record={interventionResult.record}
+                latencyMs={interventionResult.latency_ms}
+                modelId={interventionResult.model_id}
               />
             )}
           </>
