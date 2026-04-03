@@ -2,8 +2,11 @@
 import Database from "better-sqlite3";
 import { mkdirSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const MEMORY_DIR = resolve(import.meta.dirname ?? ".", "../../data/memory");
+// import.meta.dirname is undefined in tsx/CJS mode — derive dirname from URL instead
+const _dirname = import.meta.dirname ?? fileURLToPath(new URL(".", import.meta.url));
+const MEMORY_DIR = resolve(_dirname, "../../data/memory");
 const connections = new Map<string, Database.Database>();
 
 export function getDb(classroomId: string): Database.Database {
@@ -49,6 +52,15 @@ export function getDb(classroomId: string): Database.Database {
       classroom_id TEXT NOT NULL,
       student_refs TEXT NOT NULL,
       record_json TEXT NOT NULL,
+      model_id TEXT,
+      created_at TEXT NOT NULL
+    );
+
+    CREATE TABLE IF NOT EXISTS pattern_reports (
+      report_id TEXT PRIMARY KEY,
+      classroom_id TEXT NOT NULL,
+      student_filter TEXT,
+      report_json TEXT NOT NULL,
       model_id TEXT,
       created_at TEXT NOT NULL
     );
