@@ -1,6 +1,7 @@
 // services/memory/retrieve.ts
 import { getDb } from "./db.js";
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
+import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 
 export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
@@ -56,6 +57,32 @@ export function summarizeRecentPlans(plans: TomorrowPlan[]): string {
             .join("; "),
       );
     }
+  }
+
+  return lines.join("\n");
+}
+
+export function getRecentInterventions(classroomId: string, limit = 5): InterventionRecord[] {
+  const db = getDb(classroomId);
+  const rows = db.prepare(`
+    SELECT record_json FROM interventions
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT ?
+  `).all(classroomId, limit) as { record_json: string }[];
+
+  return rows.map((r) => JSON.parse(r.record_json) as InterventionRecord);
+}
+
+export function summarizeRecentInterventions(records: InterventionRecord[]): string {
+  if (records.length === 0) return "";
+
+  const lines: string[] = ["Recent interventions:"];
+
+  for (const rec of records.slice(0, 5)) {
+    const students = rec.student_refs.join(", ");
+    const outcome = rec.outcome ? ` (outcome: ${rec.outcome})` : "";
+    lines.push(`  - ${students}: ${rec.observation} -> ${rec.action_taken}${outcome}`);
   }
 
   return lines.join("\n");

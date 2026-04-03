@@ -43,6 +43,15 @@ export function getDb(classroomId: string): Database.Database {
       approval_timestamp TEXT,
       created_at TEXT NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS interventions (
+      record_id TEXT PRIMARY KEY,
+      classroom_id TEXT NOT NULL,
+      student_refs TEXT NOT NULL,
+      record_json TEXT NOT NULL,
+      model_id TEXT,
+      created_at TEXT NOT NULL
+    );
   `);
 
   connections.set(classroomId, db);

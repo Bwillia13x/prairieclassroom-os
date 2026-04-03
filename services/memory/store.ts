@@ -3,6 +3,7 @@ import { getDb } from "./db.js";
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
+import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 
 export function savePlan(
   classroomId: string,
@@ -72,4 +73,24 @@ export function approveFamilyMessage(classroomId: string, draftId: string): void
     SET teacher_approved = 1, approval_timestamp = ?
     WHERE draft_id = ?
   `).run(now, draftId);
+}
+
+export function saveIntervention(
+  classroomId: string,
+  record: InterventionRecord,
+  modelId: string,
+): void {
+  const db = getDb(classroomId);
+  db.prepare(`
+    INSERT OR REPLACE INTO interventions
+    (record_id, classroom_id, student_refs, record_json, model_id, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    record.record_id,
+    classroomId,
+    JSON.stringify(record.student_refs),
+    JSON.stringify(record),
+    modelId,
+    new Date().toISOString(),
+  );
 }
