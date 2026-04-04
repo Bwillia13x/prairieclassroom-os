@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-04 — Schedule data model enrichment
+
+- **Decision:** Extend ScheduleBlockInputSchema with optional `ea_student_refs` (which students the EA supports per block) and UpcomingEventSchema with optional `event_date`. Add `sub_ready` boolean flag to ClassroomProfile. Add GET/PUT `/api/classrooms/:id/schedule` endpoints. Persist schedule updates to the classroom JSON file.
+- **Why:** The Substitute Survival Packet and EA Cognitive Load Balancer both need richer schedule data than the current boolean `ea_available`. Explicit EA-student assignments per block enable load calculation and substitution handoff. The `sub_ready` flag is the pre-authorization gate for survival packet generation. Date-aware events allow temporal filtering.
+- **Alternatives considered:** (1) Separate SQLite table for schedules — adds complexity without clear benefit since schedules are classroom-scoped and change infrequently. (2) Day-of-week schedule variants — deferred; a single default schedule covers most use cases for now. (3) No persistence (in-memory only) — breaks local-first promise.
+- **Consequences:** All existing data validates without changes (new fields are optional). Demo classroom enriched with EA assignments from Ms. Fehr's actual support pattern. Schedule PUT writes directly to JSON — fine for single-user local deployments but would need a different strategy for multi-user.
+- **What would change this:** Multi-user deployment requiring concurrent schedule edits, or evidence that day-of-week schedule variants are needed for the EA Load Balancer.
+
+---
+
 ### 2026-04-03 — Final review hardening pass
 
 - **Decision:** Applied 20+ improvements from a comprehensive code review: auth gap fix on GET endpoint, enum validation on family message type, ESLint config, CORS restriction, database indexes, graceful shutdown, json_each for student ref queries, server-driven student lists, LocalBackend extract_json, empty-candidate logging, VertexAI error codes, SkeletonLoader extraction, aria-describedby/aria-label a11y, pinned Python deps, .env.example, and 2 new eval cases (cold-memory, non-English message).

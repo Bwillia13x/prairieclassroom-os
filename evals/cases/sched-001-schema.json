@@ -1,0 +1,16 @@
+{
+  "id": "sched-001-schema",
+  "category": "schema_reliability",
+  "description": "Schedule GET endpoint returns valid structure with ea_student_refs and sub_ready flag",
+  "prompt_class": null,
+  "endpoint": "GET /api/classrooms/demo-okafor-grade34/schedule",
+  "input": {
+    "classroom_id": "demo-okafor-grade34"
+  },
+  "expected": {
+    "required_keys": ["classroom_id", "schedule", "upcoming_events", "sub_ready"],
+    "schedule_min_blocks": 5,
+    "schedule_block_required_keys": ["time_slot", "activity", "ea_available"],
+    "sub_ready_type": "boolean"
+  }
+}

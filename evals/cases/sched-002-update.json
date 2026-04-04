@@ -1,0 +1,22 @@
+{
+  "id": "sched-002-update",
+  "category": "schema_reliability",
+  "description": "Schedule PUT endpoint accepts valid schedule and returns updated structure",
+  "prompt_class": null,
+  "endpoint": "PUT /api/classrooms/demo-okafor-grade34/schedule",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "body": {
+      "schedule": [
+        { "time_slot": "8:30-9:15", "activity": "Bell work", "ea_available": true, "ea_student_refs": ["Amira"] },
+        { "time_slot": "9:15-10:15", "activity": "Literacy", "ea_available": true, "ea_student_refs": ["Amira", "Daniyal"] },
+        { "time_slot": "10:15-10:30", "activity": "Recess", "ea_available": false }
+      ]
+    }
+  },
+  "expected": {
+    "status": 200,
+    "required_keys": ["classroom_id", "schedule", "updated"],
+    "updated": true
+  }
+}

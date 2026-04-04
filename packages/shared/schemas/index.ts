@@ -121,3 +121,22 @@ export type {
   PositiveSignal,
   WithdrawalPhase,
 } from "./scaffold-decay.js";
+
+export {
+  SurvivalPacketSchema,
+  RoutineEntrySchema,
+  StudentSupportEntrySchema,
+  EACoordinationSchema,
+  SimplifiedDayPlanSchema,
+  FamilyCommsEntrySchema,
+  ComplexityPeakSchema,
+} from "./survival-packet.js";
+export type {
+  SurvivalPacket,
+  RoutineEntry,
+  StudentSupportEntry,
+  EACoordination,
+  SimplifiedDayPlan,
+  FamilyCommsEntry,
+  ComplexityPeak,
+} from "./survival-packet.js";
