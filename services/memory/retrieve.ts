@@ -6,6 +6,7 @@ import type { SupportPatternReport } from "../../packages/shared/schemas/pattern
 import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
 import type { DebtItem, DebtThresholds, ComplexityDebtRegister } from "../../packages/shared/schemas/debt.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
+import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
 
 export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
@@ -674,4 +675,57 @@ export function buildDebtRegister(
     generated_at: new Date().toISOString(),
     schema_version: "0.1.0",
   };
+}
+
+export function buildScaffoldDecayContext(
+  classroomId: string,
+  studentRef: string,
+  windowSize = 20,
+): string {
+  const interventions = getStudentInterventions(classroomId, studentRef, windowSize);
+  if (interventions.length === 0) return "";
+
+  const midpoint = Math.floor(interventions.length / 2);
+  // interventions are newest-first; reverse for chronological
+  const chronological = [...interventions].reverse();
+  const earlyWindow = chronological.slice(0, midpoint);
+  const recentWindow = chronological.slice(midpoint);
+
+  const lines: string[] = [];
+
+  lines.push(`INTERVENTION HISTORY FOR ${studentRef} (${interventions.length} records):`);
+  lines.push("");
+  lines.push(`EARLY WINDOW (${earlyWindow.length} records):`);
+  for (const rec of earlyWindow) {
+    lines.push(
+      `  - [${rec.record_id}] ${rec.observation} -> ${rec.action_taken}` +
+      (rec.outcome ? ` (outcome: ${rec.outcome})` : ""),
+    );
+  }
+
+  lines.push("");
+  lines.push(`RECENT WINDOW (${recentWindow.length} records):`);
+  for (const rec of recentWindow) {
+    lines.push(
+      `  - [${rec.record_id}] ${rec.observation} -> ${rec.action_taken}` +
+      (rec.outcome ? ` (outcome: ${rec.outcome})` : ""),
+    );
+  }
+
+  return lines.join("\n");
+}
+
+export function getLatestScaffoldReview(
+  classroomId: string,
+  studentRef: string,
+): ScaffoldDecayReport | null {
+  const db = getDb(classroomId);
+  const row = db.prepare(`
+    SELECT report_json FROM scaffold_reviews
+    WHERE classroom_id = ? AND student_ref = ?
+    ORDER BY created_at DESC
+    LIMIT 1
+  `).get(classroomId, studentRef) as { report_json: string } | undefined;
+
+  return row ? (JSON.parse(row.report_json) as ScaffoldDecayReport) : null;
 }

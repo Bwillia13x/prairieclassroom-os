@@ -6,6 +6,7 @@ import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.j
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
 import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
+import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
 
 export function savePlan(
   classroomId: string,
@@ -132,6 +133,26 @@ export function saveForecast(
     classroomId,
     forecast.forecast_date,
     JSON.stringify(forecast),
+    modelId,
+    new Date().toISOString(),
+  );
+}
+
+export function saveScaffoldReview(
+  classroomId: string,
+  report: ScaffoldDecayReport,
+  modelId: string,
+): void {
+  const db = getDb(classroomId);
+  db.prepare(`
+    INSERT OR REPLACE INTO scaffold_reviews
+    (report_id, classroom_id, student_ref, report_json, model_id, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    report.report_id,
+    classroomId,
+    report.student_ref,
+    JSON.stringify(report),
     modelId,
     new Date().toISOString(),
   );
