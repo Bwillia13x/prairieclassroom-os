@@ -1,0 +1,13 @@
+{
+  "id": "debt-004-empty-classroom",
+  "category": "schema_reliability",
+  "description": "New classroom with no records returns empty register",
+  "prompt_class": "complexity_debt_register",
+  "input": {
+    "classroom_id": "empty-classroom"
+  },
+  "expected": {
+    "required_keys": ["register_id", "classroom_id", "items", "item_count_by_category"],
+    "schema_version": "0.1.0"
+  }
+}

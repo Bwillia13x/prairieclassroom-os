@@ -1,0 +1,14 @@
+{
+  "id": "debt-003-recurring-detection",
+  "category": "schema_reliability",
+  "description": "Debt register flags support priorities repeated in 4+ consecutive plans",
+  "prompt_class": "complexity_debt_register",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "fixture_scenario": "four_consecutive_plans_same_priority"
+  },
+  "expected": {
+    "required_keys": ["register_id", "items"],
+    "must_contain": ["recurring_plan_item"]
+  }
+}

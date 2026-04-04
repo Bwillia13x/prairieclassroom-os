@@ -1,0 +1,15 @@
+{
+  "id": "debt-002-stale-detection",
+  "category": "schema_reliability",
+  "description": "Debt register correctly identifies stale follow-ups from fixture data",
+  "prompt_class": "complexity_debt_register",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "fixture_scenario": "three_followups_two_stale"
+  },
+  "expected": {
+    "required_keys": ["register_id", "items"],
+    "must_contain": ["stale_followup"],
+    "must_not_contain": ["diagnosis", "ADHD", "autism", "disorder"]
+  }
+}
