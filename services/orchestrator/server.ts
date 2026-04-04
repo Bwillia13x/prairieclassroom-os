@@ -34,7 +34,9 @@ import { buildEABriefingPrompt, parseEABriefingResponse } from "./ea-briefing.js
 import type { EABriefingInput } from "./ea-briefing.js";
 import { buildComplexityForecastPrompt, parseComplexityForecastResponse } from "./complexity-forecast.js";
 import type { ComplexityForecastInput } from "./complexity-forecast.js";
-import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport, saveForecast } from "../memory/store.js";
+import { buildScaffoldDecayPrompt, parseScaffoldDecayResponse } from "./scaffold-decay.js";
+import type { ScaffoldDecayInput } from "./scaffold-decay.js";
+import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport, saveForecast, saveScaffoldReview } from "../memory/store.js";
 import { checkpointAll } from "../memory/db.js";
 import { createAuthMiddleware } from "./auth.js";
 import { z } from "zod";
@@ -50,8 +52,10 @@ import {
   SupportPatternsRequestSchema,
   EABriefingRequestSchema,
   ComplexityForecastRequestSchema,
+  DebtRegisterRequestSchema,
+  ScaffoldDecayRequestSchema,
 } from "./validate.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext } from "../memory/retrieve.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
@@ -60,6 +64,7 @@ import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.j
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
 import type { EABriefing } from "../../packages/shared/schemas/briefing.js";
 import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
+import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
 
 const PORT = parseInt(process.env.PORT ?? "3100", 10);
 const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
@@ -95,6 +100,8 @@ app.use("/api/vocab-cards", authMiddleware);
 app.use("/api/support-patterns", authMiddleware);
 app.use("/api/ea-briefing", authMiddleware);
 app.use("/api/complexity-forecast", authMiddleware);
+app.use("/api/debt-register", authMiddleware);
+app.use("/api/scaffold-decay", authMiddleware);
 
 // ----- Routes -----
 
@@ -900,6 +907,159 @@ app.get("/api/complexity-forecast/latest/:classroomId", (req, res) => {
     res.json({ forecast });
   } catch (err) {
     console.error("Forecast retrieval error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Complexity Debt Register Route -----
+
+app.get("/api/debt-register/:classroomId", (req, res) => {
+  try {
+    const classroomId = req.params.classroomId as string;
+
+    const classroom = loadClassroom(classroomId);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroomId}' not found` });
+      return;
+    }
+
+    const thresholds = {
+      stale_followup_days: req.query.stale_followup_days ? Number(req.query.stale_followup_days) : undefined,
+      unapproved_message_days: req.query.unapproved_message_days ? Number(req.query.unapproved_message_days) : undefined,
+      recurring_plan_min: req.query.recurring_plan_min ? Number(req.query.recurring_plan_min) : undefined,
+      review_window_days: req.query.review_window_days ? Number(req.query.review_window_days) : undefined,
+      review_min_records: req.query.review_min_records ? Number(req.query.review_min_records) : undefined,
+    };
+
+    const register = buildDebtRegister(classroomId, classroom, thresholds);
+    res.json({ register });
+  } catch (err) {
+    console.error("Debt register error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Scaffold Decay Detection Route -----
+
+app.post("/api/scaffold-decay", validateBody(ScaffoldDecayRequestSchema), async (req, res) => {
+  try {
+    const { classroom_id, student_ref, time_window } = req.body;
+
+    const classroom = loadClassroom(classroom_id);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+      return;
+    }
+
+    // Check minimum record threshold
+    const interventions = getRecentInterventions(classroom_id, time_window);
+    const studentInterventions = interventions.filter((r) =>
+      r.student_refs.includes(student_ref)
+    );
+    if (studentInterventions.length < 10) {
+      res.json({
+        report: null,
+        insufficient_records: true,
+        record_count: studentInterventions.length,
+        message: "Not enough intervention history to detect scaffold usage trends. Continue documenting and try again after more records are logged.",
+      });
+      return;
+    }
+
+    const route = getRoute("detect_scaffold_decay");
+    const modelId = getModelId(route.model_tier);
+
+    const decayInput: ScaffoldDecayInput = {
+      classroom_id,
+      student_ref,
+      time_window,
+    };
+
+    let decayCtx = "";
+    try {
+      decayCtx = buildScaffoldDecayContext(classroom_id, student_ref, time_window);
+    } catch (memErr) {
+      console.warn("Memory retrieval failed (scaffold decay):", memErr);
+    }
+
+    const prompt = buildScaffoldDecayPrompt(classroom, decayInput, decayCtx);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        prompt_class: "detect_scaffold_decay",
+        max_tokens: 4096,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      thinking_text: string | null;
+      model_id: string;
+      latency_ms: number;
+    };
+
+    let report: ScaffoldDecayReport;
+    try {
+      report = parseScaffoldDecayResponse(inferenceData.text, classroom_id, student_ref);
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as scaffold decay report",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    // Persist scaffold review to classroom memory
+    try {
+      saveScaffoldReview(classroom_id, report, inferenceData.model_id || modelId);
+    } catch (memErr) {
+      console.warn("Memory save failed (scaffold review):", memErr);
+    }
+
+    res.json({
+      report,
+      thinking_summary: inferenceData.thinking_text ?? null,
+      model_id: inferenceData.model_id || modelId,
+      latency_ms: inferenceData.latency_ms,
+    });
+  } catch (err) {
+    console.error("Scaffold decay error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Latest Scaffold Review Retrieval -----
+
+app.get("/api/scaffold-decay/latest/:classroomId/:studentRef", (req, res) => {
+  try {
+    const classroomId = req.params.classroomId as string;
+    const studentRef = req.params.studentRef as string;
+    const review = getLatestScaffoldReview(classroomId, studentRef);
+    if (!review) {
+      res.json({ review: null });
+      return;
+    }
+    res.json({ review });
+  } catch (err) {
+    console.error("Scaffold review retrieval error:", err);
     res.status(500).json({
       error: err instanceof Error ? err.message : "Internal server error",
     });
