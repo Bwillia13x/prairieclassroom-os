@@ -1,0 +1,16 @@
+{
+  "id": "surv-002-content-quality",
+  "category": "content_quality",
+  "description": "Survival packet references known students and uses actionable substitute-friendly language",
+  "prompt_class": "generate_survival_packet",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "target_date": "2026-04-07"
+  },
+  "expected": {
+    "student_refs_mentioned": ["Amira", "Brody", "Daniyal"],
+    "ea_name_mentioned": "Fehr",
+    "contains_actionable_instructions": true,
+    "does_not_contain": ["real name", "SSN", "address"]
+  }
+}

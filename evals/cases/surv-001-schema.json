@@ -1,0 +1,20 @@
+{
+  "id": "surv-001-schema",
+  "category": "schema_reliability",
+  "description": "Survival packet for demo classroom produces valid schema with all 6 sections + heads_up",
+  "prompt_class": "generate_survival_packet",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "target_date": "2026-04-07"
+  },
+  "expected": {
+    "required_packet_keys": ["packet_id", "classroom_id", "generated_for_date", "routines", "student_support", "ea_coordination", "simplified_day_plan", "family_comms", "complexity_peaks", "heads_up", "schema_version"],
+    "min_routines": 3,
+    "min_student_support": 3,
+    "ea_coordination_required_keys": ["schedule_summary", "primary_students", "if_ea_absent"],
+    "min_simplified_day_plan": 5,
+    "min_complexity_peaks": 2,
+    "min_heads_up": 3,
+    "schema_version": "0.1.0"
+  }
+}

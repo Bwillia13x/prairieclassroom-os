@@ -1,0 +1,16 @@
+{
+  "id": "surv-004-comprehensive-retrieval",
+  "category": "cross_feature_synthesis",
+  "description": "Survival packet synthesizes data from multiple memory sources, not just static profiles",
+  "prompt_class": "generate_survival_packet",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "target_date": "2026-04-07"
+  },
+  "expected": {
+    "references_intervention_history": true,
+    "references_schedule_data": true,
+    "student_support_informed_by_scaffolds": true,
+    "complexity_peaks_present": true
+  }
+}

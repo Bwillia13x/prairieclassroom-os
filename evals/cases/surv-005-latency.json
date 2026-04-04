@@ -1,0 +1,14 @@
+{
+  "id": "surv-005-latency",
+  "category": "latency_suitability",
+  "description": "Survival packet generation completes within acceptable latency for planning-tier with thinking",
+  "prompt_class": "generate_survival_packet",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "target_date": "2026-04-07"
+  },
+  "expected": {
+    "max_latency_ms": 30000,
+    "model_tier": "planning"
+  }
+}
