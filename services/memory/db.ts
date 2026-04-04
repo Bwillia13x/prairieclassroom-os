@@ -65,6 +65,18 @@ export function getDb(classroomId: string): Database.Database {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS complexity_forecasts (
+      forecast_id TEXT PRIMARY KEY,
+      classroom_id TEXT NOT NULL,
+      forecast_date TEXT NOT NULL,
+      forecast_json TEXT NOT NULL,
+      model_id TEXT,
+      created_at TEXT NOT NULL
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_forecasts_classroom
+      ON complexity_forecasts(classroom_id, created_at);
+
     CREATE INDEX IF NOT EXISTS idx_plans_classroom
       ON generated_plans(classroom_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_variants_classroom

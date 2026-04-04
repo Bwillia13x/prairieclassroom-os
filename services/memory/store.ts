@@ -5,6 +5,7 @@ import type { DifferentiatedVariant } from "../../packages/shared/schemas/artifa
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
+import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
 
 export function savePlan(
   classroomId: string,
@@ -111,6 +112,26 @@ export function savePatternReport(
     classroomId,
     report.student_filter,
     JSON.stringify(report),
+    modelId,
+    new Date().toISOString(),
+  );
+}
+
+export function saveForecast(
+  classroomId: string,
+  forecast: ComplexityForecast,
+  modelId: string,
+): void {
+  const db = getDb(classroomId);
+  db.prepare(`
+    INSERT OR REPLACE INTO complexity_forecasts
+    (forecast_id, classroom_id, forecast_date, forecast_json, model_id, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    forecast.forecast_id,
+    classroomId,
+    forecast.forecast_date,
+    JSON.stringify(forecast),
     modelId,
     new Date().toISOString(),
   );

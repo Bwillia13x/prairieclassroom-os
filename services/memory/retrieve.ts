@@ -3,6 +3,7 @@ import { getDb } from "./db.js";
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
+import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
 
 export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
@@ -262,6 +263,109 @@ export function buildEABriefingContext(classroomId: string): string {
       for (const t of report.positive_trends) {
         lines.push(`  - ${t.student_ref}: ${t.description}`);
       }
+    }
+  }
+
+  return lines.join("\n");
+}
+
+export function getLatestForecast(
+  classroomId: string,
+): ComplexityForecast | null {
+  const db = getDb(classroomId);
+  const row = db.prepare(`
+    SELECT forecast_json FROM complexity_forecasts
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT 1
+  `).get(classroomId) as { forecast_json: string } | undefined;
+
+  return row ? (JSON.parse(row.forecast_json) as ComplexityForecast) : null;
+}
+
+export function getInterventionsByTimeBlock(
+  classroomId: string,
+  limit = 30,
+): Map<string, number> {
+  const db = getDb(classroomId);
+  const rows = db.prepare(`
+    SELECT record_json FROM interventions
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT ?
+  `).all(classroomId, limit) as { record_json: string }[];
+
+  const blockCounts = new Map<string, number>();
+  for (const row of rows) {
+    const record = JSON.parse(row.record_json) as InterventionRecord;
+    // Extract time reference from observation or action if present
+    const text = `${record.observation} ${record.action_taken}`;
+    // Match common time patterns: "after lunch", "morning", "recess", "math block", etc.
+    const timePatterns = [
+      "morning", "after lunch", "post-lunch", "recess", "afternoon",
+      "math block", "literacy", "transition", "end of day", "bell work",
+    ];
+    for (const pattern of timePatterns) {
+      if (text.toLowerCase().includes(pattern)) {
+        blockCounts.set(pattern, (blockCounts.get(pattern) ?? 0) + 1);
+      }
+    }
+  }
+  return blockCounts;
+}
+
+export function buildForecastContext(classroomId: string): string {
+  const lines: string[] = [];
+
+  // Intervention frequency by time-of-day patterns
+  const blockCounts = getInterventionsByTimeBlock(classroomId, 30);
+  if (blockCounts.size > 0) {
+    lines.push("INTERVENTION FREQUENCY BY TIME/CONTEXT (last 30 records):");
+    const sorted = [...blockCounts.entries()].sort((a, b) => b[1] - a[1]);
+    for (const [block, count] of sorted) {
+      lines.push(`  - "${block}": ${count} mentions`);
+    }
+  }
+
+  // Recent interventions for context
+  const recent = getRecentInterventions(classroomId, 5);
+  if (recent.length > 0) {
+    lines.push("");
+    lines.push("MOST RECENT INTERVENTIONS:");
+    for (const rec of recent) {
+      const students = rec.student_refs.join(", ");
+      const outcome = rec.outcome ? ` (outcome: ${rec.outcome})` : "";
+      lines.push(`  - ${students}: ${rec.observation} -> ${rec.action_taken}${outcome}`);
+    }
+  }
+
+  // Latest pattern report highlights
+  const pattern = getLatestPatternReport(classroomId);
+  if (pattern) {
+    const highFocus = pattern.suggested_focus.filter((f) => f.priority === "high");
+    if (highFocus.length > 0) {
+      lines.push("");
+      lines.push("HIGH-PRIORITY PATTERN FOCUS:");
+      for (const f of highFocus) {
+        lines.push(`  - ${f.student_ref}: ${f.reason}`);
+      }
+    }
+    if (pattern.recurring_themes.length > 0) {
+      lines.push("");
+      lines.push("RECURRING THEMES:");
+      for (const t of pattern.recurring_themes) {
+        lines.push(`  - ${t.theme} (${t.student_refs.join(", ")}, ${t.evidence_count} records)`);
+      }
+    }
+  }
+
+  // Pending follow-ups
+  const pending = getFollowUpPending(classroomId);
+  if (pending.length > 0) {
+    lines.push("");
+    lines.push("PENDING FOLLOW-UPS:");
+    for (const rec of pending.slice(0, 5)) {
+      lines.push(`  - ${rec.student_refs.join(", ")}: ${rec.observation}`);
     }
   }
 
