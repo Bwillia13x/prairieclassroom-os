@@ -7,6 +7,7 @@ import type { InterventionRecord } from "../../packages/shared/schemas/intervent
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
 import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
 import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
+import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
 
 export function savePlan(
   classroomId: string,
@@ -94,7 +95,7 @@ export function saveIntervention(
     JSON.stringify(record.student_refs),
     JSON.stringify(record),
     modelId,
-    new Date().toISOString(),
+    record.created_at ?? new Date().toISOString(),
   );
 }
 
@@ -153,6 +154,26 @@ export function saveScaffoldReview(
     classroomId,
     report.student_ref,
     JSON.stringify(report),
+    modelId,
+    new Date().toISOString(),
+  );
+}
+
+export function saveSurvivalPacket(
+  classroomId: string,
+  packet: SurvivalPacket,
+  modelId: string,
+): void {
+  const db = getDb(classroomId);
+  db.prepare(`
+    INSERT OR REPLACE INTO survival_packets
+    (packet_id, classroom_id, generated_for_date, packet_json, model_id, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    packet.packet_id,
+    classroomId,
+    packet.generated_for_date,
+    JSON.stringify(packet),
     modelId,
     new Date().toISOString(),
   );
