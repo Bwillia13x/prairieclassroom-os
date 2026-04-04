@@ -7,6 +7,8 @@ import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.
 import type { DebtItem, DebtThresholds, ComplexityDebtRegister } from "../../packages/shared/schemas/debt.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
+import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
+import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
 
 export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
@@ -763,4 +765,199 @@ export function getLatestScaffoldReview(
   `).get(classroomId, studentRef) as { report_json: string } | undefined;
 
   return row ? (JSON.parse(row.report_json) as ScaffoldDecayReport) : null;
+}
+
+export function getRecentFamilyMessages(
+  classroomId: string,
+  limit = 10,
+): Array<{ draft: FamilyMessageDraft; approved: boolean }> {
+  const db = getDb(classroomId);
+  const rows = db.prepare(`
+    SELECT message_json, teacher_approved FROM family_messages
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT ?
+  `).all(classroomId, limit) as { message_json: string; teacher_approved: number }[];
+
+  return rows.map((r) => ({
+    draft: JSON.parse(r.message_json) as FamilyMessageDraft,
+    approved: r.teacher_approved === 1,
+  }));
+}
+
+export function getLatestSurvivalPacket(
+  classroomId: string,
+): SurvivalPacket | null {
+  const db = getDb(classroomId);
+  const row = db.prepare(`
+    SELECT packet_json FROM survival_packets
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT 1
+  `).get(classroomId) as { packet_json: string } | undefined;
+
+  return row ? (JSON.parse(row.packet_json) as SurvivalPacket) : null;
+}
+
+export function buildSurvivalContext(
+  classroomId: string,
+  classroom: ClassroomProfile,
+): string {
+  const lines: string[] = [];
+
+  // 1. DAILY SCHEDULE
+  if (classroom.schedule && classroom.schedule.length > 0) {
+    lines.push("DAILY SCHEDULE:");
+    for (const block of classroom.schedule) {
+      const eaRefs = (block as { ea_student_refs?: string[] }).ea_student_refs;
+      const eaPart = block.ea_available
+        ? ` [EA present${eaRefs && eaRefs.length > 0 ? `: ${eaRefs.join(", ")}` : ""}]`
+        : " [no EA]";
+      const notesPart = block.notes ? ` — ${block.notes}` : "";
+      lines.push(`  - ${block.time_slot}: ${block.activity}${eaPart}${notesPart}`);
+    }
+  }
+
+  // 2. ROUTINES
+  const routineEntries = Object.entries(classroom.routines);
+  if (routineEntries.length > 0) {
+    lines.push("");
+    lines.push("ROUTINES:");
+    for (const [label, description] of routineEntries) {
+      lines.push(`  - ${label}: ${description}`);
+    }
+  }
+
+  // 3. STUDENT PROFILES
+  if (classroom.students.length > 0) {
+    lines.push("");
+    lines.push("STUDENT PROFILES:");
+    for (const student of classroom.students) {
+      const tags = student.support_tags.length > 0 ? ` [${student.support_tags.join(", ")}]` : "";
+      const eal = student.eal_flag ? " [EAL]" : "";
+      lines.push(`  - ${student.alias}${eal}${tags}`);
+      if (student.known_successful_scaffolds.length > 0) {
+        lines.push(`      scaffolds: ${student.known_successful_scaffolds.join("; ")}`);
+      }
+      if (student.communication_notes && student.communication_notes.length > 0) {
+        lines.push(`      comms: ${student.communication_notes.join("; ")}`);
+      }
+    }
+  }
+
+  // 4. SUPPORT CONSTRAINTS
+  if (classroom.support_constraints && classroom.support_constraints.length > 0) {
+    lines.push("");
+    lines.push("SUPPORT CONSTRAINTS:");
+    for (const constraint of classroom.support_constraints) {
+      lines.push(`  - ${constraint}`);
+    }
+  }
+
+  // 5. MOST RECENT TEACHER PLAN
+  const plans = getRecentPlans(classroomId, 1);
+  if (plans.length > 0) {
+    const plan = plans[0];
+    lines.push("");
+    lines.push("MOST RECENT TEACHER PLAN:");
+    if (plan.support_priorities.length > 0) {
+      lines.push("  Support priorities:");
+      for (const sp of plan.support_priorities) {
+        lines.push(`    - ${sp.student_ref}: ${sp.reason} → ${sp.suggested_action}`);
+      }
+    }
+    if (plan.transition_watchpoints.length > 0) {
+      lines.push("  Watchpoints:");
+      for (const w of plan.transition_watchpoints) {
+        lines.push(`    - ${w.time_or_activity}: ${w.risk_description}`);
+      }
+    }
+    if (plan.ea_actions.length > 0) {
+      lines.push("  EA actions:");
+      for (const ea of plan.ea_actions) {
+        const students = ea.student_refs.length > 0 ? ` (${ea.student_refs.join(", ")})` : "";
+        lines.push(`    - [${ea.timing}]${students}: ${ea.description}`);
+      }
+    }
+    if (plan.prep_checklist.length > 0) {
+      lines.push("  Prep checklist:");
+      for (const item of plan.prep_checklist) {
+        lines.push(`    - ${item}`);
+      }
+    }
+  }
+
+  // 6. RECENT INTERVENTIONS
+  const interventions = getRecentInterventions(classroomId, 10);
+  if (interventions.length > 0) {
+    lines.push("");
+    lines.push("RECENT INTERVENTIONS:");
+    for (const rec of interventions) {
+      const students = rec.student_refs.join(", ");
+      const outcome = rec.outcome ? ` (outcome: ${rec.outcome})` : "";
+      const followUp = rec.follow_up_needed ? " [FOLLOW-UP NEEDED]" : "";
+      lines.push(`  - ${students}: ${rec.observation} → ${rec.action_taken}${outcome}${followUp}`);
+    }
+  }
+
+  // 7. PATTERN INSIGHTS
+  const report = getLatestPatternReport(classroomId);
+  if (report) {
+    const hasThemes = report.recurring_themes.length > 0;
+    const hasTrends = report.positive_trends.length > 0;
+    if (hasThemes || hasTrends) {
+      lines.push("");
+      lines.push("PATTERN INSIGHTS:");
+      if (hasThemes) {
+        lines.push("  Recurring themes:");
+        for (const t of report.recurring_themes) {
+          lines.push(`    - ${t.theme} (${t.student_refs.join(", ")}, ${t.evidence_count} records)`);
+        }
+      }
+      if (hasTrends) {
+        lines.push("  Positive trends:");
+        for (const t of report.positive_trends) {
+          lines.push(`    - ${t.student_ref}: ${t.description}`);
+        }
+      }
+    }
+  }
+
+  // 8. FAMILY MESSAGE STATUS
+  const familyMessages = getRecentFamilyMessages(classroomId, 10);
+  if (familyMessages.length > 0) {
+    lines.push("");
+    lines.push("FAMILY MESSAGE STATUS:");
+    for (const { draft, approved } of familyMessages) {
+      const status = approved ? "approved" : "draft";
+      const students = draft.student_refs.join(", ");
+      lines.push(`  - ${students}: ${draft.message_type} [${status}] (${draft.target_language})`);
+    }
+  }
+
+  // 9. COMPLEXITY FORECAST
+  const forecast = getLatestForecast(classroomId);
+  if (forecast) {
+    lines.push("");
+    lines.push("COMPLEXITY FORECAST:");
+    for (const block of forecast.blocks) {
+      lines.push(`  - ${block.time_slot} (${block.activity}): ${block.level}`);
+    }
+    lines.push(`  Highest risk: ${forecast.highest_risk_block}`);
+  }
+
+  // 10. UPCOMING EVENTS
+  if (classroom.upcoming_events && classroom.upcoming_events.length > 0) {
+    lines.push("");
+    lines.push("UPCOMING EVENTS:");
+    for (const evt of classroom.upcoming_events) {
+      const eventDate = (evt as { event_date?: string }).event_date;
+      const datePart = eventDate ? ` [${eventDate}]` : "";
+      const timePart = evt.time_slot ? ` at ${evt.time_slot}` : "";
+      const impactPart = evt.impacts ? ` — ${evt.impacts}` : "";
+      lines.push(`  - ${evt.description}${datePart}${timePart}${impactPart}`);
+    }
+  }
+
+  return lines.join("\n");
 }
