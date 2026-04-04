@@ -93,3 +93,16 @@ export type {
   PositiveTrend,
   SuggestedFocus,
 } from "./pattern.js";
+
+export {
+  DebtCategorySchema,
+  DebtItemSchema,
+  DebtThresholdsSchema,
+  ComplexityDebtRegisterSchema,
+} from "./debt.js";
+export type {
+  DebtCategory,
+  DebtItem,
+  DebtThresholds,
+  ComplexityDebtRegister,
+} from "./debt.js";
