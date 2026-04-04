@@ -4,6 +4,8 @@ import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
 import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
+import type { DebtItem, DebtThresholds, ComplexityDebtRegister } from "../../packages/shared/schemas/debt.js";
+import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 
 export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
@@ -427,4 +429,249 @@ export function summarizePatternInsights(report: SupportPatternReport): string {
   }
 
   return lines.join("\n");
+}
+
+export function getStaleFollowUps(
+  classroomId: string,
+  thresholdDays = 5,
+): DebtItem[] {
+  const db = getDb(classroomId);
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - thresholdDays);
+  const cutoffIso = cutoff.toISOString();
+
+  const rows = db.prepare(`
+    SELECT record_id, record_json, created_at FROM interventions
+    WHERE classroom_id = ?
+      AND json_extract(record_json, '$.follow_up_needed') = 1
+      AND created_at < ?
+    ORDER BY created_at ASC
+  `).all(classroomId, cutoffIso) as { record_id: string; record_json: string; created_at: string }[];
+
+  const items: DebtItem[] = [];
+  for (const row of rows) {
+    const record = JSON.parse(row.record_json) as InterventionRecord;
+
+    const hasFollowUp = db.prepare(`
+      SELECT 1 FROM interventions
+      WHERE classroom_id = ?
+        AND created_at > ?
+        AND record_id != ?
+        AND EXISTS (
+          SELECT 1 FROM json_each(student_refs) AS s1
+          WHERE s1.value IN (
+            SELECT s2.value FROM json_each(?) AS s2
+          )
+        )
+      LIMIT 1
+    `).get(classroomId, row.created_at, row.record_id, JSON.stringify(record.student_refs));
+
+    if (!hasFollowUp) {
+      const ageDays = Math.floor(
+        (Date.now() - new Date(row.created_at).getTime()) / (1000 * 60 * 60 * 24)
+      );
+      items.push({
+        category: "stale_followup",
+        student_refs: record.student_refs,
+        description: `Follow-up needed: "${record.observation}" (${ageDays} days ago)`,
+        source_record_id: row.record_id,
+        age_days: ageDays,
+        suggested_action: `Review and document follow-up for ${record.student_refs.join(", ")}`,
+      });
+    }
+  }
+  return items;
+}
+
+export function getUnapprovedMessages(
+  classroomId: string,
+  thresholdDays = 3,
+): DebtItem[] {
+  const db = getDb(classroomId);
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - thresholdDays);
+  const cutoffIso = cutoff.toISOString();
+
+  const rows = db.prepare(`
+    SELECT draft_id, student_refs, message_json, created_at FROM family_messages
+    WHERE classroom_id = ?
+      AND teacher_approved = 0
+      AND created_at < ?
+    ORDER BY created_at ASC
+  `).all(classroomId, cutoffIso) as { draft_id: string; student_refs: string; message_json: string; created_at: string }[];
+
+  return rows.map((row) => {
+    const studentRefs = JSON.parse(row.student_refs) as string[];
+    const ageDays = Math.floor(
+      (Date.now() - new Date(row.created_at).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    return {
+      category: "unapproved_message" as const,
+      student_refs: studentRefs,
+      description: `Family message drafted ${ageDays} days ago, not yet approved`,
+      source_record_id: row.draft_id,
+      age_days: ageDays,
+      suggested_action: `Review and approve or discard the draft message for ${studentRefs.join(", ")}`,
+    };
+  });
+}
+
+export function getUnaddressedPatternInsights(
+  classroomId: string,
+): DebtItem[] {
+  const latestPattern = getLatestPatternReport(classroomId);
+  if (!latestPattern) return [];
+
+  const recentPlans = getRecentPlans(classroomId, 5);
+  const planStudentRefs = new Set<string>();
+  for (const plan of recentPlans) {
+    if (plan.plan_id > latestPattern.report_id) {
+      for (const sp of plan.support_priorities) {
+        planStudentRefs.add(sp.student_ref);
+      }
+    }
+  }
+
+  const items: DebtItem[] = [];
+  for (const focus of latestPattern.suggested_focus) {
+    if (!planStudentRefs.has(focus.student_ref)) {
+      const reportAge = Math.floor(
+        (Date.now() - new Date(latestPattern.generated_at).getTime()) / (1000 * 60 * 60 * 24)
+      );
+      items.push({
+        category: "unaddressed_pattern",
+        student_refs: [focus.student_ref],
+        description: `Pattern insight (${focus.priority}): "${focus.reason}" — no plan action since`,
+        source_record_id: latestPattern.report_id,
+        age_days: reportAge,
+        suggested_action: focus.suggested_action,
+      });
+    }
+  }
+  return items;
+}
+
+export function getRecurringPlanItems(
+  classroomId: string,
+  minConsecutive = 3,
+): DebtItem[] {
+  const plans = getRecentPlans(classroomId, minConsecutive + 2);
+  if (plans.length < minConsecutive) return [];
+
+  const streaks = new Map<string, { count: number; reasons: string[] }>();
+
+  const chronological = [...plans].reverse();
+  for (const plan of chronological) {
+    const currentRefs = new Set(plan.support_priorities.map((sp) => sp.student_ref));
+
+    for (const sp of plan.support_priorities) {
+      const existing = streaks.get(sp.student_ref);
+      if (existing) {
+        existing.count++;
+        if (!existing.reasons.includes(sp.reason)) {
+          existing.reasons.push(sp.reason);
+        }
+      } else {
+        streaks.set(sp.student_ref, { count: 1, reasons: [sp.reason] });
+      }
+    }
+
+    for (const [ref, streak] of streaks) {
+      if (!currentRefs.has(ref) && streak.count < minConsecutive) {
+        streaks.delete(ref);
+      }
+    }
+  }
+
+  const items: DebtItem[] = [];
+  for (const [studentRef, streak] of streaks) {
+    if (streak.count >= minConsecutive) {
+      items.push({
+        category: "recurring_plan_item",
+        student_refs: [studentRef],
+        description: `Support priority for ${studentRef} has appeared in ${streak.count} consecutive plans: ${streak.reasons[0]}`,
+        source_record_id: plans[0].plan_id,
+        age_days: streak.count,
+        suggested_action: `This recurring item may need a different approach or a dedicated conversation with the team`,
+      });
+    }
+  }
+  return items;
+}
+
+export function getStudentsApproachingReview(
+  classroomId: string,
+  classroom: ClassroomProfile,
+  minRecords = 2,
+  windowDays = 14,
+): DebtItem[] {
+  const db = getDb(classroomId);
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - windowDays);
+  const cutoffIso = cutoff.toISOString();
+
+  const items: DebtItem[] = [];
+
+  for (const student of classroom.students) {
+    if (student.support_tags.length === 0) continue;
+
+    const count = db.prepare(`
+      SELECT COUNT(*) as cnt FROM interventions
+      WHERE classroom_id = ?
+        AND created_at > ?
+        AND EXISTS (
+          SELECT 1 FROM json_each(student_refs) WHERE json_each.value = ?
+        )
+    `).get(classroomId, cutoffIso, student.alias) as { cnt: number };
+
+    if (count.cnt < minRecords) {
+      items.push({
+        category: "approaching_review",
+        student_refs: [student.alias],
+        description: `${student.alias} has ${count.cnt} intervention records in the past ${windowDays} days (has ${student.support_tags.length} support tags)`,
+        source_record_id: `student-${student.student_id}`,
+        age_days: windowDays,
+        suggested_action: `Consider logging observations for ${student.alias} to maintain documentation currency`,
+      });
+    }
+  }
+  return items;
+}
+
+export function buildDebtRegister(
+  classroomId: string,
+  classroom: ClassroomProfile,
+  thresholds?: Partial<DebtThresholds>,
+): ComplexityDebtRegister {
+  const config: DebtThresholds = {
+    stale_followup_days: thresholds?.stale_followup_days ?? 5,
+    unapproved_message_days: thresholds?.unapproved_message_days ?? 3,
+    recurring_plan_min: thresholds?.recurring_plan_min ?? 3,
+    review_window_days: thresholds?.review_window_days ?? 14,
+    review_min_records: thresholds?.review_min_records ?? 2,
+  };
+
+  const allItems: DebtItem[] = [
+    ...getStaleFollowUps(classroomId, config.stale_followup_days),
+    ...getUnapprovedMessages(classroomId, config.unapproved_message_days),
+    ...getUnaddressedPatternInsights(classroomId),
+    ...getRecurringPlanItems(classroomId, config.recurring_plan_min),
+    ...getStudentsApproachingReview(classroomId, classroom, config.review_min_records, config.review_window_days),
+  ];
+
+  allItems.sort((a, b) => b.age_days - a.age_days);
+
+  const countByCategory: Record<string, number> = {};
+  for (const item of allItems) {
+    countByCategory[item.category] = (countByCategory[item.category] ?? 0) + 1;
+  }
+
+  return {
+    register_id: `debt-${classroomId}-${Date.now()}`,
+    classroom_id: classroomId,
+    items: allItems,
+    item_count_by_category: countByCategory,
+    generated_at: new Date().toISOString(),
+    schema_version: "0.1.0",
+  };
 }
