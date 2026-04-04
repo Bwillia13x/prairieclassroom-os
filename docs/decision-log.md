@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-04 — Substitute Teacher Survival Packet
+
+- **Decision:** Add `generate_survival_packet` as the 11th prompt class. Planning tier with thinking enabled. Retrieval pulls from all 7 SQLite tables plus the classroom profile. Output structured into 6 named sections + heads_up array. Sub_ready authorization gate on the classroom profile. Persisted to new `survival_packets` SQLite table.
+- **Why:** The substitute teacher scenario is the single highest real-world-impact feature in the roadmap. When a teacher is absent, the classroom's accumulated memory becomes inaccessible at the exact moment it's most needed. This is the first feature that makes classroom memory transferable between adults without requiring the teacher to manually write briefing notes.
+- **Alternatives considered:** (1) Reuse EA briefing with expanded scope — insufficient because the substitute needs routines, family comms, and day plan sections that the EA briefing doesn't cover. (2) Generate per-section with separate calls — 6x latency and loses cross-section coherence. (3) Deterministic output without model — would miss the synthesis and simplification that makes the packet actionable.
+- **Consequences:** The comprehensive retrieval function (buildSurvivalContext) is the most expensive query in the system — it touches all 7 tables. Acceptable because this runs once per absence, not per request. max_tokens set to 8192 to accommodate the 6-section output. New survival_packets table adds an 8th persistence layer.
+- **What would change this:** Evidence that substitutes need a different format (e.g., audio briefing, per-block cards instead of document). Or if real inference shows the 6-section output exceeds model capacity, in which case we'd split into 2 calls (operational sections + student sections).
+
+---
+
 ### 2026-04-04 — Schedule data model enrichment
 
 - **Decision:** Extend ScheduleBlockInputSchema with optional `ea_student_refs` (which students the EA supports per block) and UpcomingEventSchema with optional `event_date`. Add `sub_ready` boolean flag to ClassroomProfile. Add GET/PUT `/api/classrooms/:id/schedule` endpoints. Persist schedule updates to the classroom JSON file.

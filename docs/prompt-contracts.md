@@ -267,3 +267,63 @@ Categories: stale follow-ups, unapproved family messages, unaddressed pattern in
 **Notes:** Minimum 10 intervention records required per student. Intervention history is partitioned into early/recent windows for trend comparison. Withdrawal plans are only generated for scaffolds showing "decaying" trend with positive signals. Every withdrawal plan includes a regression protocol. Reports are persisted to `scaffold_reviews` table.
 
 Safety: Observational language only. No diagnosis or capability inference. "Your records show decreasing use of..." not "Student C no longer needs..."
+
+---
+
+## Contract K — generate_survival_packet (v0.1.0)
+
+### Purpose
+One-click generation of a structured substitute teacher briefing that synthesizes the classroom's entire memory into a printable handoff document.
+
+### Route
+- **Model tier:** Planning (gemma-4-27b-it)
+- **Thinking mode:** Enabled
+- **Retrieval:** Required — comprehensive pull from all memory sources
+
+### Input schema
+```json
+{
+  "classroom_id": "string (required)",
+  "target_date": "string (required, ISO date)",
+  "teacher_notes": "string (optional, additional context for the substitute)"
+}
+```
+
+### Output schema
+```json
+{
+  "packet_id": "string",
+  "classroom_id": "string",
+  "generated_for_date": "string",
+  "routines": [{ "time_or_label": "string", "description": "string", "recent_changes": "string?" }],
+  "student_support": [{ "student_ref": "string", "current_scaffolds": ["string"], "key_strategies": "string", "things_to_avoid": "string?" }],
+  "ea_coordination": { "ea_name": "string?", "schedule_summary": "string", "primary_students": ["string"], "if_ea_absent": "string" },
+  "simplified_day_plan": [{ "time_slot": "string", "activity": "string", "sub_instructions": "string", "materials_location": "string?" }],
+  "family_comms": [{ "student_ref": "string", "status": "enum", "language_preference": "string?", "notes": "string" }],
+  "complexity_peaks": [{ "time_slot": "string", "level": "enum", "reason": "string", "mitigation": "string" }],
+  "heads_up": ["string"],
+  "schema_version": "string"
+}
+```
+
+### Retrieval sources (10)
+1. Classroom schedule (with EA student assignments)
+2. Classroom routines
+3. Student profiles (aliases, tags, scaffolds, communication notes)
+4. Support constraints
+5. Most recent tomorrow plan (support priorities, EA actions, watchpoints)
+6. Recent interventions (last 10)
+7. Latest pattern report (themes, positive trends)
+8. Family message status (sent, draft, language preferences)
+9. Latest complexity forecast (per-block complexity levels)
+10. Upcoming events (with dates)
+
+### Safety rules
+- Student aliases only. No raw intervention records in output.
+- Observational language only.
+- Family comms default to "defer_to_teacher" for sensitive situations.
+- 15 forbidden diagnostic terms enforced.
+- Requires `sub_ready` flag to be enabled on classroom profile.
+
+### Pre-authorization gate
+The classroom's `sub_ready` field must be `true`. Returns 403 if not set. This ensures the teacher has explicitly opted into sharing classroom memory with a substitute.
