@@ -52,10 +52,9 @@ import {
   SupportPatternsRequestSchema,
   EABriefingRequestSchema,
   ComplexityForecastRequestSchema,
-  DebtRegisterRequestSchema,
   ScaffoldDecayRequestSchema,
 } from "./validate.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview } from "../memory/retrieve.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
@@ -962,11 +961,8 @@ app.post("/api/scaffold-decay", validateBody(ScaffoldDecayRequestSchema), async 
       return;
     }
 
-    // Check minimum record threshold
-    const interventions = getRecentInterventions(classroom_id, time_window);
-    const studentInterventions = interventions.filter((r) =>
-      r.student_refs.includes(student_ref)
-    );
+    // Check minimum record threshold (query student-specific records, not classroom-wide)
+    const studentInterventions = getStudentInterventions(classroom_id, student_ref, time_window);
     if (studentInterventions.length < 10) {
       res.json({
         report: null,
