@@ -18,6 +18,7 @@ import type {
   EABriefingResponse,
   ComplexityForecastRequest,
   ComplexityForecastResponse,
+  SurvivalPacketResponse,
 } from "./types";
 
 const API_BASE = "/api";
@@ -176,4 +177,31 @@ export async function generateComplexityForecast(
     throw new Error(`Complexity forecast failed (${res.status}): ${body}`);
   }
   return res.json();
+}
+
+export async function generateSurvivalPacket(
+  classroomId: string,
+  targetDate: string,
+  teacherNotes?: string,
+  classroomCode?: string,
+): Promise<SurvivalPacketResponse> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (classroomCode) headers["X-Classroom-Code"] = classroomCode;
+
+  const resp = await fetch(`${API_BASE}/survival-packet`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      classroom_id: classroomId,
+      target_date: targetDate,
+      teacher_notes: teacherNotes || undefined,
+    }),
+  });
+
+  if (!resp.ok) {
+    const err = await resp.json().catch(() => ({ error: resp.statusText }));
+    throw new Error(err.error || `Request failed: ${resp.status}`);
+  }
+
+  return resp.json();
 }

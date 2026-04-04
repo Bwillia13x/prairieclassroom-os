@@ -373,3 +373,24 @@ export interface ComplexityForecastResponse {
   model_id: string;
   latency_ms: number;
 }
+
+// ----- Survival Packet types -----
+
+export interface SurvivalPacketResponse {
+  packet: {
+    packet_id: string;
+    classroom_id: string;
+    generated_for_date: string;
+    routines: Array<{ time_or_label: string; description: string; recent_changes?: string }>;
+    student_support: Array<{ student_ref: string; current_scaffolds: string[]; key_strategies: string; things_to_avoid?: string }>;
+    ea_coordination: { ea_name?: string; schedule_summary: string; primary_students: string[]; if_ea_absent: string };
+    simplified_day_plan: Array<{ time_slot: string; activity: string; sub_instructions: string; materials_location?: string }>;
+    family_comms: Array<{ student_ref: string; status: string; language_preference?: string; notes: string }>;
+    complexity_peaks: Array<{ time_slot: string; level: string; reason: string; mitigation: string }>;
+    heads_up: string[];
+    schema_version: string;
+  };
+  model_id: string;
+  latency_ms: number;
+  thinking_summary?: string;
+}

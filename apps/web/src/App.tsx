@@ -12,7 +12,9 @@ import VocabCardGrid from "./components/VocabCardGrid";
 import PatternReport from "./components/PatternReport";
 import EABriefingView from "./components/EABriefing";
 import ForecastViewer from "./components/ForecastViewer";
+import ForecastForm from "./components/ForecastForm";
 import SkeletonLoader from "./components/SkeletonLoader";
+import SurvivalPacketView from "./components/SurvivalPacket";
 import {
   differentiate,
   listClassrooms,
@@ -25,6 +27,7 @@ import {
   detectSupportPatterns,
   generateEABriefing,
   generateComplexityForecast,
+  generateSurvivalPacket,
 } from "./api";
 import type {
   LessonArtifact,
@@ -40,10 +43,11 @@ import type {
   SupportPatternsResponse,
   EABriefingResponse,
   ComplexityForecastResponse,
+  SurvivalPacketResponse,
 } from "./types";
 import "./App.css";
 
-type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message" | "log-intervention" | "language-tools" | "support-patterns" | "ea-briefing" | "complexity-forecast";
+type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message" | "log-intervention" | "language-tools" | "support-patterns" | "ea-briefing" | "complexity-forecast" | "survival-packet";
 
 export default function App() {
   const [classrooms, setClassrooms] = useState<ClassroomProfile[]>([]);
@@ -63,13 +67,13 @@ export default function App() {
   const [patternResult, setPatternResult] = useState<SupportPatternsResponse | null>(null);
   const [briefingResult, setBriefingResult] = useState<EABriefingResponse | null>(null);
   const [forecastResult, setForecastResult] = useState<ComplexityForecastResponse | null>(null);
-  const [forecastNotes, setForecastNotes] = useState("");
+  const [survivalResult, setSurvivalResult] = useState<SurvivalPacketResponse | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
   function showSuccess(msg: string) {
     setSuccessMsg(msg);
-    setTimeout(() => setSuccessMsg(null), 3000);
+    setTimeout(() => setSuccessMsg(null), 4500);
   }
 
   useEffect(() => {
@@ -310,6 +314,26 @@ export default function App() {
     }
   }
 
+  async function handleSurvivalPacket(classroomId: string) {
+    setLoading(true);
+    setError(null);
+    setSurvivalResult(null);
+
+    try {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const targetDate = tomorrow.toISOString().split("T")[0];
+
+      const resp = await generateSurvivalPacket(classroomId, targetDate);
+      setSurvivalResult(resp);
+      showSuccess("Survival packet generated");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Survival packet generation failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="app-shell">
       {successMsg && <div className="success-toast" role="status">{successMsg}</div>}
@@ -392,6 +416,16 @@ export default function App() {
             onClick={() => setActiveTab("log-intervention")}
           >
             Log Intervention
+          </button>
+          <button
+            role="tab"
+            id="tab-survival-packet"
+            aria-selected={activeTab === "survival-packet"}
+            aria-controls="panel-survival-packet"
+            className={`tab-btn ${activeTab === "survival-packet" ? "tab-btn--active" : ""}`}
+            onClick={() => setActiveTab("survival-packet")}
+          >
+            Sub Packet
           </button>
         </div>
         <div className="tab-group" role="presentation">
@@ -627,62 +661,89 @@ export default function App() {
         </div>
         <div role="tabpanel" id="panel-complexity-forecast" aria-labelledby="tab-complexity-forecast" hidden={activeTab !== "complexity-forecast"}>
           {activeTab === "complexity-forecast" && classrooms.length > 0 && (
-            <div>
-              <h2>Complexity Forecast</h2>
-              <p className="tab-description">
-                Generate a per-block complexity forecast for tomorrow based on schedule, student needs, and intervention history.
-              </p>
-
-              <div className="form-group">
-                <label htmlFor="forecast-classroom">Classroom</label>
-                <select
-                  id="forecast-classroom"
-                  className="form-select"
-                  value={msgClassroom}
-                  onChange={(e) => setMsgClassroom(e.target.value)}
-                >
-                  {classrooms.map((c) => (
-                    <option key={c.classroom_id} value={c.classroom_id}>
-                      {c.classroom_id} ({c.grade_band})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="forecast-notes">Optional notes for tomorrow</label>
-                <textarea
-                  id="forecast-notes"
-                  className="form-textarea"
-                  value={forecastNotes}
-                  onChange={(e) => setForecastNotes(e.target.value)}
-                  placeholder="e.g., Assembly at 10am, new student starting, field trip cancelled..."
-                  rows={3}
-                />
-              </div>
-
-              <button
-                className="btn btn-primary"
-                disabled={loading || !msgClassroom}
-                onClick={() => handleForecast(msgClassroom, forecastNotes || undefined)}
-              >
-                {loading ? "Generating Forecast..." : "Generate Forecast"}
-              </button>
-
-              {loading && !forecastResult && (
-                <SkeletonLoader variant="stack" message="Generating complexity forecast with deep reasoning..." label="Generating complexity forecast" />
-              )}
-
-              {forecastResult && (
-                <div ref={resultRef} style={{ marginTop: "1rem" }}>
+            <div className={forecastResult ? "split-pane" : ""}>
+              <ForecastForm
+                classrooms={classrooms}
+                selectedClassroom={msgClassroom}
+                onClassroomChange={setMsgClassroom}
+                onSubmit={handleForecast}
+                loading={loading}
+              />
+              <div aria-live="polite">
+                {error && forecastResult === null && <div className="error-banner">{error}</div>}
+                {loading && forecastResult === null && (
+                  <SkeletonLoader variant="stack" message="Generating complexity forecast with deep reasoning..." label="Generating complexity forecast" />
+                )}
+                {!loading && forecastResult === null && !error && (
+                  <div className="empty-state">
+                    <span className="empty-state-icon">&#9729;</span>
+                    <div className="empty-state-title">No forecast yet</div>
+                    <p className="empty-state-description">
+                      Select a classroom and generate a per-block complexity forecast for tomorrow.
+                    </p>
+                  </div>
+                )}
+                {forecastResult && (
                   <ForecastViewer
                     forecast={forecastResult.forecast}
                     thinkingSummary={forecastResult.thinking_summary}
                     latencyMs={forecastResult.latency_ms}
                     modelId={forecastResult.model_id}
                   />
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+        <div role="tabpanel" id="panel-survival-packet" aria-labelledby="tab-survival-packet" hidden={activeTab !== "survival-packet"}>
+          {activeTab === "survival-packet" && classrooms.length > 0 && (
+            <div className={survivalResult ? "split-pane" : ""}>
+              <div className="form-panel">
+                <h2>Substitute Survival Packet</h2>
+                <p className="form-description">
+                  Generate a print-ready packet for a substitute covering your classroom tomorrow.
+                </p>
+                <div className="field">
+                  <label htmlFor="sp-classroom">Classroom</label>
+                  <select
+                    id="sp-classroom"
+                    value={msgClassroom}
+                    onChange={(e) => setMsgClassroom(e.target.value)}
+                  >
+                    {classrooms.map((c) => (
+                      <option key={c.classroom_id} value={c.classroom_id}>
+                        Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              )}
+                <button
+                  type="button"
+                  className="btn btn--primary"
+                  disabled={loading || !msgClassroom}
+                  onClick={() => handleSurvivalPacket(msgClassroom)}
+                >
+                  {loading && activeTab === "survival-packet" ? "Generating Packet..." : "Generate Survival Packet"}
+                </button>
+              </div>
+              <div aria-live="polite">
+                {error && survivalResult === null && <div className="error-banner">{error}</div>}
+                {loading && survivalResult === null && (
+                  <SkeletonLoader variant="stack" message="Building substitute survival packet..." label="Generating survival packet" />
+                )}
+                {!loading && survivalResult === null && !error && (
+                  <div className="empty-state">
+                    <span className="empty-state-icon">&#128203;</span>
+                    <div className="empty-state-title">No packet yet</div>
+                    <p className="empty-state-description">
+                      Select a classroom and generate a full survival packet for tomorrow's substitute.
+                    </p>
+                  </div>
+                )}
+                {survivalResult && (
+                  <SurvivalPacketView packet={survivalResult.packet} />
+                )}
+              </div>
             </div>
           )}
         </div>
