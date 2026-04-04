@@ -106,3 +106,18 @@ export type {
   DebtThresholds,
   ComplexityDebtRegister,
 } from "./debt.js";
+
+export {
+  ScaffoldDecayReportSchema,
+  ScaffoldReviewSchema,
+  ScaffoldUsageTrendSchema,
+  PositiveSignalSchema,
+  WithdrawalPhaseSchema,
+} from "./scaffold-decay.js";
+export type {
+  ScaffoldDecayReport,
+  ScaffoldReview,
+  ScaffoldUsageTrend,
+  PositiveSignal,
+  WithdrawalPhase,
+} from "./scaffold-decay.js";
