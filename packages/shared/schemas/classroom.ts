@@ -3,6 +3,7 @@
  * Maps to data-contracts.md ClassroomProfile entity.
  */
 import { z } from "zod";
+import { ScheduleBlockInputSchema, UpcomingEventSchema } from "./forecast.js";
 
 export const StudentSupportSummarySchema = z.object({
   student_id: z.string(),
@@ -24,6 +25,8 @@ export const ClassroomProfileSchema = z.object({
   support_constraints: z.array(z.string()).optional(),
   students: z.array(StudentSupportSummarySchema),
   access_code: z.string().optional(),
+  schedule: z.array(ScheduleBlockInputSchema).optional(),
+  upcoming_events: z.array(UpcomingEventSchema).optional(),
 });
 
 export type ClassroomProfile = z.infer<typeof ClassroomProfileSchema>;
