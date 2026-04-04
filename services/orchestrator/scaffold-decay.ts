@@ -88,9 +88,7 @@ export function parseScaffoldDecayResponse(
   studentRef: string,
 ): ScaffoldDecayReport {
   let cleaned = raw.trim();
-  if (cleaned.startsWith("```")) {
-    cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/```\s*$/, "");
-  }
+  cleaned = cleaned.replace(/^```(?:json)?\s*/m, "").replace(/```\s*$/m, "").trim();
 
   const parsed = JSON.parse(cleaned);
   if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {

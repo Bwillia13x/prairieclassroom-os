@@ -450,22 +450,23 @@ export function getStaleFollowUps(
   `).all(classroomId, cutoffIso) as { record_id: string; record_json: string; created_at: string }[];
 
   const items: DebtItem[] = [];
+  const followUpStmt = db.prepare(`
+    SELECT 1 FROM interventions
+    WHERE classroom_id = ?
+      AND created_at > ?
+      AND record_id != ?
+      AND EXISTS (
+        SELECT 1 FROM json_each(student_refs) AS s1
+        WHERE s1.value IN (
+          SELECT s2.value FROM json_each(?) AS s2
+        )
+      )
+    LIMIT 1
+  `);
   for (const row of rows) {
     const record = JSON.parse(row.record_json) as InterventionRecord;
 
-    const hasFollowUp = db.prepare(`
-      SELECT 1 FROM interventions
-      WHERE classroom_id = ?
-        AND created_at > ?
-        AND record_id != ?
-        AND EXISTS (
-          SELECT 1 FROM json_each(student_refs) AS s1
-          WHERE s1.value IN (
-            SELECT s2.value FROM json_each(?) AS s2
-          )
-        )
-      LIMIT 1
-    `).get(classroomId, row.created_at, row.record_id, JSON.stringify(record.student_refs));
+    const hasFollowUp = followUpStmt.get(classroomId, row.created_at, row.record_id, JSON.stringify(record.student_refs));
 
     if (!hasFollowUp) {
       const ageDays = Math.floor(
@@ -523,13 +524,25 @@ export function getUnaddressedPatternInsights(
   const latestPattern = getLatestPatternReport(classroomId);
   if (!latestPattern) return [];
 
-  const recentPlans = getRecentPlans(classroomId, 5);
+  // Use DB created_at timestamps to find plans generated after the pattern report
+  const db = getDb(classroomId);
+  const patternRow = db.prepare(`
+    SELECT created_at FROM pattern_reports WHERE report_id = ? LIMIT 1
+  `).get(latestPattern.report_id) as { created_at: string } | undefined;
+  if (!patternRow) return [];
+
+  const planRows = db.prepare(`
+    SELECT plan_json FROM generated_plans
+    WHERE classroom_id = ? AND created_at > ?
+    ORDER BY created_at DESC
+    LIMIT 5
+  `).all(classroomId, patternRow.created_at) as { plan_json: string }[];
+
   const planStudentRefs = new Set<string>();
-  for (const plan of recentPlans) {
-    if (plan.plan_id > latestPattern.report_id) {
-      for (const sp of plan.support_priorities) {
-        planStudentRefs.add(sp.student_ref);
-      }
+  for (const row of planRows) {
+    const plan = JSON.parse(row.plan_json) as TomorrowPlan;
+    for (const sp of plan.support_priorities) {
+      planStudentRefs.add(sp.student_ref);
     }
   }
 
@@ -559,33 +572,54 @@ export function getRecurringPlanItems(
   const plans = getRecentPlans(classroomId, minConsecutive + 2);
   if (plans.length < minConsecutive) return [];
 
-  const streaks = new Map<string, { count: number; reasons: string[] }>();
+  // Track current consecutive streak and best streak per student
+  const currentStreak = new Map<string, { count: number; reasons: string[] }>();
+  const bestStreak = new Map<string, { count: number; reasons: string[] }>();
 
+  // Plans are returned newest-first; process in chronological order
   const chronological = [...plans].reverse();
   for (const plan of chronological) {
     const currentRefs = new Set(plan.support_priorities.map((sp) => sp.student_ref));
 
+    // Extend or start streaks for students in this plan
     for (const sp of plan.support_priorities) {
-      const existing = streaks.get(sp.student_ref);
+      const existing = currentStreak.get(sp.student_ref);
       if (existing) {
         existing.count++;
         if (!existing.reasons.includes(sp.reason)) {
           existing.reasons.push(sp.reason);
         }
       } else {
-        streaks.set(sp.student_ref, { count: 1, reasons: [sp.reason] });
+        currentStreak.set(sp.student_ref, { count: 1, reasons: [sp.reason] });
       }
     }
 
-    for (const [ref, streak] of streaks) {
-      if (!currentRefs.has(ref) && streak.count < minConsecutive) {
-        streaks.delete(ref);
+    // Break streaks for students NOT in this plan — save best before resetting
+    const toDelete: string[] = [];
+    for (const [ref, streak] of currentStreak) {
+      if (!currentRefs.has(ref)) {
+        const best = bestStreak.get(ref);
+        if (!best || streak.count > best.count) {
+          bestStreak.set(ref, { ...streak });
+        }
+        toDelete.push(ref);
       }
+    }
+    for (const ref of toDelete) {
+      currentStreak.delete(ref);
+    }
+  }
+
+  // Merge final active streaks into best
+  for (const [ref, streak] of currentStreak) {
+    const best = bestStreak.get(ref);
+    if (!best || streak.count > best.count) {
+      bestStreak.set(ref, streak);
     }
   }
 
   const items: DebtItem[] = [];
-  for (const [studentRef, streak] of streaks) {
+  for (const [studentRef, streak] of bestStreak) {
     if (streak.count >= minConsecutive) {
       items.push({
         category: "recurring_plan_item",
@@ -612,18 +646,19 @@ export function getStudentsApproachingReview(
   const cutoffIso = cutoff.toISOString();
 
   const items: DebtItem[] = [];
+  const countStmt = db.prepare(`
+    SELECT COUNT(*) as cnt FROM interventions
+    WHERE classroom_id = ?
+      AND created_at > ?
+      AND EXISTS (
+        SELECT 1 FROM json_each(student_refs) WHERE json_each.value = ?
+      )
+  `);
 
   for (const student of classroom.students) {
     if (student.support_tags.length === 0) continue;
 
-    const count = db.prepare(`
-      SELECT COUNT(*) as cnt FROM interventions
-      WHERE classroom_id = ?
-        AND created_at > ?
-        AND EXISTS (
-          SELECT 1 FROM json_each(student_refs) WHERE json_each.value = ?
-        )
-    `).get(classroomId, cutoffIso, student.alias) as { cnt: number };
+    const count = countStmt.get(classroomId, cutoffIso, student.alias) as { cnt: number };
 
     if (count.cnt < minRecords) {
       items.push({
@@ -683,9 +718,9 @@ export function buildScaffoldDecayContext(
   windowSize = 20,
 ): string {
   const interventions = getStudentInterventions(classroomId, studentRef, windowSize);
-  if (interventions.length === 0) return "";
+  if (interventions.length < 2) return "";
 
-  const midpoint = Math.floor(interventions.length / 2);
+  const midpoint = Math.ceil(interventions.length / 2);
   // interventions are newest-first; reverse for chronological
   const chronological = [...interventions].reverse();
   const earlyWindow = chronological.slice(0, midpoint);
