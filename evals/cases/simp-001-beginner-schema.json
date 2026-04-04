@@ -1,0 +1,18 @@
+{
+  "id": "simp-001-beginner-schema",
+  "category": "schema_reliability",
+  "description": "Simplification for beginner EAL — schema and key fields present",
+  "prompt_class": "simplify_for_student",
+  "input": {
+    "source_text": "Read the passage carefully. Answer the three questions in full sentences. Use details from the text to support each answer.",
+    "grade_band": "Grade 4",
+    "eal_level": "beginner"
+  },
+  "expected": {
+    "required_simplified_keys": ["simplified_id", "simplified_text", "key_vocabulary", "visual_cue_suggestions", "grade_band", "eal_level", "schema_version"],
+    "schema_version": "0.1.0",
+    "min_vocabulary": 3,
+    "min_visual_cues": 2,
+    "max_latency_ms": 5000
+  }
+}

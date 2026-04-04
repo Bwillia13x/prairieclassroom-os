@@ -1,0 +1,14 @@
+{
+  "id": "pat-004-follow-up-gaps",
+  "category": "retrieval_relevance",
+  "description": "Follow-up gaps section identifies interventions needing follow-up",
+  "prompt_class": "detect_support_patterns",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "time_window": 20
+  },
+  "expected": {
+    "min_gaps": 1,
+    "must_contain": ["original_record_id", "days_since", "observation"]
+  }
+}

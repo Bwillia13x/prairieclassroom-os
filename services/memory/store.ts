@@ -4,6 +4,7 @@ import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
+import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
 
 export function savePlan(
   classroomId: string,
@@ -90,6 +91,26 @@ export function saveIntervention(
     classroomId,
     JSON.stringify(record.student_refs),
     JSON.stringify(record),
+    modelId,
+    new Date().toISOString(),
+  );
+}
+
+export function savePatternReport(
+  classroomId: string,
+  report: SupportPatternReport,
+  modelId: string,
+): void {
+  const db = getDb(classroomId);
+  db.prepare(`
+    INSERT OR REPLACE INTO pattern_reports
+    (report_id, classroom_id, student_filter, report_json, model_id, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    report.report_id,
+    classroomId,
+    report.student_filter,
+    JSON.stringify(report),
     modelId,
     new Date().toISOString(),
   );

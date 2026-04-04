@@ -85,7 +85,7 @@ This is not "ask Gemma and hope for the best." It is a classroom operating layer
 └─────────────────────────────────────────────────────────┘
 ```
 
-The Vite UI hosts seven tabs — one per workflow cluster — and communicates with the Express orchestrator over REST. The orchestrator owns all business logic: it builds prompts, injects retrieval context from SQLite, validates responses against typed schemas, and enforces approval gates. The Flask inference layer is a thin dispatch surface that routes to the appropriate Gemma model and handles thinking-mode configuration.
+The Vite UI hosts seven tabs — one per workflow cluster — and communicates with the Express orchestrator over REST. The orchestrator owns all business logic: it builds prompts using versioned prompt contracts, validates all incoming requests with Zod runtime schemas, injects retrieval context from SQLite, validates responses against typed schemas, enforces classroom-code authentication, and gates all outward-facing outputs on teacher approval. The Flask inference layer supports three modes: mock (development), API (Vertex AI), and local (GPU). In API mode, a `VertexAIBackend` routes to the appropriate Gemma model via the `google-genai` SDK, with a `extract_json` utility handling real model output quirks (markdown fencing, trailing commas, prose wrapping).
 
 ### Dual-Tier Gemma Routing
 
@@ -296,11 +296,11 @@ Prefer small, high-quality synthetic cases over large noisy benchmark sets. Each
 
 ## 7. What's Not Built and Why
 
-### Real Gemma Inference (Mock Mode)
+### Real Gemma Inference Baseline
 
-The Flask inference layer currently runs in mock mode — canned responses keyed by prompt class. The contracts, schemas, routing logic, retrieval injection, and validation pipeline are all production-ready. The model quality has not yet been measured against real `gemma-4-4b-it` and `gemma-4-27b-it` inference.
+The Flask inference layer supports three modes: mock, API (Vertex AI), and local (transformers). The Vertex AI backend (`VertexAIBackend`) is fully implemented — it calls `gemma-4-4b-it` and `gemma-4-27b-it` via the `google-genai` SDK, supports thinking mode, and includes a `extract_json` utility that handles real model output quirks (markdown fencing, trailing commas, prose wrapping around JSON).
 
-This was a deliberate sequencing decision. Validating contracts before validating model quality allows faster iteration on the system design. The eval suite tests the system end-to-end; swapping in real inference is an infrastructure step, not an architectural change.
+The eval baseline against real inference has not yet been run. The 42 evals pass against mock output, validating contracts end-to-end. Running the same suite against real Gemma output will reveal which prompt contracts need tuning and which parsing needs hardening — but the infrastructure is ready. Swapping from mock to real is a `--mode api` flag change.
 
 ### Student-Facing Features
 
@@ -322,18 +322,23 @@ Both are listed in the original architecture document as target capabilities. Vi
 |--------|-------|
 | Prompt classes | 8 |
 | Model tiers | 2 (live: gemma-4-4b-it, planning: gemma-4-27b-it) |
+| Inference backends | 3 (mock, Vertex AI, local) |
 | API endpoints | 13 |
 | SQLite tables / classroom | 5 |
 | Evaluations | 42 |
 | UI tabs | 7 |
+| Zod request schemas | 9 |
+| Zod entity schemas | 8 |
 | Forbidden diagnostic terms | 15 |
 | Thinking mode routes | 2 of 8 |
-| TypeScript lines | ~4,000 |
-| Python lines | ~600 |
-| Sprints completed | 8 + architecture sprint |
+| Auth model | classroom-code (X-Classroom-Code header) |
+| TypeScript lines | ~5,000 |
+| Python lines | ~750 |
+| Sprints completed | 13 |
+| Architecture decisions (ADRs) | 32 |
 | Users served | 2 (teacher, educational assistant) |
 | Languages supported (vocab cards) | 10 |
-| Zero regressions | across 8 sprints |
+| Zero regressions | across 13 sprints |
 
 ---
 
@@ -347,6 +352,6 @@ The memory is local, relational, and closed-loop. Every observation logged becom
 
 The safety boundaries are embedded, not bolted on. Observational language, 15 forbidden terms, and mandatory approval gates are part of the generation contracts, not post-processing filters.
 
-Forty-two evals. Zero regressions. Two users served. Eight workflows. One closed loop.
+Forty-two evals. Zero regressions. Thirteen sprints. Two users served. Eight workflows. One closed loop. Runtime validation at every boundary. Authentication at every classroom endpoint. And a Vertex AI backend ready to swap from mock to real inference with a single flag.
 
 This is what it looks like to build for Gemma 4, not just on top of it.

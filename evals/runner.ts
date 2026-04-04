@@ -55,6 +55,28 @@ interface ExpectedOutput {
   teacher_approved_must_be_false?: boolean;
   /** For intervention: required keys in record object. */
   required_intervention_keys?: string[];
+  /** For simplification: required keys in simplified object. */
+  required_simplified_keys?: string[];
+  /** Minimum key vocabulary items. */
+  min_vocabulary?: number;
+  /** Minimum visual cue suggestions. */
+  min_visual_cues?: number;
+  /** For vocab cards: required keys in card set object. */
+  required_cardset_keys?: string[];
+  /** For vocab cards: required keys on each card. */
+  required_card_keys?: string[];
+  /** Minimum number of vocab cards. */
+  min_cards?: number;
+  /** Maximum number of vocab cards. */
+  max_cards?: number;
+  /** For support patterns: required keys in report object. */
+  required_report_keys?: string[];
+  /** Minimum recurring themes. */
+  min_themes?: number;
+  /** Minimum follow-up gaps. */
+  min_gaps?: number;
+  /** Minimum suggested focus items. */
+  min_focus?: number;
 }
 
 interface EvalResult {
@@ -138,6 +160,20 @@ function runEval(evalCase: EvalCase, output: Record<string, unknown>, rawText: s
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:3100";
 
+// Classroom access codes for auth — must match data/synthetic_classrooms/*.json
+const CLASSROOM_CODES: Record<string, string> = {
+  "alpha-grade4": "prairie-alpha-2026",
+  "bravo-grade2": "prairie-bravo-2026",
+};
+
+function authHeaders(classroomId?: string): Record<string, string> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (classroomId && CLASSROOM_CODES[classroomId]) {
+    headers["X-Classroom-Code"] = CLASSROOM_CODES[classroomId];
+  }
+  return headers;
+}
+
 async function loadEvalCases(dir: string): Promise<EvalCase[]> {
   const absDir = resolve(dir);
   if (!existsSync(absDir)) return [];
@@ -164,7 +200,7 @@ async function runDifferentiationEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/differentiate`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(input.classroom_id as string),
       body: JSON.stringify({
         artifact,
         classroom_id: input.classroom_id,
@@ -243,7 +279,7 @@ async function runTomorrowPlanEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/tomorrow-plan`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         teacher_reflection: input.teacher_reflection,
@@ -316,7 +352,7 @@ async function runFamilyMessageEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/family-message`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         student_refs: input.student_refs,
@@ -399,7 +435,7 @@ async function runInterventionEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/intervention`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: authHeaders(input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         student_refs: input.student_refs,
@@ -464,6 +500,446 @@ async function runInterventionEval(evalCase: EvalCase): Promise<EvalResult> {
   }
 }
 
+// ─── Simplify evaluation ────────────────────────────────────────────────────
+
+async function runSimplifyEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/simplify`, {
+      method: "POST",
+      headers: authHeaders(input.classroom_id as string),
+      body: JSON.stringify({
+        source_text: input.source_text,
+        grade_band: input.grade_band,
+        eal_level: input.eal_level,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      simplified: Record<string, unknown>;
+      model_id: string;
+      latency_ms: number;
+    };
+    const simplified = data.simplified;
+
+    // Check required simplified keys
+    const requiredKeys = (evalCase.expected as Record<string, unknown>)
+      .required_simplified_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in simplified)) {
+          failures.push(`Simplified output missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && simplified.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${simplified.schema_version}`,
+      );
+    }
+
+    // Check min vocabulary
+    const minVocab = (evalCase.expected as Record<string, unknown>).min_vocabulary as number | undefined;
+    if (minVocab && Array.isArray(simplified.key_vocabulary)) {
+      if (simplified.key_vocabulary.length < minVocab) {
+        failures.push(
+          `key_vocabulary has ${simplified.key_vocabulary.length} items, expected at least ${minVocab}`,
+        );
+      }
+    }
+
+    // Check min visual cues
+    const minCues = (evalCase.expected as Record<string, unknown>).min_visual_cues as number | undefined;
+    if (minCues && Array.isArray(simplified.visual_cue_suggestions)) {
+      if (simplified.visual_cue_suggestions.length < minCues) {
+        failures.push(
+          `visual_cue_suggestions has ${simplified.visual_cue_suggestions.length} items, expected at least ${minCues}`,
+        );
+      }
+    }
+
+    // Content safety checks
+    const allText = JSON.stringify(simplified);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// ─── Vocab cards evaluation ─────────────────────────────────────────────────
+
+async function runVocabCardsEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/vocab-cards`, {
+      method: "POST",
+      headers: authHeaders(input.classroom_id as string),
+      body: JSON.stringify({
+        artifact_id: input.artifact_id,
+        artifact_text: input.artifact_text,
+        subject: input.subject,
+        target_language: input.target_language,
+        grade_band: input.grade_band,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      card_set: Record<string, unknown>;
+      model_id: string;
+      latency_ms: number;
+    };
+    const cardSet = data.card_set;
+
+    // Check required card set keys
+    const requiredSetKeys = (evalCase.expected as Record<string, unknown>)
+      .required_cardset_keys as string[] | undefined;
+    if (requiredSetKeys) {
+      for (const key of requiredSetKeys) {
+        if (!(key in cardSet)) {
+          failures.push(`Card set missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && cardSet.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${cardSet.schema_version}`,
+      );
+    }
+
+    // Check card count and required card keys
+    const cards = Array.isArray(cardSet.cards) ? cardSet.cards as Record<string, unknown>[] : [];
+
+    const minCards = (evalCase.expected as Record<string, unknown>).min_cards as number | undefined;
+    if (minCards && cards.length < minCards) {
+      failures.push(`Card set has ${cards.length} cards, expected at least ${minCards}`);
+    }
+
+    const maxCards = (evalCase.expected as Record<string, unknown>).max_cards as number | undefined;
+    if (maxCards && cards.length > maxCards) {
+      failures.push(`Card set has ${cards.length} cards, expected at most ${maxCards}`);
+    }
+
+    const requiredCardKeys = (evalCase.expected as Record<string, unknown>)
+      .required_card_keys as string[] | undefined;
+    if (requiredCardKeys) {
+      for (let i = 0; i < cards.length; i++) {
+        for (const key of requiredCardKeys) {
+          if (!(key in cards[i])) {
+            failures.push(`Card ${i} missing required key: ${key}`);
+          }
+        }
+      }
+    }
+
+    // Content safety checks
+    const allText = JSON.stringify(cardSet);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// ─── Support patterns evaluation ──────────────────────────────────────────────
+
+async function runSupportPatternsEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/support-patterns`, {
+      method: "POST",
+      headers: authHeaders(input.classroom_id as string),
+      body: JSON.stringify({
+        classroom_id: input.classroom_id,
+        student_filter: input.student_filter,
+        time_window: input.time_window,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      report: Record<string, unknown>;
+      thinking_summary: string | null;
+      model_id: string;
+      latency_ms: number;
+    };
+    const report = data.report;
+
+    // Check required report keys
+    const requiredKeys = (evalCase.expected as Record<string, unknown>)
+      .required_report_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in report)) {
+          failures.push(`Report missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && report.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${report.schema_version}`,
+      );
+    }
+
+    // Check minimum counts
+    const checkMinArray = (field: string, min: number | undefined, label: string) => {
+      if (min === undefined) return;
+      const arr = report[field];
+      const len = Array.isArray(arr) ? arr.length : 0;
+      if (len < min) {
+        failures.push(`Expected at least ${min} ${label}, got ${len}`);
+      }
+    };
+
+    checkMinArray("recurring_themes", (evalCase.expected as Record<string, unknown>).min_themes as number | undefined, "recurring themes");
+    checkMinArray("follow_up_gaps", (evalCase.expected as Record<string, unknown>).min_gaps as number | undefined, "follow-up gaps");
+    checkMinArray("suggested_focus", (evalCase.expected as Record<string, unknown>).min_focus as number | undefined, "suggested focus items");
+
+    // Content checks
+    const allText = JSON.stringify(report);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// ─── Latest pattern retrieval evaluation ─────────────────────────────────────
+
+async function runLatestPatternEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(
+      `${API_BASE}/api/support-patterns/latest/${input.classroom_id}`,
+    );
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as { report: Record<string, unknown> | null };
+
+    if (!data.report) {
+      failures.push("No pattern report found — expected a persisted report from earlier eval");
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const report = data.report;
+
+    // Check required report keys
+    const requiredKeys = (evalCase.expected as Record<string, unknown>)
+      .required_report_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in report)) {
+          failures.push(`Report missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && report.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${report.schema_version}`,
+      );
+    }
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// ─── EA briefing evaluation ────────────────────────────────────────────────
+
+async function runEABriefingEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/ea-briefing`, {
+      method: "POST",
+      headers: authHeaders(input.classroom_id as string),
+      body: JSON.stringify({
+        classroom_id: input.classroom_id,
+        ea_name: input.ea_name,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      briefing: Record<string, unknown>;
+      model_id: string;
+      latency_ms: number;
+    };
+    const briefing = data.briefing;
+
+    // Check required briefing keys
+    const requiredKeys = (evalCase.expected as Record<string, unknown>)
+      .required_briefing_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in briefing)) {
+          failures.push(`Briefing missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && briefing.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${briefing.schema_version}`,
+      );
+    }
+
+    // Check minimum counts
+    const minBlocks = (evalCase.expected as Record<string, unknown>).min_schedule_blocks as number | undefined;
+    if (minBlocks) {
+      const blocks = Array.isArray(briefing.schedule_blocks) ? briefing.schedule_blocks.length : 0;
+      if (blocks < minBlocks) {
+        failures.push(`Expected at least ${minBlocks} schedule blocks, got ${blocks}`);
+      }
+    }
+
+    const minWatch = (evalCase.expected as Record<string, unknown>).min_watch_items as number | undefined;
+    if (minWatch) {
+      const items = Array.isArray(briefing.student_watch_list) ? briefing.student_watch_list.length : 0;
+      if (items < minWatch) {
+        failures.push(`Expected at least ${minWatch} watch list items, got ${items}`);
+      }
+    }
+
+    // Content checks
+    const allText = JSON.stringify(briefing);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
 async function main(): Promise<void> {
   const casesDir = resolve(import.meta.dirname ?? ".", "cases");
   const evalCases = await loadEvalCases(casesDir);
@@ -487,6 +963,16 @@ async function main(): Promise<void> {
       result = await runFamilyMessageEval(ec);
     } else if (ec.prompt_class === "log_intervention") {
       result = await runInterventionEval(ec);
+    } else if (ec.prompt_class === "simplify_for_student") {
+      result = await runSimplifyEval(ec);
+    } else if (ec.prompt_class === "generate_vocab_cards") {
+      result = await runVocabCardsEval(ec);
+    } else if (ec.prompt_class === "detect_support_patterns") {
+      result = await runSupportPatternsEval(ec);
+    } else if (ec.prompt_class === "retrieve_latest_pattern") {
+      result = await runLatestPatternEval(ec);
+    } else if (ec.prompt_class === "generate_ea_briefing") {
+      result = await runEABriefingEval(ec);
     } else {
       result = await runDifferentiationEval(ec);
     }

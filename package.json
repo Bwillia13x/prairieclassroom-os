@@ -16,12 +16,16 @@
     "eval": "tsx evals/runner.ts"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/better-sqlite3": "^7.6.13",
+    "eslint": "^10.2.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0",
+    "typescript-eslint": "^8.58.0",
     "vitest": "^3.0.0"
   },
   "dependencies": {
-    "better-sqlite3": "^12.8.0"
+    "better-sqlite3": "^12.8.0",
+    "zod": "^4.3.6"
   }
 }

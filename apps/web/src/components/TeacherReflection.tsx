@@ -11,6 +11,7 @@ export default function TeacherReflection({ classrooms, onSubmit, loading }: Pro
   const [classroomId, setClassroomId] = useState(classrooms[0]?.classroom_id ?? "");
   const [reflection, setReflection] = useState("");
   const [teacherGoal, setTeacherGoal] = useState("");
+  const [touched, setTouched] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,7 +41,7 @@ export default function TeacherReflection({ classrooms, onSubmit, loading }: Pro
         </select>
       </div>
 
-      <div className="field">
+      <div className={`field${touched && !reflection.trim() ? " field--error" : ""}`}>
         <label htmlFor="reflection">Today's Reflection</label>
         <textarea
           id="reflection"
@@ -48,8 +49,12 @@ export default function TeacherReflection({ classrooms, onSubmit, loading }: Pro
           placeholder="How did today go? What worked, what was hard? Any specific student moments to note…"
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
+          onBlur={() => setTouched(true)}
           required
         />
+        {touched && !reflection.trim() && (
+          <span className="field-error-hint">Reflection is required</span>
+        )}
       </div>
 
       <div className="field">

@@ -1,0 +1,13 @@
+{
+  "id": "pat-007-latest-retrieval",
+  "category": "schema_reliability",
+  "description": "Latest pattern report endpoint returns persisted report with valid schema",
+  "prompt_class": "retrieve_latest_pattern",
+  "input": {
+    "classroom_id": "alpha-grade4"
+  },
+  "expected": {
+    "required_report_keys": ["report_id", "classroom_id", "student_filter", "time_window", "recurring_themes", "follow_up_gaps", "positive_trends", "suggested_focus", "generated_at", "schema_version"],
+    "schema_version": "0.1.0"
+  }
+}

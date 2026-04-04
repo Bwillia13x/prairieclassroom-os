@@ -4,17 +4,21 @@ import "./PlanViewer.css";
 interface Props {
   plan: TomorrowPlan;
   thinkingSummary: string | null;
+  patternInformed?: boolean;
   latencyMs: number;
   modelId: string;
   onFollowupClick?: (prefill: FamilyMessagePrefill) => void;
   onInterventionClick?: (prefill: InterventionPrefill) => void;
 }
 
-export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId, onFollowupClick, onInterventionClick }: Props) {
+export default function PlanViewer({ plan, thinkingSummary, patternInformed, latencyMs, modelId, onFollowupClick, onInterventionClick }: Props) {
   return (
     <div className="plan-viewer">
       <header className="plan-header">
         <h2>Tomorrow's Support Plan</h2>
+        {patternInformed && (
+          <span className="pattern-informed-badge">Pattern-informed</span>
+        )}
         <p className="plan-meta">
           {plan.classroom_id} · {Math.round(latencyMs)}ms · {modelId}
           {plan.schema_version && ` · v${plan.schema_version}`}
@@ -135,6 +139,20 @@ export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId, 
                         })
                     : undefined
                 }
+                onKeyDown={
+                  onFollowupClick
+                    ? (e: React.KeyboardEvent) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onFollowupClick({
+                            student_ref: f.student_ref,
+                            reason: f.reason,
+                            message_type: f.message_type,
+                          });
+                        }
+                      }
+                    : undefined
+                }
                 role={onFollowupClick ? "button" : undefined}
                 tabIndex={onFollowupClick ? 0 : undefined}
               >
@@ -151,6 +169,13 @@ export default function PlanViewer({ plan, thinkingSummary, latencyMs, modelId, 
           </div>
         </section>
       )}
+
+      <button
+        className="plan-print"
+        onClick={() => window.print()}
+      >
+        Print Plan
+      </button>
     </div>
   );
 }

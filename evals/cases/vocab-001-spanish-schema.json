@@ -1,0 +1,21 @@
+{
+  "id": "vocab-001-spanish-schema",
+  "category": "schema_reliability",
+  "description": "Vocab cards for Spanish — schema, card count, required fields on each card",
+  "prompt_class": "generate_vocab_cards",
+  "input": {
+    "artifact_id": "artifact-reading-001",
+    "artifact_text": "Read the passage about community helpers. Community helpers are people who work in our neighbourhood to keep us safe and healthy. Firefighters respond to emergencies. Nurses provide medical support. Teachers help students learn new things every day.",
+    "subject": "Social Studies",
+    "target_language": "es",
+    "grade_band": "Grade 3"
+  },
+  "expected": {
+    "required_cardset_keys": ["set_id", "artifact_id", "subject", "target_language", "grade_band", "cards", "schema_version"],
+    "required_card_keys": ["term", "definition", "target_translation", "example_sentence", "visual_hint"],
+    "schema_version": "0.1.0",
+    "min_cards": 5,
+    "max_cards": 8,
+    "max_latency_ms": 5000
+  }
+}

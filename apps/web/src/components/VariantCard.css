@@ -21,9 +21,15 @@
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-on-accent);
   letter-spacing: 0.02em;
 }
+
+.variant-badge--core { background: var(--color-variant-core); }
+.variant-badge--eal_supported { background: var(--color-variant-eal); }
+.variant-badge--chunked { background: var(--color-variant-chunked); }
+.variant-badge--ea_small_group { background: var(--color-variant-ea-group); }
+.variant-badge--extension { background: var(--color-variant-extension); }
 
 .variant-time {
   font-size: 0.8rem;

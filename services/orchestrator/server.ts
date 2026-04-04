@@ -33,6 +33,21 @@ import type { SupportPatternsInput } from "./support-patterns.js";
 import { buildEABriefingPrompt, parseEABriefingResponse } from "./ea-briefing.js";
 import type { EABriefingInput } from "./ea-briefing.js";
 import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport } from "../memory/store.js";
+import { checkpointAll } from "../memory/db.js";
+import { createAuthMiddleware } from "./auth.js";
+import { z } from "zod";
+import {
+  validateBody,
+  DifferentiateRequestSchema,
+  TomorrowPlanRequestSchema,
+  FamilyMessageRequestSchema,
+  ApproveMessageRequestSchema,
+  InterventionRequestSchema,
+  SimplifyRequestSchema,
+  VocabCardsRequestSchema,
+  SupportPatternsRequestSchema,
+  EABriefingRequestSchema,
+} from "./validate.js";
 import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
@@ -47,7 +62,9 @@ const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
 const DATA_DIR = resolve(import.meta.dirname ?? ".", "../../data/synthetic_classrooms");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
+}));
 app.use(express.json({ limit: "2mb" }));
 
 // ----- Data loading -----
@@ -61,6 +78,18 @@ function loadClassroom(id: string): ClassroomProfile | undefined {
   const classrooms = loadClassrooms();
   return classrooms.find((c) => c.classroom_id === id);
 }
+
+// ----- Auth middleware -----
+
+const authMiddleware = createAuthMiddleware(loadClassroom);
+app.use("/api/differentiate", authMiddleware);
+app.use("/api/tomorrow-plan", authMiddleware);
+app.use("/api/family-message", authMiddleware);
+app.use("/api/intervention", authMiddleware);
+app.use("/api/simplify", authMiddleware);
+app.use("/api/vocab-cards", authMiddleware);
+app.use("/api/support-patterns", authMiddleware);
+app.use("/api/ea-briefing", authMiddleware);
 
 // ----- Routes -----
 
@@ -76,22 +105,14 @@ app.get("/api/classrooms", (_req, res) => {
       grade_band: c.grade_band,
       subject_focus: c.subject_focus,
       classroom_notes: c.classroom_notes,
+      students: (c.students ?? []).map((s) => ({ alias: s.alias })),
     })),
   );
 });
 
-app.post("/api/differentiate", async (req, res) => {
+app.post("/api/differentiate", validateBody(DifferentiateRequestSchema), async (req, res) => {
   try {
-    const { artifact, classroom_id, teacher_goal } = req.body as {
-      artifact: LessonArtifact;
-      classroom_id: string;
-      teacher_goal?: string;
-    };
-
-    if (!artifact || !classroom_id) {
-      res.status(400).json({ error: "Missing artifact or classroom_id" });
-      return;
-    }
+    const { artifact, classroom_id, teacher_goal } = req.body;
 
     // Load classroom profile
     const classroom = loadClassroom(classroom_id);
@@ -167,19 +188,9 @@ app.post("/api/differentiate", async (req, res) => {
 
 // ----- Tomorrow Plan Route -----
 
-app.post("/api/tomorrow-plan", async (req, res) => {
+app.post("/api/tomorrow-plan", validateBody(TomorrowPlanRequestSchema), async (req, res) => {
   try {
-    const { classroom_id, teacher_reflection, artifacts, teacher_goal } = req.body as {
-      classroom_id: string;
-      teacher_reflection: string;
-      artifacts?: LessonArtifact[];
-      teacher_goal?: string;
-    };
-
-    if (!classroom_id || !teacher_reflection) {
-      res.status(400).json({ error: "Missing classroom_id or teacher_reflection" });
-      return;
-    }
+    const { classroom_id, teacher_reflection, artifacts, teacher_goal } = req.body as z.infer<typeof TomorrowPlanRequestSchema>;
 
     // Load classroom profile
     const classroom = loadClassroom(classroom_id);
@@ -295,23 +306,9 @@ app.post("/api/tomorrow-plan", async (req, res) => {
 
 // ----- Family Message Route -----
 
-app.post("/api/family-message", async (req, res) => {
+app.post("/api/family-message", validateBody(FamilyMessageRequestSchema), async (req, res) => {
   try {
-    const { classroom_id, student_refs, message_type, target_language, context } =
-      req.body as {
-        classroom_id: string;
-        student_refs: string[];
-        message_type: string;
-        target_language: string;
-        context?: string;
-      };
-
-    if (!classroom_id || !student_refs?.length || !message_type || !target_language) {
-      res.status(400).json({
-        error: "Missing required fields: classroom_id, student_refs, message_type, target_language",
-      });
-      return;
-    }
+    const { classroom_id, student_refs, message_type, target_language, context } = req.body;
 
     const classroom = loadClassroom(classroom_id);
     if (!classroom) {
@@ -325,7 +322,7 @@ app.post("/api/family-message", async (req, res) => {
     const msgInput: FamilyMessageInput = {
       classroom_id,
       student_refs,
-      message_type: message_type as FamilyMessageInput["message_type"],
+      message_type,
       target_language,
       context,
     };
@@ -387,17 +384,9 @@ app.post("/api/family-message", async (req, res) => {
   }
 });
 
-app.post("/api/family-message/approve", async (req, res) => {
+app.post("/api/family-message/approve", validateBody(ApproveMessageRequestSchema), async (req, res) => {
   try {
-    const { classroom_id, draft_id } = req.body as {
-      classroom_id: string;
-      draft_id: string;
-    };
-
-    if (!classroom_id || !draft_id) {
-      res.status(400).json({ error: "Missing classroom_id or draft_id" });
-      return;
-    }
+    const { classroom_id, draft_id } = req.body;
 
     approveFamilyMessage(classroom_id, draft_id);
     res.json({ approved: true, draft_id });
@@ -411,22 +400,9 @@ app.post("/api/family-message/approve", async (req, res) => {
 
 // ----- Intervention Logging Route -----
 
-app.post("/api/intervention", async (req, res) => {
+app.post("/api/intervention", validateBody(InterventionRequestSchema), async (req, res) => {
   try {
-    const { classroom_id, student_refs, teacher_note, context } =
-      req.body as {
-        classroom_id: string;
-        student_refs: string[];
-        teacher_note: string;
-        context?: string;
-      };
-
-    if (!classroom_id || !student_refs?.length || !teacher_note) {
-      res.status(400).json({
-        error: "Missing required fields: classroom_id, student_refs, teacher_note",
-      });
-      return;
-    }
+    const { classroom_id, student_refs, teacher_note, context } = req.body;
 
     const classroom = loadClassroom(classroom_id);
     if (!classroom) {
@@ -503,28 +479,9 @@ app.post("/api/intervention", async (req, res) => {
 
 // ----- Simplify for Student Route -----
 
-app.post("/api/simplify", async (req, res) => {
+app.post("/api/simplify", validateBody(SimplifyRequestSchema), async (req, res) => {
   try {
-    const { source_text, grade_band, eal_level } = req.body as {
-      source_text: string;
-      grade_band: string;
-      eal_level: "beginner" | "intermediate" | "advanced";
-    };
-
-    if (!source_text || !grade_band || !eal_level) {
-      res.status(400).json({
-        error: "Missing required fields: source_text, grade_band, eal_level",
-      });
-      return;
-    }
-
-    const validLevels = ["beginner", "intermediate", "advanced"];
-    if (!validLevels.includes(eal_level)) {
-      res.status(400).json({
-        error: `Invalid eal_level: ${eal_level}. Must be one of: ${validLevels.join(", ")}`,
-      });
-      return;
-    }
+    const { source_text, grade_band, eal_level } = req.body;
 
     const route = getRoute("simplify_for_student");
     const modelId = getModelId(route.model_tier);
@@ -583,23 +540,9 @@ app.post("/api/simplify", async (req, res) => {
 
 // ----- Vocab Cards Route -----
 
-app.post("/api/vocab-cards", async (req, res) => {
+app.post("/api/vocab-cards", validateBody(VocabCardsRequestSchema), async (req, res) => {
   try {
-    const { artifact_id, artifact_text, subject, target_language, grade_band } =
-      req.body as {
-        artifact_id: string;
-        artifact_text: string;
-        subject: string;
-        target_language: string;
-        grade_band: string;
-      };
-
-    if (!artifact_text || !subject || !target_language || !grade_band) {
-      res.status(400).json({
-        error: "Missing required fields: artifact_text, subject, target_language, grade_band",
-      });
-      return;
-    }
+    const { artifact_id, artifact_text, subject, target_language, grade_band } = req.body;
 
     const route = getRoute("generate_vocab_cards");
     const modelId = getModelId(route.model_tier);
@@ -664,18 +607,9 @@ app.post("/api/vocab-cards", async (req, res) => {
 
 // ----- Support Patterns Route -----
 
-app.post("/api/support-patterns", async (req, res) => {
+app.post("/api/support-patterns", validateBody(SupportPatternsRequestSchema), async (req, res) => {
   try {
-    const { classroom_id, student_filter, time_window } = req.body as {
-      classroom_id: string;
-      student_filter?: string;
-      time_window?: number;
-    };
-
-    if (!classroom_id) {
-      res.status(400).json({ error: "Missing classroom_id" });
-      return;
-    }
+    const { classroom_id, student_filter, time_window } = req.body;
 
     const classroom = loadClassroom(classroom_id);
     if (!classroom) {
@@ -768,7 +702,7 @@ app.post("/api/support-patterns", async (req, res) => {
 
 app.get("/api/support-patterns/latest/:classroomId", (req, res) => {
   try {
-    const { classroomId } = req.params;
+    const classroomId = req.params.classroomId as string;
     const report = getLatestPatternReport(classroomId);
     if (!report) {
       res.json({ report: null });
@@ -785,17 +719,9 @@ app.get("/api/support-patterns/latest/:classroomId", (req, res) => {
 
 // ----- EA Daily Briefing Route -----
 
-app.post("/api/ea-briefing", async (req, res) => {
+app.post("/api/ea-briefing", validateBody(EABriefingRequestSchema), async (req, res) => {
   try {
-    const { classroom_id, ea_name } = req.body as {
-      classroom_id: string;
-      ea_name?: string;
-    };
-
-    if (!classroom_id) {
-      res.status(400).json({ error: "Missing classroom_id" });
-      return;
-    }
+    const { classroom_id, ea_name } = req.body;
 
     const classroom = loadClassroom(classroom_id);
     if (!classroom) {
@@ -874,6 +800,10 @@ app.listen(PORT, () => {
   console.log(`Orchestrator API running on http://localhost:${PORT}`);
   console.log(`Inference service expected at ${INFERENCE_URL}`);
   console.log(`Data directory: ${DATA_DIR}`);
+
+  // Checkpoint WAL files on startup and every 5 minutes
+  checkpointAll();
+  setInterval(checkpointAll, 5 * 60 * 1000);
 
   // Check for demo classroom
   const classrooms = loadClassrooms();

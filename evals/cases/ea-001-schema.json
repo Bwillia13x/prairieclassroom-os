@@ -1,0 +1,13 @@
+{
+  "id": "ea-001-schema",
+  "category": "schema_reliability",
+  "description": "EA briefing for Grade 4 classroom produces valid schema with all required keys",
+  "prompt_class": "generate_ea_briefing",
+  "input": {
+    "classroom_id": "alpha-grade4"
+  },
+  "expected": {
+    "required_briefing_keys": ["briefing_id", "classroom_id", "date", "schedule_blocks", "student_watch_list", "pending_followups", "teacher_notes_for_ea", "schema_version"],
+    "schema_version": "0.1.0"
+  }
+}

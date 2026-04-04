@@ -7,8 +7,10 @@
 }
 
 .intervention-header h2 {
-  font-size: 1.1rem;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
   margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
 }
 
 .intervention-meta {
@@ -35,13 +37,13 @@
   line-height: 1.6;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid var(--color-section-priority);
   border-radius: var(--radius);
   padding: 0.75rem 1rem;
 }
 
 .intervention-field--outcome .intervention-field-value {
-  border-left-color: #10b981;
+  border-left-color: var(--color-section-family);
 }
 
 .followup-badge {
@@ -54,24 +56,24 @@
 }
 
 .followup-badge--yes {
-  background: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background: var(--color-bg-warning);
+  color: var(--color-text-warning);
+  border: 1px solid var(--color-border-warning);
 }
 
 .followup-badge--no {
-  background: #f0fdf4;
-  color: #059669;
-  border: 1px solid #bbf7d0;
+  background: var(--color-bg-success);
+  color: var(--color-text-success);
+  border: 1px solid var(--color-border-success);
 }
 
 .intervention-saved {
   margin-top: 1rem;
   padding: 0.5rem 0.75rem;
-  background: #f0fdf4;
-  border: 1px solid #bbf7d0;
+  background: var(--color-bg-success);
+  border: 1px solid var(--color-border-success);
   border-radius: var(--radius);
   font-size: 0.85rem;
-  color: #059669;
+  color: var(--color-text-success);
   font-weight: 500;
 }

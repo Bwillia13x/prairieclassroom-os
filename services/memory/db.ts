@@ -64,13 +64,48 @@ export function getDb(classroomId: string): Database.Database {
       model_id TEXT,
       created_at TEXT NOT NULL
     );
+
+    CREATE INDEX IF NOT EXISTS idx_plans_classroom
+      ON generated_plans(classroom_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_variants_classroom
+      ON generated_variants(classroom_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_messages_classroom
+      ON family_messages(classroom_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_interventions_classroom
+      ON interventions(classroom_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_patterns_classroom
+      ON pattern_reports(classroom_id, created_at);
   `);
 
   connections.set(classroomId, db);
   return db;
 }
 
+export function checkpointAll(): void {
+  for (const [id, db] of connections.entries()) {
+    try {
+      db.pragma("wal_checkpoint(TRUNCATE)");
+    } catch (err) {
+      console.warn(`WAL checkpoint failed for ${id}:`, err);
+    }
+  }
+}
+
 export function closeAll(): void {
+  checkpointAll();
   for (const db of connections.values()) db.close();
   connections.clear();
+}
+
+// Graceful shutdown — checkpoint and close on process exit
+let shutdownRegistered = false;
+if (!shutdownRegistered) {
+  shutdownRegistered = true;
+  for (const signal of ["SIGTERM", "SIGINT"] as const) {
+    process.on(signal, () => {
+      console.log(`\nReceived ${signal} — closing databases...`);
+      closeAll();
+      process.exit(0);
+    });
+  }
 }

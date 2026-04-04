@@ -1,0 +1,14 @@
+{
+  "id": "ea-002-content-quality",
+  "category": "differentiation_quality",
+  "description": "EA briefing contains schedule blocks with student references and task descriptions",
+  "prompt_class": "generate_ea_briefing",
+  "input": {
+    "classroom_id": "alpha-grade4"
+  },
+  "expected": {
+    "min_schedule_blocks": 1,
+    "min_watch_items": 1,
+    "must_contain": ["student_ref", "task_description"]
+  }
+}

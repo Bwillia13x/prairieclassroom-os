@@ -8,6 +8,14 @@ import type {
   FamilyMessageResponse,
   InterventionRequest,
   InterventionResponse,
+  SimplifyRequest,
+  SimplifyResponse,
+  VocabCardsRequest,
+  VocabCardsResponse,
+  SupportPatternsRequest,
+  SupportPatternsResponse,
+  EABriefingRequest,
+  EABriefingResponse,
 } from "./types";
 
 const API_BASE = "/api";
@@ -89,6 +97,66 @@ export async function logIntervention(
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`Intervention logging failed (${res.status}): ${body}`);
+  }
+  return res.json();
+}
+
+export async function simplifyText(
+  request: SimplifyRequest,
+): Promise<SimplifyResponse> {
+  const res = await fetch(`${API_BASE}/simplify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Simplification failed (${res.status}): ${body}`);
+  }
+  return res.json();
+}
+
+export async function generateVocabCards(
+  request: VocabCardsRequest,
+): Promise<VocabCardsResponse> {
+  const res = await fetch(`${API_BASE}/vocab-cards`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Vocab card generation failed (${res.status}): ${body}`);
+  }
+  return res.json();
+}
+
+export async function detectSupportPatterns(
+  request: SupportPatternsRequest,
+): Promise<SupportPatternsResponse> {
+  const res = await fetch(`${API_BASE}/support-patterns`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Support pattern detection failed (${res.status}): ${body}`);
+  }
+  return res.json();
+}
+
+export async function generateEABriefing(
+  request: EABriefingRequest,
+): Promise<EABriefingResponse> {
+  const res = await fetch(`${API_BASE}/ea-briefing`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`EA briefing generation failed (${res.status}): ${body}`);
   }
   return res.json();
 }

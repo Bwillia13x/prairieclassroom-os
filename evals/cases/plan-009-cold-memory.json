@@ -1,0 +1,19 @@
+{
+  "id": "plan-009-cold-memory",
+  "category": "schema_reliability",
+  "description": "Tomorrow plan generates valid schema even with zero prior interventions or plans in memory (Grade 6 classroom, cold start)",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "charlie-grade6",
+    "teacher_reflection": "First day with this group. Students are still learning the routines. Two EAL students joined this week. I need a plan that works without any classroom history.",
+    "teacher_goal": "Establish morning routine and identify initial support needs."
+  },
+  "expected": {
+    "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"],
+    "min_watchpoints": 1,
+    "min_priorities": 1,
+    "min_ea_actions": 1,
+    "min_prep_items": 1,
+    "schema_version": "0.1.0"
+  }
+}

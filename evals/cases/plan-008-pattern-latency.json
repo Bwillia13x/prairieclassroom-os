@@ -1,0 +1,16 @@
+{
+  "id": "plan-008-pattern-latency",
+  "category": "latency_suitability",
+  "description": "Pattern-informed plan completes within planning-tier latency budget",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "teacher_reflection": "Today went smoothly overall. Ari completed writing with just the word bank. Mika used the step checklist independently.",
+    "teacher_goal": "Keep current routines, start reducing scaffolds for Ari."
+  },
+  "expected": {
+    "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"],
+    "schema_version": "0.1.0",
+    "max_latency_ms": 5000
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "pat-002-content-quality",
+  "category": "differentiation_quality",
+  "description": "Support patterns report contains meaningful content sections",
+  "prompt_class": "detect_support_patterns",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "time_window": 10
+  },
+  "expected": {
+    "min_themes": 1,
+    "min_focus": 1,
+    "must_contain": ["student_ref", "suggested_action"]
+  }
+}

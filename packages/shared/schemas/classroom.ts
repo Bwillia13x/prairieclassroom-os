@@ -2,25 +2,28 @@
  * ClassroomProfile — represents one classroom's context.
  * Maps to data-contracts.md ClassroomProfile entity.
  */
-export interface ClassroomProfile {
-  classroom_id: string;
-  grade_band: string;
-  subject_focus: string;
-  classroom_notes: string[];
-  routines: Record<string, string>;
-  support_constraints?: string[];
-  students: StudentSupportSummary[];
-}
+import { z } from "zod";
 
-/**
- * StudentSupportSummary — per-student support context.
- * Maps to data-contracts.md StudentSupportSummary entity.
- */
-export interface StudentSupportSummary {
-  student_id: string;
-  alias: string;
-  eal_flag: boolean;
-  support_tags: string[];
-  known_successful_scaffolds: string[];
-  communication_notes?: string[];
-}
+export const StudentSupportSummarySchema = z.object({
+  student_id: z.string(),
+  alias: z.string(),
+  eal_flag: z.boolean(),
+  support_tags: z.array(z.string()),
+  known_successful_scaffolds: z.array(z.string()),
+  communication_notes: z.array(z.string()).optional(),
+});
+
+export type StudentSupportSummary = z.infer<typeof StudentSupportSummarySchema>;
+
+export const ClassroomProfileSchema = z.object({
+  classroom_id: z.string(),
+  grade_band: z.string(),
+  subject_focus: z.string(),
+  classroom_notes: z.array(z.string()),
+  routines: z.record(z.string(), z.string()),
+  support_constraints: z.array(z.string()).optional(),
+  students: z.array(StudentSupportSummarySchema),
+  access_code: z.string().optional(),
+});
+
+export type ClassroomProfile = z.infer<typeof ClassroomProfileSchema>;

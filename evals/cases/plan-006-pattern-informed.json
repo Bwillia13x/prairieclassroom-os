@@ -1,0 +1,19 @@
+{
+  "id": "plan-006-pattern-informed",
+  "category": "planning_usefulness",
+  "description": "Tomorrow plan with pattern insights produces valid schema (all required sections)",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "teacher_reflection": "Writing block was hard again. Ari needed full modelling today, though the word bank helped a bit. Mika settled faster after lunch with the step checklist — that's progress. Jae finished the extension task and shared in debrief. EA was present all afternoon.",
+    "teacher_goal": "Continue building on Ari's writing independence. Keep Mika's checklist routine going."
+  },
+  "expected": {
+    "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"],
+    "min_watchpoints": 1,
+    "min_priorities": 1,
+    "min_ea_actions": 1,
+    "min_prep_items": 1,
+    "schema_version": "0.1.0"
+  }
+}

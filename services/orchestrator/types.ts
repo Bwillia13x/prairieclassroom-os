@@ -11,7 +11,11 @@ export type PromptClass =
   | "differentiate_material"
   | "prepare_tomorrow_plan"
   | "draft_family_message"
-  | "log_intervention";
+  | "log_intervention"
+  | "simplify_for_student"
+  | "generate_vocab_cards"
+  | "detect_support_patterns"
+  | "generate_ea_briefing";
 
 // ----- Model routing -----
 

@@ -43,6 +43,38 @@ const ROUTING_TABLE: Record<PromptClass, RouteConfig> = {
     tool_call_capable: false,
     output_schema_version: "0.1.0",
   },
+  simplify_for_student: {
+    prompt_class: "simplify_for_student",
+    model_tier: "live",
+    thinking_enabled: false,
+    retrieval_required: false,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
+  generate_vocab_cards: {
+    prompt_class: "generate_vocab_cards",
+    model_tier: "live",
+    thinking_enabled: false,
+    retrieval_required: false,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
+  detect_support_patterns: {
+    prompt_class: "detect_support_patterns",
+    model_tier: "planning",
+    thinking_enabled: true,
+    retrieval_required: true,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
+  generate_ea_briefing: {
+    prompt_class: "generate_ea_briefing",
+    model_tier: "live",
+    thinking_enabled: false,
+    retrieval_required: true,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
 };
 
 /**

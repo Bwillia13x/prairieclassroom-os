@@ -59,6 +59,7 @@ export default function MessageComposer({
   );
   const [targetLanguage, setTargetLanguage] = useState("en");
   const [context, setContext] = useState(prefill?.reason ?? "");
+  const [prefillDismissed, setPrefillDismissed] = useState(false);
 
   useEffect(() => {
     if (prefill) {
@@ -71,6 +72,7 @@ export default function MessageComposer({
           | "low_stakes_concern") ?? "routine_update",
       );
       setContext(prefill.reason);
+      setPrefillDismissed(false);
     }
   }, [prefill]);
 
@@ -93,6 +95,17 @@ export default function MessageComposer({
         Draft a plain-language family message. You must review and approve before copying.
       </p>
 
+      {prefill && !prefillDismissed && (
+        <div className="prefill-banner">
+          <span className="prefill-banner-text">
+            Pre-filled from plan: <strong>{prefill.student_ref}</strong> — {prefill.message_type?.replace(/_/g, " ")}
+          </span>
+          <button className="prefill-banner-dismiss" onClick={() => setPrefillDismissed(true)} aria-label="Dismiss">
+            &times;
+          </button>
+        </div>
+      )}
+
       <div className="field">
         <label htmlFor="msg-classroom">Classroom</label>
         <select
@@ -108,7 +121,7 @@ export default function MessageComposer({
         </select>
       </div>
 
-      <div className="field">
+      <div className={`field${prefill && !prefillDismissed ? " field--prefilled" : ""}`}>
         <label htmlFor="msg-student">Student</label>
         <select
           id="msg-student"
@@ -123,7 +136,7 @@ export default function MessageComposer({
         </select>
       </div>
 
-      <div className="field">
+      <div className={`field${prefill && !prefillDismissed ? " field--prefilled" : ""}`}>
         <label htmlFor="msg-type">Message Type</label>
         <select
           id="msg-type"
@@ -153,7 +166,7 @@ export default function MessageComposer({
         </select>
       </div>
 
-      <div className="field">
+      <div className={`field${prefill && !prefillDismissed ? " field--prefilled" : ""}`}>
         <label htmlFor="msg-context">Context (optional)</label>
         <textarea
           id="msg-context"

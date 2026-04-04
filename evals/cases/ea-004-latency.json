@@ -1,0 +1,12 @@
+{
+  "id": "ea-004-latency",
+  "category": "latency_suitability",
+  "description": "EA briefing generated within 2000ms latency budget (live tier, no thinking)",
+  "prompt_class": "generate_ea_briefing",
+  "input": {
+    "classroom_id": "alpha-grade4"
+  },
+  "expected": {
+    "max_latency_ms": 2000
+  }
+}

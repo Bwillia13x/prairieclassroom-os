@@ -14,6 +14,7 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
   const [rawText, setRawText] = useState("");
   const [teacherGoal, setTeacherGoal] = useState("");
   const [classroomId, setClassroomId] = useState(classrooms[0]?.classroom_id ?? "");
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -50,7 +51,7 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
         </select>
       </div>
 
-      <div className="field">
+      <div className={`field${touched.title && !title.trim() ? " field--error" : ""}`}>
         <label htmlFor="title">Artifact Title</label>
         <input
           id="title"
@@ -58,8 +59,14 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
           placeholder="e.g. Community Helpers Reading Passage"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          onBlur={() => setTouched((t) => ({ ...t, title: true }))}
+          aria-describedby={touched.title && !title.trim() ? "title-error" : undefined}
+          aria-invalid={touched.title && !title.trim() ? true : undefined}
           required
         />
+        {touched.title && !title.trim() && (
+          <span id="title-error" className="field-error-hint">Title is required</span>
+        )}
       </div>
 
       <div className="field">
@@ -73,7 +80,7 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
         />
       </div>
 
-      <div className="field">
+      <div className={`field${touched.rawText && !rawText.trim() ? " field--error" : ""}`}>
         <label htmlFor="raw-text">Lesson Content</label>
         <textarea
           id="raw-text"
@@ -81,8 +88,14 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
           placeholder="Paste or type the lesson content, worksheet text, or instructions…"
           value={rawText}
           onChange={(e) => setRawText(e.target.value)}
+          onBlur={() => setTouched((t) => ({ ...t, rawText: true }))}
+          aria-describedby={touched.rawText && !rawText.trim() ? "rawtext-error" : undefined}
+          aria-invalid={touched.rawText && !rawText.trim() ? true : undefined}
           required
         />
+        {touched.rawText && !rawText.trim() && (
+          <span id="rawtext-error" className="field-error-hint">Lesson content is required</span>
+        )}
       </div>
 
       <div className="field">

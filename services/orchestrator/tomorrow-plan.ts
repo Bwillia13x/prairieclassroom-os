@@ -35,6 +35,7 @@ export function buildTomorrowPlanPrompt(
   input: TomorrowPlanInput,
   memorySummary?: string,
   interventionSummary?: string,
+  patternInsights?: string,
 ): TomorrowPlanPrompt {
   const system = `You are PrairieClassroom OS, a classroom planning assistant for Alberta K–6 teachers.
 
@@ -70,6 +71,7 @@ RULES:
 - Use student aliases only, never real names.
 - Do not diagnose conditions. Do not assign risk scores. Do not suggest disciplinary actions.
 - Distinguish observations from inferences.
+- If PATTERN INSIGHTS are provided, weave them into support priorities, EA actions, and prep steps. Reference the teacher's documented patterns using language like "your records show" or "based on your documented observations."
 - Output only the JSON object, no markdown fencing or commentary.`;
 
   const classroomContext = [
@@ -106,7 +108,7 @@ ${input.teacher_reflection}
 
 TOMORROW'S ARTIFACTS/MATERIALS:
 ${artifactContext}
-${memorySummary ? `\nCLASSROOM MEMORY:\n${memorySummary}\n` : ""}${interventionSummary ? `\nRECENT INTERVENTIONS:\n${interventionSummary}\n` : ""}${input.teacher_goal ? `\nTEACHER GOAL FOR TOMORROW: ${input.teacher_goal}` : ""}
+${memorySummary ? `\nCLASSROOM MEMORY:\n${memorySummary}\n` : ""}${interventionSummary ? `\nRECENT INTERVENTIONS:\n${interventionSummary}\n` : ""}${patternInsights ? `\nPATTERN INSIGHTS (from your most recent pattern review):\n${patternInsights}\n` : ""}${input.teacher_goal ? `\nTEACHER GOAL FOR TOMORROW: ${input.teacher_goal}` : ""}
 
 Produce a structured tomorrow plan as a JSON object.`;
 

@@ -13,6 +13,76 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-03 — Final review hardening pass
+
+- **Decision:** Applied 20+ improvements from a comprehensive code review: auth gap fix on GET endpoint, enum validation on family message type, ESLint config, CORS restriction, database indexes, graceful shutdown, json_each for student ref queries, server-driven student lists, LocalBackend extract_json, empty-candidate logging, VertexAI error codes, SkeletonLoader extraction, aria-describedby/aria-label a11y, pinned Python deps, .env.example, and 2 new eval cases (cold-memory, non-English message).
+- **Why:** Pre-production hardening. The auth gap on the pattern report GET endpoint was the most critical — student behavioral data was accessible without a classroom code. The enum validation bug would silently accept invalid message types.
+- **Alternatives considered:** Shipping as-is for demo. But the auth gap is a real privacy concern even for synthetic data, and the other fixes are low-risk improvements.
+- **Consequences:** Eval count rises to 44. CORS now restricts to configured origin. Three of five synthetic classrooms remain unauthenticated by design (no access_code set).
+- **What would change this:** If CORS origin needs to change for deployment, set CORS_ORIGIN env var. If auth is needed on all classrooms, add access_code to charlie/delta/echo JSON files.
+
+---
+
+### 2026-04-03 — Submission artifacts reflect full system state
+
+- **Decision:** Update README, Kaggle writeup, demo script, and eval report to reflect all 13 sprints of work including Vertex AI backend, Zod validation, and classroom-code auth.
+- **Why:** The original README was a pre-dev starter doc. The Kaggle writeup's "What's Not Built" section was outdated (Vertex AI backend now exists). A judge or collaborator cloning the repo should understand the full system from the README alone.
+- **Alternatives considered:** Separate README for each audience (judges vs. developers). Leaving the writeup as-is with a changelog appendix.
+- **Consequences:** README is now the primary entry point with quick-start instructions. Writeup accurately describes 3 inference backends, Zod validation, and auth. Sprint history table in README shows the full 13-sprint arc.
+- **What would change this:** Moving to a hosted documentation site, or splitting the repo into separate user-facing and developer-facing docs.
+
+---
+
+### 2026-04-03 — Classroom-code authentication model
+
+- **Decision:** Add optional `access_code` field to ClassroomProfile. API requests to classroom-specific routes require an `X-Classroom-Code` header matching the classroom's code. Demo classroom bypasses auth. Classrooms without an access_code are open.
+- **Why:** The state assessment identified no authentication as a critical gap. Student names and intervention records are accessible to anyone on the network. A simple classroom code provides basic access control without the complexity of user accounts.
+- **Alternatives considered:** Full user account system (overkill for local-first MVP). API key per deployment (doesn't differentiate classroom access). No auth (status quo, privacy risk).
+- **Consequences:** Two test classrooms (alpha, bravo) now have access codes. Demo classroom is open for demo mode. Auth middleware runs before route handlers on all classroom-specific endpoints. UI needs a code entry mechanism (deferred to UI polish).
+- **What would change this:** A multi-teacher deployment requiring per-user access control, or integration with school SSO.
+
+---
+
+### 2026-04-03 — WAL checkpoint management
+
+- **Decision:** Add `checkpointAll()` function that runs `PRAGMA wal_checkpoint(TRUNCATE)` on all open SQLite connections. Called on server startup and every 5 minutes via `setInterval`.
+- **Why:** WAL files were growing to 3.9MB for a 4KB database because checkpointing never happened. TRUNCATE mode resets the WAL file to zero bytes after checkpointing.
+- **Alternatives considered:** Checkpoint on every write (too frequent, adds latency). Manual checkpoint only (requires developer action). Disable WAL mode (loses concurrent read/write benefit).
+- **Consequences:** WAL files stay small. `closeAll()` now checkpoints before closing connections. Minimal CPU overhead from periodic checkpointing.
+- **What would change this:** Moving to a multi-process server where WAL checkpointing needs coordination.
+
+---
+
+### 2026-04-03 — Zod for runtime schema validation
+
+- **Decision:** Convert all 8 TypeScript interface schema files to Zod schemas. Add request validation middleware to all orchestrator POST routes. Each schema file exports both the Zod object (for validation) and the inferred type (for compile-time use).
+- **Why:** The state assessment identified no input validation as a critical gap. TypeScript interfaces provide compile-time safety but zero runtime protection. Malformed API requests could crash the server or produce garbage output. Zod provides runtime validation that catches type mismatches, missing fields, and invalid enum values at the API boundary.
+- **Alternatives considered:** joi (heavier, separate type definitions). io-ts (less ergonomic). Manual validation (already existed, incomplete and inconsistent). ArkType (newer, less ecosystem support).
+- **Consequences:** All `import type` consumers are unaffected — Zod inferred types are structurally identical. Request bodies are validated before reaching route handlers. Validation errors return 400 with field-level detail. Zod v4 added to root dependencies.
+- **What would change this:** A project-wide move away from TypeScript, or Zod's maintenance status changing.
+
+---
+
+### 2026-04-03 — Vertex AI as Gemma inference backend
+
+- **Decision:** Use Vertex AI via the `google-genai` SDK for real Gemma 4 inference. Both model tiers (`gemma-4-4b-it` live, `gemma-4-27b-it` planning) are called through the same SDK. The harness `--mode api` flag activates this backend.
+- **Why:** Vertex AI provides both model tiers without local GPU requirements. AI Studio has limited quota. Local inference requires significant GPU hardware. Vertex AI is production-grade and supports thinking mode.
+- **Alternatives considered:** AI Studio free tier (rate limits too low for eval runs). Local inference via transformers (requires 16GB+ VRAM for 27B). Gemini API (different model, not Gemma).
+- **Consequences:** Requires a GCP project with Vertex AI API enabled and Gemma model access. `GOOGLE_CLOUD_PROJECT` and `GOOGLE_APPLICATION_CREDENTIALS` environment variables must be set. Adds `google-genai` to Python dependencies. Real inference latency will be higher than mock.
+- **What would change this:** Gemma models becoming available on a simpler/cheaper API, or a need for offline-only operation where local inference is required.
+
+---
+
+### 2026-04-03 — JSON extraction utility for real model output
+
+- **Decision:** Add an `extract_json` function in the inference harness that strips markdown fences, finds JSON structures in prose output, and fixes trailing commas before returning to the orchestrator.
+- **Why:** Real model output rarely arrives as clean JSON. Common patterns include markdown ` ```json ``` ` wrapping, leading/trailing prose, and trailing commas. The mock backend always returned clean JSON, masking this issue.
+- **Alternatives considered:** Forcing structured output via API's `response_mime_type` (not all Gemma API endpoints support this reliably). Fixing only in orchestrator parsers (duplicates logic across 8 parsers). No extraction, just retry on failure (wastes API calls).
+- **Consequences:** JSON extraction happens once in the harness before returning to Flask, so all 8 prompt classes benefit. Orchestrator parsers remain as-is and serve as a second layer of defense.
+- **What would change this:** Vertex AI Gemma endpoints supporting `response_mime_type: "application/json"` reliably, making extraction unnecessary.
+
+---
+
 ### 2026-04-03 — Tomorrow plan prompt contract v0.1.0
 - **Decision:** The tomorrow plan prompt uses a structured system prompt defining 5 output sections (transition watchpoints, support priorities, EA actions, prep checklist, family followups) with explicit JSON object format, plus a user prompt injecting classroom context and teacher reflection.
 - **Why:** Structured output constraints ensure consistent plan sections. Enumerating sections explicitly prevents the model from omitting critical planning areas. Teacher reflection is the primary input signal.
@@ -37,8 +107,6 @@ Use this file as a lightweight ADR register.
 - **Alternatives considered:** Single flow wizard (forces a linear path). Sidebar navigation (overkill for 2 features). Modal overlays (poor UX for complex forms).
 - **Consequences:** Each tab manages its own state. Classrooms are loaded once on mount and shared. Future tabs (family messaging, intervention logging) can be added without refactoring.
 - **What would change this:** User research showing teachers prefer a unified flow, or the addition of cross-workflow dependencies (e.g., plan referencing today's differentiation).
-- **Consequences:**
-- **What would change this:**
 
 ---
 

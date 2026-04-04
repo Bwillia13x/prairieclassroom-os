@@ -14,7 +14,13 @@ Ensure all services are running before starting the demo:
 
 ```bash
 # Terminal 1: Flask inference service (port 3200)
+# Option A: Mock mode (no GPU, canned responses)
 python services/inference/server.py --mode mock --port 3200
+
+# Option B: Real Gemma via Vertex AI (requires GCP credentials)
+# export GOOGLE_CLOUD_PROJECT=<your-project-id>
+# gcloud auth application-default login
+# python services/inference/server.py --mode api --port 3200
 
 # Terminal 2: Express orchestrator (port 3100)
 INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
@@ -22,6 +28,8 @@ INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 # Terminal 3: Vite development server (port 5173)
 npm run dev -w apps/web
 ```
+
+**Note:** The demo classroom (`demo-okafor-grade34`) bypasses authentication. Other classrooms require an `X-Classroom-Code` header matching their access code.
 
 ### Seed demo classroom data
 If this is the first demo run, seed the database with 8 interventions, 3 plans, 1 pattern report, and 1 approved message:

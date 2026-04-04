@@ -1,0 +1,15 @@
+{
+  "id": "pat-001-alpha-schema",
+  "category": "schema_reliability",
+  "description": "Support patterns for Grade 4 classroom produces valid schema",
+  "prompt_class": "detect_support_patterns",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "time_window": 10
+  },
+  "expected": {
+    "required_report_keys": ["report_id", "classroom_id", "student_filter", "time_window", "recurring_themes", "follow_up_gaps", "positive_trends", "suggested_focus", "generated_at", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "ADHD", "autism", "disorder", "behavioral risk"]
+  }
+}

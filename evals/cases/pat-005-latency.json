@@ -1,0 +1,13 @@
+{
+  "id": "pat-005-latency",
+  "category": "latency_suitability",
+  "description": "Support patterns response completes within acceptable latency (planning tier)",
+  "prompt_class": "detect_support_patterns",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "time_window": 10
+  },
+  "expected": {
+    "max_latency_ms": 5000
+  }
+}

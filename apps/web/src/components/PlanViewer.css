@@ -7,8 +7,10 @@
 }
 
 .plan-header h2 {
-  font-size: 1.1rem;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
   margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
 }
 
 .plan-meta {
@@ -17,9 +19,21 @@
   margin-bottom: 1rem;
 }
 
+.pattern-informed-badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-text-accent);
+  background: var(--color-bg-accent);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius);
+  margin-bottom: 0.5rem;
+}
+
 /* Thinking disclosure */
 .plan-thinking {
-  background: #f8f9fa;
+  background: var(--color-bg-muted);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 0.75rem;
@@ -88,7 +102,7 @@
 
 .plan-card-risk {
   font-size: 0.85rem;
-  color: #92400e;
+  color: var(--color-text-warning);
   margin-bottom: 0.3rem;
 }
 
@@ -110,19 +124,19 @@
 
 /* Variant-specific borders */
 .plan-card--watchpoint {
-  border-left: 3px solid #f59e0b;
+  border-left: 3px solid var(--color-section-watchpoint);
 }
 
 .plan-card--priority {
-  border-left: 3px solid #3b82f6;
+  border-left: 3px solid var(--color-section-priority);
 }
 
 .plan-card--ea {
-  border-left: 3px solid #8b5cf6;
+  border-left: 3px solid var(--color-section-ea);
 }
 
 .plan-card--family {
-  border-left: 3px solid #10b981;
+  border-left: 3px solid var(--color-section-family);
 }
 
 /* Checklist */
@@ -149,15 +163,15 @@
 
 /* Section colors */
 .plan-section--watchpoints h3 {
-  color: #b45309;
+  color: var(--color-text-warning);
 }
 
 .plan-section--priorities h3 {
-  color: #1d4ed8;
+  color: var(--color-text-info);
 }
 
 .plan-section--ea h3 {
-  color: #6d28d9;
+  color: var(--color-text-accent);
 }
 
 .plan-section--prep h3 {
@@ -165,7 +179,7 @@
 }
 
 .plan-section--family h3 {
-  color: #059669;
+  color: var(--color-text-success);
 }
 
 /* Clickable family followup cards */
@@ -175,14 +189,14 @@
 }
 
 .plan-card--clickable:hover {
-  border-color: #10b981;
-  box-shadow: 0 0 0 1px #10b981;
+  border-color: var(--color-section-family);
+  box-shadow: 0 0 0 1px var(--color-section-family);
 }
 
 .plan-card-action-hint {
   display: block;
   font-size: 0.78rem;
-  color: #059669;
+  color: var(--color-text-success);
   margin-top: 0.4rem;
   font-weight: 500;
 }
@@ -194,15 +208,50 @@
   padding: 0.3rem 0.6rem;
   font-size: 0.78rem;
   font-weight: 500;
-  color: #1d4ed8;
-  background: #eff6ff;
-  border: 1px solid #bfdbfe;
+  color: var(--color-text-info);
+  background: var(--color-bg-info);
+  border: 1px solid var(--color-border-info);
   border-radius: var(--radius);
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
 
 .plan-card-intervention-link:hover {
-  background: #dbeafe;
-  border-color: #93c5fd;
+  opacity: 0.85;
+}
+
+.plan-print {
+  margin-top: 1rem;
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.plan-print:hover {
+  background: var(--color-bg-muted);
+}
+
+@media print {
+  .plan-print,
+  .plan-meta,
+  .plan-thinking,
+  .plan-card-intervention-link,
+  .plan-card-action-hint,
+  .app-header,
+  .app-tabs,
+  .classroom-context {
+    display: none !important;
+  }
+
+  .plan-viewer {
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
 }

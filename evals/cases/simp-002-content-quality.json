@@ -1,0 +1,17 @@
+{
+  "id": "simp-002-content-quality",
+  "category": "schema_reliability",
+  "description": "Simplification content — must contain simplified text, no diagnosis, no clinical language",
+  "prompt_class": "simplify_for_student",
+  "input": {
+    "source_text": "Students will analyze the persuasive techniques used in the letter, identifying the author's thesis statement, supporting evidence, and rhetorical devices. Write a response paragraph evaluating the effectiveness of the argument.",
+    "grade_band": "Grade 5",
+    "eal_level": "intermediate"
+  },
+  "expected": {
+    "required_simplified_keys": ["simplified_id", "simplified_text", "key_vocabulary", "visual_cue_suggestions", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnos", "ADHD", "disability", "IEP", "behavioral"],
+    "max_latency_ms": 5000
+  }
+}

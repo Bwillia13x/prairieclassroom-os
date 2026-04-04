@@ -1,0 +1,162 @@
+.pattern-report {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pattern-header h2 {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.pattern-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-top: 0.2rem;
+}
+
+.pattern-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pattern-form .field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.pattern-form label {
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.pattern-form select,
+.pattern-form input {
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+}
+
+.pattern-section {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1rem;
+}
+
+.pattern-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.pattern-section--themes { border-left: 3px solid var(--color-section-theme); }
+.pattern-section--gaps { border-left: 3px solid var(--color-section-gap); }
+.pattern-section--trends { border-left: 3px solid var(--color-section-trend); }
+.pattern-section--focus { border-left: 3px solid var(--color-section-focus); }
+
+.pattern-card {
+  background: var(--color-bg-muted);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.pattern-card:last-child {
+  margin-bottom: 0;
+}
+
+.pattern-card-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+}
+
+.pattern-card-tag {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+}
+
+.pattern-card p {
+  font-size: 0.88rem;
+  line-height: 1.5;
+  margin: 0.25rem 0;
+}
+
+.pattern-evidence {
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  font-style: italic;
+  margin: 0.25rem 0 0 0.5rem;
+}
+
+.priority-badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.priority-badge--high { background: var(--color-bg-danger); color: var(--color-text-danger); }
+.priority-badge--medium { background: var(--color-bg-warning); color: var(--color-text-warning); }
+.priority-badge--low { background: var(--color-bg-success); color: var(--color-text-success); }
+
+.pattern-card-action-btn {
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem 0;
+  margin-top: 0.25rem;
+  text-decoration: underline;
+}
+
+.pattern-card-action-btn:hover {
+  opacity: 0.8;
+}
+
+/* Split-pane layout when report is present */
+@media (min-width: 860px) {
+  .pattern-report--split {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .pattern-report--split .pattern-form {
+    flex: 0 0 340px;
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  .pattern-report--split > div:last-child {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+.pattern-thinking {
+  margin-top: 0.5rem;
+}
+
+.pattern-thinking summary {
+  font-size: 0.85rem;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.pattern-thinking pre {
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  background: var(--color-bg-muted);
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  margin-top: 0.5rem;
+}

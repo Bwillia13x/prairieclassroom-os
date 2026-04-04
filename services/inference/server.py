@@ -54,8 +54,18 @@ def generate():
     )
 
     start = time.perf_counter()
-    resp = harness.generate(gen_req)
+    try:
+        resp = harness.generate(gen_req)
+    except Exception as e:
+        total_ms = (time.perf_counter() - start) * 1000
+        return jsonify({"error": str(e), "latency_ms": total_ms}), 502
     total_ms = (time.perf_counter() - start) * 1000
+
+    # Check for empty response (safety filter / no candidates) or embedded error
+    if not resp.text or not resp.text.strip():
+        return jsonify({"error": "Empty model response — possible safety filter or refusal", "latency_ms": resp.latency_ms or total_ms}), 502
+    if resp.text.startswith('{"error"'):
+        return jsonify({"error": resp.text, "latency_ms": resp.latency_ms or total_ms}), 502
 
     return jsonify({
         "text": resp.text,

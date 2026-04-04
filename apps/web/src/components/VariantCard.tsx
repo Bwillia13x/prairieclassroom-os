@@ -9,26 +9,17 @@ const VARIANT_LABELS: Record<string, string> = {
   extension: "Extension",
 };
 
-const VARIANT_COLORS: Record<string, string> = {
-  core: "#2563eb",
-  eal_supported: "#7c3aed",
-  chunked: "#d97706",
-  ea_small_group: "#16a34a",
-  extension: "#dc2626",
-};
-
 interface Props {
   variant: DifferentiatedVariant;
 }
 
 export default function VariantCard({ variant }: Props) {
   const label = VARIANT_LABELS[variant.variant_type] ?? variant.variant_type;
-  const color = VARIANT_COLORS[variant.variant_type] ?? "#6b7280";
 
   return (
     <article className="variant-card">
       <header className="variant-header">
-        <span className="variant-badge" style={{ background: color }}>
+        <span className={`variant-badge variant-badge--${variant.variant_type}`}>
           {label}
         </span>
         <span className="variant-time">{variant.estimated_minutes} min</span>

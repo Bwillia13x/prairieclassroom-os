@@ -1,0 +1,144 @@
+.simplified-viewer {
+  max-width: 720px;
+}
+
+.simplified-form {
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.simplified-form h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+}
+
+.form-hint {
+  color: var(--color-text-secondary);
+  font-size: 0.85rem;
+  margin: 0 0 1rem 0;
+}
+
+.form-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+  box-sizing: border-box;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.form-label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  flex: 1;
+  margin-bottom: 0.5rem;
+}
+
+.form-select {
+  padding: 0.4rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  background: var(--color-surface);
+  color: var(--color-text);
+}
+
+.form-btn {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.form-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.simplified-result {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+.result-header h4 { margin: 0; font-size: 1rem; }
+
+.result-meta {
+  color: var(--color-text-secondary);
+  font-size: 0.8rem;
+}
+
+.simplified-text-block {
+  background: var(--color-bg-info);
+  border-left: 3px solid var(--color-accent);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  white-space: pre-wrap;
+}
+
+.vocab-section, .cues-section {
+  margin-top: 1rem;
+}
+.vocab-section h5, .cues-section h5 {
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.vocab-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.vocab-chip {
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  padding: 0.2rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+
+.cues-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+}
+.cues-list li {
+  margin-bottom: 0.3rem;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}

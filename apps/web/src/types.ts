@@ -33,6 +33,7 @@ export interface ClassroomProfile {
   grade_band: string;
   subject_focus: string;
   classroom_notes: string[];
+  students: { alias: string }[];
 }
 
 export interface DifferentiateRequest {
@@ -96,6 +97,7 @@ export interface TomorrowPlanRequest {
 export interface TomorrowPlanResponse {
   plan: TomorrowPlan;
   thinking_summary: string | null;
+  pattern_informed: boolean;
   model_id: string;
   latency_ms: number;
 }
@@ -166,4 +168,160 @@ export interface InterventionPrefill {
   student_ref: string;
   suggested_action: string;
   reason: string;
+}
+
+// ----- Language Tools types -----
+
+export interface SimplifiedOutput {
+  simplified_id: string;
+  source_text: string;
+  grade_band: string;
+  eal_level: "beginner" | "intermediate" | "advanced";
+  simplified_text: string;
+  key_vocabulary: string[];
+  visual_cue_suggestions: string[];
+  schema_version: string;
+}
+
+export interface SimplifyRequest {
+  source_text: string;
+  grade_band: string;
+  eal_level: "beginner" | "intermediate" | "advanced";
+}
+
+export interface SimplifyResponse {
+  simplified: SimplifiedOutput;
+  model_id: string;
+  latency_ms: number;
+}
+
+export interface VocabCard {
+  term: string;
+  definition: string;
+  target_translation: string;
+  example_sentence: string;
+  visual_hint: string;
+}
+
+export interface VocabCardSet {
+  set_id: string;
+  artifact_id: string;
+  subject: string;
+  target_language: string;
+  grade_band: string;
+  cards: VocabCard[];
+  schema_version: string;
+}
+
+export interface VocabCardsRequest {
+  artifact_id?: string;
+  artifact_text: string;
+  subject: string;
+  target_language: string;
+  grade_band: string;
+}
+
+export interface VocabCardsResponse {
+  card_set: VocabCardSet;
+  model_id: string;
+  latency_ms: number;
+}
+
+// ----- Support Pattern types -----
+
+export interface RecurringTheme {
+  theme: string;
+  student_refs: string[];
+  evidence_count: number;
+  example_observations: string[];
+}
+
+export interface FollowUpGap {
+  original_record_id: string;
+  student_refs: string[];
+  observation: string;
+  days_since: number;
+}
+
+export interface PositiveTrend {
+  student_ref: string;
+  description: string;
+  evidence: string[];
+}
+
+export interface SuggestedFocus {
+  student_ref: string;
+  reason: string;
+  suggested_action: string;
+  priority: "high" | "medium" | "low";
+}
+
+export interface SupportPatternReport {
+  report_id: string;
+  classroom_id: string;
+  student_filter: string | null;
+  time_window: number;
+  recurring_themes: RecurringTheme[];
+  follow_up_gaps: FollowUpGap[];
+  positive_trends: PositiveTrend[];
+  suggested_focus: SuggestedFocus[];
+  generated_at: string;
+  schema_version: string;
+}
+
+export interface SupportPatternsRequest {
+  classroom_id: string;
+  student_filter?: string;
+  time_window?: number;
+}
+
+export interface SupportPatternsResponse {
+  report: SupportPatternReport;
+  thinking_summary: string | null;
+  model_id: string;
+  latency_ms: number;
+}
+
+// ----- EA Briefing types -----
+
+export interface ScheduleBlock {
+  time_slot: string;
+  student_refs: string[];
+  task_description: string;
+  materials_needed: string[];
+}
+
+export interface StudentWatchItem {
+  student_ref: string;
+  context_summary: string;
+  suggested_approach: string;
+}
+
+export interface PendingFollowup {
+  student_ref: string;
+  original_observation: string;
+  days_since: number;
+  suggested_action: string;
+}
+
+export interface EABriefing {
+  briefing_id: string;
+  classroom_id: string;
+  date: string;
+  schedule_blocks: ScheduleBlock[];
+  student_watch_list: StudentWatchItem[];
+  pending_followups: PendingFollowup[];
+  teacher_notes_for_ea: string;
+  schema_version: string;
+}
+
+export interface EABriefingRequest {
+  classroom_id: string;
+  ea_name?: string;
+}
+
+export interface EABriefingResponse {
+  briefing: EABriefing;
+  model_id: string;
+  latency_ms: number;
 }
