@@ -72,6 +72,20 @@ export const ComplexityForecastRequestSchema = z.object({
   teacher_notes: z.string().optional(),
 });
 
+export const DebtRegisterRequestSchema = z.object({
+  stale_followup_days: z.number().int().positive().optional(),
+  unapproved_message_days: z.number().int().positive().optional(),
+  recurring_plan_min: z.number().int().positive().optional(),
+  review_window_days: z.number().int().positive().optional(),
+  review_min_records: z.number().int().positive().optional(),
+});
+
+export const ScaffoldDecayRequestSchema = z.object({
+  classroom_id: z.string().min(1),
+  student_ref: z.string().min(1),
+  time_window: z.number().int().min(10).default(20),
+});
+
 // ----- Validation middleware factory -----
 
 export function validateBody<T>(schema: z.ZodSchema<T>) {
