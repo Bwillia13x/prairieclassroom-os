@@ -1,0 +1,14 @@
+{
+  "id": "decay-005-latency",
+  "category": "latency_suitability",
+  "description": "Scaffold decay analysis completes within planning tier latency target",
+  "prompt_class": "detect_scaffold_decay",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "student_ref": "Student C",
+    "time_window": 20
+  },
+  "expected": {
+    "max_latency_ms": 30000
+  }
+}

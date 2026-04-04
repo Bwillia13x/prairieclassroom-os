@@ -1,0 +1,15 @@
+{
+  "id": "decay-002-content-quality",
+  "category": "differentiation_quality",
+  "description": "Given declining scaffold mentions, report identifies decay trend with withdrawal plan",
+  "prompt_class": "detect_scaffold_decay",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "student_ref": "Student C",
+    "time_window": 20
+  },
+  "expected": {
+    "required_keys": ["reviews", "summary"],
+    "must_contain": ["Your records show", "withdrawal", "regression"]
+  }
+}

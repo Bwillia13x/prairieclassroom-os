@@ -1,0 +1,16 @@
+{
+  "id": "decay-001-schema",
+  "category": "schema_reliability",
+  "description": "Scaffold decay report for demo classroom produces valid schema",
+  "prompt_class": "detect_scaffold_decay",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "student_ref": "Student C",
+    "time_window": 20
+  },
+  "expected": {
+    "required_keys": ["report_id", "classroom_id", "student_ref", "reviews", "summary", "generated_at", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "ADHD", "autism", "disorder", "behavioral risk"]
+  }
+}
