@@ -114,6 +114,12 @@ export function parseSurvivalPacketResponse(
   if (cleaned.startsWith("```")) {
     cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/```\s*$/, "");
   }
+  // Robust extraction: find the JSON object boundaries
+  const firstBrace = cleaned.indexOf("{");
+  const lastBrace = cleaned.lastIndexOf("}");
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    cleaned = cleaned.slice(firstBrace, lastBrace + 1);
+  }
 
   const parsed = JSON.parse(cleaned);
   if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {

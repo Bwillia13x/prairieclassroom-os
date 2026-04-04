@@ -334,11 +334,13 @@ export interface ScheduleBlockInput {
   time_slot: string;
   activity: string;
   ea_available: boolean;
+  ea_student_refs?: string[];
   notes?: string;
 }
 
 export interface UpcomingEvent {
   description: string;
+  event_date?: string;
   time_slot?: string;
   impacts?: string;
 }
