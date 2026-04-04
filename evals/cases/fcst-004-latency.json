@@ -1,0 +1,14 @@
+{
+  "id": "fcst-004-latency",
+  "category": "latency_suitability",
+  "description": "Complexity forecast completes within planning tier latency budget",
+  "prompt_class": "forecast_complexity",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "forecast_date": "2026-04-04"
+  },
+  "expected": {
+    "required_forecast_keys": ["blocks"],
+    "max_latency_ms": 6000
+  }
+}

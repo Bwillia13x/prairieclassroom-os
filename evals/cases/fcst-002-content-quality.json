@@ -1,0 +1,16 @@
+{
+  "id": "fcst-002-content-quality",
+  "category": "planning_usefulness",
+  "description": "Forecast for demo classroom references specific students and produces actionable mitigations",
+  "prompt_class": "forecast_complexity",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "forecast_date": "2026-04-04",
+    "teacher_notes": "Assembly at 10am will disrupt the literacy block. Amira's buddy is absent."
+  },
+  "expected": {
+    "required_forecast_keys": ["blocks", "overall_summary", "highest_risk_block"],
+    "min_blocks": 3,
+    "must_contain": ["Amira"]
+  }
+}

@@ -69,6 +69,10 @@ interface ExpectedOutput {
   min_cards?: number;
   /** Maximum number of vocab cards. */
   max_cards?: number;
+  /** For complexity forecast: required keys in forecast object. */
+  required_forecast_keys?: string[];
+  /** Minimum forecast blocks. */
+  min_blocks?: number;
   /** For support patterns: required keys in report object. */
   required_report_keys?: string[];
   /** Minimum recurring themes. */
@@ -940,6 +944,90 @@ async function runEABriefingEval(evalCase: EvalCase): Promise<EvalResult> {
   }
 }
 
+// --- Complexity forecast evaluation ---
+
+async function runComplexityForecastEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/complexity-forecast`, {
+      method: "POST",
+      headers: authHeaders(input.classroom_id as string),
+      body: JSON.stringify({
+        classroom_id: input.classroom_id,
+        forecast_date: input.forecast_date,
+        teacher_notes: input.teacher_notes,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      forecast: Record<string, unknown>;
+      thinking_summary: string | null;
+      model_id: string;
+      latency_ms: number;
+    };
+    const forecast = data.forecast;
+
+    // Check required forecast keys
+    const requiredKeys = (evalCase.expected as Record<string, unknown>)
+      .required_forecast_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in forecast)) {
+          failures.push(`Forecast missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && forecast.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${forecast.schema_version}`,
+      );
+    }
+
+    // Check minimum blocks
+    const minBlocks = (evalCase.expected as Record<string, unknown>).min_blocks as number | undefined;
+    if (minBlocks) {
+      const blocks = Array.isArray(forecast.blocks) ? forecast.blocks.length : 0;
+      if (blocks < minBlocks) {
+        failures.push(`Expected at least ${minBlocks} forecast blocks, got ${blocks}`);
+      }
+    }
+
+    // Content checks
+    const allText = JSON.stringify(forecast);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
 async function main(): Promise<void> {
   const casesDir = resolve(import.meta.dirname ?? ".", "cases");
   const evalCases = await loadEvalCases(casesDir);
@@ -973,6 +1061,8 @@ async function main(): Promise<void> {
       result = await runLatestPatternEval(ec);
     } else if (ec.prompt_class === "generate_ea_briefing") {
       result = await runEABriefingEval(ec);
+    } else if (ec.prompt_class === "forecast_complexity") {
+      result = await runComplexityForecastEval(ec);
     } else {
       result = await runDifferentiationEval(ec);
     }
