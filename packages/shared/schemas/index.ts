@@ -67,6 +67,19 @@ export type {
 } from "./briefing.js";
 
 export {
+  ComplexityForecastSchema,
+  ComplexityBlockSchema,
+  ScheduleBlockInputSchema,
+  UpcomingEventSchema,
+} from "./forecast.js";
+export type {
+  ComplexityForecast,
+  ComplexityBlock,
+  ScheduleBlockInput,
+  UpcomingEvent,
+} from "./forecast.js";
+
+export {
   SupportPatternReportSchema,
   RecurringThemeSchema,
   FollowUpGapSchema,
