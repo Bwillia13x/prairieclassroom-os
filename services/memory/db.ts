@@ -74,6 +74,15 @@ export function getDb(classroomId: string): Database.Database {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS scaffold_reviews (
+      report_id TEXT PRIMARY KEY,
+      classroom_id TEXT NOT NULL,
+      student_ref TEXT NOT NULL,
+      report_json TEXT NOT NULL,
+      model_id TEXT,
+      created_at TEXT NOT NULL
+    );
+
     CREATE INDEX IF NOT EXISTS idx_forecasts_classroom
       ON complexity_forecasts(classroom_id, created_at);
 
@@ -87,6 +96,8 @@ export function getDb(classroomId: string): Database.Database {
       ON interventions(classroom_id, created_at);
     CREATE INDEX IF NOT EXISTS idx_patterns_classroom
       ON pattern_reports(classroom_id, created_at);
+    CREATE INDEX IF NOT EXISTS idx_scaffold_reviews_classroom
+      ON scaffold_reviews(classroom_id, student_ref, created_at);
   `);
 
   connections.set(classroomId, db);
