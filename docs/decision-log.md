@@ -347,3 +347,21 @@ Use this file as a lightweight ADR register.
 - **Alternatives considered:** Raw SQLite inserts (faster but bypass validation). JSON fixture loading (simpler but doesn't test the real persistence path).
 - **Consequences:** Seed script depends on `services/memory/store.ts` and `services/memory/db.ts`. Any schema changes to the store layer require updating the seed data.
 - **What would change this:** A need for seed data that represents states the store functions can't produce (e.g., partially corrupted records for error-handling demos).
+
+---
+
+## 2026-04-04 — Phase 1: Debt Register as deterministic retrieval (no model)
+
+**Decision:** The Complexity Debt Register uses pure SQL queries and TypeScript logic instead of a model prompt class.
+
+**Rationale:** Every debt category maps to a deterministic query (stale follow-ups, unapproved messages, etc.). A model would add inference where we want precision. SQL counts stale items more reliably than a 4b model would.
+
+**Evidence that would change this:** If teachers want natural-language debt summaries with contextual recommendations (beyond suggested actions), a model-generated summary layer could be added on top of the deterministic scan.
+
+## 2026-04-04 — Phase 1: Scaffold Decay as separate prompt class (not extension of support-patterns)
+
+**Decision:** Scaffold decay detection is a new prompt class (`detect_scaffold_decay`) rather than an extension of the existing `detect_support_patterns` workflow.
+
+**Rationale:** The pattern report is already complex (recurring themes, follow-up gaps, positive trends, suggested focus). Adding scaffold decay analysis would make it too large. Additionally, scaffold decay is per-student and time-windowed differently — it needs 10+ records for a single student, while pattern detection works across the whole classroom.
+
+**Evidence that would change this:** If the two workflows are always run together and users find it confusing to have separate reports, they could be merged under a unified "classroom intelligence" workflow.

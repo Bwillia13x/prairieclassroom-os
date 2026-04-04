@@ -228,3 +228,42 @@ For every prompt class, document:
 - No diagnostic or clinical language (same 15 forbidden terms as all contracts)
 - Intervention history referenced with "your records show" framing
 - Student aliases only
+
+### J. Complexity Debt Register
+
+**Route:** none (deterministic retrieval)
+**Model:** none
+**Thinking:** n/a
+**Retrieval:** yes — all record types (interventions, plans, messages, pattern reports)
+
+**Input:**
+- `classroom_id`
+- optional threshold overrides (query params)
+
+**Output:**
+- `ComplexityDebtRegister` — categorized items with age, student refs, suggested actions
+
+**Notes:** This is the first workflow that uses no model. All debt categories are computed deterministically from SQL queries against classroom memory. The register is never persisted — it is always computed fresh from current state.
+
+Categories: stale follow-ups, unapproved family messages, unaddressed pattern insights, recurring plan items, approaching review windows.
+
+### K. Detect Scaffold Decay
+
+**Route:** `detect_scaffold_decay`
+**Model:** planning tier — `gemma-4-27b-it`
+**Thinking:** on
+**Retrieval:** yes — student intervention history (time-windowed), classroom profile (scaffold list)
+**Tool-call:** no
+**Schema version:** 0.1.0
+
+**Input:**
+- `classroom_id`
+- `student_ref` — which student to analyze
+- `time_window` — number of records to analyze (minimum 10)
+
+**Output:**
+- `ScaffoldDecayReport` — scaffold reviews with usage trends, positive signals, withdrawal plans
+
+**Notes:** Minimum 10 intervention records required per student. Intervention history is partitioned into early/recent windows for trend comparison. Withdrawal plans are only generated for scaffolds showing "decaying" trend with positive signals. Every withdrawal plan includes a regression protocol. Reports are persisted to `scaffold_reviews` table.
+
+Safety: Observational language only. No diagnosis or capability inference. "Your records show decreasing use of..." not "Student C no longer needs..."
