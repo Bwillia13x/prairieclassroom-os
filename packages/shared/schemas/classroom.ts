@@ -25,6 +25,7 @@ export const ClassroomProfileSchema = z.object({
   support_constraints: z.array(z.string()).optional(),
   students: z.array(StudentSupportSummarySchema),
   access_code: z.string().optional(),
+  sub_ready: z.boolean().optional(),
   schedule: z.array(ScheduleBlockInputSchema).optional(),
   upcoming_events: z.array(UpcomingEventSchema).optional(),
 });

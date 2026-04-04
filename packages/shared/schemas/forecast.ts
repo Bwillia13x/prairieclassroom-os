@@ -9,6 +9,7 @@ export const ScheduleBlockInputSchema = z.object({
   time_slot: z.string(),
   activity: z.string(),
   ea_available: z.boolean(),
+  ea_student_refs: z.array(z.string()).optional(),
   notes: z.string().optional(),
 });
 
@@ -16,6 +17,7 @@ export type ScheduleBlockInput = z.infer<typeof ScheduleBlockInputSchema>;
 
 export const UpcomingEventSchema = z.object({
   description: z.string(),
+  event_date: z.string().optional(),
   time_slot: z.string().optional(),
   impacts: z.string().optional(),
 });
