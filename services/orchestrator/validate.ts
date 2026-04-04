@@ -86,6 +86,26 @@ export const ScaffoldDecayRequestSchema = z.object({
   time_window: z.number().int().min(10).default(20),
 });
 
+export const ScheduleUpdateRequestSchema = z.object({
+  schedule: z.array(
+    z.object({
+      time_slot: z.string().min(1),
+      activity: z.string().min(1),
+      ea_available: z.boolean(),
+      ea_student_refs: z.array(z.string()).optional(),
+      notes: z.string().optional(),
+    })
+  ).min(1),
+  upcoming_events: z.array(
+    z.object({
+      description: z.string().min(1),
+      event_date: z.string().optional(),
+      time_slot: z.string().optional(),
+      impacts: z.string().optional(),
+    })
+  ).optional(),
+});
+
 // ----- Validation middleware factory -----
 
 export function validateBody<T>(schema: z.ZodSchema<T>) {

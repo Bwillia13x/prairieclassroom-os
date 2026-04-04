@@ -14,7 +14,7 @@
 
 import express from "express";
 import cors from "cors";
-import { readFileSync, readdirSync } from "node:fs";
+import { readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { getRoute, getModelId } from "./router.js";
 import { buildDifferentiationPrompt, parseVariantsResponse } from "./differentiate.js";
@@ -53,6 +53,7 @@ import {
   EABriefingRequestSchema,
   ComplexityForecastRequestSchema,
   ScaffoldDecayRequestSchema,
+  ScheduleUpdateRequestSchema,
 } from "./validate.js";
 import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
@@ -120,6 +121,57 @@ app.get("/api/classrooms", (_req, res) => {
     })),
   );
 });
+
+app.get("/api/classrooms/:id/schedule", (req, res) => {
+  const classroom = loadClassroom(req.params.id);
+  if (!classroom) {
+    res.status(404).json({ error: `Classroom '${req.params.id}' not found` });
+    return;
+  }
+  res.json({
+    classroom_id: classroom.classroom_id,
+    schedule: classroom.schedule ?? [],
+    upcoming_events: classroom.upcoming_events ?? [],
+    sub_ready: classroom.sub_ready ?? false,
+  });
+});
+
+app.put(
+  "/api/classrooms/:id/schedule",
+  authMiddleware,
+  validateBody(ScheduleUpdateRequestSchema),
+  (req, res) => {
+    const classroomId = req.params.id as string;
+    const classroom = loadClassroom(classroomId);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroomId}' not found` });
+      return;
+    }
+
+    classroom.schedule = req.body.schedule;
+    if (req.body.upcoming_events !== undefined) {
+      classroom.upcoming_events = req.body.upcoming_events;
+    }
+
+    // Persist to the JSON file that loadClassroom reads from
+    const files = readdirSync(DATA_DIR).filter((f) => f.startsWith("classroom_") && f.endsWith(".json"));
+    const matchingFile = files.find((f) => {
+      const content = JSON.parse(readFileSync(join(DATA_DIR, f), "utf-8"));
+      return content.classroom_id === classroomId;
+    });
+
+    if (matchingFile) {
+      writeFileSync(join(DATA_DIR, matchingFile), JSON.stringify(classroom, null, 2), "utf-8");
+    }
+
+    res.json({
+      classroom_id: classroomId,
+      schedule: classroom.schedule,
+      upcoming_events: classroom.upcoming_events ?? [],
+      updated: true,
+    });
+  }
+);
 
 app.post("/api/differentiate", validateBody(DifferentiateRequestSchema), async (req, res) => {
   try {
