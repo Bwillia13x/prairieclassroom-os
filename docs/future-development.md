@@ -23,6 +23,8 @@ Capabilities are ranked by leverage, novelty, and architectural fit:
 
 ## 1. Complexity Weather Forecast
 
+**Status:** Implemented -- Sprint 14. See `docs/prompt-contracts.md` Contract I and `services/orchestrator/complexity-forecast.ts`.
+
 ### Problem
 
 Classroom complexity fluctuates minute-to-minute based on overlapping factors — schedule disruptions, EA availability windows, student energy patterns, lesson transitions, external events. Teachers hold this entire model in their heads. Nobody externalizes it.

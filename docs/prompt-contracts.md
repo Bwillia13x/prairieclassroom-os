@@ -183,3 +183,48 @@ For every prompt class, document:
 - retrieval required yes/no
 - tool-call capable yes/no
 - output schema version
+
+---
+
+### I. Forecast Complexity
+
+**Route:** `forecast_complexity`
+**Model:** planning tier -- `gemma-4-27b-it`
+**Thinking:** On
+**Retrieval:** Yes -- intervention history by time-block, recent interventions, pattern report highlights, pending follow-ups
+
+**Input:**
+- `classroom_id` -- which classroom
+- `forecast_date` -- the date being forecast (YYYY-MM-DD)
+- `teacher_notes` -- optional free-text notes about tomorrow (events, changes, absences)
+
+**Context injected:**
+- Classroom schedule (time blocks, activities, EA availability)
+- Upcoming events
+- Intervention frequency by time/context pattern
+- Recent interventions
+- Pattern report highlights
+- Pending follow-ups
+
+**Output schema (v0.1.0):**
+
+    {
+      "blocks": [
+        {
+          "time_slot": "8:30-9:15",
+          "activity": "Bell work + calendar math",
+          "level": "low | medium | high",
+          "contributing_factors": ["EA present", "familiar routine"],
+          "suggested_mitigation": "specific actionable strategy"
+        }
+      ],
+      "overall_summary": "2-3 sentence summary referencing specific blocks and students",
+      "highest_risk_block": "12:30-12:45"
+    }
+
+**Safety rules:**
+- Complexity describes classroom conditions, not student behavior
+- No individual student is labeled as a "complexity driver"
+- No diagnostic or clinical language (same 15 forbidden terms as all contracts)
+- Intervention history referenced with "your records show" framing
+- Student aliases only
