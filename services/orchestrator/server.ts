@@ -36,7 +36,9 @@ import { buildComplexityForecastPrompt, parseComplexityForecastResponse } from "
 import type { ComplexityForecastInput } from "./complexity-forecast.js";
 import { buildScaffoldDecayPrompt, parseScaffoldDecayResponse } from "./scaffold-decay.js";
 import type { ScaffoldDecayInput } from "./scaffold-decay.js";
-import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport, saveForecast, saveScaffoldReview } from "../memory/store.js";
+import { buildSurvivalPacketPrompt, parseSurvivalPacketResponse } from "./survival-packet.js";
+import type { SurvivalPacketInput } from "./survival-packet.js";
+import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport, saveForecast, saveScaffoldReview, saveSurvivalPacket } from "../memory/store.js";
 import { checkpointAll } from "../memory/db.js";
 import { createAuthMiddleware } from "./auth.js";
 import { z } from "zod";
@@ -54,8 +56,9 @@ import {
   ComplexityForecastRequestSchema,
   ScaffoldDecayRequestSchema,
   ScheduleUpdateRequestSchema,
+  SurvivalPacketRequestSchema,
 } from "./validate.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions } from "../memory/retrieve.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions, buildSurvivalContext } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
@@ -65,6 +68,7 @@ import type { SupportPatternReport } from "../../packages/shared/schemas/pattern
 import type { EABriefing } from "../../packages/shared/schemas/briefing.js";
 import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
 import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
+import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
 
 const PORT = parseInt(process.env.PORT ?? "3100", 10);
 const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
@@ -102,6 +106,7 @@ app.use("/api/ea-briefing", authMiddleware);
 app.use("/api/complexity-forecast", authMiddleware);
 app.use("/api/debt-register", authMiddleware);
 app.use("/api/scaffold-decay", authMiddleware);
+app.use("/api/survival-packet", authMiddleware);
 
 // ----- Routes -----
 
@@ -1117,6 +1122,89 @@ app.get("/api/scaffold-decay/latest/:classroomId/:studentRef", (req, res) => {
     console.error("Scaffold review retrieval error:", err);
     res.status(500).json({
       error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Survival Packet Route -----
+
+app.post("/api/survival-packet", validateBody(SurvivalPacketRequestSchema), async (req, res) => {
+  try {
+    const { classroom_id, target_date, teacher_notes } = req.body;
+
+    const classroom = loadClassroom(classroom_id);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+      return;
+    }
+
+    // Check sub_ready gate
+    if (!classroom.sub_ready) {
+      res.status(403).json({
+        error: "Survival packet generation requires sub_ready to be enabled for this classroom",
+        hint: "Set sub_ready: true in the classroom profile or use PUT /api/classrooms/:id/schedule",
+      });
+      return;
+    }
+
+    const route = getRoute("generate_survival_packet");
+    const modelId = getModelId(route.model_tier);
+
+    // Build comprehensive retrieval context
+    const survivalContext = buildSurvivalContext(classroom_id, classroom);
+
+    const input: SurvivalPacketInput = { classroom_id, target_date, teacher_notes };
+    const prompt = buildSurvivalPacketPrompt(classroom, input, survivalContext);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        max_tokens: 8192,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      model_id: string;
+      latency_ms: number;
+      thinking_summary?: string;
+    };
+
+    let packet: SurvivalPacket;
+    try {
+      packet = parseSurvivalPacketResponse(inferenceData.text, classroom_id, target_date);
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as survival packet",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    saveSurvivalPacket(classroom_id, packet, inferenceData.model_id ?? modelId);
+
+    res.json({
+      packet,
+      model_id: inferenceData.model_id,
+      latency_ms: inferenceData.latency_ms,
+      thinking_summary: inferenceData.thinking_summary,
+    });
+  } catch (err) {
+    console.error("Survival packet generation failed:", err);
+    res.status(500).json({
+      error: "Survival packet generation failed",
+      detail: err instanceof Error ? err.message : String(err),
     });
   }
 });

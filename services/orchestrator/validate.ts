@@ -106,6 +106,12 @@ export const ScheduleUpdateRequestSchema = z.object({
   ).optional(),
 });
 
+export const SurvivalPacketRequestSchema = z.object({
+  classroom_id: z.string().min(1),
+  target_date: z.string().min(1),
+  teacher_notes: z.string().optional(),
+});
+
 // ----- Validation middleware factory -----
 
 export function validateBody<T>(schema: z.ZodSchema<T>) {

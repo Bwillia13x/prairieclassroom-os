@@ -91,6 +91,14 @@ const ROUTING_TABLE: Record<PromptClass, RouteConfig> = {
     tool_call_capable: false,
     output_schema_version: "0.1.0",
   },
+  generate_survival_packet: {
+    prompt_class: "generate_survival_packet",
+    model_tier: "planning",
+    thinking_enabled: true,
+    retrieval_required: true,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
 };
 
 /**

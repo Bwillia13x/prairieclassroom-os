@@ -17,7 +17,8 @@ export type PromptClass =
   | "detect_support_patterns"
   | "generate_ea_briefing"
   | "forecast_complexity"
-  | "detect_scaffold_decay";
+  | "detect_scaffold_decay"
+  | "generate_survival_packet";
 
 // ----- Model routing -----
 
