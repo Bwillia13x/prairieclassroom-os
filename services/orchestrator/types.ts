@@ -15,7 +15,8 @@ export type PromptClass =
   | "simplify_for_student"
   | "generate_vocab_cards"
   | "detect_support_patterns"
-  | "generate_ea_briefing";
+  | "generate_ea_briefing"
+  | "forecast_complexity";
 
 // ----- Model routing -----
 

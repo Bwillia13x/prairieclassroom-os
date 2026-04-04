@@ -75,6 +75,14 @@ const ROUTING_TABLE: Record<PromptClass, RouteConfig> = {
     tool_call_capable: false,
     output_schema_version: "0.1.0",
   },
+  forecast_complexity: {
+    prompt_class: "forecast_complexity",
+    model_tier: "planning",
+    thinking_enabled: true,
+    retrieval_required: true,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
 };
 
 /**

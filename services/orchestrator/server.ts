@@ -32,7 +32,9 @@ import { buildSupportPatternsPrompt, parseSupportPatternsResponse } from "./supp
 import type { SupportPatternsInput } from "./support-patterns.js";
 import { buildEABriefingPrompt, parseEABriefingResponse } from "./ea-briefing.js";
 import type { EABriefingInput } from "./ea-briefing.js";
-import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport } from "../memory/store.js";
+import { buildComplexityForecastPrompt, parseComplexityForecastResponse } from "./complexity-forecast.js";
+import type { ComplexityForecastInput } from "./complexity-forecast.js";
+import { savePlan, saveVariants, saveFamilyMessage, approveFamilyMessage, saveIntervention, savePatternReport, saveForecast } from "../memory/store.js";
 import { checkpointAll } from "../memory/db.js";
 import { createAuthMiddleware } from "./auth.js";
 import { z } from "zod";
@@ -47,8 +49,9 @@ import {
   VocabCardsRequestSchema,
   SupportPatternsRequestSchema,
   EABriefingRequestSchema,
+  ComplexityForecastRequestSchema,
 } from "./validate.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext } from "../memory/retrieve.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
@@ -56,6 +59,7 @@ import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
 import type { EABriefing } from "../../packages/shared/schemas/briefing.js";
+import type { ComplexityForecast } from "../../packages/shared/schemas/forecast.js";
 
 const PORT = parseInt(process.env.PORT ?? "3100", 10);
 const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
@@ -90,6 +94,7 @@ app.use("/api/simplify", authMiddleware);
 app.use("/api/vocab-cards", authMiddleware);
 app.use("/api/support-patterns", authMiddleware);
 app.use("/api/ea-briefing", authMiddleware);
+app.use("/api/complexity-forecast", authMiddleware);
 
 // ----- Routes -----
 
@@ -788,6 +793,113 @@ app.post("/api/ea-briefing", validateBody(EABriefingRequestSchema), async (req, 
     });
   } catch (err) {
     console.error("EA briefing error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Complexity Forecast Route -----
+
+app.post("/api/complexity-forecast", validateBody(ComplexityForecastRequestSchema), async (req, res) => {
+  try {
+    const { classroom_id, forecast_date, teacher_notes } = req.body;
+
+    const classroom = loadClassroom(classroom_id);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+      return;
+    }
+
+    const route = getRoute("forecast_complexity");
+    const modelId = getModelId(route.model_tier);
+
+    const forecastInput: ComplexityForecastInput = {
+      classroom_id,
+      forecast_date,
+      teacher_notes,
+    };
+
+    let forecastCtx = "";
+    try {
+      forecastCtx = buildForecastContext(classroom_id);
+    } catch (memErr) {
+      console.warn("Memory retrieval failed (forecast context):", memErr);
+    }
+
+    const prompt = buildComplexityForecastPrompt(classroom, forecastInput, forecastCtx || undefined);
+
+    const inferenceResp = await fetch(`${INFERENCE_URL}/generate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        prompt: `${prompt.system}\n\n${prompt.user}`,
+        model_tier: route.model_tier,
+        thinking: route.thinking_enabled,
+        prompt_class: "forecast_complexity",
+        max_tokens: 4096,
+      }),
+    });
+
+    if (!inferenceResp.ok) {
+      const errText = await inferenceResp.text();
+      res.status(502).json({ error: `Inference service error: ${errText}` });
+      return;
+    }
+
+    const inferenceData = (await inferenceResp.json()) as {
+      text: string;
+      thinking_text: string | null;
+      model_id: string;
+      latency_ms: number;
+    };
+
+    let forecast: ComplexityForecast;
+    try {
+      forecast = parseComplexityForecastResponse(inferenceData.text, classroom_id, forecast_date);
+    } catch (parseErr) {
+      res.status(422).json({
+        error: "Failed to parse model output as complexity forecast",
+        raw_output: inferenceData.text,
+        parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      });
+      return;
+    }
+
+    // Persist forecast to classroom memory
+    try {
+      saveForecast(classroom_id, forecast, inferenceData.model_id || modelId);
+    } catch (memErr) {
+      console.warn("Memory save failed (forecast):", memErr);
+    }
+
+    res.json({
+      forecast,
+      thinking_summary: inferenceData.thinking_text ?? null,
+      model_id: inferenceData.model_id || modelId,
+      latency_ms: inferenceData.latency_ms,
+    });
+  } catch (err) {
+    console.error("Complexity forecast error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Latest Forecast Retrieval -----
+
+app.get("/api/complexity-forecast/latest/:classroomId", (req, res) => {
+  try {
+    const classroomId = req.params.classroomId as string;
+    const forecast = getLatestForecast(classroomId);
+    if (!forecast) {
+      res.json({ forecast: null });
+      return;
+    }
+    res.json({ forecast });
+  } catch (err) {
+    console.error("Forecast retrieval error:", err);
     res.status(500).json({
       error: err instanceof Error ? err.message : "Internal server error",
     });

@@ -66,6 +66,12 @@ export const EABriefingRequestSchema = z.object({
   ea_name: z.string().optional(),
 });
 
+export const ComplexityForecastRequestSchema = z.object({
+  classroom_id: z.string().min(1),
+  forecast_date: z.string().min(1),
+  teacher_notes: z.string().optional(),
+});
+
 // ----- Validation middleware factory -----
 
 export function validateBody<T>(schema: z.ZodSchema<T>) {
