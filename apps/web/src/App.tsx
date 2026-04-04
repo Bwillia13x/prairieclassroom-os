@@ -11,6 +11,7 @@ import SimplifiedViewer from "./components/SimplifiedViewer";
 import VocabCardGrid from "./components/VocabCardGrid";
 import PatternReport from "./components/PatternReport";
 import EABriefingView from "./components/EABriefing";
+import ForecastViewer from "./components/ForecastViewer";
 import SkeletonLoader from "./components/SkeletonLoader";
 import {
   differentiate,
@@ -23,6 +24,7 @@ import {
   generateVocabCards,
   detectSupportPatterns,
   generateEABriefing,
+  generateComplexityForecast,
 } from "./api";
 import type {
   LessonArtifact,
@@ -37,10 +39,11 @@ import type {
   VocabCardsResponse,
   SupportPatternsResponse,
   EABriefingResponse,
+  ComplexityForecastResponse,
 } from "./types";
 import "./App.css";
 
-type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message" | "log-intervention" | "language-tools" | "support-patterns" | "ea-briefing";
+type ActiveTab = "differentiate" | "tomorrow-plan" | "family-message" | "log-intervention" | "language-tools" | "support-patterns" | "ea-briefing" | "complexity-forecast";
 
 export default function App() {
   const [classrooms, setClassrooms] = useState<ClassroomProfile[]>([]);
@@ -59,6 +62,7 @@ export default function App() {
   const [vocabResult, setVocabResult] = useState<VocabCardsResponse | null>(null);
   const [patternResult, setPatternResult] = useState<SupportPatternsResponse | null>(null);
   const [briefingResult, setBriefingResult] = useState<EABriefingResponse | null>(null);
+  const [forecastResult, setForecastResult] = useState<ComplexityForecastResponse | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
@@ -281,6 +285,30 @@ export default function App() {
     }
   }
 
+  async function handleForecast(classroomId: string, teacherNotes?: string) {
+    setLoading(true);
+    setError(null);
+    setForecastResult(null);
+
+    try {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const forecastDate = tomorrow.toISOString().split("T")[0];
+
+      const resp = await generateComplexityForecast({
+        classroom_id: classroomId,
+        forecast_date: forecastDate,
+        teacher_notes: teacherNotes || undefined,
+      });
+      setForecastResult(resp);
+      showSuccess("Forecast generated");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Forecast generation failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="app-shell">
       {successMsg && <div className="success-toast" role="status">{successMsg}</div>}
@@ -343,6 +371,16 @@ export default function App() {
             onClick={() => setActiveTab("ea-briefing")}
           >
             EA Briefing
+          </button>
+          <button
+            role="tab"
+            id="tab-complexity-forecast"
+            aria-selected={activeTab === "complexity-forecast"}
+            aria-controls="panel-complexity-forecast"
+            className={`tab-btn ${activeTab === "complexity-forecast" ? "tab-btn--active" : ""}`}
+            onClick={() => setActiveTab("complexity-forecast")}
+          >
+            Forecast
           </button>
           <button
             role="tab"
@@ -584,6 +622,52 @@ export default function App() {
               loading={loading}
               result={briefingResult}
             />
+          )}
+        </div>
+        <div role="tabpanel" id="panel-complexity-forecast" aria-labelledby="tab-complexity-forecast" hidden={activeTab !== "complexity-forecast"}>
+          {activeTab === "complexity-forecast" && classrooms.length > 0 && (
+            <div>
+              <h2>Complexity Forecast</h2>
+              <p className="tab-description">
+                Generate a per-block complexity forecast for tomorrow based on schedule, student needs, and intervention history.
+              </p>
+
+              <div className="form-group">
+                <label htmlFor="forecast-notes">Optional notes for tomorrow</label>
+                <textarea
+                  id="forecast-notes"
+                  className="form-textarea"
+                  placeholder="e.g., Assembly at 10am, new student starting, field trip cancelled..."
+                  rows={3}
+                />
+              </div>
+
+              <button
+                className="btn btn-primary"
+                disabled={loading || !msgClassroom}
+                onClick={() => {
+                  const notes = (document.getElementById("forecast-notes") as HTMLTextAreaElement)?.value;
+                  handleForecast(msgClassroom, notes);
+                }}
+              >
+                {loading ? "Generating Forecast..." : "Generate Forecast"}
+              </button>
+
+              {loading && !forecastResult && (
+                <SkeletonLoader variant="stack" message="Generating complexity forecast with deep reasoning..." label="Generating complexity forecast" />
+              )}
+
+              {forecastResult && (
+                <div ref={resultRef} style={{ marginTop: "1rem" }}>
+                  <ForecastViewer
+                    forecast={forecastResult.forecast}
+                    thinkingSummary={forecastResult.thinking_summary}
+                    latencyMs={forecastResult.latency_ms}
+                    modelId={forecastResult.model_id}
+                  />
+                </div>
+              )}
+            </div>
           )}
         </div>
       </main>

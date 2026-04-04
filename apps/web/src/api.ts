@@ -16,6 +16,8 @@ import type {
   SupportPatternsResponse,
   EABriefingRequest,
   EABriefingResponse,
+  ComplexityForecastRequest,
+  ComplexityForecastResponse,
 } from "./types";
 
 const API_BASE = "/api";
@@ -157,6 +159,21 @@ export async function generateEABriefing(
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`EA briefing generation failed (${res.status}): ${body}`);
+  }
+  return res.json();
+}
+
+export async function generateComplexityForecast(
+  request: ComplexityForecastRequest,
+): Promise<ComplexityForecastResponse> {
+  const res = await fetch(`${API_BASE}/complexity-forecast`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(request),
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Complexity forecast failed (${res.status}): ${body}`);
   }
   return res.json();
 }

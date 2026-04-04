@@ -1,0 +1,173 @@
+/* apps/web/src/components/ForecastViewer.css */
+.forecast-viewer {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.forecast-header h2 {
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  margin-bottom: 0.25rem;
+  letter-spacing: -0.01em;
+}
+
+.forecast-meta {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+}
+
+.forecast-thinking {
+  margin-bottom: 1rem;
+  background: var(--color-bg-muted);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+}
+
+.forecast-thinking summary {
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.forecast-thinking pre {
+  font-size: 0.78rem;
+  white-space: pre-wrap;
+  margin-top: 0.5rem;
+}
+
+.forecast-section {
+  margin-bottom: 1.25rem;
+}
+
+.forecast-summary-text {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--color-text-primary);
+}
+
+.forecast-risk-callout {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-text-accent);
+  padding: 0.4rem 0.6rem;
+  background: var(--color-bg-accent);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius);
+  display: inline-block;
+}
+
+.forecast-section--timeline h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.forecast-blocks {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.forecast-block {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  border-left: 4px solid var(--color-border);
+}
+
+.forecast-block--low {
+  border-left-color: #4ade80;
+}
+
+.forecast-block--medium {
+  border-left-color: #facc15;
+}
+
+.forecast-block--high {
+  border-left-color: #f87171;
+}
+
+.forecast-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.35rem;
+}
+
+.forecast-block-time {
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.forecast-block-level {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius);
+}
+
+.forecast-block-level--low {
+  color: #166534;
+  background: #dcfce7;
+}
+
+.forecast-block-level--medium {
+  color: #854d0e;
+  background: #fef9c3;
+}
+
+.forecast-block-level--high {
+  color: #991b1b;
+  background: #fee2e2;
+}
+
+.forecast-block-activity {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.35rem;
+}
+
+.forecast-block-factors {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.35rem 0;
+}
+
+.forecast-block-factors li {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.forecast-block-factors li::before {
+  content: "\2022";
+  position: absolute;
+  left: 0;
+  color: var(--color-text-secondary);
+}
+
+.forecast-block-mitigation {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.forecast-print {
+  margin-top: 1rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  cursor: pointer;
+}
+
+.forecast-print:hover {
+  background: var(--color-bg-muted);
+}

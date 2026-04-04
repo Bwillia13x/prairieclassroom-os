@@ -34,6 +34,8 @@ export interface ClassroomProfile {
   subject_focus: string;
   classroom_notes: string[];
   students: { alias: string }[];
+  schedule?: ScheduleBlockInput[];
+  upcoming_events?: UpcomingEvent[];
 }
 
 export interface DifferentiateRequest {
@@ -322,6 +324,52 @@ export interface EABriefingRequest {
 
 export interface EABriefingResponse {
   briefing: EABriefing;
+  model_id: string;
+  latency_ms: number;
+}
+
+// ----- Complexity Forecast -----
+
+export interface ScheduleBlockInput {
+  time_slot: string;
+  activity: string;
+  ea_available: boolean;
+  notes?: string;
+}
+
+export interface UpcomingEvent {
+  description: string;
+  time_slot?: string;
+  impacts?: string;
+}
+
+export interface ComplexityBlock {
+  time_slot: string;
+  activity: string;
+  level: "low" | "medium" | "high";
+  contributing_factors: string[];
+  suggested_mitigation: string;
+}
+
+export interface ComplexityForecast {
+  forecast_id: string;
+  classroom_id: string;
+  forecast_date: string;
+  blocks: ComplexityBlock[];
+  overall_summary: string;
+  highest_risk_block: string;
+  schema_version: string;
+}
+
+export interface ComplexityForecastRequest {
+  classroom_id: string;
+  forecast_date: string;
+  teacher_notes?: string;
+}
+
+export interface ComplexityForecastResponse {
+  forecast: ComplexityForecast;
+  thinking_summary: string | null;
   model_id: string;
   latency_ms: number;
 }
