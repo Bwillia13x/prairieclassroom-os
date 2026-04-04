@@ -46,7 +46,7 @@
 .forecast-summary-text {
   font-size: 0.95rem;
   line-height: 1.5;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .forecast-risk-callout {
@@ -154,7 +154,7 @@
 .forecast-block-mitigation {
   font-size: 0.82rem;
   font-style: italic;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   margin: 0;
 }
 

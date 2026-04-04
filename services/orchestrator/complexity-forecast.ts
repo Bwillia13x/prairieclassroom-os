@@ -152,13 +152,20 @@ export function parseComplexityForecastResponse(
 
   const forecastId = `fcst-${classroomId}-${Date.now()}`;
 
+  // Validate highest_risk_block against actual block time_slots
+  const knownSlots = new Set(blocks.map((b) => b.time_slot));
+  const rawHighest = String(p.highest_risk_block ?? "");
+  const highestRiskBlock = knownSlots.has(rawHighest)
+    ? rawHighest
+    : blocks.find((b) => b.level === "high")?.time_slot ?? rawHighest;
+
   return {
     forecast_id: forecastId,
     classroom_id: classroomId,
     forecast_date: forecastDate,
     blocks,
     overall_summary: String(p.overall_summary ?? ""),
-    highest_risk_block: String(p.highest_risk_block ?? ""),
+    highest_risk_block: highestRiskBlock,
     schema_version: "0.1.0",
   };
 }

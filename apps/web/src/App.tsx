@@ -63,6 +63,7 @@ export default function App() {
   const [patternResult, setPatternResult] = useState<SupportPatternsResponse | null>(null);
   const [briefingResult, setBriefingResult] = useState<EABriefingResponse | null>(null);
   const [forecastResult, setForecastResult] = useState<ComplexityForecastResponse | null>(null);
+  const [forecastNotes, setForecastNotes] = useState("");
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
 
@@ -633,10 +634,28 @@ export default function App() {
               </p>
 
               <div className="form-group">
+                <label htmlFor="forecast-classroom">Classroom</label>
+                <select
+                  id="forecast-classroom"
+                  className="form-select"
+                  value={msgClassroom}
+                  onChange={(e) => setMsgClassroom(e.target.value)}
+                >
+                  {classrooms.map((c) => (
+                    <option key={c.classroom_id} value={c.classroom_id}>
+                      {c.classroom_id} ({c.grade_band})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
                 <label htmlFor="forecast-notes">Optional notes for tomorrow</label>
                 <textarea
                   id="forecast-notes"
                   className="form-textarea"
+                  value={forecastNotes}
+                  onChange={(e) => setForecastNotes(e.target.value)}
                   placeholder="e.g., Assembly at 10am, new student starting, field trip cancelled..."
                   rows={3}
                 />
@@ -645,10 +664,7 @@ export default function App() {
               <button
                 className="btn btn-primary"
                 disabled={loading || !msgClassroom}
-                onClick={() => {
-                  const notes = (document.getElementById("forecast-notes") as HTMLTextAreaElement)?.value;
-                  handleForecast(msgClassroom, notes);
-                }}
+                onClick={() => handleForecast(msgClassroom, forecastNotes || undefined)}
               >
                 {loading ? "Generating Forecast..." : "Generate Forecast"}
               </button>
