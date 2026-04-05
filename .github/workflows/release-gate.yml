@@ -1,0 +1,59 @@
+name: Release Gate
+
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  release-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.5
+          cache: npm
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Install Python dependencies
+        run: pip install -r services/inference/requirements.txt
+
+      - name: Run TypeScript unit tests
+        run: npm run test
+
+      - name: Run Python unit tests
+        run: cd services/inference && python -m pytest tests/ -v
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Seed demo data
+        run: npx tsx data/demo/seed.ts
+
+      - name: Run release gate
+        run: npm run release:gate
+
+      - name: Upload release gate artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-gate-artifacts
+          path: |
+            output/release-gate/
+            output/playwright/
+          if-no-files-found: ignore
