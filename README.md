@@ -128,8 +128,8 @@ Before the real gate can succeed, the ADC principal needs Vertex endpoint access
 - `roles/aiplatform.user`
 - `roles/serviceusage.serviceUsageConsumer`
 - reusable deployed endpoints for:
-  - `google/gemma3@gemma-3-4b-it`
-  - `google/gemma3@gemma-3-27b-it`
+  - `google/gemma-4-4b-it`
+  - `google/gemma-4-27b-it`
 
 ## Architecture
 
@@ -146,8 +146,8 @@ Express Orchestrator :3100
         │
         ▼  HTTP JSON
 Flask Inference :3200
-  ├─ Vertex endpoint → google/gemma3@gemma-3-4b-it   (live tier)
-  └─ Vertex endpoint → google/gemma3@gemma-3-27b-it  (planning tier)
+  ├─ Vertex endpoint → google/gemma-4-4b-it   (live tier)
+  └─ Vertex endpoint → google/gemma-4-27b-it  (planning tier)
 ```
 
 ## Features

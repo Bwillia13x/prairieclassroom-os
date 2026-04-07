@@ -882,6 +882,11 @@ MOCK_SURVIVAL_PACKET_THINKING = (
     "I prioritized routines, active supports, and the fragile transition blocks so a substitute can execute the day without digging through prior notes."
 )
 
+MOCK_WORKSHEET_EXTRACTION = json.dumps({
+    "extracted_text": "Fractions Review Worksheet\n\n1. Circle the larger fraction: 1/4 or 1/3?\n\n2. Show 2/3 on the number line below.\n   [_______________]\n\n3. Solve: 1/2 + 1/4 = ___\n\n4. Mrs. Okafor has 3/4 of a pizza. If she eats 1/4, how much is left?\n\n5. Write a fraction that is equal to 1/2.\n\n6. Challenge: 5/6 - 2/6 = ___",
+    "confidence_notes": ["All text clearly legible", "Number line in question 2 represented as blank line"]
+})
+
 DEMO_CLASSROOM_ID = "demo-okafor-grade34"
 ALPHA_CLASSROOM_ID = "alpha-grade4"
 
@@ -964,6 +969,7 @@ COMMON_MOCK_PROMPT_FIXTURES: dict[str, MockFixtureEntry] = {
     "simplify_for_student": MockFixture(MOCK_SIMPLIFICATION),
     "generate_vocab_cards": MockFixture(MOCK_VOCAB_CARDS),
     "detect_scaffold_decay": MockFixture(MOCK_SCAFFOLD_DECAY),
+    "extract_worksheet": MockFixture(MOCK_WORKSHEET_EXTRACTION),
 }
 
 MOCK_CLASSROOM_FIXTURES: dict[str, dict[str, MockFixtureEntry]] = {
@@ -1233,8 +1239,8 @@ class VertexAIBackend:
     """Calls self-deployed Gemma endpoints on Vertex AI via raw_predict."""
 
     DEFAULT_MODEL_MAP = {
-        ModelTier.LIVE: "google/gemma3@gemma-3-4b-it",
-        ModelTier.PLANNING: "google/gemma3@gemma-3-27b-it",
+        ModelTier.LIVE: "google/gemma-4-4b-it",
+        ModelTier.PLANNING: "google/gemma-4-27b-it",
     }
     ENDPOINT_ENV_MAP = {
         ModelTier.LIVE: "PRAIRIE_VERTEX_ENDPOINT_LIVE",

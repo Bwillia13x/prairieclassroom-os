@@ -13,17 +13,17 @@ const RUN_DIR = path.join(OUTPUT_ROOT, RUN_ID);
 const TARGETS = [
   {
     tier: "live",
-    modelId: "google/gemma3@gemma-3-4b-it",
+    modelId: "google/gemma-4-4b-it",
     modelEnvKey: "PRAIRIE_VERTEX_MODEL_ID_LIVE",
     endpointEnvKey: "PRAIRIE_VERTEX_ENDPOINT_LIVE",
-    endpointDisplayName: "prairieclassroom-live-gemma-3-4b-it",
+    endpointDisplayName: "prairieclassroom-live-gemma-4-4b-it",
   },
   {
     tier: "planning",
-    modelId: "google/gemma3@gemma-3-27b-it",
+    modelId: "google/gemma-4-27b-it",
     modelEnvKey: "PRAIRIE_VERTEX_MODEL_ID_PLANNING",
     endpointEnvKey: "PRAIRIE_VERTEX_ENDPOINT_PLANNING",
-    endpointDisplayName: "prairieclassroom-planning-gemma-3-27b-it",
+    endpointDisplayName: "prairieclassroom-planning-gemma-4-27b-it",
   },
 ];
 

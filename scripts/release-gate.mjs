@@ -64,8 +64,8 @@ const EVAL_BASELINE_DOC = path.join(ROOT, "docs", "eval-baseline.md");
 const REAL_PREFLIGHT_FILE = path.join(RUN_DIR, "real-preflight.json");
 const REAL_BACKEND = process.env.PRAIRIE_VERTEX_BACKEND?.trim() || "";
 const REAL_MODEL_IDS = {
-  live: process.env.PRAIRIE_VERTEX_MODEL_ID_LIVE?.trim() || "google/gemma3@gemma-3-4b-it",
-  planning: process.env.PRAIRIE_VERTEX_MODEL_ID_PLANNING?.trim() || "google/gemma3@gemma-3-27b-it",
+  live: process.env.PRAIRIE_VERTEX_MODEL_ID_LIVE?.trim() || "google/gemma-4-4b-it",
+  planning: process.env.PRAIRIE_VERTEX_MODEL_ID_PLANNING?.trim() || "google/gemma-4-27b-it",
 };
 const REAL_ENDPOINTS = {
   live: process.env.PRAIRIE_VERTEX_ENDPOINT_LIVE?.trim() || "",
@@ -311,7 +311,7 @@ function classifyProbeFailure(text) {
 }
 
 function inferFailureModel(text) {
-  const match = text.match(/(google\/gemma3@gemma-3-[^'"`\s,]+)/i);
+  const match = text.match(/(google/gemma-4-[^'"`\s,]+)/i);
   return match?.[1] ?? null;
 }
 
