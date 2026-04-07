@@ -65,7 +65,7 @@ function loadClassroom(id: string): ClassroomProfile | undefined {
 
 const app = express();
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? "http://localhost:5173" }));
-app.use(express.json({ limit: "2mb" }));
+app.use(express.json({ limit: "10mb" }));
 app.use(requestLogger);
 app.use(inputSanitizer);
 
