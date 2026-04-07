@@ -1,11 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
-import { logIntervention } from "../api";
+import { logIntervention, fetchInterventionHistory } from "../api";
 import InterventionLogger from "../components/InterventionLogger";
 import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
-import type { InterventionResponse, InterventionPrefill } from "../types";
+import HistoryDrawer from "../components/HistoryDrawer";
+import { useHistory } from "../hooks/useHistory";
+import type { InterventionResponse, InterventionRecord, InterventionPrefill } from "../types";
 
 interface Props {
   prefill: InterventionPrefill | null;
@@ -14,9 +16,16 @@ interface Props {
 export default function InterventionPanel({ prefill }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, students, showSuccess } = useApp();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
+  const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
+  const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
+
+  const displayResult = result ?? historicalResult;
 
   useEffect(() => {
-    if (prefill) reset();
+    if (prefill) {
+      reset();
+      setHistoricalResult(null);
+    }
   }, [prefill, reset]);
 
   if (classrooms.length === 0) return null;
@@ -27,6 +36,7 @@ export default function InterventionPanel({ prefill }: Props) {
     teacherNote: string,
     context?: string,
   ) {
+    setHistoricalResult(null);
     const resp = await execute((signal) =>
       logIntervention({
         classroom_id: classroomId,
@@ -35,26 +45,45 @@ export default function InterventionPanel({ prefill }: Props) {
         context,
       }, signal)
     );
-    if (resp) showSuccess("Intervention logged");
+    if (resp) {
+      showSuccess("Intervention logged");
+      history.refresh();
+    }
+  }
+
+  function handleHistorySelect(record: InterventionRecord) {
+    setHistoricalResult({ record, model_id: "", latency_ms: 0 });
   }
 
   return (
-    <div className={result ? "split-pane" : ""}>
-      <InterventionLogger
-        classrooms={classrooms}
-        students={students}
-        selectedClassroom={activeClassroom}
-        onClassroomChange={setActiveClassroom}
-        onSubmit={handleSubmit}
-        loading={loading}
-        prefill={prefill}
-      />
+    <div className={displayResult ? "split-pane" : ""}>
+      <div>
+        <HistoryDrawer<InterventionRecord>
+          items={history.items}
+          loading={history.loading}
+          error={history.error}
+          renderItem={(rec) => `${rec.student_refs.join(", ")} — ${rec.observation.slice(0, 60)}`}
+          getKey={(rec) => rec.record_id}
+          getTimestamp={(rec) => rec.created_at}
+          onSelect={handleHistorySelect}
+          label="Intervention History"
+        />
+        <InterventionLogger
+          classrooms={classrooms}
+          students={students}
+          selectedClassroom={activeClassroom}
+          onClassroomChange={setActiveClassroom}
+          onSubmit={handleSubmit}
+          loading={loading}
+          prefill={prefill}
+        />
+      </div>
       <div aria-live="polite">
-        {error && result === null && <div className="error-banner">{error}</div>}
-        {loading && result === null && (
+        {error && displayResult === null && <div className="error-banner">{error}</div>}
+        {loading && displayResult === null && (
           <SkeletonLoader variant="single" message="Structuring your intervention note..." label="Structuring intervention note" />
         )}
-        {!loading && result === null && !error && (
+        {!loading && displayResult === null && !error && (
           <div className="empty-state">
             <svg className="empty-state-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="10" y="4" width="28" height="36" rx="2" stroke="var(--color-border)" strokeWidth="2"/><path d="M16 14h16M16 20h12M16 26h8" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round"/><circle cx="16" cy="33" r="1.5" fill="var(--color-accent)"/><path d="M20 33h10" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round"/></svg>
             <div className="empty-state-title">No intervention logged</div>
@@ -63,9 +92,9 @@ export default function InterventionPanel({ prefill }: Props) {
             </p>
           </div>
         )}
-        {result && (
+        {displayResult && (
           <InterventionCard
-            record={result.record}
+            record={displayResult.record}
           />
         )}
       </div>
