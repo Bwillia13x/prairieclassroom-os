@@ -22,6 +22,11 @@ export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
   return rows.map((r) => JSON.parse(r.plan_json) as TomorrowPlan);
 }
 
+export function getLatestPlan(classroomId: string): TomorrowPlan | null {
+  const plans = getRecentPlans(classroomId, 1);
+  return plans.length > 0 ? plans[0] : null;
+}
+
 export function summarizeRecentPlans(plans: TomorrowPlan[]): string {
   if (plans.length === 0) return "";
 
@@ -804,6 +809,18 @@ export function buildSurvivalContext(
   classroom: ClassroomProfile,
 ): string {
   const lines: string[] = [];
+
+  // 0. CLASSROOM OVERVIEW (teacher-written notes — contains EA name, room layout, key constraints)
+  if (classroom.classroom_notes && classroom.classroom_notes.length > 0) {
+    const notes = Array.isArray(classroom.classroom_notes)
+      ? classroom.classroom_notes
+      : [classroom.classroom_notes];
+    lines.push("CLASSROOM OVERVIEW:");
+    for (const note of notes) {
+      lines.push(`  - ${note}`);
+    }
+    lines.push("");
+  }
 
   // 1. DAILY SCHEDULE
   if (classroom.schedule && classroom.schedule.length > 0) {

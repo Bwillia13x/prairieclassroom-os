@@ -58,7 +58,7 @@ import {
   ScheduleUpdateRequestSchema,
   SurvivalPacketRequestSchema,
 } from "./validate.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions, buildSurvivalContext } from "../memory/retrieve.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions, buildSurvivalContext, getLatestPlan } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
@@ -79,6 +79,26 @@ app.use(cors({
   origin: process.env.CORS_ORIGIN ?? "http://localhost:5173",
 }));
 app.use(express.json({ limit: "2mb" }));
+
+async function buildHealthPayload() {
+  let ready = false;
+
+  try {
+    const inferenceResp = await fetch(`${INFERENCE_URL}/health`);
+    if (inferenceResp.ok) {
+      const inferenceData = (await inferenceResp.json()) as { status?: string };
+      ready = inferenceData.status === "ok";
+    }
+  } catch {
+    ready = false;
+  }
+
+  return {
+    status: ready ? "ok" : "degraded",
+    inference_url: INFERENCE_URL,
+    ready,
+  };
+}
 
 // ----- Data loading -----
 
@@ -110,8 +130,12 @@ app.use("/api/survival-packet", authMiddleware);
 
 // ----- Routes -----
 
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", service: "orchestrator" });
+app.get("/health", async (_req, res) => {
+  res.json(await buildHealthPayload());
+});
+
+app.get("/api/health", async (_req, res) => {
+  res.json(await buildHealthPayload());
 });
 
 app.get("/api/classrooms", (_req, res) => {
@@ -204,7 +228,11 @@ app.post("/api/differentiate", validateBody(DifferentiateRequestSchema), async (
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
+        prompt_class: route.prompt_class,
         max_tokens: 4096,
+        mock_context: {
+          classroom_id,
+        },
       }),
     });
 
@@ -319,7 +347,11 @@ app.post("/api/tomorrow-plan", validateBody(TomorrowPlanRequestSchema), async (r
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
+        prompt_class: route.prompt_class,
         max_tokens: 4096,
+        mock_context: {
+          classroom_id,
+        },
       }),
     });
 
@@ -403,8 +435,14 @@ app.post("/api/family-message", validateBody(FamilyMessageRequestSchema), async 
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
-        prompt_class: "draft_family_message",
+        prompt_class: route.prompt_class,
         max_tokens: 2048,
+        mock_context: {
+          classroom_id,
+          student_refs,
+          message_type,
+          target_language,
+        },
       }),
     });
 
@@ -496,8 +534,12 @@ app.post("/api/intervention", validateBody(InterventionRequestSchema), async (re
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
-        prompt_class: "log_intervention",
+        prompt_class: route.prompt_class,
         max_tokens: 1024,
+        mock_context: {
+          classroom_id,
+          student_refs,
+        },
       }),
     });
 
@@ -711,8 +753,13 @@ app.post("/api/support-patterns", validateBody(SupportPatternsRequestSchema), as
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
-        prompt_class: "detect_support_patterns",
+        prompt_class: route.prompt_class,
         max_tokens: 4096,
+        mock_context: {
+          classroom_id,
+          student_filter,
+          time_window: window,
+        },
       }),
     });
 
@@ -818,8 +865,12 @@ app.post("/api/ea-briefing", validateBody(EABriefingRequestSchema), async (req, 
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
-        prompt_class: "generate_ea_briefing",
+        prompt_class: route.prompt_class,
         max_tokens: 2048,
+        mock_context: {
+          classroom_id,
+          ea_name,
+        },
       }),
     });
 
@@ -899,8 +950,13 @@ app.post("/api/complexity-forecast", validateBody(ComplexityForecastRequestSchem
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
-        prompt_class: "forecast_complexity",
+        prompt_class: route.prompt_class,
         max_tokens: 4096,
+        mock_context: {
+          classroom_id,
+          forecast_date,
+          teacher_notes,
+        },
       }),
     });
 
@@ -1000,6 +1056,38 @@ app.get("/api/debt-register/:classroomId", (req, res) => {
     res.json({ register });
   } catch (err) {
     console.error("Debt register error:", err);
+    res.status(500).json({
+      error: err instanceof Error ? err.message : "Internal server error",
+    });
+  }
+});
+
+// ----- Today Snapshot Route -----
+
+app.get("/api/today/:classroomId", (req, res) => {
+  try {
+    const classroomId = req.params.classroomId as string;
+    const classroom = loadClassroom(classroomId);
+    if (!classroom) {
+      res.status(404).json({ error: `Classroom '${classroomId}' not found` });
+      return;
+    }
+
+    const register = buildDebtRegister(classroomId, classroom);
+    const latestPlan = getLatestPlan(classroomId);
+    const latestForecast = getLatestForecast(classroomId);
+
+    res.json({
+      debt_register: register,
+      latest_plan: latestPlan,
+      latest_forecast: latestForecast,
+      student_count: classroom.students.length,
+      last_activity_at: register.items.length > 0
+        ? register.generated_at
+        : null,
+    });
+  } catch (err) {
+    console.error("Today snapshot error:", err);
     res.status(500).json({
       error: err instanceof Error ? err.message : "Internal server error",
     });
@@ -1163,7 +1251,13 @@ app.post("/api/survival-packet", validateBody(SurvivalPacketRequestSchema), asyn
         prompt: `${prompt.system}\n\n${prompt.user}`,
         model_tier: route.model_tier,
         thinking: route.thinking_enabled,
+        prompt_class: route.prompt_class,
         max_tokens: 8192,
+        mock_context: {
+          classroom_id,
+          target_date,
+          teacher_notes,
+        },
       }),
     });
 
