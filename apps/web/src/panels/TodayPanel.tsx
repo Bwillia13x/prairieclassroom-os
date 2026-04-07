@@ -40,7 +40,7 @@ export default function TodayPanel({ onTabChange }: Props) {
       {error && !result && <div className="error-banner">{error}</div>}
 
       {result && (
-        <div className="today-grid">
+        <div className="today-grid motion-stagger">
           <PendingActionsCard
             items={[
               {

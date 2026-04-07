@@ -5,13 +5,11 @@ interface Props {
   plan: TomorrowPlan;
   thinkingSummary: string | null;
   patternInformed?: boolean;
-  latencyMs: number;
-  modelId: string;
   onFollowupClick?: (prefill: FamilyMessagePrefill) => void;
   onInterventionClick?: (prefill: InterventionPrefill) => void;
 }
 
-export default function PlanViewer({ plan, thinkingSummary, patternInformed, latencyMs, modelId, onFollowupClick, onInterventionClick }: Props) {
+export default function PlanViewer({ plan, thinkingSummary, patternInformed, onFollowupClick, onInterventionClick }: Props) {
   return (
     <div className="plan-viewer">
       <header className="plan-header">
@@ -20,8 +18,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, lat
           <span className="pattern-informed-badge">Pattern-informed</span>
         )}
         <p className="plan-meta">
-          {plan.classroom_id} · {Math.round(latencyMs)}ms · {modelId}
-          {plan.schema_version && ` · v${plan.schema_version}`}
+          {plan.classroom_id}
         </p>
       </header>
 
@@ -38,7 +35,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, lat
           <h3>
             <span className="plan-icon">⚠</span> Transition Watchpoints
           </h3>
-          <div className="plan-cards">
+          <div className="plan-cards motion-stagger">
             {plan.transition_watchpoints.map((w, i) => (
               <div key={i} className="plan-card plan-card--watchpoint">
                 <div className="plan-card-label">{w.time_or_activity}</div>
@@ -56,7 +53,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, lat
           <h3>
             <span className="plan-icon">★</span> Support Priorities
           </h3>
-          <div className="plan-cards">
+          <div className="plan-cards motion-stagger">
             {plan.support_priorities.map((s, i) => (
               <div key={i} className="plan-card plan-card--priority">
                 <div className="plan-card-label">{s.student_ref}</div>
@@ -88,7 +85,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, lat
           <h3>
             <span className="plan-icon">👤</span> EA Plan
           </h3>
-          <div className="plan-cards">
+          <div className="plan-cards motion-stagger">
             {plan.ea_actions.map((e, i) => (
               <div key={i} className="plan-card plan-card--ea">
                 <div className="plan-card-label">
@@ -124,7 +121,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, lat
           <h3>
             <span className="plan-icon">✉</span> Family Follow-ups
           </h3>
-          <div className="plan-cards">
+          <div className="plan-cards motion-stagger">
             {plan.family_followups.map((f, i) => (
               <div
                 key={i}
@@ -171,7 +168,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, lat
       )}
 
       <button
-        className="plan-print"
+        className="btn btn--ghost plan-print"
         onClick={() => window.print()}
       >
         Print Plan

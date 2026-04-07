@@ -24,7 +24,7 @@ export default function PendingActionsCard({ items, onNavigate }: Props) {
   return (
     <div className="pending-actions">
       <h3 className="pending-actions-heading">Needs Attention</h3>
-      <div className="pending-actions-grid">
+      <div className="pending-actions-grid motion-stagger">
         {activeItems.map((item) => (
           <button
             key={item.targetTab}
