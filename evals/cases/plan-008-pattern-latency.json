@@ -11,6 +11,6 @@
   "expected": {
     "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"],
     "schema_version": "0.1.0",
-    "max_latency_ms": 5000
+    "max_latency_ms": 60000
   }
 }

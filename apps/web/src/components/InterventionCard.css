@@ -2,19 +2,20 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  animation: fade-up 0.35s ease-out both;
 }
 
 .intervention-header h2 {
   font-family: var(--font-serif);
-  font-size: 1.15rem;
+  font-size: var(--text-xl);
   margin-bottom: 0.25rem;
   letter-spacing: -0.01em;
 }
 
 .intervention-meta {
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
@@ -24,7 +25,7 @@
 }
 
 .intervention-field-label {
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--color-text-secondary);
   text-transform: uppercase;
@@ -33,7 +34,7 @@
 }
 
 .intervention-field-value {
-  font-size: 0.95rem;
+  font-size: var(--text-md);
   line-height: 1.6;
   background: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -73,7 +74,7 @@
   background: var(--color-bg-success);
   border: 1px solid var(--color-border-success);
   border-radius: var(--radius);
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   color: var(--color-text-success);
   font-weight: 500;
 }

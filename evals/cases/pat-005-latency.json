@@ -8,6 +8,6 @@
     "time_window": 10
   },
   "expected": {
-    "max_latency_ms": 5000
+    "max_latency_ms": 120000
   }
 }

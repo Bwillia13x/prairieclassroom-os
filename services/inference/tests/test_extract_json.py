@@ -49,12 +49,16 @@ class TestProseStripping:
         assert parsed == {"key": "value"}
 
     def test_trailing_prose(self):
-        # When text starts with '{', extract_json returns it as-is after
-        # trailing-comma repair (early return at line 1152-1155). Trailing
-        # prose is NOT stripped in this code path.
         raw = '{"key": "value"}\nI hope this helps!'
         result = extract_json(raw)
-        assert result == '{"key": "value"}\nI hope this helps!'
+        parsed = json.loads(result)
+        assert parsed == {"key": "value"}
+
+    def test_trailing_prose_after_array(self):
+        raw = '[{"a": 1}]\nHere is your JSON output.'
+        result = extract_json(raw)
+        parsed = json.loads(result)
+        assert parsed == [{"a": 1}]
 
     def test_both_leading_and_trailing(self):
         raw = 'Sure!\n{"key": "value"}\nLet me know.'
@@ -87,6 +91,44 @@ class TestTrailingCommaRepair:
         result = extract_json(raw)
         parsed = json.loads(result)
         assert parsed == {"a": [1, 2], "b": 3}
+
+
+class TestControlCharacterSanitization:
+    def test_unescaped_tab_in_string(self):
+        raw = '{"key": "hello\tworld"}'
+        result = extract_json(raw)
+        parsed = json.loads(result)
+        assert parsed == {"key": "hello\tworld"}
+
+    def test_unescaped_newline_in_string(self):
+        raw = '{"instructions": "Step 1\nStep 2"}'
+        result = extract_json(raw)
+        parsed = json.loads(result)
+        assert parsed == {"instructions": "Step 1\nStep 2"}
+
+    def test_already_escaped_chars_preserved(self):
+        raw = r'{"key": "line1\nline2\ttab"}'
+        result = extract_json(raw)
+        parsed = json.loads(result)
+        assert parsed == {"key": "line1\nline2\ttab"}
+
+    def test_control_char_in_array_string(self):
+        raw = '[{"text": "hello\tworld"}]'
+        result = extract_json(raw)
+        parsed = json.loads(result)
+        assert parsed == [{"text": "hello\tworld"}]
+
+    def test_invalid_escape_backslash_underscore(self):
+        raw = r'{"text": "fill in \_\_\_\_ the blank"}'
+        result = extract_json(raw)
+        parsed = json.loads(result)
+        assert parsed == {"text": "fill in ____ the blank"}
+
+    def test_invalid_escape_backslash_quote_preserved(self):
+        raw = r'{"text": "she said \"hello\""}'
+        result = extract_json(raw)
+        parsed = json.loads(result)
+        assert parsed == {"text": 'she said "hello"'}
 
 
 class TestEdgeCases:

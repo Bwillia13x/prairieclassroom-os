@@ -2,39 +2,21 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.5rem;
-  margin-bottom: 1.5rem;
+  padding: var(--space-6);
+  margin-bottom: var(--space-6);
   box-shadow: var(--shadow-sm);
 }
 
 .ea-briefing-form h2 {
-  font-size: 1.1rem;
+  font-size: var(--text-lg);
   margin-bottom: 0.25rem;
 }
 
 .ea-briefing-description {
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   color: var(--color-text-secondary);
   margin-bottom: 1rem;
   line-height: 1.5;
-}
-
-.ea-briefing-label {
-  display: block;
-  font-size: 0.85rem;
-  font-weight: 500;
-  margin-bottom: 0.75rem;
-}
-
-.ea-briefing-label select,
-.ea-briefing-label input {
-  display: block;
-  width: 100%;
-  margin-top: 0.25rem;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  font-size: 0.88rem;
 }
 
 .ea-briefing-optional {
@@ -42,45 +24,25 @@
   color: var(--color-text-secondary);
 }
 
-.ea-briefing-submit {
-  padding: 0.5rem 1.25rem;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: var(--color-text-on-accent);
-  background: var(--color-text-accent);
-  border: none;
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.ea-briefing-submit:hover:not(:disabled) {
-  opacity: 0.9;
-}
-
-.ea-briefing-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 
 /* Result */
 .ea-briefing-result {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
 }
 
 .ea-briefing-header h2 {
   font-family: var(--font-serif);
-  font-size: 1.15rem;
+  font-size: var(--text-xl);
   margin-bottom: 0.25rem;
   letter-spacing: -0.01em;
 }
 
 .ea-briefing-meta {
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
   margin-bottom: 0.75rem;
 }
@@ -99,10 +61,16 @@
 /* Sections */
 .ea-section {
   margin-bottom: 1.25rem;
+  animation: fade-up 0.35s ease-out both;
 }
 
+.ea-section:nth-of-type(1) { animation-delay: 0.05s; }
+.ea-section:nth-of-type(2) { animation-delay: 0.1s; }
+.ea-section:nth-of-type(3) { animation-delay: 0.15s; }
+.ea-section:nth-of-type(4) { animation-delay: 0.2s; }
+
 .ea-section h3 {
-  font-size: 0.95rem;
+  font-size: var(--text-md);
   font-weight: 600;
   margin-bottom: 0.6rem;
   display: flex;
@@ -131,7 +99,7 @@
 }
 
 .ea-notes-text {
-  font-size: 0.88rem;
+  font-size: var(--text-base);
   line-height: 1.6;
   background: var(--color-bg-muted);
   border: 1px solid var(--color-border);
@@ -155,14 +123,14 @@
 
 .ea-card-label {
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: var(--text-base);
   margin-bottom: 0.3rem;
   color: var(--color-text);
 }
 
 .ea-card-tag {
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }
 
@@ -233,28 +201,15 @@
 /* Print */
 .ea-briefing-print {
   margin-top: 1rem;
-  padding: 0.4rem 1rem;
-  font-size: 0.85rem;
-  font-weight: 500;
-  color: var(--color-text-secondary);
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-
-.ea-briefing-print:hover {
-  background: var(--color-bg-muted);
 }
 
 @media print {
   .ea-briefing-form,
   .ea-briefing-print,
-  .ea-briefing-disclaimer,
   .ea-briefing-meta,
   .app-header,
   .app-tabs,
+  .mobile-nav,
   .classroom-context {
     display: none !important;
   }
@@ -263,5 +218,58 @@
     border: none;
     box-shadow: none;
     padding: 0;
+    color: #000;
+  }
+
+  .ea-briefing-header h2 {
+    font-size: 1.3rem;
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.35rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Keep disclaimer visible — it's a governance requirement */
+  .ea-briefing-disclaimer {
+    background: #fffbeb;
+    border-color: #d97706;
+    color: #92400e;
+    font-weight: 500;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .ea-section {
+    animation: none;
+    break-inside: avoid;
+    margin-bottom: 0.75rem;
+  }
+
+  .ea-section h3 {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.2rem;
+  }
+
+  .ea-card {
+    border-color: #ccc;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  /* Schedule blocks print as compact rows */
+  .ea-card--schedule {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .ea-card-materials {
+    color: #666;
+  }
+
+  /* Watch list items print scannable */
+  .ea-card--watch .ea-card-label {
+    font-size: 0.9rem;
+  }
+
+  .ea-card--watch .ea-card-approach {
+    font-weight: 500;
   }
 }

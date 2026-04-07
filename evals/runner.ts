@@ -7,6 +7,7 @@
  */
 
 import { readFileSync, readdirSync, existsSync } from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 
 // ----- Types -----
@@ -15,18 +16,23 @@ interface EvalCase {
   id: string;
   category: EvalCategory;
   description: string;
-  prompt_class?: string;
+  prompt_class?: string | null;
+  endpoint?: string;
+  source_file?: string;
   input: Record<string, unknown>;
   expected: ExpectedOutput;
 }
 
 type EvalCategory =
+  | "content_quality"
+  | "cross_feature_synthesis"
   | "differentiation_quality"
+  | "latency_suitability"
   | "planning_usefulness"
   | "retrieval_relevance"
+  | "safety_boundaries"
   | "schema_reliability"
-  | "safety_correctness"
-  | "latency_suitability";
+  | "safety_correctness";
 
 interface ExpectedOutput {
   /** If set, output must contain all of these keys. */
@@ -88,36 +94,15 @@ interface EvalResult {
   passed: boolean;
   failures: string[];
   latency_ms?: number;
-}
-
-// ----- Loader -----
-
-function loadFixturesDir(dir: string): Record<string, unknown>[] {
-  const absDir = resolve(dir);
-  if (!existsSync(absDir)) return [];
-  return readdirSync(absDir)
-    .filter((f) => f.endsWith(".json"))
-    .map((f) => JSON.parse(readFileSync(join(absDir, f), "utf-8")));
+  model_id?: string;
+  category?: EvalCategory;
+  description?: string;
+  prompt_class?: string | null;
+  endpoint?: string;
+  source_file?: string;
 }
 
 // ----- Validators -----
-
-function validateSchema(output: Record<string, unknown>, expected: ExpectedOutput): string[] {
-  const failures: string[] = [];
-  if (expected.required_keys) {
-    for (const key of expected.required_keys) {
-      if (!(key in output)) {
-        failures.push(`Missing required key: ${key}`);
-      }
-    }
-  }
-  if (expected.schema_version && output.schema_version !== expected.schema_version) {
-    failures.push(
-      `Schema version mismatch: expected ${expected.schema_version}, got ${output.schema_version}`
-    );
-  }
-  return failures;
-}
 
 function validateContent(text: string, expected: ExpectedOutput): string[] {
   const failures: string[] = [];
@@ -135,34 +120,96 @@ function validateContent(text: string, expected: ExpectedOutput): string[] {
       }
     }
   }
+  const aliases = (expected as Record<string, unknown>).does_not_contain as string[] | undefined;
+  if (aliases) {
+    for (const substr of aliases) {
+      if (text.includes(substr)) {
+        failures.push(`Output contains forbidden content: "${substr}"`);
+      }
+    }
+  }
+  const forbiddenTerms = (expected as Record<string, unknown>).forbidden_terms_absent as string[] | undefined;
+  if (forbiddenTerms) {
+    for (const term of forbiddenTerms) {
+      if (text.toLowerCase().includes(term.toLowerCase())) {
+        failures.push(`Output contains forbidden term: "${term}"`);
+      }
+    }
+  }
   return failures;
 }
 
-// ----- Runner -----
+function uniqueNormalized(items: string[]): string[] {
+  return [...new Set(items.map((item) => item.trim().replace(/\s+/g, " ").toLowerCase()).filter(Boolean))];
+}
 
-function runEval(evalCase: EvalCase, output: Record<string, unknown>, rawText: string, latencyMs: number): EvalResult {
-  const failures: string[] = [
-    ...validateSchema(output, evalCase.expected),
-    ...validateContent(rawText, evalCase.expected),
-  ];
-
-  if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
-    failures.push(
-      `Latency ${latencyMs}ms exceeds max ${evalCase.expected.max_latency_ms}ms`
-    );
+function checkRequiredKeys(value: Record<string, unknown>, keys: string[], label: string): string[] {
+  const failures: string[] = [];
+  for (const key of keys) {
+    if (!(key in value)) {
+      failures.push(`${label} missing required key: ${key}`);
+    }
   }
+  return failures;
+}
 
-  return {
-    case_id: evalCase.id,
-    passed: failures.length === 0,
-    failures,
-    latency_ms: latencyMs,
-  };
+function inferEndpoint(evalCase: EvalCase): string {
+  if (evalCase.endpoint) {
+    return evalCase.endpoint;
+  }
+  switch (evalCase.prompt_class) {
+    case "prepare_tomorrow_plan":
+      return "POST /api/tomorrow-plan";
+    case "draft_family_message":
+      return "POST /api/family-message";
+    case "log_intervention":
+      return "POST /api/intervention";
+    case "simplify_for_student":
+      return "POST /api/simplify";
+    case "generate_vocab_cards":
+      return "POST /api/vocab-cards";
+    case "detect_support_patterns":
+      return "POST /api/support-patterns";
+    case "retrieve_latest_pattern":
+      return "POST /api/support-patterns/latest";
+    case "generate_ea_briefing":
+      return "POST /api/ea-briefing";
+    case "forecast_complexity":
+      return "POST /api/complexity-forecast";
+    case "complexity_debt_register":
+      return "GET /api/debt-register/:classroom_id";
+    case "detect_scaffold_decay":
+      return "POST /api/scaffold-decay";
+    case "generate_survival_packet":
+      return "POST /api/survival-packet";
+    default:
+      return "POST /api/differentiate";
+  }
+}
+
+function validateModelTier(modelId: string | undefined, expected: ExpectedOutput): string[] {
+  const expectedTier = (expected as Record<string, unknown>).model_tier as string | undefined;
+  if (!expectedTier) {
+    return [];
+  }
+  if (!modelId) {
+    return [`Expected model tier ${expectedTier}, but no model_id was returned`];
+  }
+  const normalized = modelId.toLowerCase();
+  if (expectedTier === "planning" && !normalized.includes("27b")) {
+    return [`Expected planning-tier model_id to include 27b, got ${modelId}`];
+  }
+  if (expectedTier === "live" && normalized.includes("27b")) {
+    return [`Expected live-tier model_id, got planning-tier model_id ${modelId}`];
+  }
+  return [];
 }
 
 // ----- Main -----
 
 const API_BASE = process.env.API_BASE ?? "http://localhost:3100";
+const EVAL_OUTPUT_DIR = process.env.EVAL_OUTPUT_DIR;
+const EVAL_OUTPUT_BASENAME = process.env.EVAL_OUTPUT_BASENAME ?? new Date().toISOString().replace(/[:.]/g, "-");
 
 // Classroom access codes for auth — must match data/synthetic_classrooms/*.json
 const CLASSROOM_CODES: Record<string, string> = {
@@ -183,7 +230,57 @@ async function loadEvalCases(dir: string): Promise<EvalCase[]> {
   if (!existsSync(absDir)) return [];
   return readdirSync(absDir)
     .filter((f) => f.endsWith(".json"))
-    .map((f) => JSON.parse(readFileSync(join(absDir, f), "utf-8")) as EvalCase);
+    .map((f) => {
+      const parsed = JSON.parse(readFileSync(join(absDir, f), "utf-8")) as EvalCase;
+      return { ...parsed, source_file: join(absDir, f) };
+    });
+}
+
+async function writeEvalArtifacts(results: EvalResult[]): Promise<void> {
+  if (!EVAL_OUTPUT_DIR) {
+    return;
+  }
+
+  const finishedAt = new Date().toISOString();
+  const passed = results.filter((result) => result.passed).length;
+  const failed = results.length - passed;
+  const models = [...new Set(results.map((result) => result.model_id).filter((value): value is string => Boolean(value)))];
+  const artifact = {
+    generated_at: finishedAt,
+    api_base: API_BASE,
+    total_cases: results.length,
+    passed_cases: passed,
+    failed_cases: failed,
+    models,
+    results,
+  };
+  const summary = {
+    generated_at: finishedAt,
+    api_base: API_BASE,
+    total_cases: results.length,
+    passed_cases: passed,
+    failed_cases: failed,
+    models,
+    failing_cases: results
+      .filter((result) => !result.passed)
+      .map((result) => ({
+        case_id: result.case_id,
+        source_file: result.source_file,
+        endpoint: result.endpoint,
+        prompt_class: result.prompt_class,
+        failures: result.failures,
+      })),
+  };
+
+  await mkdir(EVAL_OUTPUT_DIR, { recursive: true });
+  await writeFile(
+    join(EVAL_OUTPUT_DIR, `${EVAL_OUTPUT_BASENAME}-results.json`),
+    JSON.stringify(artifact, null, 2),
+  );
+  await writeFile(
+    join(EVAL_OUTPUT_DIR, `${EVAL_OUTPUT_BASENAME}-summary.json`),
+    JSON.stringify(summary, null, 2),
+  );
 }
 
 async function runDifferentiationEval(evalCase: EvalCase): Promise<EvalResult> {
@@ -237,6 +334,17 @@ async function runDifferentiationEval(evalCase: EvalCase): Promise<EvalResult> {
       }
     }
 
+    const minDistinctInstructions = (evalCase.expected as Record<string, unknown>).min_distinct_instructions as number | undefined;
+    if (minDistinctInstructions) {
+      const instructions = variants
+        .map((variant) => variant.student_facing_instructions)
+        .filter((value): value is string => typeof value === "string");
+      const distinctInstructions = uniqueNormalized(instructions).length;
+      if (distinctInstructions < minDistinctInstructions) {
+        failures.push(`Expected at least ${minDistinctInstructions} distinct instruction sets, got ${distinctInstructions}`);
+      }
+    }
+
     // Check required keys on each variant
     if (evalCase.expected.required_keys) {
       for (const variant of variants) {
@@ -266,7 +374,9 @@ async function runDifferentiationEval(evalCase: EvalCase): Promise<EvalResult> {
       failures.push(`Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`);
     }
 
-    return { case_id: evalCase.id, passed: failures.length === 0, failures, latency_ms: latencyMs };
+    failures.push(...validateModelTier(data.model_id, evalCase.expected));
+
+    return { case_id: evalCase.id, passed: failures.length === 0, failures, latency_ms: latencyMs, model_id: data.model_id };
   } catch (err) {
     const latencyMs = performance.now() - start;
     failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
@@ -339,7 +449,9 @@ async function runTomorrowPlanEval(evalCase: EvalCase): Promise<EvalResult> {
       failures.push(`Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`);
     }
 
-    return { case_id: evalCase.id, passed: failures.length === 0, failures, latency_ms: latencyMs };
+    failures.push(...validateModelTier(data.model_id, evalCase.expected));
+
+    return { case_id: evalCase.id, passed: failures.length === 0, failures, latency_ms: latencyMs, model_id: data.model_id };
   } catch (err) {
     const latencyMs = performance.now() - start;
     failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
@@ -775,11 +887,14 @@ async function runSupportPatternsEval(evalCase: EvalCase): Promise<EvalResult> {
       );
     }
 
+    failures.push(...validateModelTier(data.model_id, evalCase.expected));
+
     return {
       case_id: evalCase.id,
       passed: failures.length === 0,
       failures,
       latency_ms: latencyMs,
+      model_id: data.model_id,
     };
   } catch (err) {
     const latencyMs = performance.now() - start;
@@ -931,11 +1046,14 @@ async function runEABriefingEval(evalCase: EvalCase): Promise<EvalResult> {
       );
     }
 
+    failures.push(...validateModelTier(data.model_id, evalCase.expected));
+
     return {
       case_id: evalCase.id,
       passed: failures.length === 0,
       failures,
       latency_ms: latencyMs,
+      model_id: data.model_id,
     };
   } catch (err) {
     const latencyMs = performance.now() - start;
@@ -1020,6 +1138,482 @@ async function runComplexityForecastEval(evalCase: EvalCase): Promise<EvalResult
       passed: failures.length === 0,
       failures,
       latency_ms: latencyMs,
+      model_id: data.model_id,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// --- Debt register evaluation ---
+
+async function runDebtRegisterEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const classroomId = input.classroom_id as string;
+  const start = performance.now();
+
+  try {
+    // Build query string from optional threshold overrides in the eval input
+    const queryParams = new URLSearchParams();
+    for (const key of ["stale_followup_days", "unapproved_message_days", "recurring_plan_min", "review_window_days", "review_min_records"]) {
+      if (input[key] !== undefined) queryParams.set(key, String(input[key]));
+    }
+    const qs = queryParams.toString();
+    const url = `${API_BASE}/api/debt-register/${classroomId}${qs ? `?${qs}` : ""}`;
+
+    const resp = await fetch(url, {
+      method: "GET",
+      headers: authHeaders(classroomId),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      register: Record<string, unknown>;
+    };
+    const register = data.register;
+
+    // Check required keys
+    if (evalCase.expected.required_keys) {
+      for (const key of evalCase.expected.required_keys) {
+        if (!(key in register)) {
+          failures.push(`Register missing required key: ${key}`);
+        }
+      }
+    }
+
+    // Check schema version
+    if (evalCase.expected.schema_version && register.schema_version !== evalCase.expected.schema_version) {
+      failures.push(
+        `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${register.schema_version}`,
+      );
+    }
+
+    // Content checks
+    const allText = JSON.stringify(register);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// --- Scaffold decay evaluation ---
+
+async function runScaffoldDecayEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/scaffold-decay`, {
+      method: "POST",
+      headers: authHeaders(input.classroom_id as string),
+      body: JSON.stringify({
+        classroom_id: input.classroom_id,
+        student_ref: input.student_ref,
+        time_window: input.time_window ?? 20,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      report: Record<string, unknown> | null;
+      insufficient_records?: boolean;
+      record_count?: number;
+      message?: string;
+      thinking_summary?: string | null;
+      model_id?: string;
+      latency_ms?: number;
+    };
+
+    // For insufficient records, check against message content
+    if (data.insufficient_records) {
+      const allText = JSON.stringify(data);
+      failures.push(...validateContent(allText, evalCase.expected));
+
+      // If the eval expected schema keys on a report, that's a mismatch
+      // (unless the eval specifically tests the insufficient case)
+      if (evalCase.expected.required_keys && !evalCase.expected.must_contain?.some((s) => s.includes("Not enough"))) {
+        failures.push(`Got insufficient_records response (${data.record_count} records) — expected a full report`);
+      }
+    } else if (data.report) {
+      const report = data.report;
+
+      // Check required keys
+      if (evalCase.expected.required_keys) {
+        for (const key of evalCase.expected.required_keys) {
+          if (!(key in report)) {
+            failures.push(`Report missing required key: ${key}`);
+          }
+        }
+      }
+
+      // Check schema version
+      if (evalCase.expected.schema_version && report.schema_version !== evalCase.expected.schema_version) {
+        failures.push(
+          `Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${report.schema_version}`,
+        );
+      }
+
+      // Content checks
+      const allText = JSON.stringify(report);
+      failures.push(...validateContent(allText, evalCase.expected));
+    }
+
+    // Latency check
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(
+        `Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`,
+      );
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// --- Schedule evaluation ---
+
+async function runScheduleEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const classroomId = input.classroom_id as string;
+  const endpoint = evalCase.endpoint ?? "GET /api/classrooms/:id/schedule";
+  const method = endpoint.startsWith("PUT ") ? "PUT" : "GET";
+  const start = performance.now();
+  let originalState: Record<string, unknown> | null = null;
+
+  try {
+    if (method === "PUT") {
+      const restoreResp = await fetch(`${API_BASE}/api/classrooms/${classroomId}/schedule`, {
+        method: "GET",
+      });
+      if (restoreResp.ok) {
+        originalState = (await restoreResp.json()) as Record<string, unknown>;
+      }
+    }
+
+    const response = await fetch(`${API_BASE}/api/classrooms/${classroomId}/schedule`, {
+      method,
+      headers: authHeaders(classroomId),
+      body: method === "PUT" ? JSON.stringify(input.body ?? {}) : undefined,
+    });
+
+    const latencyMs = performance.now() - start;
+    const raw = await response.text();
+    const data = raw ? JSON.parse(raw) as Record<string, unknown> : {};
+    const expectedStatus = (evalCase.expected as Record<string, unknown>).status as number | undefined;
+
+    if (expectedStatus !== undefined && response.status !== expectedStatus) {
+      failures.push(`Expected status ${expectedStatus}, got ${response.status}`);
+    }
+
+    if (!response.ok) {
+      failures.push(`API returned ${response.status}: ${raw}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    if (evalCase.expected.required_keys) {
+      failures.push(...checkRequiredKeys(data, evalCase.expected.required_keys, "Schedule response"));
+    }
+
+    const updated = (evalCase.expected as Record<string, unknown>).updated as boolean | undefined;
+    if (updated !== undefined && data.updated !== updated) {
+      failures.push(`Expected updated=${updated}, got ${JSON.stringify(data.updated)}`);
+    }
+
+    const schedule = Array.isArray(data.schedule) ? data.schedule : [];
+    const minBlocks = (evalCase.expected as Record<string, unknown>).schedule_min_blocks as number | undefined;
+    if (minBlocks !== undefined && schedule.length < minBlocks) {
+      failures.push(`Expected at least ${minBlocks} schedule blocks, got ${schedule.length}`);
+    }
+
+    const blockRequiredKeys = (evalCase.expected as Record<string, unknown>).schedule_block_required_keys as string[] | undefined;
+    if (blockRequiredKeys) {
+      schedule.forEach((block, index) => {
+        if (!block || typeof block !== "object") {
+          failures.push(`Schedule block ${index} is not an object`);
+          return;
+        }
+        failures.push(...checkRequiredKeys(block as Record<string, unknown>, blockRequiredKeys, `Schedule block ${index}`));
+      });
+    }
+
+    const subReadyType = (evalCase.expected as Record<string, unknown>).sub_ready_type as string | undefined;
+    if (subReadyType && typeof data.sub_ready !== subReadyType) {
+      failures.push(`Expected sub_ready to be ${subReadyType}, got ${typeof data.sub_ready}`);
+    }
+
+    const allText = JSON.stringify(data);
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(`Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`);
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  } finally {
+    if (method === "PUT" && originalState) {
+      const restorePayload: Record<string, unknown> = {
+        schedule: originalState.schedule,
+      };
+      if ("upcoming_events" in originalState) {
+        restorePayload.upcoming_events = originalState.upcoming_events;
+      }
+      await fetch(`${API_BASE}/api/classrooms/${classroomId}/schedule`, {
+        method: "PUT",
+        headers: {
+          ...authHeaders(classroomId),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(restorePayload),
+      }).catch(() => undefined);
+    }
+  }
+}
+
+// --- Survival packet evaluation ---
+
+async function runSurvivalPacketEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/survival-packet`, {
+      method: "POST",
+      headers: authHeaders(input.classroom_id as string),
+      body: JSON.stringify({
+        classroom_id: input.classroom_id,
+        target_date: input.target_date,
+        teacher_notes: input.teacher_notes,
+      }),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!resp.ok) {
+      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const data = (await resp.json()) as {
+      packet: Record<string, unknown>;
+      thinking_summary: string | null;
+      model_id: string;
+      latency_ms: number;
+    };
+    const packet = data.packet;
+    const allText = JSON.stringify(packet);
+
+    const requiredPacketKeys = (evalCase.expected as Record<string, unknown>).required_packet_keys as string[] | undefined;
+    if (requiredPacketKeys) {
+      failures.push(...checkRequiredKeys(packet, requiredPacketKeys, "Survival packet"));
+    }
+
+    if (evalCase.expected.schema_version && packet.schema_version !== evalCase.expected.schema_version) {
+      failures.push(`Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${packet.schema_version}`);
+    }
+
+    const minRoutines = (evalCase.expected as Record<string, unknown>).min_routines as number | undefined;
+    if (minRoutines !== undefined) {
+      const routines = Array.isArray(packet.routines) ? packet.routines : [];
+      if (routines.length < minRoutines) {
+        failures.push(`Expected at least ${minRoutines} routines, got ${routines.length}`);
+      }
+    }
+
+    const minStudentSupport = (evalCase.expected as Record<string, unknown>).min_student_support as number | undefined;
+    if (minStudentSupport !== undefined) {
+      const studentSupport = Array.isArray(packet.student_support) ? packet.student_support : [];
+      if (studentSupport.length < minStudentSupport) {
+        failures.push(`Expected at least ${minStudentSupport} student_support entries, got ${studentSupport.length}`);
+      }
+    }
+
+    const eaCoordinationRequiredKeys = (evalCase.expected as Record<string, unknown>).ea_coordination_required_keys as string[] | undefined;
+    if (eaCoordinationRequiredKeys) {
+      if (!packet.ea_coordination || typeof packet.ea_coordination !== "object") {
+        failures.push("Survival packet missing ea_coordination object");
+      } else {
+        failures.push(...checkRequiredKeys(packet.ea_coordination as Record<string, unknown>, eaCoordinationRequiredKeys, "ea_coordination"));
+      }
+    }
+
+    const minSimplifiedDayPlan = (evalCase.expected as Record<string, unknown>).min_simplified_day_plan as number | undefined;
+    if (minSimplifiedDayPlan !== undefined) {
+      const dayPlan = Array.isArray(packet.simplified_day_plan) ? packet.simplified_day_plan : [];
+      if (dayPlan.length < minSimplifiedDayPlan) {
+        failures.push(`Expected at least ${minSimplifiedDayPlan} simplified_day_plan entries, got ${dayPlan.length}`);
+      }
+    }
+
+    const minComplexityPeaks = (evalCase.expected as Record<string, unknown>).min_complexity_peaks as number | undefined;
+    if (minComplexityPeaks !== undefined) {
+      const peaks = Array.isArray(packet.complexity_peaks) ? packet.complexity_peaks : [];
+      if (peaks.length < minComplexityPeaks) {
+        failures.push(`Expected at least ${minComplexityPeaks} complexity_peaks, got ${peaks.length}`);
+      }
+    }
+
+    const minHeadsUp = (evalCase.expected as Record<string, unknown>).min_heads_up as number | undefined;
+    if (minHeadsUp !== undefined) {
+      const headsUp = Array.isArray(packet.heads_up) ? packet.heads_up : [];
+      if (headsUp.length < minHeadsUp) {
+        failures.push(`Expected at least ${minHeadsUp} heads_up entries, got ${headsUp.length}`);
+      }
+    }
+
+    const studentRefsMentioned = (evalCase.expected as Record<string, unknown>).student_refs_mentioned as string[] | undefined;
+    if (studentRefsMentioned) {
+      for (const studentRef of studentRefsMentioned) {
+        if (!allText.includes(studentRef)) {
+          failures.push(`Expected survival packet to mention ${studentRef}`);
+        }
+      }
+    }
+
+    const eaNameMentioned = (evalCase.expected as Record<string, unknown>).ea_name_mentioned as string | undefined;
+    if (eaNameMentioned && !allText.includes(eaNameMentioned)) {
+      failures.push(`Expected survival packet to mention EA name ${eaNameMentioned}`);
+    }
+
+    const containsActionableInstructions = (evalCase.expected as Record<string, unknown>).contains_actionable_instructions as boolean | undefined;
+    if (containsActionableInstructions) {
+      const actionVerbMatches = allText.match(/\b(use|give|keep|set|provide|post|check|offer|meet|point|let|clip|brief|avoid|prepare|have)\b/gi) ?? [];
+      if (actionVerbMatches.length < 3) {
+        failures.push("Expected substitute packet to contain multiple actionable instructions");
+      }
+    }
+
+    const usesObservationalLanguage = (evalCase.expected as Record<string, unknown>).uses_observational_language as boolean | undefined;
+    if (usesObservationalLanguage) {
+      const observationalPatterns = [
+        "benefits from",
+        "needs",
+        "works best",
+        "responds to",
+        "when",
+        "during",
+      ];
+      if (!observationalPatterns.some((pattern) => allText.toLowerCase().includes(pattern))) {
+        failures.push("Expected observational language markers in survival packet");
+      }
+    }
+
+    const familyCommsRespectsBoundaries = (evalCase.expected as Record<string, unknown>).family_comms_respects_boundaries as boolean | undefined;
+    if (familyCommsRespectsBoundaries) {
+      const familyComms = Array.isArray(packet.family_comms) ? packet.family_comms : [];
+      if (familyComms.length === 0) {
+        failures.push("Expected family_comms entries in survival packet");
+      } else {
+        for (const [index, entry] of familyComms.entries()) {
+          if (!entry || typeof entry !== "object") {
+            failures.push(`family_comms[${index}] is not an object`);
+            continue;
+          }
+          if (typeof (entry as Record<string, unknown>).notes !== "string" || !(entry as Record<string, unknown>).notes) {
+            failures.push(`family_comms[${index}] must include notes`);
+          }
+        }
+      }
+    }
+
+    const referencesInterventionHistory = (evalCase.expected as Record<string, unknown>).references_intervention_history as boolean | undefined;
+    if (referencesInterventionHistory) {
+      const historyPatterns = ["recent", "history", "follow-up", "records show", "this week", "last"];
+      if (!historyPatterns.some((pattern) => allText.toLowerCase().includes(pattern))) {
+        failures.push("Expected survival packet to reference recent history or follow-up context");
+      }
+    }
+
+    const referencesScheduleData = (evalCase.expected as Record<string, unknown>).references_schedule_data as boolean | undefined;
+    if (referencesScheduleData) {
+      const dayPlan = Array.isArray(packet.simplified_day_plan) ? packet.simplified_day_plan : [];
+      const hasTimeSlots = dayPlan.some((entry) => typeof entry?.time_slot === "string" && entry.time_slot.includes(":"));
+      if (!hasTimeSlots) {
+        failures.push("Expected survival packet to reference schedule time slots");
+      }
+    }
+
+    const studentSupportInformedByScaffolds = (evalCase.expected as Record<string, unknown>).student_support_informed_by_scaffolds as boolean | undefined;
+    if (studentSupportInformedByScaffolds) {
+      const studentSupport = Array.isArray(packet.student_support) ? packet.student_support : [];
+      const scaffoldCount = studentSupport.filter((entry) => Array.isArray(entry?.current_scaffolds) && entry.current_scaffolds.length > 0).length;
+      if (scaffoldCount === 0) {
+        failures.push("Expected survival packet student_support to include known scaffolds");
+      }
+    }
+
+    const complexityPeaksPresent = (evalCase.expected as Record<string, unknown>).complexity_peaks_present as boolean | undefined;
+    if (complexityPeaksPresent) {
+      const peaks = Array.isArray(packet.complexity_peaks) ? packet.complexity_peaks : [];
+      if (peaks.length === 0) {
+        failures.push("Expected survival packet to include complexity_peaks");
+      }
+    }
+
+    failures.push(...validateContent(allText, evalCase.expected));
+
+    if (evalCase.expected.max_latency_ms && latencyMs > evalCase.expected.max_latency_ms) {
+      failures.push(`Latency ${Math.round(latencyMs)}ms exceeds max ${evalCase.expected.max_latency_ms}ms`);
+    }
+
+    failures.push(...validateModelTier(data.model_id, evalCase.expected));
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+      model_id: data.model_id,
     };
   } catch (err) {
     const latencyMs = performance.now() - start;
@@ -1044,28 +1638,46 @@ async function main(): Promise<void> {
 
   for (const ec of evalCases) {
     console.log(`[${ec.id}] ${ec.description}`);
-    let result: EvalResult;
-    if (ec.prompt_class === "prepare_tomorrow_plan") {
-      result = await runTomorrowPlanEval(ec);
+    let rawResult: EvalResult;
+    if (ec.endpoint?.includes("/api/classrooms/") && ec.endpoint.includes("/schedule")) {
+      rawResult = await runScheduleEval(ec);
+    } else if (ec.prompt_class === "prepare_tomorrow_plan") {
+      rawResult = await runTomorrowPlanEval(ec);
     } else if (ec.prompt_class === "draft_family_message") {
-      result = await runFamilyMessageEval(ec);
+      rawResult = await runFamilyMessageEval(ec);
     } else if (ec.prompt_class === "log_intervention") {
-      result = await runInterventionEval(ec);
+      rawResult = await runInterventionEval(ec);
     } else if (ec.prompt_class === "simplify_for_student") {
-      result = await runSimplifyEval(ec);
+      rawResult = await runSimplifyEval(ec);
     } else if (ec.prompt_class === "generate_vocab_cards") {
-      result = await runVocabCardsEval(ec);
+      rawResult = await runVocabCardsEval(ec);
     } else if (ec.prompt_class === "detect_support_patterns") {
-      result = await runSupportPatternsEval(ec);
+      rawResult = await runSupportPatternsEval(ec);
     } else if (ec.prompt_class === "retrieve_latest_pattern") {
-      result = await runLatestPatternEval(ec);
+      rawResult = await runLatestPatternEval(ec);
     } else if (ec.prompt_class === "generate_ea_briefing") {
-      result = await runEABriefingEval(ec);
+      rawResult = await runEABriefingEval(ec);
     } else if (ec.prompt_class === "forecast_complexity") {
-      result = await runComplexityForecastEval(ec);
+      rawResult = await runComplexityForecastEval(ec);
+    } else if (ec.prompt_class === "complexity_debt_register") {
+      rawResult = await runDebtRegisterEval(ec);
+    } else if (ec.prompt_class === "detect_scaffold_decay") {
+      rawResult = await runScaffoldDecayEval(ec);
+    } else if (ec.prompt_class === "generate_survival_packet") {
+      rawResult = await runSurvivalPacketEval(ec);
     } else {
-      result = await runDifferentiationEval(ec);
+      rawResult = await runDifferentiationEval(ec);
     }
+
+    const result: EvalResult = {
+      ...rawResult,
+      category: ec.category,
+      description: ec.description,
+      prompt_class: ec.prompt_class ?? null,
+      endpoint: inferEndpoint(ec),
+      source_file: ec.source_file,
+    };
+
     results.push(result);
 
     if (result.passed) {
@@ -1078,9 +1690,14 @@ async function main(): Promise<void> {
     }
   }
 
+  await writeEvalArtifacts(results);
+
   const passed = results.filter((r) => r.passed).length;
   console.log(`\nResults: ${passed}/${results.length} passed`);
   process.exit(passed === results.length ? 0 : 1);
 }
 
-main();
+main().catch(async (error) => {
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exitCode = 1;
+});

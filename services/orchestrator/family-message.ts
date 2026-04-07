@@ -87,12 +87,9 @@ export function parseFamilyMessageResponse(
   return {
     draft_id: draftId,
     classroom_id: classroomId,
-    student_refs: Array.isArray(p.student_refs)
-      ? p.student_refs.map(String)
-      : input.student_refs,
-    message_type:
-      (p.message_type as FamilyMessageDraft["message_type"]) ?? input.message_type,
-    target_language: String(p.target_language ?? input.target_language),
+    student_refs: input.student_refs,
+    message_type: input.message_type,
+    target_language: input.target_language,
     plain_language_text: String(p.plain_language_text ?? ""),
     simplified_student_text: p.simplified_student_text
       ? String(p.simplified_student_text)

@@ -5,7 +5,18 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["**/dist/**", "**/node_modules/**", "**/*.js", "**/*.cjs"],
+    ignores: ["**/dist/**", "**/node_modules/**", "**/.venv*/**", "**/*.js", "**/*.cjs"],
+  },
+  {
+    files: ["scripts/**/*.mjs", "eslint.config.mjs"],
+    languageOptions: {
+      globals: {
+        console: "readonly",
+        fetch: "readonly",
+        process: "readonly",
+        setTimeout: "readonly",
+      },
+    },
   },
   {
     rules: {

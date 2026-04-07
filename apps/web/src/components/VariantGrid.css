@@ -3,12 +3,12 @@
 }
 
 .variant-grid-header h2 {
-  font-size: 1.1rem;
+  font-size: var(--text-lg);
   margin-bottom: 0.25rem;
 }
 
 .variant-grid-meta {
-  font-size: 0.82rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }

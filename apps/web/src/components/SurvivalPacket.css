@@ -1,0 +1,380 @@
+/* SurvivalPacket — CSS variable design system (replaces Tailwind) */
+
+.survival-packet {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  color: var(--color-text);
+}
+
+.survival-packet > section {
+  animation: fade-up 0.35s ease-out both;
+}
+
+.survival-packet > section:nth-child(2) { animation-delay: 0.05s; }
+.survival-packet > section:nth-child(3) { animation-delay: 0.1s; }
+.survival-packet > section:nth-child(4) { animation-delay: 0.15s; }
+.survival-packet > section:nth-child(5) { animation-delay: 0.2s; }
+.survival-packet > section:nth-child(6) { animation-delay: 0.25s; }
+.survival-packet > section:nth-child(7) { animation-delay: 0.3s; }
+.survival-packet > section:nth-child(8) { animation-delay: 0.35s; }
+
+/* Header */
+.survival-packet-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.survival-packet-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+}
+
+.survival-packet-meta {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-1);
+}
+
+/* Heads Up alert */
+.survival-packet-heads-up {
+  border-left: 4px solid var(--color-section-watchpoint);
+  background: var(--color-bg-warning);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: var(--space-4);
+}
+
+.survival-packet-heads-up-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text-warning);
+  margin-bottom: var(--space-2);
+}
+
+.survival-packet-heads-up-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.survival-packet-heads-up-item {
+  font-size: var(--text-sm);
+  color: var(--color-text-warning);
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Section heading */
+.survival-packet-heading {
+  font-size: var(--text-lg);
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+/* Card */
+.survival-packet-card {
+  border-radius: var(--radius);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  padding: var(--space-4);
+}
+
+/* Card grid (2-col on wider) */
+.survival-packet-grid {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (min-width: 640px) {
+  .survival-packet-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Card stack (single-col list) */
+.survival-packet-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* Inline label */
+.survival-packet-label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+.survival-packet-text {
+  font-size: var(--text-sm);
+}
+
+.survival-packet-text--bold {
+  font-weight: 500;
+}
+
+.survival-packet-text--italic {
+  font-style: italic;
+  color: var(--color-text-warning);
+  margin-top: var(--space-2);
+}
+
+.survival-packet-avoid {
+  font-size: var(--text-sm);
+  color: var(--color-text-danger);
+}
+
+.survival-packet-student-name {
+  font-weight: 600;
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-2);
+}
+
+.survival-packet-scaffolds {
+  margin-bottom: var(--space-2);
+}
+
+.survival-packet-ea-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.survival-packet-inline-field {
+  font-size: var(--text-sm);
+}
+
+.survival-packet-inline-field strong {
+  font-weight: 500;
+}
+
+/* Table */
+.survival-packet-table-wrap {
+  overflow-x: auto;
+}
+
+.survival-packet-table {
+  width: 100%;
+  font-size: var(--text-sm);
+  border-collapse: collapse;
+}
+
+.survival-packet-table th,
+.survival-packet-table td {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  vertical-align: top;
+}
+
+.survival-packet-table th {
+  font-weight: 600;
+  text-align: left;
+  background: var(--color-bg-muted);
+}
+
+.survival-packet-table .col-time { width: 7rem; }
+.survival-packet-table .col-activity { width: 10rem; }
+.survival-packet-table .col-materials { width: 9rem; }
+
+.survival-packet-table tbody tr:nth-child(even) {
+  background: var(--color-bg-muted);
+}
+
+.survival-packet-table .cell-muted {
+  color: var(--color-text-secondary);
+}
+
+.survival-packet-table .cell-bold {
+  font-weight: 500;
+}
+
+/* Badges */
+.survival-packet-badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius);
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.survival-packet-badge--low {
+  background: var(--color-forecast-low-bg);
+  color: var(--color-forecast-low-text);
+}
+
+.survival-packet-badge--medium {
+  background: var(--color-forecast-medium-bg);
+  color: var(--color-forecast-medium-text);
+}
+
+.survival-packet-badge--high {
+  background: var(--color-forecast-high-bg);
+  color: var(--color-forecast-high-text);
+}
+
+.survival-packet-badge--danger {
+  background: var(--color-bg-danger);
+  color: var(--color-text-danger);
+}
+
+.survival-packet-badge--info {
+  background: var(--color-bg-info);
+  color: var(--color-text-info);
+}
+
+.survival-packet-badge--muted {
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}
+
+/* Peak row */
+.survival-packet-peak-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.survival-packet-peak-time {
+  font-size: var(--text-sm);
+  font-weight: 500;
+}
+
+.survival-packet-peak-detail {
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-1);
+}
+
+.survival-packet-peak-mitigation {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Family comms row */
+.survival-packet-comms-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+
+.survival-packet-comms-name {
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.survival-packet-comms-lang {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+/* ─── Print ─── */
+@media print {
+  .survival-packet {
+    gap: 0;
+    color: #000;
+  }
+
+  .survival-packet-header {
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .survival-packet-title {
+    font-size: 1.4rem;
+  }
+
+  .survival-packet-meta {
+    color: #444;
+  }
+
+  .survival-packet > section {
+    animation: none;
+    margin-bottom: 0.75rem;
+    break-inside: avoid;
+  }
+
+  .survival-packet-card {
+    border-color: #ccc;
+    box-shadow: none;
+    break-inside: avoid;
+  }
+
+  .survival-packet-heading {
+    font-size: 1rem;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 0.25rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Heads-up alert prints with background */
+  .survival-packet-heads-up {
+    border-left-color: #d97706;
+    background: #fffbeb;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* DO NOT CONTACT badge prints red */
+  .survival-packet-badge--danger {
+    background: #fee2e2;
+    color: #991b1b;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+    font-weight: 700;
+  }
+
+  /* Complexity peak badges print colored */
+  .survival-packet-badge--high {
+    background: #fee2e2;
+    color: #991b1b;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .survival-packet-badge--medium {
+    background: #fef9c3;
+    color: #854d0e;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .survival-packet-badge--low {
+    background: #dcfce7;
+    color: #166534;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Table prints with clear borders */
+  .survival-packet-table th,
+  .survival-packet-table td {
+    border-color: #999;
+  }
+
+  .survival-packet-table th {
+    background: #f0f0f0;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  /* Day plan table gets page break before if needed */
+  .survival-packet-table-wrap {
+    break-inside: avoid;
+  }
+
+  /* Avoid text prints bold */
+  .survival-packet-avoid {
+    color: #991b1b;
+    font-weight: 600;
+  }
+}

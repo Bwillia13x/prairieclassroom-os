@@ -9,7 +9,7 @@
     "teacher_goal": "Improve afternoon flow."
   },
   "expected": {
-    "max_latency_ms": 30000,
+    "max_latency_ms": 60000,
     "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"]
   }
 }

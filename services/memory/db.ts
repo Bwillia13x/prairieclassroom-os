@@ -132,14 +132,10 @@ export function closeAll(): void {
 }
 
 // Graceful shutdown — checkpoint and close on process exit
-let shutdownRegistered = false;
-if (!shutdownRegistered) {
-  shutdownRegistered = true;
-  for (const signal of ["SIGTERM", "SIGINT"] as const) {
-    process.on(signal, () => {
-      console.log(`\nReceived ${signal} — closing databases...`);
-      closeAll();
-      process.exit(0);
-    });
-  }
+for (const signal of ["SIGTERM", "SIGINT"] as const) {
+  process.on(signal, () => {
+    console.log(`\nReceived ${signal} — closing databases...`);
+    closeAll();
+    process.exit(0);
+  });
 }

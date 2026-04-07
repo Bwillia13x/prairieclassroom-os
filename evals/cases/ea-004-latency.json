@@ -7,6 +7,6 @@
     "classroom_id": "alpha-grade4"
   },
   "expected": {
-    "max_latency_ms": 2000
+    "max_latency_ms": 15000
   }
 }

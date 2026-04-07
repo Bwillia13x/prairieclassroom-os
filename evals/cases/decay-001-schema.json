@@ -5,7 +5,7 @@
   "prompt_class": "detect_scaffold_decay",
   "input": {
     "classroom_id": "demo-okafor-grade34",
-    "student_ref": "Student C",
+    "student_ref": "Chantal",
     "time_window": 20
   },
   "expected": {

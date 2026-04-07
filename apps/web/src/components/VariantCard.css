@@ -2,11 +2,24 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.25rem;
+  padding: var(--space-5);
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-3);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  animation: fade-up 0.3s ease-out both;
+}
+
+.variant-card:nth-child(1) { animation-delay: 0.05s; }
+.variant-card:nth-child(2) { animation-delay: 0.1s; }
+.variant-card:nth-child(3) { animation-delay: 0.15s; }
+.variant-card:nth-child(4) { animation-delay: 0.2s; }
+.variant-card:nth-child(5) { animation-delay: 0.25s; }
+
+.variant-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
 }
 
 .variant-header {
@@ -19,7 +32,7 @@
   display: inline-block;
   padding: 0.15rem 0.6rem;
   border-radius: 999px;
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   font-weight: 600;
   color: var(--color-text-on-accent);
   letter-spacing: 0.02em;
@@ -32,17 +45,17 @@
 .variant-badge--extension { background: var(--color-variant-extension); }
 
 .variant-time {
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }
 
 .variant-title {
-  font-size: 0.95rem;
+  font-size: var(--text-md);
   font-weight: 600;
 }
 
 .variant-section h4 {
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--color-text-secondary);
@@ -50,7 +63,7 @@
 }
 
 .variant-section p {
-  font-size: 0.88rem;
+  font-size: var(--text-base);
   color: var(--color-text);
   line-height: 1.55;
 }
@@ -63,7 +76,7 @@
 }
 
 .variant-section li {
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: 4px;

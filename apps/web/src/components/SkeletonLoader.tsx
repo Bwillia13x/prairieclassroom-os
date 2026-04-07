@@ -12,7 +12,7 @@ export default function SkeletonLoader({ variant, message, label }: Props) {
     return (
       <div aria-busy="true" aria-label={label}>
         <div className="loading-indicator">{message}</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "1rem", marginTop: "0.75rem" }}>
+        <div className="skeleton-grid">
           {[1, 2, 3].map((n) => (
             <div key={n} className="skeleton-card">
               <div className="skeleton-line skeleton-line--short" />
@@ -30,7 +30,7 @@ export default function SkeletonLoader({ variant, message, label }: Props) {
     return (
       <div aria-busy="true" aria-label={label}>
         <div className="loading-indicator loading-indicator--planning">{message}</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginTop: "0.75rem" }}>
+        <div className="skeleton-stack">
           {[1, 2, 3, 4].map((n) => (
             <div key={n} className="skeleton-card">
               <div className="skeleton-line skeleton-line--short" />
@@ -46,7 +46,7 @@ export default function SkeletonLoader({ variant, message, label }: Props) {
   return (
     <div aria-busy="true" aria-label={label}>
       <div className="loading-indicator">{message}</div>
-      <div className="skeleton-card" style={{ marginTop: "0.75rem" }}>
+      <div className="skeleton-card skeleton-card--single">
         <div className="skeleton-line skeleton-line--full" />
         <div className="skeleton-line skeleton-line--long" />
         <div className="skeleton-line skeleton-line--medium" />

@@ -8,7 +8,7 @@
     "target_date": "2026-04-07"
   },
   "expected": {
-    "max_latency_ms": 30000,
+    "max_latency_ms": 150000,
     "model_tier": "planning"
   }
 }

@@ -4,9 +4,9 @@
   "description": "Fewer than 10 student records returns insufficient records message",
   "prompt_class": "detect_scaffold_decay",
   "input": {
-    "classroom_id": "alpha-grade4",
-    "student_ref": "Ari",
-    "time_window": 5
+    "classroom_id": "echo-grade3",
+    "student_ref": "StudentX",
+    "time_window": 10
   },
   "expected": {
     "must_contain": ["Not enough intervention history"]

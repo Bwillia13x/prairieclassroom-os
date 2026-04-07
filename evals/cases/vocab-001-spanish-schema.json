@@ -16,6 +16,6 @@
     "schema_version": "0.1.0",
     "min_cards": 5,
     "max_cards": 8,
-    "max_latency_ms": 5000
+    "max_latency_ms": 10000
   }
 }

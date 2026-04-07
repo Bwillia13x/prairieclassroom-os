@@ -2,7 +2,7 @@
 
 ## Goal
 
-Replace mock inference with real Gemma 4 model output via Vertex AI. Run all 42 evals against actual model responses. Establish a baseline of what works, what needs prompt tuning, and what parsing needs hardening.
+Replace mock inference with real Gemma model output via Vertex AI. Run the full 64-case eval corpus against actual model responses. Establish a baseline of what works, what needs prompt tuning, and what parsing needs hardening.
 
 ## User story
 
@@ -23,6 +23,8 @@ Everything downstream depends on this. Prompt tuning, safety validation, demo vi
 
 ## Changes
 
+> Note: the original publisher-model plan in this document was superseded on 2026-04-05 by the endpoint-backed Vertex path. The current real implementation uses self-deployed Gemma 3 Model Garden endpoints, not `google-genai` publisher-model calls.
+
 ### 1. Vertex AI backend (`services/inference/harness.py`)
 
 New `VertexAIBackend` class implementing:
@@ -41,6 +43,13 @@ Add `google-genai>=1.0.0` for the Google GenAI SDK (unified API for Vertex AI Ge
 - `GOOGLE_CLOUD_PROJECT` — GCP project ID
 - `GOOGLE_CLOUD_LOCATION` — region (default: `us-central1`)
 - `GOOGLE_APPLICATION_CREDENTIALS` — service account key path (or use `gcloud auth application-default login`)
+- `gcloud auth application-default set-quota-project <project>` — required when using local authorized-user ADC
+- Open-model access for the ADC principal:
+  - `roles/aiplatform.user`
+  - `roles/serviceusage.serviceUsageConsumer`
+  - `roles/consumerprocurement.entitlementManager`
+  - `cloudcommerceconsumerprocurement.googleapis.com` enabled and allowed by org policy
+  - target model enabled for the project in Model Garden
 
 ### 4. Orchestrator mode awareness (`services/orchestrator/server.ts`)
 
@@ -56,11 +65,11 @@ Real model output often wraps JSON in prose or markdown fencing. Add a `extract_
 
 ### 6. Eval baseline run
 
-Run all 42 evals against real inference. Document results in `docs/eval-baseline.md`:
+Run all 64 evals against real inference. Document results in `docs/eval-baseline.md`:
 - Per-case pass/fail
 - Failure categories: parse error, missing keys, safety violation, latency exceeded
 - Model IDs and latency percentiles
-- Comparison to mock baseline (42/42)
+- Comparison to the mock release gate
 
 ## What this sprint does NOT include
 
@@ -76,17 +85,17 @@ Run all 42 evals against real inference. Document results in `docs/eval-baseline
 | Inference | `services/inference/harness.py` | Add `VertexAIBackend` class, JSON extraction utility |
 | Deps | `services/inference/requirements.txt` | Add `google-genai` |
 | Docs | `docs/sprint-10-plan.md` | This file |
-| Docs | `docs/eval-baseline.md` | Eval results against real inference |
+| Docs | `docs/eval-baseline.md` | Real-gate preflight or eval results against live inference |
 | Docs | `docs/sprint-10-review.md` | Sprint review (after execution) |
 | Docs | `docs/decision-log.md` | ADR for Vertex AI backend choice |
 
 ## Eval impact
 
-No new evals. Existing 42 are the validation suite. Expected: some failures under real inference — the baseline document captures which and why.
+The validation suite now contains 64 cases. Expected: some failures under real inference — the baseline document captures which and why.
 
 ## Risks
 
 - **Structured output quality**: Gemma 4 may not reliably produce the JSON structures the prompts demand. Mitigation: JSON extraction utility + the existing orchestrator parsers already handle markdown fencing. Sprint 11 will tune prompts if needed.
-- **API access**: Requires a GCP project with Vertex AI API enabled and Gemma model access. Mitigation: document setup steps.
+- **API access**: Requires a GCP project with Vertex AI API enabled, open-model entitlements configured, and the target model enabled for the project. Mitigation: document setup steps and run a direct model probe before starting local services.
 - **Latency**: Real inference is slower than mock. Mitigation: latency evals have generous budgets (2000ms live, 10000ms planning).
 - **Thinking mode**: Gemma 4 thinking config may differ from documentation. Mitigation: test with smoke tests first.

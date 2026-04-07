@@ -12,7 +12,7 @@
 
 .vocab-form h3 {
   margin: 0 0 0.25rem 0;
-  font-size: 1.1rem;
+  font-size: var(--text-lg);
 }
 
 .vocab-results {
@@ -20,54 +20,88 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 1.25rem;
+  animation: fade-up 0.35s ease-out both;
 }
 
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
   margin-top: 0.75rem;
 }
 
+/* ─── Flashcard design ─── */
 .vocab-card {
-  background: var(--color-bg-warning);
-  border: 1px solid var(--color-border-warning);
-  border-radius: var(--radius);
-  padding: 1rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transform: rotate(-0.5deg);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: fade-up 0.3s ease-out both;
 }
 
-.card-term {
-  font-size: 1.1rem;
-  font-weight: 700;
+.vocab-card:nth-child(even) {
+  transform: rotate(0.5deg);
+}
+
+.vocab-card:hover {
+  transform: rotate(0deg) translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.vocab-card-head {
+  background: var(--color-bg-accent);
+  border-bottom: 2px solid var(--color-border-accent);
+  padding: 0.85rem 1rem 0.7rem;
+}
+
+.vocab-card-term {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
   color: var(--color-text);
-  margin-bottom: 0.15rem;
+  letter-spacing: -0.01em;
 }
 
-.card-translation {
-  font-size: 1rem;
+.vocab-card-translation {
+  font-size: var(--text-md);
   font-weight: 600;
   color: var(--color-accent);
-  margin-bottom: 0.5rem;
-  font-style: italic;
+  margin-top: 0.15rem;
 }
 
-.card-definition {
-  font-size: 0.88rem;
+.vocab-card-body {
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.vocab-card-definition {
+  font-size: var(--text-base);
   color: var(--color-text);
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
+  line-height: 1.5;
+  margin: 0;
 }
 
-.card-example, .card-visual {
-  font-size: 0.82rem;
+.vocab-card-example,
+.vocab-card-visual {
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  margin-bottom: 0.3rem;
   line-height: 1.4;
+  margin: 0;
 }
 
-.card-label {
+.vocab-card-label {
+  display: block;
+  font-size: var(--text-xs);
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   color: var(--color-text-secondary);
+  margin-bottom: 0.1rem;
 }
 
 @media (max-width: 600px) {

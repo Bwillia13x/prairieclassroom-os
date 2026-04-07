@@ -93,6 +93,56 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-05 — extract_json() control character sanitization for real model output
+
+- **Decision:** Add `_sanitize_json_control_chars()` that escapes bare control characters (tabs, newlines, etc.) inside JSON string values before returning from `extract_json()`.
+- **Why:** Run 2 of real evals revealed that Gemma 3 4B sometimes emits unescaped control characters inside JSON string values (e.g., literal tabs or newlines inside `student_facing_instructions`). These are valid in Python strings but illegal in JSON, causing `json.loads()` to fail with "Bad control character in string literal." The sanitizer walks the string tracking quote state and escapes control chars only inside string values.
+- **Alternatives considered:** Post-processing in each orchestrator parser (duplicates logic across 11 parsers). Regex-based replacement (can't distinguish control chars inside vs outside strings). Requesting `response_mime_type: "application/json"` from the endpoint (not reliably supported by vLLM-served Gemma).
+- **Consequences:** Adds ~0.1ms per response (character walk is O(n) on output length). 4 new test cases cover tab, newline, already-escaped, and array contexts.
+- **What would change this:** Vertex AI vLLM endpoints supporting reliable structured output mode, making control character sanitization unnecessary.
+
+---
+
+### 2026-04-05 — extract_json() unified bracket matching replaces early-return path
+
+- **Decision:** Remove the early-return path in `extract_json()` that returned text as-is when it started with `{` or `[`. Replace with a single code path that always finds the outermost bracket pair (preferring whichever bracket type appears first in the text).
+- **Why:** The early-return path didn't strip trailing prose. Real model output like `{"key": "value"}\nI hope this helps!` would return the full string including prose, causing downstream `json.loads()` to fail. While this bug didn't manifest in the first real eval run (Gemma 3's output was cleaner than expected), it's a ticking time bomb.
+- **Alternatives considered:** Adding a separate trailing-prose strip after the early return (would duplicate the `rfind` logic). Keeping the early return and just adding `rfind` there (inconsistent code paths for the same operation).
+- **Consequences:** All 20 extract_json tests pass including the previously-bug-documenting test case which now asserts correct behavior. The new array trailing-prose test also passes.
+- **What would change this:** Evidence that the unified path is slower on large inputs (unlikely — it's a single `find` + `rfind`), or edge cases where the earliest bracket isn't the JSON boundary.
+
+---
+
+### 2026-04-05 — First real-inference baseline: 56/64 (87.5%), zero safety failures
+
+- **Decision:** Accept 56/64 as the Phase A baseline. All 8 failures categorized: 7 latency (mock-calibrated thresholds too tight for real 27B inference), 1 content quality (missing EA name in survival packet due to retrieval gap). After fixes: 7 latency thresholds adjusted, survival context now includes classroom notes.
+- **Why:** The 87.5% pass rate exceeds the 85% exit criteria. Zero parse/schema and zero safety failures on the first real run is a strong signal that the prompt contracts, JSON extraction, and safety framing work under real inference conditions.
+- **Alternatives considered:** Re-running before fixing to get a "clean" baseline (unnecessary — the failures are well-understood and documented).
+- **Consequences:** Planning tier latency budgets are now 60-150s (up from 5-30s). The survival context is richer. The extract_json bug is fixed proactively. Re-run will establish the post-fix baseline.
+- **What would change this:** Evidence that the latency thresholds are too generous (should tighten once endpoint is warm), or that classroom notes injection degrades survival packet quality by adding noise.
+
+---
+
+### 2026-04-05 — Both Vertex AI endpoints operational (Phase A G-01 Task 8)
+
+- **Decision:** Both self-deployed Gemma 3 endpoints are confirmed operational and responding to smoke tests. Live tier (4B on A100 80GB) responds in ~2s. Planning tier (27B on A100 80GB) responds in ~5-8s. No GPU quota issues encountered — A100 80GB quota was available.
+- **Why:** The planning endpoint was previously blocked with "Dedicated endpoint DNS is empty." The deployment operation (`4140943352084299776`) completed successfully within ~9 minutes of submission. The earlier sessions observed it too early.
+- **Alternatives considered:** Managed Gemma API via `generate_content` was the documented fallback if GPU quota blocked deployment. Not needed.
+- **Consequences:** Real-inference eval suite (Task 9) is unblocked. Thinking mode returns `thinking=no` from the vLLM endpoint — reasoning traces are not exposed. This is a known limitation documented in the prior ADR. Safety and content quality evals that depend on thinking output will need adjusted assertions.
+- **What would change this:** Vertex AI exposing reasoning traces from vLLM-served Gemma 3, or a switch to a different serving stack that supports them.
+
+---
+
+### 2026-04-05 — Vertex real path uses self-deployed Gemma 3 endpoints
+
+- **Decision:** Keep Vertex AI as the real provider, but stop using publisher-model `generate_content` calls. Real inference now targets two long-lived self-deployed Model Garden endpoints via `PredictionServiceClient.raw_predict`: `google/gemma3@gemma-3-4b-it` for the live tier and `google/gemma3@gemma-3-27b-it` for the planning tier.
+- **Why:** The project's real gate was blocked by unavailable Gemma publisher-model IDs. Model Garden deployment configs exist for Gemma 3 in `us-central1`, and the verified vLLM configs expose a chat-completions sample request that preserves the prompt split and multimodal surface we already need.
+- **Alternatives considered:** Keep waiting on publisher-model availability (blocks all real baselines). Switch to a non-Gemma Vertex model (breaks model intent). Switch providers (adds a second real-provider path and more operational drift).
+- **Consequences:** Real mode now requires `PRAIRIE_VERTEX_BACKEND=endpoint`, `PRAIRIE_VERTEX_ENDPOINT_LIVE`, and `PRAIRIE_VERTEX_ENDPOINT_PLANNING`. The repo adds an explicit provisioning script and the real gate probes endpoint reachability before starting local services. Thinking mode remains a contract flag, but endpoint-backed Gemma does not currently expose separate reasoning traces the way the old SDK path did.
+- **What would change this:** A supported, project-accessible Gemma publisher-model path on Vertex that preserves the same multimodal and structured-output needs more simply than endpoint deployment.
+
+---
+
 ### 2026-04-03 — JSON extraction utility for real model output
 
 - **Decision:** Add an `extract_json` function in the inference harness that strips markdown fences, finds JSON structures in prose output, and fixes trailing commas before returning to the orchestrator.

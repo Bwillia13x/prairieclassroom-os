@@ -12,73 +12,23 @@
 
 .simplified-form h3 {
   margin: 0 0 0.25rem 0;
-  font-size: 1.1rem;
+  font-size: var(--text-lg);
 }
 
 .form-hint {
   color: var(--color-text-secondary);
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   margin: 0 0 1rem 0;
 }
 
-.form-textarea {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  font-family: inherit;
-  font-size: 0.9rem;
-  resize: vertical;
-  box-sizing: border-box;
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-.form-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.form-label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--color-text-secondary);
-  flex: 1;
-  margin-bottom: 0.5rem;
-}
-
-.form-select {
-  padding: 0.4rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-  background: var(--color-surface);
-  color: var(--color-text);
-}
-
-.form-btn {
-  background: var(--color-accent);
-  color: var(--color-text-on-accent);
-  border: none;
-  padding: 0.5rem 1.25rem;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-  cursor: pointer;
-}
-.form-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
+/* .form-row base styles now in index.css */
 
 .simplified-result {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 1.25rem;
+  animation: fade-up 0.35s ease-out both;
 }
 
 .result-header {
@@ -91,7 +41,7 @@
 
 .result-meta {
   color: var(--color-text-secondary);
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
 }
 
 .simplified-text-block {

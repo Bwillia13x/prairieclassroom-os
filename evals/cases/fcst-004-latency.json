@@ -9,6 +9,6 @@
   },
   "expected": {
     "required_forecast_keys": ["blocks"],
-    "max_latency_ms": 6000
+    "max_latency_ms": 120000
   }
 }

@@ -51,6 +51,7 @@ def generate():
         model_tier=tier,
         max_tokens=body.get("max_tokens", 2048),
         prompt_class=body.get("prompt_class"),
+        mock_context=body.get("mock_context"),  # optional dev-only fixture context; ignored outside mock mode
     )
 
     start = time.perf_counter()

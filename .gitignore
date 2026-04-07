@@ -12,6 +12,7 @@ __pycache__/
 *.pyc
 *.pyo
 .venv/
+.venv311/
 venv/
 *.egg-info/
 
@@ -44,6 +45,11 @@ logs/
 # Test coverage
 coverage/
 .nyc_output/
+output/playwright/
+output/release-gate/
+output/evals/
+output/vertex-endpoints/
+apps/web/tsconfig.tsbuildinfo
 
 # SQLite classroom memory
 data/memory/*.sqlite

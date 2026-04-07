@@ -6,13 +6,13 @@
 
 .pattern-header h2 {
   font-family: var(--font-serif);
-  font-size: 1.2rem;
+  font-size: var(--text-xl);
   font-weight: 700;
   letter-spacing: -0.01em;
 }
 
 .pattern-meta {
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
   margin-top: 0.2rem;
 }
@@ -20,36 +20,29 @@
 .pattern-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
-.pattern-form .field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+.pattern-form-description {
+  font-size: var(--text-base);
+  color: var(--color-text-secondary);
 }
-
-.pattern-form label {
-  font-weight: 600;
-  font-size: 0.88rem;
-}
-
-.pattern-form select,
-.pattern-form input {
-  padding: 0.5rem;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-}
+/* .field base styles now unified in index.css */
 
 .pattern-section {
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 1rem;
+  animation: fade-up 0.35s ease-out both;
 }
 
+.pattern-section:nth-of-type(1) { animation-delay: 0.05s; }
+.pattern-section:nth-of-type(2) { animation-delay: 0.1s; }
+.pattern-section:nth-of-type(3) { animation-delay: 0.15s; }
+.pattern-section:nth-of-type(4) { animation-delay: 0.2s; }
+
 .pattern-section h3 {
-  font-size: 1rem;
+  font-size: var(--text-md);
   font-weight: 600;
   margin-bottom: 0.75rem;
 }
@@ -62,8 +55,13 @@
 .pattern-card {
   background: var(--color-bg-muted);
   border-radius: var(--radius);
-  padding: 0.75rem 1rem;
-  margin-bottom: 0.5rem;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+  transition: box-shadow 0.15s;
+}
+
+.pattern-card:hover {
+  box-shadow: var(--shadow-sm);
 }
 
 .pattern-card:last-child {
@@ -72,18 +70,18 @@
 
 .pattern-card-label {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: var(--text-base);
   margin-bottom: 0.25rem;
 }
 
 .pattern-card-tag {
   font-weight: 400;
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }
 
 .pattern-card p {
-  font-size: 0.88rem;
+  font-size: var(--text-base);
   line-height: 1.5;
   margin: 0.25rem 0;
 }
@@ -97,7 +95,7 @@
 
 .priority-badge {
   display: inline-block;
-  font-size: 0.75rem;
+  font-size: var(--text-xs);
   font-weight: 600;
   padding: 0.15rem 0.5rem;
   border-radius: 999px;
@@ -109,14 +107,16 @@
 .priority-badge--low { background: var(--color-bg-success); color: var(--color-text-success); }
 
 .pattern-card-action-btn {
-  font-size: 0.8rem;
+  font-size: var(--text-sm);
   color: var(--color-accent);
-  background: none;
-  border: none;
+  background: var(--color-bg-accent);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius);
   cursor: pointer;
-  padding: 0.25rem 0;
-  margin-top: 0.25rem;
-  text-decoration: underline;
+  padding: 0.4rem 0.75rem;
+  margin-top: 0.4rem;
+  min-height: 36px;
+  text-decoration: none;
 }
 
 .pattern-card-action-btn:hover {

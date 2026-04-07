@@ -1,13 +1,13 @@
 """
-PrairieClassroom OS — Gemma 4 Inference Harness
+PrairieClassroom OS — Gemma Inference Harness
 
 Provides model loading and generation for the dual-speed architecture:
-- Live route:     gemma-4-4b-it (small, low-latency classroom actions)
-- Planning route: gemma-4-27b-it (deeper reasoning, next-day planning)
+- Live route:     self-deployed Gemma live tier (low-latency classroom actions)
+- Planning route: self-deployed Gemma planning tier (deeper reasoning, next-day planning)
 
 Supports three modes:
 1. mock   — returns canned responses for development without GPU
-2. api    — calls a remote Gemma API endpoint (Vertex AI, etc.)
+2. api    — calls remote Vertex AI endpoints
 3. local  — loads model weights locally via transformers
 
 Usage:
@@ -18,14 +18,16 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import base64
 import json
+import mimetypes
 import os
 import re
 import sys
 import time
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any
+from typing import Any, Callable
 
 
 class InferenceMode(Enum):
@@ -35,8 +37,8 @@ class InferenceMode(Enum):
 
 
 class ModelTier(Enum):
-    LIVE = "live"       # small Gemma 4 for fast classroom actions
-    PLANNING = "planning"  # larger Gemma 4 for synthesis/planning
+    LIVE = "live"       # fast classroom actions
+    PLANNING = "planning"  # deeper synthesis/planning
 
 
 @dataclass
@@ -49,6 +51,7 @@ class GenerationRequest:
     model_tier: ModelTier = ModelTier.LIVE
     max_tokens: int = 2048
     prompt_class: str | None = None
+    mock_context: dict[str, Any] | None = None
 
 
 @dataclass
@@ -59,6 +62,12 @@ class GenerationResponse:
     thinking_text: str | None = None
     model_id: str = ""
     latency_ms: float = 0.0
+
+
+@dataclass(frozen=True)
+class MockFixture:
+    text: str
+    thinking_text: str | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -183,20 +192,76 @@ MOCK_TOMORROW_THINKING = (
     "Prep: sentence starters, extension menus, schedule posting, step checklists, EA briefing."
 )
 
-MOCK_FAMILY_MESSAGE = json.dumps({
-    "student_refs": ["Ari"],
-    "message_type": "praise",
-    "target_language": "en",
-    "plain_language_text": "Hi! I wanted to share some good news about your child's progress this week. Ari has been showing real improvement in reading comprehension — during our guided reading session today, they were able to identify the main idea of a passage and explain it in their own words. This is a meaningful step forward. We will keep building on this with sentence starters and paired examples that have been working well. Thank you for your support at home!",
-    "simplified_student_text": "Great job this week! You did really well finding the main idea when we read together. Keep it up!"
+MOCK_TOMORROW_PLAN_DEMO = json.dumps({
+    "transition_watchpoints": [
+        {
+            "time_or_activity": "After lunch — returning to classroom",
+            "risk_description": "Brody still needs proactive support during the post-lunch re-entry. The recent positive streak holds best when the first task is visible before he walks in.",
+            "suggested_mitigation": "Have the visual timer running and a 1-minute desk task already posted. Meet Brody at the doorway and point him directly to the first step."
+        },
+        {
+            "time_or_activity": "Math word problems after mini-lesson",
+            "risk_description": "Amira can explain the math orally but may stall when the written language load spikes. Farid shows the same pattern when verbal reasoning has to turn into written sentences.",
+            "suggested_mitigation": "Pre-teach key problem language, then let Amira and Farid talk through the steps before writing. Keep sentence frames and word banks on the table from the start."
+        }
+    ],
+    "support_priorities": [
+        {
+            "student_ref": "Brody",
+            "reason": "Your records show the strongest risk cluster is still the post-lunch transition. The timer and settling task are working, but only when they are in place before correction is needed.",
+            "suggested_action": "Set the timer before lunch ends, place the first task on Brody's desk, and keep the re-entry directions short and visual."
+        },
+        {
+            "student_ref": "Amira",
+            "reason": "Amira's math reasoning is stronger than her written English output. She benefits when she can rehearse the language before she has to write.",
+            "suggested_action": "Preview the problem vocabulary, pair a brief verbal planning step with a sentence frame, and check in after the first written response."
+        },
+        {
+            "student_ref": "Farid",
+            "reason": "Farid can explain his thinking clearly aloud but still slows down when he has to transfer that reasoning into written sentences.",
+            "suggested_action": "Use a voice-first planning step or quick dictation before independent writing, then reduce the written load to two strong sentences."
+        }
+    ],
+    "ea_actions": [
+        {
+            "description": "Run a short language-to-writing bridge with Amira and Farid before math journaling. Let them explain their reasoning aloud first, then move to sentence frames.",
+            "student_refs": ["Amira", "Farid"],
+            "timing": "9:15–9:35 (math support block)"
+        },
+        {
+            "description": "Monitor Brody's post-lunch re-entry and cue the first desk task before noise builds in the room.",
+            "student_refs": ["Brody"],
+            "timing": "12:45–13:00 (after lunch re-entry)"
+        },
+        {
+            "description": "Check Daniyal's visual schedule during the afternoon transition and anchor him with a nearby peer if he misses the room cue.",
+            "student_refs": ["Daniyal"],
+            "timing": "13:00–13:10 (transition to writing)"
+        }
+    ],
+    "prep_checklist": [
+        "Set out the visual timer and settling task before lunch ends",
+        "Print sentence frames for Amira and Farid's math journaling",
+        "Place Brody's first-task card on desk before re-entry",
+        "Clip Daniyal's visual schedule to the whiteboard edge",
+        "Brief the EA on the language-to-writing bridge before first block"
+    ],
+    "family_followups": [
+        {
+            "student_ref": "Amira",
+            "reason": "Amira's math understanding is coming through more clearly when she gets language scaffolds before writing. That progress is worth a short praise note to family.",
+            "message_type": "praise"
+        }
+    ]
 })
 
-MOCK_INTERVENTION = json.dumps({
-    "observation": "Ari needed 1:1 support during the writing block. Had difficulty starting the first sentence and appeared frustrated when looking at the blank page.",
-    "action_taken": "Used sentence starters and word bank from the EAL support kit. Modelled the first sentence together, then had Ari try the second independently.",
-    "outcome": "Completed 3 of 5 questions independently by end of period. Showed more confidence after the first modelled sentence.",
-    "follow_up_needed": True
-})
+MOCK_TOMORROW_THINKING_DEMO = (
+    "Let me think through tomorrow's support plan for the demo classroom.\n\n"
+    "Brody's recent progress depends on proactive transition structure, especially after lunch.\n"
+    "Amira and Farid both show the same friction point: they can explain the math, but the written language slows them down.\n"
+    "Daniyal still needs the visual schedule to catch transitions reliably.\n\n"
+    "The plan should therefore front-load transition supports for Brody, language-to-writing bridges for Amira and Farid, and one short visual check for Daniyal."
+)
 
 MOCK_SIMPLIFICATION = json.dumps({
     "simplified_text": "Read the story. It is about community helpers. Community helpers are people who help us. Read each part slowly. Answer the three questions. Use your own words. You can look back at the story to find answers.",
@@ -355,6 +420,114 @@ MOCK_EA_BRIEFING = json.dumps({
     "teacher_notes_for_ea": "Today's focus is the reading-to-writing transition. Ari needs graduated scaffolding during writing — try word bank first before sentence starters. Mika needs proactive support at the post-lunch transition. Jae is a strong reader who may finish early — extension menu cards are on the side table."
 })
 
+MOCK_COMPLEXITY_FORECAST = json.dumps({
+    "blocks": [
+        {
+            "time_slot": "9:00–9:45",
+            "activity": "Morning literacy block",
+            "level": "medium",
+            "contributing_factors": [
+                "Amira's peer buddy absent today — will need alternative pairing",
+                "New passage may challenge EAL students without pre-teaching"
+            ],
+            "suggested_mitigation": "Pre-teach 3 key vocabulary words with Amira before the block. Pair with Chantal as temporary buddy."
+        },
+        {
+            "time_slot": "10:00–10:45",
+            "activity": "Math block (post-assembly transition)",
+            "level": "high",
+            "contributing_factors": [
+                "Assembly at 10am will shorten and disrupt the math block",
+                "Post-assembly re-entry is a known high-noise transition for this class",
+                "Brody and Daniyal historically struggle with focus after assemblies"
+            ],
+            "suggested_mitigation": "Post visual schedule before assembly. Use 2-minute settling activity on return. Have step checklists ready for Brody and Daniyal."
+        },
+        {
+            "time_slot": "11:00–11:45",
+            "activity": "Science — plant lifecycle observation",
+            "level": "low",
+            "contributing_factors": [
+                "Hands-on activity with high student engagement",
+                "EA (Ms. Fehr) available for small-group support"
+            ],
+            "suggested_mitigation": "Standard support plan. Amira may need vocabulary support for observation journal entries."
+        },
+        {
+            "time_slot": "12:45–13:30",
+            "activity": "Afternoon writing block",
+            "level": "high",
+            "contributing_factors": [
+                "Post-lunch transition is consistently the hardest period for this class",
+                "Writing task has high language demand for EAL students",
+                "No EA available in afternoon — teacher-only support"
+            ],
+            "suggested_mitigation": "Use structured re-entry task (1-minute desk activity). Provide sentence starters and word bank for Amira and Elena. Monitor Brody's transition with pre-correction."
+        }
+    ],
+    "overall_summary": "Your records show two high-complexity blocks tomorrow — the post-assembly math transition and the afternoon writing block. Both involve transitions that have historically been challenging for this class. Amira's buddy absence adds complexity to the morning literacy block. The science block is a bright spot with hands-on engagement and EA support.",
+    "highest_risk_block": "12:45–13:30 Afternoon writing block — post-lunch transition combined with high language demand and no EA support creates the highest complexity concentration."
+})
+
+MOCK_COMPLEXITY_FORECAST_THINKING = (
+    "Let me analyze the complexity landscape for tomorrow.\n\n"
+    "First, the assembly at 10am will disrupt the math block. Your records show post-assembly transitions "
+    "are consistently noisy for this class, especially for Brody and Daniyal.\n\n"
+    "Amira's peer buddy is absent, which affects the literacy block — she relies on buddy support for reading tasks.\n\n"
+    "The afternoon writing block is always the highest-risk period: post-lunch transition plus high language demand "
+    "plus no EA support in the afternoon.\n\n"
+    "Science block is the lowest complexity — hands-on, engaging, and EA available."
+)
+
+MOCK_SCAFFOLD_DECAY = json.dumps({
+    "reviews": [
+        {
+            "scaffold_name": "sentence starters",
+            "usage_trend": {
+                "scaffold_name": "sentence starters",
+                "early_window_count": 8,
+                "early_window_total": 10,
+                "recent_window_count": 3,
+                "recent_window_total": 10,
+                "trend": "decaying"
+            },
+            "positive_signals": [
+                {
+                    "description": "Your records show the student completed 3 of 5 writing questions independently with only the word bank — sentence starters were not needed.",
+                    "source_record_id": "int-demo-001"
+                },
+                {
+                    "description": "Your records show increasing confidence when starting sentences without the full starter template.",
+                    "source_record_id": "int-demo-005"
+                }
+            ],
+            "withdrawal_plan": [
+                {
+                    "phase_number": 1,
+                    "description": "Provide word bank only. Offer sentence starters only if the student stalls after 2 minutes.",
+                    "duration_weeks": 2,
+                    "success_criteria": "Student starts 3 of 5 sentences independently with word bank alone."
+                },
+                {
+                    "phase_number": 2,
+                    "description": "Remove word bank for familiar topics. Keep available for new vocabulary-heavy tasks.",
+                    "duration_weeks": 2,
+                    "success_criteria": "Student starts writing within 1 minute on familiar topics without any scaffold."
+                },
+                {
+                    "phase_number": 3,
+                    "description": "Full withdrawal. Monitor for regression during high-demand tasks.",
+                    "duration_weeks": 2,
+                    "success_criteria": "Consistent independent writing starts across all task types for 2 weeks."
+                }
+            ],
+            "regression_protocol": "If the student stalls for more than 3 minutes on 2 consecutive tasks, reintroduce word bank (phase 1). Do not skip back to sentence starters unless word bank alone is insufficient for 3 sessions.",
+            "confidence": "medium"
+        }
+    ],
+    "summary": "Your records show a clear decaying trend in sentence starter usage for this student. The withdrawal pattern is positive — the student is increasingly able to start writing with lighter scaffolds. A 3-phase withdrawal plan over 6 weeks is recommended, with clear regression checkpoints."
+})
+
 MOCK_SUPPORT_PATTERNS_THINKING = (
     "Let me analyze the intervention records and support plans for this classroom.\n\n"
     "First, I'll look for recurring themes — actions or observations that appear multiple times for the same student.\n\n"
@@ -366,14 +539,477 @@ MOCK_SUPPORT_PATTERNS_THINKING = (
     "Positive trends: Ari's records show increasing independence with scaffolds over time."
 )
 
+MOCK_SUPPORT_PATTERNS_DEMO = json.dumps({
+    "recurring_themes": [
+        {
+            "theme": "Post-lunch transition supports are becoming more proactive",
+            "student_refs": ["Brody"],
+            "evidence_count": 2,
+            "example_observations": [
+                "Brody had significant difficulty transitioning back from lunch recess until a calm sensory break and low-pressure entry were used.",
+                "Brody independently picked up the visual countdown timer before the next transition and moved without adult prompting."
+            ]
+        },
+        {
+            "theme": "Strong verbal reasoning needs a bridge into written language",
+            "student_refs": ["Amira", "Farid"],
+            "evidence_count": 2,
+            "example_observations": [
+                "Amira could explain the math accurately but stalled once she had to write the solution in English.",
+                "Farid explained his pattern-finding clearly to a partner, then produced only three written words after eight minutes."
+            ]
+        }
+    ],
+    "follow_up_gaps": [
+        {
+            "original_record_id": "int-demo-003",
+            "student_refs": ["Daniyal"],
+            "observation": "Daniyal used the visual schedule and peer anchor successfully, but there is no documented plan yet for how that transition support should generalize across the full day.",
+            "days_since": 6
+        }
+    ],
+    "positive_trends": [
+        {
+            "student_ref": "Brody",
+            "description": "Your records show a real shift from adult-managed transition support toward Brody choosing the visual timer independently. That is a meaningful self-regulation gain worth reinforcing with family.",
+            "evidence": [
+                "Mar 20: sensory break and calm corner were needed before Brody could rejoin the class.",
+                "Mar 25: Brody independently picked up the visual timer and transitioned on his own."
+            ]
+        }
+    ],
+    "suggested_focus": [
+        {
+            "student_ref": "Farid",
+            "reason": "Farid's verbal reasoning is outpacing his written production. Without a standing bridge from spoken explanation to written output, he is likely to keep hitting the same wall.",
+            "suggested_action": "Make voice-first planning or dictation the default first step on written explanation tasks, then keep the written expectation short and high-quality.",
+            "priority": "high"
+        },
+        {
+            "student_ref": "Elena",
+            "reason": "Elena's understanding improves when timed pressure is removed and manipulatives are available, but that accommodation has not yet been formalized.",
+            "suggested_action": "Document an untimed or reduced-pressure option for timed math checks and keep concrete materials available at the start of assessment tasks.",
+            "priority": "medium"
+        }
+    ]
+})
+
+MOCK_SUPPORT_PATTERNS_THINKING_DEMO = (
+    "Let me review the demo classroom records.\n\n"
+    "Brody's strongest pattern is transition regulation, and the important change is that the support is becoming proactive rather than reactive.\n"
+    "Amira and Farid share a language-to-writing bottleneck: both can reason aloud before the writing demand catches them.\n"
+    "Daniyal still has a follow-up gap because the successful peer-and-visual transition support has not been formalized."
+)
+
+MOCK_EA_BRIEFING_DEMO = json.dumps({
+    "schedule_blocks": [
+        {
+            "time_slot": "9:15–9:35",
+            "student_refs": ["Amira", "Farid"],
+            "task_description": "Run the math language bridge before journaling. Let Amira and Farid explain the problem orally first, then move them into sentence frames and brief written responses.",
+            "materials_needed": ["math journal prompt", "sentence frame cards", "word bank"]
+        },
+        {
+            "time_slot": "12:45–13:00",
+            "student_refs": ["Brody"],
+            "task_description": "Meet Brody at re-entry from lunch, point him to the visual timer, and cue the first desk task before the room gets loud.",
+            "materials_needed": ["visual timer", "first-task card"]
+        },
+        {
+            "time_slot": "13:00–13:10",
+            "student_refs": ["Daniyal"],
+            "task_description": "Check that Daniyal notices the transition cue and redirect him to the visual schedule if he misses the room movement.",
+            "materials_needed": ["visual schedule card"]
+        }
+    ],
+    "student_watch_list": [
+        {
+            "student_ref": "Amira",
+            "context_summary": "Amira's mathematical thinking is stronger than her written English output. She benefits when she can rehearse language before writing.",
+            "suggested_approach": "Start with oral rehearsal and a sentence frame before asking for written work."
+        },
+        {
+            "student_ref": "Brody",
+            "context_summary": "Brody is building momentum on post-lunch transitions, but the positive pattern depends on visible structure being ready ahead of time.",
+            "suggested_approach": "Keep the timer and first task visible before correction is needed."
+        },
+        {
+            "student_ref": "Farid",
+            "context_summary": "Farid explains his reasoning clearly aloud but slows down once he has to turn that language into written sentences.",
+            "suggested_approach": "Use voice-first planning or dictation, then keep the written expectation concise."
+        }
+    ],
+    "pending_followups": [
+        {
+            "student_ref": "Daniyal",
+            "original_observation": "Visual schedule plus peer anchor helped Daniyal catch the transition, but the accommodation is not yet formalized.",
+            "days_since": 6,
+            "suggested_action": "Check whether the visual schedule still works when Farid is not the nearby peer and note the result for follow-up."
+        }
+    ],
+    "teacher_notes_for_ea": "Today's fragile points are the post-lunch re-entry for Brody and the language-to-writing bridge for Amira and Farid. Daniyal still needs a quick visual cue check during room transitions."
+})
+
+MOCK_COMPLEXITY_FORECAST_ALPHA = json.dumps({
+    "blocks": [
+        {
+            "time_slot": "9:00–9:45",
+            "activity": "Morning literacy block",
+            "level": "medium",
+            "contributing_factors": [
+                "Ari needs vocabulary support before independent reading",
+                "New text may increase language demand for the first 10 minutes"
+            ],
+            "suggested_mitigation": "Pre-teach 3 key words with Ari before students begin independent reading. Keep sentence starters visible on desks."
+        },
+        {
+            "time_slot": "12:45–13:15",
+            "activity": "Post-lunch transition into math",
+            "level": "high",
+            "contributing_factors": [
+                "Mika often needs proactive support after lunch",
+                "The block begins with a fast transition and independent seatwork"
+            ],
+            "suggested_mitigation": "Use a 2-minute settling task on desks and give Mika a step checklist before students re-enter the room."
+        },
+        {
+            "time_slot": "13:15–14:00",
+            "activity": "Independent writing block",
+            "level": "medium",
+            "contributing_factors": [
+                "Ari's writing task carries language demand",
+                "Jae may finish early and need extension work"
+            ],
+            "suggested_mitigation": "Have sentence starters ready for Ari and an extension menu card ready for Jae."
+        }
+    ],
+    "overall_summary": "Your records show the post-lunch transition into math is tomorrow's most fragile period. Ari will still need light language scaffolds during writing, while Jae needs extension ready to avoid drift once core work is complete.",
+    "highest_risk_block": "12:45–13:15"
+})
+
+MOCK_COMPLEXITY_FORECAST_ALPHA_THINKING = (
+    "The highest concentration of complexity is the post-lunch transition into math. "
+    "Mika's transition support needs are the strongest recurring pattern. "
+    "Ari still needs language scaffolds during writing, and Jae needs early-finisher structure."
+)
+
+MOCK_SURVIVAL_PACKET_ALPHA = json.dumps({
+    "routines": [
+        {
+            "time_or_label": "Morning entry",
+            "description": "Students hang coats, begin the bell-work bin immediately, and wait for instructions at desks."
+        },
+        {
+            "time_or_label": "After lunch",
+            "description": "Students return quietly, sit immediately, and begin the short settling task on the board before any whole-class directions."
+        },
+        {
+            "time_or_label": "Pack-up",
+            "description": "Dismiss by table group once desks are clear and agendas are in backpacks."
+        }
+    ],
+    "student_support": [
+        {
+            "student_ref": "Ari",
+            "current_scaffolds": ["sentence starters", "word bank", "peer buddy"],
+            "key_strategies": "Pre-teach vocabulary and check for understanding before asking for independent writing.",
+            "things_to_avoid": "Do not start with a blank page and verbal-only directions."
+        },
+        {
+            "student_ref": "Mika",
+            "current_scaffolds": ["step checklist", "advance notice"],
+            "key_strategies": "Give proactive transition reminders and a specific first job when returning from lunch."
+        },
+        {
+            "student_ref": "Jae",
+            "current_scaffolds": ["extension menu"],
+            "key_strategies": "Offer extension work quickly after core tasks to maintain engagement."
+        }
+    ],
+    "ea_coordination": {
+        "schedule_summary": "EA is available for the morning reading block and briefly after lunch.",
+        "primary_students": ["Ari", "Mika"],
+        "if_ea_absent": "Run Ari's small-group support whole-class with sentence starters and keep Mika's checklist visible on desk."
+    },
+    "simplified_day_plan": [
+        {
+            "time_slot": "9:00–9:45",
+            "activity": "Literacy",
+            "sub_instructions": "Read the passage together first, then release students to answer questions. Keep Ari near a supportive peer.",
+            "materials_location": "Reading handouts are stacked in the blue literacy tray."
+        },
+        {
+            "time_slot": "12:45–13:15",
+            "activity": "Math re-entry",
+            "sub_instructions": "Start with the 2-minute settling task on the board before explaining the math page. Give Mika the checklist card immediately.",
+            "materials_location": "Checklist cards are clipped to the whiteboard ledge."
+        },
+        {
+            "time_slot": "13:15–14:00",
+            "activity": "Writing",
+            "sub_instructions": "Offer the word bank to Ari before sentence starters. Give Jae the extension menu if core work is finished early.",
+            "materials_location": "Word banks and extension menus are in the green writing folder."
+        }
+    ],
+    "family_comms": [
+        {
+            "student_ref": "Ari",
+            "status": "expecting_message",
+            "notes": "Teacher has a praise note in progress. Do not send anything directly."
+        },
+        {
+            "student_ref": "Mika",
+            "status": "defer_to_teacher",
+            "notes": "Transition support updates should stay with the teacher."
+        }
+    ],
+    "complexity_peaks": [
+        {
+            "time_slot": "12:45–13:15",
+            "level": "high",
+            "reason": "Post-lunch transitions are the most fragile period for this classroom.",
+            "mitigation": "Use the settling task first and keep directions short and visible."
+        },
+        {
+            "time_slot": "13:15–14:00",
+            "level": "medium",
+            "reason": "Writing has language demand for Ari and pacing differences for early finishers.",
+            "mitigation": "Use scaffold cards and extension menus instead of improvising new work."
+        }
+    ],
+    "heads_up": [
+        "Mika needs proactive support after lunch, not reactive correction.",
+        "Ari works best when vocabulary is previewed before independent writing.",
+        "Jae should get extension work as soon as core tasks are complete."
+    ]
+})
+
+MOCK_SURVIVAL_PACKET_DEMO = json.dumps({
+    "routines": [
+        {
+            "time_or_label": "Morning entry",
+            "description": "Students unpack, check the board, and start the bell work without waiting for a second reminder."
+        },
+        {
+            "time_or_label": "After lunch",
+            "description": "Students return quietly, look to the timer and first-task card, and begin the settling task before whole-class directions."
+        },
+        {
+            "time_or_label": "Pack-up",
+            "description": "Students pack agendas first, then line up by table once desks are clear."
+        }
+    ],
+    "student_support": [
+        {
+            "student_ref": "Amira",
+            "current_scaffolds": ["sentence frames", "word bank", "peer verbal rehearsal"],
+            "key_strategies": "Let Amira talk through the idea before she has to write it down. Preview vocabulary before independent work.",
+            "things_to_avoid": "Do not move straight from oral instruction to a blank written response."
+        },
+        {
+            "student_ref": "Brody",
+            "current_scaffolds": ["visual timer", "settling task", "advance cue"],
+            "key_strategies": "Give Brody the first task immediately on re-entry and keep the transition language short.",
+            "things_to_avoid": "Do not wait until Brody is stuck in the doorway to introduce the support."
+        },
+        {
+            "student_ref": "Farid",
+            "current_scaffolds": ["dictation option", "sentence frame card"],
+            "key_strategies": "Farid can explain ideas well aloud. Use a voice-first bridge, then ask for two strong written sentences.",
+            "things_to_avoid": "Avoid long written-response demands without a planning bridge."
+        }
+    ],
+    "ea_coordination": {
+        "schedule_summary": "EA is most useful during the morning math language bridge and the post-lunch re-entry window.",
+        "primary_students": ["Amira", "Brody", "Farid"],
+        "if_ea_absent": "Keep the sentence frames on tables for Amira and Farid, and make sure the visual timer and first-task card are ready for Brody before lunch ends."
+    },
+    "simplified_day_plan": [
+        {
+            "time_slot": "9:15–9:35",
+            "activity": "Math journaling support",
+            "sub_instructions": "Have Amira and Farid explain the problem aloud first, then move them into sentence frames before independent writing.",
+            "materials_location": "Sentence frame cards are in the blue math folder."
+        },
+        {
+            "time_slot": "12:45–13:00",
+            "activity": "Lunch re-entry",
+            "sub_instructions": "Start the timer before students enter and point Brody to the first-task card immediately.",
+            "materials_location": "Timer is on the shelf by the door; first-task cards are clipped to the board."
+        },
+        {
+            "time_slot": "13:00–13:30",
+            "activity": "Independent writing",
+            "sub_instructions": "Check Daniyal's visual schedule if he misses the transition. Offer Farid dictation or oral rehearsal before written output if he stalls.",
+            "materials_location": "Visual schedule cards are in the red support bin."
+        }
+    ],
+    "family_comms": [
+        {
+            "student_ref": "Amira",
+            "status": "expecting_message",
+            "notes": "Teacher has a praise note in progress about stronger math communication with scaffolds."
+        },
+        {
+            "student_ref": "Brody",
+            "status": "defer_to_teacher",
+            "notes": "Transition progress can be celebrated, but any update should come from the teacher."
+        }
+    ],
+    "complexity_peaks": [
+        {
+            "time_slot": "12:45–13:00",
+            "level": "high",
+            "reason": "Post-lunch re-entry is still the most fragile time for the room, especially for Brody.",
+            "mitigation": "Have the timer and settling task ready before students enter."
+        },
+        {
+            "time_slot": "9:15–9:35",
+            "level": "medium",
+            "reason": "Amira and Farid both need a bridge from spoken reasoning into written language.",
+            "mitigation": "Use oral rehearsal and sentence frames before independent writing."
+        }
+    ],
+    "heads_up": [
+        "Brody's transition momentum is real, but it depends on proactive structure.",
+        "Amira can solve the math before she can always write the English for it.",
+        "Farid's best entry point is to explain first and write second."
+    ]
+})
+
+MOCK_SURVIVAL_PACKET_THINKING = (
+    "I prioritized routines, active supports, and the fragile transition blocks so a substitute can execute the day without digging through prior notes."
+)
+
+DEMO_CLASSROOM_ID = "demo-okafor-grade34"
+ALPHA_CLASSROOM_ID = "alpha-grade4"
+
+def _mock_classroom_id(request: GenerationRequest) -> str:
+    context = request.mock_context or {}
+    classroom_id = context.get("classroom_id")
+    if isinstance(classroom_id, str) and classroom_id in {ALPHA_CLASSROOM_ID, DEMO_CLASSROOM_ID}:
+        return classroom_id
+    if DEMO_CLASSROOM_ID in request.prompt:
+        return DEMO_CLASSROOM_ID
+    return ALPHA_CLASSROOM_ID
+
+
+def _mock_student_refs(request: GenerationRequest) -> list[str]:
+    context = request.mock_context or {}
+    refs = context.get("student_refs")
+    if isinstance(refs, list):
+        return [str(ref) for ref in refs if ref]
+    return []
+
+
+def _mock_family_message_fixture(request: GenerationRequest) -> MockFixture:
+    context = request.mock_context or {}
+    classroom_id = _mock_classroom_id(request)
+    student_refs = _mock_student_refs(request)
+    defaults = MOCK_CLASSROOM_DEFAULTS[classroom_id]
+    student_ref = student_refs[0] if student_refs else defaults["default_student_ref"]
+    message_type = str(context.get("message_type") or "routine_update")
+    target_language = str(context.get("target_language") or "en")
+    templates = defaults["family_templates"]
+    return MockFixture(text=json.dumps({
+        "student_refs": [student_ref],
+        "message_type": message_type,
+        "target_language": target_language,
+        "plain_language_text": templates.get(message_type, templates["routine_update"]).format(student_ref=student_ref),
+        "simplified_student_text": defaults["student_message_template"].format(student_ref=student_ref),
+    }))
+
+
+def _mock_intervention_fixture(request: GenerationRequest) -> MockFixture:
+    classroom_id = _mock_classroom_id(request)
+    student_refs = _mock_student_refs(request)
+    defaults = MOCK_CLASSROOM_DEFAULTS[classroom_id]
+    student_ref = student_refs[0] if student_refs else defaults["default_student_ref"]
+    return MockFixture(text=json.dumps({
+        "observation": f"{student_ref} needed extra support to start the writing task and hesitated when looking at the blank page.",
+        "action_taken": f"Used a quick verbal check-in and scaffold supports with {student_ref}, then modelled the first step before releasing to independent work.",
+        "outcome": f"{student_ref} completed the first part of the task with more confidence once the scaffold was in place.",
+        "follow_up_needed": True,
+    }))
+
+
+MockFixtureEntry = MockFixture | Callable[[GenerationRequest], MockFixture]
+
+MOCK_CLASSROOM_DEFAULTS: dict[str, dict[str, Any]] = {
+    ALPHA_CLASSROOM_ID: {
+        "default_student_ref": "Ari",
+        "student_message_template": "{student_ref}, you worked hard today. Keep using the support tools that help you get started.",
+        "family_templates": {
+            "praise": "Hi! I wanted to share some good news about {student_ref}'s progress this week. {student_ref} showed stronger focus and follow-through during class today, and that progress was noticeable. We will keep using the same supports that helped this success. Thank you for your support at home!",
+            "missed_work": "Hi! I wanted to let you know that {student_ref} still has one classroom task to finish. {student_ref} made a start, but the work was not completed during class time. We will help them re-enter the task tomorrow and can share the next step if needed.",
+            "low_stakes_concern": "Hi! I wanted to share a small classroom concern about {student_ref}. {student_ref} needed a few extra prompts to get started today, but responded well once support was in place. We will keep watching this pattern and use the supports that are already helping.",
+            "routine_update": "Hi! Here is a quick classroom update about {student_ref}. {student_ref} used the regular classroom supports and stayed engaged with the lesson. We will keep building on that progress during the next few days.",
+        },
+    },
+    DEMO_CLASSROOM_ID: {
+        "default_student_ref": "Amira",
+        "student_message_template": "{student_ref}, you used the classroom supports well today. Keep starting with the tools that help you explain your thinking.",
+        "family_templates": {
+            "praise": "Hi! I wanted to share some good news about {student_ref}. Today {student_ref} showed stronger independence once the right classroom support was in place, and that progress was noticeable. We will keep building on that same structure because it is working well.",
+            "missed_work": "Hi! I wanted to let you know that {student_ref} still has one classroom task to finish. {student_ref} began the work, but needed more time and support than the block allowed. We will help them re-enter it tomorrow with the same scaffolds that are already helping.",
+            "low_stakes_concern": "Hi! I wanted to share a small classroom concern about {student_ref}. {student_ref} needed a few extra prompts to get started today, but responded once the support routine was in place. We will keep watching the pattern and using the supports that are already helping.",
+            "routine_update": "Hi! Here is a quick classroom update about {student_ref}. {student_ref} stayed engaged once the classroom supports were in place and was able to keep going with the lesson. We will keep reinforcing that same routine over the next few days.",
+        },
+    },
+}
+
+COMMON_MOCK_PROMPT_FIXTURES: dict[str, MockFixtureEntry] = {
+    "differentiate_material": MockFixture(MOCK_DIFFERENTIATION),
+    "simplify_for_student": MockFixture(MOCK_SIMPLIFICATION),
+    "generate_vocab_cards": MockFixture(MOCK_VOCAB_CARDS),
+    "detect_scaffold_decay": MockFixture(MOCK_SCAFFOLD_DECAY),
+}
+
+MOCK_CLASSROOM_FIXTURES: dict[str, dict[str, MockFixtureEntry]] = {
+    ALPHA_CLASSROOM_ID: {
+        **COMMON_MOCK_PROMPT_FIXTURES,
+        "prepare_tomorrow_plan": MockFixture(MOCK_TOMORROW_PLAN, MOCK_TOMORROW_THINKING),
+        "draft_family_message": _mock_family_message_fixture,
+        "log_intervention": _mock_intervention_fixture,
+        "detect_support_patterns": MockFixture(MOCK_SUPPORT_PATTERNS, MOCK_SUPPORT_PATTERNS_THINKING),
+        "generate_ea_briefing": MockFixture(MOCK_EA_BRIEFING),
+        "forecast_complexity": MockFixture(MOCK_COMPLEXITY_FORECAST_ALPHA, MOCK_COMPLEXITY_FORECAST_ALPHA_THINKING),
+        "generate_survival_packet": MockFixture(MOCK_SURVIVAL_PACKET_ALPHA, MOCK_SURVIVAL_PACKET_THINKING),
+    },
+    DEMO_CLASSROOM_ID: {
+        **COMMON_MOCK_PROMPT_FIXTURES,
+        "prepare_tomorrow_plan": MockFixture(MOCK_TOMORROW_PLAN_DEMO, MOCK_TOMORROW_THINKING_DEMO),
+        "draft_family_message": _mock_family_message_fixture,
+        "log_intervention": _mock_intervention_fixture,
+        "detect_support_patterns": MockFixture(MOCK_SUPPORT_PATTERNS_DEMO, MOCK_SUPPORT_PATTERNS_THINKING_DEMO),
+        "generate_ea_briefing": MockFixture(MOCK_EA_BRIEFING_DEMO),
+        "forecast_complexity": MockFixture(MOCK_COMPLEXITY_FORECAST, MOCK_COMPLEXITY_FORECAST_THINKING),
+        "generate_survival_packet": MockFixture(MOCK_SURVIVAL_PACKET_DEMO, MOCK_SURVIVAL_PACKET_THINKING),
+    },
+}
+
+
+def _resolve_mock_fixture(
+    request: GenerationRequest,
+    prompt_class: str | None = None,
+) -> MockFixture | None:
+    target_prompt = prompt_class or request.prompt_class
+    if not target_prompt:
+        return None
+    classroom_id = _mock_classroom_id(request)
+    entry = MOCK_CLASSROOM_FIXTURES.get(classroom_id, {}).get(target_prompt)
+    if entry is None:
+        return None
+    if callable(entry):
+        return entry(request)
+    return entry
+
 MOCK_RESPONSES: dict[str, str] = {
     "text": MOCK_DIFFERENTIATION,
     "image_text": (
         "I can see a worksheet about community helpers. The passage asks students "
         "to read about people who help in their community and answer three questions."
     ),
-    "thinking": MOCK_TOMORROW_PLAN,
-    "thinking_text": MOCK_TOMORROW_THINKING,
     "tool_call": json.dumps({
         "tool_calls": [{
             "name": "differentiate_material",
@@ -396,28 +1032,21 @@ class MockBackend:
             return GenerationResponse(
                 text=text, tool_calls=tool_calls, model_id="mock"
             )
-        if request.prompt_class == "detect_support_patterns":
+        fixture = _resolve_mock_fixture(request)
+        if fixture is not None:
             return GenerationResponse(
-                text=MOCK_SUPPORT_PATTERNS,
-                thinking_text=MOCK_SUPPORT_PATTERNS_THINKING,
+                text=fixture.text,
+                thinking_text=fixture.thinking_text,
                 model_id="mock",
             )
-        if request.prompt_class == "generate_ea_briefing":
-            return GenerationResponse(text=MOCK_EA_BRIEFING, model_id="mock")
-        if request.prompt_class == "draft_family_message":
-            return GenerationResponse(text=MOCK_FAMILY_MESSAGE, model_id="mock")
-        if request.prompt_class == "log_intervention":
-            return GenerationResponse(text=MOCK_INTERVENTION, model_id="mock")
-        if request.prompt_class == "simplify_for_student":
-            return GenerationResponse(text=MOCK_SIMPLIFICATION, model_id="mock")
-        if request.prompt_class == "generate_vocab_cards":
-            return GenerationResponse(text=MOCK_VOCAB_CARDS, model_id="mock")
         if request.thinking:
-            return GenerationResponse(
-                text=MOCK_RESPONSES["thinking"],
-                thinking_text=MOCK_RESPONSES["thinking_text"],
-                model_id="mock",
-            )
+            fixture = _resolve_mock_fixture(request, "prepare_tomorrow_plan")
+            if fixture is not None:
+                return GenerationResponse(
+                    text=fixture.text,
+                    thinking_text=fixture.thinking_text,
+                    model_id="mock",
+                )
         if request.images:
             return GenerationResponse(
                 text=MOCK_RESPONSES["image_text"], model_id="mock"
@@ -504,6 +1133,55 @@ class LocalBackend:
 # JSON extraction — handles real model output quirks
 # ---------------------------------------------------------------------------
 
+_VALID_JSON_ESCAPES = frozenset('"\\bfnrtu/')
+
+
+def _sanitize_json_control_chars(text: str) -> str:
+    """Fix illegal characters inside JSON string values.
+
+    Models sometimes emit:
+    - Unescaped control characters (tabs, newlines) inside strings
+    - Invalid escape sequences like \\_  (markdown-style underline escaping)
+
+    We walk char-by-char, track whether we're inside a JSON string,
+    and fix only characters that would cause JSON.parse() to fail.
+    """
+    result: list[str] = []
+    in_string = False
+    i = 0
+    while i < len(text):
+        ch = text[i]
+        if ch == '\\' and in_string and i + 1 < len(text):
+            next_ch = text[i + 1]
+            if next_ch in _VALID_JSON_ESCAPES:
+                # Valid JSON escape — pass through
+                result.append(ch)
+                result.append(next_ch)
+                i += 2
+            else:
+                # Invalid escape like \_ or \' — drop the backslash
+                result.append(next_ch)
+                i += 2
+            continue
+        if ch == '"':
+            in_string = not in_string
+            result.append(ch)
+        elif in_string and ord(ch) < 0x20:
+            # Control character inside a string — escape it
+            if ch == '\n':
+                result.append('\\n')
+            elif ch == '\r':
+                result.append('\\r')
+            elif ch == '\t':
+                result.append('\\t')
+            else:
+                result.append(f'\\u{ord(ch):04x}')
+        else:
+            result.append(ch)
+        i += 1
+    return ''.join(result)
+
+
 def extract_json(raw: str) -> str:
     """Extract JSON from model output that may include prose or markdown fencing.
 
@@ -511,6 +1189,7 @@ def extract_json(raw: str) -> str:
     - Markdown ```json ... ``` fences
     - Leading/trailing prose around JSON
     - Trailing commas (common Gemma quirk)
+    - Unescaped control characters inside JSON strings
     """
     text = raw.strip()
 
@@ -519,22 +1198,20 @@ def extract_json(raw: str) -> str:
     if fence_match:
         text = fence_match.group(1).strip()
 
-    # If the text already looks like valid JSON, return it
-    if text and text[0] in ("{", "["):
-        # Fix trailing commas before } or ]
-        text = re.sub(r",\s*([}\]])", r"\1", text)
-        return text
-
-    # Find the first { or [ and match to the end
+    # Find the outermost JSON structure — prefer whichever bracket appears first
+    candidates: list[tuple[int, str, str]] = []
     for start_char, end_char in [("{", "}"), ("[", "]")]:
         idx = text.find(start_char)
-        if idx == -1:
-            continue
-        # Walk backwards from end to find the last matching bracket
+        if idx != -1:
+            candidates.append((idx, start_char, end_char))
+    candidates.sort(key=lambda c: c[0])
+
+    for idx, start_char, end_char in candidates:
         ridx = text.rfind(end_char)
         if ridx > idx:
             candidate = text[idx : ridx + 1]
             candidate = re.sub(r",\s*([}\]])", r"\1", candidate)
+            candidate = _sanitize_json_control_chars(candidate)
             return candidate
 
     # No JSON structure found — return the raw text for downstream handling
@@ -542,54 +1219,96 @@ def extract_json(raw: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Vertex AI backend — calls Gemma models via Google GenAI SDK
+# Vertex AI backend — calls self-deployed Gemma endpoints
 # ---------------------------------------------------------------------------
 
-class VertexAIBackend:
-    """Calls Gemma 4 models on Vertex AI via the google-genai SDK."""
+@dataclass(frozen=True)
+class VertexEndpointConfig:
+    endpoint: str
+    model_id: str
 
-    MODEL_MAP = {
-        ModelTier.LIVE: "gemma-4-4b-it",
-        ModelTier.PLANNING: "gemma-4-27b-it",
+
+class VertexAIBackend:
+    """Calls self-deployed Gemma endpoints on Vertex AI via raw_predict."""
+
+    DEFAULT_MODEL_MAP = {
+        ModelTier.LIVE: "google/gemma3@gemma-3-4b-it",
+        ModelTier.PLANNING: "google/gemma3@gemma-3-27b-it",
+    }
+    ENDPOINT_ENV_MAP = {
+        ModelTier.LIVE: "PRAIRIE_VERTEX_ENDPOINT_LIVE",
+        ModelTier.PLANNING: "PRAIRIE_VERTEX_ENDPOINT_PLANNING",
+    }
+    MODEL_ENV_MAP = {
+        ModelTier.LIVE: "PRAIRIE_VERTEX_MODEL_ID_LIVE",
+        ModelTier.PLANNING: "PRAIRIE_VERTEX_MODEL_ID_PLANNING",
     }
 
     def __init__(self) -> None:
-        self._client = None
+        self._endpoint_clients: dict[ModelTier, Any] = {}
+        self._sdk_initialized = False
+        backend_mode = os.environ.get("PRAIRIE_VERTEX_BACKEND", "").strip()
+        if backend_mode != "endpoint":
+            raise RuntimeError(
+                "PRAIRIE_VERTEX_BACKEND must be set to 'endpoint' for Vertex AI endpoint mode."
+            )
 
-    def _get_client(self):
-        if self._client is not None:
-            return self._client
-
-        from google import genai
-
-        project = os.environ.get("GOOGLE_CLOUD_PROJECT")
-        location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
-
-        if not project:
+        self.project = os.environ.get("GOOGLE_CLOUD_PROJECT")
+        self.location = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+        if not self.project:
             raise RuntimeError(
                 "GOOGLE_CLOUD_PROJECT environment variable is required for Vertex AI mode. "
                 "Set it to your GCP project ID."
             )
 
-        self._client = genai.Client(
-            vertexai=True,
-            project=project,
-            location=location,
+        self.endpoint_map: dict[ModelTier, VertexEndpointConfig] = {}
+        for tier, endpoint_env in self.ENDPOINT_ENV_MAP.items():
+            endpoint = os.environ.get(endpoint_env, "").strip()
+            if not endpoint:
+                raise RuntimeError(
+                    f"{endpoint_env} is required for Vertex AI endpoint mode. "
+                    "Use the full endpoint resource name, e.g. "
+                    "'projects/<project>/locations/<region>/endpoints/<endpoint-id>'."
+                )
+            if not endpoint.startswith("projects/"):
+                raise RuntimeError(
+                    f"{endpoint_env} must be a full endpoint resource name, got: {endpoint}"
+                )
+            model_id = os.environ.get(
+                self.MODEL_ENV_MAP[tier],
+                self.DEFAULT_MODEL_MAP[tier],
+            ).strip()
+            self.endpoint_map[tier] = VertexEndpointConfig(
+                endpoint=endpoint,
+                model_id=model_id,
+            )
+
+    def _get_endpoint_client(self, model_tier: ModelTier):
+        existing = self._endpoint_clients.get(model_tier)
+        if existing is not None:
+            return existing
+
+        from google.cloud import aiplatform
+
+        if not self._sdk_initialized:
+            aiplatform.init(project=self.project, location=self.location)
+            self._sdk_initialized = True
+            print(
+                f"Vertex AI endpoint client initialized — project={self.project}, location={self.location}"
+            )
+
+        endpoint_config = self.endpoint_map.get(
+            model_tier,
+            self.endpoint_map[ModelTier.LIVE],
         )
-        print(f"Vertex AI client initialized — project={project}, location={location}")
-        return self._client
+        endpoint_client = aiplatform.Endpoint(endpoint_name=endpoint_config.endpoint)
+        self._endpoint_clients[model_tier] = endpoint_client
+        return endpoint_client
 
-    def generate(self, request: GenerationRequest) -> GenerationResponse:
-        from google.genai import types
-
-        client = self._get_client()
-        model_id = self.MODEL_MAP.get(request.model_tier, self.MODEL_MAP[ModelTier.LIVE])
-
-        # Split the prompt into system instruction and user message.
-        # Our prompt builders concatenate system + user with a double newline
-        # before the context section. We split on common delimiters.
+    @staticmethod
+    def _split_prompt(prompt: str) -> tuple[str | None, str]:
         system_instruction = None
-        user_text = request.prompt
+        user_text = prompt
 
         for delimiter in [
             "\n\nCLASSROOM CONTEXT:",
@@ -600,79 +1319,163 @@ class VertexAIBackend:
             "\n\nSOURCE TEXT:",
             "\n\nCLASSROOM MEMORY:",
         ]:
-            idx = request.prompt.find(delimiter)
+            idx = prompt.find(delimiter)
             if idx > 0:
-                system_instruction = request.prompt[:idx].strip()
-                user_text = request.prompt[idx:].strip()
+                system_instruction = prompt[:idx].strip()
+                user_text = prompt[idx:].strip()
                 break
 
-        # Build message contents
-        contents: list = []
-        if request.images:
-            for img_path in request.images:
-                try:
-                    with open(img_path, "rb") as f:
-                        img_data = f.read()
-                    contents.append(types.Part.from_bytes(
-                        data=img_data,
-                        mime_type="image/png",
-                    ))
-                except FileNotFoundError:
-                    pass  # Skip missing images in smoke tests
-        contents.append(user_text)
+        return system_instruction, user_text
 
-        # Configure thinking mode
-        thinking_config = None
-        if request.thinking:
-            thinking_config = types.ThinkingConfig(
-                thinking_budget=8192,
+    @staticmethod
+    def _guess_mime_type(file_path: str) -> str:
+        mime_type, _ = mimetypes.guess_type(file_path)
+        return mime_type or "image/png"
+
+    def _build_chat_messages(self, request: GenerationRequest) -> list[dict[str, Any]]:
+        system_instruction, user_text = self._split_prompt(request.prompt)
+        messages: list[dict[str, Any]] = []
+
+        if system_instruction:
+            messages.append(
+                {
+                    "role": "system",
+                    "content": [{"type": "text", "text": system_instruction}],
+                }
             )
 
-        # Build generation config
-        generate_config = types.GenerateContentConfig(
-            system_instruction=system_instruction,
-            max_output_tokens=request.max_tokens,
-            temperature=0.7,
-            thinking_config=thinking_config,
+        user_content: list[dict[str, Any]] = []
+        for img_path in request.images:
+            try:
+                with open(img_path, "rb") as handle:
+                    image_bytes = handle.read()
+            except FileNotFoundError:
+                continue
+
+            mime_type = self._guess_mime_type(img_path)
+            encoded = base64.b64encode(image_bytes).decode("ascii")
+            user_content.append(
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:{mime_type};base64,{encoded}"},
+                }
+            )
+
+        user_content.append({"type": "text", "text": user_text})
+        messages.append({"role": "user", "content": user_content})
+        return messages
+
+    def _build_payload(self, request: GenerationRequest) -> dict[str, Any]:
+        instance: dict[str, Any] = {
+            "@requestFormat": "chatCompletions",
+            "messages": self._build_chat_messages(request),
+            "max_tokens": request.max_tokens,
+            "temperature": 0.7,
+        }
+        if request.thinking:
+            instance["metadata"] = {"thinking_requested": True}
+        return {"instances": [instance]}
+
+    @staticmethod
+    def _coerce_content_to_text(content: Any) -> str | None:
+        if content is None:
+            return None
+        if isinstance(content, str):
+            return content
+        if isinstance(content, list):
+            parts: list[str] = []
+            for item in content:
+                text = VertexAIBackend._coerce_content_to_text(item)
+                if text:
+                    parts.append(text)
+            return "\n".join(parts) if parts else None
+        if isinstance(content, dict):
+            if isinstance(content.get("text"), str):
+                return content["text"]
+            if isinstance(content.get("content"), (str, list, dict)):
+                return VertexAIBackend._coerce_content_to_text(content["content"])
+            if isinstance(content.get("message"), dict):
+                return VertexAIBackend._coerce_content_to_text(content["message"])
+            if isinstance(content.get("generated_text"), str):
+                return content["generated_text"]
+        return None
+
+    def _extract_generation(self, payload: Any) -> tuple[str, str | None]:
+        if isinstance(payload, dict):
+            choices = payload.get("choices")
+            if isinstance(choices, list) and choices:
+                choice = choices[0]
+                if isinstance(choice, dict):
+                    message = choice.get("message", {})
+                    text = self._coerce_content_to_text(message.get("content"))
+                    thinking = self._coerce_content_to_text(
+                        message.get("reasoning_content") or choice.get("reasoning_content")
+                    )
+                    if text:
+                        return text, thinking
+
+            predictions = payload.get("predictions")
+            if isinstance(predictions, list) and predictions:
+                return self._extract_generation(predictions[0])
+            if isinstance(predictions, dict):
+                return self._extract_generation(predictions)
+
+            for key in ["generated_text", "text", "output"]:
+                text = self._coerce_content_to_text(payload.get(key))
+                if text:
+                    return text, None
+
+        if isinstance(payload, list) and payload:
+            return self._extract_generation(payload[0])
+
+        text = self._coerce_content_to_text(payload)
+        if text:
+            return text, None
+
+        return json.dumps(payload), None
+
+    def generate(self, request: GenerationRequest) -> GenerationResponse:
+        endpoint_config = self.endpoint_map.get(
+            request.model_tier,
+            self.endpoint_map[ModelTier.LIVE],
         )
+        endpoint_client = self._get_endpoint_client(request.model_tier)
+        payload = self._build_payload(request)
 
         start = time.perf_counter()
         try:
-            response = client.models.generate_content(
-                model=model_id,
-                contents=contents,
-                config=generate_config,
+            response = endpoint_client.raw_predict(
+                body=json.dumps(payload).encode("utf-8"),
+                headers={"Content-Type": "application/json"},
             )
         except Exception as e:
             latency_ms = (time.perf_counter() - start) * 1000
             return GenerationResponse(
                 text=json.dumps({"error": str(e)}),
-                model_id=model_id,
+                model_id=endpoint_config.model_id,
                 latency_ms=latency_ms,
             )
         latency_ms = (time.perf_counter() - start) * 1000
 
-        # Extract text and thinking from response parts
-        output_text = ""
-        thinking_text = None
+        if response.status_code >= 400:
+            return GenerationResponse(
+                text=json.dumps({"error": f"HTTP {response.status_code}: {response.text}"}),
+                model_id=endpoint_config.model_id,
+                latency_ms=latency_ms,
+            )
 
-        if not response.candidates:
-            print(f"WARNING: Empty candidates from {model_id} — possible safety filter or refusal")
+        try:
+            response_payload = json.loads(response.text)
+        except json.JSONDecodeError:
+            response_payload = response.text
 
-        if response.candidates:
-            for part in response.candidates[0].content.parts:
-                if hasattr(part, "thought") and part.thought:
-                    thinking_text = (thinking_text or "") + part.text
-                else:
-                    output_text += part.text
-
-        # Extract clean JSON from model output
+        output_text, thinking_text = self._extract_generation(response_payload)
         output_text = extract_json(output_text)
 
         return GenerationResponse(
             text=output_text,
             thinking_text=thinking_text,
-            model_id=model_id,
+            model_id=endpoint_config.model_id,
             latency_ms=latency_ms,
         )
 
@@ -710,59 +1513,103 @@ class GemmaHarness:
 # ---------------------------------------------------------------------------
 
 def run_smoke_tests(harness: GemmaHarness) -> bool:
-    """Run the four Sprint 0 smoke tests."""
+    """Run harness smoke tests for the active backend."""
     passed = 0
-    total = 4
+    total = 4 if harness.mode == InferenceMode.MOCK else 3
+
+    def classify_error_text(text: str) -> str:
+        normalized = text.lower()
+        if any(token in normalized for token in [
+            "permission_denied",
+            "aiplatform.endpoints.predict",
+            "quota project",
+            "endpoint mode",
+            "prairie_vertex_endpoint",
+            "endpoint resource name",
+            "deployed model",
+            "raw_predict",
+            "endpoint",
+            "not_found",
+        ]):
+            return "auth/model-access"
+        if any(token in normalized for token in [
+            "json",
+            "schema",
+            "missing key",
+            "required key",
+            "parse",
+        ]):
+            return "parse/schema"
+        return "other"
+
+    def inspect_response(resp: GenerationResponse) -> tuple[bool, str | None]:
+        text = resp.text.strip()
+        if not text:
+            return False, "empty model response"
+        if text.startswith('{"error"'):
+            try:
+                payload = json.loads(text)
+                message = str(payload.get("error", text))
+            except json.JSONDecodeError:
+                message = text
+            category = classify_error_text(message)
+            return False, f"{category}: {message}"
+        return True, None
 
     # Test 1: Text prompt
-    print("\n[1/4] Text prompt...")
+    print(f"\n[1/{total}] Text prompt...")
     resp = harness.generate(GenerationRequest(prompt="Differentiate this reading passage for mixed levels."))
-    ok = len(resp.text) > 0
-    print(f"  {'PASS' if ok else 'FAIL'} — got {len(resp.text)} chars")
+    ok, detail = inspect_response(resp)
+    print(f"  {'PASS' if ok else 'FAIL'} — {detail or f'got {len(resp.text)} chars'}")
     passed += ok
 
     # Test 2: Image + text prompt
-    print("[2/4] Image + text prompt...")
+    print(f"[2/{total}] Image + text prompt...")
     resp = harness.generate(GenerationRequest(
         prompt="Describe this worksheet and suggest how to adapt it.",
         images=["placeholder.png"],
     ))
-    ok = len(resp.text) > 0
-    print(f"  {'PASS' if ok else 'FAIL'} — got {len(resp.text)} chars")
+    ok, detail = inspect_response(resp)
+    print(f"  {'PASS' if ok else 'FAIL'} — {detail or f'got {len(resp.text)} chars'}")
     passed += ok
 
     # Test 3: Thinking mode
-    print("[3/4] Thinking mode...")
+    print(f"[3/{total}] Thinking mode...")
     resp = harness.generate(GenerationRequest(
         prompt="Plan tomorrow's support priorities for a class with 3 EAL students and 2 needing transition support.",
         thinking=True,
         model_tier=ModelTier.PLANNING,
     ))
-    ok = resp.thinking_text is not None or len(resp.text) > 0
-    print(f"  {'PASS' if ok else 'FAIL'} — thinking={'yes' if resp.thinking_text else 'no'}")
+    text_ok, detail = inspect_response(resp)
+    ok = resp.thinking_text is not None or text_ok
+    if ok:
+        print(f"  PASS — thinking={'yes' if resp.thinking_text else 'no'}")
+    else:
+        print(f"  FAIL — {detail or 'no thinking text returned'}")
     passed += ok
 
-    # Test 4: Tool call round trip
-    print("[4/4] Tool call round trip...")
-    tools = [{
-        "name": "differentiate_material",
-        "description": "Generate differentiated versions of a lesson artifact.",
-        "parameters": {
-            "type": "object",
-            "properties": {
-                "artifact_id": {"type": "string"},
-                "variant_types": {"type": "array", "items": {"type": "string"}},
+    if harness.mode == InferenceMode.MOCK:
+        # Test 4: Tool call round trip (mock-only; current live stack is text generation only)
+        print(f"[4/{total}] Tool call round trip...")
+        tools = [{
+            "name": "differentiate_material",
+            "description": "Generate differentiated versions of a lesson artifact.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "artifact_id": {"type": "string"},
+                    "variant_types": {"type": "array", "items": {"type": "string"}},
+                },
+                "required": ["artifact_id", "variant_types"],
             },
-            "required": ["artifact_id", "variant_types"],
-        },
-    }]
-    resp = harness.generate(GenerationRequest(
-        prompt="Differentiate artifact-001 into all five variant types.",
-        tools=tools,
-    ))
-    ok = len(resp.tool_calls) > 0
-    print(f"  {'PASS' if ok else 'FAIL'} — tool_calls={len(resp.tool_calls)}")
-    passed += ok
+        }]
+        resp = harness.generate(GenerationRequest(
+            prompt="Differentiate artifact-001 into all five variant types.",
+            tools=tools,
+        ))
+        ok = len(resp.tool_calls) > 0
+        print(f"  {'PASS' if ok else 'FAIL'} — tool_calls={len(resp.tool_calls)}")
+        passed += ok
 
     print(f"\nSmoke tests: {passed}/{total} passed")
     return passed == total

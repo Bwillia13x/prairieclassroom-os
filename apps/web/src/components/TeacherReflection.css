@@ -2,18 +2,18 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 1.5rem;
+  padding: var(--space-6);
   box-shadow: var(--shadow-sm);
 }
 
 .teacher-reflection h2 {
-  font-size: 1.1rem;
+  font-size: var(--text-lg);
   margin-bottom: 0.25rem;
   color: var(--color-text);
 }
 
 .reflection-description {
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   color: var(--color-text-secondary);
   margin-bottom: 1rem;
 }
