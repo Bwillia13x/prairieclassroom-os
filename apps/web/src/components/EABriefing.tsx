@@ -30,9 +30,10 @@ export default function EABriefing({
           Synthesizes today's plan, recent interventions, and pattern insights.
         </p>
 
-        <label className="ea-briefing-label">
-          Classroom
+        <div className="field">
+          <label htmlFor="ea-classroom">Classroom</label>
           <select
+            id="ea-classroom"
             value={selectedClassroom}
             onChange={(e) => onClassroomChange(e.target.value)}
           >
@@ -42,20 +43,21 @@ export default function EABriefing({
               </option>
             ))}
           </select>
-        </label>
+        </div>
 
-        <label className="ea-briefing-label">
-          EA Name <span className="ea-briefing-optional">(optional)</span>
+        <div className="field">
+          <label htmlFor="ea-name">EA Name <span className="ea-briefing-optional">(optional)</span></label>
           <input
+            id="ea-name"
             type="text"
             value={eaName}
             onChange={(e) => setEaName(e.target.value)}
             placeholder="e.g. Ms. Chen"
           />
-        </label>
+        </div>
 
         <button
-          className="ea-briefing-submit"
+          className="btn btn--primary"
           onClick={() => onSubmit(selectedClassroom, eaName || undefined)}
           disabled={loading}
         >
@@ -68,8 +70,7 @@ export default function EABriefing({
           <header className="ea-briefing-header">
             <h2>Daily Briefing — {result.briefing.classroom_id}</h2>
             <p className="ea-briefing-meta">
-              {result.briefing.date} · {Math.round(result.latency_ms)}ms · {result.model_id}
-              {result.briefing.schema_version && ` · v${result.briefing.schema_version}`}
+              {result.briefing.date}
             </p>
           </header>
 
@@ -146,7 +147,7 @@ export default function EABriefing({
           )}
 
           <button
-            className="ea-briefing-print"
+            className="btn btn--ghost ea-briefing-print"
             onClick={() => window.print()}
           >
             Print Briefing

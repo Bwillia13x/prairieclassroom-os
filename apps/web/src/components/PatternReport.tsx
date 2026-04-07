@@ -43,7 +43,7 @@ export default function PatternReport({
     <div className={`pattern-report${report ? " pattern-report--split" : ""}`}>
       <form className="pattern-form" onSubmit={handleSubmit}>
         <h2>Support Patterns</h2>
-        <p style={{ fontSize: "0.88rem", color: "var(--color-text-secondary)" }}>
+        <p className="pattern-form-description">
           Review patterns across your intervention records and support plans.
           This reflects your own documentation — not a diagnosis.
         </p>
@@ -92,7 +92,7 @@ export default function PatternReport({
           </select>
         </div>
 
-        <button type="submit" className="btn-primary" disabled={loading}>
+        <button type="submit" className="btn btn--primary" disabled={loading}>
           {loading ? "Analyzing Patterns..." : "Detect Patterns"}
         </button>
       </form>
@@ -105,8 +105,6 @@ export default function PatternReport({
               {report.classroom_id}
               {report.student_filter && ` · ${report.student_filter}`}
               {" · "}last {report.time_window} records
-              {" · "}{Math.round(result.latency_ms)}ms · {result.model_id}
-              {report.schema_version && ` · v${report.schema_version}`}
             </p>
           </header>
 

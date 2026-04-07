@@ -57,8 +57,6 @@ export default function ForecastPanel() {
           <ForecastViewer
             forecast={result.forecast}
             thinkingSummary={result.thinking_summary}
-            latencyMs={result.latency_ms}
-            modelId={result.model_id}
           />
           </>
         )}

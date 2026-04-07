@@ -1,12 +1,11 @@
 // apps/web/src/components/ForecastViewer.tsx
+import { useRef } from "react";
 import type { ComplexityForecast } from "../types";
 import "./ForecastViewer.css";
 
 interface Props {
   forecast: ComplexityForecast;
   thinkingSummary: string | null;
-  latencyMs: number;
-  modelId: string;
 }
 
 const LEVEL_ICON: Record<string, string> = {
@@ -21,14 +20,19 @@ const LEVEL_LABEL: Record<string, string> = {
   high: "High",
 };
 
-export default function ForecastViewer({ forecast, thinkingSummary, latencyMs, modelId }: Props) {
+export default function ForecastViewer({ forecast, thinkingSummary }: Props) {
+  const blockRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  function scrollToBlock(index: number) {
+    blockRefs.current[index]?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   return (
     <div className="forecast-viewer">
       <header className="forecast-header">
         <h2>Complexity Forecast</h2>
         <p className="forecast-meta">
-          {forecast.classroom_id} &middot; {forecast.forecast_date} &middot; {Math.round(latencyMs)}ms &middot; {modelId}
-          {forecast.schema_version && ` \u00B7 v${forecast.schema_version}`}
+          {forecast.classroom_id} &middot; {forecast.forecast_date}
         </p>
       </header>
 
@@ -51,10 +55,27 @@ export default function ForecastViewer({ forecast, thinkingSummary, latencyMs, m
       {forecast.blocks.length > 0 && (
         <section className="forecast-section forecast-section--timeline">
           <h3>Day Timeline</h3>
+
+          {/* Visual timeline bar */}
+          <div className="forecast-timeline-bar" role="img" aria-label="Day complexity overview">
+            {forecast.blocks.map((block, i) => (
+              <button
+                key={i}
+                className={`forecast-timeline-segment forecast-timeline-segment--${block.level}`}
+                onClick={() => scrollToBlock(i)}
+                title={`${block.time_slot}: ${block.activity} (${LEVEL_LABEL[block.level]})`}
+                aria-label={`${block.time_slot} — ${LEVEL_LABEL[block.level]} complexity — click to scroll`}
+              >
+                <span className="forecast-timeline-label">{block.time_slot}</span>
+              </button>
+            ))}
+          </div>
+
           <div className="forecast-blocks">
             {forecast.blocks.map((block, i) => (
               <div
                 key={i}
+                ref={(el) => { blockRefs.current[i] = el; }}
                 className={`forecast-block forecast-block--${block.level}`}
                 aria-label={`${block.time_slot}: ${LEVEL_LABEL[block.level]} complexity`}
               >
@@ -79,7 +100,7 @@ export default function ForecastViewer({ forecast, thinkingSummary, latencyMs, m
         </section>
       )}
 
-      <button className="forecast-print" onClick={() => window.print()}>
+      <button className="btn btn--ghost forecast-print" onClick={() => window.print()}>
         Print Forecast
       </button>
     </div>

@@ -27,21 +27,21 @@ export default function SimplifiedViewer({ onSubmit, result, loading }: Props) {
           Paste any classroom text — instructions, a passage, or an assignment — and get an EAL-friendly simplified version.
         </p>
 
-        <label className="form-label">
-          Source text
+        <div className="field">
+          <label htmlFor="simplify-source">Source text</label>
           <textarea
-            className="form-textarea"
+            id="simplify-source"
             rows={6}
             value={sourceText}
             onChange={(e) => setSourceText(e.target.value)}
             placeholder="Paste the text you want to simplify…"
           />
-        </label>
+        </div>
 
         <div className="form-row">
-          <label className="form-label">
-            Grade
-            <select className="form-select" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
+          <div className="field">
+            <label htmlFor="simplify-grade">Grade</label>
+            <select id="simplify-grade" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
               <option>Grade 1</option>
               <option>Grade 2</option>
               <option>Grade 3</option>
@@ -49,19 +49,19 @@ export default function SimplifiedViewer({ onSubmit, result, loading }: Props) {
               <option>Grade 5</option>
               <option>Grade 6</option>
             </select>
-          </label>
+          </div>
 
-          <label className="form-label">
-            EAL level
-            <select className="form-select" value={ealLevel} onChange={(e) => setEalLevel(e.target.value as "beginner" | "intermediate" | "advanced")}>
+          <div className="field">
+            <label htmlFor="simplify-eal">EAL level</label>
+            <select id="simplify-eal" value={ealLevel} onChange={(e) => setEalLevel(e.target.value as "beginner" | "intermediate" | "advanced")}>
               <option value="beginner">Beginner</option>
               <option value="intermediate">Intermediate</option>
               <option value="advanced">Advanced</option>
             </select>
-          </label>
+          </div>
         </div>
 
-        <button className="form-btn" type="submit" disabled={loading || !sourceText.trim()}>
+        <button className="btn btn--primary" type="submit" disabled={loading || !sourceText.trim()}>
           {loading ? "Simplifying…" : "Simplify"}
         </button>
       </form>
@@ -71,7 +71,7 @@ export default function SimplifiedViewer({ onSubmit, result, loading }: Props) {
           <div className="result-header">
             <h4>Simplified Version</h4>
             <span className="result-meta">
-              EAL {result.simplified.eal_level} · {result.simplified.grade_band} · {Math.round(result.latency_ms)}ms
+              EAL {result.simplified.eal_level} · {result.simplified.grade_band}
             </span>
           </div>
 

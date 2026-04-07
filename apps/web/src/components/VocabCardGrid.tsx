@@ -46,41 +46,41 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
           Paste lesson text to generate bilingual vocabulary cards for EAL students.
         </p>
 
-        <label className="form-label">
-          Lesson text
+        <div className="field">
+          <label htmlFor="vocab-text">Lesson text</label>
           <textarea
-            className="form-textarea"
+            id="vocab-text"
             rows={5}
             value={artifactText}
             onChange={(e) => setArtifactText(e.target.value)}
             placeholder="Paste the lesson content…"
           />
-        </label>
+        </div>
 
         <div className="form-row">
-          <label className="form-label">
-            Subject
-            <select className="form-select" value={subject} onChange={(e) => setSubject(e.target.value)}>
+          <div className="field">
+            <label htmlFor="vocab-subject">Subject</label>
+            <select id="vocab-subject" value={subject} onChange={(e) => setSubject(e.target.value)}>
               <option>ELA</option>
               <option>Math</option>
               <option>Science</option>
               <option>Social Studies</option>
               <option>Health</option>
             </select>
-          </label>
+          </div>
 
-          <label className="form-label">
-            Target language
-            <select className="form-select" value={targetLang} onChange={(e) => setTargetLang(e.target.value)}>
+          <div className="field">
+            <label htmlFor="vocab-lang">Target language</label>
+            <select id="vocab-lang" value={targetLang} onChange={(e) => setTargetLang(e.target.value)}>
               {LANGUAGE_OPTIONS.map((l) => (
                 <option key={l.code} value={l.code}>{l.label}</option>
               ))}
             </select>
-          </label>
+          </div>
 
-          <label className="form-label">
-            Grade
-            <select className="form-select" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
+          <div className="field">
+            <label htmlFor="vocab-grade">Grade</label>
+            <select id="vocab-grade" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
               <option>Grade 1</option>
               <option>Grade 2</option>
               <option>Grade 3</option>
@@ -88,10 +88,10 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
               <option>Grade 5</option>
               <option>Grade 6</option>
             </select>
-          </label>
+          </div>
         </div>
 
-        <button className="form-btn" type="submit" disabled={loading || !artifactText.trim()}>
+        <button className="btn btn--primary" type="submit" disabled={loading || !artifactText.trim()}>
           {loading ? "Generating…" : "Generate Cards"}
         </button>
       </form>
@@ -101,23 +101,29 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
           <div className="result-header">
             <h4>Vocabulary Cards ({result.card_set.cards.length})</h4>
             <span className="result-meta">
-              {result.card_set.subject} · {LANGUAGE_OPTIONS.find((l) => l.code === result.card_set.target_language)?.label ?? result.card_set.target_language} · {Math.round(result.latency_ms)}ms
+              {result.card_set.subject} · {LANGUAGE_OPTIONS.find((l) => l.code === result.card_set.target_language)?.label ?? result.card_set.target_language}
             </span>
           </div>
 
           <div className="cards-grid">
             {result.card_set.cards.map((card, i) => (
-              <div key={i} className="vocab-card">
-                <div className="card-term">{card.term}</div>
-                <div className="card-translation">{card.target_translation}</div>
-                <div className="card-definition">{card.definition}</div>
-                <div className="card-example">
-                  <span className="card-label">Example:</span> {card.example_sentence}
+              <article key={i} className="vocab-card" style={{ animationDelay: `${0.05 * (i + 1)}s` }}>
+                <div className="vocab-card-head">
+                  <div className="vocab-card-term">{card.term}</div>
+                  <div className="vocab-card-translation">{card.target_translation}</div>
                 </div>
-                <div className="card-visual">
-                  <span className="card-label">Visual:</span> {card.visual_hint}
+                <div className="vocab-card-body">
+                  <p className="vocab-card-definition">{card.definition}</p>
+                  <p className="vocab-card-example">
+                    <span className="vocab-card-label">Example</span>
+                    {card.example_sentence}
+                  </p>
+                  <p className="vocab-card-visual">
+                    <span className="vocab-card-label">Visual cue</span>
+                    {card.visual_hint}
+                  </p>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         </div>

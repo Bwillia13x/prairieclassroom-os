@@ -3,19 +3,15 @@ import "./InterventionCard.css";
 
 interface Props {
   record: InterventionRecord;
-  latencyMs: number;
-  modelId: string;
 }
 
-export default function InterventionCard({ record, latencyMs, modelId }: Props) {
+export default function InterventionCard({ record }: Props) {
   return (
     <div className="intervention-card">
       <header className="intervention-header">
         <h2>Intervention Record</h2>
         <p className="intervention-meta">
-          {record.student_refs.join(", ")} · {record.classroom_id} ·{" "}
-          {Math.round(latencyMs)}ms · {modelId}
-          {record.schema_version && ` · v${record.schema_version}`}
+          {record.student_refs.join(", ")} · {record.classroom_id}
         </p>
       </header>
 

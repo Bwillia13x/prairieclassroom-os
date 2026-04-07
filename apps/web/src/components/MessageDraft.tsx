@@ -4,12 +4,10 @@ import "./MessageDraft.css";
 
 interface Props {
   draft: FamilyMessageDraft;
-  latencyMs: number;
-  modelId: string;
   onApprove: (draftId: string) => void;
 }
 
-export default function MessageDraft({ draft, latencyMs, modelId, onApprove }: Props) {
+export default function MessageDraft({ draft, onApprove }: Props) {
   const [copied, setCopied] = useState(false);
   const [approved, setApproved] = useState(draft.teacher_approved);
 
@@ -31,8 +29,7 @@ export default function MessageDraft({ draft, latencyMs, modelId, onApprove }: P
       <header className="draft-header">
         <h2>Draft Message</h2>
         <p className="draft-meta">
-          {draft.student_refs.join(", ")} · {draft.message_type.replace(/_/g, " ")} ·{" "}
-          {draft.target_language} · {Math.round(latencyMs)}ms · {modelId}
+          {draft.student_refs.join(", ")} · {draft.message_type.replace(/_/g, " ")} · {draft.target_language}
         </p>
       </header>
 
@@ -53,7 +50,7 @@ export default function MessageDraft({ draft, latencyMs, modelId, onApprove }: P
             Approved {copied ? "& Copied" : ""}
           </div>
         ) : (
-          <button className="btn-approve" onClick={handleApproveAndCopy}>
+          <button className="btn btn--approve" onClick={handleApproveAndCopy}>
             Approve & Copy to Clipboard
           </button>
         )}
