@@ -1,4 +1,5 @@
 import type { InterventionRecord } from "../types";
+import PrintButton from "./PrintButton";
 import "./InterventionCard.css";
 
 interface Props {
@@ -42,6 +43,8 @@ export default function InterventionCard({ record }: Props) {
       <div className="intervention-saved">
         Saved to classroom memory
       </div>
+
+      <PrintButton label="Print Record" />
     </div>
   );
 }

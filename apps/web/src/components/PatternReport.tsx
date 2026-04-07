@@ -4,6 +4,7 @@ import type {
   InterventionPrefill,
   FamilyMessagePrefill,
 } from "../types";
+import PrintButton from "./PrintButton";
 import "./PatternReport.css";
 
 interface Props {
@@ -226,6 +227,8 @@ export default function PatternReport({
               ))}
             </section>
           )}
+
+          <PrintButton label="Print Report" />
         </div>
       )}
     </div>

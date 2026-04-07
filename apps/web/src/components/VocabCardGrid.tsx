@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { VocabCardsResponse } from "../types";
+import PrintButton from "./PrintButton";
 import "./VocabCardGrid.css";
 
 interface Props {
@@ -126,6 +127,8 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
               </article>
             ))}
           </div>
+
+          <PrintButton label="Print Vocab Cards" />
         </div>
       )}
     </div>

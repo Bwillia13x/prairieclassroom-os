@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { ClassroomProfile, EABriefingResponse } from "../types";
+import PrintButton from "./PrintButton";
 import "./EABriefing.css";
 
 interface Props {
@@ -146,12 +147,7 @@ export default function EABriefing({
             </section>
           )}
 
-          <button
-            className="btn btn--ghost ea-briefing-print"
-            onClick={() => window.print()}
-          >
-            Print Briefing
-          </button>
+          <PrintButton label="Print Briefing" />
         </div>
       )}
     </div>

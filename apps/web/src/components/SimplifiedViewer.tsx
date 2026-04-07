@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { SimplifyResponse } from "../types";
+import PrintButton from "./PrintButton";
 import "./SimplifiedViewer.css";
 
 interface Props {
@@ -100,6 +101,8 @@ export default function SimplifiedViewer({ onSubmit, result, loading }: Props) {
               </ul>
             </div>
           )}
+
+          <PrintButton label="Print Simplified Text" />
         </div>
       )}
     </div>

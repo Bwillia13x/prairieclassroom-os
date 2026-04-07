@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { FamilyMessageDraft } from "../types";
+import PrintButton from "./PrintButton";
 import "./MessageDraft.css";
 
 interface Props {
@@ -59,6 +60,8 @@ export default function MessageDraft({ draft, onApprove }: Props) {
           preferred communication channel.
         </p>
       </div>
+
+      <PrintButton label="Print Message" />
     </div>
   );
 }

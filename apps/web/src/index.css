@@ -677,4 +677,5 @@ body::before {
   }
 }
 
+@import "./print.css";
 @import "./motion.css";

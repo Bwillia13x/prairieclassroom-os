@@ -1,4 +1,5 @@
 import type { TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
+import PrintButton from "./PrintButton";
 import "./PlanViewer.css";
 
 interface Props {
@@ -167,12 +168,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, onF
         </section>
       )}
 
-      <button
-        className="btn btn--ghost plan-print"
-        onClick={() => window.print()}
-      >
-        Print Plan
-      </button>
+      <PrintButton label="Print Plan" />
     </div>
   );
 }

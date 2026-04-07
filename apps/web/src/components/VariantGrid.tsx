@@ -1,5 +1,6 @@
 import type { DifferentiatedVariant } from "../types";
 import VariantCard from "./VariantCard";
+import PrintButton from "./PrintButton";
 import "./VariantGrid.css";
 
 interface Props {
@@ -22,6 +23,8 @@ export default function VariantGrid({ artifactTitle, variants }: Props) {
           <VariantCard key={v.variant_id} variant={v} />
         ))}
       </div>
+
+      <PrintButton label="Print Variants" />
     </div>
   );
 }

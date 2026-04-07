@@ -1,0 +1,47 @@
+@media print {
+  /* Hide non-content elements */
+  .app-header,
+  .app-tabs,
+  .mobile-nav,
+  .print-btn,
+  .btn,
+  .history-drawer-container,
+  .tab-badge {
+    display: none !important;
+  }
+
+  /* Full width, no margin */
+  .app-shell {
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .app-main {
+    display: block;
+  }
+
+  /* Show only active panel */
+  [role="tabpanel"][hidden] {
+    display: none !important;
+  }
+
+  /* Reset backgrounds for print */
+  body {
+    background: white;
+    color: black;
+  }
+
+  body::before {
+    display: none !important;
+  }
+
+  .split-pane {
+    display: block;
+  }
+
+  /* Page breaks */
+  .plan-section,
+  .pattern-section {
+    break-inside: avoid;
+  }
+}

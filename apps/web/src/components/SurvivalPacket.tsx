@@ -1,4 +1,6 @@
 // apps/web/src/components/SurvivalPacket.tsx
+import PrintButton from "./PrintButton";
+import "./SurvivalPacket.css";
 
 interface RoutineEntry {
   time_or_label: string;
@@ -61,45 +63,39 @@ const STATUS_LABELS: Record<string, string> = {
   expecting_message: "Expecting message",
 };
 
-const LEVEL_COLORS: Record<string, string> = {
-  low: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200",
-  medium: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200",
-  high: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200",
+const LEVEL_CLASS: Record<string, string> = {
+  low: "survival-packet-badge--low",
+  medium: "survival-packet-badge--medium",
+  high: "survival-packet-badge--high",
 };
 
 export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData }) {
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 space-y-8 text-gray-900 dark:text-gray-100">
+    <div className="survival-packet">
       {/* Header */}
-      <div className="flex items-start justify-between gap-4 flex-wrap">
+      <div className="survival-packet-header">
         <div>
-          <h2 className="text-2xl font-bold">Substitute Survival Packet</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+          <h2 className="survival-packet-title">Substitute Survival Packet</h2>
+          <p className="survival-packet-meta">
             {packet.classroom_id} &middot; {packet.generated_for_date}
           </p>
         </div>
-        <button
-          className="btn btn--ghost print:hidden"
-          onClick={() => window.print()}
-          aria-label="Print survival packet"
-        >
-          Print Packet
-        </button>
+        <PrintButton label="Print Packet" />
       </div>
 
       {/* Heads Up */}
       {packet.heads_up.length > 0 && (
         <section aria-labelledby="heads-up-heading">
-          <div className="border-l-4 border-amber-400 bg-amber-50 dark:bg-amber-950 rounded-r-lg p-4">
+          <div className="survival-packet-heads-up">
             <h3
               id="heads-up-heading"
-              className="text-base font-semibold text-amber-800 dark:text-amber-200 mb-2"
+              className="survival-packet-heads-up-title"
             >
               Heads Up
             </h3>
-            <ul className="space-y-1">
+            <ul className="survival-packet-heads-up-list">
               {packet.heads_up.map((item, i) => (
-                <li key={i} className="text-sm text-amber-900 dark:text-amber-100 flex gap-2">
+                <li key={i} className="survival-packet-heads-up-item">
                   <span aria-hidden="true">&bull;</span>
                   <span>{item}</span>
                 </li>
@@ -112,24 +108,18 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
       {/* Routines */}
       {packet.routines.length > 0 && (
         <section aria-labelledby="routines-heading">
-          <h3
-            id="routines-heading"
-            className="text-lg font-semibold mb-3"
-          >
+          <h3 id="routines-heading" className="survival-packet-heading">
             Classroom Routines
           </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="survival-packet-grid">
             {packet.routines.map((routine, i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
-              >
-                <div className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-1">
+              <div key={i} className="survival-packet-card">
+                <div className="survival-packet-label">
                   {routine.time_or_label}
                 </div>
-                <p className="text-sm">{routine.description}</p>
+                <p className="survival-packet-text">{routine.description}</p>
                 {routine.recent_changes && (
-                  <p className="text-sm italic text-amber-700 dark:text-amber-300 mt-2">
+                  <p className="survival-packet-text--italic">
                     Recent change: {routine.recent_changes}
                   </p>
                 )}
@@ -142,36 +132,30 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
       {/* Student Support */}
       {packet.student_support.length > 0 && (
         <section aria-labelledby="student-support-heading">
-          <h3
-            id="student-support-heading"
-            className="text-lg font-semibold mb-3"
-          >
+          <h3 id="student-support-heading" className="survival-packet-heading">
             Student Support
           </h3>
-          <div className="space-y-3">
+          <div className="survival-packet-stack">
             {packet.student_support.map((entry, i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
-              >
-                <div className="font-semibold text-sm mb-2">{entry.student_ref}</div>
+              <div key={i} className="survival-packet-card">
+                <div className="survival-packet-student-name">{entry.student_ref}</div>
                 {entry.current_scaffolds.length > 0 && (
-                  <div className="mb-2">
-                    <span className="text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                  <div className="survival-packet-scaffolds">
+                    <span className="survival-packet-label">
                       Scaffolds:{" "}
                     </span>
-                    <span className="text-sm">
+                    <span className="survival-packet-text">
                       {entry.current_scaffolds.join(", ")}
                     </span>
                   </div>
                 )}
-                <p className="text-sm mb-2">
-                  <span className="font-medium">Key strategy: </span>
+                <p className="survival-packet-text" style={{ marginBottom: "var(--space-2)" }}>
+                  <span className="survival-packet-text--bold">Key strategy: </span>
                   {entry.key_strategies}
                 </p>
                 {entry.things_to_avoid && (
-                  <p className="text-sm text-red-700 dark:text-red-400">
-                    <span className="font-medium">Avoid: </span>
+                  <p className="survival-packet-avoid">
+                    <span className="survival-packet-text--bold">Avoid: </span>
                     {entry.things_to_avoid}
                   </p>
                 )}
@@ -183,31 +167,28 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
 
       {/* EA Coordination */}
       <section aria-labelledby="ea-coordination-heading">
-        <h3
-          id="ea-coordination-heading"
-          className="text-lg font-semibold mb-3"
-        >
+        <h3 id="ea-coordination-heading" className="survival-packet-heading">
           EA Coordination
         </h3>
-        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 space-y-3">
+        <div className="survival-packet-card survival-packet-ea-card">
           {packet.ea_coordination.ea_name && (
-            <div className="text-sm">
-              <span className="font-medium">EA: </span>
+            <div className="survival-packet-inline-field">
+              <strong>EA: </strong>
               {packet.ea_coordination.ea_name}
             </div>
           )}
-          <div className="text-sm">
-            <span className="font-medium">Schedule: </span>
+          <div className="survival-packet-inline-field">
+            <strong>Schedule: </strong>
             {packet.ea_coordination.schedule_summary}
           </div>
           {packet.ea_coordination.primary_students.length > 0 && (
-            <div className="text-sm">
-              <span className="font-medium">Primary students: </span>
+            <div className="survival-packet-inline-field">
+              <strong>Primary students: </strong>
               {packet.ea_coordination.primary_students.join(", ")}
             </div>
           )}
-          <div className="text-sm">
-            <span className="font-medium">If EA is absent: </span>
+          <div className="survival-packet-inline-field">
+            <strong>If EA is absent: </strong>
             {packet.ea_coordination.if_ea_absent}
           </div>
         </div>
@@ -216,50 +197,26 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
       {/* Simplified Day Plan */}
       {packet.simplified_day_plan.length > 0 && (
         <section aria-labelledby="day-plan-heading">
-          <h3
-            id="day-plan-heading"
-            className="text-lg font-semibold mb-3"
-          >
+          <h3 id="day-plan-heading" className="survival-packet-heading">
             Day Plan
           </h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
+          <div className="survival-packet-table-wrap">
+            <table className="survival-packet-table">
               <thead>
-                <tr className="bg-gray-100 dark:bg-gray-700 text-left">
-                  <th className="px-3 py-2 font-semibold border border-gray-200 dark:border-gray-600 w-28">
-                    Time
-                  </th>
-                  <th className="px-3 py-2 font-semibold border border-gray-200 dark:border-gray-600 w-40">
-                    Activity
-                  </th>
-                  <th className="px-3 py-2 font-semibold border border-gray-200 dark:border-gray-600">
-                    Instructions for Sub
-                  </th>
-                  <th className="px-3 py-2 font-semibold border border-gray-200 dark:border-gray-600 w-36">
-                    Materials
-                  </th>
+                <tr>
+                  <th className="col-time">Time</th>
+                  <th className="col-activity">Activity</th>
+                  <th>Instructions for Sub</th>
+                  <th className="col-materials">Materials</th>
                 </tr>
               </thead>
               <tbody>
                 {packet.simplified_day_plan.map((row, i) => (
-                  <tr
-                    key={i}
-                    className={
-                      i % 2 === 0
-                        ? "bg-white dark:bg-gray-800"
-                        : "bg-gray-50 dark:bg-gray-750"
-                    }
-                  >
-                    <td className="px-3 py-2 border border-gray-200 dark:border-gray-600 align-top">
-                      {row.time_slot}
-                    </td>
-                    <td className="px-3 py-2 border border-gray-200 dark:border-gray-600 align-top font-medium">
-                      {row.activity}
-                    </td>
-                    <td className="px-3 py-2 border border-gray-200 dark:border-gray-600 align-top">
-                      {row.sub_instructions}
-                    </td>
-                    <td className="px-3 py-2 border border-gray-200 dark:border-gray-600 align-top text-gray-600 dark:text-gray-400">
+                  <tr key={i}>
+                    <td>{row.time_slot}</td>
+                    <td className="cell-bold">{row.activity}</td>
+                    <td>{row.sub_instructions}</td>
+                    <td className="cell-muted">
                       {row.materials_location ?? "—"}
                     </td>
                   </tr>
@@ -273,32 +230,26 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
       {/* Complexity Peaks */}
       {packet.complexity_peaks.length > 0 && (
         <section aria-labelledby="complexity-peaks-heading">
-          <h3
-            id="complexity-peaks-heading"
-            className="text-lg font-semibold mb-3"
-          >
+          <h3 id="complexity-peaks-heading" className="survival-packet-heading">
             Complexity Peaks
           </h3>
-          <div className="space-y-3">
+          <div className="survival-packet-stack">
             {packet.complexity_peaks.map((peak, i) => (
-              <div
-                key={i}
-                className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
-              >
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-sm font-medium">{peak.time_slot}</span>
+              <div key={i} className="survival-packet-card">
+                <div className="survival-packet-peak-header">
+                  <span className="survival-packet-peak-time">{peak.time_slot}</span>
                   <span
-                    className={`px-2 py-0.5 rounded text-xs font-semibold ${LEVEL_COLORS[peak.level] ?? LEVEL_COLORS.medium}`}
+                    className={`survival-packet-badge ${LEVEL_CLASS[peak.level] ?? LEVEL_CLASS.medium}`}
                   >
                     {peak.level.charAt(0).toUpperCase() + peak.level.slice(1)}
                   </span>
                 </div>
-                <p className="text-sm mb-1">
-                  <span className="font-medium">Why: </span>
+                <p className="survival-packet-peak-detail">
+                  <strong>Why: </strong>
                   {peak.reason}
                 </p>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  <span className="font-medium">Mitigation: </span>
+                <p className="survival-packet-peak-mitigation">
+                  <strong>Mitigation: </strong>
                   {peak.mitigation}
                 </p>
               </div>
@@ -310,40 +261,32 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
       {/* Family Comms */}
       {packet.family_comms.length > 0 && (
         <section aria-labelledby="family-comms-heading">
-          <h3
-            id="family-comms-heading"
-            className="text-lg font-semibold mb-3"
-          >
+          <h3 id="family-comms-heading" className="survival-packet-heading">
             Family Communications
           </h3>
-          <div className="space-y-3">
+          <div className="survival-packet-stack">
             {packet.family_comms.map((entry, i) => {
-              const statusClass =
+              const badgeClass =
                 entry.status === "do_not_contact"
-                  ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                  ? "survival-packet-badge--danger"
                   : entry.status === "expecting_message"
-                  ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                  : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300";
+                  ? "survival-packet-badge--info"
+                  : "survival-packet-badge--muted";
 
               return (
-                <div
-                  key={i}
-                  className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4"
-                >
-                  <div className="flex items-center gap-3 flex-wrap mb-2">
-                    <span className="font-semibold text-sm">{entry.student_ref}</span>
-                    <span
-                      className={`px-2 py-0.5 rounded text-xs font-semibold ${statusClass}`}
-                    >
+                <div key={i} className="survival-packet-card">
+                  <div className="survival-packet-comms-header">
+                    <span className="survival-packet-comms-name">{entry.student_ref}</span>
+                    <span className={`survival-packet-badge ${badgeClass}`}>
                       {STATUS_LABELS[entry.status] ?? entry.status}
                     </span>
                     {entry.language_preference && (
-                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                      <span className="survival-packet-comms-lang">
                         {entry.language_preference}
                       </span>
                     )}
                   </div>
-                  <p className="text-sm">{entry.notes}</p>
+                  <p className="survival-packet-text">{entry.notes}</p>
                 </div>
               );
             })}

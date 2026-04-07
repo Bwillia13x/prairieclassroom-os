@@ -1,6 +1,7 @@
 // apps/web/src/components/ForecastViewer.tsx
 import { useRef } from "react";
 import type { ComplexityForecast } from "../types";
+import PrintButton from "./PrintButton";
 import "./ForecastViewer.css";
 
 interface Props {
@@ -100,9 +101,7 @@ export default function ForecastViewer({ forecast, thinkingSummary }: Props) {
         </section>
       )}
 
-      <button className="btn btn--ghost forecast-print" onClick={() => window.print()}>
-        Print Forecast
-      </button>
+      <PrintButton label="Print Forecast" />
     </div>
   );
 }
