@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
 import type { LessonArtifact } from "../types";
+import FileUploadZone from "./FileUploadZone";
 import "./ArtifactUpload.css";
 
 interface Props {
@@ -34,6 +35,13 @@ export default function ArtifactUpload({
       if (saved.teacherGoal !== undefined) setTeacherGoal(saved.teacherGoal);
     }, []),
   );
+
+  function handleFileExtracted(text: string, filename: string) {
+    setRawText(text);
+    if (!title.trim()) {
+      setTitle(filename.replace(/\.(txt|pdf)$/, ""));
+    }
+  }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -102,6 +110,8 @@ export default function ArtifactUpload({
 
       <div className={`field${touched.rawText && !rawText.trim() ? " field--error" : ""}`}>
         <label htmlFor="raw-text">Lesson Content</label>
+        <FileUploadZone onTextExtracted={handleFileExtracted} />
+        <p className="field-divider">or paste text directly</p>
         <textarea
           id="raw-text"
           rows={6}
