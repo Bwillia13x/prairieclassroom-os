@@ -12,6 +12,7 @@ export const StudentSupportSummarySchema = z.object({
   support_tags: z.array(z.string()),
   known_successful_scaffolds: z.array(z.string()),
   communication_notes: z.array(z.string()).optional(),
+  family_language: z.string().optional(),
 });
 
 export type StudentSupportSummary = z.infer<typeof StudentSupportSummarySchema>;

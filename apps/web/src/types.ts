@@ -33,7 +33,7 @@ export interface ClassroomProfile {
   grade_band: string;
   subject_focus: string;
   classroom_notes: string[];
-  students: { alias: string }[];
+  students: { alias: string; family_language?: string }[];
   schedule?: ScheduleBlockInput[];
   upcoming_events?: UpcomingEvent[];
 }

@@ -27,7 +27,8 @@
       "eal_flag": true,
       "support_tags": ["eal_level_2", "needs_visual_supports", "strong_math_reasoning"],
       "known_successful_scaffolds": ["bilingual_word_walls", "visual_step_cards", "peer_buddy_system"],
-      "communication_notes": ["Family speaks Tagalog at home", "Mother prefers messages in English with simple vocabulary"]
+      "communication_notes": ["Family speaks Tagalog at home", "Mother prefers messages in English with simple vocabulary"],
+      "family_language": "tl"
     },
     {
       "student_id": "D2",
@@ -50,7 +51,8 @@
       "eal_flag": true,
       "support_tags": ["eal_level_1", "new_to_school_system", "needs_routine_support"],
       "known_successful_scaffolds": ["visual_schedule", "simplified_instructions", "buddy_system"],
-      "communication_notes": ["Family speaks Urdu", "Older sibling translates for parent meetings"]
+      "communication_notes": ["Family speaks Urdu", "Older sibling translates for parent meetings"],
+      "family_language": "ur"
     },
     {
       "student_id": "D5",
@@ -65,7 +67,8 @@
       "eal_flag": true,
       "support_tags": ["eal_level_3", "social_language_stronger_than_academic", "good_at_math"],
       "known_successful_scaffolds": ["academic_vocabulary_previews", "sentence_frames_for_writing"],
-      "communication_notes": ["Family speaks Arabic", "Mother is comfortable with English communication"]
+      "communication_notes": ["Family speaks Arabic", "Mother is comfortable with English communication"],
+      "family_language": "ar"
     }
   ],
   "schedule": [

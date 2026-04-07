@@ -146,7 +146,7 @@ app.get("/api/classrooms", (_req, res) => {
       grade_band: c.grade_band,
       subject_focus: c.subject_focus,
       classroom_notes: c.classroom_notes,
-      students: (c.students ?? []).map((s) => ({ alias: s.alias })),
+      students: (c.students ?? []).map((s) => ({ alias: s.alias, family_language: s.family_language })),
     })),
   );
 });
