@@ -55,17 +55,43 @@ export function createDifferentiateRouter(deps: RouteDeps): Router {
         latency_ms: number;
       };
 
-      // Parse variants from model output
+      // Parse variants from model output — retry once on parse failure
       let variants: DifferentiatedVariant[];
       try {
         variants = parseVariantsResponse(inferenceData.text, artifact.artifact_id);
-      } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as variants",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
+      } catch (firstParseErr) {
+        // Retry inference once — Gemma occasionally produces mixed-encoding JSON
+        const retryResp = await fetch(`${deps.inferenceUrl}/generate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            prompt: `${prompt.system}\n\n${prompt.user}`,
+            model_tier: route.model_tier,
+            thinking: route.thinking_enabled,
+            prompt_class: route.prompt_class,
+            max_tokens: 4096,
+            mock_context: { classroom_id },
+          }),
         });
-        return;
+        if (!retryResp.ok) {
+          res.status(422).json({
+            error: "Failed to parse model output as variants (retry also failed)",
+            raw_output: inferenceData.text,
+            parse_error: firstParseErr instanceof Error ? firstParseErr.message : String(firstParseErr),
+          });
+          return;
+        }
+        const retryData = (await retryResp.json()) as { text: string; model_id: string; latency_ms: number };
+        try {
+          variants = parseVariantsResponse(retryData.text, artifact.artifact_id);
+        } catch (retryParseErr) {
+          res.status(422).json({
+            error: "Failed to parse model output as variants after retry",
+            raw_output: retryData.text,
+            parse_error: retryParseErr instanceof Error ? retryParseErr.message : String(retryParseErr),
+          });
+          return;
+        }
       }
 
       res.json({

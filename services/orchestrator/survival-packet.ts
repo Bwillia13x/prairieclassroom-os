@@ -77,6 +77,7 @@ OUTPUT FORMAT: Respond with a single JSON object containing these fields:
 7. "heads_up" - array of 3-5 short strings with the most important things the substitute should know that don't fit elsewhere
 
 RULES:
+- IMPORTANT: If the provided context includes recent intervention follow-ups, pending family communications, or unresolved action items, you MUST reference them in the relevant sections (student_support, family_comms, heads_up). Do not omit follow-up context.
 - This is a SURVIVAL document — prioritize actionable, concrete guidance over comprehensive context.
 - Write for someone who has NEVER been in this classroom. Assume zero prior knowledge.
 - Use student aliases only. Never use real names.
