@@ -201,6 +201,28 @@ export function getLatestPatternReport(
   return row ? (JSON.parse(row.report_json) as SupportPatternReport) : null;
 }
 
+export function getRecentMessages(classroomId: string, limit = 10): FamilyMessageDraft[] {
+  const db = getDb(classroomId);
+  const rows = db.prepare(`
+    SELECT message_json FROM family_messages
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT ?
+  `).all(classroomId, limit) as { message_json: string }[];
+  return rows.map((r) => JSON.parse(r.message_json) as FamilyMessageDraft);
+}
+
+export function getRecentPatternReports(classroomId: string, limit = 5): SupportPatternReport[] {
+  const db = getDb(classroomId);
+  const rows = db.prepare(`
+    SELECT report_json FROM pattern_reports
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT ?
+  `).all(classroomId, limit) as { report_json: string }[];
+  return rows.map((r) => JSON.parse(r.report_json) as SupportPatternReport);
+}
+
 export function buildEABriefingContext(classroomId: string): string {
   const lines: string[] = [];
 

@@ -58,7 +58,7 @@ import {
   ScheduleUpdateRequestSchema,
   SurvivalPacketRequestSchema,
 } from "./validate.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions, buildSurvivalContext, getLatestPlan } from "../memory/retrieve.js";
+import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, buildPatternContext, getLatestPatternReport, summarizePatternInsights, buildEABriefingContext, getLatestForecast, buildForecastContext, buildDebtRegister, buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions, buildSurvivalContext, getLatestPlan, getRecentMessages, getRecentPatternReports } from "../memory/retrieve.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant } from "../../packages/shared/schemas/artifact.js";
@@ -1091,6 +1091,52 @@ app.get("/api/today/:classroomId", (req, res) => {
     res.status(500).json({
       error: err instanceof Error ? err.message : "Internal server error",
     });
+  }
+});
+
+// ----- History Retrieval Routes -----
+
+app.get("/api/classrooms/:id/plans", (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
+    const plans = getRecentPlans(req.params.id, limit);
+    res.json({ plans });
+  } catch (err) {
+    console.error("Plans history error:", err);
+    res.status(500).json({ error: err instanceof Error ? err.message : "Internal server error" });
+  }
+});
+
+app.get("/api/classrooms/:id/messages", (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
+    const messages = getRecentMessages(req.params.id, limit);
+    res.json({ messages });
+  } catch (err) {
+    console.error("Messages history error:", err);
+    res.status(500).json({ error: err instanceof Error ? err.message : "Internal server error" });
+  }
+});
+
+app.get("/api/classrooms/:id/interventions", (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 20, 50);
+    const interventions = getRecentInterventions(req.params.id, limit);
+    res.json({ interventions });
+  } catch (err) {
+    console.error("Interventions history error:", err);
+    res.status(500).json({ error: err instanceof Error ? err.message : "Internal server error" });
+  }
+});
+
+app.get("/api/classrooms/:id/patterns", (req, res) => {
+  try {
+    const limit = Math.min(parseInt(req.query.limit as string) || 5, 20);
+    const patterns = getRecentPatternReports(req.params.id, limit);
+    res.json({ patterns });
+  } catch (err) {
+    console.error("Patterns history error:", err);
+    res.status(500).json({ error: err instanceof Error ? err.message : "Internal server error" });
   }
 });
 
