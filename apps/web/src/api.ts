@@ -19,17 +19,20 @@ import type {
   ComplexityForecastRequest,
   ComplexityForecastResponse,
   SurvivalPacketResponse,
+  TodaySnapshot,
 } from "./types";
 
 const API_BASE = "/api";
 
 export async function differentiate(
   request: DifferentiateRequest,
+  signal?: AbortSignal,
 ): Promise<DifferentiateResponse> {
   const res = await fetch(`${API_BASE}/differentiate`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -46,11 +49,13 @@ export async function listClassrooms(): Promise<ClassroomProfile[]> {
 
 export async function generateTomorrowPlan(
   request: TomorrowPlanRequest,
+  signal?: AbortSignal,
 ): Promise<TomorrowPlanResponse> {
   const res = await fetch(`${API_BASE}/tomorrow-plan`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -61,11 +66,13 @@ export async function generateTomorrowPlan(
 
 export async function draftFamilyMessage(
   request: FamilyMessageRequest,
+  signal?: AbortSignal,
 ): Promise<FamilyMessageResponse> {
   const res = await fetch(`${API_BASE}/family-message`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -91,11 +98,13 @@ export async function approveFamilyMessage(
 
 export async function logIntervention(
   request: InterventionRequest,
+  signal?: AbortSignal,
 ): Promise<InterventionResponse> {
   const res = await fetch(`${API_BASE}/intervention`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -106,11 +115,13 @@ export async function logIntervention(
 
 export async function simplifyText(
   request: SimplifyRequest,
+  signal?: AbortSignal,
 ): Promise<SimplifyResponse> {
   const res = await fetch(`${API_BASE}/simplify`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -121,11 +132,13 @@ export async function simplifyText(
 
 export async function generateVocabCards(
   request: VocabCardsRequest,
+  signal?: AbortSignal,
 ): Promise<VocabCardsResponse> {
   const res = await fetch(`${API_BASE}/vocab-cards`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -136,11 +149,13 @@ export async function generateVocabCards(
 
 export async function detectSupportPatterns(
   request: SupportPatternsRequest,
+  signal?: AbortSignal,
 ): Promise<SupportPatternsResponse> {
   const res = await fetch(`${API_BASE}/support-patterns`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -151,11 +166,13 @@ export async function detectSupportPatterns(
 
 export async function generateEABriefing(
   request: EABriefingRequest,
+  signal?: AbortSignal,
 ): Promise<EABriefingResponse> {
   const res = await fetch(`${API_BASE}/ea-briefing`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -166,11 +183,13 @@ export async function generateEABriefing(
 
 export async function generateComplexityForecast(
   request: ComplexityForecastRequest,
+  signal?: AbortSignal,
 ): Promise<ComplexityForecastResponse> {
   const res = await fetch(`${API_BASE}/complexity-forecast`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(request),
+    signal,
   });
   if (!res.ok) {
     const body = await res.text();
@@ -184,6 +203,7 @@ export async function generateSurvivalPacket(
   targetDate: string,
   teacherNotes?: string,
   classroomCode?: string,
+  signal?: AbortSignal,
 ): Promise<SurvivalPacketResponse> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (classroomCode) headers["X-Classroom-Code"] = classroomCode;
@@ -196,6 +216,7 @@ export async function generateSurvivalPacket(
       target_date: targetDate,
       teacher_notes: teacherNotes || undefined,
     }),
+    signal,
   });
 
   if (!resp.ok) {
@@ -204,4 +225,16 @@ export async function generateSurvivalPacket(
   }
 
   return resp.json();
+}
+
+export async function fetchTodaySnapshot(
+  classroomId: string,
+  signal?: AbortSignal,
+): Promise<TodaySnapshot> {
+  const res = await fetch(`${API_BASE}/today/${classroomId}`, { signal });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Today snapshot failed (${res.status}): ${body}`);
+  }
+  return res.json();
 }

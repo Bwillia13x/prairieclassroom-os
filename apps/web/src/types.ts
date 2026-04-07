@@ -387,12 +387,39 @@ export interface SurvivalPacketResponse {
     student_support: Array<{ student_ref: string; current_scaffolds: string[]; key_strategies: string; things_to_avoid?: string }>;
     ea_coordination: { ea_name?: string; schedule_summary: string; primary_students: string[]; if_ea_absent: string };
     simplified_day_plan: Array<{ time_slot: string; activity: string; sub_instructions: string; materials_location?: string }>;
-    family_comms: Array<{ student_ref: string; status: string; language_preference?: string; notes: string }>;
-    complexity_peaks: Array<{ time_slot: string; level: string; reason: string; mitigation: string }>;
+    family_comms: Array<{ student_ref: string; status: "do_not_contact" | "defer_to_teacher" | "routine_ok" | "expecting_message"; language_preference?: string; notes: string }>;
+    complexity_peaks: Array<{ time_slot: string; level: "low" | "medium" | "high"; reason: string; mitigation: string }>;
     heads_up: string[];
     schema_version: string;
   };
   model_id: string;
   latency_ms: number;
   thinking_summary?: string;
+}
+
+// ----- Today Snapshot types -----
+
+export interface DebtItem {
+  category: "stale_followup" | "unapproved_message" | "unaddressed_pattern" | "recurring_plan_item" | "approaching_review";
+  student_refs: string[];
+  description: string;
+  source_record_id: string;
+  age_days: number;
+}
+
+export interface ComplexityDebtRegister {
+  register_id: string;
+  classroom_id: string;
+  items: DebtItem[];
+  item_count_by_category: Record<string, number>;
+  generated_at: string;
+  schema_version: string;
+}
+
+export interface TodaySnapshot {
+  debt_register: ComplexityDebtRegister;
+  latest_plan: TomorrowPlan | null;
+  latest_forecast: ComplexityForecast | null;
+  student_count: number;
+  last_activity_at: string | null;
 }
