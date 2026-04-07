@@ -397,6 +397,15 @@ export interface SurvivalPacketResponse {
   thinking_summary?: string;
 }
 
+// ----- Worksheet Extraction types -----
+
+export interface ExtractWorksheetResponse {
+  extracted_text: string;
+  confidence_notes: string[];
+  model_id: string;
+  latency_ms: number;
+}
+
 // ----- Today Snapshot types -----
 
 export interface DebtItem {

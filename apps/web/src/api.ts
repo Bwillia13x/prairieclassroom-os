@@ -24,6 +24,7 @@ import type {
   ComplexityForecastResponse,
   SurvivalPacketResponse,
   TodaySnapshot,
+  ExtractWorksheetResponse,
 } from "./types";
 
 const API_BASE = import.meta.env.VITE_API_URL || "/api";
@@ -279,4 +280,27 @@ export async function fetchPatternHistory(
   if (!res.ok) throw new Error(`Pattern history failed (${res.status})`);
   const data = await res.json();
   return data.patterns;
+}
+
+export async function extractWorksheet(
+  classroomId: string,
+  imageBase64: string,
+  mimeType: string,
+  signal?: AbortSignal,
+): Promise<ExtractWorksheetResponse> {
+  const res = await fetch(`${API_BASE}/extract-worksheet`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      classroom_id: classroomId,
+      image_base64: imageBase64,
+      mime_type: mimeType,
+    }),
+    signal,
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Worksheet extraction failed (${res.status}): ${body}`);
+  }
+  return res.json();
 }

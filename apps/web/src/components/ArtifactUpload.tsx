@@ -2,6 +2,7 @@ import { useState, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
 import type { LessonArtifact } from "../types";
 import FileUploadZone from "./FileUploadZone";
+import WorksheetUpload from "./WorksheetUpload";
 import "./ArtifactUpload.css";
 
 interface Props {
@@ -110,6 +111,14 @@ export default function ArtifactUpload({
 
       <div className={`field${touched.rawText && !rawText.trim() ? " field--error" : ""}`}>
         <label htmlFor="raw-text">Lesson Content</label>
+        <WorksheetUpload
+          classroomId={selectedClassroom}
+          onTextExtracted={(text) => {
+            setRawText(text);
+            if (!title.trim()) setTitle("Extracted Worksheet");
+          }}
+        />
+        <p className="field-divider">or upload a document</p>
         <FileUploadZone onTextExtracted={handleFileExtracted} />
         <p className="field-divider">or paste text directly</p>
         <textarea
