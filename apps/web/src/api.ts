@@ -2,16 +2,20 @@ import type {
   DifferentiateRequest,
   DifferentiateResponse,
   ClassroomProfile,
+  TomorrowPlan,
   TomorrowPlanRequest,
   TomorrowPlanResponse,
+  FamilyMessageDraft,
   FamilyMessageRequest,
   FamilyMessageResponse,
+  InterventionRecord,
   InterventionRequest,
   InterventionResponse,
   SimplifyRequest,
   SimplifyResponse,
   VocabCardsRequest,
   VocabCardsResponse,
+  SupportPatternReport,
   SupportPatternsRequest,
   SupportPatternsResponse,
   EABriefingRequest,
@@ -237,4 +241,42 @@ export async function fetchTodaySnapshot(
     throw new Error(`Today snapshot failed (${res.status}): ${body}`);
   }
   return res.json();
+}
+
+// ----- History fetch functions -----
+
+export async function fetchPlanHistory(
+  classroomId: string, limit = 10, signal?: AbortSignal,
+): Promise<TomorrowPlan[]> {
+  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/plans?limit=${limit}`, { signal });
+  if (!res.ok) throw new Error(`Plan history failed (${res.status})`);
+  const data = await res.json();
+  return data.plans;
+}
+
+export async function fetchMessageHistory(
+  classroomId: string, limit = 10, signal?: AbortSignal,
+): Promise<FamilyMessageDraft[]> {
+  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/messages?limit=${limit}`, { signal });
+  if (!res.ok) throw new Error(`Message history failed (${res.status})`);
+  const data = await res.json();
+  return data.messages;
+}
+
+export async function fetchInterventionHistory(
+  classroomId: string, limit = 20, signal?: AbortSignal,
+): Promise<InterventionRecord[]> {
+  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/interventions?limit=${limit}`, { signal });
+  if (!res.ok) throw new Error(`Intervention history failed (${res.status})`);
+  const data = await res.json();
+  return data.interventions;
+}
+
+export async function fetchPatternHistory(
+  classroomId: string, limit = 5, signal?: AbortSignal,
+): Promise<SupportPatternReport[]> {
+  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/patterns?limit=${limit}`, { signal });
+  if (!res.ok) throw new Error(`Pattern history failed (${res.status})`);
+  const data = await res.json();
+  return data.patterns;
 }
