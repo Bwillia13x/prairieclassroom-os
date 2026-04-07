@@ -1,0 +1,18 @@
+{
+  "id": "extract-002-content-quality",
+  "description": "extract_worksheet output contains actual text content, not empty or generic",
+  "category": "content_quality",
+  "route": "POST /api/extract-worksheet",
+  "prompt_class": "extract_worksheet",
+  "request": {
+    "classroom_id": "demo-okafor-grade34",
+    "image_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "mime_type": "image/png"
+  },
+  "assertions": [
+    { "type": "status", "expected": 200 },
+    { "type": "min_length", "key": "extracted_text", "expected": 20 },
+    { "type": "not_contains", "key": "extracted_text", "value": "I cannot" },
+    { "type": "not_contains", "key": "extracted_text", "value": "I'm unable" }
+  ]
+}

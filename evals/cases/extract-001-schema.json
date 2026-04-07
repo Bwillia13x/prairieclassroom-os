@@ -1,0 +1,19 @@
+{
+  "id": "extract-001-schema",
+  "description": "extract_worksheet returns valid schema with extracted_text and confidence_notes",
+  "category": "schema_reliability",
+  "route": "POST /api/extract-worksheet",
+  "prompt_class": "extract_worksheet",
+  "request": {
+    "classroom_id": "demo-okafor-grade34",
+    "image_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "mime_type": "image/png"
+  },
+  "assertions": [
+    { "type": "status", "expected": 200 },
+    { "type": "has_key", "key": "extracted_text" },
+    { "type": "has_key", "key": "confidence_notes" },
+    { "type": "typeof", "key": "extracted_text", "expected": "string" },
+    { "type": "is_array", "key": "confidence_notes" }
+  ]
+}
