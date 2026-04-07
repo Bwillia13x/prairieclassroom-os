@@ -87,7 +87,7 @@ def create_app(mode: str = "mock", model_id: str | None = None, port: int = 3200
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Inference HTTP server")
-    parser.add_argument("--mode", choices=["mock", "api", "local"], default="mock")
+    parser.add_argument("--mode", choices=["mock", "api", "local", "ollama"], default="mock")
     parser.add_argument("--model-id", type=str, default=None)
     parser.add_argument("--port", type=int, default=3200)
     args = parser.parse_args()

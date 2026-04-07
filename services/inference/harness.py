@@ -34,6 +34,7 @@ class InferenceMode(Enum):
     MOCK = "mock"
     API = "api"
     LOCAL = "local"
+    OLLAMA = "ollama"
 
 
 class ModelTier(Enum):
@@ -1501,6 +1502,9 @@ class GemmaHarness:
             self.backend = LocalBackend(mid)
         elif mode == InferenceMode.API:
             self.backend = VertexAIBackend()
+        elif mode == InferenceMode.OLLAMA:
+            from ollama_backend import OllamaBackend
+            self.backend = OllamaBackend()
         else:
             raise ValueError(f"Unknown inference mode: {mode}")
 
@@ -1621,7 +1625,7 @@ def run_smoke_tests(harness: GemmaHarness) -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="PrairieClassroom OS — Gemma 4 Harness")
-    parser.add_argument("--mode", choices=["mock", "api", "local"], default="mock")
+    parser.add_argument("--mode", choices=["mock", "api", "local", "ollama"], default="mock")
     parser.add_argument("--model-id", type=str, default=None)
     parser.add_argument("--smoke-test", action="store_true")
     args = parser.parse_args()
