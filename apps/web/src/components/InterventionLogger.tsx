@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFormPersistence } from "../hooks/useFormPersistence";
 import type { InterventionPrefill } from "../types";
 import "./InterventionLogger.css";
 
@@ -31,6 +32,14 @@ export default function InterventionLogger({
   );
   const [teacherNote, setTeacherNote] = useState("");
 
+  const { clear: clearDraft } = useFormPersistence(
+    `prairie-intervention-${selectedClassroom}`,
+    { teacherNote },
+    useCallback((saved: Partial<{ teacherNote: string }>) => {
+      if (saved.teacherNote !== undefined) setTeacherNote(saved.teacherNote);
+    }, []),
+  );
+
   useEffect(() => {
     if (prefill) {
       setSelectedStudents([prefill.student_ref]);
@@ -52,6 +61,7 @@ export default function InterventionLogger({
       ? `Plan suggested: ${prefill.suggested_action} (reason: ${prefill.reason})`
       : undefined;
     onSubmit(selectedClassroom, selectedStudents, teacherNote.trim(), context);
+    clearDraft();
   }
 
   return (
@@ -116,7 +126,7 @@ export default function InterventionLogger({
 
       <button
         type="submit"
-        className="btn-primary"
+        className="btn btn--primary"
         disabled={loading || selectedStudents.length === 0 || !teacherNote.trim()}
       >
         {loading ? "Structuring Note…" : "Log Intervention"}

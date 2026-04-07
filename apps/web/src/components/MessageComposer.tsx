@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useFormPersistence } from "../hooks/useFormPersistence";
 import type { FamilyMessagePrefill } from "../types";
 import "./MessageComposer.css";
 
@@ -61,6 +62,14 @@ export default function MessageComposer({
   const [context, setContext] = useState(prefill?.reason ?? "");
   const [prefillDismissed, setPrefillDismissed] = useState(false);
 
+  const { clear: clearDraft } = useFormPersistence(
+    `prairie-message-${selectedClassroom}`,
+    { context },
+    useCallback((saved: Partial<{ context: string }>) => {
+      if (saved.context !== undefined) setContext(saved.context);
+    }, []),
+  );
+
   useEffect(() => {
     if (prefill) {
       setStudentRef(prefill.student_ref);
@@ -86,6 +95,7 @@ export default function MessageComposer({
       targetLanguage,
       context.trim() || undefined,
     );
+    clearDraft();
   }
 
   return (
@@ -177,7 +187,7 @@ export default function MessageComposer({
         />
       </div>
 
-      <button type="submit" className="btn-primary" disabled={loading}>
+      <button type="submit" className="btn btn--primary" disabled={loading}>
         {loading ? "Drafting Message…" : "Draft Family Message"}
       </button>
     </form>

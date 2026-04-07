@@ -1,22 +1,40 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useFormPersistence } from "../hooks/useFormPersistence";
 import "./TeacherReflection.css";
 
 interface Props {
   classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
+  selectedClassroom: string;
+  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, reflection: string, teacherGoal?: string) => void;
   loading: boolean;
 }
 
-export default function TeacherReflection({ classrooms, onSubmit, loading }: Props) {
-  const [classroomId, setClassroomId] = useState(classrooms[0]?.classroom_id ?? "");
+export default function TeacherReflection({
+  classrooms,
+  selectedClassroom,
+  onClassroomChange,
+  onSubmit,
+  loading,
+}: Props) {
   const [reflection, setReflection] = useState("");
   const [teacherGoal, setTeacherGoal] = useState("");
   const [touched, setTouched] = useState(false);
 
+  const { clear: clearDraft } = useFormPersistence(
+    `prairie-reflection-${selectedClassroom}`,
+    { reflection, teacherGoal },
+    useCallback((saved: Partial<{ reflection: string; teacherGoal: string }>) => {
+      if (saved.reflection !== undefined) setReflection(saved.reflection);
+      if (saved.teacherGoal !== undefined) setTeacherGoal(saved.teacherGoal);
+    }, []),
+  );
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!reflection.trim()) return;
-    onSubmit(classroomId, reflection.trim(), teacherGoal.trim() || undefined);
+    onSubmit(selectedClassroom, reflection.trim(), teacherGoal.trim() || undefined);
+    clearDraft();
   }
 
   return (
@@ -30,8 +48,8 @@ export default function TeacherReflection({ classrooms, onSubmit, loading }: Pro
         <label htmlFor="plan-classroom">Classroom</label>
         <select
           id="plan-classroom"
-          value={classroomId}
-          onChange={(e) => setClassroomId(e.target.value)}
+          value={selectedClassroom}
+          onChange={(e) => onClassroomChange(e.target.value)}
         >
           {classrooms.map((c) => (
             <option key={c.classroom_id} value={c.classroom_id}>
@@ -68,7 +86,7 @@ export default function TeacherReflection({ classrooms, onSubmit, loading }: Pro
         />
       </div>
 
-      <button type="submit" className="btn-primary" disabled={loading}>
+      <button type="submit" className="btn btn--primary" disabled={loading}>
         {loading ? "Generating Plan…" : "Generate Tomorrow Plan"}
       </button>
     </form>

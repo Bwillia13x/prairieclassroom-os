@@ -1,20 +1,39 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
+import { useFormPersistence } from "../hooks/useFormPersistence";
 import type { LessonArtifact } from "../types";
 import "./ArtifactUpload.css";
 
 interface Props {
   classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
+  selectedClassroom: string;
+  onClassroomChange: (id: string) => void;
   onSubmit: (artifact: LessonArtifact, classroomId: string) => void;
   loading: boolean;
 }
 
-export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props) {
+export default function ArtifactUpload({
+  classrooms,
+  selectedClassroom,
+  onClassroomChange,
+  onSubmit,
+  loading,
+}: Props) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [rawText, setRawText] = useState("");
   const [teacherGoal, setTeacherGoal] = useState("");
-  const [classroomId, setClassroomId] = useState(classrooms[0]?.classroom_id ?? "");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const { clear: clearDraft } = useFormPersistence(
+    `prairie-artifact-${selectedClassroom}`,
+    { title, subject, rawText, teacherGoal },
+    useCallback((saved: Partial<{ title: string; subject: string; rawText: string; teacherGoal: string }>) => {
+      if (saved.title !== undefined) setTitle(saved.title);
+      if (saved.subject !== undefined) setSubject(saved.subject);
+      if (saved.rawText !== undefined) setRawText(saved.rawText);
+      if (saved.teacherGoal !== undefined) setTeacherGoal(saved.teacherGoal);
+    }, []),
+  );
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -29,7 +48,8 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
       teacher_goal: teacherGoal.trim() || undefined,
     };
 
-    onSubmit(artifact, classroomId);
+    onSubmit(artifact, selectedClassroom);
+    clearDraft();
   }
 
   return (
@@ -40,8 +60,8 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
         <label htmlFor="classroom">Classroom</label>
         <select
           id="classroom"
-          value={classroomId}
-          onChange={(e) => setClassroomId(e.target.value)}
+          value={selectedClassroom}
+          onChange={(e) => onClassroomChange(e.target.value)}
         >
           {classrooms.map((c) => (
             <option key={c.classroom_id} value={c.classroom_id}>
@@ -109,7 +129,7 @@ export default function ArtifactUpload({ classrooms, onSubmit, loading }: Props)
         />
       </div>
 
-      <button type="submit" className="btn-primary" disabled={loading}>
+      <button type="submit" className="btn btn--primary" disabled={loading}>
         {loading ? "Differentiating…" : "Differentiate"}
       </button>
     </form>
