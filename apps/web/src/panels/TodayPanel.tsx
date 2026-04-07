@@ -6,6 +6,7 @@ import PendingActionsCard from "../components/PendingActionsCard";
 import PlanRecap from "../components/PlanRecap";
 import ForecastTimeline from "../components/ForecastTimeline";
 import SkeletonLoader from "../components/SkeletonLoader";
+import TimeSuggestion from "../components/TimeSuggestion";
 import type { TodaySnapshot } from "../types";
 import "./TodayPanel.css";
 
@@ -32,6 +33,8 @@ export default function TodayPanel({ onTabChange }: Props) {
           Grade {profile.grade_band} — {profile.subject_focus.replace(/_/g, " ")} — {profile.students.length} students
         </p>
       </header>
+
+      <TimeSuggestion onNavigate={onTabChange} />
 
       {loading && !result && (
         <SkeletonLoader variant="stack" message="Loading today's snapshot..." label="Loading dashboard" />

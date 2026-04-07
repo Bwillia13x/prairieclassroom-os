@@ -5,8 +5,12 @@ import { generateTomorrowPlan, fetchPlanHistory } from "../api";
 import TeacherReflection from "../components/TeacherReflection";
 import PlanViewer from "../components/PlanViewer";
 import SkeletonLoader from "../components/SkeletonLoader";
+import StreamingIndicator from "../components/StreamingIndicator";
+import ContextualHint from "../components/ContextualHint";
+import OutputFeedback from "../components/OutputFeedback";
 import HistoryDrawer from "../components/HistoryDrawer";
 import { useHistory } from "../hooks/useHistory";
+import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import type { TomorrowPlanResponse, TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
 
 interface Props {
@@ -15,10 +19,13 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
   const { loading, error, result, execute } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<TomorrowPlanResponse | null>(null);
+  const streamer = useStreamingRequest({
+    sectionLabels: ["Support priorities", "Prep checklist", "Differentiation notes"],
+  });
 
   const displayResult = result ?? historicalResult;
 
@@ -26,12 +33,14 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
 
   async function handleSubmit(classroomId: string, reflection: string, teacherGoal?: string) {
     setHistoricalResult(null);
-    const resp = await execute((signal) =>
-      generateTomorrowPlan({
-        classroom_id: classroomId,
-        teacher_reflection: reflection,
-        teacher_goal: teacherGoal,
-      }, signal)
+    const resp = await streamer.execute(() =>
+      execute((signal) =>
+        generateTomorrowPlan({
+          classroom_id: classroomId,
+          teacher_reflection: reflection,
+          teacher_goal: teacherGoal,
+        }, signal)
+      )
     );
     if (resp) {
       showSuccess("Plan generated");
@@ -46,6 +55,11 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   return (
     <div className={displayResult ? "split-pane" : ""}>
       <div>
+        <ContextualHint
+          featureKey="tomorrow-plan"
+          title="Tomorrow Plan"
+          description="Reflect on today's wins and challenges. The planning model uses deep reasoning to generate a structured support plan — this may take a few moments."
+        />
         <HistoryDrawer<TomorrowPlan>
           items={history.items}
           loading={history.loading}
@@ -70,7 +84,11 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
       <div aria-live="polite">
         {error && displayResult === null && <div className="error-banner">{error}</div>}
         {loading && displayResult === null && (
-          <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
+          streaming.phase !== "idle" ? (
+            <StreamingIndicator />
+          ) : (
+            <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
+          )
         )}
         {!loading && displayResult === null && !error && (
           <div className="empty-state">
@@ -82,13 +100,16 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
           </div>
         )}
         {displayResult && (
-          <PlanViewer
-            plan={displayResult.plan}
-            thinkingSummary={displayResult.thinking_summary}
-            patternInformed={displayResult.pattern_informed}
-            onFollowupClick={onFollowupClick}
-            onInterventionClick={onInterventionClick}
-          />
+          <>
+            <PlanViewer
+              plan={displayResult.plan}
+              thinkingSummary={displayResult.thinking_summary}
+              patternInformed={displayResult.pattern_informed}
+              onFollowupClick={onFollowupClick}
+              onInterventionClick={onInterventionClick}
+            />
+            <OutputFeedback outputId={displayResult.plan.plan_id} outputType="tomorrow-plan" />
+          </>
         )}
       </div>
     </div>

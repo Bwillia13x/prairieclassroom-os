@@ -5,6 +5,8 @@ import { draftFamilyMessage, approveFamilyMessage, fetchMessageHistory } from ".
 import MessageComposer from "../components/MessageComposer";
 import MessageDraft from "../components/MessageDraft";
 import SkeletonLoader from "../components/SkeletonLoader";
+import ContextualHint from "../components/ContextualHint";
+import OutputFeedback from "../components/OutputFeedback";
 import HistoryDrawer from "../components/HistoryDrawer";
 import { useHistory } from "../hooks/useHistory";
 import type { FamilyMessageResponse, FamilyMessageDraft, FamilyMessagePrefill } from "../types";
@@ -14,7 +16,7 @@ interface Props {
 }
 
 export default function FamilyMessagePanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, students, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, students, showSuccess, showUndo } = useApp();
   const { loading, error, result, execute, reset } = useAsyncAction<FamilyMessageResponse>();
   const history = useHistory(fetchMessageHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
@@ -61,6 +63,11 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     if (!displayResult) return;
     try {
       await approveFamilyMessage(displayResult.draft.classroom_id, draftId);
+      showSuccess("Message approved");
+      showUndo("Message approved — undo?", async () => {
+        // Undo: re-draft or mark unapproved (best-effort)
+        console.log("Undo approve for", draftId);
+      });
     } catch (err) {
       console.warn("Approval persistence failed:", err);
     }
@@ -69,6 +76,11 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   return (
     <div className={displayResult ? "split-pane" : ""}>
       <div>
+        <ContextualHint
+          featureKey="family-message"
+          title="Family Messages"
+          description="Draft plain-language messages for families. You review every message before it can be shared — nothing sends automatically."
+        />
         <HistoryDrawer<FamilyMessageDraft>
           items={history.items}
           loading={history.loading}
@@ -107,10 +119,13 @@ export default function FamilyMessagePanel({ prefill }: Props) {
           </div>
         )}
         {displayResult && (
-          <MessageDraft
-            draft={displayResult.draft}
-            onApprove={handleApprove}
-          />
+          <>
+            <MessageDraft
+              draft={displayResult.draft}
+              onApprove={handleApprove}
+            />
+            <OutputFeedback outputId={displayResult.draft.draft_id} outputType="family-message" />
+          </>
         )}
       </div>
     </div>

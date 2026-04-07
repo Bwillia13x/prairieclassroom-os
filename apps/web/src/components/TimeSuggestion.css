@@ -1,0 +1,79 @@
+/* ─── Time Suggestion — Time-of-day aware navigation card ─── */
+
+.time-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.55rem 0.85rem;
+  background: var(--color-bg-accent);
+  border: 1px solid var(--color-border-accent);
+  border-radius: var(--radius);
+  margin-bottom: var(--space-4);
+  animation: fade-up 0.25s ease-out;
+}
+
+.time-suggestion-emoji {
+  font-size: 1.15rem;
+  flex-shrink: 0;
+}
+
+.time-suggestion-text {
+  flex: 1;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.time-suggestion-actions {
+  display: flex;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.time-suggestion-btn {
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--color-border-accent);
+  border-radius: 4px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  min-height: 30px;
+  white-space: nowrap;
+}
+
+.time-suggestion-btn:hover {
+  background: var(--color-bg-muted);
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.time-suggestion-btn--primary {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  border-color: var(--color-accent);
+}
+
+.time-suggestion-btn--primary:hover {
+  background: var(--color-accent-hover);
+}
+
+@media (max-width: 600px) {
+  .time-suggestion {
+    flex-wrap: wrap;
+  }
+
+  .time-suggestion-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .time-suggestion {
+    animation: none;
+  }
+}

@@ -5,11 +5,17 @@ import ForecastForm from "../components/ForecastForm";
 import ForecastTimeline from "../components/ForecastTimeline";
 import ForecastViewer from "../components/ForecastViewer";
 import SkeletonLoader from "../components/SkeletonLoader";
+import StreamingIndicator from "../components/StreamingIndicator";
+import OutputFeedback from "../components/OutputFeedback";
+import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import type { ComplexityForecastResponse } from "../types";
 
 export default function ForecastPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
   const { loading, error, result, execute } = useAsyncAction<ComplexityForecastResponse>();
+  const streamer = useStreamingRequest({
+    sectionLabels: ["Block analysis", "Complexity curves", "Risk assessment"],
+  });
 
   if (classrooms.length === 0) return null;
 
@@ -18,12 +24,14 @@ export default function ForecastPanel() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const forecastDate = tomorrow.toISOString().split("T")[0];
 
-    const resp = await execute((signal) =>
-      generateComplexityForecast({
-        classroom_id: classroomId,
-        forecast_date: forecastDate,
-        teacher_notes: teacherNotes || undefined,
-      }, signal)
+    const resp = await streamer.execute(() =>
+      execute((signal) =>
+        generateComplexityForecast({
+          classroom_id: classroomId,
+          forecast_date: forecastDate,
+          teacher_notes: teacherNotes || undefined,
+        }, signal)
+      )
     );
     if (resp) showSuccess("Forecast generated");
   }
@@ -40,7 +48,11 @@ export default function ForecastPanel() {
       <div aria-live="polite">
         {error && result === null && <div className="error-banner">{error}</div>}
         {loading && result === null && (
-          <SkeletonLoader variant="stack" message="Generating complexity forecast with deep reasoning..." label="Generating complexity forecast" />
+          streaming.phase !== "idle" ? (
+            <StreamingIndicator />
+          ) : (
+            <SkeletonLoader variant="stack" message="Generating complexity forecast with deep reasoning..." label="Generating complexity forecast" />
+          )
         )}
         {!loading && result === null && !error && (
           <div className="empty-state">
@@ -58,6 +70,7 @@ export default function ForecastPanel() {
             forecast={result.forecast}
             thinkingSummary={result.thinking_summary}
           />
+          <OutputFeedback outputId={result.forecast.forecast_id} outputType="complexity-forecast" />
           </>
         )}
       </div>

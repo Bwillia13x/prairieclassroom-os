@@ -5,6 +5,8 @@ import { differentiate } from "../api";
 import ArtifactUpload from "../components/ArtifactUpload";
 import VariantGrid from "../components/VariantGrid";
 import SkeletonLoader from "../components/SkeletonLoader";
+import ContextualHint from "../components/ContextualHint";
+import OutputFeedback from "../components/OutputFeedback";
 import type { LessonArtifact, DifferentiateResponse } from "../types";
 
 export default function DifferentiatePanel() {
@@ -12,6 +14,7 @@ export default function DifferentiatePanel() {
   const { loading, error, result, execute } = useAsyncAction<DifferentiateResponse>();
   const [artifactTitle, setArtifactTitle] = useState("");
   const resultRef = useRef<HTMLDivElement>(null);
+  const [resultKey, setResultKey] = useState(0);
 
   if (classrooms.length === 0) return null;
 
@@ -25,17 +28,25 @@ export default function DifferentiatePanel() {
       }, signal)
     );
     if (resp) showSuccess("Variants generated");
+    if (resp) setResultKey((k) => k + 1);
   }
 
   return (
     <div className={result ? "split-pane" : ""}>
-      <ArtifactUpload
+      <div>
+        <ContextualHint
+          featureKey="differentiate"
+          title="Differentiate"
+          description="Upload a lesson artifact and the system generates variants adapted for each student's readiness and language profile."
+        />
+        <ArtifactUpload
         classrooms={classrooms}
         selectedClassroom={activeClassroom}
         onClassroomChange={setActiveClassroom}
         onSubmit={handleDifferentiate}
         loading={loading}
       />
+      </div>
       <div aria-live="polite" ref={resultRef}>
         {error && result === null && <div className="error-banner">{error}</div>}
         {loading && result === null && (
@@ -51,10 +62,13 @@ export default function DifferentiatePanel() {
           </div>
         )}
         {result && (
-          <VariantGrid
-            artifactTitle={artifactTitle}
-            variants={result.variants}
-          />
+          <>
+            <VariantGrid
+              artifactTitle={artifactTitle}
+              variants={result.variants}
+            />
+            <OutputFeedback outputId={`diff-${resultKey}`} outputType="differentiate" />
+          </>
         )}
       </div>
     </div>

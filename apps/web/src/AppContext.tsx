@@ -1,5 +1,6 @@
-import { createContext, useContext } from "react";
+import { createContext, useContext, type Dispatch } from "react";
 import type { ClassroomProfile } from "./types";
+import type { AppAction, StreamingState, ToastItem } from "./appReducer";
 
 export interface AppContextValue {
   classrooms: ClassroomProfile[];
@@ -8,6 +9,20 @@ export interface AppContextValue {
   profile: ClassroomProfile | undefined;
   students: { alias: string; family_language?: string }[];
   showSuccess: (msg: string) => void;
+  /** Dispatch for the central state reducer */
+  dispatch: Dispatch<AppAction>;
+  /** Streaming state for planning-tier progressive disclosure */
+  streaming: StreamingState;
+  /** Toast queue for success, undo, info, error toasts */
+  toasts: ToastItem[];
+  /** Features the teacher has already seen (contextual onboarding) */
+  featuresSeen: Record<string, boolean>;
+  /** Submit output feedback */
+  submitFeedback: (outputId: string, outputType: string, rating: "up" | "down", note?: string) => void;
+  /** Show an undo toast for a reversible action */
+  showUndo: (label: string, rollback: () => Promise<void>) => void;
+  /** Dismiss a specific toast by id */
+  dismissToast: (id: string) => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);

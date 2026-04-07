@@ -1,13 +1,21 @@
+import { useState } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateSurvivalPacket } from "../api";
 import SurvivalPacketView from "../components/SurvivalPacket";
 import SkeletonLoader from "../components/SkeletonLoader";
+import StreamingIndicator from "../components/StreamingIndicator";
+import OutputFeedback from "../components/OutputFeedback";
+import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import type { SurvivalPacketResponse } from "../types";
 
 export default function SurvivalPacketPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
   const { loading, error, result, execute } = useAsyncAction<SurvivalPacketResponse>();
+  const streamer = useStreamingRequest({
+    sectionLabels: ["Schedule", "Student profiles", "Emergency info"],
+  });
+  const [resultKey, setResultKey] = useState(0);
 
   if (classrooms.length === 0) return null;
 
@@ -16,10 +24,13 @@ export default function SurvivalPacketPanel() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const targetDate = tomorrow.toISOString().split("T")[0];
 
-    const resp = await execute((signal) =>
-      generateSurvivalPacket(activeClassroom, targetDate, undefined, undefined, signal)
+    const resp = await streamer.execute(() =>
+      execute((signal) =>
+        generateSurvivalPacket(activeClassroom, targetDate, undefined, undefined, signal)
+      )
     );
     if (resp) showSuccess("Survival packet generated");
+    if (resp) setResultKey((k) => k + 1);
   }
 
   return (
@@ -55,7 +66,11 @@ export default function SurvivalPacketPanel() {
       <div aria-live="polite">
         {error && result === null && <div className="error-banner">{error}</div>}
         {loading && result === null && (
-          <SkeletonLoader variant="stack" message="Building substitute survival packet..." label="Generating survival packet" />
+          streaming.phase !== "idle" ? (
+            <StreamingIndicator />
+          ) : (
+            <SkeletonLoader variant="stack" message="Building substitute survival packet..." label="Generating survival packet" />
+          )
         )}
         {!loading && result === null && !error && (
           <div className="empty-state">
@@ -67,7 +82,10 @@ export default function SurvivalPacketPanel() {
           </div>
         )}
         {result && (
-          <SurvivalPacketView packet={result.packet} />
+          <>
+            <SurvivalPacketView packet={result.packet} />
+            <OutputFeedback outputId={`packet-${resultKey}`} outputType="survival-packet" />
+          </>
         )}
       </div>
     </div>
