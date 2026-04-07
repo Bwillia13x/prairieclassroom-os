@@ -13,6 +13,7 @@ import SurvivalPacketPanel from "./panels/SurvivalPacketPanel";
 import TodayPanel from "./panels/TodayPanel";
 import { listClassrooms, fetchTodaySnapshot } from "./api";
 import MobileNav from "./components/MobileNav";
+import OnboardingOverlay from "./components/OnboardingOverlay";
 import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
 import "./App.css";
 
@@ -34,6 +35,9 @@ export default function App() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [initError, setInitError] = useState<string | null>(null);
   const [debtCounts, setDebtCounts] = useState<Record<string, number>>({});
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem("prairie-onboarding-done");
+  });
 
   const showSuccess = useCallback((msg: string) => {
     setSuccessMsg(msg);
@@ -88,6 +92,11 @@ export default function App() {
     return () => window.removeEventListener("keydown", handleKeydown);
   }, []);
 
+  function handleDismissOnboarding() {
+    localStorage.setItem("prairie-onboarding-done", "true");
+    setShowOnboarding(false);
+  }
+
   function handleFollowupClick(prefill: FamilyMessagePrefill) {
     setMessagePrefill(prefill);
     setActiveTab("family-message");
@@ -113,6 +122,14 @@ export default function App() {
               <h1>PrairieClassroom <span className="app-title-os">OS</span></h1>
               <p className="app-subtitle">Classroom complexity copilot</p>
             </div>
+            <button
+              className="btn btn--ghost app-help-btn"
+              onClick={() => setShowOnboarding(true)}
+              type="button"
+              aria-label="Show onboarding tour"
+            >
+              ?
+            </button>
           </div>
           {profile && (
             <div className="classroom-context">
@@ -210,6 +227,8 @@ export default function App() {
         </main>
 
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
+
+        {showOnboarding && <OnboardingOverlay onDismiss={handleDismissOnboarding} />}
       </div>
     </AppContext.Provider>
   );
