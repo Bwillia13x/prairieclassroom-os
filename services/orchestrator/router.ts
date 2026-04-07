@@ -99,6 +99,14 @@ const ROUTING_TABLE: Record<PromptClass, RouteConfig> = {
     tool_call_capable: false,
     output_schema_version: "0.1.0",
   },
+  extract_worksheet: {
+    prompt_class: "extract_worksheet",
+    model_tier: "live",
+    thinking_enabled: false,
+    retrieval_required: false,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
 };
 
 /**

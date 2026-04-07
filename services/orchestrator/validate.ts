@@ -112,6 +112,12 @@ export const SurvivalPacketRequestSchema = z.object({
   teacher_notes: z.string().optional(),
 });
 
+export const ExtractWorksheetRequestSchema = z.object({
+  classroom_id: z.string().min(1),
+  image_base64: z.string().min(1),
+  mime_type: z.string().min(1),
+});
+
 // ----- Validation middleware factory -----
 
 export function validateBody<T>(schema: z.ZodSchema<T>) {

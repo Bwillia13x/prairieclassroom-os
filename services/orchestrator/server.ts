@@ -41,6 +41,7 @@ import { createTodayRouter } from "./routes/today.js";
 import { createHistoryRouter } from "./routes/history.js";
 import { createScaffoldDecayRouter } from "./routes/scaffold-decay.js";
 import { createSurvivalPacketRouter } from "./routes/survival-packet.js";
+import { createExtractWorksheetRouter } from "./routes/extract-worksheet.js";
 
 // ----- Config -----
 
@@ -85,6 +86,7 @@ app.use("/api/complexity-forecast", authMiddleware);
 app.use("/api/debt-register", authMiddleware);
 app.use("/api/scaffold-decay", authMiddleware);
 app.use("/api/survival-packet", authMiddleware);
+app.use("/api/extract-worksheet", authMiddleware);
 
 // ----- Mount routes -----
 
@@ -103,6 +105,7 @@ app.use("/api/today", createTodayRouter(deps));
 app.use("/api/classrooms", createHistoryRouter(deps));
 app.use("/api/scaffold-decay", createScaffoldDecayRouter(deps));
 app.use("/api/survival-packet", createSurvivalPacketRouter(deps));
+app.use("/api/extract-worksheet", createExtractWorksheetRouter(deps));
 
 // ----- Start -----
 
