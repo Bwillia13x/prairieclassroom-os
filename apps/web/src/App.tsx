@@ -11,7 +11,7 @@ import EABriefingPanel from "./panels/EABriefingPanel";
 import ForecastPanel from "./panels/ForecastPanel";
 import SurvivalPacketPanel from "./panels/SurvivalPacketPanel";
 import TodayPanel from "./panels/TodayPanel";
-import { listClassrooms } from "./api";
+import { listClassrooms, fetchTodaySnapshot } from "./api";
 import MobileNav from "./components/MobileNav";
 import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
 import "./App.css";
@@ -33,6 +33,7 @@ export default function App() {
   const [interventionPrefill, setInterventionPrefill] = useState<InterventionPrefill | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [initError, setInitError] = useState<string | null>(null);
+  const [debtCounts, setDebtCounts] = useState<Record<string, number>>({});
 
   const showSuccess = useCallback((msg: string) => {
     setSuccessMsg(msg);
@@ -54,6 +55,13 @@ export default function App() {
       })
       .catch(() => setInitError("Failed to load classrooms. Is the API server running?"));
   }, []);
+
+  useEffect(() => {
+    if (!activeClassroom) return;
+    fetchTodaySnapshot(activeClassroom)
+      .then((snapshot) => setDebtCounts(snapshot.debt_register.item_count_by_category))
+      .catch(() => {}); // Silent fail — badges are informational
+  }, [activeClassroom]);
 
   const profile = classrooms.find((c) => c.classroom_id === activeClassroom);
   const students = profile?.students ?? [];
@@ -134,13 +142,30 @@ export default function App() {
             <button role="tab" id="tab-tomorrow-plan" aria-selected={activeTab === "tomorrow-plan"} aria-controls="panel-tomorrow-plan" tabIndex={activeTab === "tomorrow-plan" ? 0 : -1} className={`tab-btn ${activeTab === "tomorrow-plan" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("tomorrow-plan")}>Tomorrow Plan</button>
             <button role="tab" id="tab-ea-briefing" aria-selected={activeTab === "ea-briefing"} aria-controls="panel-ea-briefing" tabIndex={activeTab === "ea-briefing" ? 0 : -1} className={`tab-btn ${activeTab === "ea-briefing" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("ea-briefing")}>EA Briefing</button>
             <button role="tab" id="tab-complexity-forecast" aria-selected={activeTab === "complexity-forecast"} aria-controls="panel-complexity-forecast" tabIndex={activeTab === "complexity-forecast" ? 0 : -1} className={`tab-btn ${activeTab === "complexity-forecast" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("complexity-forecast")}>Forecast</button>
-            <button role="tab" id="tab-log-intervention" aria-selected={activeTab === "log-intervention"} aria-controls="panel-log-intervention" tabIndex={activeTab === "log-intervention" ? 0 : -1} className={`tab-btn ${activeTab === "log-intervention" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("log-intervention")}>Log Intervention</button>
+            <button role="tab" id="tab-log-intervention" aria-selected={activeTab === "log-intervention"} aria-controls="panel-log-intervention" tabIndex={activeTab === "log-intervention" ? 0 : -1} className={`tab-btn ${activeTab === "log-intervention" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("log-intervention")}>
+              Log Intervention
+              {(debtCounts["stale_followup"] ?? 0) > 0 && (
+                <span className="tab-badge">{debtCounts["stale_followup"]}</span>
+              )}
+            </button>
             <button role="tab" id="tab-survival-packet" aria-selected={activeTab === "survival-packet"} aria-controls="panel-survival-packet" tabIndex={activeTab === "survival-packet" ? 0 : -1} className={`tab-btn ${activeTab === "survival-packet" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("survival-packet")}>Sub Packet</button>
           </div>
           <div className="tab-group" role="presentation">
             <span className="tab-group-label">Review</span>
-            <button role="tab" id="tab-family-message" aria-selected={activeTab === "family-message"} aria-controls="panel-family-message" tabIndex={activeTab === "family-message" ? 0 : -1} className={`tab-btn ${activeTab === "family-message" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("family-message")}>Family Message</button>
-            <button role="tab" id="tab-support-patterns" aria-selected={activeTab === "support-patterns"} aria-controls="panel-support-patterns" tabIndex={activeTab === "support-patterns" ? 0 : -1} className={`tab-btn ${activeTab === "support-patterns" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("support-patterns")}>Support Patterns</button>
+            <button role="tab" id="tab-family-message" aria-selected={activeTab === "family-message"} aria-controls="panel-family-message" tabIndex={activeTab === "family-message" ? 0 : -1} className={`tab-btn ${activeTab === "family-message" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("family-message")}>
+              Family Message
+              {(debtCounts["unapproved_message"] ?? 0) > 0 && (
+                <span className="tab-badge">{debtCounts["unapproved_message"]}</span>
+              )}
+            </button>
+            <button role="tab" id="tab-support-patterns" aria-selected={activeTab === "support-patterns"} aria-controls="panel-support-patterns" tabIndex={activeTab === "support-patterns" ? 0 : -1} className={`tab-btn ${activeTab === "support-patterns" ? "tab-btn--active" : ""}`} onClick={() => setActiveTab("support-patterns")}>
+              Support Patterns
+              {((debtCounts["unaddressed_pattern"] ?? 0) + (debtCounts["approaching_review"] ?? 0)) > 0 && (
+                <span className="tab-badge">
+                  {(debtCounts["unaddressed_pattern"] ?? 0) + (debtCounts["approaching_review"] ?? 0)}
+                </span>
+              )}
+            </button>
           </div>
         </nav>
 
@@ -184,7 +209,7 @@ export default function App() {
           </div>
         </main>
 
-        <MobileNav activeTab={activeTab} onTabChange={setActiveTab} />
+        <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
       </div>
     </AppContext.Provider>
   );

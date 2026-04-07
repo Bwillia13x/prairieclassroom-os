@@ -71,9 +71,10 @@ function groupForTab(tab: ActiveTab): TabGroup {
 interface Props {
   activeTab: ActiveTab;
   onTabChange: (tab: ActiveTab) => void;
+  debtCounts?: Record<string, number>;
 }
 
-export default function MobileNav({ activeTab, onTabChange }: Props) {
+export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props) {
   const [expandedGroup, setExpandedGroup] = useState<TabGroup>(groupForTab(activeTab));
 
   useEffect(() => {
@@ -123,6 +124,10 @@ export default function MobileNav({ activeTab, onTabChange }: Props) {
                 <path d={group.icon} />
               </svg>
               <span className="mobile-nav-group-label">{group.label}</span>
+              {group.key === "review" && debtCounts &&
+                ((debtCounts["unapproved_message"] ?? 0) + (debtCounts["unaddressed_pattern"] ?? 0)) > 0 && (
+                <span className="mobile-nav-badge" />
+              )}
             </button>
           );
         })}
