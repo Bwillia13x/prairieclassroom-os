@@ -5,7 +5,7 @@ import "./MessageComposer.css";
 
 interface Props {
   classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
-  students: { alias: string }[];
+  students: { alias: string; family_language?: string }[];
   selectedClassroom: string;
   onClassroomChange: (id: string) => void;
   onSubmit: (
@@ -46,8 +46,8 @@ export default function MessageComposer({
   loading,
   prefill,
 }: Props) {
-  const [studentRef, setStudentRef] = useState(
-    prefill?.student_ref ?? students[0]?.alias ?? "",
+  const [selectedStudents, setSelectedStudents] = useState<string[]>(
+    prefill?.student_ref ? [prefill.student_ref] : [],
   );
   const [messageType, setMessageType] = useState<
     "routine_update" | "missed_work" | "praise" | "low_stakes_concern"
@@ -72,7 +72,7 @@ export default function MessageComposer({
 
   useEffect(() => {
     if (prefill) {
-      setStudentRef(prefill.student_ref);
+      setSelectedStudents([prefill.student_ref]);
       setMessageType(
         (prefill.message_type as
           | "routine_update"
@@ -85,12 +85,21 @@ export default function MessageComposer({
     }
   }, [prefill]);
 
+  useEffect(() => {
+    if (selectedStudents.length === 1) {
+      const student = students.find((s) => s.alias === selectedStudents[0]);
+      if (student?.family_language) {
+        setTargetLanguage(student.family_language);
+      }
+    }
+  }, [selectedStudents, students]);
+
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!studentRef) return;
+    if (selectedStudents.length === 0) return;
     onSubmit(
       selectedClassroom,
-      [studentRef],
+      selectedStudents,
       messageType,
       targetLanguage,
       context.trim() || undefined,
@@ -132,18 +141,25 @@ export default function MessageComposer({
       </div>
 
       <div className={`field${prefill && !prefillDismissed ? " field--prefilled" : ""}`}>
-        <label htmlFor="msg-student">Student</label>
-        <select
-          id="msg-student"
-          value={studentRef}
-          onChange={(e) => setStudentRef(e.target.value)}
-        >
+        <label>Students</label>
+        <div className="student-checkbox-list">
           {students.map((s) => (
-            <option key={s.alias} value={s.alias}>
-              {s.alias}
-            </option>
+            <label key={s.alias} className="student-checkbox">
+              <input
+                type="checkbox"
+                checked={selectedStudents.includes(s.alias)}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setSelectedStudents((prev) => [...prev, s.alias]);
+                  } else {
+                    setSelectedStudents((prev) => prev.filter((r) => r !== s.alias));
+                  }
+                }}
+              />
+              <span>{s.alias}</span>
+            </label>
           ))}
-        </select>
+        </div>
       </div>
 
       <div className={`field${prefill && !prefillDismissed ? " field--prefilled" : ""}`}>
