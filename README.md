@@ -48,6 +48,23 @@ INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 npm run dev -w apps/web
 ```
 
+### Run with Ollama (recommended — zero cost)
+
+```bash
+# Pull Gemma 4 models (one-time)
+ollama pull gemma4:4b
+ollama pull gemma4:27b
+
+# Terminal 1: Inference service (Ollama mode)
+cd services/inference && python server.py --mode ollama --port 3200
+
+# Terminal 2: Orchestrator API
+INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
+
+# Terminal 3: UI dev server
+npm run dev -w apps/web
+```
+
 After backend, inference-harness, or memory-layer changes, restart the inference and orchestrator processes before trusting fresh smoke results.
 
 For real Gemma inference via Vertex AI endpoints:
@@ -146,8 +163,8 @@ Express Orchestrator :3100
         │
         ▼  HTTP JSON
 Flask Inference :3200
-  ├─ Vertex endpoint → google/gemma-4-4b-it   (live tier)
-  └─ Vertex endpoint → google/gemma-4-27b-it  (planning tier)
+  ├─ Ollama/Vertex → gemma-4-4b-it   (live tier)
+  └─ Ollama/Vertex → gemma-4-27b-it  (planning tier)
 ```
 
 ## Features
