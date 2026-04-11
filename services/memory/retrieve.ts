@@ -1,5 +1,6 @@
 // services/memory/retrieve.ts
 import { getDb } from "./db.js";
+import type { ClassroomId } from "../../packages/shared/schemas/branded.js";
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
@@ -10,7 +11,16 @@ import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
 import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
 
-export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
+function safeParseJson<T>(raw: string, label: string): T | null {
+  try {
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    console.warn(`Corrupt ${label} record skipped:`, err instanceof Error ? err.message : err);
+    return null;
+  }
+}
+
+export function getRecentPlans(classroomId: ClassroomId, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
   const rows = db.prepare(`
     SELECT plan_json FROM generated_plans
@@ -19,10 +29,10 @@ export function getRecentPlans(classroomId: string, limit = 5): TomorrowPlan[] {
     LIMIT ?
   `).all(classroomId, limit) as { plan_json: string }[];
 
-  return rows.map((r) => JSON.parse(r.plan_json) as TomorrowPlan);
+  return rows.map((r) => safeParseJson<TomorrowPlan>(r.plan_json, "plan")).filter((p): p is TomorrowPlan => p !== null);
 }
 
-export function getLatestPlan(classroomId: string): TomorrowPlan | null {
+export function getLatestPlan(classroomId: ClassroomId): TomorrowPlan | null {
   const plans = getRecentPlans(classroomId, 1);
   return plans.length > 0 ? plans[0] : null;
 }
@@ -74,7 +84,10 @@ export function summarizeRecentPlans(plans: TomorrowPlan[]): string {
   return lines.join("\n");
 }
 
-export function getRecentInterventions(classroomId: string, limit = 5): InterventionRecord[] {
+export function getRecentInterventions(classroomId: ClassroomId, limit = 5, studentRef?: string): InterventionRecord[] {
+  if (studentRef !== undefined) {
+    return getStudentInterventions(classroomId, studentRef, limit);
+  }
   const db = getDb(classroomId);
   const rows = db.prepare(`
     SELECT record_json FROM interventions
@@ -83,7 +96,7 @@ export function getRecentInterventions(classroomId: string, limit = 5): Interven
     LIMIT ?
   `).all(classroomId, limit) as { record_json: string }[];
 
-  return rows.map((r) => JSON.parse(r.record_json) as InterventionRecord);
+  return rows.map((r) => safeParseJson<InterventionRecord>(r.record_json, "intervention")).filter((rec): rec is InterventionRecord => rec !== null);
 }
 
 export function summarizeRecentInterventions(records: InterventionRecord[]): string {
@@ -101,7 +114,7 @@ export function summarizeRecentInterventions(records: InterventionRecord[]): str
 }
 
 export function getStudentInterventions(
-  classroomId: string,
+  classroomId: ClassroomId,
   studentRef: string,
   limit = 10,
 ): InterventionRecord[] {
@@ -116,10 +129,10 @@ export function getStudentInterventions(
     LIMIT ?
   `).all(classroomId, studentRef, limit) as { record_json: string }[];
 
-  return rows.map((r) => JSON.parse(r.record_json) as InterventionRecord);
+  return rows.map((r) => safeParseJson<InterventionRecord>(r.record_json, "student-intervention")).filter((rec): rec is InterventionRecord => rec !== null);
 }
 
-export function getFollowUpPending(classroomId: string): InterventionRecord[] {
+export function getFollowUpPending(classroomId: ClassroomId): InterventionRecord[] {
   const db = getDb(classroomId);
   const rows = db.prepare(`
     SELECT record_json FROM interventions
@@ -129,11 +142,11 @@ export function getFollowUpPending(classroomId: string): InterventionRecord[] {
     LIMIT 20
   `).all(classroomId) as { record_json: string }[];
 
-  return rows.map((r) => JSON.parse(r.record_json) as InterventionRecord);
+  return rows.map((r) => safeParseJson<InterventionRecord>(r.record_json, "followup-intervention")).filter((rec): rec is InterventionRecord => rec !== null);
 }
 
 export function buildPatternContext(
-  classroomId: string,
+  classroomId: ClassroomId,
   studentRef?: string,
   windowSize = 10,
 ): string {
@@ -188,7 +201,7 @@ export function buildPatternContext(
 }
 
 export function getLatestPatternReport(
-  classroomId: string,
+  classroomId: ClassroomId,
 ): SupportPatternReport | null {
   const db = getDb(classroomId);
   const row = db.prepare(`
@@ -198,21 +211,33 @@ export function getLatestPatternReport(
     LIMIT 1
   `).get(classroomId) as { report_json: string } | undefined;
 
-  return row ? (JSON.parse(row.report_json) as SupportPatternReport) : null;
+  return row ? safeParseJson<SupportPatternReport>(row.report_json, "pattern-report") : null;
 }
 
-export function getRecentMessages(classroomId: string, limit = 10): FamilyMessageDraft[] {
+export function getRecentMessages(classroomId: ClassroomId, limit = 10, studentRef?: string): FamilyMessageDraft[] {
   const db = getDb(classroomId);
+  if (studentRef !== undefined) {
+    const rows = db.prepare(`
+      SELECT message_json FROM family_messages
+      WHERE classroom_id = ?
+        AND EXISTS (
+          SELECT 1 FROM json_each(student_refs) WHERE json_each.value = ?
+        )
+      ORDER BY created_at DESC
+      LIMIT ?
+    `).all(classroomId, studentRef, limit) as { message_json: string }[];
+    return rows.map((r) => safeParseJson<FamilyMessageDraft>(r.message_json, "family-message")).filter((m): m is FamilyMessageDraft => m !== null);
+  }
   const rows = db.prepare(`
     SELECT message_json FROM family_messages
     WHERE classroom_id = ?
     ORDER BY created_at DESC
     LIMIT ?
   `).all(classroomId, limit) as { message_json: string }[];
-  return rows.map((r) => JSON.parse(r.message_json) as FamilyMessageDraft);
+  return rows.map((r) => safeParseJson<FamilyMessageDraft>(r.message_json, "family-message")).filter((m): m is FamilyMessageDraft => m !== null);
 }
 
-export function getRecentPatternReports(classroomId: string, limit = 5): SupportPatternReport[] {
+export function getRecentPatternReports(classroomId: ClassroomId, limit = 5): SupportPatternReport[] {
   const db = getDb(classroomId);
   const rows = db.prepare(`
     SELECT report_json FROM pattern_reports
@@ -220,10 +245,10 @@ export function getRecentPatternReports(classroomId: string, limit = 5): Support
     ORDER BY created_at DESC
     LIMIT ?
   `).all(classroomId, limit) as { report_json: string }[];
-  return rows.map((r) => JSON.parse(r.report_json) as SupportPatternReport);
+  return rows.map((r) => safeParseJson<SupportPatternReport>(r.report_json, "pattern-report")).filter((rpt): rpt is SupportPatternReport => rpt !== null);
 }
 
-export function buildEABriefingContext(classroomId: string): string {
+export function buildEABriefingContext(classroomId: ClassroomId): string {
   const lines: string[] = [];
 
   // Pull EA actions from the most recent plan
@@ -302,7 +327,7 @@ export function buildEABriefingContext(classroomId: string): string {
 }
 
 export function getLatestForecast(
-  classroomId: string,
+  classroomId: ClassroomId,
 ): ComplexityForecast | null {
   const db = getDb(classroomId);
   const row = db.prepare(`
@@ -312,11 +337,11 @@ export function getLatestForecast(
     LIMIT 1
   `).get(classroomId) as { forecast_json: string } | undefined;
 
-  return row ? (JSON.parse(row.forecast_json) as ComplexityForecast) : null;
+  return row ? safeParseJson<ComplexityForecast>(row.forecast_json, "forecast") : null;
 }
 
 export function getInterventionsByTimeBlock(
-  classroomId: string,
+  classroomId: ClassroomId,
   limit = 30,
 ): Map<string, number> {
   const db = getDb(classroomId);
@@ -329,7 +354,8 @@ export function getInterventionsByTimeBlock(
 
   const blockCounts = new Map<string, number>();
   for (const row of rows) {
-    const record = JSON.parse(row.record_json) as InterventionRecord;
+    const record = safeParseJson<InterventionRecord>(row.record_json, "time-block-intervention");
+    if (!record) continue;
     // Extract time reference from observation or action if present
     const text = `${record.observation} ${record.action_taken}`;
     // Match common time patterns: "after lunch", "morning", "recess", "math block", etc.
@@ -346,7 +372,7 @@ export function getInterventionsByTimeBlock(
   return blockCounts;
 }
 
-export function buildForecastContext(classroomId: string): string {
+export function buildForecastContext(classroomId: ClassroomId): string {
   const lines: string[] = [];
 
   // Intervention frequency by time-of-day patterns
@@ -462,7 +488,7 @@ export function summarizePatternInsights(report: SupportPatternReport): string {
 }
 
 export function getStaleFollowUps(
-  classroomId: string,
+  classroomId: ClassroomId,
   thresholdDays = 5,
 ): DebtItem[] {
   const db = getDb(classroomId);
@@ -493,7 +519,8 @@ export function getStaleFollowUps(
     LIMIT 1
   `);
   for (const row of rows) {
-    const record = JSON.parse(row.record_json) as InterventionRecord;
+    const record = safeParseJson<InterventionRecord>(row.record_json, "stale-followup-intervention");
+    if (!record) continue;
 
     const hasFollowUp = followUpStmt.get(classroomId, row.created_at, row.record_id, JSON.stringify(record.student_refs));
 
@@ -515,7 +542,7 @@ export function getStaleFollowUps(
 }
 
 export function getUnapprovedMessages(
-  classroomId: string,
+  classroomId: ClassroomId,
   thresholdDays = 3,
 ): DebtItem[] {
   const db = getDb(classroomId);
@@ -531,24 +558,27 @@ export function getUnapprovedMessages(
     ORDER BY created_at ASC
   `).all(classroomId, cutoffIso) as { draft_id: string; student_refs: string; message_json: string; created_at: string }[];
 
-  return rows.map((row) => {
-    const studentRefs = JSON.parse(row.student_refs) as string[];
+  const items: DebtItem[] = [];
+  for (const row of rows) {
+    const studentRefs = safeParseJson<string[]>(row.student_refs, "unapproved-message-refs");
+    if (!studentRefs) continue;
     const ageDays = Math.floor(
       (Date.now() - new Date(row.created_at).getTime()) / (1000 * 60 * 60 * 24)
     );
-    return {
-      category: "unapproved_message" as const,
+    items.push({
+      category: "unapproved_message",
       student_refs: studentRefs,
       description: `Family message drafted ${ageDays} days ago, not yet approved`,
       source_record_id: row.draft_id,
       age_days: ageDays,
       suggested_action: `Review and approve or discard the draft message for ${studentRefs.join(", ")}`,
-    };
-  });
+    });
+  }
+  return items;
 }
 
 export function getUnaddressedPatternInsights(
-  classroomId: string,
+  classroomId: ClassroomId,
 ): DebtItem[] {
   const latestPattern = getLatestPatternReport(classroomId);
   if (!latestPattern) return [];
@@ -569,7 +599,8 @@ export function getUnaddressedPatternInsights(
 
   const planStudentRefs = new Set<string>();
   for (const row of planRows) {
-    const plan = JSON.parse(row.plan_json) as TomorrowPlan;
+    const plan = safeParseJson<TomorrowPlan>(row.plan_json, "unaddressed-pattern-plan");
+    if (!plan) continue;
     for (const sp of plan.support_priorities) {
       planStudentRefs.add(sp.student_ref);
     }
@@ -595,7 +626,7 @@ export function getUnaddressedPatternInsights(
 }
 
 export function getRecurringPlanItems(
-  classroomId: string,
+  classroomId: ClassroomId,
   minConsecutive = 3,
 ): DebtItem[] {
   const plans = getRecentPlans(classroomId, minConsecutive + 2);
@@ -664,7 +695,7 @@ export function getRecurringPlanItems(
 }
 
 export function getStudentsApproachingReview(
-  classroomId: string,
+  classroomId: ClassroomId,
   classroom: ClassroomProfile,
   minRecords = 2,
   windowDays = 14,
@@ -704,7 +735,7 @@ export function getStudentsApproachingReview(
 }
 
 export function buildDebtRegister(
-  classroomId: string,
+  classroomId: ClassroomId,
   classroom: ClassroomProfile,
   thresholds?: Partial<DebtThresholds>,
 ): ComplexityDebtRegister {
@@ -742,7 +773,7 @@ export function buildDebtRegister(
 }
 
 export function buildScaffoldDecayContext(
-  classroomId: string,
+  classroomId: ClassroomId,
   studentRef: string,
   windowSize = 20,
 ): string {
@@ -780,7 +811,7 @@ export function buildScaffoldDecayContext(
 }
 
 export function getLatestScaffoldReview(
-  classroomId: string,
+  classroomId: ClassroomId,
   studentRef: string,
 ): ScaffoldDecayReport | null {
   const db = getDb(classroomId);
@@ -791,11 +822,11 @@ export function getLatestScaffoldReview(
     LIMIT 1
   `).get(classroomId, studentRef) as { report_json: string } | undefined;
 
-  return row ? (JSON.parse(row.report_json) as ScaffoldDecayReport) : null;
+  return row ? safeParseJson<ScaffoldDecayReport>(row.report_json, "scaffold-review") : null;
 }
 
 export function getRecentFamilyMessages(
-  classroomId: string,
+  classroomId: ClassroomId,
   limit = 10,
 ): Array<{ draft: FamilyMessageDraft; approved: boolean }> {
   const db = getDb(classroomId);
@@ -806,14 +837,15 @@ export function getRecentFamilyMessages(
     LIMIT ?
   `).all(classroomId, limit) as { message_json: string; teacher_approved: number }[];
 
-  return rows.map((r) => ({
-    draft: JSON.parse(r.message_json) as FamilyMessageDraft,
-    approved: r.teacher_approved === 1,
-  }));
+  return rows.map((r) => {
+    const draft = safeParseJson<FamilyMessageDraft>(r.message_json, "family-message-draft");
+    if (!draft) return null;
+    return { draft, approved: r.teacher_approved === 1 };
+  }).filter((item): item is { draft: FamilyMessageDraft; approved: boolean } => item !== null);
 }
 
 export function getLatestSurvivalPacket(
-  classroomId: string,
+  classroomId: ClassroomId,
 ): SurvivalPacket | null {
   const db = getDb(classroomId);
   const row = db.prepare(`
@@ -823,11 +855,11 @@ export function getLatestSurvivalPacket(
     LIMIT 1
   `).get(classroomId) as { packet_json: string } | undefined;
 
-  return row ? (JSON.parse(row.packet_json) as SurvivalPacket) : null;
+  return row ? safeParseJson<SurvivalPacket>(row.packet_json, "survival-packet") : null;
 }
 
 export function buildSurvivalContext(
-  classroomId: string,
+  classroomId: ClassroomId,
   classroom: ClassroomProfile,
 ): string {
   const lines: string[] = [];
