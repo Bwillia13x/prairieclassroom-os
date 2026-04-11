@@ -34,6 +34,8 @@ export interface ClassroomProfile {
   subject_focus: string;
   classroom_notes: string[];
   students: { alias: string; family_language?: string }[];
+  requires_access_code?: boolean;
+  is_demo?: boolean;
   schedule?: ScheduleBlockInput[];
   upcoming_events?: UpcomingEvent[];
 }
@@ -432,3 +434,36 @@ export interface TodaySnapshot {
   student_count: number;
   last_activity_at: string | null;
 }
+
+// ----- Classroom Health types -----
+
+export interface ClassroomHealth {
+  streak_days: number;
+  plans_last_7: boolean[];
+  messages_approved: number;
+  messages_total: number;
+  trends: {
+    debt_total_14d: number[];
+    plans_14d: number[];
+    peak_complexity_14d: number[];
+  };
+}
+
+// ----- Student Summary types -----
+
+export interface StudentSummary {
+  alias: string;
+  pending_action_count: number;
+  last_intervention_days: number | null;
+  active_pattern_count: number;
+  pending_message_count: number;
+  latest_priority_reason: string | null;
+}
+
+// ----- Drill-Down Drawer types -----
+
+export type DrillDownContext =
+  | { type: "forecast-block"; blockIndex: number; block: ComplexityBlock }
+  | { type: "student"; alias: string; initialData?: StudentSummary }
+  | { type: "debt-category"; category: string; items: DebtItem[] }
+  | { type: "trend"; trendKey: "debt" | "plans" | "complexity"; data: number[]; label: string };

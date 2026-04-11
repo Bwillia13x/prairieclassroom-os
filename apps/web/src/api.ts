@@ -1,10 +1,13 @@
 import type {
+  ClassroomHealth,
+  ComplexityForecastRequest,
+  ComplexityForecastResponse,
+  ClassroomProfile,
   DifferentiateRequest,
   DifferentiateResponse,
-  ClassroomProfile,
-  TomorrowPlan,
-  TomorrowPlanRequest,
-  TomorrowPlanResponse,
+  EABriefingRequest,
+  EABriefingResponse,
+  ExtractWorksheetResponse,
   FamilyMessageDraft,
   FamilyMessageRequest,
   FamilyMessageResponse,
@@ -13,294 +16,404 @@ import type {
   InterventionResponse,
   SimplifyRequest,
   SimplifyResponse,
-  VocabCardsRequest,
-  VocabCardsResponse,
+  StudentSummary,
   SupportPatternReport,
   SupportPatternsRequest,
   SupportPatternsResponse,
-  EABriefingRequest,
-  EABriefingResponse,
-  ComplexityForecastRequest,
-  ComplexityForecastResponse,
   SurvivalPacketResponse,
   TodaySnapshot,
-  ExtractWorksheetResponse,
+  TomorrowPlan,
+  TomorrowPlanRequest,
+  TomorrowPlanResponse,
+  VocabCardsRequest,
+  VocabCardsResponse,
 } from "./types";
 
 const API_BASE = import.meta.env.VITE_API_URL || "/api";
 
-export async function differentiate(
+interface ApiErrorPayload {
+  error?: string;
+  category?: string;
+  retryable?: boolean;
+  detail_code?: string;
+}
+
+interface AuthChallenge {
+  classroomId: string;
+  status: number;
+  message: string;
+}
+
+interface ApiClientConfig {
+  getClassroomCode?: (classroomId: string) => string | undefined;
+  requestClassroomCode?: (challenge: AuthChallenge) => Promise<string | null>;
+}
+
+interface RequestOptions {
+  method?: "GET" | "POST" | "PUT";
+  body?: object;
+  headers?: HeadersInit;
+  signal?: AbortSignal;
+  classroomId?: string;
+  classroomCode?: string;
+}
+
+const apiClientConfig: ApiClientConfig = {};
+
+export class ApiError extends Error {
+  readonly status: number;
+  readonly category?: string;
+  readonly retryable?: boolean;
+  readonly detailCode?: string;
+  readonly handled: boolean;
+
+  constructor(status: number, payload: ApiErrorPayload, handled = false) {
+    super(payload.error || `Request failed (${status})`);
+    this.name = "ApiError";
+    this.status = status;
+    this.category = payload.category;
+    this.retryable = payload.retryable;
+    this.detailCode = payload.detail_code;
+    this.handled = handled;
+  }
+}
+
+export function configureApiClient(config: Partial<ApiClientConfig>) {
+  Object.assign(apiClientConfig, config);
+}
+
+function resolveClassroomId(
+  explicitClassroomId?: string,
+  body?: object,
+): string | undefined {
+  if (explicitClassroomId) return explicitClassroomId;
+  const fromBody = body && "classroom_id" in body ? (body as { classroom_id?: unknown }).classroom_id : undefined;
+  return typeof fromBody === "string" ? fromBody : undefined;
+}
+
+async function parseErrorPayload(res: Response): Promise<ApiErrorPayload> {
+  const contentType = res.headers.get("content-type") ?? "";
+  if (contentType.includes("application/json")) {
+    const payload = await res.json().catch(() => ({}));
+    return typeof payload === "object" && payload !== null
+      ? payload as ApiErrorPayload
+      : {};
+  }
+
+  const text = await res.text().catch(() => "");
+  return text ? { error: text } : {};
+}
+
+function isAuthChallenge(status: number, payload: ApiErrorPayload) {
+  return (status === 401 || status === 403)
+    && (payload.detail_code === "classroom_code_missing" || payload.detail_code === "classroom_code_invalid");
+}
+
+async function requestJson<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  const classroomId = resolveClassroomId(options.classroomId, options.body);
+  const headers = new Headers(options.headers);
+
+  if (options.body && !headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  const classroomCode = options.classroomCode
+    ?? (classroomId ? apiClientConfig.getClassroomCode?.(classroomId) : undefined);
+  if (classroomCode) {
+    headers.set("X-Classroom-Code", classroomCode);
+  }
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    method: options.method ?? "GET",
+    headers,
+    body: options.body ? JSON.stringify(options.body) : undefined,
+    signal: options.signal,
+  });
+
+  if (!res.ok) {
+    const payload = await parseErrorPayload(res);
+    if (classroomId && isAuthChallenge(res.status, payload) && apiClientConfig.requestClassroomCode) {
+      const code = await apiClientConfig.requestClassroomCode({
+        classroomId,
+        status: res.status,
+        message: payload.error || "This classroom needs an access code before protected tools can run.",
+      });
+      if (code) {
+        return requestJson<T>(path, {
+          ...options,
+          classroomId,
+          classroomCode: code,
+          signal: undefined,
+        });
+      }
+      throw new ApiError(res.status, payload, true);
+    }
+
+    throw new ApiError(res.status, payload);
+  }
+
+  return res.json() as Promise<T>;
+}
+
+async function requestVoid(path: string, options: RequestOptions = {}): Promise<void> {
+  await requestJson<unknown>(path, options);
+}
+
+export function listClassrooms(): Promise<ClassroomProfile[]> {
+  return requestJson<ClassroomProfile[]>("/classrooms");
+}
+
+export function differentiate(
   request: DifferentiateRequest,
   signal?: AbortSignal,
 ): Promise<DifferentiateResponse> {
-  const res = await fetch(`${API_BASE}/differentiate`, {
+  return requestJson<DifferentiateResponse>("/differentiate", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Differentiation failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function listClassrooms(): Promise<ClassroomProfile[]> {
-  const res = await fetch(`${API_BASE}/classrooms`);
-  if (!res.ok) throw new Error(`Failed to list classrooms (${res.status})`);
-  return res.json();
-}
-
-export async function generateTomorrowPlan(
+export function generateTomorrowPlan(
   request: TomorrowPlanRequest,
   signal?: AbortSignal,
 ): Promise<TomorrowPlanResponse> {
-  const res = await fetch(`${API_BASE}/tomorrow-plan`, {
+  return requestJson<TomorrowPlanResponse>("/tomorrow-plan", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Tomorrow plan failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function draftFamilyMessage(
+export function draftFamilyMessage(
   request: FamilyMessageRequest,
   signal?: AbortSignal,
 ): Promise<FamilyMessageResponse> {
-  const res = await fetch(`${API_BASE}/family-message`, {
+  return requestJson<FamilyMessageResponse>("/family-message", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Family message failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function approveFamilyMessage(
-  classroomId: string,
-  draftId: string,
-): Promise<void> {
-  const res = await fetch(`${API_BASE}/family-message/approve`, {
+export function approveFamilyMessage(classroomId: string, draftId: string): Promise<void> {
+  return requestVoid("/family-message/approve", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ classroom_id: classroomId, draft_id: draftId }),
+    body: {
+      classroom_id: classroomId,
+      draft_id: draftId,
+    },
+    classroomId,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Approval failed (${res.status}): ${body}`);
-  }
 }
 
-export async function logIntervention(
+export function logIntervention(
   request: InterventionRequest,
   signal?: AbortSignal,
 ): Promise<InterventionResponse> {
-  const res = await fetch(`${API_BASE}/intervention`, {
+  return requestJson<InterventionResponse>("/intervention", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Intervention logging failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function simplifyText(
+export function simplifyText(
   request: SimplifyRequest,
   signal?: AbortSignal,
 ): Promise<SimplifyResponse> {
-  const res = await fetch(`${API_BASE}/simplify`, {
+  return requestJson<SimplifyResponse>("/simplify", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Simplification failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function generateVocabCards(
+export function generateVocabCards(
   request: VocabCardsRequest,
   signal?: AbortSignal,
 ): Promise<VocabCardsResponse> {
-  const res = await fetch(`${API_BASE}/vocab-cards`, {
+  return requestJson<VocabCardsResponse>("/vocab-cards", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Vocab card generation failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function detectSupportPatterns(
+export function detectSupportPatterns(
   request: SupportPatternsRequest,
   signal?: AbortSignal,
 ): Promise<SupportPatternsResponse> {
-  const res = await fetch(`${API_BASE}/support-patterns`, {
+  return requestJson<SupportPatternsResponse>("/support-patterns", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Support pattern detection failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function generateEABriefing(
+export function generateEABriefing(
   request: EABriefingRequest,
   signal?: AbortSignal,
 ): Promise<EABriefingResponse> {
-  const res = await fetch(`${API_BASE}/ea-briefing`, {
+  return requestJson<EABriefingResponse>("/ea-briefing", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`EA briefing generation failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function generateComplexityForecast(
+export function generateComplexityForecast(
   request: ComplexityForecastRequest,
   signal?: AbortSignal,
 ): Promise<ComplexityForecastResponse> {
-  const res = await fetch(`${API_BASE}/complexity-forecast`, {
+  return requestJson<ComplexityForecastResponse>("/complexity-forecast", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(request),
+    body: request,
     signal,
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Complexity forecast failed (${res.status}): ${body}`);
-  }
-  return res.json();
 }
 
-export async function generateSurvivalPacket(
+export function generateSurvivalPacket(
   classroomId: string,
   targetDate: string,
   teacherNotes?: string,
   classroomCode?: string,
   signal?: AbortSignal,
 ): Promise<SurvivalPacketResponse> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (classroomCode) headers["X-Classroom-Code"] = classroomCode;
-
-  const resp = await fetch(`${API_BASE}/survival-packet`, {
+  return requestJson<SurvivalPacketResponse>("/survival-packet", {
     method: "POST",
-    headers,
-    body: JSON.stringify({
+    classroomId,
+    classroomCode,
+    signal,
+    body: {
       classroom_id: classroomId,
       target_date: targetDate,
       teacher_notes: teacherNotes || undefined,
-    }),
-    signal,
+    },
   });
-
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => ({ error: resp.statusText }));
-    throw new Error(err.error || `Request failed: ${resp.status}`);
-  }
-
-  return resp.json();
 }
 
-export async function fetchTodaySnapshot(
+export function fetchTodaySnapshot(
   classroomId: string,
   signal?: AbortSignal,
 ): Promise<TodaySnapshot> {
-  const res = await fetch(`${API_BASE}/today/${classroomId}`, { signal });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Today snapshot failed (${res.status}): ${body}`);
-  }
-  return res.json();
+  return requestJson<TodaySnapshot>(`/today/${encodeURIComponent(classroomId)}`, {
+    classroomId,
+    signal,
+  });
 }
 
-// ----- History fetch functions -----
-
 export async function fetchPlanHistory(
-  classroomId: string, limit = 10, signal?: AbortSignal,
+  classroomId: string,
+  limit = 10,
+  signal?: AbortSignal,
 ): Promise<TomorrowPlan[]> {
-  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/plans?limit=${limit}`, { signal });
-  if (!res.ok) throw new Error(`Plan history failed (${res.status})`);
-  const data = await res.json();
+  const data = await requestJson<{ plans: TomorrowPlan[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/plans?limit=${limit}`,
+    { classroomId, signal },
+  );
   return data.plans;
 }
 
 export async function fetchMessageHistory(
-  classroomId: string, limit = 10, signal?: AbortSignal,
+  classroomId: string,
+  limit = 10,
+  signal?: AbortSignal,
 ): Promise<FamilyMessageDraft[]> {
-  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/messages?limit=${limit}`, { signal });
-  if (!res.ok) throw new Error(`Message history failed (${res.status})`);
-  const data = await res.json();
+  const data = await requestJson<{ messages: FamilyMessageDraft[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/messages?limit=${limit}`,
+    { classroomId, signal },
+  );
   return data.messages;
 }
 
 export async function fetchInterventionHistory(
-  classroomId: string, limit = 20, signal?: AbortSignal,
+  classroomId: string,
+  limit = 20,
+  signal?: AbortSignal,
 ): Promise<InterventionRecord[]> {
-  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/interventions?limit=${limit}`, { signal });
-  if (!res.ok) throw new Error(`Intervention history failed (${res.status})`);
-  const data = await res.json();
+  const data = await requestJson<{ interventions: InterventionRecord[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/interventions?limit=${limit}`,
+    { classroomId, signal },
+  );
   return data.interventions;
 }
 
 export async function fetchPatternHistory(
-  classroomId: string, limit = 5, signal?: AbortSignal,
+  classroomId: string,
+  limit = 5,
+  signal?: AbortSignal,
 ): Promise<SupportPatternReport[]> {
-  const res = await fetch(`${API_BASE}/classrooms/${classroomId}/patterns?limit=${limit}`, { signal });
-  if (!res.ok) throw new Error(`Pattern history failed (${res.status})`);
-  const data = await res.json();
+  const data = await requestJson<{ patterns: SupportPatternReport[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/patterns?limit=${limit}`,
+    { classroomId, signal },
+  );
   return data.patterns;
 }
 
-export async function extractWorksheet(
+export function extractWorksheet(
   classroomId: string,
   imageBase64: string,
   mimeType: string,
   signal?: AbortSignal,
 ): Promise<ExtractWorksheetResponse> {
-  const res = await fetch(`${API_BASE}/extract-worksheet`, {
+  return requestJson<ExtractWorksheetResponse>("/extract-worksheet", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
+    classroomId,
+    signal,
+    body: {
       classroom_id: classroomId,
       image_base64: imageBase64,
       mime_type: mimeType,
-    }),
-    signal,
+    },
   });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Worksheet extraction failed (${res.status}): ${body}`);
-  }
-  return res.json();
+}
+
+export function fetchClassroomHealth(
+  classroomId: string,
+  signal?: AbortSignal,
+): Promise<ClassroomHealth> {
+  return requestJson<ClassroomHealth>(
+    `/classrooms/${encodeURIComponent(classroomId)}/health`,
+    { classroomId, signal },
+  );
+}
+
+export async function fetchStudentSummary(
+  classroomId: string,
+  studentRef?: string,
+  signal?: AbortSignal,
+): Promise<StudentSummary[]> {
+  const studentParam = studentRef ? `&student=${encodeURIComponent(studentRef)}` : "";
+  const data = await requestJson<{ summaries: StudentSummary[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/student-summary?_=1${studentParam}`,
+    { classroomId, signal },
+  );
+  return data.summaries;
+}
+
+export async function fetchInterventionHistoryForStudent(
+  classroomId: string,
+  studentRef: string,
+  limit = 10,
+  signal?: AbortSignal,
+): Promise<InterventionRecord[]> {
+  const data = await requestJson<{ interventions: InterventionRecord[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/interventions?limit=${limit}&student=${encodeURIComponent(studentRef)}`,
+    { classroomId, signal },
+  );
+  return data.interventions;
+}
+
+export async function fetchMessageHistoryForStudent(
+  classroomId: string,
+  studentRef: string,
+  limit = 10,
+  signal?: AbortSignal,
+): Promise<FamilyMessageDraft[]> {
+  const data = await requestJson<{ messages: FamilyMessageDraft[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/messages?limit=${limit}&student=${encodeURIComponent(studentRef)}`,
+    { classroomId, signal },
+  );
+  return data.messages;
 }
