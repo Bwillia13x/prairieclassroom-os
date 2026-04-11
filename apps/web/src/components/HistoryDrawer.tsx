@@ -1,6 +1,20 @@
 import { useState } from "react";
 import "./HistoryDrawer.css";
 
+function getDateGroup(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "Earlier";
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today.getTime() - 86_400_000);
+  const weekAgo = new Date(today.getTime() - 6 * 86_400_000);
+
+  if (date >= today) return "Today";
+  if (date >= yesterday) return "Yesterday";
+  if (date >= weekAgo) return "This week";
+  return "Earlier";
+}
+
 interface Props<T> {
   items: T[];
   loading: boolean;
@@ -40,22 +54,41 @@ export default function HistoryDrawer<T>({
             <p className="history-drawer-empty">No history yet.</p>
           )}
           <ul className="history-drawer-list">
-            {items.map((item, i) => (
-              <li key={getKey(item)} className="history-drawer-item">
-                <button
-                  className="history-drawer-item-btn"
-                  onClick={() => { onSelect(item); setOpen(false); }}
-                  type="button"
-                >
-                  <span className="history-drawer-item-time">
-                    {new Date(getTimestamp(item)).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                  <span className="history-drawer-item-preview">
-                    {renderItem(item, i)}
-                  </span>
-                </button>
-              </li>
-            ))}
+            {(() => {
+              const grouped: { group: string; items: T[] }[] = [];
+              let lastGroup = "";
+              for (const item of items) {
+                const ts = getTimestamp(item);
+                const group = getDateGroup(ts);
+                if (group !== lastGroup) {
+                  grouped.push({ group, items: [item] });
+                  lastGroup = group;
+                } else {
+                  grouped[grouped.length - 1].items.push(item);
+                }
+              }
+              return grouped.map((section) => (
+                <div key={section.group}>
+                  <div className="history-drawer-group-label">{section.group}</div>
+                  {section.items.map((item, i) => (
+                    <li key={getKey(item)} className="history-drawer-item">
+                      <button
+                        className="history-drawer-item-btn"
+                        onClick={() => { onSelect(item); setOpen(false); }}
+                        type="button"
+                      >
+                        <span className="history-drawer-item-time">
+                          {new Date(getTimestamp(item)).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                        <span className="history-drawer-item-preview">
+                          {renderItem(item, i)}
+                        </span>
+                      </button>
+                    </li>
+                  ))}
+                </div>
+              ));
+            })()}
           </ul>
         </div>
       )}
