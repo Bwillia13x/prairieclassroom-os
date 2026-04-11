@@ -1,0 +1,74 @@
+/* ---- Sparkline ---- */
+
+.dataviz-sparkline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dataviz-sparkline--empty {
+  font-size: var(--ds-text-xs);
+  color: var(--ds-text-muted);
+}
+
+/* ---- TrendIndicator ---- */
+
+.dataviz-trend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-1);
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.dataviz-trend--up   { color: var(--ds-success); }
+.dataviz-trend--down { color: var(--ds-danger); }
+.dataviz-trend--flat { color: var(--ds-text-muted); }
+
+.dataviz-trend__arrow {
+  font-size: var(--ds-text-base);
+  line-height: 1;
+}
+
+/* ---- HealthDot ---- */
+
+.dataviz-health-dot {
+  display: inline-block;
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: var(--ds-radius-full);
+  flex-shrink: 0;
+}
+
+.dataviz-health-dot--healthy  { background: var(--ds-success); }
+.dataviz-health-dot--warning  { background: var(--ds-warning); }
+.dataviz-health-dot--critical { background: var(--ds-danger); }
+
+/* ---- ProgressBar ---- */
+
+.dataviz-progress {
+  display: flex;
+  flex-direction: column;
+  gap: var(--ds-space-1);
+}
+
+.dataviz-progress__label {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-xs);
+  font-weight: 500;
+  color: var(--ds-text-secondary);
+}
+
+.dataviz-progress__track {
+  height: 0.5rem;
+  background: var(--ds-surface-muted);
+  border-radius: var(--ds-radius-full);
+  overflow: hidden;
+}
+
+.dataviz-progress__fill {
+  height: 100%;
+  background: var(--ds-accent);
+  border-radius: var(--ds-radius-full);
+  transition: width var(--ds-transition-normal);
+}

@@ -1,0 +1,22 @@
+.session-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-3);
+  padding: var(--ds-space-3) var(--ds-space-4);
+  background: var(--ds-surface-raised);
+  border: 1px solid var(--ds-border-light);
+  border-radius: var(--ds-radius-md);
+}
+
+.session-banner__name {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-base);
+  font-weight: 600;
+  color: var(--ds-text);
+}
+
+.session-banner__grade {
+  font-family: var(--ds-font-sans);
+  font-size: var(--ds-text-sm);
+  color: var(--ds-text-secondary);
+}
