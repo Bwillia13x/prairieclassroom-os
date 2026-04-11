@@ -1,13 +1,21 @@
 import type { TomorrowPlan } from "../types";
+import Sparkline from "./Sparkline";
 
 interface Props {
   plan: TomorrowPlan;
+  sparklineData?: number[];
+  onPriorityClick?: (studentRef: string) => void;
 }
 
-export default function PlanRecap({ plan }: Props) {
+export default function PlanRecap({ plan, sparklineData, onPriorityClick }: Props) {
   return (
     <div className="plan-recap">
-      <h3 className="plan-recap-heading">Yesterday's Plan</h3>
+      <div className="plan-recap-header-row">
+        <h3 className="plan-recap-heading">Yesterday's Plan</h3>
+        {sparklineData && sparklineData.length >= 3 ? (
+          <Sparkline data={sparklineData} label="Plans trend over 14 days" />
+        ) : null}
+      </div>
 
       {plan.support_priorities.length > 0 && (
         <div className="plan-recap-section">
@@ -15,7 +23,19 @@ export default function PlanRecap({ plan }: Props) {
           <ul className="plan-recap-list">
             {plan.support_priorities.map((p, i) => (
               <li key={i}>
-                <strong>{p.student_ref}</strong> — {p.suggested_action}
+                {onPriorityClick ? (
+                  <button
+                    className="plan-recap-priority-btn"
+                    type="button"
+                    onClick={() => onPriorityClick(p.student_ref)}
+                  >
+                    <strong>{p.student_ref}</strong> — {p.suggested_action}
+                  </button>
+                ) : (
+                  <>
+                    <strong>{p.student_ref}</strong> — {p.suggested_action}
+                  </>
+                )}
               </li>
             ))}
           </ul>

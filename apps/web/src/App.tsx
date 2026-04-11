@@ -1,8 +1,22 @@
-import { useReducer, useEffect, useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import AppContext from "./AppContext";
-import { appReducer, createInitialState, TAB_ORDER, type ActiveTab } from "./appReducer";
+import {
+  appReducer,
+  createInitialState,
+  getGroupForTab,
+  getTabsForGroup,
+  NAV_GROUP_META,
+  NAV_GROUP_ORDER,
+  TAB_META,
+  TAB_ORDER,
+  type ActiveTab,
+  type AuthPromptState,
+} from "./appReducer";
+import { configureApiClient, fetchTodaySnapshot, listClassrooms } from "./api";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ToastQueue from "./components/ToastQueue";
+import StatusChip from "./components/StatusChip";
+import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
 import DifferentiatePanel from "./panels/DifferentiatePanel";
 import TomorrowPlanPanel from "./panels/TomorrowPlanPanel";
 import FamilyMessagePanel from "./panels/FamilyMessagePanel";
@@ -13,16 +27,87 @@ import EABriefingPanel from "./panels/EABriefingPanel";
 import ForecastPanel from "./panels/ForecastPanel";
 import SurvivalPacketPanel from "./panels/SurvivalPacketPanel";
 import TodayPanel from "./panels/TodayPanel";
-import { listClassrooms, fetchTodaySnapshot } from "./api";
 import MobileNav from "./components/MobileNav";
 import OnboardingOverlay from "./components/OnboardingOverlay";
-import type { FamilyMessagePrefill, InterventionPrefill } from "./types";
-import "./App.css";
+import ThemeToggle from "./components/ThemeToggle";
+import SectionIcon from "./components/SectionIcon";
+import AppFooter from "./components/AppFooter";
+import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
+
+const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+
+function isActiveTab(value: string | null): value is ActiveTab {
+  return value !== null && value in TAB_META;
+}
+
+function describeClassroom(classroom: ClassroomProfile) {
+  return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
+}
+
+function getTabBadgeCount(tab: ActiveTab, debtCounts: Record<string, number>) {
+  switch (tab) {
+    case "family-message":
+      return debtCounts.unapproved_message ?? 0;
+    case "log-intervention":
+      return debtCounts.stale_followup ?? 0;
+    case "support-patterns":
+      return (debtCounts.unaddressed_pattern ?? 0) + (debtCounts.approaching_review ?? 0);
+    default:
+      return 0;
+  }
+}
+
+function LockIcon({ locked }: { locked: boolean }) {
+  return (
+    <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
+      {locked ? (
+        <>
+          <path d="M5.5 8V5.9a3.5 3.5 0 117 0V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <rect x="4" y="8" width="10" height="7.5" rx="2" stroke="currentColor" strokeWidth="1.5" />
+        </>
+      ) : (
+        <>
+          <path d="M11.5 8V5.9a3.5 3.5 0 00-6.27-2.14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <path d="M6.2 10.1L4.8 8.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+          <rect x="4" y="8" width="10" height="7.5" rx="2" stroke="currentColor" strokeWidth="1.5" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+function renderPanel(
+  activeTab: ActiveTab,
+  targetTab: ActiveTab,
+  panel: ReactNode,
+) {
+  return (
+    <div
+      role="tabpanel"
+      id={`panel-${targetTab}`}
+      aria-labelledby={`tab-${targetTab}`}
+      hidden={activeTab !== targetTab}
+    >
+      <ErrorBoundary>{panel}</ErrorBoundary>
+    </div>
+  );
+}
 
 export default function App() {
   const [state, dispatch] = useReducer(appReducer, undefined, createInitialState);
+  const authPromptResolverRef = useRef<((code: string | null) => void) | null>(null);
+  const classroomsRef = useRef<ClassroomProfile[]>(state.classrooms);
+  const classroomCodesRef = useRef(state.classroomAccessCodes);
+  const classroomMenuRef = useRef<HTMLDivElement>(null);
+  const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
 
-  // ─── Convenience callbacks ───
+  useEffect(() => {
+    classroomsRef.current = state.classrooms;
+  }, [state.classrooms]);
+
+  useEffect(() => {
+    classroomCodesRef.current = state.classroomAccessCodes;
+  }, [state.classroomAccessCodes]);
 
   const showSuccess = useCallback((msg: string) => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -42,50 +127,259 @@ export default function App() {
   }, []);
 
   const submitFeedback = useCallback((outputId: string, outputType: string, rating: "up" | "down", note?: string) => {
-    dispatch({ type: "ADD_FEEDBACK", feedback: { outputId, outputType, rating, note, timestamp: new Date().toISOString() } });
+    dispatch({
+      type: "ADD_FEEDBACK",
+      feedback: { outputId, outputType, rating, note, timestamp: new Date().toISOString() },
+    });
   }, []);
 
-  // ─── Init: load classrooms ───
+  const setActiveTab = useCallback((tab: ActiveTab) => {
+    dispatch({ type: "SET_ACTIVE_TAB", tab });
+  }, []);
+
+  const openAuthPrompt = useCallback((prompt: AuthPromptState, resolver?: (code: string | null) => void) => {
+    authPromptResolverRef.current?.(null);
+    authPromptResolverRef.current = resolver ?? null;
+    dispatch({ type: "OPEN_AUTH_PROMPT", prompt });
+  }, []);
+
+  const closeAuthPrompt = useCallback(() => {
+    const resolver = authPromptResolverRef.current;
+    authPromptResolverRef.current = null;
+    dispatch({ type: "CLOSE_AUTH_PROMPT" });
+    resolver?.(null);
+  }, []);
+
+  const setActiveClassroom = useCallback((classroomId: string, classroomsOverride?: ClassroomProfile[]) => {
+    dispatch({ type: "SET_ACTIVE_CLASSROOM", classroomId });
+
+    const classrooms = classroomsOverride ?? classroomsRef.current;
+    const classroom = classrooms.find((entry) => entry.classroom_id === classroomId);
+    if (!classroom?.requires_access_code || classroomCodesRef.current[classroomId]) {
+      return;
+    }
+
+    openAuthPrompt({
+      classroomId,
+      message: `${describeClassroom(classroom)} is protected. Save the classroom access code to unlock planning, messaging, and intervention workflows.`,
+      status: 401,
+      source: "selection",
+    });
+  }, [openAuthPrompt]);
+
+  const requestClassroomCode = useCallback((challenge: { classroomId: string; status: number; message: string }) => (
+    new Promise<string | null>((resolve) => {
+      openAuthPrompt({
+        classroomId: challenge.classroomId,
+        message: challenge.message,
+        status: challenge.status,
+        source: "request",
+      }, resolve);
+    })
+  ), [openAuthPrompt]);
+
+  const handleAuthSubmit = useCallback((code: string) => {
+    if (!state.authPrompt) return;
+    dispatch({ type: "SET_CLASSROOM_ACCESS_CODE", classroomId: state.authPrompt.classroomId, code });
+    const resolver = authPromptResolverRef.current;
+    authPromptResolverRef.current = null;
+    dispatch({ type: "CLOSE_AUTH_PROMPT" });
+    resolver?.(code);
+    if (!resolver) {
+      showSuccess("Classroom access saved");
+    }
+  }, [showSuccess, state.authPrompt]);
 
   useEffect(() => {
-    listClassrooms()
-      .then((data) => {
-        dispatch({ type: "SET_CLASSROOMS", classrooms: data });
-        const params = new URLSearchParams(window.location.search);
-        const isDemo = params.get("demo") === "true";
-        const demoClassroom = data.find((c) => c.classroom_id === "demo-okafor-grade34");
-        if (isDemo && demoClassroom) {
-          dispatch({ type: "SET_ACTIVE_CLASSROOM", classroomId: demoClassroom.classroom_id });
-        } else if (data.length > 0) {
-          dispatch({ type: "SET_ACTIVE_CLASSROOM", classroomId: data[0].classroom_id });
-        }
-      })
-      .catch(() => dispatch({ type: "SET_INIT_ERROR", error: "Failed to load classrooms. Is the API server running?" }));
+    const params = new URLSearchParams(window.location.search);
+    const requestedTab = params.get("tab");
+    if (isActiveTab(requestedTab)) {
+      dispatch({ type: "SET_ACTIVE_TAB", tab: requestedTab });
+    }
   }, []);
 
-  // ─── Load debt counts for active classroom ───
+  useEffect(() => {
+    let cancelled = false;
+
+    listClassrooms()
+      .then((data) => {
+        if (cancelled) return;
+
+        dispatch({ type: "SET_CLASSROOMS", classrooms: data });
+
+        const params = new URLSearchParams(window.location.search);
+        const requestedClassroomId = params.get("classroom");
+        const demoRequested = params.get("demo") === "true";
+        const demoClassroom = data.find((entry) => entry.is_demo || entry.classroom_id === DEMO_CLASSROOM_ID);
+
+        const nextClassroomId = requestedClassroomId && data.some((entry) => entry.classroom_id === requestedClassroomId)
+          ? requestedClassroomId
+          : demoRequested && demoClassroom
+            ? demoClassroom.classroom_id
+            : data[0]?.classroom_id ?? "";
+
+        if (nextClassroomId) {
+          setActiveClassroom(nextClassroomId, data);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          dispatch({ type: "SET_INIT_ERROR", error: "Failed to load classrooms. Is the API server running?" });
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [setActiveClassroom]);
+
+  useEffect(() => {
+    configureApiClient({
+      getClassroomCode: (classroomId) => state.classroomAccessCodes[classroomId],
+      requestClassroomCode,
+    });
+
+    return () => {
+      configureApiClient({
+        getClassroomCode: undefined,
+        requestClassroomCode: undefined,
+      });
+    };
+  }, [requestClassroomCode, state.classroomAccessCodes]);
 
   useEffect(() => {
     if (!state.activeClassroom) return;
-    fetchTodaySnapshot(state.activeClassroom)
+    const controller = new AbortController();
+    fetchTodaySnapshot(state.activeClassroom, controller.signal)
       .then((snapshot) => dispatch({ type: "SET_DEBT_COUNTS", counts: snapshot.debt_register.item_count_by_category }))
-      .catch(() => {}); // Silent fail — badges are informational
+      .catch((err) => {
+        if (controller.signal.aborted) return;
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        console.warn("Failed to load today snapshot:", err);
+        // Use stable ID so rapid switching doesn't stack duplicate toasts
+        dispatch({ type: "DISMISS_TOAST", id: "debt-load-error" });
+        dispatch({
+          type: "PUSH_TOAST",
+          toast: {
+            id: "debt-load-error",
+            type: "error",
+            message: "Couldn't load today's snapshot. Debt counts may be stale.",
+            duration: 6000,
+          },
+        });
+      });
+    return () => controller.abort();
   }, [state.activeClassroom]);
 
-  // ─── Derived values ───
+  useEffect(() => {
+    setClassroomMenuOpen(false);
+  }, [state.activeClassroom, state.authPrompt]);
 
-  const profile = state.classrooms.find((c) => c.classroom_id === state.activeClassroom);
+  useEffect(() => {
+    if (!classroomMenuOpen) return;
+
+    function handlePointerDown(event: MouseEvent) {
+      if (!classroomMenuRef.current?.contains(event.target as Node)) {
+        setClassroomMenuOpen(false);
+      }
+    }
+
+    function handleEscape(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setClassroomMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [classroomMenuOpen]);
+
+  useEffect(() => {
+    if (!state.activeClassroom) return;
+    const params = new URLSearchParams(window.location.search);
+    params.set("tab", state.activeTab);
+    params.set("classroom", state.activeClassroom);
+
+    const profile = state.classrooms.find((entry) => entry.classroom_id === state.activeClassroom);
+    if (profile?.is_demo) {
+      params.set("demo", "true");
+    } else {
+      params.delete("demo");
+    }
+
+    const nextQuery = params.toString();
+    const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ""}`;
+    window.history.replaceState({}, "", nextUrl);
+  }, [state.activeClassroom, state.activeTab, state.classrooms]);
+
+  // Scroll to top of main content on tab change
+  useEffect(() => {
+    const main = document.querySelector(".app-main");
+    if (main) {
+      main.scrollIntoView({ behavior: "instant", block: "start" });
+    }
+  }, [state.activeTab]);
+
+  useEffect(() => {
+    function handleKeydown(e: KeyboardEvent) {
+      const el = document.activeElement;
+      const tag = (el?.tagName ?? "").toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "select") return;
+      if ((el as HTMLElement)?.isContentEditable) return;
+
+      const digit = Number.parseInt(e.key, 10);
+      if (digit >= 1 && digit <= TAB_ORDER.length) {
+        e.preventDefault();
+        setActiveTab(TAB_ORDER[digit - 1]);
+      }
+    }
+
+    window.addEventListener("keydown", handleKeydown);
+    return () => window.removeEventListener("keydown", handleKeydown);
+  }, [setActiveTab]);
+
+  function handleDismissOnboarding() {
+    localStorage.setItem("prairie-onboarding-done", "true");
+    dispatch({ type: "SHOW_ONBOARDING", show: false });
+  }
+
+  function handleFollowupClick(prefill: FamilyMessagePrefill) {
+    dispatch({ type: "SET_MESSAGE_PREFILL", prefill });
+    setActiveTab("family-message");
+  }
+
+  function handleInterventionClick(prefill: InterventionPrefill) {
+    dispatch({ type: "SET_INTERVENTION_PREFILL", prefill });
+    setActiveTab("log-intervention");
+  }
+
+  const { activeClassroom, activeTab, authPrompt, debtCounts, initError } = state;
+  const activeGroup = getGroupForTab(activeTab);
+  const profile = state.classrooms.find((entry) => entry.classroom_id === activeClassroom);
   const students = profile?.students ?? [];
-
-  // ─── Context value ───
+  const secondaryTabs = getTabsForGroup(activeGroup);
+  const showSecondaryTabs = secondaryTabs.length > 1;
+  const accessSaved = Boolean(activeClassroom && state.classroomAccessCodes[activeClassroom]);
+  const activeGroupMeta = NAV_GROUP_META[activeGroup];
+  const activeClassroomLabel = profile ? describeClassroom(profile) : "Choose classroom";
+  const activeClassroomMeta = profile?.subject_focus.replace(/_/g, " ") ?? "";
 
   const ctxValue = useMemo(
     () => ({
       classrooms: state.classrooms,
-      activeClassroom: state.activeClassroom,
-      setActiveClassroom: (id: string) => dispatch({ type: "SET_ACTIVE_CLASSROOM", classroomId: id }),
+      activeClassroom,
+      activeTab,
+      setActiveClassroom,
+      setActiveTab,
       profile,
       students,
+      classroomAccessCodes: state.classroomAccessCodes,
+      authPrompt,
       showSuccess,
       dispatch,
       streaming: state.streaming,
@@ -95,169 +389,224 @@ export default function App() {
       showUndo,
       dismissToast,
     }),
-    [state, profile, students, showSuccess, submitFeedback, showUndo, dismissToast],
+    [
+      activeClassroom,
+      activeTab,
+      authPrompt,
+      dismissToast,
+      profile,
+      setActiveClassroom,
+      setActiveTab,
+      showSuccess,
+      showUndo,
+      state.classroomAccessCodes,
+      state.classrooms,
+      state.featuresSeen,
+      state.streaming,
+      state.toasts,
+      students,
+      submitFeedback,
+    ],
   );
-
-  // ─── Keyboard shortcuts ───
-
-  useEffect(() => {
-    function handleKeydown(e: KeyboardEvent) {
-      const el = document.activeElement;
-      const tag = (el?.tagName ?? "").toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select") return;
-      if ((el as HTMLElement)?.isContentEditable) return;
-
-      const digit = parseInt(e.key, 10);
-      if (digit >= 1 && digit <= TAB_ORDER.length) {
-        e.preventDefault();
-        dispatch({ type: "SET_ACTIVE_TAB", tab: TAB_ORDER[digit - 1] });
-      }
-    }
-    window.addEventListener("keydown", handleKeydown);
-    return () => window.removeEventListener("keydown", handleKeydown);
-  }, []);
-
-  // ─── Cross-panel navigation handlers ───
-
-  function handleDismissOnboarding() {
-    localStorage.setItem("prairie-onboarding-done", "true");
-    dispatch({ type: "SHOW_ONBOARDING", show: false });
-  }
-
-  function handleFollowupClick(prefill: FamilyMessagePrefill) {
-    dispatch({ type: "SET_MESSAGE_PREFILL", prefill });
-    dispatch({ type: "SET_ACTIVE_TAB", tab: "family-message" });
-  }
-
-  function handleInterventionClick(prefill: InterventionPrefill) {
-    dispatch({ type: "SET_INTERVENTION_PREFILL", prefill });
-    dispatch({ type: "SET_ACTIVE_TAB", tab: "log-intervention" });
-  }
-
-  const { activeTab, debtCounts, initError } = state;
 
   return (
     <AppContext.Provider value={ctxValue}>
       <div className="app-shell">
         <ToastQueue />
+
         <header className="app-header">
-          <div className="app-header-title-row">
-            <svg className="app-mark" viewBox="0 0 40 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0 18 Q5 10 10 14 Q14 6 18 12 Q22 4 26 10 Q30 6 34 12 Q37 8 40 14" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" fill="none" />
-              <line x1="0" y1="20" x2="40" y2="20" stroke="var(--color-border)" strokeWidth="1.5" />
-              <circle cx="10" cy="8" r="3" fill="var(--color-accent)" opacity="0.25" />
-            </svg>
-            <div>
-              <h1>PrairieClassroom <span className="app-title-os">OS</span></h1>
-              <p className="app-subtitle">Classroom complexity copilot</p>
+          <div className="app-header__inner">
+            <div className="shell-bar">
+              <div className="shell-brand" aria-label="PrairieClassroom home">
+                <svg className="app-mark" viewBox="0 0 40 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0 18 Q5 10 10 14 Q14 6 18 12 Q22 4 26 10 Q30 6 34 12 Q37 8 40 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
+                  <line x1="0" y1="20" x2="40" y2="20" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
+                  <circle cx="10" cy="8" r="3" fill="currentColor" opacity="0.2" />
+                </svg>
+                <div className="shell-brand__wordmark">
+                  <span className="app-wordmark">PrairieClassroom</span>
+                  <span className="app-title-os">OS</span>
+                </div>
+              </div>
+
+              <div className="shell-classroom-anchor" ref={classroomMenuRef}>
+                <button
+                  id="shell-classroom-trigger"
+                  className={`shell-classroom-pill${classroomMenuOpen ? " shell-classroom-pill--open" : ""}`}
+                  type="button"
+                  onClick={() => setClassroomMenuOpen((open) => !open)}
+                  aria-expanded={classroomMenuOpen}
+                  aria-controls="shell-classroom-panel"
+                  disabled={!profile}
+                >
+                  <span className={`shell-classroom-pill__lock${profile?.requires_access_code ? " shell-classroom-pill__lock--locked" : ""}`}>
+                    <LockIcon locked={Boolean(profile?.requires_access_code)} />
+                  </span>
+                  <span className="shell-classroom-pill__copy">
+                    <span className="shell-classroom-pill__eyebrow">Active classroom</span>
+                    <span className="shell-classroom-pill__label">{activeClassroomLabel}</span>
+                  </span>
+                  <span className="shell-classroom-pill__caret" aria-hidden="true">⌄</span>
+                </button>
+
+                {classroomMenuOpen && profile ? (
+                  <div
+                    id="shell-classroom-panel"
+                    className="shell-classroom-panel"
+                    role="dialog"
+                    aria-modal="false"
+                    aria-label="Switch classroom"
+                  >
+                    <div className="field shell-classroom-field">
+                      <label htmlFor="shell-classroom">Switch classroom</label>
+                      <select
+                        id="shell-classroom"
+                        value={activeClassroom}
+                        onChange={(e) => {
+                          setClassroomMenuOpen(false);
+                          setActiveClassroom(e.target.value);
+                        }}
+                        disabled={state.classrooms.length === 0}
+                      >
+                        {state.classrooms.map((classroom) => (
+                          <option key={classroom.classroom_id} value={classroom.classroom_id}>
+                            {describeClassroom(classroom)}
+                            {classroom.is_demo ? " · demo" : ""}
+                            {classroom.requires_access_code ? " · protected" : ""}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <section className="shell-classroom-panel__snapshot" aria-label="Active classroom details">
+                      <div className="shell-classroom-panel__topline">
+                        <span className="shell-classroom-panel__eyebrow">Classroom status</span>
+                        <div className="shell-classroom-panel__chips">
+                          {profile.is_demo ? <StatusChip label="Demo lane" tone="slate" icon={<SectionIcon name="info" className="shell-nav__group-icon" />} /> : null}
+                          <StatusChip
+                            label={profile.requires_access_code ? "Protected classroom" : "Open classroom"}
+                            tone={profile.requires_access_code ? "pending" : "success"}
+                            icon={<SectionIcon name={profile.requires_access_code ? "lock" : "check"} className="shell-nav__group-icon" />}
+                          />
+                          {accessSaved ? <StatusChip label="Access saved locally" tone="provenance" icon={<SectionIcon name="refresh" className="shell-nav__group-icon" />} /> : null}
+                        </div>
+                      </div>
+                      <div className="shell-classroom-panel__title-row">
+                        <strong className="shell-classroom-panel__title">{activeClassroomLabel}</strong>
+                        <span className="shell-classroom-panel__id">{profile.classroom_id}</span>
+                      </div>
+                      <div className="shell-classroom-panel__details">
+                        <span>{students.length} students</span>
+                        <span>{activeClassroomMeta}</span>
+                        {profile.requires_access_code ? <span>{accessSaved ? "Access saved in this browser" : "Classroom code required"}</span> : null}
+                      </div>
+                    </section>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="shell-bar__actions">
+                <ThemeToggle />
+                <button
+                  className="btn btn--ghost app-help-btn"
+                  onClick={() => dispatch({ type: "SHOW_ONBOARDING", show: true })}
+                  type="button"
+                  aria-label="Show onboarding tour"
+                >
+                  Quick Help
+                </button>
+              </div>
             </div>
-            <button
-              className="btn btn--ghost app-help-btn"
-              onClick={() => dispatch({ type: "SHOW_ONBOARDING", show: true })}
-              type="button"
-              aria-label="Show onboarding tour"
-            >
-              ?
-            </button>
+
+            <nav className="shell-nav" aria-label="PrairieClassroom navigation">
+              <div className="shell-nav__groups" role="toolbar" aria-label="Primary navigation groups">
+                {NAV_GROUP_ORDER.map((group) => {
+                  const meta = NAV_GROUP_META[group];
+                  return (
+                    <button
+                      key={group}
+                      className={`shell-nav__group${activeGroup === group ? " shell-nav__group--active" : ""}`}
+                      onClick={() => setActiveTab(getTabsForGroup(group)[0])}
+                      type="button"
+                      aria-pressed={activeGroup === group}
+                    >
+                      <SectionIcon name={meta.icon} className="shell-nav__group-icon" />
+                      <span>{meta.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {showSecondaryTabs ? (
+                <div className="shell-nav__tabs-frame">
+                  <div className="shell-nav__tabs" role="tablist" aria-label={`${activeGroupMeta.label} tools`}>
+                    {secondaryTabs.map((tab) => {
+                      const count = getTabBadgeCount(tab, debtCounts);
+                      return (
+                        <button
+                          key={tab}
+                          role="tab"
+                          id={`tab-${tab}`}
+                          aria-selected={activeTab === tab}
+                          aria-controls={`panel-${tab}`}
+                          tabIndex={activeTab === tab ? 0 : -1}
+                          className={`shell-nav__tab${activeTab === tab ? " shell-nav__tab--active" : ""}`}
+                          onClick={() => setActiveTab(tab)}
+                          type="button"
+                        >
+                          <span>{TAB_META[tab].label}</span>
+                          {count > 0 ? <span className="shell-nav__badge">{count}</span> : null}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
+            </nav>
           </div>
-          {profile && (
-            <div className="classroom-context">
-              <span className="classroom-context-label">Active classroom</span>
-              <span className="classroom-context-value">
-                Grade {profile.grade_band} — {profile.subject_focus.replace(/_/g, " ")}
-              </span>
-              <span className="classroom-context-divider" aria-hidden="true" />
-              <span className="classroom-context-id">{profile.classroom_id}</span>
-              <span className="classroom-context-count">{students.length} students</span>
-            </div>
-          )}
         </header>
 
-        <nav className="app-tabs" role="tablist" aria-label="PrairieClassroom OS sections">
-          <div className="tab-group" role="presentation">
-            <span className="tab-group-label">Today</span>
-            <button role="tab" id="tab-today" aria-selected={activeTab === "today"} aria-controls="panel-today" tabIndex={activeTab === "today" ? 0 : -1} className={`tab-btn ${activeTab === "today" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "today" })}>Today</button>
-          </div>
-          <div className="tab-group" role="presentation">
-            <span className="tab-group-label">Lesson Prep</span>
-            <button role="tab" id="tab-differentiate" aria-selected={activeTab === "differentiate"} aria-controls="panel-differentiate" tabIndex={activeTab === "differentiate" ? 0 : -1} className={`tab-btn ${activeTab === "differentiate" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "differentiate" })}>Differentiate</button>
-            <button role="tab" id="tab-language-tools" aria-selected={activeTab === "language-tools"} aria-controls="panel-language-tools" tabIndex={activeTab === "language-tools" ? 0 : -1} className={`tab-btn ${activeTab === "language-tools" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "language-tools" })}>Language Tools</button>
-          </div>
-          <div className="tab-group" role="presentation">
-            <span className="tab-group-label">Daily Ops</span>
-            <button role="tab" id="tab-tomorrow-plan" aria-selected={activeTab === "tomorrow-plan"} aria-controls="panel-tomorrow-plan" tabIndex={activeTab === "tomorrow-plan" ? 0 : -1} className={`tab-btn ${activeTab === "tomorrow-plan" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "tomorrow-plan" })}>Tomorrow Plan</button>
-            <button role="tab" id="tab-ea-briefing" aria-selected={activeTab === "ea-briefing"} aria-controls="panel-ea-briefing" tabIndex={activeTab === "ea-briefing" ? 0 : -1} className={`tab-btn ${activeTab === "ea-briefing" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "ea-briefing" })}>EA Briefing</button>
-            <button role="tab" id="tab-complexity-forecast" aria-selected={activeTab === "complexity-forecast"} aria-controls="panel-complexity-forecast" tabIndex={activeTab === "complexity-forecast" ? 0 : -1} className={`tab-btn ${activeTab === "complexity-forecast" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "complexity-forecast" })}>Forecast</button>
-            <button role="tab" id="tab-log-intervention" aria-selected={activeTab === "log-intervention"} aria-controls="panel-log-intervention" tabIndex={activeTab === "log-intervention" ? 0 : -1} className={`tab-btn ${activeTab === "log-intervention" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "log-intervention" })}>
-              Log Intervention
-              {(debtCounts["stale_followup"] ?? 0) > 0 && (
-                <span className="tab-badge">{debtCounts["stale_followup"]}</span>
-              )}
-            </button>
-            <button role="tab" id="tab-survival-packet" aria-selected={activeTab === "survival-packet"} aria-controls="panel-survival-packet" tabIndex={activeTab === "survival-packet" ? 0 : -1} className={`tab-btn ${activeTab === "survival-packet" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "survival-packet" })}>Sub Packet</button>
-          </div>
-          <div className="tab-group" role="presentation">
-            <span className="tab-group-label">Review</span>
-            <button role="tab" id="tab-family-message" aria-selected={activeTab === "family-message"} aria-controls="panel-family-message" tabIndex={activeTab === "family-message" ? 0 : -1} className={`tab-btn ${activeTab === "family-message" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "family-message" })}>
-              Family Message
-              {(debtCounts["unapproved_message"] ?? 0) > 0 && (
-                <span className="tab-badge">{debtCounts["unapproved_message"]}</span>
-              )}
-            </button>
-            <button role="tab" id="tab-support-patterns" aria-selected={activeTab === "support-patterns"} aria-controls="panel-support-patterns" tabIndex={activeTab === "support-patterns" ? 0 : -1} className={`tab-btn ${activeTab === "support-patterns" ? "tab-btn--active" : ""}`} onClick={() => dispatch({ type: "SET_ACTIVE_TAB", tab: "support-patterns" })}>
-              Support Patterns
-              {((debtCounts["unaddressed_pattern"] ?? 0) + (debtCounts["approaching_review"] ?? 0)) > 0 && (
-                <span className="tab-badge">
-                  {(debtCounts["unaddressed_pattern"] ?? 0) + (debtCounts["approaching_review"] ?? 0)}
-                </span>
-              )}
-            </button>
-          </div>
-        </nav>
-
         <main className="app-main">
-          {state.classrooms.length === 0 && !initError && (
+          {state.classrooms.length === 0 && !initError ? (
             <p className="loading-text">Loading classrooms…</p>
-          )}
-          {state.classrooms.length === 0 && initError && (
+          ) : null}
+          {state.classrooms.length === 0 && initError ? (
             <div className="error-banner">{initError}</div>
-          )}
+          ) : null}
 
-          <div role="tabpanel" id="panel-today" aria-labelledby="tab-today" hidden={activeTab !== "today"}>
-            <ErrorBoundary><TodayPanel onTabChange={(tab) => dispatch({ type: "SET_ACTIVE_TAB", tab: tab as ActiveTab })} /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-differentiate" aria-labelledby="tab-differentiate" hidden={activeTab !== "differentiate"}>
-            <ErrorBoundary><DifferentiatePanel /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-tomorrow-plan" aria-labelledby="tab-tomorrow-plan" hidden={activeTab !== "tomorrow-plan"}>
-            <ErrorBoundary><TomorrowPlanPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-family-message" aria-labelledby="tab-family-message" hidden={activeTab !== "family-message"}>
-            <ErrorBoundary><FamilyMessagePanel prefill={state.messagePrefill} /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-log-intervention" aria-labelledby="tab-log-intervention" hidden={activeTab !== "log-intervention"}>
-            <ErrorBoundary><InterventionPanel prefill={state.interventionPrefill} /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-language-tools" aria-labelledby="tab-language-tools" hidden={activeTab !== "language-tools"}>
-            <ErrorBoundary><LanguageToolsPanel /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-support-patterns" aria-labelledby="tab-support-patterns" hidden={activeTab !== "support-patterns"}>
-            <ErrorBoundary><SupportPatternsPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-ea-briefing" aria-labelledby="tab-ea-briefing" hidden={activeTab !== "ea-briefing"}>
-            <ErrorBoundary><EABriefingPanel /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-complexity-forecast" aria-labelledby="tab-complexity-forecast" hidden={activeTab !== "complexity-forecast"}>
-            <ErrorBoundary><ForecastPanel /></ErrorBoundary>
-          </div>
-          <div role="tabpanel" id="panel-survival-packet" aria-labelledby="tab-survival-packet" hidden={activeTab !== "survival-packet"}>
-            <ErrorBoundary><SurvivalPacketPanel /></ErrorBoundary>
-          </div>
+          {renderPanel(activeTab, "today", <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
+          {renderPanel(activeTab, "differentiate", <DifferentiatePanel />)}
+          {renderPanel(
+            activeTab,
+            "tomorrow-plan",
+            <TomorrowPlanPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} />,
+          )}
+          {renderPanel(activeTab, "family-message", <FamilyMessagePanel prefill={state.messagePrefill} />)}
+          {renderPanel(activeTab, "log-intervention", <InterventionPanel prefill={state.interventionPrefill} />)}
+          {renderPanel(activeTab, "language-tools", <LanguageToolsPanel />)}
+          {renderPanel(
+            activeTab,
+            "support-patterns",
+            <SupportPatternsPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} />,
+          )}
+          {renderPanel(activeTab, "ea-briefing", <EABriefingPanel />)}
+          {renderPanel(activeTab, "complexity-forecast", <ForecastPanel />)}
+          {renderPanel(activeTab, "survival-packet", <SurvivalPacketPanel />)}
         </main>
 
-        <MobileNav activeTab={activeTab} onTabChange={(tab) => dispatch({ type: "SET_ACTIVE_TAB", tab: tab as ActiveTab })} debtCounts={debtCounts} />
+        <AppFooter />
 
-        {state.showOnboarding && <OnboardingOverlay onDismiss={handleDismissOnboarding} />}
+        <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
+
+        {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
+        <ClassroomAccessDialog
+          open={Boolean(authPrompt)}
+          classroomId={authPrompt?.classroomId ?? activeClassroom}
+          message={authPrompt?.message ?? ""}
+          initialValue={authPrompt ? state.classroomAccessCodes[authPrompt.classroomId] : ""}
+          onClose={closeAuthPrompt}
+          onSubmit={handleAuthSubmit}
+        />
       </div>
     </AppContext.Provider>
   );

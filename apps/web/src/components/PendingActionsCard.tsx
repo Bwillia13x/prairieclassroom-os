@@ -1,16 +1,23 @@
+import type { ActiveTab } from "../appReducer";
+
+import type { ReactNode } from "react";
+import Sparkline from "./Sparkline";
+
 interface ActionItem {
   label: string;
   count: number;
-  targetTab: string;
-  icon: string;
+  targetTab: ActiveTab;
+  icon: ReactNode;
 }
 
 interface Props {
   items: ActionItem[];
-  onNavigate: (tab: string) => void;
+  onNavigate: (tab: ActiveTab) => void;
+  onItemClick?: (label: string) => void;
+  sparklineData?: number[];
 }
 
-export default function PendingActionsCard({ items, onNavigate }: Props) {
+export default function PendingActionsCard({ items, onNavigate, onItemClick, sparklineData }: Props) {
   const activeItems = items.filter((item) => item.count > 0);
 
   if (activeItems.length === 0) {
@@ -23,13 +30,24 @@ export default function PendingActionsCard({ items, onNavigate }: Props) {
 
   return (
     <div className="pending-actions">
-      <h3 className="pending-actions-heading">Needs Attention</h3>
+      <div className="pending-actions-header-row">
+        <h3 className="pending-actions-heading">Needs Attention</h3>
+        {sparklineData && sparklineData.length >= 3 ? (
+          <Sparkline data={sparklineData} label="Debt trend over 14 days" />
+        ) : null}
+      </div>
       <div className="pending-actions-grid motion-stagger">
         {activeItems.map((item) => (
           <button
-            key={item.targetTab}
+            key={`${item.targetTab}-${item.label}`}
             className="pending-action-card"
-            onClick={() => onNavigate(item.targetTab)}
+            onClick={() => {
+              if (onItemClick) {
+                onItemClick(item.label);
+              } else {
+                onNavigate(item.targetTab);
+              }
+            }}
             type="button"
           >
             <span className="pending-action-icon" aria-hidden="true">{item.icon}</span>
