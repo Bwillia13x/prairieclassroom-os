@@ -18,12 +18,14 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { checkpointAll } from "../memory/db.js";
 import { createAuthMiddleware } from "./auth.js";
+import { isValidClassroomId } from "./validate.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { RouteDeps } from "./route-deps.js";
 
 // ----- Middleware -----
 import { requestLogger } from "./middleware/requestLogger.js";
 import { inputSanitizer } from "./middleware/inputSanitizer.js";
+import { globalLimiter, authLimiter } from "./middleware/rateLimiter.js";
 
 // ----- Route modules -----
 import { createHealthRouter } from "./routes/health.js";
@@ -42,12 +44,17 @@ import { createHistoryRouter } from "./routes/history.js";
 import { createScaffoldDecayRouter } from "./routes/scaffold-decay.js";
 import { createSurvivalPacketRouter } from "./routes/survival-packet.js";
 import { createExtractWorksheetRouter } from "./routes/extract-worksheet.js";
+import { createClassroomHealthRouter } from "./routes/classroom-health.js";
+import { createStudentSummaryRouter } from "./routes/student-summary.js";
 
 // ----- Config -----
 
 const PORT = parseInt(process.env.PORT ?? "3100", 10);
 const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
-const DATA_DIR = resolve(import.meta.dirname ?? ".", "../../data/synthetic_classrooms");
+const DEFAULT_DATA_DIR = resolve(import.meta.dirname ?? ".", "../../data/synthetic_classrooms");
+const DATA_DIR = process.env.PRAIRIE_DATA_DIR
+  ? resolve(process.env.PRAIRIE_DATA_DIR)
+  : DEFAULT_DATA_DIR;
 
 // ----- Data loading -----
 
@@ -57,6 +64,7 @@ function loadClassrooms(): ClassroomProfile[] {
 }
 
 function loadClassroom(id: string): ClassroomProfile | undefined {
+  if (!isValidClassroomId(id)) return undefined;
   const classrooms = loadClassrooms();
   return classrooms.find((c) => c.classroom_id === id);
 }
@@ -66,27 +74,39 @@ function loadClassroom(id: string): ClassroomProfile | undefined {
 const app = express();
 app.use(cors({ origin: process.env.CORS_ORIGIN ?? "http://localhost:5173" }));
 app.use(express.json({ limit: "10mb" }));
+
+// Security headers
+app.use((_req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("X-DNS-Prefetch-Control", "off");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  next();
+});
+
 app.use(requestLogger);
 app.use(inputSanitizer);
+app.use(globalLimiter);
 
 const deps: RouteDeps = { inferenceUrl: INFERENCE_URL, dataDir: DATA_DIR, loadClassroom, loadClassrooms };
 
 // ----- Auth middleware -----
 
 const authMiddleware = createAuthMiddleware(loadClassroom);
-app.use("/api/differentiate", authMiddleware);
-app.use("/api/tomorrow-plan", authMiddleware);
-app.use("/api/family-message", authMiddleware);
-app.use("/api/intervention", authMiddleware);
-app.use("/api/simplify", authMiddleware);
-app.use("/api/vocab-cards", authMiddleware);
-app.use("/api/support-patterns", authMiddleware);
-app.use("/api/ea-briefing", authMiddleware);
-app.use("/api/complexity-forecast", authMiddleware);
-app.use("/api/debt-register", authMiddleware);
-app.use("/api/scaffold-decay", authMiddleware);
-app.use("/api/survival-packet", authMiddleware);
-app.use("/api/extract-worksheet", authMiddleware);
+app.use("/api/differentiate", authLimiter, authMiddleware);
+app.use("/api/tomorrow-plan", authLimiter, authMiddleware);
+app.use("/api/family-message", authLimiter, authMiddleware);
+app.use("/api/intervention", authLimiter, authMiddleware);
+app.use("/api/simplify", authLimiter, authMiddleware);
+app.use("/api/vocab-cards", authLimiter, authMiddleware);
+app.use("/api/support-patterns", authLimiter, authMiddleware);
+app.use("/api/ea-briefing", authLimiter, authMiddleware);
+app.use("/api/complexity-forecast", authLimiter, authMiddleware);
+app.use("/api/debt-register", authLimiter, authMiddleware);
+app.use("/api/scaffold-decay", authLimiter, authMiddleware);
+app.use("/api/survival-packet", authLimiter, authMiddleware);
+app.use("/api/extract-worksheet", authLimiter, authMiddleware);
 
 // ----- Mount routes -----
 
@@ -103,6 +123,8 @@ app.use("/api/complexity-forecast", createForecastRouter(deps));
 app.use("/api/debt-register", createDebtRegisterRouter(deps));
 app.use("/api/today", createTodayRouter(deps));
 app.use("/api/classrooms", createHistoryRouter(deps));
+app.use("/api/classrooms", createClassroomHealthRouter(deps));
+app.use("/api/classrooms", createStudentSummaryRouter(deps));
 app.use("/api/scaffold-decay", createScaffoldDecayRouter(deps));
 app.use("/api/survival-packet", createSurvivalPacketRouter(deps));
 app.use("/api/extract-worksheet", createExtractWorksheetRouter(deps));
