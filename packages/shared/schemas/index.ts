@@ -1,6 +1,22 @@
 // Barrel export for all PrairieClassroom OS shared schemas.
 // Exports both Zod schema objects (for validation) and inferred types (for type checking).
 
+export type {
+  ClassroomId,
+  StudentRef,
+  PlanId,
+  DraftId,
+  RecordId,
+} from "./branded.js";
+export {
+  classroomId,
+  studentRef,
+  planId,
+  draftId,
+  recordId,
+  unsafeCastClassroomId,
+} from "./branded.js";
+
 export {
   ClassroomProfileSchema,
   StudentSupportSummarySchema,
@@ -106,6 +122,12 @@ export type {
   DebtThresholds,
   ComplexityDebtRegister,
 } from "./debt.js";
+
+export { ClassroomHealthSchema } from "./health.js";
+export type { ClassroomHealth } from "./health.js";
+
+export { StudentSummarySchema } from "./student-summary.js";
+export type { StudentSummary } from "./student-summary.js";
 
 export {
   ScaffoldDecayReportSchema,
