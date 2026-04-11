@@ -51,6 +51,7 @@ export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChang
       </div>
 
       <button
+        type="button"
         className="btn btn--primary"
         onClick={() => onSubmit(selectedClassroom, eaName || undefined)}
         disabled={loading}

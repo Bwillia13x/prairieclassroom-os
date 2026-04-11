@@ -53,7 +53,7 @@ export default function HistoryDrawer<T>({
           {!loading && items.length === 0 && (
             <p className="history-drawer-empty">No history yet.</p>
           )}
-          <ul className="history-drawer-list">
+          <div className="history-drawer-list" role="list">
             {(() => {
               const grouped: { group: string; items: T[] }[] = [];
               let lastGroup = "";
@@ -68,10 +68,10 @@ export default function HistoryDrawer<T>({
                 }
               }
               return grouped.map((section) => (
-                <div key={section.group}>
+                <div key={section.group} role="group" aria-label={section.group}>
                   <div className="history-drawer-group-label">{section.group}</div>
                   {section.items.map((item, i) => (
-                    <li key={getKey(item)} className="history-drawer-item">
+                    <div key={getKey(item)} className="history-drawer-item" role="listitem">
                       <button
                         className="history-drawer-item-btn"
                         onClick={() => { onSelect(item); setOpen(false); }}
@@ -84,12 +84,12 @@ export default function HistoryDrawer<T>({
                           {renderItem(item, i)}
                         </span>
                       </button>
-                    </li>
+                    </div>
                   ))}
                 </div>
               ));
             })()}
-          </ul>
+          </div>
         </div>
       )}
     </div>
