@@ -1,0 +1,309 @@
+/* ── DrillDownDrawer ── */
+
+/* Backdrop — fixed overlay with blur */
+.drill-down-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Drawer panel — fixed right edge, slides in */
+.drill-down-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 91;
+  width: min(420px, 100vw);
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  box-shadow: var(--shadow-lg);
+  animation: drawer-slide-in var(--motion-base) var(--ease-standard) both;
+}
+
+@keyframes drawer-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Header — title + close button */
+.drill-down-drawer__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  gap: var(--space-3);
+  flex-shrink: 0;
+}
+
+.drill-down-drawer__title {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drill-down-drawer__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: var(--text-base);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+
+.drill-down-drawer__close:hover {
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.drill-down-drawer__close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Scrollable body */
+.drill-down-drawer__body {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-4);
+}
+
+/* ── Sub-view sections ── */
+
+.drill-down-section {
+  margin-top: var(--space-4);
+}
+
+.drill-down-section h4 {
+  margin-bottom: var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+}
+
+.drill-down-section:first-child {
+  margin-top: 0;
+}
+
+/* Record cards — interventions and messages */
+.drill-down-record {
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-muted);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.drill-down-record + .drill-down-record {
+  margin-top: var(--space-2);
+}
+
+.drill-down-record__observation {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.drill-down-record__action {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-snug);
+}
+
+.drill-down-record__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+/* Action buttons row */
+.drill-down-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+}
+
+/* Unstyled list with borders between items */
+.drill-down-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.drill-down-list li {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.drill-down-list li:last-child {
+  border-bottom: none;
+}
+
+/* Student summary stats grid */
+.drill-down-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.drill-down-stat {
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  text-align: center;
+}
+
+.drill-down-stat__value {
+  display: block;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+}
+
+.drill-down-stat__label {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: 0.15rem;
+}
+
+/* Debt item rows */
+.drill-down-debt-item {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.drill-down-debt-item:last-child {
+  border-bottom: none;
+}
+
+.drill-down-debt-item__description {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: var(--leading-snug);
+}
+
+.drill-down-debt-item__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.drill-down-debt-item__refs {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.drill-down-debt-item__age {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+/* Trend table */
+.drill-down-trend-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: var(--space-3);
+  font-size: var(--text-sm);
+}
+
+.drill-down-trend-table th {
+  text-align: left;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.drill-down-trend-table td {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.drill-down-trend-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Small button variant */
+.btn--sm {
+  min-height: 32px;
+  padding: 0.3rem 0.75rem;
+  font-size: var(--text-xs);
+}
+
+/* Empty / error states inside drawer */
+.drill-down-empty {
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  padding: var(--space-3) 0;
+  font-style: italic;
+}
+
+.drill-down-error {
+  font-size: var(--text-sm);
+  color: var(--color-text-danger);
+  padding: var(--space-2) 0;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .drill-down-drawer {
+    animation: none;
+  }
+}
+
+/* Mobile: full width at 600px */
+@media (max-width: 600px) {
+  .drill-down-drawer {
+    width: 100vw;
+  }
+}
