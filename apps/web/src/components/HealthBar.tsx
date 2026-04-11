@@ -31,7 +31,13 @@ function getOverallLabel(tone: "success" | "pending" | "warning"): string {
 }
 
 export default function HealthBar({ health, loading, pendingActionCount = 0 }: Props) {
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div className="health-bar health-bar--loading" aria-busy="true" aria-label="Loading health summary">
+        <span className="health-bar__shimmer" />
+      </div>
+    );
+  }
 
   if (!health || isZeroState(health)) {
     return (

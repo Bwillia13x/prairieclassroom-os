@@ -125,4 +125,51 @@ describe("getClassroomHealth", () => {
     expect(health.messages_total).toBe(3);
     expect(health.messages_approved).toBe(2);
   });
+
+  it("computes trend arrays with seeded data", () => {
+    const db = getDb(TEST_CLASSROOM);
+
+    // Insert a plan 3 days ago — should show up in plans_14d
+    db.prepare(`
+      INSERT INTO generated_plans (plan_id, classroom_id, plan_json, teacher_reflection, model_id, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run("plan-trend", TEST_CLASSROOM, '{"plan_id":"plan-trend"}', null, "test-model", dayOffset(3));
+
+    // Insert an unapproved message 5 days ago — should affect debt_total_14d
+    db.prepare(`
+      INSERT INTO family_messages (draft_id, classroom_id, student_refs, message_json, teacher_approved, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run("msg-trend", TEST_CLASSROOM, '["Ari"]', '{"draft_id":"msg-trend"}', 0, dayOffset(5));
+
+    // Insert a forecast 2 days ago with a high-complexity block
+    const forecastJson = JSON.stringify({
+      forecast_id: "fc-trend",
+      classroom_id: TEST_CLASSROOM,
+      blocks: [
+        { time_slot: "9:00", activity: "Math", level: "high", contributing_factors: [], suggested_mitigation: "" },
+        { time_slot: "10:00", activity: "Science", level: "low", contributing_factors: [], suggested_mitigation: "" },
+      ],
+    });
+    db.prepare(`
+      INSERT INTO complexity_forecasts (forecast_id, classroom_id, forecast_date, forecast_json, model_id, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run("fc-trend", TEST_CLASSROOM, dayOffset(2).slice(0, 10), forecastJson, "test-model", dayOffset(2));
+
+    const health = getClassroomHealth(TEST_CLASSROOM);
+
+    // plans_14d: index 11 = 3 days ago (oldest first, so index = 14-1-3 = 10... actually: index = 13 - daysAgo)
+    // Array is oldest first: index 0 = 13 days ago, index 13 = today
+    // 3 days ago = index 13 - 3 = 10
+    expect(health.trends.plans_14d[10]).toBe(1);
+    // Days without plans should be 0
+    expect(health.trends.plans_14d[13]).toBe(0); // today — no plan
+
+    // peak_complexity_14d: 2 days ago = index 11
+    expect(health.trends.peak_complexity_14d[11]).toBe(3); // high = 3
+
+    // debt_total_14d: the unapproved message from 5 days ago should appear
+    // from day 5 onward (cumulative). Index for 5 days ago = 8, for today = 13
+    // The unapproved message was created 5 days ago, so it appears in debt from that day forward
+    expect(health.trends.debt_total_14d[13]).toBeGreaterThan(0); // today should have at least 1 unapproved
+  });
 });
