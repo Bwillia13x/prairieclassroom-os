@@ -1,0 +1,119 @@
+/* ============================================================
+   Design Tokens — Shared Component Library
+   ============================================================
+   Generic semantic aliases consumed by apps/web/src/components/shared/.
+   These map to the broader Prairie palette in styles/tokens.css
+   but provide stable, component-oriented names for the shared lib.
+   ============================================================ */
+
+:root {
+  /* ---- Surfaces ---- */
+  --ds-surface:          #ffffff;
+  --ds-surface-raised:   #fafbfc;
+  --ds-surface-muted:    #f3f4f6;
+
+  /* ---- Borders ---- */
+  --ds-border:           #d1d5db;
+  --ds-border-light:     #e5e7eb;
+
+  /* ---- Text ---- */
+  --ds-text:             #111827;
+  --ds-text-secondary:   #4b5563;
+  --ds-text-muted:       #9ca3af;
+
+  /* ---- Accent ---- */
+  --ds-accent:           #2563eb;
+  --ds-accent-hover:     #1d4ed8;
+  --ds-accent-soft:      #eff6ff;
+
+  /* ---- Status: Success ---- */
+  --ds-success:          #059669;
+  --ds-success-soft:     #ecfdf5;
+
+  /* ---- Status: Warning ---- */
+  --ds-warning:          #d97706;
+  --ds-warning-soft:     #fffbeb;
+
+  /* ---- Status: Danger ---- */
+  --ds-danger:           #dc2626;
+  --ds-danger-soft:      #fef2f2;
+
+  /* ---- Status: Info ---- */
+  --ds-info:             #0891b2;
+  --ds-info-soft:        #ecfeff;
+
+  /* ---- Spacing (4px base) ---- */
+  --ds-space-1:   0.25rem;   /*  4px */
+  --ds-space-2:   0.5rem;    /*  8px */
+  --ds-space-3:   0.75rem;   /* 12px */
+  --ds-space-4:   1rem;      /* 16px */
+  --ds-space-5:   1.25rem;   /* 20px */
+  --ds-space-6:   1.5rem;    /* 24px */
+  --ds-space-7:   1.75rem;   /* 28px */
+  --ds-space-8:   2rem;      /* 32px */
+  --ds-space-9:   2.25rem;   /* 36px */
+  --ds-space-10:  2.5rem;    /* 40px */
+  --ds-space-11:  2.75rem;   /* 44px */
+  --ds-space-12:  3rem;      /* 48px */
+
+  /* ---- Type scale ---- */
+  --ds-text-xs:    0.75rem;
+  --ds-text-sm:    0.875rem;
+  --ds-text-base:  1rem;
+  --ds-text-lg:    1.125rem;
+  --ds-text-xl:    1.25rem;
+  --ds-text-2xl:   1.5rem;
+
+  /* ---- Font families ---- */
+  --ds-font-sans:  system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --ds-font-mono:  ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  /* ---- Radii ---- */
+  --ds-radius-sm:   0.25rem;
+  --ds-radius-md:   0.5rem;
+  --ds-radius-lg:   0.75rem;
+  --ds-radius-full: 9999px;
+
+  /* ---- Shadows ---- */
+  --ds-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
+  --ds-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --ds-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+
+  /* ---- Transitions ---- */
+  --ds-transition-fast:   150ms ease;
+  --ds-transition-normal: 250ms ease;
+}
+
+/* ---- Dark mode overrides ---- */
+[data-theme="dark"] {
+  --ds-surface:          #111827;
+  --ds-surface-raised:   #1f2937;
+  --ds-surface-muted:    #374151;
+
+  --ds-border:           #4b5563;
+  --ds-border-light:     #374151;
+
+  --ds-text:             #f9fafb;
+  --ds-text-secondary:   #d1d5db;
+  --ds-text-muted:       #6b7280;
+
+  --ds-accent:           #60a5fa;
+  --ds-accent-hover:     #3b82f6;
+  --ds-accent-soft:      #1e3a5f;
+
+  --ds-success:          #34d399;
+  --ds-success-soft:     #064e3b;
+
+  --ds-warning:          #fbbf24;
+  --ds-warning-soft:     #78350f;
+
+  --ds-danger:           #f87171;
+  --ds-danger-soft:      #7f1d1d;
+
+  --ds-info:             #22d3ee;
+  --ds-info-soft:        #164e63;
+
+  --ds-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.3);
+  --ds-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
+  --ds-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+}
