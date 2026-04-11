@@ -421,6 +421,37 @@
   font-variant-numeric: tabular-nums;
 }
 
+.shell-nav__kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0 0.25rem;
+  margin-left: 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  background: var(--color-bg-muted);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.6rem;
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+.shell-nav__tabs:hover .shell-nav__kbd,
+.shell-nav__tab:focus-visible .shell-nav__kbd {
+  opacity: 1;
+}
+
+@media (max-width: 600px) {
+  .shell-nav__kbd {
+    display: none;
+  }
+}
+
 .app-main {
   display: flex;
   flex-direction: column;

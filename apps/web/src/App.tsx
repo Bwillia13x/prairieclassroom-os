@@ -4,6 +4,7 @@ import {
   appReducer,
   createInitialState,
   getGroupForTab,
+  getTabBadgeCount,
   getTabsForGroup,
   NAV_GROUP_META,
   NAV_GROUP_ORDER,
@@ -44,19 +45,6 @@ function describeClassroom(classroom: ClassroomProfile) {
   return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
 }
 
-function getTabBadgeCount(tab: ActiveTab, debtCounts: Record<string, number>) {
-  switch (tab) {
-    case "family-message":
-      return debtCounts.unapproved_message ?? 0;
-    case "log-intervention":
-      return debtCounts.stale_followup ?? 0;
-    case "support-patterns":
-      return (debtCounts.unaddressed_pattern ?? 0) + (debtCounts.approaching_review ?? 0);
-    default:
-      return 0;
-  }
-}
-
 function LockIcon({ locked }: { locked: boolean }) {
   return (
     <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
@@ -79,8 +67,10 @@ function LockIcon({ locked }: { locked: boolean }) {
 function renderPanel(
   activeTab: ActiveTab,
   targetTab: ActiveTab,
+  mountedTabs: Set<ActiveTab>,
   panel: ReactNode,
 ) {
+  if (!mountedTabs.has(targetTab)) return null;
   return (
     <div
       role="tabpanel"
@@ -100,6 +90,12 @@ export default function App() {
   const classroomCodesRef = useRef(state.classroomAccessCodes);
   const classroomMenuRef = useRef<HTMLDivElement>(null);
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
+  const [mountedTabs, setMountedTabs] = useState<Set<ActiveTab>>(() => {
+    const initial = new Set<ActiveTab>([state.activeTab]);
+    const urlTab = new URLSearchParams(window.location.search).get("tab");
+    if (urlTab && urlTab in TAB_META) initial.add(urlTab as ActiveTab);
+    return initial;
+  });
 
   useEffect(() => {
     classroomsRef.current = state.classrooms;
@@ -317,11 +313,34 @@ export default function App() {
     window.history.replaceState({}, "", nextUrl);
   }, [state.activeClassroom, state.activeTab, state.classrooms]);
 
-  // Scroll to top of main content on tab change
+  // Lazily mount panels on first activation
   useEffect(() => {
-    const main = document.querySelector(".app-main");
-    if (main) {
-      main.scrollIntoView({ behavior: "instant", block: "start" });
+    setMountedTabs((prev) => {
+      if (prev.has(state.activeTab)) return prev;
+      const next = new Set(prev);
+      next.add(state.activeTab);
+      return next;
+    });
+  }, [state.activeTab]);
+
+  // Save scroll position before tab switch and restore on return
+  const prevTabRef = useRef(state.activeTab);
+  useEffect(() => {
+    const prev = prevTabRef.current;
+    if (prev !== state.activeTab) {
+      sessionStorage.setItem(`prairie-scroll-${prev}`, String(window.scrollY));
+    }
+    prevTabRef.current = state.activeTab;
+
+    const saved = sessionStorage.getItem(`prairie-scroll-${state.activeTab}`);
+    if (saved) {
+      window.scrollTo(0, parseInt(saved, 10));
+      sessionStorage.removeItem(`prairie-scroll-${state.activeTab}`);
+    } else {
+      const main = document.querySelector(".app-main");
+      if (main) {
+        main.scrollIntoView({ behavior: "instant", block: "start" });
+      }
     }
   }, [state.activeTab]);
 
@@ -412,6 +431,9 @@ export default function App() {
   return (
     <AppContext.Provider value={ctxValue}>
       <div className="app-shell">
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <ToastQueue />
 
         <header className="app-header">
@@ -453,9 +475,6 @@ export default function App() {
                   <div
                     id="shell-classroom-panel"
                     className="shell-classroom-panel"
-                    role="dialog"
-                    aria-modal="false"
-                    aria-label="Switch classroom"
                   >
                     <div className="field shell-classroom-field">
                       <label htmlFor="shell-classroom">Switch classroom</label>
@@ -542,6 +561,8 @@ export default function App() {
                   <div className="shell-nav__tabs" role="tablist" aria-label={`${activeGroupMeta.label} tools`}>
                     {secondaryTabs.map((tab) => {
                       const count = getTabBadgeCount(tab, debtCounts);
+                      const tabIndex1Based = TAB_ORDER.indexOf(tab) + 1;
+                      const shortcutKey = tabIndex1Based <= 9 ? String(tabIndex1Based) : "0";
                       return (
                         <button
                           key={tab}
@@ -556,6 +577,7 @@ export default function App() {
                         >
                           <span>{TAB_META[tab].label}</span>
                           {count > 0 ? <span className="shell-nav__badge">{count}</span> : null}
+                          <kbd className="shell-nav__kbd" aria-hidden="true">{shortcutKey}</kbd>
                         </button>
                       );
                     })}
@@ -566,32 +588,48 @@ export default function App() {
           </div>
         </header>
 
-        <main className="app-main">
+        <main id="main-content" className="app-main">
           {state.classrooms.length === 0 && !initError ? (
-            <p className="loading-text">Loading classrooms…</p>
+            <div className="branded-loading">
+              <svg className="branded-loading__mark" viewBox="0 0 40 24" aria-hidden="true" fill="none">
+                <path d="M0 18 Q5 10 10 14 Q14 6 18 12 Q22 4 26 10 Q30 6 34 12 Q37 8 40 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
+                <line x1="0" y1="20" x2="40" y2="20" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
+                <circle cx="10" cy="8" r="3" fill="currentColor" opacity="0.2" />
+              </svg>
+              <div className="skeleton-stack">
+                <div className="skeleton-card">
+                  <div className="skeleton-line skeleton-line--medium" />
+                  <div className="skeleton-line skeleton-line--long" />
+                  <div className="skeleton-line skeleton-line--short" />
+                </div>
+              </div>
+              <p className="loading-text">Loading classrooms…</p>
+            </div>
           ) : null}
           {state.classrooms.length === 0 && initError ? (
             <div className="error-banner">{initError}</div>
           ) : null}
 
-          {renderPanel(activeTab, "today", <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
-          {renderPanel(activeTab, "differentiate", <DifferentiatePanel />)}
+          {renderPanel(activeTab, "today", mountedTabs, <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
+          {renderPanel(activeTab, "differentiate", mountedTabs, <DifferentiatePanel />)}
           {renderPanel(
             activeTab,
             "tomorrow-plan",
+            mountedTabs,
             <TomorrowPlanPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} />,
           )}
-          {renderPanel(activeTab, "family-message", <FamilyMessagePanel prefill={state.messagePrefill} />)}
-          {renderPanel(activeTab, "log-intervention", <InterventionPanel prefill={state.interventionPrefill} />)}
-          {renderPanel(activeTab, "language-tools", <LanguageToolsPanel />)}
+          {renderPanel(activeTab, "family-message", mountedTabs, <FamilyMessagePanel prefill={state.messagePrefill} />)}
+          {renderPanel(activeTab, "log-intervention", mountedTabs, <InterventionPanel prefill={state.interventionPrefill} />)}
+          {renderPanel(activeTab, "language-tools", mountedTabs, <LanguageToolsPanel />)}
           {renderPanel(
             activeTab,
             "support-patterns",
+            mountedTabs,
             <SupportPatternsPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} />,
           )}
-          {renderPanel(activeTab, "ea-briefing", <EABriefingPanel />)}
-          {renderPanel(activeTab, "complexity-forecast", <ForecastPanel />)}
-          {renderPanel(activeTab, "survival-packet", <SurvivalPacketPanel />)}
+          {renderPanel(activeTab, "ea-briefing", mountedTabs, <EABriefingPanel />)}
+          {renderPanel(activeTab, "complexity-forecast", mountedTabs, <ForecastPanel />)}
+          {renderPanel(activeTab, "survival-packet", mountedTabs, <SurvivalPacketPanel />)}
         </main>
 
         <AppFooter />
