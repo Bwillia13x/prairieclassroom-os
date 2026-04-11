@@ -4,18 +4,7 @@ import type { ClassroomId } from "../../packages/shared/schemas/branded.js";
 import type { StudentSummary } from "../../packages/shared/schemas/student-summary.js";
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
-
-function safeParseJson<T>(raw: string, label: string): T | null {
-  try {
-    return JSON.parse(raw) as T;
-  } catch (err) {
-    console.warn(
-      `Corrupt ${label} record skipped:`,
-      err instanceof Error ? err.message : err,
-    );
-    return null;
-  }
-}
+import { safeParseJson } from "./json-utils.js";
 
 /**
  * Compute the number of whole calendar days between the midnight-UTC of a

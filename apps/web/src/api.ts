@@ -384,9 +384,9 @@ export async function fetchStudentSummary(
   studentRef?: string,
   signal?: AbortSignal,
 ): Promise<StudentSummary[]> {
-  const studentParam = studentRef ? `&student=${encodeURIComponent(studentRef)}` : "";
+  const studentParam = studentRef ? `?student=${encodeURIComponent(studentRef)}` : "";
   const data = await requestJson<{ summaries: StudentSummary[] }>(
-    `/classrooms/${encodeURIComponent(classroomId)}/student-summary?_=1${studentParam}`,
+    `/classrooms/${encodeURIComponent(classroomId)}/student-summary${studentParam}`,
     { classroomId, signal },
   );
   return data.summaries;

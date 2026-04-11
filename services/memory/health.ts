@@ -2,15 +2,7 @@
 import { getDb } from "./db.js";
 import type { ClassroomId } from "../../packages/shared/schemas/branded.js";
 import type { ClassroomHealth } from "../../packages/shared/schemas/health.js";
-
-function safeParseJson<T>(raw: string, label: string): T | null {
-  try {
-    return JSON.parse(raw) as T;
-  } catch (err) {
-    console.warn(`Corrupt ${label} record skipped:`, err instanceof Error ? err.message : err);
-    return null;
-  }
-}
+import { safeParseJson } from "./json-utils.js";
 
 /**
  * Return the start-of-day (midnight UTC) ISO string for a date that is

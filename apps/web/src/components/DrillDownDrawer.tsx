@@ -1,5 +1,6 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useApp } from "../AppContext";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import { useAsyncAction } from "../useAsyncAction";
 import {
   fetchInterventionHistoryForStudent,
@@ -142,7 +143,7 @@ function StudentDetailView({
           </div>
 
           {initialData.latest_priority_reason && (
-            <div style={{ marginTop: "var(--space-3)" }}>
+            <div className="drill-down-priority-chip">
               <StatusChip
                 label={initialData.latest_priority_reason}
                 tone="warning"
@@ -275,7 +276,7 @@ function ForecastBlockView({ block }: ForecastBlockViewProps) {
 
   return (
     <>
-      <div style={{ marginBottom: "var(--space-3)" }}>
+      <div className="drill-down-level-chip">
         <StatusChip label={block.level} tone={tone} />
       </div>
 
@@ -293,13 +294,7 @@ function ForecastBlockView({ block }: ForecastBlockViewProps) {
       {block.suggested_mitigation && (
         <div className="drill-down-section">
           <h4>Suggested mitigation</h4>
-          <p
-            style={{
-              fontSize: "var(--text-sm)",
-              color: "var(--color-text)",
-              lineHeight: "var(--leading-base)",
-            }}
-          >
+          <p className="drill-down-mitigation-text">
             {block.suggested_mitigation}
           </p>
         </div>
@@ -359,7 +354,6 @@ function DebtCategoryView({
                   type="button"
                   className="btn btn--ghost btn--sm"
                   onClick={handleLogFollowUp}
-                  style={{ marginLeft: "auto" }}
                 >
                   Log follow-up
                 </button>
@@ -391,13 +385,7 @@ function TrendDetailView({ context }: TrendViewProps) {
 
   return (
     <>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          padding: "var(--space-3) 0",
-        }}
-      >
+      <div className="drill-down-trend-chart">
         <Sparkline
           data={data}
           width={340}
@@ -444,14 +432,10 @@ export default function DrillDownDrawer({
   onMessagePrefill,
 }: Props) {
   const { activeClassroom } = useApp();
+  const drawerRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-  // Focus close button on open
-  useEffect(() => {
-    if (context) {
-      closeBtnRef.current?.focus();
-    }
-  }, [context]);
+  useFocusTrap(drawerRef, context !== null);
 
   // Escape key to close
   useEffect(() => {
@@ -482,6 +466,7 @@ export default function DrillDownDrawer({
 
       {/* Drawer */}
       <div
+        ref={drawerRef}
         className="drill-down-drawer"
         role="dialog"
         aria-modal="true"

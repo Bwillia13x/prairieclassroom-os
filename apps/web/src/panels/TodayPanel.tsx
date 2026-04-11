@@ -72,7 +72,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
       {result ? (
         <div className="today-grid motion-stagger">
-          <HealthBar health={health.result ?? null} loading={health.loading} />
+          <HealthBar health={health.result ?? null} loading={health.loading} pendingActionCount={result.debt_register.items.length} />
 
           <PendingActionsCard
             items={[

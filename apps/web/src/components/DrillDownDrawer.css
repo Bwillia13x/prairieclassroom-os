@@ -294,6 +294,30 @@
   padding: var(--space-2) 0;
 }
 
+.drill-down-priority-chip {
+  margin-top: var(--space-3);
+}
+
+.drill-down-level-chip {
+  margin-bottom: var(--space-3);
+}
+
+.drill-down-mitigation-text {
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: 1.6;
+}
+
+.drill-down-debt-item__meta .btn {
+  margin-left: auto;
+}
+
+.drill-down-trend-chart {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-3) 0;
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .drill-down-drawer {

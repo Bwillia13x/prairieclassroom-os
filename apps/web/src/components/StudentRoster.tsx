@@ -51,18 +51,10 @@ function StudentCard({ student, onDrillDown }: StudentCardProps) {
     });
   }
 
-  function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      handleClick();
-    }
-  }
-
   return (
     <button
       className={`student-card${hasAttention ? " student-card--attention" : ""}`}
       onClick={handleClick}
-      onKeyDown={handleKeyDown}
       aria-label={`View ${student.alias}${hasAttention ? `, ${student.pending_action_count} pending action${student.pending_action_count !== 1 ? "s" : ""}` : ""}`}
       type="button"
     >

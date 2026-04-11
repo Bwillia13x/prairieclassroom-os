@@ -4,6 +4,12 @@ import { createAuthMiddleware } from "../auth.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 
+function parseStudentRef(query: unknown): string | undefined {
+  if (typeof query !== "string") return undefined;
+  if (query.length > 100) return undefined;
+  return query;
+}
+
 export function createHistoryRouter(deps: RouteDeps): Router {
   const router = Router();
   const authMiddleware = createAuthMiddleware(deps.loadClassroom);
@@ -24,7 +30,7 @@ export function createHistoryRouter(deps: RouteDeps): Router {
     try {
       const classroomId = req.params.id as ClassroomId;
       const limit = Math.min(parseInt(req.query.limit as string) || 10, 50);
-      const studentRef = typeof req.query.student === "string" ? req.query.student : undefined;
+      const studentRef = parseStudentRef(req.query.student);
       const messages = getRecentMessages(classroomId, limit, studentRef);
       res.json({ messages });
     } catch (err) {
@@ -37,7 +43,7 @@ export function createHistoryRouter(deps: RouteDeps): Router {
     try {
       const classroomId = req.params.id as ClassroomId;
       const limit = Math.min(parseInt(req.query.limit as string) || 20, 50);
-      const studentRef = typeof req.query.student === "string" ? req.query.student : undefined;
+      const studentRef = parseStudentRef(req.query.student);
       const interventions = getRecentInterventions(classroomId, limit, studentRef);
       res.json({ interventions });
     } catch (err) {

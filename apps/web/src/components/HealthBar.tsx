@@ -5,6 +5,7 @@ import "./HealthBar.css";
 interface Props {
   health: ClassroomHealth | null;
   loading: boolean;
+  pendingActionCount?: number;
 }
 
 function isZeroState(health: ClassroomHealth): boolean {
@@ -15,13 +16,11 @@ function isZeroState(health: ClassroomHealth): boolean {
   );
 }
 
-function getOverallTone(health: ClassroomHealth): "success" | "pending" | "warning" {
-  const todayDebt = 0; // debt is contextual; use messages_approved vs total as proxy
-  const planToday = health.plans_last_7[health.plans_last_7.length - 1] ?? false;
-  const highDebt = health.messages_total > 0 && health.messages_approved < health.messages_total * 0.5;
+function getOverallTone(health: ClassroomHealth, pendingActionCount: number): "success" | "pending" | "warning" {
+  const planToday = health.plans_last_7[0] ?? false;
 
-  if (highDebt) return "warning";
-  if (todayDebt === 0 && health.streak_days >= 2 && planToday) return "success";
+  if (pendingActionCount > 3) return "warning";
+  if (pendingActionCount === 0 && health.streak_days >= 2 && planToday) return "success";
   return "pending";
 }
 
@@ -31,7 +30,7 @@ function getOverallLabel(tone: "success" | "pending" | "warning"): string {
   return "Catching up";
 }
 
-export default function HealthBar({ health, loading }: Props) {
+export default function HealthBar({ health, loading, pendingActionCount = 0 }: Props) {
   if (loading) return null;
 
   if (!health || isZeroState(health)) {
@@ -47,7 +46,7 @@ export default function HealthBar({ health, loading }: Props) {
 
   const streak = Math.min(health.streak_days, 30);
   const plannedCount = health.plans_last_7.filter(Boolean).length;
-  const overallTone = getOverallTone(health);
+  const overallTone = getOverallTone(health, pendingActionCount);
   const overallLabel = getOverallLabel(overallTone);
 
   return (

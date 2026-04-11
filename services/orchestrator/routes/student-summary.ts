@@ -17,7 +17,8 @@ export function createStudentSummaryRouter(deps: RouteDeps): Router {
         return;
       }
 
-      const studentFilter = typeof req.query.student === "string" ? req.query.student : undefined;
+      const raw = req.query.student;
+      const studentFilter = typeof raw === "string" && raw.length <= 100 ? raw : undefined;
       const students = studentFilter
         ? classroom.students.filter((s) => s.alias === studentFilter)
         : classroom.students;

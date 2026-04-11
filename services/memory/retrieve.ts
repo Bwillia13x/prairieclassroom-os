@@ -10,15 +10,7 @@ import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.j
 import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
 import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
-
-function safeParseJson<T>(raw: string, label: string): T | null {
-  try {
-    return JSON.parse(raw) as T;
-  } catch (err) {
-    console.warn(`Corrupt ${label} record skipped:`, err instanceof Error ? err.message : err);
-    return null;
-  }
-}
+import { safeParseJson } from "./json-utils.js";
 
 export function getRecentPlans(classroomId: ClassroomId, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
