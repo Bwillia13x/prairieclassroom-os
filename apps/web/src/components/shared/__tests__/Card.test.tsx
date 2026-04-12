@@ -67,4 +67,31 @@ describe("Card", () => {
     const card = screen.getByText("x").closest(".card");
     expect(card?.className).toContain("custom-extra");
   });
+
+  it("adds role=button and tabIndex when as=div is forced with interactive+onClick", () => {
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+    render(
+      <Card as="div" interactive onClick={() => {}}>
+        forced-div
+      </Card>,
+    );
+    const el = screen.getByText("forced-div");
+    expect(el.tagName).toBe("DIV");
+    expect(el).toHaveAttribute("role", "button");
+    expect(el).toHaveAttribute("tabindex", "0");
+    expect(warnSpy).toHaveBeenCalled();
+    warnSpy.mockRestore();
+  });
+
+  it("does not add role or tabIndex when interactive but no onClick", () => {
+    render(
+      <Card interactive>
+        no-handler
+      </Card>,
+    );
+    const el = screen.getByText("no-handler").closest(".card");
+    expect(el?.tagName).toBe("DIV");
+    expect(el).not.toHaveAttribute("role");
+    expect(el).not.toHaveAttribute("tabindex");
+  });
 });

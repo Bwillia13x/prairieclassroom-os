@@ -117,6 +117,8 @@
 .card--tone-sage.card--accent::before        { background: var(--color-border-sage); }
 .card--tone-slate.card--accent::before       { background: var(--color-border-slate); }
 .card--tone-forest.card--accent::before      { background: var(--color-border-forest); }
+.card--tone-analysis.card--accent::before    { background: var(--color-analysis); }
+.card--tone-provenance.card--accent::before  { background: var(--color-provenance); }
 
 /* Interactive affordance */
 

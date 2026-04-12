@@ -77,8 +77,24 @@ function Card({
     );
   }
 
+  // Escape hatch: caller forced as="div"/"article"/"section" but still wants
+  // an interactive click target (we already returned early for the button
+  // branch). Provide minimum a11y (role + tabIndex) and warn in dev — full
+  // keyboard handling is the caller's responsibility.
+  const isEscapeHatch = interactive && !!onClick;
+  if (isEscapeHatch && process.env.NODE_ENV !== "production") {
+    console.warn(
+      `[Card] interactive + onClick with as="${Component}" — adding role=button and tabIndex=0, but you must wire your own keyboard handler (Enter/Space).`,
+    );
+  }
+
   return (
-    <Component className={classes} onClick={onClick}>
+    <Component
+      className={classes}
+      onClick={onClick}
+      role={isEscapeHatch ? "button" : undefined}
+      tabIndex={isEscapeHatch ? 0 : undefined}
+    >
       {children}
     </Component>
   );
