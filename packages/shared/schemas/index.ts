@@ -162,3 +162,37 @@ export type {
   FamilyCommsEntry,
   ComplexityPeak,
 } from "./survival-packet.js";
+
+export {
+  ExtractWorksheetRequestSchema,
+  ExtractWorksheetResponseSchema,
+} from "./extract-worksheet.js";
+export type {
+  ExtractWorksheetRequest,
+  ExtractWorksheetResponse,
+} from "./extract-worksheet.js";
+
+export {
+  PANEL_IDS,
+  FeedbackRequestSchema,
+  FeedbackResponseSchema,
+  FeedbackSummarySchema,
+} from "./feedback.js";
+export type {
+  FeedbackRequest,
+  FeedbackResponse,
+  FeedbackSummary,
+} from "./feedback.js";
+
+export {
+  GenerationEventSchema,
+  SessionRequestSchema,
+  SessionResponseSchema,
+  SessionSummarySchema,
+} from "./session.js";
+export type {
+  GenerationEvent,
+  SessionRequest,
+  SessionResponse,
+  SessionSummary,
+} from "./session.js";
