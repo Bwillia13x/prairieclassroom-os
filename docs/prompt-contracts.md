@@ -327,3 +327,66 @@ One-click generation of a structured substitute teacher briefing that synthesize
 
 ### Pre-authorization gate
 The classroom's `sub_ready` field must be `true`. Returns 403 if not set. This ensures the teacher has explicitly opted into sharing classroom memory with a substitute.
+
+---
+
+## Non-model API surfaces: Feedback and Sessions
+
+These routes are deterministic (no model call) and support the Usage Insights panel and evidence portfolio.
+
+### L. Submit Feedback
+
+**Route:** `POST /api/feedback`
+**Model:** none (deterministic persistence)
+
+**Input:**
+- `classroom_id` (required)
+- `panel_id` (required) — which panel the output was generated in
+- `prompt_class` (optional) — which prompt class produced the output
+- `rating` (required) — numeric rating
+- `comment` (optional) — free-text teacher comment
+- `generation_id` (optional) — links to a specific generation
+- `session_id` (optional) — links to the current session
+
+**Output:**
+- `id` — persisted feedback record ID
+- `created_at` — timestamp
+
+### M. Feedback Summary
+
+**Route:** `GET /api/feedback/summary/:classroomId`
+**Model:** none (deterministic aggregation)
+
+**Output:**
+- `total` — total feedback count
+- `by_panel` — per-panel breakdown (count, avg_rating, recent_comments)
+- `by_week` — weekly aggregation (week label, count, avg_rating)
+- `top_comments` — recent comments with panel and rating context
+
+### N. Submit Session
+
+**Route:** `POST /api/sessions`
+**Model:** none (deterministic persistence)
+
+**Input:**
+- `classroom_id` (required)
+- `session_id` (required)
+- `started_at` / `ended_at` (required) — ISO timestamps
+- `panels_visited` (required) — ordered list of panel IDs
+- `generations_triggered` (required) — list of { panel_id, prompt_class, timestamp }
+- `feedback_count` (required)
+
+**Output:**
+- `id` — persisted session record ID
+
+### O. Session Summary
+
+**Route:** `GET /api/sessions/summary/:classroomId`
+**Model:** none (deterministic aggregation)
+
+**Output:**
+- `total_sessions` — session count
+- `avg_duration_minutes` — average session length
+- `common_flows` — most frequent panel visit sequences with counts
+- `panel_time_distribution` — time spent per panel (estimated from visit order)
+- `generations_per_session` — average generation count

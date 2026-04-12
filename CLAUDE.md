@@ -23,7 +23,7 @@ As of 2026-04-10, the practical state of the repo is:
 - The hosted Gemini hackathon proof lane passes on synthetic/demo data via `npm run release:gate:gemini`.
 - The Ollama privacy-first live-model lane is implemented, but this host is currently blocked because Ollama is unavailable and the required Gemma 4 models are not present.
 - The paid Vertex lane exists, but it is intentionally gated behind `PRAIRIE_ALLOW_PAID_SERVICES=true` and is not part of the default no-cost proof story.
-- The repo has 12 model-routed prompt classes, a real web UI with 10 teacher-facing panels, 99 eval cases, and 595 unit tests across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
+- The repo has 12 model-routed prompt classes, a real web UI with 11 teacher-facing panels, 99 eval cases, and 595 unit tests across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
 - The web shell supports grouped `Today / Prep / Ops / Review` navigation, URL-backed `tab` and `classroom` state, and a classroom-code prompt that retries protected reads and writes from the UI.
 - Security hardened: classroomId path traversal validation, rate limiting (global + per-classroom auth), security headers, safe JSON deserialization, atomic schedule writes, prompt injection detection.
 - Documentation current: `docs/architecture.md` rewritten to match the implemented system, reference docs for database schema, classroom profiles, and eval inventory.
@@ -80,6 +80,10 @@ Hosted Gemini runs are synthetic/demo only. Do not use real classroom or student
 - `GET /api/classrooms/:id/student-summary`
 - history endpoints under `GET /api/classrooms/:id/{plans,messages,interventions,patterns}`
 - latest report endpoints: `GET /api/support-patterns/latest/:classroomId`, `GET /api/complexity-forecast/latest/:classroomId`, `GET /api/scaffold-decay/latest/:classroomId/:studentRef`
+- `POST /api/feedback` — submit output feedback (rating, comment, panel, generation)
+- `GET /api/feedback/summary/:classroomId` — aggregated feedback summary (by panel, by week)
+- `POST /api/sessions` — submit session tracking data (panels visited, generations triggered)
+- `GET /api/sessions/summary/:classroomId` — aggregated session summary (flows, duration, generation rate)
 
 ### Primary UI panels
 
@@ -93,6 +97,7 @@ Hosted Gemini runs are synthetic/demo only. Do not use real classroom or student
 - Sub Packet
 - Family Message
 - Support Patterns
+- Usage Insights
 
 `extract_worksheet` exists as a backend capability and is used by the web upload components, but it is not a top-level nav tab.
 
@@ -152,6 +157,8 @@ If you change env expectations, update `.env.example`, `README.md`, and any affe
 - host preflight artifacts: `output/host-preflight/`
 - request logs: `output/request-logs/`
 - eval outputs: `output/evals/`
+- evidence reports: `docs/evidence/`
+- evidence snapshots: `output/evidence-snapshots/`
 
 ## Supported Inference Lanes
 
@@ -223,6 +230,7 @@ No meaningful change is done until you run the checks that fit the change:
 - inference Python change: `npm run test:python`
 - end-to-end behavior or release hardening: `npm run release:gate`
 - hosted proof maintenance: `npm run proof:check`, `npm run gemini:readycheck`, then `npm run release:gate:gemini`
+- evidence portfolio refresh: `npm run evidence:generate`
 
 Prefer the cheapest validation that actually covers the risk, but do not skip the release gate when touching cross-service behavior, run scripts, or operator paths.
 
