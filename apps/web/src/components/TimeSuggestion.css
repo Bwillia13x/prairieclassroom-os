@@ -106,7 +106,7 @@
   background: var(--color-accent);
   color: var(--color-text-on-accent);
   border-color: var(--color-accent);
-  box-shadow: 0 8px 16px rgba(184, 131, 49, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .time-suggestion-btn--primary:hover {
