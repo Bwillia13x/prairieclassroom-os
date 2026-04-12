@@ -1,10 +1,6 @@
-/* ArtifactUpload */
-.artifact-upload {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
+/* ArtifactUpload — surface owned by Card; layout-only rules here */
+.artifact-upload__form {
+  display: contents;
 }
 
 .artifact-upload h2 {

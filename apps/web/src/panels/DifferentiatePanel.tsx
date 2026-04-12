@@ -14,7 +14,7 @@ import DifferentiateEmptyState from "../components/DifferentiateEmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import OutputMetaRow from "../components/OutputMetaRow";
 import ResultBanner from "../components/ResultBanner";
-import { FeedbackCollector } from "../components/shared";
+import { Card, FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import type { LessonArtifact, DifferentiateResponse } from "../types";
 
@@ -113,19 +113,21 @@ export default function DifferentiatePanel() {
                   label={`${result.variants.length} variants generated`}
                   generatedAt={Date.now()}
                 />
-                <div className="surface-panel surface-panel--padded">
-                  <h3 className="form-panel-title">{artifactTitle || "Latest artifact"}</h3>
-                  <p className="panel-description">
-                    {result.variants.length} variants generated across readiness, chunking, extension, and language-support lanes.
-                  </p>
-                  <OutputMetaRow
-                    items={[
-                      { label: profile ? describeSource(profile.grade_band) : "Classroom-linked", tone: "accent" },
-                      { label: "Retrieval-backed profiles", tone: "provenance" },
-                      { label: "Differentiation suite", tone: "analysis" },
-                    ]}
-                  />
-                </div>
+                <Card variant="raised" tone="sage" className="differentiate-result-summary">
+                  <Card.Body>
+                    <h3 className="form-panel-title">{artifactTitle || "Latest artifact"}</h3>
+                    <p className="panel-description">
+                      {result.variants.length} variants generated across readiness, chunking, extension, and language-support lanes.
+                    </p>
+                    <OutputMetaRow
+                      items={[
+                        { label: profile ? describeSource(profile.grade_band) : "Classroom-linked", tone: "accent" },
+                        { label: "Retrieval-backed profiles", tone: "provenance" },
+                        { label: "Differentiation suite", tone: "analysis" },
+                      ]}
+                    />
+                  </Card.Body>
+                </Card>
                 <VariantGrid artifactTitle={artifactTitle} variants={result.variants} />
                 <OutputFeedback outputId={`diff-${resultKey}`} outputType="differentiate" />
                 <FeedbackCollector
