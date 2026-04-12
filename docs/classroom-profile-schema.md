@@ -27,6 +27,7 @@ The top-level object representing a single classroom.
 | `sub_ready` | boolean | Optional | Whether the classroom has enough data for a survival packet to be generated. Default: `false`. |
 | `schedule` | ScheduleBlock[] | Optional | Daily schedule blocks (see below). Used by forecast, EA briefing, and today panel. |
 | `upcoming_events` | UpcomingEvent[] | Optional | Known upcoming events that may affect classroom complexity. Used by forecast prompt. |
+| `retention_policy` | RetentionPolicy | Optional | Per-classroom data-retention governance contract (see below). Read by `npm run memory:admin -- prune`. Omit for open-ended retention. |
 
 ## StudentSupportSummary
 
@@ -64,6 +65,29 @@ Each entry in `upcoming_events` describes a known event that may affect classroo
 | `event_date` | string | Optional | Date of the event (ISO 8601 or human-readable). |
 | `time_slot` | string | Optional | Time range if the event occupies a specific block. |
 | `impacts` | string | Optional | Description of how this event affects the classroom. Example: `"No EA available, routine disrupted"` |
+
+## RetentionPolicy
+
+The optional `retention_policy` field declares how long time-series classroom memory is kept. It is consumed by `npm run memory:admin -- prune --classroom <id> --confirm`, which deletes rows older than the configured window from every retention-eligible table and writes a tombstone audit artifact to `output/memory-admin/`.
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `default_days` | integer \| null | Optional | Default retention window in days applied to every retention-eligible table. Must be a positive integer when present. `null` or omitted means that table keeps records indefinitely unless overridden. |
+| `overrides` | Record<string, integer> | Optional | Per-table retention overrides, keyed by table name. Any specified table uses this window instead of `default_days`. Valid keys are `generated_plans`, `generated_variants`, `family_messages`, `interventions`, `pattern_reports`, `complexity_forecasts`, `scaffold_reviews`, `survival_packets`, `feedback`, `sessions`. |
+
+**Example:**
+
+```json
+"retention_policy": {
+  "default_days": 730,
+  "overrides": {
+    "sessions": 90,
+    "feedback": 180
+  }
+}
+```
+
+This policy keeps generated artifacts (plans, variants, messages, interventions, reports) for two years, prunes raw session telemetry after 90 days, and prunes teacher feedback after six months. Pruning never runs automatically — it only applies when an operator invokes `memory:admin -- prune` with `--confirm`.
 
 ## Example: Minimal classroom
 

@@ -15,6 +15,8 @@ import {
   // classroom.ts
   StudentSupportSummarySchema,
   ClassroomProfileSchema,
+  RetentionPolicySchema,
+  RETENTION_TABLES,
   // debt.ts
   DebtCategorySchema,
   DebtItemSchema,
@@ -65,6 +67,12 @@ import {
   ExtractWorksheetRequestSchema,
   ExtractWorksheetResponseSchema,
 } from "../extract-worksheet.js";
+
+import {
+  EALoadProfileSchema,
+  EALoadBlockSchema,
+  EALoadLevelSchema,
+} from "../ea-load.js";
 
 // ---------------------------------------------------------------------------
 // artifact.ts
@@ -377,6 +385,169 @@ describe("ClassroomProfileSchema", () => {
   it("rejects students as a string", () => {
     expect(
       ClassroomProfileSchema.safeParse({ ...valid, students: "Ari, Mika" }).success,
+    ).toBe(false);
+  });
+
+  it("accepts a profile with a retention_policy", () => {
+    const withRetention = {
+      ...valid,
+      retention_policy: {
+        default_days: 180,
+        overrides: { interventions: 365, family_messages: 90 },
+      },
+    };
+    expect(ClassroomProfileSchema.safeParse(withRetention).success).toBe(true);
+  });
+});
+
+describe("RetentionPolicySchema", () => {
+  it("accepts an empty policy (all records kept indefinitely)", () => {
+    expect(RetentionPolicySchema.safeParse({}).success).toBe(true);
+  });
+
+  it("accepts a default-only policy", () => {
+    expect(RetentionPolicySchema.safeParse({ default_days: 30 }).success).toBe(true);
+  });
+
+  it("accepts null default_days (explicitly indefinite)", () => {
+    expect(RetentionPolicySchema.safeParse({ default_days: null }).success).toBe(true);
+  });
+
+  it("accepts per-table overrides for every retention-eligible table", () => {
+    const overrides = Object.fromEntries(
+      RETENTION_TABLES.map((t) => [t, 120]),
+    );
+    expect(
+      RetentionPolicySchema.safeParse({ default_days: 60, overrides }).success,
+    ).toBe(true);
+  });
+
+  it("rejects zero or negative default_days", () => {
+    expect(RetentionPolicySchema.safeParse({ default_days: 0 }).success).toBe(false);
+    expect(RetentionPolicySchema.safeParse({ default_days: -5 }).success).toBe(false);
+  });
+
+  it("rejects non-integer default_days", () => {
+    expect(RetentionPolicySchema.safeParse({ default_days: 7.5 }).success).toBe(false);
+  });
+
+  it("rejects an override for an unknown table", () => {
+    expect(
+      RetentionPolicySchema.safeParse({
+        overrides: { not_a_real_table: 30 },
+      }).success,
+    ).toBe(false);
+  });
+
+  it("rejects zero or negative override values", () => {
+    expect(
+      RetentionPolicySchema.safeParse({
+        overrides: { interventions: 0 },
+      }).success,
+    ).toBe(false);
+  });
+
+  it("rejects unexpected top-level keys (strict mode)", () => {
+    expect(
+      RetentionPolicySchema.safeParse({
+        default_days: 30,
+        retention_mode: "aggressive",
+      }).success,
+    ).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// ea-load.ts
+// ---------------------------------------------------------------------------
+
+describe("EALoadLevelSchema", () => {
+  it("accepts all four valid levels", () => {
+    for (const level of ["low", "medium", "high", "break"]) {
+      expect(EALoadLevelSchema.safeParse(level).success).toBe(true);
+    }
+  });
+
+  it("rejects an unknown level", () => {
+    expect(EALoadLevelSchema.safeParse("chaotic").success).toBe(false);
+  });
+});
+
+describe("EALoadBlockSchema", () => {
+  const valid = {
+    time_slot: "9:30-10:30",
+    activity: "Literacy block",
+    ea_available: true,
+    supported_students: ["Amira", "Daniyal"],
+    load_level: "high" as const,
+    load_factors: ["2 supported students", "Language-heavy block"],
+    redistribution_suggestion: "Consider rotating Daniyal to independent station at 9:45.",
+  };
+
+  it("accepts a valid block with all fields", () => {
+    expect(EALoadBlockSchema.safeParse(valid).success).toBe(true);
+  });
+
+  it("accepts a block without the optional redistribution_suggestion", () => {
+    const { redistribution_suggestion: _omit, ...rest } = valid;
+    expect(EALoadBlockSchema.safeParse(rest).success).toBe(true);
+  });
+
+  it("rejects a block with a non-array supported_students", () => {
+    expect(
+      EALoadBlockSchema.safeParse({ ...valid, supported_students: "Amira" }).success,
+    ).toBe(false);
+  });
+
+  it("rejects a block with an unknown load_level", () => {
+    expect(
+      EALoadBlockSchema.safeParse({ ...valid, load_level: "overwhelmed" }).success,
+    ).toBe(false);
+  });
+});
+
+describe("EALoadProfileSchema", () => {
+  const valid = {
+    load_id: "eal-demo-001",
+    classroom_id: "demo-okafor-grade34",
+    target_date: "2026-04-13",
+    blocks: [
+      {
+        time_slot: "8:30-9:15",
+        activity: "Bell work",
+        ea_available: true,
+        supported_students: ["Amira"],
+        load_level: "low" as const,
+        load_factors: ["Familiar routine"],
+      },
+    ],
+    alerts: [],
+    overall_summary: "Standard morning shape with one supported student in the opening block.",
+    highest_load_block: "8:30-9:15",
+    schema_version: "0.1.0",
+  };
+
+  it("accepts a valid profile", () => {
+    expect(EALoadProfileSchema.safeParse(valid).success).toBe(true);
+  });
+
+  it("accepts a profile with alerts", () => {
+    expect(
+      EALoadProfileSchema.safeParse({
+        ...valid,
+        alerts: ["Sustained high load 9:30-11:45 without recovery break"],
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects missing blocks", () => {
+    const { blocks: _omit, ...rest } = valid;
+    expect(EALoadProfileSchema.safeParse(rest).success).toBe(false);
+  });
+
+  it("rejects alerts as a single string instead of an array", () => {
+    expect(
+      EALoadProfileSchema.safeParse({ ...valid, alerts: "one alert" }).success,
     ).toBe(false);
   });
 });

@@ -1,0 +1,16 @@
+{
+  "id": "eal-004-no-ea-window",
+  "category": "schema_reliability",
+  "description": "EA load profile for a day with no EA availability — every block must report load_level=break, with alerts empty or noting the full teacher-only day",
+  "prompt_class": "balance_ea_load",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "target_date": "2026-04-13",
+    "teacher_notes": "EA is out sick tomorrow. Entire day is teacher-only."
+  },
+  "expected": {
+    "required_message_keys": ["load_id", "classroom_id", "target_date", "blocks", "alerts", "overall_summary", "highest_load_block", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "behavioral risk", "incompetent", "undefined", "null"]
+  }
+}

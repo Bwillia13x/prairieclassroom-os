@@ -17,7 +17,7 @@ import cors from "cors";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { checkpointAll } from "../memory/db.js";
-import { createAuthMiddleware } from "./auth.js";
+import { createAuthMiddleware, requireClassroomRole } from "./auth.js";
 import { isValidClassroomId } from "./validate.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { RouteDeps } from "./route-deps.js";
@@ -38,6 +38,7 @@ import { createLanguageToolsRouter } from "./routes/language-tools.js";
 import { createSupportPatternsRouter } from "./routes/support-patterns.js";
 import { createEABriefingRouter } from "./routes/ea-briefing.js";
 import { createForecastRouter } from "./routes/forecast.js";
+import { createEALoadRouter } from "./routes/ea-load.js";
 import { createDebtRegisterRouter } from "./routes/debt-register.js";
 import { createTodayRouter } from "./routes/today.js";
 import { createHistoryRouter } from "./routes/history.js";
@@ -106,23 +107,34 @@ app.use(globalLimiter);
 // ----- Auth middleware -----
 
 const authMiddleware = createAuthMiddleware(loadClassroom);
+const teacherOnly = requireClassroomRole(["teacher"]);
+const teacherOrEa = requireClassroomRole(["teacher", "ea"]);
 
-const deps: RouteDeps = { inferenceUrl: INFERENCE_URL, dataDir: DATA_DIR, loadClassroom, loadClassrooms, authMiddleware };
-app.use("/api/differentiate", authLimiter, authMiddleware);
-app.use("/api/tomorrow-plan", authLimiter, authMiddleware);
-app.use("/api/family-message", authLimiter, authMiddleware);
-app.use("/api/intervention", authLimiter, authMiddleware);
-app.use("/api/simplify", authLimiter, authMiddleware);
-app.use("/api/vocab-cards", authLimiter, authMiddleware);
-app.use("/api/support-patterns", authLimiter, authMiddleware);
-app.use("/api/ea-briefing", authLimiter, authMiddleware);
-app.use("/api/complexity-forecast", authLimiter, authMiddleware);
-app.use("/api/debt-register", authLimiter, authMiddleware);
-app.use("/api/scaffold-decay", authLimiter, authMiddleware);
-app.use("/api/survival-packet", authLimiter, authMiddleware);
-app.use("/api/extract-worksheet", authLimiter, authMiddleware);
-app.use("/api/feedback", authLimiter, authMiddleware);
-app.use("/api/sessions", authLimiter, authMiddleware);
+const deps: RouteDeps = {
+  inferenceUrl: INFERENCE_URL,
+  dataDir: DATA_DIR,
+  loadClassroom,
+  loadClassrooms,
+  authMiddleware,
+  requireClassroomRole,
+};
+app.use("/api/differentiate", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/tomorrow-plan", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/family-message", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/intervention", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/simplify", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/vocab-cards", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/support-patterns", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/ea-briefing", authLimiter, authMiddleware, teacherOrEa);
+app.use("/api/complexity-forecast", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/ea-load", authLimiter, authMiddleware, teacherOrEa);
+app.use("/api/debt-register", authLimiter, authMiddleware, teacherOrEa);
+app.use("/api/today", authLimiter, authMiddleware, teacherOrEa);
+app.use("/api/scaffold-decay", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/survival-packet", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/extract-worksheet", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/feedback", authLimiter, authMiddleware, teacherOrEa);
+app.use("/api/sessions", authLimiter, authMiddleware, teacherOrEa);
 
 // ----- Mount routes -----
 
@@ -136,6 +148,7 @@ app.use("/api", createLanguageToolsRouter(deps));
 app.use("/api/support-patterns", createSupportPatternsRouter(deps));
 app.use("/api/ea-briefing", createEABriefingRouter(deps));
 app.use("/api/complexity-forecast", createForecastRouter(deps));
+app.use("/api/ea-load", createEALoadRouter(deps));
 app.use("/api/debt-register", createDebtRegisterRouter(deps));
 app.use("/api/today", createTodayRouter(deps));
 app.use("/api/classrooms", createHistoryRouter(deps));

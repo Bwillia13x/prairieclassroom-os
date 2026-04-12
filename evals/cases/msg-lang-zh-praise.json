@@ -1,0 +1,19 @@
+{
+  "id": "msg-lang-zh-praise",
+  "category": "differentiation_quality",
+  "description": "Family message praise with target_language=Mandarin returns a safe, alias-preserving draft",
+  "prompt_class": "draft_family_message",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Jae"],
+    "message_type": "praise",
+    "target_language": "Mandarin",
+    "context": "Jae led a small group through the independent extension menu today, helping two classmates pick an appropriate challenge level."
+  },
+  "expected": {
+    "required_message_keys": ["draft_id", "classroom_id", "student_refs", "message_type", "target_language", "plain_language_text", "teacher_approved", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_contain": ["Jae"],
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "deficit"]
+  }
+}

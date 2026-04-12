@@ -39,7 +39,7 @@
 .artifact-source-switcher__tab--active {
   background: var(--color-accent);
   color: var(--color-text-on-accent);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 10px 18px light-dark(rgba(183, 128, 45, 0.2), rgba(0, 0, 0, 0.32));
 }
 
 .artifact-source-panel {

@@ -528,6 +528,107 @@ MOCK_COMPLEXITY_FORECAST_THINKING = (
     "Science block is the lowest complexity — hands-on, engaging, and EA available."
 )
 
+MOCK_EA_LOAD = json.dumps({
+    "blocks": [
+        {
+            "time_slot": "8:30-9:15",
+            "activity": "Bell work journal + calendar math",
+            "ea_available": True,
+            "supported_students": ["Amira", "Daniyal"],
+            "load_level": "low",
+            "load_factors": [
+                "Familiar morning routine",
+                "Only 2 supported students in this block"
+            ]
+        },
+        {
+            "time_slot": "9:15-9:30",
+            "activity": "Recess transition",
+            "ea_available": True,
+            "supported_students": ["Brody"],
+            "load_level": "medium",
+            "load_factors": [
+                "Your records show post-recess re-entry is a known pressure point for Brody",
+                "Short block but high transition cost"
+            ],
+            "redistribution_suggestion": "Consider having Brody's fidget kit pre-placed at his desk before recess ends so the EA can greet rather than retrieve."
+        },
+        {
+            "time_slot": "9:30-10:30",
+            "activity": "Literacy block",
+            "ea_available": True,
+            "supported_students": ["Amira", "Daniyal", "Farid"],
+            "load_level": "high",
+            "load_factors": [
+                "3 EAL-tagged students need EA attention simultaneously",
+                "Language-heavy block increases per-student support intensity",
+                "Follows the higher-cost recess transition"
+            ],
+            "redistribution_suggestion": "Consider moving Farid to the independent sentence-frames station at 9:30 so the EA can focus on Amira and Daniyal during the opening 20 minutes."
+        },
+        {
+            "time_slot": "10:30-10:45",
+            "activity": "Snack break",
+            "ea_available": True,
+            "supported_students": [],
+            "load_level": "low",
+            "load_factors": ["Structural break — no active support demand"]
+        },
+        {
+            "time_slot": "10:45-11:45",
+            "activity": "Science / Social Studies",
+            "ea_available": True,
+            "supported_students": ["Amira", "Brody"],
+            "load_level": "high",
+            "load_factors": [
+                "EA departs at noon — this is the last full-support block",
+                "Your records show Brody historically needs more support in content-heavy blocks",
+                "Follows a sustained high-load literacy block with only a 15-minute snack recovery"
+            ],
+            "redistribution_suggestion": "Consider front-loading the hands-on demonstration in the first 20 minutes when Brody's attention is freshest."
+        },
+        {
+            "time_slot": "11:45-12:30",
+            "activity": "Lunch",
+            "ea_available": False,
+            "supported_students": [],
+            "load_level": "break",
+            "load_factors": ["EA not scheduled"]
+        },
+        {
+            "time_slot": "12:30-12:45",
+            "activity": "Body break + transition to math",
+            "ea_available": False,
+            "supported_students": [],
+            "load_level": "break",
+            "load_factors": ["EA not scheduled"]
+        },
+        {
+            "time_slot": "12:45-1:45",
+            "activity": "Math block",
+            "ea_available": False,
+            "supported_students": [],
+            "load_level": "break",
+            "load_factors": ["EA not scheduled"]
+        }
+    ],
+    "alerts": [
+        "Sustained high-load sequence from 9:30-11:45 with only a 15-minute snack recovery between the literacy block and the science block — consider pacing the literacy block's second half so the EA can recover briefly before science."
+    ],
+    "overall_summary": "Your records show tomorrow's EA window (8:30-12:00) concentrates three supported students into the literacy and science blocks back-to-back. The highest sustained load is 9:30-11:45, with Amira, Daniyal, and Farid needing EA attention during literacy and Amira plus Brody during science. The afternoon is teacher-only as usual and carries no EA load.",
+    "highest_load_block": "9:30-10:30"
+})
+
+MOCK_EA_LOAD_THINKING = (
+    "Let me trace the EA's day. The window is 8:30-12:00 only, so the afternoon is break by definition.\n\n"
+    "Morning starts light — only Amira and Daniyal in bell work, familiar routine.\n\n"
+    "Recess transition adds a short medium-load moment for Brody based on the intervention history.\n\n"
+    "Literacy 9:30-10:30 stacks three EAL students simultaneously. That's the highest per-minute load of the day.\n\n"
+    "Snack is a brief recovery, then science pulls Amira and Brody back into active support. That makes 9:30-11:45 a "
+    "sustained high-load sequence — worth flagging as an alert.\n\n"
+    "Noon onward is break by contract."
+)
+
 MOCK_SCAFFOLD_DECAY = json.dumps({
     "reviews": [
         {
@@ -1018,6 +1119,7 @@ COMMON_MOCK_PROMPT_FIXTURES: dict[str, MockFixtureEntry] = {
     "generate_vocab_cards": MockFixture(MOCK_VOCAB_CARDS),
     "detect_scaffold_decay": MockFixture(MOCK_SCAFFOLD_DECAY),
     "extract_worksheet": MockFixture(MOCK_WORKSHEET_EXTRACTION),
+    "balance_ea_load": MockFixture(MOCK_EA_LOAD, MOCK_EA_LOAD_THINKING),
 }
 
 MOCK_CLASSROOM_FIXTURES: dict[str, dict[str, MockFixtureEntry]] = {

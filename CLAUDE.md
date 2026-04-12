@@ -17,16 +17,17 @@ The product is still not a student chatbot. It is a classroom operations copilot
 
 ## Current State Of Development
 
-As of 2026-04-10, the practical state of the repo is:
+As of 2026-04-12, the practical state of the repo is:
 
 - `npm run release:gate` passes in mock mode and is the default no-cost structural validation lane.
 - The hosted Gemini hackathon proof lane passes on synthetic/demo data via `npm run release:gate:gemini`.
-- The Ollama privacy-first live-model lane is implemented, but this host is currently blocked because Ollama is unavailable and the required Gemma 4 models are not present.
+- The Ollama privacy-first live-model lane is implemented, but this host is **structurally blocked** for the full dual-speed lane: the 2026-04-12 `host:preflight:ollama` run recorded 8 GiB total RAM and 6.76 GiB free disk, which cannot fit the planning-tier `gemma4:27b` weights regardless of whether Ollama is installed. The `gemma4:4b` live-tier model may still be feasible on this host. See `docs/decision-log.md` (2026-04-12 maintenance host finding) and `docs/development-gaps.md` G-02.
 - The paid Vertex lane exists, but it is intentionally gated behind `PRAIRIE_ALLOW_PAID_SERVICES=true` and is not part of the default no-cost proof story.
-- The repo has 12 model-routed prompt classes, a real web UI with 11 teacher-facing panels, 99 eval cases, and 595 unit tests across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
+- The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 120 eval cases, and broad unit coverage across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
 - The web shell supports grouped `Today / Prep / Ops / Review` navigation, URL-backed `tab` and `classroom` state, and a classroom-code prompt that retries protected reads and writes from the UI.
+- Protected classroom APIs now support `X-Classroom-Code` plus optional `X-Classroom-Role`; the role defaults to `teacher`, and generated `docs/api-surface.md` records current teacher-only and teacher/EA scopes.
 - Security hardened: classroomId path traversal validation, rate limiting (global + per-classroom auth), security headers, safe JSON deserialization, atomic schedule writes, prompt injection detection.
-- Documentation current: `docs/architecture.md` rewritten to match the implemented system, reference docs for database schema, classroom profiles, and eval inventory.
+- Documentation current: generated system/API inventory, pilot-readiness gates, memory lifecycle controls, database schema, classroom profiles, and eval inventory.
 
 Do not treat this repository like a blank-slate MVP. Treat it like a production-hardened classroom operating system that needs careful incremental changes, regression protection, and documentation hygiene.
 
@@ -67,8 +68,11 @@ Hosted Gemini runs are synthetic/demo only. Do not use real classroom or student
 - `detect_scaffold_decay`
 - `generate_survival_packet`
 - `extract_worksheet`
+- `balance_ea_load`
 
 ### Additional deterministic or retrieval-backed API surfaces
+
+Exact endpoint inventory is generated in `docs/api-surface.md`; do not maintain a parallel hand-counted endpoint table here.
 
 - `GET /health` and `GET /api/health`
 - `GET /api/today/:classroomId`
@@ -92,6 +96,7 @@ Hosted Gemini runs are synthetic/demo only. Do not use real classroom or student
 - Language Tools
 - Tomorrow Plan
 - EA Briefing
+- EA Load
 - Forecast
 - Log Intervention
 - Sub Packet
@@ -107,6 +112,14 @@ Hosted Gemini runs are synthetic/demo only. Do not use real classroom or student
 - The web UI treats `?tab=` and `?classroom=` as stable deep-link state.
 - `?demo=true` remains a convenience selector for the seeded demo classroom when `classroom` is not provided.
 - Protected classroom codes are stored locally in-browser and reused automatically for protected `today`, history, and generation routes.
+
+### Adult API role contract
+
+- Protected classroom endpoints accept `X-Classroom-Code` and optional `X-Classroom-Role`.
+- Supported role header values are `teacher`, `ea`, `substitute`, and `reviewer`; missing role defaults to `teacher` for backwards compatibility.
+- Current implemented scopes are intentionally narrow: teacher-only routes cover generation, history, schedule writes, health, and student summaries; teacher/EA routes cover Today, EA briefing, debt register, feedback, and session summaries.
+- Substitute and reviewer roles are declared for future bounded views, but they are not granted raw classroom-memory endpoint access by default.
+- Exact route scopes are generated in `docs/api-surface.md`; do not hand-maintain a separate role table.
 
 ## Runtime And Config Reality
 
@@ -159,6 +172,7 @@ If you change env expectations, update `.env.example`, `README.md`, and any affe
 - eval outputs: `output/evals/`
 - evidence reports: `docs/evidence/`
 - evidence snapshots: `output/evidence-snapshots/`
+- generated system inventory: `docs/system-inventory.md`
 
 ## Supported Inference Lanes
 
@@ -191,6 +205,8 @@ Then pull in the specialized docs that match your task:
 
 - release or run-mode work: `docs/release-checklist.md`, `docs/eval-baseline.md`, `docs/hackathon-hosted-operations.md`, `docs/live-model-proof-status.md`
 - current backlog and posture: `docs/development-gaps.md`
+- code-derived surface inventory: `docs/system-inventory.md`, `docs/api-surface.md`
+- pilot and real-data readiness: `docs/pilot-readiness.md`, `docs/safety-governance.md`
 - product proof and submission framing: `docs/hackathon-proof-brief.md`, `docs/kaggle-writeup.md`, `docs/demo-script.md`
 
 Do not write against stale assumptions from older sprint docs if README, release docs, and current code disagree.
@@ -215,7 +231,9 @@ When you change:
 
 - runtime commands or setup: update `README.md` and `docs/release-checklist.md`
 - proof-lane behavior or artifacts: update `docs/eval-baseline.md`, `docs/hackathon-hosted-operations.md`, and related proof docs
-- route inventory or prompt routing: update `docs/prompt-contracts.md` and any route tables that describe the feature
+- route inventory or prompt routing: update `docs/prompt-contracts.md`, then run `npm run system:inventory` so `docs/system-inventory.md` and `docs/api-surface.md` stay generated from code
+- classroom memory lifecycle behavior: update `docs/database-schema.md`, `docs/pilot-readiness.md`, and `docs/safety-governance.md`
+- color tokens, dark-mode switching, or contrast contracts: update `docs/dark-mode-contract.md`, then run `npm run check:contrast`
 - major product behavior: update `docs/spec.md`, `docs/architecture.md`, or `docs/decision-log.md` as appropriate
 
 Do not create shadow docs when a canonical doc already exists.
@@ -230,6 +248,9 @@ No meaningful change is done until you run the checks that fit the change:
 - inference Python change: `npm run test:python`
 - end-to-end behavior or release hardening: `npm run release:gate`
 - hosted proof maintenance: `npm run proof:check`, `npm run gemini:readycheck`, then `npm run release:gate:gemini`
+- canonical surface or proof-claim updates: `npm run system:inventory:check`
+- classroom memory lifecycle changes: `npm run memory:admin -- summary --classroom demo-okafor-grade34`
+- color token or dark-mode contrast changes: `npm run check:contrast`
 - evidence portfolio refresh: `npm run evidence:generate`
 
 Prefer the cheapest validation that actually covers the risk, but do not skip the release gate when touching cross-service behavior, run scripts, or operator paths.
@@ -237,6 +258,7 @@ Prefer the cheapest validation that actually covers the risk, but do not skip th
 ## Auth And Safety Notes
 
 - Classroom-code auth is enforced server-side with `X-Classroom-Code` on protected routes.
+- Adult API scopes are enforced server-side with optional `X-Classroom-Role`; invalid roles return `classroom_role_invalid`, and disallowed roles return `classroom_role_forbidden`.
 - `GET /api/classrooms` exposes only non-secret protection metadata such as `requires_access_code` and `is_demo`.
 - Demo classroom bypasses auth.
 - Some classrooms are open if they do not define an `access_code`.

@@ -1,0 +1,17 @@
+{
+  "id": "vocab-005-thin-artifact",
+  "category": "schema_reliability",
+  "description": "Vocab card generator returns a valid card set even when the source artifact text is very short — must not invent unrelated vocabulary to pad the set",
+  "prompt_class": "generate_vocab_cards",
+  "input": {
+    "artifact_text": "Plants need sun and water to grow. Some plants grow tall. Some plants stay small.",
+    "subject": "science",
+    "target_language": "English",
+    "grade_band": "K-2"
+  },
+  "expected": {
+    "required_message_keys": ["cards", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "clinical", "undefined", "null", "lorem", "placeholder"]
+  }
+}

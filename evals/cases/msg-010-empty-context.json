@@ -1,0 +1,18 @@
+{
+  "id": "msg-010-empty-context",
+  "category": "schema_reliability",
+  "description": "Family message request with no context field (optional field omitted) still produces a valid draft grounded in student_refs and message_type alone",
+  "prompt_class": "draft_family_message",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Ari"],
+    "message_type": "routine_update",
+    "target_language": "English"
+  },
+  "expected": {
+    "required_message_keys": ["draft_id", "classroom_id", "student_refs", "message_type", "target_language", "plain_language_text", "teacher_approved", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_contain": ["Ari"],
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "deficit", "undefined", "null"]
+  }
+}

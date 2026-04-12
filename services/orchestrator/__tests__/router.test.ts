@@ -21,6 +21,7 @@ const ALL_PROMPT_CLASSES: PromptClass[] = [
   "detect_scaffold_decay",
   "generate_survival_packet",
   "extract_worksheet",
+  "balance_ea_load",
 ];
 
 const PLANNING_TIER_CLASSES: PromptClass[] = [
@@ -29,6 +30,7 @@ const PLANNING_TIER_CLASSES: PromptClass[] = [
   "forecast_complexity",
   "detect_scaffold_decay",
   "generate_survival_packet",
+  "balance_ea_load",
 ];
 
 const LIVE_TIER_CLASSES: PromptClass[] = [
@@ -48,6 +50,7 @@ const RETRIEVAL_REQUIRED_CLASSES: PromptClass[] = [
   "forecast_complexity",
   "detect_scaffold_decay",
   "generate_survival_packet",
+  "balance_ea_load",
 ];
 
 describe("getRoute", () => {
@@ -152,9 +155,9 @@ describe("getModelId", () => {
 });
 
 describe("listPromptClasses", () => {
-  it("returns all 12 prompt classes", () => {
+  it("returns all 13 prompt classes", () => {
     const classes = listPromptClasses();
-    expect(classes).toHaveLength(12);
+    expect(classes).toHaveLength(13);
     for (const pc of ALL_PROMPT_CLASSES) {
       expect(classes).toContain(pc);
     }

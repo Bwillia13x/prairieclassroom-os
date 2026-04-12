@@ -2,7 +2,7 @@
 
 Gemma-4-native, local-first classroom complexity copilot for Alberta K-6 inclusive classrooms.
 
-PrairieClassroom OS is not a chatbot. It is a teacher command center with 10 primary panels and 12 prompt or retrieval-backed workflows that reduce the coordination tax on teachers working in high-complexity classrooms with mixed grades, EAL learners, accessibility needs, and shared staffing.
+PrairieClassroom OS is not a chatbot. It is a teacher command center with 12 primary panels and 13 prompt or retrieval-backed workflows that reduce the coordination tax on teachers working in high-complexity classrooms with mixed grades, EAL learners, accessibility needs, and shared staffing.
 
 ## Quick Start
 
@@ -199,12 +199,22 @@ npm run release:gate:ollama
 The no-spend observability and evidence helpers are:
 
 ```bash
+npm run ops:status
+npm run system:inventory
+npm run system:inventory:check
+npm run memory:admin -- summary --classroom demo-okafor-grade34
 npm run logs:summary
 npm run logs:prune -- --days 14
+npm run audit:log -- --classroom demo-okafor-grade34 --from 2026-04-01
 npm run eval:summary
 ```
 
+`npm run audit:log` is the access audit query CLI. It reads the orchestrator JSONL request logs and surfaces the governance question "who accessed which classroom record, when, under which role, and was it allowed?". Filters include `--classroom`, `--role`, `--outcome {allowed|denied|demo_bypass|<detail_code>}`, `--from/--to`, and `--only-classroom`. Passing `--artifact` writes a point-in-time audit snapshot (filters, summary, and up to `--limit` matching records) to `output/access-audit/` as pilot evidence.
+
 Request logs are written inside the repo under `output/request-logs/`. Host preflight artifacts land in `output/host-preflight/`. Eval results and failure summaries land in `output/evals/`.
+The generated code-derived surface inventory lives at [docs/system-inventory.md](docs/system-inventory.md), with exact endpoint inventory in [docs/api-surface.md](docs/api-surface.md). Use `npm run system:inventory:check` before updating public proof or operator docs that mention panel counts, prompt-class counts, tier splits, or endpoint tables.
+Per-classroom memory lifecycle commands are available through `npm run memory:admin -- <summary|export|anonymize|backup|prune|purge|restore> --classroom <id>`. Destructive `prune`, `purge`, and `restore` operations require `--confirm`. `prune` applies the retention policy defined in the classroom profile JSON (or a `--default-days <n>` flag), deletes rows older than the window from every retention-eligible table, and writes a tombstone artifact to `output/memory-admin/` recording the policy source, per-table cutoffs, and rows removed.
+Protected classroom endpoints accept `X-Classroom-Code` plus optional `X-Classroom-Role`. The role defaults to `teacher`; supported values are `teacher`, `ea`, `substitute`, and `reviewer`. Current route scopes are generated in [docs/api-surface.md](docs/api-surface.md).
 
 For credentialed Vertex/Gemma validation, run the real-inference gate only when you intentionally want the paid path. It uses the same startup flow, adds ADC/endpoint preflight checks, runs the real harness smoke + eval suite, saves eval artifacts under `output/evals/<date>-real/`, and refreshes `docs/eval-baseline.md`.
 
@@ -307,8 +317,11 @@ For public claims, `npm run claims:check` blocks unsupported statements like inv
 - [Product spec](docs/spec.md) — MVP scope and user stories
 - [Architecture](docs/architecture.md) — 6-layer system design
 - [Prompt contracts](docs/prompt-contracts.md) — all 12 versioned contracts
+- [System inventory](docs/system-inventory.md) — generated panel, routing, endpoint, and eval inventory
+- [API surface](docs/api-surface.md) — generated exact Express endpoint table
 - [Safety governance](docs/safety-governance.md) — hard boundaries and framing rules
-- [Decision log](docs/decision-log.md) — 32 architecture decision records
+- [Pilot readiness](docs/pilot-readiness.md) — real-data blockers, evidence artifacts, and pilot modes
+- [Decision log](docs/decision-log.md) — architecture decision records
 - [Kaggle writeup](docs/kaggle-writeup.md) — competition submission document
 - [Hackathon proof brief](docs/hackathon-proof-brief.md) — concise artifact-backed proof summary for judges
 - [Demo script](docs/demo-script.md) — 15-minute walkthrough with narration cues

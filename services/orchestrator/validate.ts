@@ -97,6 +97,12 @@ export const ComplexityForecastRequestSchema = z.object({
   teacher_notes: optionalString(MEDIUM_TEXT_MAX),
 });
 
+export const EALoadRequestSchema = z.object({
+  classroom_id: requiredString(SHORT_TEXT_MAX),
+  target_date: requiredString(SHORT_TEXT_MAX),
+  teacher_notes: optionalString(MEDIUM_TEXT_MAX),
+});
+
 export const DebtRegisterRequestSchema = z.object({
   stale_followup_days: z.number().int().positive().optional(),
   unapproved_message_days: z.number().int().positive().optional(),

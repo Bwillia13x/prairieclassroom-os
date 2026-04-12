@@ -1,0 +1,16 @@
+{
+  "id": "simp-006-minimum-grade-text",
+  "category": "schema_reliability",
+  "description": "Simplify handles a very short source text without over-padding or hallucinating missing content",
+  "prompt_class": "simplify_for_student",
+  "input": {
+    "source_text": "The cat sat on the mat.",
+    "grade_band": "K-2",
+    "eal_level": "beginner"
+  },
+  "expected": {
+    "required_message_keys": ["simplified_text", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "clinical", "lorem", "ipsum", "undefined", "null"]
+  }
+}

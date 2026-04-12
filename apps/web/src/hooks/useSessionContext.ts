@@ -40,10 +40,11 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
 
   // Flush session data to the server (or localStorage fallback)
   const flush = useCallback(() => {
-    if (!classroomId || panelsRef.current.length === 0) return;
+    const targetClassroomId = prevClassroomRef.current;
+    if (!targetClassroomId || panelsRef.current.length === 0) return;
 
     const request: SubmitSessionRequest = {
-      classroom_id: prevClassroomRef.current,
+      classroom_id: targetClassroomId,
       session_id: sessionId,
       started_at: startedAtRef.current,
       ended_at: new Date().toISOString(),
@@ -66,7 +67,7 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
         queueSession(request);
       });
     }
-  }, [classroomId, sessionId]);
+  }, [sessionId]);
 
   // Reset on classroom change
   useEffect(() => {

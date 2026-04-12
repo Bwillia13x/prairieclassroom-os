@@ -229,6 +229,60 @@ For every prompt class, document:
 - Intervention history referenced with "your records show" framing
 - Student aliases only
 
+### I2. Balance EA Cognitive Load
+
+**Route:** `balance_ea_load`
+**Model:** planning tier -- `gemma-4-27b-it`
+**Thinking:** On
+**Retrieval:** Yes -- intervention frequency by time/context pattern, recent interventions, latest pattern-report highlights (reuses `buildForecastContext` — the EA-load feature shares retrieval with the complexity forecast)
+
+**Input:**
+- `classroom_id` -- which classroom
+- `target_date` -- the date being analyzed (YYYY-MM-DD)
+- `teacher_notes` -- optional free-text notes about tomorrow's EA coverage (shortened window, coverage swap, unusual routine)
+
+**Context injected:**
+- Classroom schedule (time blocks, activities, EA availability, per-block `ea_student_refs`)
+- Support constraints (the EA window, coverage rules)
+- Student support tags and scaffolds
+- Intervention history patterns from `buildForecastContext`
+- Upcoming events
+
+**Output schema (v0.1.0):**
+
+    {
+      "load_id": "eal-demo-okafor-grade34-1728734400000",
+      "classroom_id": "demo-okafor-grade34",
+      "target_date": "2026-04-13",
+      "blocks": [
+        {
+          "time_slot": "9:30-10:30",
+          "activity": "Literacy block",
+          "ea_available": true,
+          "supported_students": ["Amira", "Daniyal", "Farid"],
+          "load_level": "high",
+          "load_factors": ["3 EAL-tagged students need EA attention simultaneously", "Language-heavy block"],
+          "redistribution_suggestion": "Consider moving Farid to the independent sentence-frames station at 9:30"
+        }
+      ],
+      "alerts": ["Sustained high-load sequence 9:30-11:45 with only a 15-minute recovery break"],
+      "overall_summary": "2-3 sentence summary referencing specific time_slots and student aliases",
+      "highest_load_block": "9:30-10:30",
+      "schema_version": "0.1.0"
+    }
+
+**Level vocabulary:** `low | medium | high | break`. Blocks where the EA is not scheduled are always `break` (enforced by the parser, not just the prompt).
+
+**Safety rules:**
+- Describes CLASSROOM CONDITIONS AND EA DEMANDS, never EA competence
+- No EA is "failing," "overloaded," or "underperforming" in the output
+- No individual student is a "load driver" in isolation — load arises from multiple factors across a sequence of blocks
+- Same 15 forbidden terms as every other contract (no diagnosis, no behavioral-risk scoring, no disciplinary suggestions)
+- Student aliases only; cross-classroom aliases are scrubbed from narrative text by the parser
+- Redistribution suggestions are framed as "consider moving X" — the teacher and EA decide
+
+**Persistence:** Not persisted. The EA load profile is always computed fresh from current schedule + memory.
+
 ### J. Complexity Debt Register
 
 **Route:** none (deterministic retrieval)

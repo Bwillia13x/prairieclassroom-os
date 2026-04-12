@@ -19,6 +19,26 @@ export default tseslint.config(
     },
   },
   {
+    files: ["scripts/record-walkthrough.mjs"],
+    languageOptions: {
+      globals: {
+        document: "readonly",
+        localStorage: "readonly",
+        window: "readonly",
+      },
+    },
+  },
+  {
+    files: ["scripts/smoke-browser.mjs"],
+    languageOptions: {
+      globals: {
+        document: "readonly",
+        getComputedStyle: "readonly",
+        window: "readonly",
+      },
+    },
+  },
+  {
     rules: {
       "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/no-explicit-any": "warn",

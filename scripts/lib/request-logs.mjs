@@ -86,6 +86,85 @@ function cutoffDate(days, now) {
   return cutoff;
 }
 
+// Audit-outcome codes that represent a denial. Kept in sync with auth.ts
+// detail_code vocabulary and AuthOutcome in request-context.ts.
+const DENIAL_OUTCOMES = new Set([
+  "classroom_code_missing",
+  "classroom_code_invalid",
+  "classroom_role_invalid",
+  "classroom_role_forbidden",
+]);
+
+function matchesOutcome(record, outcome) {
+  if (!outcome) return true;
+  if (outcome === "allowed") return record.auth_outcome === "allowed";
+  if (outcome === "denied") return DENIAL_OUTCOMES.has(record.auth_outcome);
+  if (outcome === "demo_bypass") return record.auth_outcome === "demo_bypass";
+  if (outcome === "all") return true;
+  return record.auth_outcome === outcome;
+}
+
+function dateKey(timestamp) {
+  if (typeof timestamp !== "string") return null;
+  return timestamp.slice(0, 10);
+}
+
+// Filter request-log records down to the subset that answers pilot-audit
+// questions: "Who accessed which classroom, when, under what role, and was
+// the access allowed?" All filter fields are optional; omit them to include
+// everything.
+export function filterAccessAuditRecords(records, filters = {}) {
+  const { classroomId, role, outcome, from, to, onlyClassroomContext } = filters;
+  return records.filter((record) => {
+    if (classroomId && record.classroom_id !== classroomId) return false;
+    if (role && record.classroom_role !== role) return false;
+    if (onlyClassroomContext && !record.classroom_id) return false;
+    if (!matchesOutcome(record, outcome)) return false;
+    if (from && dateKey(record.timestamp) && dateKey(record.timestamp) < from) return false;
+    if (to && dateKey(record.timestamp) && dateKey(record.timestamp) > to) return false;
+    return true;
+  });
+}
+
+// Aggregate access-audit records into the shape a pilot operator actually
+// wants to eyeball: per-classroom counts, per-role counts, per-outcome counts,
+// and top-level denial / demo-bypass totals.
+export function summarizeAccessAudit(records) {
+  const byClassroom = {};
+  const byRole = {};
+  const byOutcome = {};
+  let denialCount = 0;
+  let demoBypassCount = 0;
+
+  for (const record of records) {
+    const outcome = record.auth_outcome ?? "unknown";
+    byOutcome[outcome] = (byOutcome[outcome] ?? 0) + 1;
+    if (DENIAL_OUTCOMES.has(outcome)) denialCount += 1;
+    if (outcome === "demo_bypass") demoBypassCount += 1;
+
+    if (record.classroom_id) {
+      const bucket =
+        byClassroom[record.classroom_id] ??
+        (byClassroom[record.classroom_id] = { total: 0, by_outcome: {} });
+      bucket.total += 1;
+      bucket.by_outcome[outcome] = (bucket.by_outcome[outcome] ?? 0) + 1;
+    }
+
+    if (record.classroom_role) {
+      byRole[record.classroom_role] = (byRole[record.classroom_role] ?? 0) + 1;
+    }
+  }
+
+  return {
+    total_records: records.length,
+    by_classroom: byClassroom,
+    by_role: byRole,
+    by_outcome: byOutcome,
+    denial_count: denialCount,
+    demo_bypass_count: demoBypassCount,
+  };
+}
+
 export async function pruneRequestLogFiles(dir, { days = 14, now = new Date() } = {}) {
   const files = await listRequestLogFiles(dir);
   const cutoff = cutoffDate(days, now);

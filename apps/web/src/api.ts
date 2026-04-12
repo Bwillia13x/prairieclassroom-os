@@ -7,6 +7,8 @@ import type {
   DifferentiateResponse,
   EABriefingRequest,
   EABriefingResponse,
+  EALoadRequest,
+  EALoadResponse,
   ExtractWorksheetResponse,
   FamilyMessageDraft,
   FamilyMessageRequest,
@@ -267,6 +269,17 @@ export function generateComplexityForecast(
   signal?: AbortSignal,
 ): Promise<ComplexityForecastResponse> {
   return requestJson<ComplexityForecastResponse>("/complexity-forecast", {
+    method: "POST",
+    body: request,
+    signal,
+  });
+}
+
+export function generateEALoadProfile(
+  request: EALoadRequest,
+  signal?: AbortSignal,
+): Promise<EALoadResponse> {
+  return requestJson<EALoadResponse>("/ea-load", {
     method: "POST",
     body: request,
     signal,

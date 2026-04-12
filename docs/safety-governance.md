@@ -42,3 +42,51 @@ Require a safety review when:
 - classroom images are used in a new way
 - parent messaging behavior changes
 - a feature begins to infer student state
+
+## Operating modes
+
+Safety posture depends on the data lane:
+
+| Mode | Real classroom data | Hosted model calls | Notes |
+|---|---:|---:|---|
+| Demo | no | allowed only with synthetic/demo data | Public demos and judging. |
+| Synthetic proof | no | allowed only with synthetic/demo data | Eval, release-gate, and proof artifacts. |
+| Local pilot rehearsal | no | no | Fake or manually de-identified records only. |
+| Local real-data pilot | gated | no | Requires pilot-readiness blockers to be closed. |
+| Hosted real-data use | prohibited | prohibited | No exception in the current product. |
+
+## Adult role boundaries
+
+Classroom-code auth is sufficient for demo and local rehearsal only. The current API adds an initial adult role boundary through optional `X-Classroom-Role`, with route scopes generated in `docs/api-surface.md`.
+
+- Teacher owner scope currently covers generation, schedule writes, raw classroom history, classroom health, and student summaries.
+- EA collaborator scope currently covers Today, EA briefing, debt register, feedback, and session-summary routes.
+- Substitute view should see only teacher-approved survival-packet content for a bounded date; this dedicated view is not implemented yet.
+- Reviewer/read-only roles should inspect de-identified summaries only; this dedicated view is not implemented yet.
+- No role receives unrestricted raw intervention history by default.
+- This is not a district identity system, SSO integration, or authenticated audit log. Those remain future requirements for multi-user or school-managed deployment.
+
+## Data lifecycle expectations
+
+Real classroom use requires explicit controls for:
+
+- retention period per classroom via the `retention_policy` field in the classroom profile JSON; `npm run memory:admin -- prune --classroom <id> --confirm` applies the declared policy and writes a tombstone artifact to `output/memory-admin/` recording the policy source, per-table cutoffs, and rows removed
+- export of classroom memory through `npm run memory:admin -- export --classroom <id>`
+- structural de-identification/anonymization through `npm run memory:admin -- anonymize --classroom <id>`, followed by manual free-text review
+- purge/delete for a classroom through `npm run memory:admin -- purge --classroom <id> --confirm`
+- backup and restore of per-classroom SQLite memory through `npm run memory:admin -- backup|restore`
+- operator-visible record of hosted/model lane used for each generated artifact
+
+Access audit evidence is now captured in the orchestrator request log: every protected request records `classroom_id`, `classroom_role`, `demo_bypass`, and an `auth_outcome` in the stable vocabulary `allowed | demo_bypass | classroom_code_missing | classroom_code_invalid | classroom_role_invalid | classroom_role_forbidden | none`. Operators query and export this via `npm run audit:log -- --classroom <id> --from <YYYY-MM-DD> [--outcome denied] [--artifact]`, which emits a point-in-time audit snapshot to `output/access-audit/`. Dedicated substitute/reviewer views remain required before those roles may access real classroom data.
+
+## Incident response triggers
+
+Open an incident log entry when:
+
+- sensitive classroom notes are exposed to the wrong adult
+- a hosted lane receives real classroom or student data
+- output implies diagnosis, discipline scoring, or unsupported certainty
+- a family message is sent outside explicit teacher review
+- classroom memory is corrupted, lost, or restored from backup
+
+Incident entries should include timestamp, affected mode, route or panel, data class, mitigation, and whether public proof claims need to be revised.

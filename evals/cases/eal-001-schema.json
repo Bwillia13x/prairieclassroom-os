@@ -1,0 +1,16 @@
+{
+  "id": "eal-001-schema",
+  "category": "schema_reliability",
+  "description": "EA Cognitive Load Balancer produces a valid EALoadProfile for the demo classroom",
+  "prompt_class": "balance_ea_load",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "target_date": "2026-04-13",
+    "teacher_notes": "Tomorrow is a standard schedule day — no assemblies, no new students, EA (Ms. Fehr) is confirmed for 8:30-12:00."
+  },
+  "expected": {
+    "required_message_keys": ["load_id", "classroom_id", "target_date", "blocks", "alerts", "overall_summary", "highest_load_block", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "deficit", "behavioral risk", "incompetent", "unable to handle"]
+  }
+}

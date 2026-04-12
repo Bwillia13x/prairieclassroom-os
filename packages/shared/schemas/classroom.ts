@@ -17,6 +17,40 @@ export const StudentSupportSummarySchema = z.object({
 
 export type StudentSupportSummary = z.infer<typeof StudentSupportSummarySchema>;
 
+// Retention-eligible memory tables. Kept in sync with scripts/lib/memory-admin.mjs DATA_TABLES.
+export const RETENTION_TABLES = [
+  "generated_plans",
+  "generated_variants",
+  "family_messages",
+  "interventions",
+  "pattern_reports",
+  "complexity_forecasts",
+  "scaffold_reviews",
+  "survival_packets",
+  "feedback",
+  "sessions",
+] as const;
+export type RetentionTable = typeof RETENTION_TABLES[number];
+
+/**
+ * Per-classroom retention policy. A positive default_days sets the retention
+ * window for every time-series record type; overrides tighten or loosen a
+ * specific table. Omit the policy entirely to keep records indefinitely.
+ *
+ * Pruning is never automatic — it runs only when an operator invokes
+ * `npm run memory:admin -- prune --classroom <id> --confirm`.
+ */
+export const RetentionPolicySchema = z
+  .object({
+    default_days: z.number().int().positive().nullable().optional(),
+    overrides: z
+      .partialRecord(z.enum(RETENTION_TABLES), z.number().int().positive())
+      .optional(),
+  })
+  .strict();
+
+export type RetentionPolicy = z.infer<typeof RetentionPolicySchema>;
+
 export const ClassroomProfileSchema = z.object({
   classroom_id: z.string(),
   grade_band: z.string(),
@@ -29,6 +63,7 @@ export const ClassroomProfileSchema = z.object({
   sub_ready: z.boolean().optional(),
   schedule: z.array(ScheduleBlockInputSchema).optional(),
   upcoming_events: z.array(UpcomingEventSchema).optional(),
+  retention_policy: RetentionPolicySchema.optional(),
 });
 
 export type ClassroomProfile = z.infer<typeof ClassroomProfileSchema>;

@@ -26,6 +26,7 @@ import InterventionPanel from "./panels/InterventionPanel";
 import LanguageToolsPanel from "./panels/LanguageToolsPanel";
 import SupportPatternsPanel from "./panels/SupportPatternsPanel";
 import EABriefingPanel from "./panels/EABriefingPanel";
+import EALoadPanel from "./panels/EALoadPanel";
 import ForecastPanel from "./panels/ForecastPanel";
 import SurvivalPacketPanel from "./panels/SurvivalPacketPanel";
 import TodayPanel from "./panels/TodayPanel";
@@ -631,6 +632,7 @@ export default function App() {
             <SupportPatternsPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} />,
           )}
           {renderPanel(activeTab, "ea-briefing", mountedTabs, <EABriefingPanel />)}
+          {renderPanel(activeTab, "ea-load", mountedTabs, <EALoadPanel />)}
           {renderPanel(activeTab, "complexity-forecast", mountedTabs, <ForecastPanel />)}
           {renderPanel(activeTab, "survival-packet", mountedTabs, <SurvivalPacketPanel />)}
           {renderPanel(activeTab, "usage-insights", mountedTabs, <UsageInsightsPanel />)}

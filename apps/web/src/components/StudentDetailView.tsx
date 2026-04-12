@@ -46,7 +46,6 @@ export default function StudentDetailView({
     messageAction.execute((signal) =>
       fetchMessageHistoryForStudent(classroomId, context.alias, 10, signal)
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [classroomId, context.alias]);
 
   const { initialData } = context;

@@ -148,6 +148,27 @@ async function main() {
       assertNoAlphaAliases(complexityForecast, "Complexity forecast");
       console.log("PASS complexity-forecast");
     },
+    "ea-load": async () => {
+      const eaLoad = await postJson("/api/ea-load", {
+        classroom_id: DEMO_CLASSROOM_ID,
+        target_date: isoTomorrow(),
+        teacher_notes: "Standard schedule",
+      });
+      assert.equal(eaLoad.profile.classroom_id, DEMO_CLASSROOM_ID);
+      assert.ok(eaLoad.profile.blocks.length > 0, "EA load profile must include blocks");
+      assert.ok(Array.isArray(eaLoad.profile.alerts), "EA load profile must include alerts array");
+      for (const block of eaLoad.profile.blocks) {
+        if (block.ea_available === false) {
+          assert.equal(
+            block.load_level,
+            "break",
+            `Block ${block.time_slot} without EA must report load_level='break'`,
+          );
+        }
+      }
+      assertNoAlphaAliases(eaLoad, "EA load");
+      console.log("PASS ea-load");
+    },
     "survival-packet": async () => {
       const survivalPacket = await postJson("/api/survival-packet", {
         classroom_id: DEMO_CLASSROOM_ID,

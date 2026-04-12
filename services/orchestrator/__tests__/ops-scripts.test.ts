@@ -1,7 +1,10 @@
 import os from "node:os";
 import path from "node:path";
-import { mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import { mkdir, mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
 import { afterEach, describe, expect, it } from "vitest";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // TypeScript does not infer declarations for these repo-local .mjs utility modules.
 // They are runtime-covered here by Vitest and stay isolated to test code.
@@ -23,6 +26,10 @@ const requestLogsModule = await import("../../../scripts/lib/request-logs.mjs");
 const smokeApiCasesModule = await import("../../../scripts/lib/smoke-api-cases.mjs");
 // @ts-expect-error test-only import of repo-local .mjs helper without declarations
 const hackathonProofModule = await import("../../../scripts/lib/hackathon-proof.mjs");
+// @ts-expect-error test-only import of repo-local .mjs helper without declarations
+const systemInventoryModule = await import("../../../scripts/lib/system-inventory.mjs");
+// @ts-expect-error test-only import of repo-local .mjs helper without declarations
+const memoryAdminModule = await import("../../../scripts/lib/memory-admin.mjs");
 
 const { categorizeEvalFailure, buildEvalFailureSummary } = evalSummaryModule;
 const { categorizeOllamaPreflight, parseOllamaListOutput } = ollamaPreflightModule;
@@ -40,6 +47,11 @@ const {
   formatGeminiReadycheckReport,
   validateProofSurfaces,
 } = hackathonProofModule;
+const { buildSystemInventory, validateCanonicalInventoryClaims, formatInventoryMarkdown, formatApiSurfaceMarkdown } = systemInventoryModule;
+const {
+  anonymizeClassroomExport,
+  purgeClassroomMemory,
+} = memoryAdminModule;
 
 const tempDirs: string[] = [];
 
@@ -399,6 +411,165 @@ describe("proof status helpers", () => {
     expect(markdown).toContain("75-ollama-evals failed with code 1.");
     expect(markdown).toContain("output/release-gate/ollama-failed/summary.json");
     expect(markdown).not.toContain("output/host-preflight/viable.json` |");
+  });
+});
+
+describe("system inventory helpers", () => {
+  it("derives the current UI and prompt surface from code", async () => {
+    const rootDir = path.resolve(__dirname, "../../..");
+    const inventory = await buildSystemInventory(rootDir);
+
+    expect(inventory.ui.panel_count).toBe(12);
+    expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("Usage Insights");
+    expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("EA Load");
+    expect(inventory.prompts.prompt_class_count).toBe(13);
+    expect(inventory.prompts.live_count).toBe(7);
+    expect(inventory.prompts.planning_count).toBe(6);
+    expect(inventory.prompts.classes.map((entry: { name: string }) => entry.name)).toContain("extract_worksheet");
+    expect(inventory.prompts.classes.map((entry: { name: string }) => entry.name)).toContain("balance_ea_load");
+    expect(inventory.api.endpoint_count).toBe(34);
+    expect(inventory.api.endpoints).toEqual(expect.arrayContaining([
+      expect.objectContaining({ method: "PUT", path: "/api/classrooms/:id/schedule" }),
+      expect.objectContaining({ method: "POST", path: "/api/family-message/approve" }),
+      expect.objectContaining({ method: "GET", path: "/api/classrooms/:id/student-summary", role_scope: ["teacher"] }),
+      expect.objectContaining({ method: "GET", path: "/api/today/:classroomId", role_scope: ["teacher", "ea"] }),
+    ]));
+    expect(inventory.evals.case_count).toBeGreaterThanOrEqual(90);
+  });
+
+  it("flags canonical doc inventory drift", async () => {
+    const rootDir = await makeTempDir();
+    await mkdir(path.join(rootDir, "docs"), { recursive: true });
+    await writeFile(path.join(rootDir, "README.md"), "teacher command center with 10 primary panels", "utf8");
+    await writeFile(path.join(rootDir, "CLAUDE.md"), [
+      "The repo has 12 model-routed prompt classes, a real web UI with 10 teacher-facing panels.",
+      "### Model-routed prompt classes",
+      "",
+      "- `differentiate_material`",
+      "",
+      "### Additional deterministic",
+      "",
+      "### Primary UI panels",
+      "",
+      "- Today",
+      "",
+      "`extract_worksheet`",
+    ].join("\n"), "utf8");
+    await writeFile(path.join(rootDir, "docs/architecture.md"), "**Live tier (7 classes)**\n\n**Planning tier (5 classes)**", "utf8");
+    const fakeInventory = {
+      ui: {
+        panel_count: 11,
+        panels: [{ label: "Today" }, { label: "Usage Insights" }],
+      },
+      prompts: {
+        prompt_class_count: 2,
+        live_count: 1,
+        planning_count: 1,
+        classes: [{ name: "differentiate_material" }, { name: "extract_worksheet" }],
+      },
+      api: {
+        mount_count: 1,
+        endpoint_count: 1,
+        endpoints: [{ method: "GET", path: "/api/example", route_file: "services/orchestrator/routes/example.ts" }],
+      },
+    };
+    await writeFile(path.join(rootDir, "docs/prompt-contracts.md"), "", "utf8");
+    await writeFile(path.join(rootDir, "docs/development-gaps.md"), "", "utf8");
+    await writeFile(path.join(rootDir, "docs/api-surface.md"), formatApiSurfaceMarkdown(fakeInventory), "utf8");
+
+    const validation = await validateCanonicalInventoryClaims(rootDir, fakeInventory);
+
+    expect(validation.ok).toBe(false);
+    expect(validation.issues).toEqual(expect.arrayContaining([
+      expect.stringContaining("README.md primary panel count is 10"),
+      expect.stringContaining("CLAUDE.md teacher-facing panel count is 10"),
+      expect.stringContaining("CLAUDE.md prompt class count is 12"),
+      expect.stringContaining("CLAUDE.md prompt-class list missing: extract_worksheet"),
+      expect.stringContaining("CLAUDE.md panel list missing: Usage Insights"),
+    ]));
+  });
+
+  it("formats a markdown inventory artifact", async () => {
+    const rootDir = path.resolve(__dirname, "../../..");
+    const inventory = await buildSystemInventory(rootDir);
+    const markdown = formatInventoryMarkdown(inventory);
+
+    expect(markdown).toContain("# System Inventory");
+    expect(markdown).toContain("- Primary panels: 12");
+    expect(markdown).toContain("- Exact endpoints: 34");
+    expect(markdown).toContain("| `prepare_tomorrow_plan` | planning | yes | yes | yes |");
+  });
+
+  it("formats a deterministic API surface artifact", async () => {
+    const rootDir = path.resolve(__dirname, "../../..");
+    const inventory = await buildSystemInventory(rootDir);
+    const markdown = formatApiSurfaceMarkdown(inventory);
+
+    expect(markdown).toContain("# API Surface Inventory");
+    expect(markdown).toContain("- Exact endpoints: 34");
+    expect(markdown).toContain("| POST | `/api/family-message/approve` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |");
+    expect(markdown).toContain("| GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea |");
+  });
+});
+
+describe("memory admin helpers", () => {
+  it("structurally anonymizes classroom and student references", () => {
+    const exported = {
+      generated_at: "2026-04-11T10:00:00.000Z",
+      export_type: "classroom-memory",
+      classroom_id: "room-one",
+      source_db: "/tmp/room-one.sqlite",
+      table_counts: {
+        interventions: 1,
+        feedback: 1,
+      },
+      tables: {
+        interventions: [
+          {
+            record_id: "rec-1",
+            classroom_id: "room-one",
+            student_refs: ["Ada", "Ben"],
+            record_json: {
+              classroom_id: "room-one",
+              student_refs: ["Ada"],
+              observation: "Ada and Ben worked together during math.",
+            },
+          },
+        ],
+        feedback: [
+          {
+            id: "fb-1",
+            classroom_id: "room-one",
+            comment: "Ada follow-up was clear.",
+          },
+        ],
+      },
+    };
+    const anonymized = anonymizeClassroomExport(exported);
+    const serialized = JSON.stringify(anonymized);
+
+    expect(anonymized.classroom_id).toBe("classroom-001");
+    expect(anonymized.anonymization.student_ref_count).toBe(2);
+    expect(anonymized.source_db).toBe("redacted-source.sqlite");
+    expect(serialized).toContain("student-001");
+    expect(serialized).not.toContain("room-one");
+    expect(serialized).not.toContain("Ada");
+    expect(serialized).not.toContain("Ben");
+  });
+
+  it("refuses and then performs confirmed classroom memory purge", async () => {
+    const dir = await makeTempDir();
+    const dbPath = path.join(dir, "room-one.sqlite");
+    const walPath = `${dbPath}-wal`;
+    const shmPath = `${dbPath}-shm`;
+    await writeFile(dbPath, "", "utf8");
+    await writeFile(walPath, "", "utf8");
+    await writeFile(shmPath, "", "utf8");
+
+    await expect(purgeClassroomMemory({ dbPath })).rejects.toThrow("--confirm");
+    const removed = await purgeClassroomMemory({ dbPath, confirm: true });
+    expect(removed).toEqual([dbPath, walPath, shmPath]);
+    expect(await readdir(dir)).toEqual([]);
   });
 });
 

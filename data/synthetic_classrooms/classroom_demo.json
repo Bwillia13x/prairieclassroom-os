@@ -20,6 +20,13 @@
     "Speech-language consult available biweekly"
   ],
   "sub_ready": true,
+  "retention_policy": {
+    "default_days": 730,
+    "overrides": {
+      "sessions": 90,
+      "feedback": 180
+    }
+  },
   "students": [
     {
       "student_id": "D1",

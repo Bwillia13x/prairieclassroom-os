@@ -19,6 +19,7 @@ export type ActiveTab =
   | "language-tools"
   | "support-patterns"
   | "ea-briefing"
+  | "ea-load"
   | "complexity-forecast"
   | "survival-packet"
   | "usage-insights";
@@ -26,7 +27,7 @@ export type ActiveTab =
 export const TAB_ORDER: ActiveTab[] = [
   "today",
   "differentiate", "language-tools",
-  "tomorrow-plan", "ea-briefing", "complexity-forecast", "log-intervention", "survival-packet",
+  "tomorrow-plan", "ea-briefing", "ea-load", "complexity-forecast", "log-intervention", "survival-packet",
   "family-message", "support-patterns", "usage-insights",
 ];
 
@@ -55,6 +56,7 @@ export const TAB_META: Record<ActiveTab, { label: string; shortLabel: string; gr
   "language-tools": { label: "Language Tools", shortLabel: "Language", group: "prep" },
   "tomorrow-plan": { label: "Tomorrow Plan", shortLabel: "Plan", group: "ops" },
   "ea-briefing": { label: "EA Briefing", shortLabel: "EA Brief", group: "ops" },
+  "ea-load": { label: "EA Load", shortLabel: "EA Load", group: "ops" },
   "complexity-forecast": { label: "Forecast", shortLabel: "Forecast", group: "ops" },
   "log-intervention": { label: "Log Intervention", shortLabel: "Log", group: "ops" },
   "survival-packet": { label: "Sub Packet", shortLabel: "Sub Packet", group: "ops" },

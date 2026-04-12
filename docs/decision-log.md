@@ -13,7 +13,7 @@ Use this file as a lightweight ADR register.
 
 ---
 
-## 2026-04-12 — Letterpress Tactility for cards and buttons
+### 2026-04-12 — Letterpress Tactility for cards and buttons
 
 **Context:** The 2026-04-12 light-palette editorial-letterpress sprint
 (see `docs/superpowers/specs/2026-04-12-light-palette-editorial-letterpress-design.md`)
@@ -88,6 +88,36 @@ raw-class call sites in one sprint.
   the panel doesn't consume `--color-surface-glass`. This was already
   true before this sprint and is not made worse — flagged here for
   awareness only.
+
+---
+
+### 2026-04-12 — Endpoint role scopes for adult workflows
+
+- **Decision:** Add optional `X-Classroom-Role` handling to classroom-code auth, enforce route-level role scopes for teacher-only and teacher/EA API surfaces, and extend the generated API inventory with a `Role scope` column.
+- **Why:** The operating system needs a concrete adult-boundary layer before real-data rehearsal. Classroom-code access alone cannot distinguish teacher-owned raw history and generation routes from scoped EA coordination routes.
+- **Alternatives considered:** Wait for a full account/SSO system, or keep role boundaries documentation-only. Full identity is still outside the local-first pilot scope; documentation-only boundaries were too weak for the next readiness step.
+- **Consequences:** Missing role headers default to `teacher` for backwards compatibility. Invalid role headers return `classroom_role_invalid`; disallowed roles return `classroom_role_forbidden`. Teacher-only routes cover generation, schedule writes, raw history, health, and student summaries. Teacher/EA routes cover Today, EA briefing, debt register, feedback, and session summaries. Substitute and reviewer roles are declared but intentionally receive no raw endpoint access until dedicated bounded views exist.
+- **What would change this:** A school-managed deployment, multi-teacher accounts, or external sharing would require real identity, invitation state, per-user audit logs, and persistence-backed role assignment rather than header-based local role scoping.
+
+---
+
+### 2026-04-12 — Exact API inventory and memory lifecycle controls
+
+- **Decision:** Extend the generated inventory to exact Express endpoint parsing and add `docs/api-surface.md` as a deterministic endpoint table. Add `npm run memory:admin` for per-classroom SQLite summary, export, structural anonymization, backup, purge, and restore.
+- **Why:** Route-base counts were useful but not enough to prevent endpoint-level documentation drift. Real-data pilot readiness also needed concrete operator controls for memory export, de-identification, deletion, and recovery instead of documentation-only blockers.
+- **Alternatives considered:** Keep endpoint tables manually maintained in CLAUDE/README, or wait for a full OpenAPI generator. Manual tables had already drifted; OpenAPI generation would require broader route/schema refactoring than the current risk justified. For memory controls, a UI was deferred because pilot operators need safe local CLI controls first.
+- **Consequences:** `npm run system:inventory:check` now fails if `docs/api-surface.md` drifts from the route files. Memory lifecycle operations are available without introducing hosted storage or external services. `purge` and `restore` require `--confirm`; anonymized exports still carry a free-text review warning because structural replacement cannot guarantee complete de-identification.
+- **What would change this:** A move to multi-user or school-managed deployment would require persistence-backed role assignment, retention policy enforcement in schema, and authenticated audit logs rather than local-only CLI controls.
+
+---
+
+### 2026-04-12 — Canonical inventory and pilot-readiness guardrails
+
+- **Decision:** Add code-derived system inventory tooling (`npm run system:inventory`, `npm run system:inventory:check`) and an operator status command (`npm run ops:status`). Add `docs/system-inventory.md` as the generated surface inventory and introduce `docs/pilot-readiness.md` plus expanded safety-governance rules for real classroom data.
+- **Why:** The system had reached a stage where documentation drift was becoming a credibility risk: canonical docs could disagree about panel counts, prompt-class counts, and proof posture. The next strategic gap is not another workflow; it is pilot-readiness, role boundaries, data lifecycle control, and proof claims that remain tied to artifacts.
+- **Alternatives considered:** Manually updating the README and CLAUDE count only. That fixes the immediate mismatch but does not prevent future drift. Building full route-contract generation now was deferred because the first useful guardrail is panel/prompt/tier claim validation.
+- **Consequences:** Public and operator docs now have a generated inventory source. Readiness docs explicitly block real classroom data until adult roles, export/delete/anonymize/backup controls, incident handling, and human validation artifacts exist.
+- **What would change this:** If route-level documentation starts drifting, extend the inventory helper to parse exact endpoint methods and compare them against `docs/prompt-contracts.md` and `docs/architecture.md`.
 
 ---
 
@@ -533,6 +563,26 @@ raw-class call sites in one sprint.
 - **Alternatives considered:** (1) Fix only the 4 critical auth endpoints without standardizing the rest — would leave 5 more routes without input validation, creating future vulnerability surface. (2) Use branded ClassroomId types instead of runtime validation — stronger type safety but requires changes to all call sites and doesn't protect against malformed URL params at the HTTP boundary. (3) Generate web types at build time with a codegen step — adds build complexity; `import type` re-exports achieve the same result with zero runtime cost and no tooling.
 - **Consequences:** Test count increased from 568 to 595 (27 test files). Every GET endpoint in the system now validates classroomId format before processing. Error responses are structurally uniform (category, retryable, detail_code), enabling the web client's auth retry and error display logic to work consistently. The web layer's type file cannot drift from shared schemas. The eval runner's validators are independently testable. The extract-worksheet schema is now accessible via the @prairie/shared barrel export.
 - **What would change this:** If Express 5 changes sub-router param resolution behavior. If the web app needs to validate server responses at runtime (would need Zod schemas, not just type imports). If the prompt injection rule set causes false positives in multilingual classroom text (the rules are English-biased and may need localization for French immersion classrooms).
+
+---
+
+### 2026-04-12 — Maintenance host is hardware-infeasible for the full Ollama lane
+
+- **Decision:** Record explicitly that the current maintenance host (Apple M1, 8 GiB RAM, ~6.76 GiB free disk) cannot run the full dual-speed Ollama lane regardless of whether Ollama itself is installed. The planning-tier `gemma4:27b` model requires substantially more RAM than 8 GiB under any reasonable quantization and its weights substantially exceed the available free disk. Update `docs/pilot/claims-ledger.md`, `docs/development-gaps.md` G-02, and the CLAUDE.md framing so future sessions and public copy describe "commodity Alberta hardware" as "≥ 16 GiB RAM and ≥ 40 GiB free disk" rather than "any Alberta school laptop." The `gemma4:4b` live-tier model may still be feasible on this host; a live-tier-only Ollama configuration would exercise 7 of the 13 prompt classes and could produce a partial privacy-first proof artifact if we later decide to pursue it.
+- **Why:** The strategic assessment on 2026-04-11 treated the Ollama lane as "host-blocked on Ollama install + model pull." The 2026-04-12 non-destructive `host:preflight:ollama` run (artifact `output/host-preflight/2026-04-12T16-10-14-124Z.json`) revealed the block is structurally stronger — the host cannot fit the planning-tier weights into RAM or onto disk. Continuing to describe the Ollama lane as "unblockable by installing Ollama" on this host would be factually misleading, and a future sprint could waste hours trying to install and pull models that the machine physically cannot run. Capturing this as a decision-log entry rather than only a gap-doc update is appropriate because it changes the definition of "commodity hardware" the project is willing to claim publicly.
+- **Alternatives considered:** (1) Ignore the finding and continue to treat Ollama as an operational TODO on this host — rejected because it would make the next person to try the lane waste meaningful time discovering the same constraint. (2) Build a live-tier-only Ollama configuration immediately to produce a partial proof — deferred because a live-tier-only proof covers only 7/13 prompt classes and would invite confusion about which parts of the system are "privacy-first proven" and which are not; if this is pursued it should be framed as "partial privacy proof" with explicit claims-ledger rows, not as a general solution. (3) Buy / rent different hardware — explicitly outside the zero-cost boundary and not authorized. (4) Rework the dual-speed architecture to allow the 4B live model to serve planning-tier prompts at lower quality — rejected, planning tier is planning tier for a reason.
+- **Consequences:** `docs/pilot/claims-ledger.md` gains a `contradicted` row for "Ollama lane is feasible on the current maintenance host" and the existing `unsupported` row for "commodity Alberta hardware" gains a footnote defining the minimum viable hardware profile. `docs/development-gaps.md` G-02 "What remains" gains a fork — either pick a host with ≥ 16 GiB RAM + ≥ 40 GiB disk for the full lane, or run a live-tier-only configuration on this host with explicit scope limits. Public copy must not describe 8-GiB MacBook Airs as a target deployment host. The privacy-first narrative can still hold, but it must specify the hardware profile that supports it.
+- **What would change this:** A host with the minimum profile becoming available for Ollama execution. Gemma model quantizations that genuinely fit a 27B-equivalent into 8 GiB (unlikely without significant quality loss). A decision to redesign the dual-speed architecture to consolidate on the 4B model for both tiers (would require a full prompt-contract review and is a much larger move than closing G-02).
+
+---
+
+### 2026-04-12 — EA Cognitive Load Balancer (Phase 2 capability)
+
+- **Decision:** Add a 13th prompt class `balance_ea_load` (planning tier, thinking on, retrieval required) that produces a per-block EA cognitive-load profile for tomorrow's schedule, with a `load_level` enum of `low | medium | high | break`, per-block `load_factors`, optional `redistribution_suggestion` strings, and cross-block `alerts`. Retrieval is shared with the complexity forecast via `buildForecastContext`. The prompt class ships with a full end-to-end surface: Zod schema (`packages/shared/schemas/ea-load.ts`), orchestrator route (`/api/ea-load`, teacher+EA scope), prompt builder and parser (`services/orchestrator/ea-load.ts`), mock fixture (`MOCK_EA_LOAD` + thinking variant in `services/inference/harness.py`), three eval cases (schema, safety, prompt injection), a 12th web panel (`EALoadPanel`), and coverage in `prompt-contracts.md`. The parser enforces the invariant that blocks where `ea_available` is false always report `load_level: "break"`, regardless of what the model returned.
+- **Why:** The EA Cognitive Load Balancer was one of the two remaining Phase 2 capabilities in `docs/future-development.md` and the more strategically distinctive of the two — inclusive education in Alberta leans heavily on Educational Assistants, and no other classroom tool models EA load as a first-class signal. Shipping it closes the gap between the four Phase-1 capabilities (forecast, scaffold decay, survival packet, debt register — all already shipped) and the EA-coordination story the project has been framing since the initial sprint. Cross-Adult Handoff Protocol, the other unshipped Phase 2 capability, is deferred because it requires multi-user real-time delivery and only earns its complexity once a real teacher asks for it.
+- **Alternatives considered:** (1) Extend the existing EA Briefing panel with a load section instead of a new prompt class — rejected because EA Briefing is live tier (no thinking) and uses different retrieval, while load analysis needs deliberate cross-block reasoning. (2) Compute load deterministically from schedule metadata alone (no LLM) — rejected because the intervention history adds per-student intensity signal that is the whole point of modeling EA load over time. (3) Introduce a new memory table for persisted load profiles — rejected; the profile is always computed fresh from current schedule + memory, mirroring how the Debt Register avoids stale debt-about-debt.
+- **Consequences:** Prompt-class count rises from 12 to 13, planning-tier count from 5 to 6, primary panel count from 11 to 12, API endpoint count from 33 to 34. `docs/system-inventory.md` and `docs/api-surface.md` regenerated. Test count rises (9 ea-load tests covering prompt shape, parser invariants, and cross-classroom alias scrubbing; 8 new schema tests for the `EALoadProfile` / `EALoadBlock` / `EALoadLevel` schemas). Eval count rises from 117 to 120 (three `eal-*` cases). The `apps/web/src/appReducer.ts` tab order now includes `ea-load` inside the Ops nav group.
+- **What would change this:** Evidence from a real teacher pilot that EA load profiles produce friction rather than clarity — either too generic to be decision-useful, too accusatory in framing even after operational rewording, or too noisy when the `load_factors` are thin. If that happens, the first move is to tighten the prompt's "load factors" instructions; only after that fails does the capability move into deferral status.
 
 ---
 

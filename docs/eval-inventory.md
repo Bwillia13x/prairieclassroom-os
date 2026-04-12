@@ -8,9 +8,15 @@ Generated: 2026-04-10
 
 ## Summary Statistics
 
-**Total eval case files:** 96 JSON cases (plus 1 README)
+**Total eval case files:** 126 JSON cases (plus 1 README)
 
 *Updated 2026-04-10: +6 prompt injection cases (int-007, ea-007, fcst-006, decay-006, simp-005, vocab-004). Category `safety_boundaries` standardized to `safety_correctness` across all cases.*
+
+*Updated 2026-04-12: +18 bilingual `draft_family_message` cases (`msg-lang-*`) covering Punjabi, Tagalog, Mandarin, French, Arabic, and Ukrainian across three message types each. Authoring-only — intended to run on the next hosted-Gemini refresh; mock-mode validation continues to pass because mock fixtures respond uniformly across target languages.*
+
+*Updated 2026-04-12: +3 `balance_ea_load` cases (`eal-001-schema`, `eal-002-safety`, `eal-003-prompt-injection`) shipped with the EA Cognitive Load Balancer prompt class.*
+
+*Updated 2026-04-12: +6 degraded-path / edge-case cases closing part of G-03: `msg-010-empty-context` (optional context omitted), `simp-006-minimum-grade-text` (very short source), `vocab-005-thin-artifact` (minimal source material), `ea-008-cold-memory` (classroom with minimal intervention history — retrieval relevance), `eal-004-no-ea-window` (full teacher-only day, every block should report break), `eal-005-minimal-roster` (small roster, must not invent aliases).*
 
 ### Cases per Prompt Class
 
@@ -19,19 +25,20 @@ Generated: 2026-04-10
 | `differentiate_material` | diff | 14 |
 | `prepare_tomorrow_plan` | plan | 13 |
 | `detect_support_patterns` | pat | 8 |
-| `draft_family_message` | msg | 8 |
+| `draft_family_message` | msg | 27 |
 | `generate_survival_packet` | surv | 7 |
-| `generate_ea_briefing` | ea | 6 |
+| `generate_ea_briefing` | ea | 7 |
 | `log_intervention` | int | 6 |
 | `forecast_complexity` | fcst | 5 |
 | `detect_scaffold_decay` | decay | 5 |
-| `simplify_for_student` | simp | 4 |
+| `balance_ea_load` | eal | 5 |
+| `simplify_for_student` | simp | 5 |
 | `complexity_debt_register` | debt | 4 |
-| `generate_vocab_cards` | vocab | 3 |
+| `generate_vocab_cards` | vocab | 4 |
 | `extract_worksheet` | extract | 3 |
 | `retrieve_latest_pattern` | pat (retrieval) | 2 |
 | Schedule endpoints (no prompt class) | sched | 2 |
-| **Total** | | **90** |
+| **Total** | | **126** |
 
 Note: pat-007 and pat-010 use `retrieve_latest_pattern` as their prompt class (a retrieval sub-route of support patterns). sched-001 and sched-002 have `prompt_class: null` and target schedule CRUD endpoints directly.
 
@@ -92,7 +99,7 @@ Note: Category names used in JSON files sometimes vary slightly from the runner'
 | `plan-012-cold-memory-minimal-artifacts.json` | retrieval_relevance | Still returns valid output when there are no explicit artifacts |
 | `plan-013-empty-memory-echo.json` | retrieval_relevance | Returns bounded response for classroom with effectively empty memory |
 
-### msg -- draft_family_message (8 cases)
+### msg -- draft_family_message (26 cases)
 
 | Filename | Category | Purpose |
 |---|---|---|
@@ -104,6 +111,27 @@ Note: Category names used in JSON files sometimes vary slightly from the runner'
 | `msg-006-non-english.json` | differentiation_quality | target_language=Spanish produces valid schema with safety boundaries |
 | `msg-007-prompt-injection.json` | safety_correctness | Ignores instruction-override language inside context |
 | `msg-008-nonlatin-context.json` | differentiation_quality | Tolerates mixed-script context and still returns safe draft |
+| `msg-009-persistence.json` | schema_reliability | Draft persists through memory store/retrieve round-trip |
+| `msg-lang-pa-routine.json` | differentiation_quality | target_language=Punjabi, routine_update — Alberta regional language |
+| `msg-lang-pa-praise.json` | differentiation_quality | target_language=Punjabi, praise |
+| `msg-lang-pa-concern.json` | safety_correctness | target_language=Punjabi, low_stakes_concern stays observational |
+| `msg-lang-tl-routine.json` | differentiation_quality | target_language=Tagalog, routine_update — Alberta regional language |
+| `msg-lang-tl-praise.json` | differentiation_quality | target_language=Tagalog, praise |
+| `msg-lang-tl-concern.json` | safety_correctness | target_language=Tagalog, low_stakes_concern stays observational |
+| `msg-lang-zh-routine.json` | differentiation_quality | target_language=Mandarin, routine_update |
+| `msg-lang-zh-praise.json` | differentiation_quality | target_language=Mandarin, praise |
+| `msg-lang-zh-concern.json` | safety_correctness | target_language=Mandarin, low_stakes_concern stays observational |
+| `msg-lang-fr-routine.json` | differentiation_quality | target_language=French — Alberta's second official language |
+| `msg-lang-fr-praise.json` | differentiation_quality | target_language=French, praise |
+| `msg-lang-fr-concern.json` | safety_correctness | target_language=French, low_stakes_concern stays observational |
+| `msg-lang-ar-routine.json` | differentiation_quality | target_language=Arabic, routine_update |
+| `msg-lang-ar-praise.json` | differentiation_quality | target_language=Arabic, praise |
+| `msg-lang-ar-concern.json` | safety_correctness | target_language=Arabic, low_stakes_concern stays observational |
+| `msg-lang-uk-routine.json` | differentiation_quality | target_language=Ukrainian, routine_update |
+| `msg-lang-uk-praise.json` | differentiation_quality | target_language=Ukrainian, praise |
+| `msg-lang-uk-concern.json` | safety_correctness | target_language=Ukrainian, low_stakes_concern stays observational |
+
+**Bilingual expansion (2026-04-12):** 18 new cases (`msg-lang-*`) cover three message types across six languages that represent Alberta K-6 classroom family-language demographics — Punjabi, Tagalog, Mandarin, French, Arabic, Ukrainian. These cases are authoring-only: they are discovered automatically by the runner on the next hosted-Gemini refresh. They do not change mock-mode expectations because mock fixtures respond uniformly regardless of target_language.
 
 ### int -- log_intervention (6 cases)
 
@@ -351,8 +379,8 @@ The extract cases use a different structure with an `assertions` array. Types in
 | `safety_boundaries` | 1 | Only surv-003. Most safety testing uses `safety_correctness` instead. These may be intended as the same category. |
 | `retrieval_relevance` | 6 | Only covers plan (2), pat (3), ea (1). No retrieval test for forecast, decay, or survival packet retrieval quality. |
 | Prompt injection | 6 | diff-008, plan-010, msg-007, pat-008, surv-006 and implicitly others. Missing for: int, ea, fcst, decay, simp, vocab, extract, debt, sched. |
-| Multilingual / non-Latin | 8 | diff-014, plan-011, msg-006, msg-008, int-006, fcst-005, simp-004, vocab-003. Missing for: ea, pat, decay, surv, debt, sched, extract. |
-| Edge case / empty input | 5 | diff-009 (no text), diff-010/011/012/013 (error paths), decay-004, debt-004, plan-009/012/013, pat-010. Missing for: msg, ea, simp, vocab, extract. |
+| Multilingual / non-Latin | 26 | diff-014, plan-011, msg-006, msg-008, int-006, fcst-005, simp-004, vocab-003, plus 18 `msg-lang-*` cases covering Punjabi, Tagalog, Mandarin, French, Arabic, Ukrainian across routine_update / praise / low_stakes_concern. Missing for: ea, pat, decay, surv, debt, sched, extract. |
+| Edge case / empty input | 11 | diff-009 (no text), diff-010/011/012/013 (error paths), decay-004, debt-004, plan-009/012/013, pat-010, msg-010 (empty context), simp-006 (minimum source text), vocab-005 (thin artifact), ea-008 (cold memory retrieval), eal-004 (no EA window), eal-005 (minimal roster). Still missing for: extract. |
 | Persistence / round-trip | 1 | Only pat-006 explicitly tests that a generated report is persisted. No persistence test for interventions, plans, or messages. |
 
 ### Structural Observations

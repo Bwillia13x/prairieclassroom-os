@@ -2,85 +2,86 @@
   color-scheme: light dark;
 
   /* Color tokens — Prairie palette */
-  --color-bg: light-dark(#f7f1e5, #1a1610);
-  --color-surface: light-dark(#fdfaf5, #231d16);
-  --color-surface-elevated: light-dark(#fffdf9, #2b241c);
-  --color-surface-muted: light-dark(#f2eadc, #1f1a14);
-  --color-surface-glass: light-dark(rgba(253, 250, 245, 0.7), rgba(35, 29, 22, 0.7));
-  --color-border: light-dark(#e8dfc8, #4a3d2d);
-  --color-border-strong: light-dark(#d9ccaf, #6a563d);
-  --color-text: light-dark(#30251a, #f5ecdf);
-  --color-text-secondary: light-dark(#746754, #c8baa4);
-  --color-text-tertiary: light-dark(#968874, #9f927d);
-  --color-accent: light-dark(#c97d2e, #d4a15c);
-  --color-accent-hover: light-dark(#ae6820, #e3b26e);
-  --color-accent-soft: light-dark(#f4e5cf, #3a2c1a);
-  --color-success: light-dark(#567053, #86a883);
-  --color-warning: light-dark(#c97d2e, #d7a15b);
-  --color-danger: light-dark(#b85c38, #cf8a69);
+  --color-bg: light-dark(#f5eddb, #1a1610);
+  --color-surface: light-dark(#fbf6ea, #231d16);
+  --color-surface-elevated: light-dark(#fffbf0, #2b241c);
+  --color-surface-muted: light-dark(#efe6d2, #1f1a14);
+  --color-surface-glass: light-dark(rgba(251, 246, 234, 0.72), rgba(35, 29, 22, 0.7));
+  --color-border: light-dark(#e2d6ba, #4a3d2d);
+  --color-border-strong: light-dark(#c9b896, #6a563d);
+  --color-border-input: light-dark(#7d6e4c, #a89072);
+  --color-text: light-dark(#2b2014, #f5ecdf);
+  --color-text-secondary: light-dark(#6b5d48, #c8baa4);
+  --color-text-tertiary: light-dark(#73654e, #9f927d);
+  --color-accent: light-dark(#ae671a, #d4a15c);
+  --color-accent-hover: light-dark(#935110, #e3b26e);
+  --color-accent-soft: light-dark(#f3e0c2, #3a2c1a);
+  --color-success: light-dark(#4a6648, #86a883);
+  --color-warning: light-dark(#a86f08, #d7a15b);
+  --color-danger: light-dark(#a8502e, #cf8a69);
   --color-analysis: light-dark(#756b8d, #b5b4d6);
   --color-provenance: light-dark(#5d7a7c, #9bbebd);
-  --color-pending: light-dark(#c08832, #ddb06b);
+  --color-pending: light-dark(#b47a26, #ddb06b);
 
   /* Semantic tinted backgrounds */
-  --color-bg-muted: light-dark(#f4ecdf, #241d16);
-  --color-bg-info: light-dark(#f3ede3, #2b241d);
-  --color-bg-success: light-dark(#edf3ea, #1e2720);
-  --color-bg-warning: light-dark(#fcf1df, #322615);
-  --color-bg-danger: light-dark(#f6efe9, #31221c);
-  --color-bg-accent: light-dark(#f6ead8, #382a18);
-  --color-bg-analysis: light-dark(#f1eef8, #27263a);
-  --color-bg-provenance: light-dark(#eef4f3, #1d2a2a);
-  --color-bg-pending: light-dark(#fff3e1, #392a18);
-  --color-bg-sun: light-dark(#fcf1df, #322615);
-  --color-bg-sage: light-dark(#ecf1eb, #202821);
-  --color-bg-slate: light-dark(#eef2f8, #1d2430);
-  --color-bg-forest: light-dark(#eaf2ed, #1d2620);
+  --color-bg-muted: light-dark(#f1e8d4, #241d16);
+  --color-bg-info: light-dark(#f0e9d8, #2b241d);
+  --color-bg-success: light-dark(#eaf0e3, #1e2720);
+  --color-bg-warning: light-dark(#faecc9, #322615);
+  --color-bg-danger: light-dark(#f4ebe2, #31221c);
+  --color-bg-accent: light-dark(#f5e6cc, #382a18);
+  --color-bg-analysis: light-dark(#eeebf5, #27263a);
+  --color-bg-provenance: light-dark(#ebf1f0, #1d2a2a);
+  --color-bg-pending: light-dark(#fdeed5, #392a18);
+  --color-bg-sun: light-dark(#faecc9, #322615);
+  --color-bg-sage: light-dark(#e9eee8, #202821);
+  --color-bg-slate: light-dark(#ebeff5, #1d2430);
+  --color-bg-forest: light-dark(#e7efea, #1d2620);
 
   /* Semantic borders */
-  --color-border-info: light-dark(#ded3bc, #64543a);
-  --color-border-success: light-dark(#c4d3be, #445c46);
-  --color-border-warning: light-dark(#e7c492, #87653a);
-  --color-border-danger: light-dark(#dfb8aa, #7f5445);
-  --color-border-accent: light-dark(#e4cbab, #8c693c);
-  --color-border-analysis: light-dark(#d7cee8, #555576);
-  --color-border-provenance: light-dark(#c9dad9, #486463);
-  --color-border-pending: light-dark(#ebcb9d, #8d6a3d);
-  --color-border-sun: light-dark(#e7c492, #87653a);
-  --color-border-sage: light-dark(#cad7c8, #566957);
-  --color-border-slate: light-dark(#cbd5e6, #53617c);
-  --color-border-forest: light-dark(#bfd3c6, #4d6a57);
+  --color-border-info: light-dark(#d8cbae, #64543a);
+  --color-border-success: light-dark(#bccfb6, #445c46);
+  --color-border-warning: light-dark(#e3be7a, #87653a);
+  --color-border-danger: light-dark(#d9aea0, #7f5445);
+  --color-border-accent: light-dark(#dfc298, #8c693c);
+  --color-border-analysis: light-dark(#cec4e0, #555576);
+  --color-border-provenance: light-dark(#c2d3d2, #486463);
+  --color-border-pending: light-dark(#e7c487, #8d6a3d);
+  --color-border-sun: light-dark(#e3be7a, #87653a);
+  --color-border-sage: light-dark(#c4d2c2, #566957);
+  --color-border-slate: light-dark(#c5cfe0, #53617c);
+  --color-border-forest: light-dark(#b9cdc0, #4d6a57);
 
   /* Semantic text */
-  --color-text-info: light-dark(#836f52, #d5c09f);
-  --color-text-success: light-dark(#435d41, #bdd5ba);
-  --color-text-warning: light-dark(#8c5611, #f0c37d);
-  --color-text-danger: light-dark(#8f4526, #f0b097);
-  --color-text-accent: light-dark(#865622, #f1c47d);
-  --color-text-analysis: light-dark(#605674, #ddd9ff);
-  --color-text-provenance: light-dark(#476263, #bfe1df);
-  --color-text-pending: light-dark(#8f5e1e, #f1c786);
-  --color-text-sun: light-dark(#8c5611, #f0c37d);
-  --color-text-sage: light-dark(#4f6954, #b7d0b6);
-  --color-text-slate: light-dark(#556982, #c7d2ea);
-  --color-text-forest: light-dark(#40634c, #c0dac6);
+  --color-text-info: light-dark(#6a5740, #d5c09f);
+  --color-text-success: light-dark(#3b5539, #bdd5ba);
+  --color-text-warning: light-dark(#7a5208, #f0c37d);
+  --color-text-danger: light-dark(#823d1f, #f0b097);
+  --color-text-accent: light-dark(#7a4c17, #f1c47d);
+  --color-text-analysis: light-dark(#584e6d, #ddd9ff);
+  --color-text-provenance: light-dark(#3f5a5b, #bfe1df);
+  --color-text-pending: light-dark(#805210, #f1c786);
+  --color-text-sun: light-dark(#7a5208, #f0c37d);
+  --color-text-sage: light-dark(#47604c, #b7d0b6);
+  --color-text-slate: light-dark(#4c6079, #c7d2ea);
+  --color-text-forest: light-dark(#385a44, #c0dac6);
 
   /* Section border colors */
-  --color-section-watchpoint: light-dark(#d4940e, #daa040);
-  --color-section-priority: light-dark(#5a8a7a, #70a090);
-  --color-section-ea: light-dark(#8a6a7a, #a08090);
-  --color-section-family: light-dark(#5a8a5a, #70a080);
-  --color-section-theme: light-dark(#8a7a50, #a09060);
-  --color-section-gap: light-dark(#c45a3a, #d07060);
-  --color-section-trend: light-dark(#5a9a5a, #70b080);
-  --color-section-focus: light-dark(#d4940e, #daa040);
+  --color-section-watchpoint: light-dark(#c88808, #daa040);
+  --color-section-priority: light-dark(#4f7a6c, #70a090);
+  --color-section-ea: light-dark(#7a5c6c, #a08090);
+  --color-section-family: light-dark(#4f7a4f, #70a080);
+  --color-section-theme: light-dark(#7a6b44, #a09060);
+  --color-section-gap: light-dark(#b04e30, #d07060);
+  --color-section-trend: light-dark(#4f8a4f, #70b080);
+  --color-section-focus: light-dark(#c88808, #daa040);
 
   /* Variant type badge colors */
-  --color-variant-core: light-dark(#5a7a8a, #70a0b0);
-  --color-variant-eal: light-dark(#7a5a8a, #a080b0);
-  --color-variant-chunked: light-dark(#b07a20, #d0a040);
-  --color-variant-ea-group: light-dark(#4a8a5a, #70b080);
-  --color-variant-extension: light-dark(#b05040, #d07060);
+  --color-variant-core: light-dark(#4f6d7d, #70a0b0);
+  --color-variant-eal: light-dark(#6d4f7d, #a080b0);
+  --color-variant-chunked: light-dark(#a06c16, #d0a040);
+  --color-variant-ea-group: light-dark(#3f7a4f, #70b080);
+  --color-variant-extension: light-dark(#9d4434, #d07060);
 
   /* Forecast colors */
   --color-forecast-low: light-dark(#4a8a5a, #70b080);
@@ -93,16 +94,18 @@
   --color-forecast-high-bg: light-dark(#fceeed, #2c1c18);
   --color-forecast-high-text: light-dark(#8a3020, #e0a090);
 
-  --color-approve: light-dark(#547d52, #77996f);
-  --color-approve-hover: light-dark(#446b43, #88a87d);
-  --color-text-on-accent: light-dark(#24190f, #1a1610);
+  --color-approve: light-dark(#476d45, #77996f);
+  --color-approve-hover: light-dark(#375c35, #88a87d);
+  --color-text-on-accent: light-dark(#000000, #1a1610);
 
   /* Elevation — shadow color primitives for light-dark switching */
+  --_shadow-xs-a: light-dark(rgba(148, 110, 44, 0.03), rgba(0, 0, 0, 0.10));
   --_shadow-sm-a: light-dark(rgba(148, 110, 44, 0.04), rgba(0, 0, 0, 0.12));
-  --_shadow-md-a: light-dark(rgba(180, 140, 60, 0.04), rgba(0, 0, 0, 0.14));
-  --_shadow-lg-a: light-dark(rgba(162, 121, 46, 0.04), rgba(0, 0, 0, 0.16));
-  --_shadow-lg-b: light-dark(rgba(162, 121, 46, 0.06), rgba(0, 0, 0, 0.18));
+  --_shadow-md-a: light-dark(rgba(180, 140, 60, 0.06), rgba(0, 0, 0, 0.14));
+  --_shadow-lg-a: light-dark(rgba(162, 121, 46, 0.06), rgba(0, 0, 0, 0.16));
+  --_shadow-lg-b: light-dark(rgba(162, 121, 46, 0.08), rgba(0, 0, 0, 0.18));
 
+  --shadow-xs: 0 1px 1px var(--_shadow-xs-a), 0 1px 3px var(--_shadow-xs-a);
   --shadow-sm: 0 1px 2px var(--_shadow-sm-a), 0 2px 8px var(--_shadow-sm-a), 0 4px 16px var(--_shadow-sm-a);
   --shadow-md: 0 2px 8px var(--_shadow-md-a), 0 8px 16px var(--_shadow-md-a), 0 16px 32px var(--_shadow-md-a);
   --shadow-lg: 0 4px 12px var(--_shadow-lg-a), 0 16px 32px var(--_shadow-lg-a), 0 32px 64px var(--_shadow-lg-b);
@@ -183,4 +186,27 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
+}
+
+/* ------------------------------------------------------------
+   Accessibility preference overrides
+   See docs/dark-mode-contract.md for the rationale and scope.
+   ------------------------------------------------------------ */
+
+@media (prefers-contrast: more) {
+  :root {
+    --color-text-secondary: light-dark(#5a4f3c, #e8dcc2);
+    --color-text-tertiary: light-dark(#5e5140, #d6c7a8);
+    --color-border: light-dark(#b0a082, #7a674c);
+    --color-border-strong: light-dark(#6e5e42, #c4ad85);
+    --color-border-input: light-dark(#5e4f34, #d4bb8c);
+    --color-accent: light-dark(#a85e10, #f3b864);
+    --color-accent-hover: light-dark(#8e4e08, #ffc978);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --color-surface-glass: var(--color-surface);
+  }
 }

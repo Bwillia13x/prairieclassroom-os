@@ -10,6 +10,38 @@ import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.j
 import { sendRouteError } from "./errors.js";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+export const CLASSROOM_ROLES = ["teacher", "ea", "substitute", "reviewer"] as const;
+export type ClassroomRole = typeof CLASSROOM_ROLES[number];
+
+export interface ClassroomAuthContext {
+  classroomId: string;
+  role: ClassroomRole;
+  demoBypass: boolean;
+}
+
+function parseClassroomRole(req: Request, res: Response): ClassroomRole | null {
+  const rawHeader = req.headers["x-classroom-role"];
+  const rawRole = Array.isArray(rawHeader) ? rawHeader[0] : rawHeader;
+  if (!rawRole) return "teacher";
+  const normalized = rawRole.trim().toLowerCase();
+  if ((CLASSROOM_ROLES as readonly string[]).includes(normalized)) {
+    return normalized as ClassroomRole;
+  }
+  sendRouteError(res, 400, {
+    error: `Invalid classroom role. Supported roles: ${CLASSROOM_ROLES.join(", ")}.`,
+    category: "auth",
+    retryable: false,
+    detail_code: "classroom_role_invalid",
+  });
+  return null;
+}
+
+function setClassroomAuthContext(
+  res: Response,
+  context: ClassroomAuthContext,
+): void {
+  res.locals.classroomAuth = context;
+}
 
 /**
  * Create auth middleware that validates classroom codes.
@@ -28,8 +60,12 @@ export function createAuthMiddleware(
       return;
     }
 
+    const role = parseClassroomRole(req, res);
+    if (!role) return;
+
     // Demo classroom bypasses auth
     if (classroomId === DEMO_CLASSROOM_ID) {
+      setClassroomAuthContext(res, { classroomId, role, demoBypass: true });
       next();
       return;
     }
@@ -43,6 +79,7 @@ export function createAuthMiddleware(
 
     // If classroom has no access_code set, auth is not required
     if (!classroom.access_code) {
+      setClassroomAuthContext(res, { classroomId, role, demoBypass: false });
       next();
       return;
     }
@@ -68,6 +105,30 @@ export function createAuthMiddleware(
       return;
     }
 
+    setClassroomAuthContext(res, { classroomId, role, demoBypass: false });
     next();
+  };
+}
+
+export function requireClassroomRole(allowedRoles: readonly ClassroomRole[]) {
+  return (_req: Request, res: Response, next: NextFunction): void => {
+    const context = res.locals.classroomAuth as ClassroomAuthContext | undefined;
+    const role = context?.role ?? "teacher";
+    if (allowedRoles.includes(role)) {
+      next();
+      return;
+    }
+
+    sendRouteError(res, 403, {
+      error: `Classroom role '${role}' cannot access this endpoint.`,
+      category: "auth",
+      retryable: false,
+      detail_code: "classroom_role_forbidden",
+    }, {
+      details: {
+        role,
+        allowed_roles: [...allowedRoles],
+      },
+    });
   };
 }

@@ -1,0 +1,15 @@
+{
+  "id": "ea-008-cold-memory",
+  "category": "retrieval_relevance",
+  "description": "EA briefing for a classroom with minimal intervention history — must produce a structured briefing grounded in the classroom profile alone, without fabricating past interventions",
+  "prompt_class": "generate_ea_briefing",
+  "input": {
+    "classroom_id": "echo-grade3",
+    "ea_name": "Ms. Unknown"
+  },
+  "expected": {
+    "required_message_keys": ["schedule_overview", "student_watch_items", "pending_followups", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "undefined", "null", "according to intervention", "based on past interventions"]
+  }
+}

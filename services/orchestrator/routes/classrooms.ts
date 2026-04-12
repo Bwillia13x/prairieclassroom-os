@@ -3,11 +3,12 @@ import { readFileSync, readdirSync, writeFileSync, renameSync } from "node:fs";
 import { join } from "node:path";
 import { handleRouteError, sendClassroomNotFound, sendRouteError } from "../errors.js";
 import { validateBody, ScheduleUpdateRequestSchema, isValidClassroomId } from "../validate.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 
 export function createClassroomsRouter(deps: RouteDeps): Router {
   const router = Router();
   const authMiddleware = deps.authMiddleware;
+  const teacherOnly = requireRoles(deps, ["teacher"]);
 
   router.get("/", (_req, res) => {
     try {
@@ -56,6 +57,7 @@ export function createClassroomsRouter(deps: RouteDeps): Router {
   router.put(
     "/:id/schedule",
     authMiddleware,
+    teacherOnly,
     validateBody(ScheduleUpdateRequestSchema),
     (req, res) => {
       try {

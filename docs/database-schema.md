@@ -1,6 +1,6 @@
 # PrairieClassroom OS — Database Schema Reference
 
-*Updated 2026-04-10*
+*Updated 2026-04-12*
 
 ## Overview
 
@@ -16,6 +16,22 @@ PrairieClassroom OS uses **per-classroom SQLite databases** with WAL (Write-Ahea
 - WAL mode is enabled on every new connection: `PRAGMA journal_mode = WAL`
 - WAL checkpoints run every 5 minutes and on graceful shutdown (`SIGTERM`, `SIGINT`)
 - Connections are closed and WAL files flushed on process exit via `closeAll()`
+
+## Operator lifecycle commands
+
+Per-classroom memory lifecycle operations are exposed through `npm run memory:admin`:
+
+```bash
+npm run memory:admin -- summary --classroom <classroom-id>
+npm run memory:admin -- export --classroom <classroom-id>
+npm run memory:admin -- anonymize --classroom <classroom-id>
+npm run memory:admin -- backup --classroom <classroom-id>
+npm run memory:admin -- prune --classroom <classroom-id> --confirm [--default-days <n>] [--profile <file>]
+npm run memory:admin -- purge --classroom <classroom-id> --confirm
+npm run memory:admin -- restore --classroom <classroom-id> --from <backup.sqlite> --confirm
+```
+
+`summary`, `export`, `anonymize`, and `backup` are non-destructive. `purge` removes the classroom `.sqlite`, `.sqlite-wal`, and `.sqlite-shm` files and writes a tombstone artifact under `output/memory-admin/`. `restore` backs up the existing database before replacing it when a prior database exists. `anonymize` structurally replaces classroom IDs and detected student-reference fields; operators must still review free text before sharing exports outside a pilot boundary. `prune` reads the `retention_policy` from the classroom profile JSON (or `--default-days`) and deletes rows older than the configured window from every retention-eligible table (`generated_plans`, `generated_variants`, `family_messages`, `interventions`, `pattern_reports`, `complexity_forecasts`, `scaffold_reviews`, `survival_packets`, `feedback`, `sessions`). Per-table overrides in the policy take precedence over `default_days`; null / missing / zero retention leaves the affected table untouched. Every prune run writes a tombstone artifact naming the policy source, per-table cutoffs, and rows removed — the intended pilot-audit evidence for governance conversations.
 
 ## Classroom ID validation
 
@@ -177,6 +193,6 @@ All retrieval functions use safe JSON deserialization — corrupted records are 
 
 ## Migration notes
 
-There is currently no formal migration system. Schema changes are applied via `CREATE TABLE IF NOT EXISTS` and `CREATE INDEX IF NOT EXISTS` on connection open. This is acceptable for single-process deployments but would need a migration framework for multi-instance production.
+Schema changes run through the lightweight migration runner in `services/memory/migrate.ts`. Numbered SQL files live in `services/memory/migrations/`, and applied versions are tracked in `_migrations` per classroom database. Migrations run inside a transaction and use `IF NOT EXISTS` where appropriate for compatibility with databases created before the migration runner existed.
 
-To reset a classroom's memory: delete the `.sqlite` file from the memory directory and restart the orchestrator.
+To reset a classroom's memory, prefer `npm run memory:admin -- purge --classroom <classroom-id> --confirm` over manual file deletion so a tombstone artifact is recorded.

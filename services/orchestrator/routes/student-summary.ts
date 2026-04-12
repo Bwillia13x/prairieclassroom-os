@@ -2,14 +2,15 @@ import { Router } from "express";
 import { getStudentSummaries } from "../../memory/student-summary.js";
 import { handleRouteError, sendClassroomNotFound, sendRouteError } from "../errors.js";
 import { isValidClassroomId } from "../validate.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 
 export function createStudentSummaryRouter(deps: RouteDeps): Router {
   const router = Router();
   const authMiddleware = deps.authMiddleware;
+  const teacherOnly = requireRoles(deps, ["teacher"]);
 
-  router.get("/:id/student-summary", authMiddleware, (req, res) => {
+  router.get("/:id/student-summary", authMiddleware, teacherOnly, (req, res) => {
     try {
       const rawId = req.params.id as string;
       if (!isValidClassroomId(rawId)) {

@@ -37,6 +37,9 @@ import type {
   ClassroomHealth,
   StudentSummary,
   SurvivalPacket,
+  EALoadProfile,
+  EALoadBlock,
+  EALoadLevel,
 } from "@prairie/shared";
 
 // ── Domain model re-exports ─────────────────────────────────────────────────
@@ -75,6 +78,9 @@ export type {
   ClassroomHealth,
   StudentSummary,
   SurvivalPacket,
+  EALoadProfile,
+  EALoadBlock,
+  EALoadLevel,
 };
 
 // ── Classroom profile (sanitized API view) ──────────────────────────────────
@@ -154,6 +160,12 @@ export interface ComplexityForecastRequest {
   teacher_notes?: string;
 }
 
+export interface EALoadRequest {
+  classroom_id: string;
+  target_date: string;
+  teacher_notes?: string;
+}
+
 // ── Response wrapper types ──────────────────────────────────────────────────
 
 export interface DifferentiateResponse {
@@ -210,6 +222,13 @@ export interface EABriefingResponse {
 
 export interface ComplexityForecastResponse {
   forecast: ComplexityForecast;
+  thinking_summary: string | null;
+  model_id: string;
+  latency_ms: number;
+}
+
+export interface EALoadResponse {
+  profile: EALoadProfile;
   thinking_summary: string | null;
   model_id: string;
   latency_ms: number;

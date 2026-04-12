@@ -311,6 +311,8 @@ DEBT TREND
 
 ## 5. EA Cognitive Load Balancer
 
+**Status:** Implemented — 2026-04-12. See `docs/prompt-contracts.md` Contract I2 and `services/orchestrator/ea-load.ts`. Full end-to-end surface: shared schema, orchestrator route (`/api/ea-load`, teacher+EA scope), Python prompt builder + mock fixture, three eval cases (`eal-001-schema`, `eal-002-safety`, `eal-003-prompt-injection`), and a 12th web panel (`EALoadPanel`).
+
 ### Problem
 
 Educational assistants in Alberta typically support 3–5 students across the day, often floating between classrooms. Their cognitive load is invisible — to the system, to the teacher, and often to the EA themselves. An EA who has had three back-to-back high-intensity support sessions is less effective in the fourth, but nobody tracks this.

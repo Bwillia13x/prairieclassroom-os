@@ -65,7 +65,7 @@ select,
 textarea {
   color: var(--color-text);
   background: var(--color-surface);
-  border-color: var(--color-border);
+  border-color: var(--color-border-input);
 }
 
 a {
@@ -78,7 +78,7 @@ a {
 }
 
 ::selection {
-  background: rgba(201, 125, 46, 0.24);
+  background: color-mix(in srgb, var(--color-accent) 24%, transparent);
 }
 
 .num,
@@ -159,7 +159,9 @@ a {
   100% { background: transparent; }
 }
 
-/* Grain texture overlay — subtle analog warmth */
+/* Grain texture overlay — subtle analog warmth.
+   Suppressed in dark mode: the warm-brown dark palette plus the same
+   grain pattern compounds visible noise and hurts legibility. */
 body::before {
   content: "";
   position: fixed;
@@ -169,6 +171,25 @@ body::before {
   opacity: 0.03;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   background-size: 256px 256px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body::before {
+    display: none;
+  }
+}
+
+:root[data-theme="dark"] body::before {
+  display: none;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  body {
+    background: var(--color-bg);
+  }
+  body::before {
+    display: none;
+  }
 }
 
 /* Reduced motion — global fallback */

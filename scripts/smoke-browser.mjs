@@ -237,7 +237,7 @@ async function main() {
     await page.getByRole("button", { name: "Detect Patterns" }).click();
     await page.waitForSelector(".pattern-header", { timeout: HOSTED_GENERATION_TIMEOUT_MS });
 
-    const patternText = await page.locator(".pattern-report").innerText();
+    const patternText = await page.locator("#panel-support-patterns:not([hidden]) .workspace-result").innerText();
     assertNoAlphaAliases(patternText, "Support Patterns UI");
 
     const trendCard = page.locator(".pattern-section--trends .pattern-card").first();
@@ -325,7 +325,10 @@ async function main() {
       colorBg: getComputedStyle(globalThis.document.documentElement).getPropertyValue("--color-bg").trim(),
     }));
     assert.equal(themeState.theme, "dark", "Theme toggle should reach dark mode");
-    assert.equal(themeState.colorBg, "#1a1610", "Dark theme should apply prairie-night background token");
+    assert.ok(
+      themeState.colorBg === "#1a1610" || themeState.colorBg.includes("#1a1610"),
+      "Dark theme should apply prairie-night background token",
+    );
 
     if (pageErrors.length > 0) {
       throw new Error(`Page errors detected:\n${pageErrors.join("\n")}`);

@@ -49,6 +49,13 @@ output/playwright/
 output/release-gate/
 output/evals/
 output/vertex-endpoints/
+output/request-logs/
+output/memory-admin/
+output/access-audit/
+output/host-preflight/
+output/manual-run/
+output/contrast-report.md
+output/evidence-snapshots/
 apps/web/tsconfig.tsbuildinfo
 
 # SQLite classroom memory

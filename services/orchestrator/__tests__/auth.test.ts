@@ -1,27 +1,41 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createAuthMiddleware } from "../auth.js";
+import { createAuthMiddleware, requireClassroomRole } from "../auth.js";
 import type { Request, Response, NextFunction } from "express";
 import type { ClassroomProfile } from "../../../packages/shared/schemas/classroom.js";
 
 function mockReq(overrides: {
-  body?: Record<string, any>;
-  params?: Record<string, any>;
+  body?: Record<string, unknown>;
+  params?: Record<string, string>;
   headers?: Record<string, string>;
 }): Partial<Request> {
   return {
     body: overrides.body ?? {},
-    params: (overrides.params ?? {}) as any,
+    params: overrides.params ?? {},
     headers: overrides.headers ?? {},
   };
 }
 
-function mockRes(): { status: any; json: any; _status: number | null; _json: any } {
-  const res: any = {
+type MockResponse = {
+  _status: number | null;
+  _json: Record<string, unknown> | null;
+  locals: Record<string, unknown>;
+  status: (code: number) => MockResponse;
+  json: (data: Record<string, unknown>) => MockResponse;
+};
+
+function mockRes(): MockResponse {
+  const res: MockResponse = {
     _status: null,
     _json: null,
     locals: {},
-    status(code: number) { res._status = code; return res; },
-    json(data: any) { res._json = data; return res; },
+    status(code: number) {
+      res._status = code;
+      return res;
+    },
+    json(data: Record<string, unknown>) {
+      res._json = data;
+      return res;
+    },
   };
   return res;
 }
@@ -95,6 +109,43 @@ describe("createAuthMiddleware", () => {
     const res = mockRes();
     middleware(req as Request, res as unknown as Response, next);
     expect(next).toHaveBeenCalled();
+    expect(res.locals.classroomAuth).toMatchObject({
+      classroomId: "alpha-grade4",
+      role: "teacher",
+      demoBypass: false,
+    });
+  });
+
+  it("stores a supported classroom role from X-Classroom-Role", () => {
+    const req = mockReq({
+      body: { classroom_id: "alpha-grade4" },
+      headers: {
+        "x-classroom-code": "prairie-alpha-2026",
+        "x-classroom-role": "ea",
+      },
+    });
+    const res = mockRes();
+    middleware(req as Request, res as unknown as Response, next);
+    expect(next).toHaveBeenCalled();
+    expect(res.locals.classroomAuth).toMatchObject({
+      classroomId: "alpha-grade4",
+      role: "ea",
+    });
+  });
+
+  it("returns 400 when X-Classroom-Role is unsupported", () => {
+    const req = mockReq({
+      body: { classroom_id: "alpha-grade4" },
+      headers: {
+        "x-classroom-code": "prairie-alpha-2026",
+        "x-classroom-role": "student",
+      },
+    });
+    const res = mockRes();
+    middleware(req as Request, res as unknown as Response, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res._status).toBe(400);
+    expect(res._json?.detail_code).toBe("classroom_role_invalid");
   });
 
   it("returns 401 when code is required but not provided", () => {
@@ -103,10 +154,10 @@ describe("createAuthMiddleware", () => {
     middleware(req as Request, res as unknown as Response, next);
     expect(next).not.toHaveBeenCalled();
     expect(res._status).toBe(401);
-    expect(res._json.error).toContain("Authentication required");
-    expect(res._json.category).toBe("auth");
-    expect(res._json.retryable).toBe(false);
-    expect(res._json.detail_code).toBe("classroom_code_missing");
+    expect(res._json?.error).toContain("Authentication required");
+    expect(res._json?.category).toBe("auth");
+    expect(res._json?.retryable).toBe(false);
+    expect(res._json?.detail_code).toBe("classroom_code_missing");
   });
 
   it("returns 403 when wrong code is provided", () => {
@@ -118,10 +169,10 @@ describe("createAuthMiddleware", () => {
     middleware(req as Request, res as unknown as Response, next);
     expect(next).not.toHaveBeenCalled();
     expect(res._status).toBe(403);
-    expect(res._json.error).toContain("Invalid classroom code");
-    expect(res._json.category).toBe("auth");
-    expect(res._json.retryable).toBe(false);
-    expect(res._json.detail_code).toBe("classroom_code_invalid");
+    expect(res._json?.error).toContain("Invalid classroom code");
+    expect(res._json?.category).toBe("auth");
+    expect(res._json?.retryable).toBe(false);
+    expect(res._json?.detail_code).toBe("classroom_code_invalid");
   });
 
   it("reads classroom_id from params when not in body", () => {
@@ -178,7 +229,7 @@ describe("createAuthMiddleware", () => {
     middleware(req as Request, res as unknown as Response, next);
     expect(next).not.toHaveBeenCalled();
     expect(res._status).toBe(401);
-    expect(res._json.detail_code).toBe("classroom_code_missing");
+    expect(res._json?.detail_code).toBe("classroom_code_missing");
   });
 
   it("returns 403 when params.id route is protected and code is wrong", () => {
@@ -191,6 +242,38 @@ describe("createAuthMiddleware", () => {
     middleware(req as Request, res as unknown as Response, next);
     expect(next).not.toHaveBeenCalled();
     expect(res._status).toBe(403);
-    expect(res._json.detail_code).toBe("classroom_code_invalid");
+    expect(res._json?.detail_code).toBe("classroom_code_invalid");
+  });
+});
+
+describe("requireClassroomRole", () => {
+  it("allows a permitted classroom role", () => {
+    const middleware = requireClassroomRole(["teacher", "ea"]);
+    const req = mockReq({ body: {} });
+    const res = mockRes();
+    const next = vi.fn();
+    res.locals.classroomAuth = { classroomId: "alpha-grade4", role: "ea", demoBypass: false };
+
+    middleware(req as Request, res as unknown as Response, next);
+
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("blocks a classroom role outside the allowed scope", () => {
+    const middleware = requireClassroomRole(["teacher"]);
+    const req = mockReq({ body: {} });
+    const res = mockRes();
+    const next = vi.fn();
+    res.locals.classroomAuth = { classroomId: "alpha-grade4", role: "ea", demoBypass: false };
+
+    middleware(req as Request, res as unknown as Response, next);
+
+    expect(next).not.toHaveBeenCalled();
+    expect(res._status).toBe(403);
+    expect(res._json?.detail_code).toBe("classroom_role_forbidden");
+    expect(res._json?.details).toEqual({
+      role: "ea",
+      allowed_roles: ["teacher"],
+    });
   });
 });

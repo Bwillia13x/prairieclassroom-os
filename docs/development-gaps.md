@@ -22,13 +22,15 @@
 | **G-03** | Error-path eval depth still trails happy-path coverage | Partial | The degraded-path corpus is materially deeper now, but it still depends on ongoing expansion as new failure modes are discovered on real hosts. |
 | **G-04** | Observability review and retention policy | Mostly closed | Request logging, repo-local log paths, operator summaries, and pruning now exist; the remaining gap is operational discipline rather than missing code. |
 | **G-05** | Seed-data and eval-fixture separation | Partial | The ownership split now exists, but proof fixtures should keep growing until demo data carries no proof burden at all. |
-| **G-06** | Human validation and pilot evidence | Not started | The product narrative is strongest when teacher, EA, and school feedback are documented. That evidence is intentionally not claimed without artifacts. |
+| **G-06** | Human validation and pilot evidence | Not started; synthetic walkthrough baseline + complete pilot-paperwork set now exist | `docs/structured-walkthrough-v1.md` is an explicitly synthetic, self-walked friction log by the maintainer — it surfaces design gaps at hackathon pace but is **not** human validation. `docs/pilot/` now contains the full paperwork set — `participant-brief.md`, `observation-template.md`, `usefulness-rubric.md`, `session-log-template.md`, `claims-ledger.md`, and `incident-log.md` — so the first real pilot session can start without any further drafting. The product narrative is still strongest when a real teacher, EA, or school fills out the rubric and session log, which remains intentionally unclaimed. |
 | **G-07** | Paid Vertex baseline | Deferred by design | The paid path remains available, but it is outside the hackathon/zero-cost credibility story and should stay clearly separated. |
 | **G-08** | Branded types for domain IDs | **Closed** | ClassroomId, StudentRef, DraftId, PlanId, RecordId branded types defined in `packages/shared/schemas/branded.ts`. Applied at memory layer boundary (db.ts, retrieve.ts, store.ts) and all route handlers. Progressive adoption — internal code migrated, new code uses branded types automatically. |
 | **G-09** | Error tracking integration | **Partially closed** | Structured error reporter (`apps/web/src/errorReporter.ts`) with pluggable transport, ErrorBoundary integration, and global error/rejection handlers. Ready for Sentry/LogRocket — just register a transport. |
 | **G-10** | Automated baseline regression detection | **Closed** | Release gate now detects regressions automatically by comparing against the latest passing run per inference mode. Non-fatal warnings printed clearly; baseline only updates on pass. |
 | **G-11** | Database migration framework | **Closed** | Versioned SQL migrations in `services/memory/migrations/`. Tracked in per-database `_migrations` table. Runs inside transactions with rollback. Current schema is migration 001. Backward-compatible with pre-existing databases. |
 | **G-12** | Teacher dashboard structural gaps | **Closed** | Health Bar (success states), sparkline trends, student roster, drill-down drawer — all four structural gaps from the frontend design audit are now implemented. See details below. |
+| **G-13** | Canonical system inventory drift | **Closed for current surface** | `npm run system:inventory` now generates `docs/system-inventory.md` and `docs/api-surface.md`, while `npm run system:inventory:check` catches panel, prompt, tier, and exact endpoint drift across canonical docs. |
+| **G-14** | Pilot readiness and real-data governance | **Partial** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) now cover operating modes, memory lifecycle, initial teacher/EA boundaries, per-request access evidence, and the paperwork a first real pilot session would need. Dedicated substitute/reviewer views remain the last structural blocker before real classroom data is acceptable. |
 
 ## Gap details
 
@@ -53,7 +55,7 @@
 
 ### G-02 — Ollama baseline execution
 
-**Status:** Code path implemented; results depend on the local machine.
+**Status:** Code path implemented; results depend on the local machine. On the current maintenance host, the planning-tier model is hardware-infeasible — this is a stronger block than previously recorded.
 
 **What is already closed**
 
@@ -61,20 +63,31 @@
 - `host:preflight:ollama` now writes machine-readable host checks under `output/host-preflight/`.
 - The gate checks for `gemma4:4b` and `gemma4:27b` before trying to run.
 - `docs/eval-baseline.md` is now structured around mock, Ollama, hosted Gemini, and paid Vertex sections.
+- `host:preflight:ollama` ran non-destructively on the maintenance host on 2026-04-12 (artifact `output/host-preflight/2026-04-12T16-10-14-124Z.json`) and produced a clean, honest diagnostic: Ollama CLI missing, 8 GiB total RAM, 0.11 GiB free RAM, 6.76 GiB free disk.
+
+**Hardware feasibility finding (2026-04-12)**
+
+The preflight revealed a structural block on the current maintenance host that was previously framed only as "Ollama isn't installed":
+
+- The planning-tier `gemma4:27b` model requires substantially more than 8 GiB RAM for any reasonable quantization — the maintenance host (Apple M1, 8 GiB RAM) cannot run it regardless of whether Ollama is installed.
+- The `gemma4:27b` weights also exceed the 6.76 GiB of free disk available on the maintenance host.
+- The `gemma4:4b` live-tier model may still be feasible on this host if Ollama is installed and a few GiB of disk is freed; the dual-speed architecture would then run in "live-only" mode on this host with no planning tier.
+
+This means the Ollama lane as a full release gate cannot run on the maintenance host at all. It requires a different target machine with ≥ 16 GiB RAM and ≥ 40 GiB free disk for the full dual-speed lane, or it must be reduced to a live-tier-only configuration on the current host (which would only exercise 7 of the 13 prompt classes).
 
 **What remains**
 
-- Pull the required Ollama models on the target host.
-- Run `npm run host:preflight:ollama`.
-- Run `npm run release:gate:ollama`.
-- Keep the generated Ollama artifact set for the machine used in demos or judging.
+- Choose a target host with ≥ 16 GiB RAM and ≥ 40 GiB free disk for the full Ollama lane, OR
+- Run a live-tier-only Ollama lane on the current maintenance host (requires installing Ollama, pulling `gemma4:4b` only, and accepting that planning-tier routes will fall back to mock or fail in the gate).
+- Once a viable host is chosen, pull the required models, run `npm run host:preflight:ollama`, run `npm run release:gate:ollama`, and keep the generated artifact set for demos or judging.
 
 ### G-03 — Error-path eval depth
 
-**Status:** Improved, not finished.
+**Status:** Improved further on 2026-04-12 — still not finished.
 
 **What is already closed**
 
+- 2026-04-12: +6 degraded-path / edge-case cases across five prompt classes — `msg-010-empty-context` (optional context omitted), `simp-006-minimum-grade-text` (very short source text), `vocab-005-thin-artifact` (minimal source material), `ea-008-cold-memory` (retrieval against a classroom with minimal intervention history), `eal-004-no-ea-window` (full teacher-only day — every block must report break), `eal-005-minimal-roster` (small roster, must not invent aliases). Edge-case coverage is now present for every prompt class except `extract_worksheet`.
 - Validation now rejects oversized free-text payloads at the API boundary.
 - Model-output parse failures return structured failures with eval coverage.
 - Inference transport and timeout failures now return categorized retry metadata.
@@ -84,6 +97,9 @@
 
 - Keep adding host-specific degraded-path cases as new failure modes appear.
 - Use proof fixtures rather than demo data for any new edge-case coverage.
+- Add at least one edge-case eval for `extract_worksheet` (the remaining uncovered class).
+- Author cross-feature synthesis cases: plan+pattern, forecast+intervention, ea-load+intervention, survival-packet+forecast.
+- Add retrieval-relevance cases for `forecast_complexity`, `detect_scaffold_decay`, `generate_survival_packet`, `balance_ea_load` (none yet — only plan and pat have explicit retrieval-relevance cases).
 
 ### G-04 — Observability and operator view
 
@@ -117,11 +133,24 @@ The demo classroom is useful, but product proof is stronger when synthetic demo 
 
 ### G-06 — Human validation evidence
 
-**Status:** Intentionally unclaimed.
+**Status:** Intentionally unclaimed. A synthetic walkthrough baseline now exists but does not substitute for human validation.
 
 **Why it matters**
 
 The repo can now support a cleaner pilot, but it still does not contain audited teacher, EA, or family validation artifacts. Public copy should continue to describe this as a promising operating model, not a proven classroom outcome.
+
+**What is already closed**
+
+- `docs/structured-walkthrough-v1.md` captures a first-person maintainer walkthrough of 8 product scenarios against the demo classroom in mock mode, with a per-scenario friction log and a top-five change list. It is explicitly framed as synthetic and not as human validation — the doc's opening section states what it is not and the trailing section lists exactly what would need to happen to upgrade it to credible pilot evidence.
+- That walkthrough is now the durable baseline the project re-runs after each sprint, so design friction doesn't silently return between the maintainer's touch points.
+- `docs/pilot/` now holds the complete paperwork set a first real pilot session needs: `participant-brief.md` (5–7 minute read for teachers/EAs), `observation-template.md` (observer form), `usefulness-rubric.md` (1–5 scale across actionability, trust, time saved, cognitive load, edit burden), `session-log-template.md` (self-documented session shape), `claims-ledger.md` (every public claim with status + evidence reference + last-reviewed date), and `incident-log.md` (append-only, S1–S4 severity, format template + anchor entry). The claims ledger explicitly starts with most usefulness claims at `unsupported` or `partially supported`, which is the honest baseline the project stands behind.
+
+**What remains**
+
+- A real Alberta K-6 teacher, unaffiliated with the project, walks through 8 scenarios cold while an observer (not the maintainer) captures friction using `observation-template.md` — see the closing checklist in `structured-walkthrough-v1.md` for the exact steps required to upgrade the synthetic baseline into real pilot evidence.
+- Teacher / EA usefulness rubrics filled out with consent-recorded metadata (templates exist; no data yet).
+- Incident-log entries from real sessions (template exists with only an anchor entry).
+- Claims-ledger rows moved from `unsupported` / `partially supported` to `supported` as real-session evidence accumulates.
 
 ### G-07 — Paid Vertex baseline
 
@@ -147,3 +176,34 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 
 - VocabCard export (Anki/Quizlet/PDF) — separate feature, not a dashboard concern
 - Survival packet print page-break polish — CSS-only refinement
+
+### G-13 — Canonical system inventory drift
+
+**Status:** Closed for current surface.
+
+**What is already closed**
+
+- `npm run system:inventory` generates `docs/system-inventory.md` and `docs/api-surface.md` from code-level sources.
+- `npm run system:inventory:check` compares canonical docs against the current panel count, prompt-class count, prompt class list, live/planning split, and exact endpoint table.
+- `npm run ops:status` includes inventory drift status alongside release-gate, host-preflight, request-log, and evidence-doc summaries.
+
+**Future enhancement**
+
+- Consider folding `system:inventory:check` into `proof:check` once the generated inventory is stable across local environments.
+
+### G-14 — Pilot readiness and real-data governance
+
+**Status:** Partial.
+
+**What is already closed**
+
+- `docs/pilot-readiness.md` defines the difference between demo/synthetic proof, local pilot readiness, and real classroom data readiness.
+- `docs/safety-governance.md` now includes operating modes, data lifecycle controls, role-scope expectations, incident response, and real-data blockers.
+- `npm run memory:admin` now provides per-classroom `summary`, `export`, `anonymize`, `backup`, `prune`, `purge`, and `restore` commands.
+- Destructive memory commands require `--confirm`; anonymized exports still require adult free-text review before external sharing.
+- Explicit retention settings per classroom: `ClassroomProfile.retention_policy` (`default_days` + optional per-table `overrides`) is read by `memory:admin -- prune`, which deletes rows older than the configured window from every retention-eligible table and writes a tombstone audit artifact naming the policy source, per-table cutoffs, and rows removed. Pruning is never automatic.
+
+**What remains**
+
+- Extend the initial teacher/EA API role scopes into dedicated substitute and reviewer views before those roles use real classroom records.
+- Add structured human-validation artifacts: de-identified observation notes, teacher/EA usefulness rubrics, consent assumptions, friction logs, and a public claims ledger.

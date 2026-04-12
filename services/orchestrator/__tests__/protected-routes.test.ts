@@ -6,7 +6,7 @@ import { createHistoryRouter } from "../routes/history.js";
 import { closeAll } from "../../memory/db.js";
 import type { ClassroomProfile } from "../../../packages/shared/schemas/classroom.js";
 import type { RouteDeps } from "../route-deps.js";
-import { createAuthMiddleware } from "../auth.js";
+import { createAuthMiddleware, requireClassroomRole } from "../auth.js";
 
 const PROTECTED_CLASSROOM_ID = "protected-route-classroom";
 const OPEN_CLASSROOM_ID = "open-route-classroom";
@@ -39,14 +39,17 @@ function makeDeps(): RouteDeps {
     loadClassroom: (id: string) => CLASSROOMS[id],
     loadClassrooms: () => Object.values(CLASSROOMS),
     authMiddleware: createAuthMiddleware((id: string) => CLASSROOMS[id]),
+    requireClassroomRole,
   };
 }
 
 async function startServer() {
   const app = express();
   app.use(express.json());
-  app.use("/api/today", createTodayRouter(makeDeps()));
-  app.use("/api/classrooms", createHistoryRouter(makeDeps()));
+  const deps = makeDeps();
+  app.use("/api/today", deps.authMiddleware, requireClassroomRole(["teacher", "ea"]));
+  app.use("/api/today", createTodayRouter(deps));
+  app.use("/api/classrooms", createHistoryRouter(deps));
 
   const server = await new Promise<Server>((resolve) => {
     const nextServer = app.listen(0, "127.0.0.1", () => resolve(nextServer));
@@ -116,6 +119,14 @@ describe("protected classroom routes", () => {
       latest_plan: null,
       latest_forecast: null,
     });
+
+    const eaAllowed = await fetch(`${baseUrl}/api/today/${PROTECTED_CLASSROOM_ID}`, {
+      headers: {
+        "X-Classroom-Code": PROTECTED_CODE,
+        "X-Classroom-Role": "ea",
+      },
+    });
+    expect(eaAllowed.status).toBe(200);
   });
 
   it("protects history endpoints mounted at /api/classrooms/:id/*", async () => {
@@ -138,5 +149,20 @@ describe("protected classroom routes", () => {
     });
     expect(allowed.status).toBe(200);
     await expect(allowed.json()).resolves.toEqual({ plans: [] });
+
+    const eaBlocked = await fetch(`${baseUrl}/api/classrooms/${PROTECTED_CLASSROOM_ID}/plans`, {
+      headers: {
+        "X-Classroom-Code": PROTECTED_CODE,
+        "X-Classroom-Role": "ea",
+      },
+    });
+    expect(eaBlocked.status).toBe(403);
+    await expect(eaBlocked.json()).resolves.toMatchObject({
+      detail_code: "classroom_role_forbidden",
+      details: {
+        role: "ea",
+        allowed_roles: ["teacher"],
+      },
+    });
   });
 });

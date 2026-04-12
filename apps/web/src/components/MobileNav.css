@@ -9,7 +9,7 @@
     linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 72%, transparent), color-mix(in srgb, var(--color-surface-elevated) 16%, transparent)),
     var(--color-surface);
   border-top: 1px solid var(--color-border);
-  box-shadow: 0 -14px 30px rgba(114, 86, 34, 0.14);
+  box-shadow: 0 -14px 30px light-dark(rgba(114, 86, 34, 0.14), rgba(0, 0, 0, 0.36));
   backdrop-filter: blur(12px);
 }
 

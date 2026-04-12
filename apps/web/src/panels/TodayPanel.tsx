@@ -46,16 +46,17 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     health.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
   }, [activeClassroom, execute, health.execute]);
 
-  if (!profile) return null;
-
   const recommendedAction = useMemo(
     () => result ? getRecommendedAction(result) : null,
     [result],
   );
 
-  const attentionStudents = new Set(
-    result?.debt_register.items.flatMap((i) => i.student_refs) ?? []
+  const attentionStudents = useMemo(
+    () => new Set(result?.debt_register.items.flatMap((i) => i.student_refs) ?? []),
+    [result],
   );
+
+  if (!profile) return null;
 
   return (
     <section className="workspace-page today-panel">

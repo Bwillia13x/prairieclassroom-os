@@ -3,6 +3,7 @@ export const SUPPORTED_SMOKE_CASES = [
   "family-message",
   "support-patterns",
   "ea-briefing",
+  "ea-load",
   "complexity-forecast",
   "survival-packet",
 ];

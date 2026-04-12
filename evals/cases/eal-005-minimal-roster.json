@@ -1,0 +1,15 @@
+{
+  "id": "eal-005-minimal-roster",
+  "category": "schema_reliability",
+  "description": "EA load profile for a classroom with a very small roster — must not invent aliases beyond the roster and must not pad supported_students with placeholder names",
+  "prompt_class": "balance_ea_load",
+  "input": {
+    "classroom_id": "echo-grade3",
+    "target_date": "2026-04-13"
+  },
+  "expected": {
+    "required_message_keys": ["load_id", "classroom_id", "target_date", "blocks", "alerts", "overall_summary", "highest_load_block", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "behavioral risk", "undefined", "null", "placeholder", "Student A", "Student B"]
+  }
+}

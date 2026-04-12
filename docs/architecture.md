@@ -92,11 +92,11 @@ All tables indexed on `(classroom_id, created_at)`. Student-specific tables add 
 
 ### 5. Prompt class routing layer
 
-Twelve model-routed prompt classes plus one deterministic query, each defined by a versioned contract in `docs/prompt-contracts.md`:
+Thirteen model-routed prompt classes plus one deterministic query, each defined by a versioned contract in `docs/prompt-contracts.md`:
 
 **Live tier (7 classes):** `differentiate_material`, `simplify_for_student`, `generate_vocab_cards`, `draft_family_message`, `log_intervention`, `generate_ea_briefing`, `extract_worksheet`
 
-**Planning tier (5 classes):** `prepare_tomorrow_plan`, `forecast_complexity`, `detect_support_patterns`, `detect_scaffold_decay`, `generate_survival_packet`
+**Planning tier (6 classes):** `prepare_tomorrow_plan`, `forecast_complexity`, `detect_support_patterns`, `detect_scaffold_decay`, `generate_survival_packet`, `balance_ea_load`
 
 **Deterministic:** `complexity_debt_register`
 

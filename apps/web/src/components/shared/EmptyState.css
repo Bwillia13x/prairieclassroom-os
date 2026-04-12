@@ -27,7 +27,7 @@
   appearance: none;
   border: 1px solid var(--ds-accent);
   background: var(--ds-accent);
-  color: #fff;
+  color: var(--color-text-on-accent);
   padding: var(--ds-space-2) var(--ds-space-4);
   border-radius: var(--ds-radius-md);
   font-size: var(--ds-text-sm);

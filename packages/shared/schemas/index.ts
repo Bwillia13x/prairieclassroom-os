@@ -20,10 +20,14 @@ export {
 export {
   ClassroomProfileSchema,
   StudentSupportSummarySchema,
+  RetentionPolicySchema,
+  RETENTION_TABLES,
 } from "./classroom.js";
 export type {
   ClassroomProfile,
   StudentSupportSummary,
+  RetentionPolicy,
+  RetentionTable,
 } from "./classroom.js";
 
 export {
@@ -94,6 +98,17 @@ export type {
   ScheduleBlockInput,
   UpcomingEvent,
 } from "./forecast.js";
+
+export {
+  EALoadProfileSchema,
+  EALoadBlockSchema,
+  EALoadLevelSchema,
+} from "./ea-load.js";
+export type {
+  EALoadProfile,
+  EALoadBlock,
+  EALoadLevel,
+} from "./ea-load.js";
 
 export {
   SupportPatternReportSchema,

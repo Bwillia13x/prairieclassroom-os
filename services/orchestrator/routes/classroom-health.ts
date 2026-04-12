@@ -2,14 +2,15 @@ import { Router } from "express";
 import { getClassroomHealth } from "../../memory/health.js";
 import { handleRouteError, sendRouteError } from "../errors.js";
 import { isValidClassroomId } from "../validate.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 
 export function createClassroomHealthRouter(deps: RouteDeps): Router {
   const router = Router();
   const authMiddleware = deps.authMiddleware;
+  const teacherOnly = requireRoles(deps, ["teacher"]);
 
-  router.get("/:id/health", authMiddleware, (req, res) => {
+  router.get("/:id/health", authMiddleware, teacherOnly, (req, res) => {
     try {
       const rawId = req.params.id as string;
       if (!isValidClassroomId(rawId)) {

@@ -107,6 +107,14 @@ const ROUTING_TABLE: Record<PromptClass, RouteConfig> = {
     tool_call_capable: false,
     output_schema_version: "0.1.0",
   },
+  balance_ea_load: {
+    prompt_class: "balance_ea_load",
+    model_tier: "planning",
+    thinking_enabled: true,
+    retrieval_required: true,
+    tool_call_capable: false,
+    output_schema_version: "0.1.0",
+  },
 };
 
 /**
