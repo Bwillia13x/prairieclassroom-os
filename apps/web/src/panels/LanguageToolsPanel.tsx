@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { simplifyText, generateVocabCards } from "../api";
@@ -13,17 +13,29 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ResultBanner from "../components/ResultBanner";
+import { FeedbackCollector } from "../components/shared";
+import { useFeedback } from "../hooks/useFeedback";
 import type { SimplifyResponse, VocabCardsResponse } from "../types";
 
 type LanguageTool = "simplify" | "vocab";
 
 export default function LanguageToolsPanel() {
-  const { profile, showSuccess } = useApp();
+  const { profile, showSuccess, activeClassroom } = useApp();
   const simplify = useAsyncAction<SimplifyResponse>();
   const vocab = useAsyncAction<VocabCardsResponse>();
   const [activeTool, setActiveTool] = useState<LanguageTool>("simplify");
   const [simplifyKey, setSimplifyKey] = useState(0);
   const [vocabKey, setVocabKey] = useState(0);
+  const feedback = useFeedback(activeClassroom, `lang-session-${activeClassroom}`);
+  const handleFeedbackSubmit = useCallback(
+    (rating: number, comment?: string) => {
+      const outputType = activeTool === "simplify" ? "simplify" : "vocab-cards";
+      const promptClass = activeTool === "simplify" ? "simplify_for_student" : "generate_vocab_cards";
+      const key = activeTool === "simplify" ? `simplify-${simplifyKey}` : `vocab-${vocabKey}`;
+      feedback.submit(outputType, rating, comment, key, promptClass);
+    },
+    [feedback.submit, activeTool, simplifyKey, vocabKey],
+  );
 
   async function handleSimplify(sourceText: string, gradeBand: string, ealLevel: "beginner" | "intermediate" | "advanced") {
     const resp = await simplify.execute((signal) =>
@@ -125,6 +137,11 @@ export default function LanguageToolsPanel() {
                 <ResultBanner label="Text simplified" generatedAt={Date.now()} />
                 <SimplifiedViewer onSubmit={handleSimplify} result={simplify.result} loading={simplify.loading} />
                 <OutputFeedback outputId={`simplify-${simplifyKey}`} outputType="simplify" />
+                <FeedbackCollector
+                  onSubmit={handleFeedbackSubmit}
+                  submitted={feedback.submitted}
+                  panelLabel="simplified text"
+                />
               </>
             ) : null}
             {vocab.result && activeTool === "vocab" ? (
@@ -132,6 +149,11 @@ export default function LanguageToolsPanel() {
                 <ResultBanner label={`${vocab.result.card_set.cards.length} cards generated`} generatedAt={Date.now()} />
                 <VocabCardGrid onSubmit={handleVocabCards} result={vocab.result} loading={vocab.loading} />
                 <OutputFeedback outputId={`vocab-${vocabKey}`} outputType="vocab-cards" />
+                <FeedbackCollector
+                  onSubmit={handleFeedbackSubmit}
+                  submitted={feedback.submitted}
+                  panelLabel="vocabulary cards"
+                />
               </>
             ) : null}
           </div>

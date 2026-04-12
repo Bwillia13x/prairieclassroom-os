@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateSurvivalPacket } from "../api";
@@ -13,6 +13,8 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
+import { ActionButton, FeedbackCollector, FormSection } from "../components/shared";
+import { useFeedback } from "../hooks/useFeedback";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import type { SurvivalPacketResponse } from "../types";
 
@@ -23,6 +25,13 @@ export default function SurvivalPacketPanel() {
     sectionLabels: ["Schedule", "Student profiles", "Emergency info"],
   });
   const [resultKey, setResultKey] = useState(0);
+  const feedback = useFeedback(activeClassroom, `packet-session-${activeClassroom}`);
+  const handleFeedbackSubmit = useCallback(
+    (rating: number, comment?: string) => {
+      feedback.submit("survival-packet", rating, comment, `packet-${resultKey}`, "generate_survival_packet");
+    },
+    [feedback.submit, resultKey],
+  );
 
   if (classrooms.length === 0) return null;
 
@@ -70,8 +79,7 @@ export default function SurvivalPacketPanel() {
               <p className="form-description">
                 Generate a print-ready packet for a substitute covering your classroom tomorrow.
               </p>
-              <div className="field">
-                <label htmlFor="sp-classroom">Classroom</label>
+              <FormSection label="Classroom" description="Select the classroom for substitute coverage.">
                 <select
                   id="sp-classroom"
                   value={activeClassroom}
@@ -83,15 +91,15 @@ export default function SurvivalPacketPanel() {
                     </option>
                   ))}
                 </select>
-              </div>
-              <button
-                type="button"
-                className="btn btn--primary"
-                disabled={loading || !activeClassroom}
+              </FormSection>
+              <ActionButton
+                variant="primary"
+                loading={loading}
+                disabled={!activeClassroom}
                 onClick={handleSubmit}
               >
-                {loading ? "Generating Packet..." : "Generate Survival Packet"}
-              </button>
+                Generate Survival Packet
+              </ActionButton>
             </div>
           </>
         )}
@@ -115,6 +123,11 @@ export default function SurvivalPacketPanel() {
                 <ResultBanner label="Survival packet generated" generatedAt={Date.now()} />
                 <SurvivalPacketView packet={result.packet} />
                 <OutputFeedback outputId={`packet-${resultKey}`} outputType="survival-packet" />
+                <FeedbackCollector
+                  onSubmit={handleFeedbackSubmit}
+                  submitted={feedback.submitted}
+                  panelLabel="survival packet"
+                />
               </>
             ) : null}
           </div>

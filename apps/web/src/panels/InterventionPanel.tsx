@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { logIntervention, fetchInterventionHistory } from "../api";
@@ -13,6 +13,8 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
+import { FeedbackCollector } from "../components/shared";
+import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import type { InterventionResponse, InterventionRecord, InterventionPrefill } from "../types";
 
@@ -25,6 +27,14 @@ export default function InterventionPanel({ prefill }: Props) {
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
+  const feedback = useFeedback(activeClassroom, `intervention-session-${activeClassroom}`);
+  const handleFeedbackSubmit = useCallback(
+    (rating: number, comment?: string) => {
+      const recordId = (result ?? historicalResult)?.record.record_id;
+      feedback.submit("log-intervention", rating, comment, recordId, "log_intervention");
+    },
+    [feedback.submit, result, historicalResult],
+  );
 
   const displayResult = result ?? historicalResult;
 
@@ -132,6 +142,11 @@ export default function InterventionPanel({ prefill }: Props) {
                   latencyMs={displayResult.latency_ms || undefined}
                 />
                 <InterventionCard record={displayResult.record} />
+                <FeedbackCollector
+                  onSubmit={handleFeedbackSubmit}
+                  submitted={feedback.submitted}
+                  panelLabel="intervention log"
+                />
               </>
             ) : null}
           </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { detectSupportPatterns } from "../api";
@@ -12,6 +12,8 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
+import { FeedbackCollector } from "../components/shared";
+import { useFeedback } from "../hooks/useFeedback";
 import type { SupportPatternsResponse, FamilyMessagePrefill, InterventionPrefill } from "../types";
 
 interface Props {
@@ -23,6 +25,13 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
   const { loading, error, result, execute, reset } = useAsyncAction<SupportPatternsResponse>();
   const [resultKey, setResultKey] = useState(0);
+  const feedback = useFeedback(activeClassroom, `patterns-session-${activeClassroom}`);
+  const handleFeedbackSubmit = useCallback(
+    (rating: number, comment?: string) => {
+      feedback.submit("support-patterns", rating, comment, `patterns-${resultKey}`, "detect_support_patterns");
+    },
+    [feedback.submit, resultKey],
+  );
 
   if (classrooms.length === 0) return null;
 
@@ -95,6 +104,11 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
                   onFollowupClick={onFollowupClick}
                 />
                 <OutputFeedback outputId={`patterns-${resultKey}`} outputType="support-patterns" />
+                <FeedbackCollector
+                  onSubmit={handleFeedbackSubmit}
+                  submitted={feedback.submitted}
+                  panelLabel="support patterns"
+                />
               </>
             ) : null}
           </div>

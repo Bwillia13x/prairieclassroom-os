@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEABriefing } from "../api";
@@ -12,12 +12,21 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
+import { FeedbackCollector } from "../components/shared";
+import { useFeedback } from "../hooks/useFeedback";
 import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
   const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess } = useApp();
   const { loading, error, result, execute, reset } = useAsyncAction<EABriefingResponse>();
   const [resultKey, setResultKey] = useState(0);
+  const feedback = useFeedback(activeClassroom, `briefing-session-${activeClassroom}`);
+  const handleFeedbackSubmit = useCallback(
+    (rating: number, comment?: string) => {
+      feedback.submit("ea-briefing", rating, comment, `briefing-${resultKey}`, "generate_ea_briefing");
+    },
+    [feedback.submit, resultKey],
+  );
 
   if (classrooms.length === 0) return null;
 
@@ -81,6 +90,11 @@ export default function EABriefingPanel() {
                 <ResultBanner label="Briefing generated" generatedAt={Date.now()} />
                 <EABriefingResult result={result} />
                 <OutputFeedback outputId={`briefing-${resultKey}`} outputType="ea-briefing" />
+                <FeedbackCollector
+                  onSubmit={handleFeedbackSubmit}
+                  submitted={feedback.submitted}
+                  panelLabel="EA briefing"
+                />
               </>
             ) : null}
           </div>
