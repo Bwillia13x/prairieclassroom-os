@@ -19,7 +19,7 @@ import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import Sparkline from "../components/Sparkline";
-import { HealthDot, TrendIndicator } from "../components/shared";
+import { HealthDot, TrendIndicator, Card, ActionButton } from "../components/shared";
 import type { TodaySnapshot, ClassroomHealth, DrillDownContext, InterventionPrefill, FamilyMessagePrefill } from "../types";
 import "./TodayPanel.css";
 
@@ -154,18 +154,20 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           />
 
           {recommendedAction ? (
-            <section className="surface-panel today-priority-card">
-              <div className="today-priority-header">
-                <div>
-                  <h3>Recommended Next Step</h3>
-                  <p>{recommendedAction.description}</p>
+            <Card variant="raised" tone="priority" accent className="today-priority-card">
+              <Card.Body>
+                <div className="today-priority-header">
+                  <div>
+                    <h3>Recommended Next Step</h3>
+                    <p>{recommendedAction.description}</p>
+                  </div>
+                  <StatusChip label={recommendedAction.label} tone={recommendedAction.tone} />
                 </div>
-                <StatusChip label={recommendedAction.label} tone={recommendedAction.tone} />
-              </div>
-              <button className="btn btn--primary" type="button" onClick={() => onTabChange(recommendedAction.tab)}>
-                Open {recommendedAction.cta}
-              </button>
-            </section>
+                <ActionButton variant="primary" onClick={() => onTabChange(recommendedAction.tab)}>
+                  Open {recommendedAction.cta}
+                </ActionButton>
+              </Card.Body>
+            </Card>
           ) : null}
 
           {result.latest_plan ? (
@@ -177,25 +179,27 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           ) : null}
 
           {result.latest_forecast ? (
-            <div className="today-forecast-section surface-panel">
-              <div className="today-forecast-header">
-                <h3>Latest Forecast Recap</h3>
-                <div className="today-forecast-header-right">
-                  {health.result?.trends.peak_complexity_14d ? (
-                    <Sparkline data={health.result.trends.peak_complexity_14d} label="Complexity trend over 14 days" />
-                  ) : null}
-                  <StatusChip label={result.latest_forecast.highest_risk_block || "Forecast ready"} tone="analysis" />
+            <Card variant="raised" className="today-forecast-section">
+              <Card.Body>
+                <div className="today-forecast-header">
+                  <h3>Latest Forecast Recap</h3>
+                  <div className="today-forecast-header-right">
+                    {health.result?.trends.peak_complexity_14d ? (
+                      <Sparkline data={health.result.trends.peak_complexity_14d} label="Complexity trend over 14 days" />
+                    ) : null}
+                    <StatusChip label={result.latest_forecast.highest_risk_block || "Forecast ready"} tone="analysis" />
+                  </div>
                 </div>
-              </div>
-              <ForecastTimeline
-                blocks={result.latest_forecast.blocks}
-                onBlockClick={(index) => {
-                  const block = result.latest_forecast!.blocks[index];
-                  if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
-                }}
-              />
-              <p className="today-forecast-summary">{result.latest_forecast.overall_summary}</p>
-            </div>
+                <ForecastTimeline
+                  blocks={result.latest_forecast.blocks}
+                  onBlockClick={(index) => {
+                    const block = result.latest_forecast!.blocks[index];
+                    if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+                  }}
+                />
+                <p className="today-forecast-summary">{result.latest_forecast.overall_summary}</p>
+              </Card.Body>
+            </Card>
           ) : null}
 
           <StudentRoster

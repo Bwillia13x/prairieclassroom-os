@@ -13,6 +13,84 @@ Use this file as a lightweight ADR register.
 
 ---
 
+## 2026-04-12 — Letterpress Tactility for cards and buttons
+
+**Context:** The 2026-04-12 light-palette editorial-letterpress sprint
+(see `docs/superpowers/specs/2026-04-12-light-palette-editorial-letterpress-design.md`)
+committed the color system to a paper-and-ink metaphor. Cards and buttons,
+however, still carried generic SaaS dashboard interaction patterns:
+bouncy `translateY(-2px) scale(1.02)` hover transforms, hardcoded
+accent-tied glow shadows that silently drifted when the palette was
+refined, frosted glass blur on `.surface-panel`/`.form-panel`, missing
+`:focus-visible` and `:active` states, and no shared component primitive
+for structured cards.
+
+**Decision:** Introduced a "Letterpress Tactility" direction. Killed
+bouncy transforms (translateY max 1px, no scale). Replaced hardcoded
+rgba button shadows with derived `--shadow-sm/md/xs` tokens so future
+palette shifts track automatically. Added `:focus-visible` (shared token
+with form fields), `:active` press states, `prefers-reduced-motion`
+fallback, `.btn--danger` and `.btn--link` variants, size modifiers,
+icon-only modifier, loading state with absolute spinner, and a
+general-purpose `<Card>` React primitive with variants, tones,
+composition API, and accent stripe. Killed `backdrop-filter: blur` on
+`.surface-panel` and `.form-panel` (frosted glass is not letterpress);
+replaced the depth cue with an inset top-edge warm-white highlight.
+
+**Scope:** `apps/web/src/styles/primitives.css`,
+`apps/web/src/styles/tokens.css`, `apps/web/src/tokens.css`,
+`apps/web/src/components/shared/{ActionButton,StatusCard,Card,IconButton,index}.{tsx,ts,css}`,
+plus three reference panel migrations:
+
+- Today (`apps/web/src/panels/TodayPanel.tsx` — priority and forecast cards)
+- Differentiate (`apps/web/src/panels/DifferentiatePanel.tsx` and the
+  `ArtifactUpload.tsx` sub-component — form rail and result summary)
+- InterventionLogger (`apps/web/src/components/InterventionLogger.tsx`
+  — form rail)
+
+Each migration also stripped stale surface declarations from the
+panel's own CSS file (padding, box-shadow, background, border, radius)
+that would otherwise have fought Card's styles. The remaining nine
+panels benefit passively from the `primitives.css` class refresh —
+explicit component-level migration is deferred as opportunistic future
+work.
+
+**Justification for killing `backdrop-filter: blur`:** Frosted glass is
+a Material 3 / visionOS idiom. The letterpress metaphor requires cards
+that sit on paper, not float on blur. The inset top-edge highlight
+combined with the existing warm shadow ladder delivers the
+"ink-pressed-into-paper" lift without the compositing cost or the
+silent conflict with `prefers-reduced-transparency: reduce` (which the
+old blur ignored).
+
+**Non-goals:** No new animation framework, no shadcn-style component
+library rewrite, no palette changes, no global migration of all 20+
+raw-class call sites in one sprint.
+
+**Known follow-ups (not blockers):**
+
+- The Task 11 (InterventionLogger) commit message mentions a Delete
+  button migration that did not happen — there is no Delete button in
+  that file. The CSS and Save button work in that commit are correct;
+  only the message is misleading. Future readers should ignore that
+  sentence.
+- Card composition with `accent` and named slots (`Card.Body`) has
+  asymmetric left-padding when the slot's own padding combines with
+  the accent stripe's outer `padding-left`. Not visible in the
+  reference panels (none use the combination), but a future migration
+  that does will need a small layout adjustment.
+- Some tests for migrated panels are smoke-import-only — there is no
+  unit-level coverage of `Card`/`ActionButton` rendered inside
+  `TodayPanel`, `DifferentiatePanel`, or `InterventionLogger`. Adding
+  panel-level RTL tests is a separate sprint.
+- The `prefers-reduced-transparency: reduce` override on
+  `--color-surface-glass` no longer reaches `.surface-panel` because
+  the panel doesn't consume `--color-surface-glass`. This was already
+  true before this sprint and is not made worse — flagged here for
+  awareness only.
+
+---
+
 ### 2026-04-04 — Substitute Teacher Survival Packet
 
 - **Decision:** Add `generate_survival_packet` as the 11th prompt class. Planning tier with thinking enabled. Retrieval pulls from all 7 SQLite tables plus the classroom profile. Output structured into 6 named sections + heads_up array. Sub_ready authorization gate on the classroom profile. Persisted to new `survival_packets` SQLite table.

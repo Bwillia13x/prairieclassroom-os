@@ -3,6 +3,7 @@ import { useFormPersistence } from "../hooks/useFormPersistence";
 import type { LessonArtifact } from "../types";
 import FileUploadZone from "./FileUploadZone";
 import WorksheetUpload from "./WorksheetUpload";
+import { Card, ActionButton } from "./shared";
 import "./ArtifactUpload.css";
 
 type ArtifactSourceMode = "photo" | "file" | "paste";
@@ -70,7 +71,9 @@ export default function ArtifactUpload({
   }
 
   return (
-    <form className="artifact-upload form-panel" onSubmit={handleSubmit} ref={formRef}>
+    <Card variant="raised" tone="sage" className="artifact-upload">
+    <Card.Body>
+    <form className="artifact-upload__form" onSubmit={handleSubmit} ref={formRef}>
       <h2>Prepare Lesson Artifact</h2>
       <p className="form-description">
         Choose the classroom first, then bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
@@ -196,9 +199,17 @@ export default function ArtifactUpload({
         />
       </div>
 
-      <button type="submit" className="btn btn--primary" disabled={loading}>
+      <ActionButton
+        type="submit"
+        variant="primary"
+        size="lg"
+        loading={loading}
+        fullWidth
+      >
         {loading ? "Differentiating…" : "Differentiate"}
-      </button>
+      </ActionButton>
     </form>
+    </Card.Body>
+    </Card>
   );
 }

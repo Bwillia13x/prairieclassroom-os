@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import Card from "./Card";
 import EmptyState from "./EmptyState";
 import "./StatusCard.css";
 
@@ -42,7 +43,7 @@ export default function StatusCard({
   className,
   children,
 }: StatusCardProps) {
-  const classes = [
+  const wrapperClassName = [
     "status-card",
     status === "error" && "status-card--error",
     className,
@@ -51,31 +52,37 @@ export default function StatusCard({
     .join(" ");
 
   return (
-    <div className={classes} aria-busy={status === "loading" ? "true" : undefined}>
-      <div className="status-card__header">
-        <h3 className="status-card__title">{title}</h3>
-        {actions && <div className="status-card__actions">{actions}</div>}
+    <Card
+      variant="raised"
+      tone={status === "error" ? "watchpoint" : "neutral"}
+      className={wrapperClassName}
+    >
+      <div aria-busy={status === "loading" ? "true" : undefined}>
+        <div className="status-card__header">
+          <h3 className="status-card__title">{title}</h3>
+          {actions && <div className="status-card__actions">{actions}</div>}
+        </div>
+
+        <div className="status-card__body">
+          {status === "loading" && <SkeletonLines />}
+
+          {status === "error" && (
+            <p className="status-card__error" role="alert">
+              {errorMessage ?? "Something went wrong."}
+            </p>
+          )}
+
+          {status === "empty" && (
+            <EmptyState
+              title={emptyTitle ?? "No data"}
+              description={emptyDescription ?? "Nothing to display yet."}
+              action={emptyAction}
+            />
+          )}
+
+          {(status === "idle" || status === "success") && children}
+        </div>
       </div>
-
-      <div className="status-card__body">
-        {status === "loading" && <SkeletonLines />}
-
-        {status === "error" && (
-          <p className="status-card__error" role="alert">
-            {errorMessage ?? "Something went wrong."}
-          </p>
-        )}
-
-        {status === "empty" && (
-          <EmptyState
-            title={emptyTitle ?? "No data"}
-            description={emptyDescription ?? "Nothing to display yet."}
-            action={emptyAction}
-          />
-        )}
-
-        {(status === "idle" || status === "success") && children}
-      </div>
-    </div>
+    </Card>
   );
 }

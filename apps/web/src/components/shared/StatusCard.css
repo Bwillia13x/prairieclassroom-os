@@ -1,13 +1,11 @@
-.status-card {
-  background: var(--ds-surface);
-  border: 1px solid var(--ds-border-light);
-  border-radius: var(--ds-radius-lg);
-  box-shadow: var(--ds-shadow-sm);
-  overflow: hidden;
-}
+/* ============================================================
+   StatusCard — status-specific internals only.
+   Surface, border, radius, and shadow are provided by <Card>.
+   ============================================================ */
 
 .status-card--error {
-  border-color: var(--ds-danger);
+  /* Card gets tone="watchpoint" from the component; this class is kept
+     for test queries and for any future error-specific overrides. */
 }
 
 .status-card__header {
@@ -58,7 +56,7 @@
   animation: status-card-pulse 1.5s ease-in-out infinite;
 }
 
-.status-card__skeleton-line--long  { width: 85%; }
+.status-card__skeleton-line--long   { width: 85%; }
 .status-card__skeleton-line--medium { width: 60%; }
 .status-card__skeleton-line--short  { width: 40%; }
 

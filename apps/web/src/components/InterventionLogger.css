@@ -1,13 +1,7 @@
-.intervention-logger {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
-}
-
 .intervention-logger h2 {
+  font-family: var(--font-serif);
   font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
   margin-bottom: var(--space-1);
   color: var(--color-text);
 }
