@@ -8,11 +8,6 @@
   gap: var(--space-4);
 }
 
-.today-priority-card,
-.today-forecast-section {
-  padding: var(--space-4);
-}
-
 .today-priority-header,
 .today-forecast-header {
   display: flex;
@@ -168,10 +163,6 @@
 
 .plan-recap-list li:last-child {
   border-bottom: none;
-}
-
-.today-forecast-section {
-  box-shadow: var(--shadow-sm);
 }
 
 .today-forecast-summary {
