@@ -1,35 +1,82 @@
-import type { ReactNode } from "react";
-import "./ActionButton.css";
+import type { MouseEvent, ReactNode } from "react";
+
+export type ActionButtonVariant =
+  | "primary"
+  | "secondary"
+  | "danger"
+  | "approve"
+  | "soft"
+  | "tertiary"
+  | "ghost"
+  | "link";
+
+export type ActionButtonSize = "sm" | "md" | "lg";
 
 interface ActionButtonProps {
-  variant?: "primary" | "secondary" | "danger";
+  variant?: ActionButtonVariant;
+  size?: ActionButtonSize;
   loading?: boolean;
   disabled?: boolean;
-  onClick: () => void;
+  type?: "button" | "submit" | "reset";
+  leadingIcon?: ReactNode;
+  trailingIcon?: ReactNode;
+  fullWidth?: boolean;
+  onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
+  className?: string;
+  "aria-label"?: string;
+  "aria-describedby"?: string;
+}
+
+function joinClassNames(...parts: Array<string | false | undefined>): string {
+  return parts.filter(Boolean).join(" ");
+}
+
+function resolveVariantClass(variant: ActionButtonVariant): string {
+  if (variant === "secondary") return "btn--ghost";
+  return `btn--${variant}`;
 }
 
 export default function ActionButton({
   variant = "primary",
+  size = "md",
   loading = false,
   disabled = false,
+  type = "button",
+  leadingIcon,
+  trailingIcon,
+  fullWidth = false,
   onClick,
   children,
+  className,
+  "aria-label": ariaLabel,
+  "aria-describedby": ariaDescribedBy,
 }: ActionButtonProps) {
   const isDisabled = disabled || loading;
 
+  const classes = joinClassNames(
+    "btn",
+    resolveVariantClass(variant),
+    size !== "md" && `btn--${size}`,
+    loading && "btn--loading",
+    fullWidth && "btn--full-width",
+    className,
+  );
+
   return (
     <button
-      type="button"
-      className={`action-button action-button--${variant}`}
+      type={type}
+      className={classes}
       disabled={isDisabled}
       aria-busy={loading ? "true" : undefined}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedBy}
       onClick={onClick}
     >
-      {loading && <span className="action-button__spinner" aria-hidden="true" />}
-      <span className={loading ? "action-button__label--loading" : undefined}>
-        {children}
-      </span>
+      {loading && <span className="btn__spinner" aria-hidden="true" />}
+      {leadingIcon && <span className="btn__leading-icon" aria-hidden="true">{leadingIcon}</span>}
+      <span className="btn__label">{children}</span>
+      {trailingIcon && <span className="btn__trailing-icon" aria-hidden="true">{trailingIcon}</span>}
     </button>
   );
 }
