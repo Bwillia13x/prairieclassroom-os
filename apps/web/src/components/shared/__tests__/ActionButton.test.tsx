@@ -138,4 +138,28 @@ describe("ActionButton", () => {
     const btn = screen.getByRole("button");
     expect(btn.className).toContain("btn--full-width");
   });
+
+  it("renders leadingIcon inside an aria-hidden btn__leading-icon span", () => {
+    const { container } = render(
+      <ActionButton leadingIcon={<svg data-testid="lead" />} onClick={() => {}}>
+        Save
+      </ActionButton>,
+    );
+    const slot = container.querySelector(".btn__leading-icon");
+    expect(slot).toBeInTheDocument();
+    expect(slot).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByTestId("lead")).toBeInTheDocument();
+  });
+
+  it("renders trailingIcon inside an aria-hidden btn__trailing-icon span", () => {
+    const { container } = render(
+      <ActionButton trailingIcon={<svg data-testid="trail" />} onClick={() => {}}>
+        Next
+      </ActionButton>,
+    );
+    const slot = container.querySelector(".btn__trailing-icon");
+    expect(slot).toBeInTheDocument();
+    expect(slot).toHaveAttribute("aria-hidden", "true");
+    expect(screen.getByTestId("trail")).toBeInTheDocument();
+  });
 });
