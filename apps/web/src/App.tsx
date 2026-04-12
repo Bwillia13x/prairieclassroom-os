@@ -28,6 +28,7 @@ import EABriefingPanel from "./panels/EABriefingPanel";
 import ForecastPanel from "./panels/ForecastPanel";
 import SurvivalPacketPanel from "./panels/SurvivalPacketPanel";
 import TodayPanel from "./panels/TodayPanel";
+import UsageInsightsPanel from "./panels/UsageInsightsPanel";
 import MobileNav from "./components/MobileNav";
 import OnboardingOverlay from "./components/OnboardingOverlay";
 import ThemeToggle from "./components/ThemeToggle";
@@ -630,6 +631,7 @@ export default function App() {
           {renderPanel(activeTab, "ea-briefing", mountedTabs, <EABriefingPanel />)}
           {renderPanel(activeTab, "complexity-forecast", mountedTabs, <ForecastPanel />)}
           {renderPanel(activeTab, "survival-packet", mountedTabs, <SurvivalPacketPanel />)}
+          {renderPanel(activeTab, "usage-insights", mountedTabs, <UsageInsightsPanel />)}
         </main>
 
         <AppFooter />

@@ -20,13 +20,14 @@ export type ActiveTab =
   | "support-patterns"
   | "ea-briefing"
   | "complexity-forecast"
-  | "survival-packet";
+  | "survival-packet"
+  | "usage-insights";
 
 export const TAB_ORDER: ActiveTab[] = [
   "today",
   "differentiate", "language-tools",
   "tomorrow-plan", "ea-briefing", "complexity-forecast", "log-intervention", "survival-packet",
-  "family-message", "support-patterns",
+  "family-message", "support-patterns", "usage-insights",
 ];
 
 export type NavGroup = "today" | "prep" | "ops" | "review";
@@ -59,6 +60,7 @@ export const TAB_META: Record<ActiveTab, { label: string; shortLabel: string; gr
   "survival-packet": { label: "Sub Packet", shortLabel: "Sub Packet", group: "ops" },
   "family-message": { label: "Family Message", shortLabel: "Message", group: "review" },
   "support-patterns": { label: "Support Patterns", shortLabel: "Patterns", group: "review" },
+  "usage-insights": { label: "Usage Insights", shortLabel: "Insights", group: "review" },
 };
 
 export function getGroupForTab(tab: ActiveTab): NavGroup {
