@@ -1,0 +1,21 @@
+{
+  "id": "diff-011-empty-model-response",
+  "category": "schema_reliability",
+  "description": "Differentiate surfaces a structured inference error when the model returns an empty response",
+  "input": {
+    "artifact_id": "artifact-011",
+    "artifact_title": "Sentence Starters",
+    "artifact_subject": "writing",
+    "artifact_text": "Write three short sentences about your weekend using the starters on the board.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Reduce writing load but keep the sentence practice.",
+    "eval_behavior": "empty_text"
+  },
+  "expected": {
+    "expected_status": 502,
+    "expected_error_category": "inference",
+    "expected_detail_code": "inference_service_error",
+    "expected_retryable": false,
+    "expected_error_substring": "Empty model response"
+  }
+}

@@ -6,10 +6,12 @@
  * importing server-level singletons.
  */
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
+import type { Request, Response, NextFunction } from "express";
 
 export interface RouteDeps {
   inferenceUrl: string;
   dataDir: string;
   loadClassroom: (id: string) => ClassroomProfile | undefined;
   loadClassrooms: () => ClassroomProfile[];
+  authMiddleware: (req: Request, res: Response, next: NextFunction) => void;
 }

@@ -1,0 +1,309 @@
+sources:
+  - id: "S-001"
+    title: "PrairieClassroom CLAUDE.md"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/CLAUDE.md"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.95
+    domain_relevance: 0.98
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: "First-party source describing intended product scope"
+    notes: "Mission, boundaries, and Gemma routing assumptions."
+  - id: "S-002"
+    title: "PrairieClassroom README"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/README.md"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.91
+    domain_relevance: 0.97
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: "First-party summary can overstate maturity"
+    notes: "Top-level product architecture and claims."
+  - id: "S-003"
+    title: "PrairieClassroom prompt contracts"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/docs/prompt-contracts.md"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.93
+    domain_relevance: 0.99
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: "First-party design source"
+    notes: "Most detailed workflow and safety contract source."
+  - id: "S-004"
+    title: "PrairieClassroom router.ts"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/services/orchestrator/router.ts"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.96
+    domain_relevance: 0.95
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Internal"]
+    bias_notes: ""
+    notes: "Confirms actual route assignments and model IDs."
+  - id: "S-005"
+    title: "PrairieClassroom complexity-forecast.ts"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/services/orchestrator/complexity-forecast.ts"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.95
+    domain_relevance: 0.96
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: ""
+    notes: "Evidence of complexity-as-forecast workflow."
+  - id: "S-006"
+    title: "PrairieClassroom harness.py"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/services/inference/harness.py"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.96
+    domain_relevance: 0.98
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Internal"]
+    bias_notes: ""
+    notes: "Critical maturity source; tool calls are mock-only in smoke tests."
+  - id: "S-007"
+    title: "PrairieClassroom eval baseline"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/docs/eval-baseline.md"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.94
+    domain_relevance: 0.97
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Internal"]
+    bias_notes: ""
+    notes: "Shows real Gemma 4 baseline is still pending."
+  - id: "S-008"
+    title: "PrairieClassroom ollama_backend.py"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/services/inference/ollama_backend.py"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.95
+    domain_relevance: 0.92
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Internal"]
+    bias_notes: ""
+    notes: "Confirms actual local inference mechanics."
+  - id: "S-009"
+    title: "PrairieClassroom demo script"
+    url: "file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/docs/demo-script.md"
+    access_date: "2026-04-07"
+    publisher: "PrairieClassroom repo"
+    year: 2026
+    source_type: "internal_repo"
+    quality_score: 0.80
+    domain_relevance: 0.86
+    evidence_tier: "mixed"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: "Presentation-oriented document may overstate validation"
+    notes: "Contains testing claims not clearly substantiated elsewhere."
+  - id: "S-010"
+    title: "Gemma 4 model card"
+    url: "https://ai.google.dev/gemma/docs/core/model_card_4"
+    access_date: "2026-04-07"
+    publisher: "Google AI for Developers"
+    year: 2026
+    source_type: "official_docs"
+    quality_score: 0.98
+    domain_relevance: 0.97
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Global"]
+    bias_notes: "Vendor source"
+    notes: "Primary source for Gemma 4 capabilities and deployment sizes."
+  - id: "S-011"
+    title: "Gemma 4 launch announcement"
+    url: "https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/"
+    access_date: "2026-04-07"
+    publisher: "Google Blog"
+    year: 2026
+    source_type: "official_docs"
+    quality_score: 0.94
+    domain_relevance: 0.95
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Global"]
+    bias_notes: "Launch/marketing framing"
+    notes: "Concise source for reasoning, agentic, OCR, and local deployment claims."
+  - id: "S-012"
+    title: "FunctionGemma function-calling guide"
+    url: "https://ai.google.dev/gemma/docs/functiongemma/function-calling-with-hf"
+    access_date: "2026-04-07"
+    publisher: "Google AI for Developers"
+    year: 2026
+    source_type: "official_docs"
+    quality_score: 0.96
+    domain_relevance: 0.89
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Global"]
+    bias_notes: "Vendor documentation"
+    notes: "Shows available specialized function-calling path not yet used in app."
+  - id: "S-013"
+    title: "ShieldGemma overview"
+    url: "https://ai.google.dev/gemma/docs/shieldgemma"
+    access_date: "2026-04-07"
+    publisher: "Google AI for Developers"
+    year: 2026
+    source_type: "official_docs"
+    quality_score: 0.95
+    domain_relevance: 0.84
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Global"]
+    bias_notes: "Vendor documentation"
+    notes: "Relevant for safety-governance future path."
+  - id: "S-014"
+    title: "EmbeddingGemma overview"
+    url: "https://ai.google.dev/gemma/docs/embeddinggemma"
+    access_date: "2026-04-07"
+    publisher: "Google AI for Developers"
+    year: 2025
+    source_type: "official_docs"
+    quality_score: 0.92
+    domain_relevance: 0.83
+    evidence_tier: "established"
+    freshness_risk: "medium"
+    geographic_focus: ["Global"]
+    bias_notes: "Vendor documentation"
+    notes: "Relevant to future multilingual local retrieval."
+  - id: "S-015"
+    title: "Collaborating to support students"
+    url: "https://www.alberta.ca/collaborating-to-support-students"
+    access_date: "2026-04-07"
+    publisher: "Government of Alberta"
+    year: 2026
+    source_type: "government"
+    quality_score: 0.95
+    domain_relevance: 0.88
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: ""
+    notes: "Shows Alberta's collaboration-oriented support model."
+  - id: "S-016"
+    title: "Complexity Teams by School"
+    url: "https://www.alberta.ca/system/files/ecc-complexity-team-allocations-by-school.pdf"
+    access_date: "2026-04-07"
+    publisher: "Government of Alberta"
+    year: 2026
+    source_type: "government"
+    quality_score: 0.97
+    domain_relevance: 0.95
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: ""
+    notes: "Direct evidence that complexity teams are a funded provincial operational category."
+  - id: "S-017"
+    title: "Calgary Board of Education Annual Education Results Report 2024-25"
+    url: "https://cbe.ab.ca/FormsManuals/Annual-Education-Results-Report.pdf"
+    access_date: "2026-04-07"
+    publisher: "Calgary Board of Education"
+    year: 2025
+    source_type: "government"
+    quality_score: 0.96
+    domain_relevance: 0.93
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Calgary", "Alberta"]
+    bias_notes: ""
+    notes: "Key source on multilingual and special-education complexity in Calgary."
+  - id: "S-018"
+    title: "Reporting on Class Size and Complexity, Aggression, and Artificial Intelligence in Alberta's K-12 Schools"
+    url: "https://teachers.ab.ca/sites/default/files/2024-10/COOR-101-39_ReportingOnAlbertaK-12Schools_2024-02-14.pdf"
+    access_date: "2026-04-07"
+    publisher: "Alberta Teachers' Association"
+    year: 2024
+    source_type: "association"
+    quality_score: 0.90
+    domain_relevance: 0.94
+    evidence_tier: "established"
+    freshness_risk: "medium"
+    geographic_focus: ["Alberta"]
+    bias_notes: "Advocacy association, though survey data remain valuable"
+    notes: "Key practitioner-readiness and equity-risk source."
+  - id: "S-019"
+    title: "MagicSchool quality and responsible AI"
+    url: "https://www.magicschool.ai/privacy/quality"
+    access_date: "2026-04-07"
+    publisher: "MagicSchool"
+    year: 2026
+    source_type: "industry"
+    quality_score: 0.74
+    domain_relevance: 0.86
+    evidence_tier: "mixed"
+    freshness_risk: "medium"
+    geographic_focus: ["North America"]
+    bias_notes: "Company marketing source"
+    notes: "Shows mainstream teacher-AI feature overlap."
+  - id: "S-020"
+    title: "Brisk Teaching for Schools and Districts"
+    url: "https://www.briskteaching.com/fr-fr/schools-and-districts"
+    access_date: "2026-04-07"
+    publisher: "Brisk Teaching"
+    year: 2026
+    source_type: "industry"
+    quality_score: 0.76
+    domain_relevance: 0.88
+    evidence_tier: "mixed"
+    freshness_risk: "medium"
+    geographic_focus: ["North America"]
+    bias_notes: "Company marketing source"
+    notes: "Useful overlap comparison on differentiation, translation, family comms, and sub plans."
+  - id: "S-021"
+    title: "Survey highlights ongoing struggles"
+    url: "https://teachers.ab.ca/news/survey-highlights-ongoing-struggles"
+    access_date: "2026-04-07"
+    publisher: "Alberta Teachers' Association"
+    year: 2023
+    source_type: "association"
+    quality_score: 0.78
+    domain_relevance: 0.72
+    evidence_tier: "mixed"
+    freshness_risk: "medium"
+    geographic_focus: ["Alberta"]
+    bias_notes: "Association summary article"
+    notes: "Supplementary evidence that class-size/complexity strain predates current AI wave."
+  - id: "S-022"
+    title: "About Access to Information Act (ATIA)"
+    url: "https://www.alberta.ca/about-access-to-information-act"
+    access_date: "2026-04-07"
+    publisher: "Government of Alberta"
+    year: 2026
+    source_type: "government"
+    quality_score: 0.94
+    domain_relevance: 0.79
+    evidence_tier: "established"
+    freshness_risk: "low"
+    geographic_focus: ["Alberta"]
+    bias_notes: ""
+    notes: "Confirms school boards are local public bodies under Alberta information-access rules."

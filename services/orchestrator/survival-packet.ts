@@ -16,6 +16,7 @@ import type {
   FamilyCommsEntry,
   ComplexityPeak,
 } from "../../packages/shared/schemas/survival-packet.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface SurvivalPacketPrompt {
   system: string;
@@ -33,7 +34,9 @@ export function buildSurvivalPacketPrompt(
   input: SurvivalPacketInput,
   survivalContext: string,
 ): SurvivalPacketPrompt {
-  const system = `You are PrairieClassroom OS, generating a Substitute Teacher Survival Packet for an Alberta K-6 classroom.
+  const rosterAliases = classroom.students.map((student) => student.alias).filter(Boolean);
+  const rosterLine = rosterAliases.length > 0 ? rosterAliases.join(", ") : "(no aliases provided)";
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, generating a Substitute Teacher Survival Packet for an Alberta K-6 classroom.
 
 Your task: Synthesize the classroom schedule, student profiles, active support plans, recent interventions, family communication status, and complexity data into a structured briefing that a substitute teacher can use to manage the classroom effectively for the day.
 
@@ -81,20 +84,31 @@ RULES:
 - This is a SURVIVAL document — prioritize actionable, concrete guidance over comprehensive context.
 - Write for someone who has NEVER been in this classroom. Assume zero prior knowledge.
 - Use student aliases only. Never use real names.
+- Use only student aliases from the provided classroom roster.
+- Never reuse aliases from another classroom. If a referenced record contains an alias not on the roster, omit it rather than guessing.
 - For "simplified_day_plan", simplify complex activities. If the teacher had a group rotation, suggest whole-class instead. If materials are pre-prepared, say where they are.
 - For "family_comms", err toward "defer_to_teacher" for sensitive situations.
 - Do not diagnose conditions, assign risk scores, or use clinical language.
 - Use observational language: "Records show..." not "This student has..."
 - Do not expose raw intervention records — synthesize into operational guidance.
 - The substitute should finish reading this and feel PREPARED, not overwhelmed.
+- Prefer compact JSON. Keep only the highest-signal entries:
+  - up to 6 routines
+  - up to 6 student-support entries
+  - up to 6 simplified day-plan blocks
+  - up to 6 family communication entries
+  - up to 4 complexity peaks
+  - up to 5 heads-up bullets
 - Output only the JSON object, no markdown fencing or commentary.
 
 FORBIDDEN TERMS (never use these):
-diagnosis, disorder, deficit, syndrome, spectrum, pathology, clinical, prognosis, regression, at-risk, risk score, behavioral issue, learning disability, cognitive delay, developmental`;
+diagnosis, disorder, deficit, syndrome, spectrum, pathology, clinical, prognosis, regression, at-risk, risk score, behavioral issue, learning disability, cognitive delay, developmental`);
 
   const user = `CLASSROOM: ${classroom.classroom_id} (${classroom.grade_band}, ${classroom.subject_focus})
 
-${survivalContext}${input.teacher_notes ? `\nTEACHER NOTES FOR SUBSTITUTE: ${input.teacher_notes}` : ""}
+ROSTER ALIASES: ${rosterLine}
+
+${renderPromptInput(survivalContext, "survival_context", "(no classroom synthesis available)")}${input.teacher_notes ? `\nTEACHER NOTES FOR SUBSTITUTE:\n${renderPromptInput(input.teacher_notes, "teacher_notes")}` : ""}
 
 TARGET DATE: ${input.target_date}
 
@@ -110,6 +124,8 @@ export function parseSurvivalPacketResponse(
   raw: string,
   classroomId: string,
   targetDate: string,
+  allowedAliases: Iterable<string> = [],
+  knownStudentAliases: Iterable<string> = [],
 ): SurvivalPacket {
   let cleaned = raw.trim();
   if (cleaned.startsWith("```")) {
@@ -128,6 +144,45 @@ export function parseSurvivalPacketResponse(
   }
 
   const p = parsed as Record<string, unknown>;
+  const allowedAliasSet = new Set(Array.from(allowedAliases, String));
+  const disallowedAliasSet = new Set(
+    Array.from(knownStudentAliases, String).filter((alias) => alias && !allowedAliasSet.has(alias)),
+  );
+  const isAllowedAlias = (value: unknown): value is string => {
+    if (typeof value !== "string" || !value.trim()) {
+      return false;
+    }
+    if (allowedAliasSet.size === 0) {
+      return true;
+    }
+    return allowedAliasSet.has(value);
+  };
+  const sanitizeText = (value: string): string => {
+    if (!value || disallowedAliasSet.size === 0) {
+      return value;
+    }
+
+    let sanitized = value;
+    for (const alias of disallowedAliasSet) {
+      const pattern = new RegExp(`\\b${alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "g");
+      sanitized = sanitized.replace(pattern, "another student");
+    }
+    return sanitized;
+  };
+  const sanitizeNarrativeValue = <T>(value: T): T => {
+    if (typeof value === "string") {
+      return sanitizeText(value) as T;
+    }
+    if (Array.isArray(value)) {
+      return value.map((entry) => sanitizeNarrativeValue(entry)) as T;
+    }
+    if (value && typeof value === "object") {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, child]) => [key, sanitizeNarrativeValue(child)]),
+      ) as T;
+    }
+    return value;
+  };
 
   const routines: RoutineEntry[] = Array.isArray(p.routines)
     ? (p.routines as Record<string, unknown>[]).map((r) => ({
@@ -143,14 +198,16 @@ export function parseSurvivalPacketResponse(
         current_scaffolds: Array.isArray(s.current_scaffolds) ? s.current_scaffolds.map(String) : [],
         key_strategies: String(s.key_strategies ?? ""),
         ...(s.things_to_avoid ? { things_to_avoid: String(s.things_to_avoid) } : {}),
-      }))
+      })).filter((entry) => isAllowedAlias(entry.student_ref))
     : [];
 
   const rawEa = (p.ea_coordination ?? {}) as Record<string, unknown>;
   const eaCoordination = {
     ...(rawEa.ea_name ? { ea_name: String(rawEa.ea_name) } : {}),
     schedule_summary: String(rawEa.schedule_summary ?? ""),
-    primary_students: Array.isArray(rawEa.primary_students) ? rawEa.primary_students.map(String) : [],
+    primary_students: Array.isArray(rawEa.primary_students)
+      ? rawEa.primary_students.filter(isAllowedAlias).map(String)
+      : [],
     if_ea_absent: String(rawEa.if_ea_absent ?? ""),
   };
 
@@ -172,7 +229,7 @@ export function parseSurvivalPacketResponse(
           : "defer_to_teacher",
         ...(f.language_preference ? { language_preference: String(f.language_preference) } : {}),
         notes: String(f.notes ?? ""),
-      }))
+      })).filter((entry) => isAllowedAlias(entry.student_ref))
     : [];
 
   const validLevels = new Set(["low", "medium", "high"]);
@@ -189,7 +246,7 @@ export function parseSurvivalPacketResponse(
 
   const packetId = `surv-${classroomId}-${Date.now()}`;
 
-  return {
+  return sanitizeNarrativeValue({
     packet_id: packetId,
     classroom_id: classroomId,
     generated_for_date: targetDate,
@@ -201,5 +258,5 @@ export function parseSurvivalPacketResponse(
     complexity_peaks: complexityPeaks,
     heads_up: headsUp,
     schema_version: "0.1.0",
-  };
+  });
 }

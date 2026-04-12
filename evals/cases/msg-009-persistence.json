@@ -1,0 +1,20 @@
+{
+  "id": "msg-009-persistence",
+  "category": "retrieval_relevance",
+  "description": "Drafted family message is persisted and retrievable via classroom messages history with teacher_approved false",
+  "prompt_class": "roundtrip_message_persistence",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "student_refs": ["Elena"],
+    "message_type": "praise",
+    "target_language": "en",
+    "context": "Elena volunteered to read aloud during shared reading today and used expression in her voice. She also helped a classmate find the right page in the textbook."
+  },
+  "expected": {
+    "required_message_keys": ["draft_id", "classroom_id", "student_refs", "message_type", "target_language", "plain_language_text", "teacher_approved", "schema_version"],
+    "history_must_contain_draft_id": true,
+    "history_must_match_classroom_id": true,
+    "teacher_approved_must_be_false": true,
+    "schema_version": "0.1.0"
+  }
+}

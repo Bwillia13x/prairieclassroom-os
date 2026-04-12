@@ -1,0 +1,13 @@
+claim_id	domain	type	support_status	policy_relevance	geographic_scope	overclaim_risk	freshness_risk	source_ids	note
+C-001	implementation	factual	supported	high	internal_repo	low	low	S-001,S-002,S-004	The product is intentionally framed as a local-first classroom operations copilot rather than a student chatbot.
+C-002	implementation	factual	supported	high	internal_repo	low	low	S-004,S-008	The current stack uses dual-tier Gemma routing with live and planning model tiers.
+C-003	implementation	factual	supported	medium	internal_repo	low	low	S-005,S-008	The product currently uses multimodal worksheet extraction and image handling in the local/Ollama path.
+C-004	implementation	factual	supported	high	internal_repo	low	low	S-006,S-007	Real Gemma 4 validation is not yet fully evidenced because the checked-in eval baseline remains pending.
+C-005	market	analytic	supported	high	North_America	medium	medium	S-019,S-020	Generic teacher-AI features such as differentiation, translation, and family communication are already crowded-market categories.
+C-006	novelty	analytic	supported	high	North_America	medium	medium	S-002,S-003,S-005,S-019,S-020	The product is more differentiated at the system/workflow-composition level than at the single-feature level.
+C-007	gemma	factual	supported	high	global	low	low	S-010,S-011	Gemma 4 officially supports reasoning, multimodal inputs, long context, and native function-calling/structured JSON workflows.
+C-008	gemma	analytic	supported	medium	global	medium	low	S-006,S-010,S-012,S-013,S-014	The app is Gemma-centered today but does not yet exploit the broader Gemma variant stack that could strengthen the "Gemma-native" claim.
+C-009	alberta_context	factual	supported	high	Alberta	low	low	S-015,S-016,S-017,S-018,S-022	Alberta's classroom-complexity context makes local, collaborative, privacy-sensitive teacher/EA tooling unusually relevant.
+C-010	alberta_context	factual	supported	high	Calgary_Alberta	low	low	S-016	The official Alberta complexity-team allocation list shows 118 allocations for Calgary School Division.
+C-011	alberta_context	analytic	supported	high	Alberta	medium	low	S-017,S-018,S-021	Multilingual demand, support complexity, and AI-readiness caution together create both need and adoption friction.
+C-012	impact	analytic	mixed	high	Alberta	high	medium	S-015,S-016,S-017,S-018,S-019,S-020	The platform could become highly valuable in Alberta if it proves coordination-time savings and handoff quality improvements, but current evidence is not yet sufficient to call it game-changing.

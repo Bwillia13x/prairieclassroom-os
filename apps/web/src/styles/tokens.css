@@ -1,0 +1,174 @@
+:root {
+  color-scheme: light dark;
+
+  /* Color tokens — Prairie palette */
+  --color-bg: light-dark(#f7f1e5, #1a1610);
+  --color-surface: light-dark(#fdfaf5, #231d16);
+  --color-surface-elevated: light-dark(#fffdf9, #2b241c);
+  --color-surface-muted: light-dark(#f2eadc, #1f1a14);
+  --color-surface-glass: light-dark(rgba(253, 250, 245, 0.7), rgba(35, 29, 22, 0.7));
+  --color-border: light-dark(#e8dfc8, #4a3d2d);
+  --color-border-strong: light-dark(#d9ccaf, #6a563d);
+  --color-text: light-dark(#30251a, #f5ecdf);
+  --color-text-secondary: light-dark(#746754, #c8baa4);
+  --color-text-tertiary: light-dark(#968874, #9f927d);
+  --color-accent: light-dark(#c97d2e, #d4a15c);
+  --color-accent-hover: light-dark(#ae6820, #e3b26e);
+  --color-accent-soft: light-dark(#f4e5cf, #3a2c1a);
+  --color-success: light-dark(#567053, #86a883);
+  --color-warning: light-dark(#c97d2e, #d7a15b);
+  --color-danger: light-dark(#b85c38, #cf8a69);
+  --color-analysis: light-dark(#756b8d, #b5b4d6);
+  --color-provenance: light-dark(#5d7a7c, #9bbebd);
+  --color-pending: light-dark(#c08832, #ddb06b);
+
+  /* Semantic tinted backgrounds */
+  --color-bg-muted: light-dark(#f4ecdf, #241d16);
+  --color-bg-info: light-dark(#f3ede3, #2b241d);
+  --color-bg-success: light-dark(#edf3ea, #1e2720);
+  --color-bg-warning: light-dark(#fcf1df, #322615);
+  --color-bg-danger: light-dark(#f6efe9, #31221c);
+  --color-bg-accent: light-dark(#f6ead8, #382a18);
+  --color-bg-analysis: light-dark(#f1eef8, #27263a);
+  --color-bg-provenance: light-dark(#eef4f3, #1d2a2a);
+  --color-bg-pending: light-dark(#fff3e1, #392a18);
+  --color-bg-sun: light-dark(#fcf1df, #322615);
+  --color-bg-sage: light-dark(#ecf1eb, #202821);
+  --color-bg-slate: light-dark(#eef2f8, #1d2430);
+  --color-bg-forest: light-dark(#eaf2ed, #1d2620);
+
+  /* Semantic borders */
+  --color-border-info: light-dark(#ded3bc, #64543a);
+  --color-border-success: light-dark(#c4d3be, #445c46);
+  --color-border-warning: light-dark(#e7c492, #87653a);
+  --color-border-danger: light-dark(#dfb8aa, #7f5445);
+  --color-border-accent: light-dark(#e4cbab, #8c693c);
+  --color-border-analysis: light-dark(#d7cee8, #555576);
+  --color-border-provenance: light-dark(#c9dad9, #486463);
+  --color-border-pending: light-dark(#ebcb9d, #8d6a3d);
+  --color-border-sun: light-dark(#e7c492, #87653a);
+  --color-border-sage: light-dark(#cad7c8, #566957);
+  --color-border-slate: light-dark(#cbd5e6, #53617c);
+  --color-border-forest: light-dark(#bfd3c6, #4d6a57);
+
+  /* Semantic text */
+  --color-text-info: light-dark(#836f52, #d5c09f);
+  --color-text-success: light-dark(#435d41, #bdd5ba);
+  --color-text-warning: light-dark(#8c5611, #f0c37d);
+  --color-text-danger: light-dark(#8f4526, #f0b097);
+  --color-text-accent: light-dark(#865622, #f1c47d);
+  --color-text-analysis: light-dark(#605674, #ddd9ff);
+  --color-text-provenance: light-dark(#476263, #bfe1df);
+  --color-text-pending: light-dark(#8f5e1e, #f1c786);
+  --color-text-sun: light-dark(#8c5611, #f0c37d);
+  --color-text-sage: light-dark(#4f6954, #b7d0b6);
+  --color-text-slate: light-dark(#556982, #c7d2ea);
+  --color-text-forest: light-dark(#40634c, #c0dac6);
+
+  /* Section border colors */
+  --color-section-watchpoint: light-dark(#d4940e, #daa040);
+  --color-section-priority: light-dark(#5a8a7a, #70a090);
+  --color-section-ea: light-dark(#8a6a7a, #a08090);
+  --color-section-family: light-dark(#5a8a5a, #70a080);
+  --color-section-theme: light-dark(#8a7a50, #a09060);
+  --color-section-gap: light-dark(#c45a3a, #d07060);
+  --color-section-trend: light-dark(#5a9a5a, #70b080);
+  --color-section-focus: light-dark(#d4940e, #daa040);
+
+  /* Variant type badge colors */
+  --color-variant-core: light-dark(#5a7a8a, #70a0b0);
+  --color-variant-eal: light-dark(#7a5a8a, #a080b0);
+  --color-variant-chunked: light-dark(#b07a20, #d0a040);
+  --color-variant-ea-group: light-dark(#4a8a5a, #70b080);
+  --color-variant-extension: light-dark(#b05040, #d07060);
+
+  /* Forecast colors */
+  --color-forecast-low: light-dark(#4a8a5a, #70b080);
+  --color-forecast-low-bg: light-dark(#edf5ef, #1a2a1e);
+  --color-forecast-low-text: light-dark(#2a5a38, #8ad0a0);
+  --color-forecast-medium: light-dark(#c4920e, #daa040);
+  --color-forecast-medium-bg: light-dark(#fdf5e8, #2c2414);
+  --color-forecast-medium-text: light-dark(#7a5610, #e0c070);
+  --color-forecast-high: light-dark(#c45a3a, #d07060);
+  --color-forecast-high-bg: light-dark(#fceeed, #2c1c18);
+  --color-forecast-high-text: light-dark(#8a3020, #e0a090);
+
+  --color-approve: light-dark(#547d52, #77996f);
+  --color-approve-hover: light-dark(#446b43, #88a87d);
+  --color-text-on-accent: light-dark(#24190f, #1a1610);
+
+  /* Elevation — shadow color primitives for light-dark switching */
+  --_shadow-sm-a: light-dark(rgba(148, 110, 44, 0.04), rgba(0, 0, 0, 0.12));
+  --_shadow-md-a: light-dark(rgba(180, 140, 60, 0.04), rgba(0, 0, 0, 0.14));
+  --_shadow-lg-a: light-dark(rgba(162, 121, 46, 0.04), rgba(0, 0, 0, 0.16));
+  --_shadow-lg-b: light-dark(rgba(162, 121, 46, 0.06), rgba(0, 0, 0, 0.18));
+
+  --shadow-sm: 0 1px 2px var(--_shadow-sm-a), 0 2px 8px var(--_shadow-sm-a), 0 4px 16px var(--_shadow-sm-a);
+  --shadow-md: 0 2px 8px var(--_shadow-md-a), 0 8px 16px var(--_shadow-md-a), 0 16px 32px var(--_shadow-md-a);
+  --shadow-lg: 0 4px 12px var(--_shadow-lg-a), 0 16px 32px var(--_shadow-lg-a), 0 32px 64px var(--_shadow-lg-b);
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 2.5rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 5rem;
+
+  /* Radius */
+  --radius-sm: 10px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+  --radius: var(--radius-sm);
+
+  /* Typography */
+  --font-sans: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Fraunces", ui-serif, Georgia, serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-md: 1.0625rem;
+  --text-lg: 1.1875rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 2.15rem;
+  --text-3xl: 3.1rem;
+
+  --leading-tight: 1.15;
+  --leading-snug: 1.32;
+  --leading-base: 1.5;
+  --leading-loose: 1.68;
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Layout */
+  --app-max-width: 1320px;
+  --content-max-width: 920px;
+  --rail-width: 360px;
+  --rail-width-compact: 320px;
+  --panel-padding: var(--space-5);
+  --panel-gap: var(--space-5);
+
+  /* Motion */
+  --motion-fast: 140ms;
+  --motion-base: 220ms;
+  --motion-slow: 360ms;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-emphasis: cubic-bezier(0.34, 1.2, 0.64, 1);
+}
+
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+}

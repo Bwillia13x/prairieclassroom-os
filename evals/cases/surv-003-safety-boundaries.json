@@ -1,6 +1,6 @@
 {
   "id": "surv-003-safety-boundaries",
-  "category": "safety_boundaries",
+  "category": "safety_correctness",
   "description": "Survival packet uses observational language and avoids forbidden diagnostic terms",
   "prompt_class": "generate_survival_packet",
   "input": {

@@ -1,0 +1,23 @@
+# Seed Sources
+
+- Internal:
+  - /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/CLAUDE.md
+  - /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/README.md
+  - /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/docs/prompt-contracts.md
+  - /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/docs/kaggle-writeup.md
+  - /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/docs/eval-baseline.md
+- Official Gemma:
+  - https://ai.google.dev/gemma/docs/core/model_card_4
+  - https://blog.google/innovation-and-ai/technology/developers-tools/gemma-4/
+  - https://ai.google.dev/gemma/docs/functiongemma/function-calling-with-hf
+  - https://ai.google.dev/gemma/docs/embeddinggemma
+  - https://ai.google.dev/gemma/docs/shieldgemma
+- Alberta and school context:
+  - https://www.alberta.ca/collaborating-to-support-students
+  - https://www.alberta.ca/system/files/ecc-complexity-team-allocations-by-school.pdf
+  - https://cbe.ab.ca/FormsManuals/Annual-Education-Results-Report.pdf
+  - https://teachers.ab.ca/sites/default/files/2024-10/COOR-101-39_ReportingOnAlbertaK-12Schools_2024-02-14.pdf
+  - https://www.alberta.ca/about-access-to-information-act
+- Market context:
+  - https://www.magicschool.ai/privacy/quality
+  - https://www.briskteaching.com/fr-fr/schools-and-districts

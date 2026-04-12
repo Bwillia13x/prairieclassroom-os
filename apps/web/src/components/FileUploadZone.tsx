@@ -68,6 +68,7 @@ export default function FileUploadZone({ onTextExtracted, accept = ".txt,.pdf" }
         onChange={handleInputChange}
         className="file-upload-input"
         id="file-upload"
+        aria-invalid={!!error}
       />
       <label htmlFor="file-upload" className="file-upload-label">
         {processing ? (

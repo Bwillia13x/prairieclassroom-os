@@ -5,11 +5,13 @@
   align-items: flex-start;
   gap: 0.5rem;
   padding: 0.6rem 0.85rem;
-  background: var(--color-bg-accent);
-  border: 1px solid var(--color-border-accent);
-  border-left: 3px solid var(--color-accent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--hint-bg, var(--color-bg-accent)) 85%, transparent), color-mix(in srgb, var(--hint-bg, var(--color-bg-accent)) 65%, transparent));
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--hint-border, var(--color-border-accent));
+  border-left: 3px solid var(--hint-accent, var(--color-accent));
   border-radius: var(--radius);
   margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-sm);
   animation: hint-appear 0.3s ease-out;
 }
 
@@ -33,7 +35,7 @@
 
 .contextual-hint-title {
   font-size: var(--text-base);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
 }
 
@@ -45,21 +47,50 @@
 
 .contextual-hint-dismiss {
   background: none;
-  border: 1px solid var(--color-border-accent);
-  border-radius: 4px;
-  padding: 0.2rem 0.6rem;
+  border: 1px solid color-mix(in srgb, var(--hint-border, var(--color-border-accent)) 60%, transparent);
+  border-radius: var(--radius-pill);
+  padding: 0.2rem 0.65rem;
   font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+  color: var(--hint-accent, var(--color-accent));
   cursor: pointer;
   white-space: nowrap;
-  transition: background 0.12s;
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
   flex-shrink: 0;
   min-height: 28px;
 }
 
 .contextual-hint-dismiss:hover {
-  background: var(--color-surface);
+  background: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  border-color: var(--hint-border, var(--color-border-accent));
+  transform: translateY(-1px);
+}
+
+.contextual-hint--sun {
+  --hint-bg: var(--color-bg-sun);
+  --hint-border: var(--color-border-sun);
+  --hint-accent: var(--color-text-sun);
+}
+
+.contextual-hint--sage {
+  --hint-bg: var(--color-bg-sage);
+  --hint-border: var(--color-border-sage);
+  --hint-accent: var(--color-text-sage);
+}
+
+.contextual-hint--slate {
+  --hint-bg: var(--color-bg-slate);
+  --hint-border: var(--color-border-slate);
+  --hint-accent: var(--color-text-slate);
+}
+
+.contextual-hint--forest {
+  --hint-bg: var(--color-bg-forest);
+  --hint-border: var(--color-border-forest);
+  --hint-accent: var(--color-text-forest);
 }
 
 @media (prefers-reduced-motion: reduce) {

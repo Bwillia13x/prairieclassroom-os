@@ -1,5 +1,8 @@
 import { useApp } from "../AppContext";
+import type { SectionTone } from "../appReducer";
 import "./ContextualHint.css";
+
+import type { ReactNode } from "react";
 
 /**
  * ContextualHint — shows a subtle, dismissable tooltip-hint the first time
@@ -14,10 +17,11 @@ interface Props {
   /** One-sentence description. */
   description: string;
   /** Optional icon/emoji. */
-  icon?: string;
+  icon?: ReactNode;
+  tone?: SectionTone;
 }
 
-export default function ContextualHint({ featureKey, title, description, icon }: Props) {
+export default function ContextualHint({ featureKey, title, description, icon, tone }: Props) {
   const { featuresSeen, dispatch } = useApp();
 
   // Already seen — render nothing
@@ -28,7 +32,7 @@ export default function ContextualHint({ featureKey, title, description, icon }:
   }
 
   return (
-    <div className="contextual-hint" role="note" aria-label={`Tip: ${title}`}>
+    <div className={`contextual-hint${tone ? ` contextual-hint--${tone}` : ""}`} role="note" aria-label={`Tip: ${title}`}>
       {icon && <span className="contextual-hint-icon" aria-hidden="true">{icon}</span>}
       <div className="contextual-hint-body">
         <span className="contextual-hint-title">{title}</span>

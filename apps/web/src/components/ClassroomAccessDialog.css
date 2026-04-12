@@ -1,0 +1,75 @@
+.access-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-4);
+  background: rgba(19, 14, 9, 0.62);
+  backdrop-filter: blur(10px);
+}
+
+.access-dialog__card {
+  width: min(100%, 430px);
+  padding: var(--space-6);
+  border: 1px solid color-mix(in srgb, var(--color-border-accent) 82%, transparent);
+  border-radius: calc(var(--radius-lg) + 4px);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 94%, transparent), color-mix(in srgb, var(--color-surface) 96%, transparent)),
+    var(--color-surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.access-dialog__eyebrow {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  margin-bottom: var(--space-3);
+  color: var(--color-text-accent);
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.access-dialog__title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.55rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+.access-dialog__description {
+  margin-top: var(--space-3);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-loose);
+}
+
+.access-dialog__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+}
+
+.access-dialog__field {
+  margin-bottom: 0;
+}
+
+.access-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+@media (max-width: 600px) {
+  .access-dialog__card {
+    padding: var(--space-5);
+  }
+
+  .access-dialog__actions {
+    flex-direction: column-reverse;
+  }
+}

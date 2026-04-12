@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateTomorrowPlan, fetchPlanHistory } from "../api";
@@ -9,8 +9,17 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import ContextualHint from "../components/ContextualHint";
 import OutputFeedback from "../components/OutputFeedback";
 import HistoryDrawer from "../components/HistoryDrawer";
+import PageIntro from "../components/PageIntro";
+import WorkspaceLayout from "../components/WorkspaceLayout";
+import EmptyStateCard from "../components/EmptyStateCard";
+import EmptyStateIllustration from "../components/EmptyStateIllustration";
+import ErrorBanner from "../components/ErrorBanner";
+import ResultBanner from "../components/ResultBanner";
+import { FeedbackCollector } from "../components/shared";
+import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
+import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
 import type { TomorrowPlanResponse, TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
 
 interface Props {
@@ -19,13 +28,21 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
-  const { loading, error, result, execute } = useAsyncAction<TomorrowPlanResponse>();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<TomorrowPlanResponse | null>(null);
   const streamer = useStreamingRequest({
     sectionLabels: ["Support priorities", "Prep checklist", "Differentiation notes"],
   });
+  const feedback = useFeedback(activeClassroom, `plan-session-${activeClassroom}`);
+  const handleFeedbackSubmit = useCallback(
+    (rating: number, comment?: string) => {
+      const planId = (result ?? historicalResult)?.plan.plan_id;
+      feedback.submit("tomorrow-plan", rating, comment, planId, "prepare_tomorrow_plan");
+    },
+    [feedback.submit, result, historicalResult],
+  );
 
   const displayResult = result ?? historicalResult;
 
@@ -53,65 +70,90 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   }
 
   return (
-    <div className={displayResult ? "split-pane" : ""}>
-      <div>
-        <ContextualHint
-          featureKey="tomorrow-plan"
-          title="Tomorrow Plan"
-          description="Reflect on today's wins and challenges. The planning model uses deep reasoning to generate a structured support plan — this may take a few moments."
-        />
-        <HistoryDrawer<TomorrowPlan>
-          items={history.items}
-          loading={history.loading}
-          error={history.error}
-          renderItem={(plan) => `${plan.support_priorities.length} priorities, ${plan.prep_checklist.length} prep items`}
-          getKey={(plan) => plan.plan_id}
-          getTimestamp={(plan) => {
-            const ms = plan.plan_id.split("-").pop();
-            return ms && /^\d+$/.test(ms) ? new Date(Number(ms)).toISOString() : new Date().toISOString();
-          }}
-          onSelect={handleHistorySelect}
-          label="Plan History"
-        />
-        <TeacherReflection
-          classrooms={classrooms}
-          selectedClassroom={activeClassroom}
-          onClassroomChange={setActiveClassroom}
-          onSubmit={handleSubmit}
-          loading={loading}
-        />
-      </div>
-      <div aria-live="polite">
-        {error && displayResult === null && <div className="error-banner">{error}</div>}
-        {loading && displayResult === null && (
-          streaming.phase !== "idle" ? (
-            <StreamingIndicator />
-          ) : (
-            <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
-          )
-        )}
-        {!loading && displayResult === null && !error && (
-          <div className="empty-state">
-            <svg className="empty-state-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M8 36 Q16 20 24 28 Q32 16 40 24" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round" fill="none"/><line x1="8" y1="38" x2="40" y2="38" stroke="var(--color-border)" strokeWidth="1.5"/><circle cx="36" cy="14" r="5" stroke="var(--color-accent)" strokeWidth="1.5" fill="var(--color-bg-accent)"/><path d="M36 12v4M36 12l2 2" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round"/></svg>
-            <div className="empty-state-title">No plan yet</div>
-            <p className="empty-state-description">
-              Reflect on today to generate a structured support plan for tomorrow. The planning model uses deep reasoning.
-            </p>
-          </div>
-        )}
-        {displayResult && (
+    <section className="workspace-page">
+      <PageIntro
+        eyebrow="Operations Workspace"
+        title="Plan Tomorrow's Support"
+        sectionTone="slate"
+        sectionIcon="grid"
+        breadcrumb={{ group: "Ops", tab: "Tomorrow Plan" }}
+        description="Capture the signal from today and convert it into watchpoints, student priorities, EA actions, prep items, and family follow-ups before the next school day starts."
+        badges={[
+          { label: profile ? `Grade ${profile.grade_band}` : "Planning suite", tone: "sun" },
+          { label: "Reasoned planning", tone: "analysis" },
+          { label: "Pattern-aware", tone: "slate" },
+        ]}
+      />
+
+      <WorkspaceLayout
+        rail={(
           <>
-            <PlanViewer
-              plan={displayResult.plan}
-              thinkingSummary={displayResult.thinking_summary}
-              patternInformed={displayResult.pattern_informed}
-              onFollowupClick={onFollowupClick}
-              onInterventionClick={onInterventionClick}
+            <ContextualHint
+              featureKey="tomorrow-plan"
+              title="Tomorrow Plan"
+              description="Reflect on today's wins and challenges. The planning model uses deep reasoning to generate a structured support plan — this may take a few moments."
+              tone="slate"
             />
-            <OutputFeedback outputId={displayResult.plan.plan_id} outputType="tomorrow-plan" />
+            <HistoryDrawer<TomorrowPlan>
+              items={history.items}
+              loading={history.loading}
+              error={history.error}
+              renderItem={(plan) => `${plan.support_priorities.length} priorities, ${plan.prep_checklist.length} prep items`}
+              getKey={(plan) => plan.plan_id}
+              getTimestamp={(plan) => parseRecordTimestamp(plan.plan_id) ?? new Date().toISOString()}
+              onSelect={handleHistorySelect}
+              label="Plan History"
+            />
+            <TeacherReflection
+              classrooms={classrooms}
+              selectedClassroom={activeClassroom}
+              onClassroomChange={setActiveClassroom}
+              onSubmit={handleSubmit}
+              loading={loading}
+            />
           </>
         )}
-      </div>
-    </div>
+        canvas={(
+          <div className="workspace-result" aria-live="polite" aria-busy={loading && displayResult === null}>
+            {error && displayResult === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
+            {loading && displayResult === null ? (
+              streaming.phase !== "idle"
+                ? <StreamingIndicator onCancel={cancel} />
+                : <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
+            ) : null}
+            {!loading && displayResult === null && !error ? (
+              <EmptyStateCard
+                icon={<EmptyStateIllustration name="plan" />}
+                title="No plan yet"
+                description="Use the reflection rail to capture the day. The result canvas will fill with tomorrow's priorities, prep actions, and family follow-through."
+              />
+            ) : null}
+            {displayResult ? (
+              <>
+                <ResultBanner
+                  label="Plan generated"
+                  generatedAt={parseRecordTimestamp(displayResult.plan.plan_id)}
+                  modelId={displayResult.model_id || undefined}
+                  latencyMs={displayResult.latency_ms || undefined}
+                />
+                <PlanViewer
+                  plan={displayResult.plan}
+                  thinkingSummary={displayResult.thinking_summary}
+                  patternInformed={displayResult.pattern_informed}
+                  onFollowupClick={onFollowupClick}
+                  onInterventionClick={onInterventionClick}
+                />
+                <OutputFeedback outputId={displayResult.plan.plan_id} outputType="tomorrow-plan" />
+                <FeedbackCollector
+                  onSubmit={handleFeedbackSubmit}
+                  submitted={feedback.submitted}
+                  panelLabel="tomorrow plan"
+                />
+              </>
+            ) : null}
+          </div>
+        )}
+      />
+    </section>
   );
 }

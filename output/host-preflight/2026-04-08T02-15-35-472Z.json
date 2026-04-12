@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-04-08T02:15:35.472Z",
+  "artifact_path": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/host-preflight/2026-04-08T02-15-35-472Z.json",
+  "status": "ollama_unavailable",
+  "category": "host_preflight",
+  "summary": "Ollama CLI is not available or `ollama list` failed.",
+  "command": "ollama list",
+  "cli_available": false,
+  "required_models": [
+    "gemma4:4b",
+    "gemma4:27b"
+  ],
+  "available_models": [],
+  "stdout": "",
+  "stderr": "",
+  "host": {
+    "os": {
+      "platform": "darwin",
+      "release": "25.2.0",
+      "arch": "arm64",
+      "hostname": "Benjamins-MacBook-Air.local"
+    },
+    "hardware": {
+      "cpu_model": "Apple M1",
+      "cpu_count": 8,
+      "total_memory_bytes": 8589934592,
+      "total_memory_human": "8.00 GiB",
+      "free_memory_bytes": 486621184,
+      "free_memory_human": "0.45 GiB"
+    },
+    "disk": {
+      "path": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev",
+      "total_bytes": 245107195904,
+      "total_human": "228.27 GiB",
+      "available_bytes": 11364663296,
+      "available_human": "10.58 GiB"
+    }
+  }
+}

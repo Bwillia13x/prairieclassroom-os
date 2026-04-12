@@ -7,6 +7,7 @@
  */
 import type { Request, Response, NextFunction } from "express";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
+import { sendRouteError } from "./errors.js";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 
@@ -20,7 +21,7 @@ export function createAuthMiddleware(
   return (req: Request, res: Response, next: NextFunction): void => {
     // Skip auth for non-classroom routes
     const classroomId =
-      req.body?.classroom_id ?? req.params?.classroomId;
+      req.body?.classroom_id ?? req.params?.classroomId ?? req.params?.id;
 
     if (!classroomId) {
       next();
@@ -48,15 +49,21 @@ export function createAuthMiddleware(
 
     const providedCode = req.headers["x-classroom-code"] as string | undefined;
     if (!providedCode) {
-      res.status(401).json({
+      sendRouteError(res, 401, {
         error: "Authentication required. Provide X-Classroom-Code header.",
+        category: "auth",
+        retryable: false,
+        detail_code: "classroom_code_missing",
       });
       return;
     }
 
     if (providedCode !== classroom.access_code) {
-      res.status(403).json({
+      sendRouteError(res, 403, {
         error: "Invalid classroom code.",
+        category: "auth",
+        retryable: false,
+        detail_code: "classroom_code_invalid",
       });
       return;
     }

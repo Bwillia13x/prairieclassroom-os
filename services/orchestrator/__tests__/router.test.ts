@@ -20,6 +20,7 @@ const ALL_PROMPT_CLASSES: PromptClass[] = [
   "forecast_complexity",
   "detect_scaffold_decay",
   "generate_survival_packet",
+  "extract_worksheet",
 ];
 
 const PLANNING_TIER_CLASSES: PromptClass[] = [
@@ -37,6 +38,7 @@ const LIVE_TIER_CLASSES: PromptClass[] = [
   "simplify_for_student",
   "generate_vocab_cards",
   "generate_ea_briefing",
+  "extract_worksheet",
 ];
 
 const RETRIEVAL_REQUIRED_CLASSES: PromptClass[] = [
@@ -150,9 +152,9 @@ describe("getModelId", () => {
 });
 
 describe("listPromptClasses", () => {
-  it("returns all 11 prompt classes", () => {
+  it("returns all 12 prompt classes", () => {
     const classes = listPromptClasses();
-    expect(classes).toHaveLength(11);
+    expect(classes).toHaveLength(12);
     for (const pc of ALL_PROMPT_CLASSES) {
       expect(classes).toContain(pc);
     }

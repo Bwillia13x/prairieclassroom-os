@@ -1,7 +1,7 @@
 .ea-briefing-form {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   padding: var(--space-6);
   margin-bottom: var(--space-6);
   box-shadow: var(--shadow-sm);
@@ -9,13 +9,13 @@
 
 .ea-briefing-form h2 {
   font-size: var(--text-lg);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
 }
 
 .ea-briefing-description {
   font-size: var(--text-base);
   color: var(--color-text-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-3);
   line-height: 1.5;
 }
 
@@ -29,7 +29,7 @@
 .ea-briefing-result {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   padding: var(--space-6);
   box-shadow: var(--shadow-md);
 }
@@ -37,14 +37,14 @@
 .ea-briefing-header h2 {
   font-family: var(--font-serif);
   font-size: var(--text-xl);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
   letter-spacing: -0.01em;
 }
 
 .ea-briefing-meta {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-2);
 }
 
 .ea-briefing-disclaimer {
@@ -54,13 +54,13 @@
   border: 1px solid var(--color-border-warning);
   border-radius: var(--radius);
   padding: 0.5rem 0.75rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--space-4);
   line-height: 1.4;
 }
 
 /* Sections */
 .ea-section {
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--space-4);
   animation: fade-up 0.35s ease-out both;
 }
 
@@ -71,11 +71,11 @@
 
 .ea-section h3 {
   font-size: var(--text-md);
-  font-weight: 600;
-  margin-bottom: 0.6rem;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: var(--space-2);
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: var(--space-1);
 }
 
 .ea-icon {
@@ -111,7 +111,7 @@
 .ea-cards {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-2);
 }
 
 .ea-card {
@@ -119,12 +119,22 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
   padding: 0.75rem 1rem;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.ea-card:hover {
+  border-color: var(--color-border-strong);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
 }
 
 .ea-card-label {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: var(--text-base);
-  margin-bottom: 0.3rem;
+  margin-bottom: var(--space-1);
   color: var(--color-text);
 }
 
@@ -148,7 +158,7 @@
 
 .ea-card-context {
   color: var(--color-text-secondary);
-  margin-bottom: 0.3rem;
+  margin-bottom: var(--space-1);
 }
 
 .ea-card-approach {
@@ -157,7 +167,7 @@
 
 .ea-card-observation {
   color: var(--color-text-warning);
-  margin-bottom: 0.3rem;
+  margin-bottom: var(--space-1);
 }
 
 .ea-card-action {
@@ -241,7 +251,7 @@
   .ea-section {
     animation: none;
     break-inside: avoid;
-    margin-bottom: 0.75rem;
+    margin-bottom: var(--space-2);
   }
 
   .ea-section h3 {

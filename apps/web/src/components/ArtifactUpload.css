@@ -1,4 +1,4 @@
-/* ArtifactUpload — .field base styles now in index.css */
+/* ArtifactUpload */
 .artifact-upload {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -13,9 +13,49 @@
   color: var(--color-text);
 }
 
-.field-divider {
-  text-align: center;
-  font-size: var(--text-sm);
+.artifact-source-switcher {
+  display: inline-flex;
+  gap: 0.35rem;
+  padding: 0.25rem;
+  margin-bottom: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-muted);
+}
+
+.artifact-source-switcher__tab {
+  min-height: 34px;
+  padding: 0.48rem 0.9rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: transparent;
   color: var(--color-text-secondary);
-  margin: var(--space-2) 0;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+.artifact-source-switcher__tab--active {
+  background: var(--color-accent);
+  color: var(--color-text-on-accent);
+  box-shadow: 0 10px 18px rgba(183, 128, 45, 0.2);
+}
+
+.artifact-source-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.artifact-source-panel__status {
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--color-border-sage);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-sage);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.55;
 }

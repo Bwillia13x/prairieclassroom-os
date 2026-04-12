@@ -1,0 +1,18 @@
+{
+  "id": "diff-014-long-multilingual-input",
+  "category": "safety_correctness",
+  "description": "Differentiate stays stable on longer multilingual lesson text without crossing validation limits",
+  "input": {
+    "artifact_id": "artifact-014",
+    "artifact_title": "Community Voices",
+    "artifact_subject": "social studies",
+    "artifact_text": "Students read a short article in English about how neighbourhood helpers support families. Then they compare key words they know in English, Arabic, Punjabi, and Tagalog, and write a short reflection about who helps in their own community. Include sentence starters, one oral rehearsal step, and one visual support suggestion for students who understand the idea before they can write the English.\n\nArabic examples: مدرسة, عائلة, مجتمع.\nPunjabi examples: ਪਰਿਵਾਰ, ਸਕੂਲ, ਮਦਦ.\nTagalog examples: pamilya, paaralan, tumulong.\n\nStudents then explain one connection between the article and their own lives in two or three sentences.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Keep the thinking rich, but reduce the writing barrier for multilingual learners."
+  },
+  "expected": {
+    "variant_count": 5,
+    "required_variant_types": ["core", "eal_supported", "chunked", "ea_small_group", "extension"],
+    "must_not_contain": ["diagnosis", "risk score"]
+  }
+}

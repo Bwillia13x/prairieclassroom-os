@@ -38,10 +38,10 @@ export default function TeacherReflection({
   }
 
   return (
-    <form className="teacher-reflection" onSubmit={handleSubmit}>
-      <h2>Tomorrow Plan</h2>
-      <p className="reflection-description">
-        Reflect on today and get a structured support plan for tomorrow.
+    <form className="teacher-reflection form-panel" onSubmit={handleSubmit}>
+      <h2>Build Tomorrow's Plan</h2>
+      <p className="reflection-description form-description">
+        Capture the day in a few sentences and the planner will turn it into tomorrow's priorities, watchpoints, and follow-through actions.
       </p>
 
       <div className="field">
@@ -60,7 +60,7 @@ export default function TeacherReflection({
       </div>
 
       <div className={`field${touched && !reflection.trim() ? " field--error" : ""}`}>
-        <label htmlFor="reflection">Today's Reflection</label>
+        <label htmlFor="reflection">Today's Reflection <span className="field-required" aria-hidden="true">*</span></label>
         <textarea
           id="reflection"
           rows={5}
@@ -69,14 +69,20 @@ export default function TeacherReflection({
           onChange={(e) => setReflection(e.target.value)}
           onBlur={() => setTouched(true)}
           required
+          aria-required="true"
+          aria-invalid={touched && !reflection.trim() ? "true" : undefined}
+          aria-describedby={touched && !reflection.trim() ? "reflection-error" : undefined}
         />
         {touched && !reflection.trim() && (
-          <span className="field-error-hint">Reflection is required</span>
+          <span id="reflection-error" className="field-error-hint" role="alert">Reflection is required</span>
         )}
       </div>
 
       <div className="field">
-        <label htmlFor="plan-goal">Goal for Tomorrow (optional)</label>
+        <label htmlFor="plan-goal">
+          Goal for Tomorrow
+          <span className="field-optional">(optional)</span>
+        </label>
         <textarea
           id="plan-goal"
           rows={2}

@@ -1,5 +1,6 @@
 import type { TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
 import PrintButton from "./PrintButton";
+import OutputMetaRow from "./OutputMetaRow";
 import "./PlanViewer.css";
 
 interface Props {
@@ -15,17 +16,22 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, onF
     <div className="plan-viewer">
       <header className="plan-header">
         <h2>Tomorrow's Support Plan</h2>
-        {patternInformed && (
-          <span className="pattern-informed-badge">Pattern-informed</span>
-        )}
         <p className="plan-meta">
           {plan.classroom_id}
         </p>
+        <OutputMetaRow
+          items={[
+            { label: "Planning suite", tone: "analysis" },
+            { label: "Retrieval-backed", tone: "provenance" },
+            ...(patternInformed ? [{ label: "Pattern-informed", tone: "analysis" as const }] : []),
+          ]}
+          compact
+        />
       </header>
 
       {thinkingSummary && (
         <details className="plan-thinking">
-          <summary>Model Thinking</summary>
+          <summary>Reasoning notes</summary>
           <pre>{thinkingSummary}</pre>
         </details>
       )}
@@ -63,6 +69,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, onF
                 {onInterventionClick && (
                   <button
                     className="plan-card-intervention-link"
+                    type="button"
                     onClick={() =>
                       onInterventionClick({
                         student_ref: s.student_ref,

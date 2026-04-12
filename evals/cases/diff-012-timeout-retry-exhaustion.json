@@ -1,0 +1,22 @@
+{
+  "id": "diff-012-timeout-retry-exhaustion",
+  "category": "latency_suitability",
+  "description": "Differentiate returns a retryable timeout error after repeated eval-only short timeouts",
+  "input": {
+    "artifact_id": "artifact-012",
+    "artifact_title": "Math Exit Slip",
+    "artifact_subject": "math",
+    "artifact_text": "Solve 3 subtraction questions and explain which strategy you used.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Keep it short and clear for the end of class.",
+    "eval_behavior": "sleep_ms:250",
+    "eval_timeout_ms": 50
+  },
+  "expected": {
+    "expected_status": 502,
+    "expected_error_category": "inference",
+    "expected_detail_code": "inference_timeout",
+    "expected_retryable": true,
+    "expected_error_substring": "Inference service timed out"
+  }
+}

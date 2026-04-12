@@ -6,6 +6,7 @@
  */
 
 import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
+import type { SectionIconName } from "./components/SectionIcon";
 
 // ─── Active Tab ───
 
@@ -27,6 +28,59 @@ export const TAB_ORDER: ActiveTab[] = [
   "tomorrow-plan", "ea-briefing", "complexity-forecast", "log-intervention", "survival-packet",
   "family-message", "support-patterns",
 ];
+
+export type NavGroup = "today" | "prep" | "ops" | "review";
+
+export type SectionTone = "sun" | "sage" | "slate" | "forest";
+
+export interface NavGroupMeta {
+  label: string;
+  icon: SectionIconName;
+  sectionTone: SectionTone;
+}
+
+export const NAV_GROUP_ORDER: NavGroup[] = ["today", "prep", "ops", "review"];
+
+export const NAV_GROUP_META: Record<NavGroup, NavGroupMeta> = {
+  today: { label: "Today", icon: "sun", sectionTone: "sun" },
+  prep: { label: "Prep", icon: "pencil", sectionTone: "sage" },
+  ops: { label: "Ops", icon: "grid", sectionTone: "slate" },
+  review: { label: "Review", icon: "check", sectionTone: "forest" },
+};
+
+export const TAB_META: Record<ActiveTab, { label: string; shortLabel: string; group: NavGroup }> = {
+  today: { label: "Today", shortLabel: "Today", group: "today" },
+  differentiate: { label: "Differentiate", shortLabel: "Differentiate", group: "prep" },
+  "language-tools": { label: "Language Tools", shortLabel: "Language", group: "prep" },
+  "tomorrow-plan": { label: "Tomorrow Plan", shortLabel: "Plan", group: "ops" },
+  "ea-briefing": { label: "EA Briefing", shortLabel: "EA Brief", group: "ops" },
+  "complexity-forecast": { label: "Forecast", shortLabel: "Forecast", group: "ops" },
+  "log-intervention": { label: "Log Intervention", shortLabel: "Log", group: "ops" },
+  "survival-packet": { label: "Sub Packet", shortLabel: "Sub Packet", group: "ops" },
+  "family-message": { label: "Family Message", shortLabel: "Message", group: "review" },
+  "support-patterns": { label: "Support Patterns", shortLabel: "Patterns", group: "review" },
+};
+
+export function getGroupForTab(tab: ActiveTab): NavGroup {
+  return TAB_META[tab].group;
+}
+
+export function getTabsForGroup(group: NavGroup): ActiveTab[] {
+  return TAB_ORDER.filter((tab) => TAB_META[tab].group === group);
+}
+
+export function getTabBadgeCount(tab: ActiveTab, debtCounts: Record<string, number>): number {
+  switch (tab) {
+    case "family-message":
+      return debtCounts.unapproved_message ?? 0;
+    case "log-intervention":
+      return debtCounts.stale_followup ?? 0;
+    case "support-patterns":
+      return (debtCounts.unaddressed_pattern ?? 0) + (debtCounts.approaching_review ?? 0);
+    default:
+      return 0;
+  }
+}
 
 // ─── Undo System ───
 
@@ -61,6 +115,8 @@ export interface StreamingState {
   partialSections: string[];
   /** Progress 0–1 (estimated) */
   progress: number;
+  /** Elapsed seconds since streaming started */
+  elapsedSeconds: number;
 }
 
 // ─── Toast Queue ───
@@ -73,6 +129,14 @@ export interface ToastItem {
   undoAction?: UndoAction;
   /** Duration in ms before auto-dismiss (0 = sticky) */
   duration: number;
+}
+
+export interface AuthPromptState {
+  classroomId: string;
+  message: string;
+  status: number;
+  source: "selection" | "request";
+  retry?: (code?: string) => Promise<unknown>;
 }
 
 // ─── App State ───
@@ -98,6 +162,12 @@ export interface AppState {
 
   // New: feedback store (persisted to localStorage)
   feedbackQueue: OutputFeedback[];
+
+  // Protected classroom access codes (persisted locally)
+  classroomAccessCodes: Record<string, string>;
+
+  // Auth prompt state for protected classroom flows
+  authPrompt: AuthPromptState | null;
 }
 
 // ─── Actions ───
@@ -121,11 +191,15 @@ export type AppAction =
   | { type: "STREAM_PROGRESS"; progress: number }
   | { type: "STREAM_COMPLETE" }
   | { type: "STREAM_RESET" }
+  | { type: "STREAM_TICK" }
   // Contextual onboarding
   | { type: "MARK_FEATURE_SEEN"; feature: string }
   // Feedback
   | { type: "ADD_FEEDBACK"; feedback: OutputFeedback }
-  | { type: "FLUSH_FEEDBACK" };
+  | { type: "FLUSH_FEEDBACK" }
+  | { type: "SET_CLASSROOM_ACCESS_CODE"; classroomId: string; code: string }
+  | { type: "OPEN_AUTH_PROMPT"; prompt: AuthPromptState }
+  | { type: "CLOSE_AUTH_PROMPT" };
 
 // ─── Initial State ───
 
@@ -147,6 +221,15 @@ function loadFeedbackQueue(): OutputFeedback[] {
   }
 }
 
+function loadClassroomAccessCodes(): Record<string, string> {
+  try {
+    const raw = localStorage.getItem("prairie-classroom-access-codes");
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
 export function createInitialState(): AppState {
   return {
     classrooms: [],
@@ -164,9 +247,12 @@ export function createInitialState(): AppState {
       thinkingText: "",
       partialSections: [],
       progress: 0,
+      elapsedSeconds: 0,
     },
     featuresSeen: loadFeaturesSeen(),
     feedbackQueue: loadFeedbackQueue(),
+    classroomAccessCodes: loadClassroomAccessCodes(),
+    authPrompt: null,
   };
 }
 
@@ -217,6 +303,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
           thinkingText: "",
           partialSections: [],
           progress: 0,
+          elapsedSeconds: 0,
         },
       };
 
@@ -251,6 +338,13 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         streaming: { ...state.streaming, active: false, phase: "complete", progress: 1 },
       };
 
+    case "STREAM_TICK":
+      if (!state.streaming.active) return state;
+      return {
+        ...state,
+        streaming: { ...state.streaming, elapsedSeconds: state.streaming.elapsedSeconds + 1 },
+      };
+
     case "STREAM_RESET":
       return {
         ...state,
@@ -260,6 +354,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
           thinkingText: "",
           partialSections: [],
           progress: 0,
+          elapsedSeconds: 0,
         },
       };
 
@@ -282,6 +377,25 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     case "FLUSH_FEEDBACK":
       try { localStorage.removeItem("prairie-feedback-queue"); } catch { /* noop */ }
       return { ...state, feedbackQueue: [] };
+
+    case "SET_CLASSROOM_ACCESS_CODE": {
+      const classroomAccessCodes = {
+        ...state.classroomAccessCodes,
+        [action.classroomId]: action.code,
+      };
+      try {
+        localStorage.setItem("prairie-classroom-access-codes", JSON.stringify(classroomAccessCodes));
+      } catch {
+        /* noop */
+      }
+      return { ...state, classroomAccessCodes };
+    }
+
+    case "OPEN_AUTH_PROMPT":
+      return { ...state, authPrompt: action.prompt };
+
+    case "CLOSE_AUTH_PROMPT":
+      return { ...state, authPrompt: null };
 
     default:
       return state;

@@ -1,0 +1,15 @@
+{
+  "id": "ea-006-minimal-request",
+  "category": "schema_reliability",
+  "description": "EA briefing works from classroom retrieval context even when no EA name is supplied",
+  "prompt_class": "generate_ea_briefing",
+  "input": {
+    "classroom_id": "alpha-grade4"
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "risk score"
+    ]
+  }
+}

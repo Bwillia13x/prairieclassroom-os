@@ -10,6 +10,7 @@
   "expected": {
     "required_forecast_keys": ["forecast_id", "classroom_id", "forecast_date", "blocks", "overall_summary", "highest_risk_block", "schema_version"],
     "min_blocks": 3,
-    "schema_version": "0.1.0"
+    "schema_version": "0.1.0",
+    "must_not_contain": ["Ari", "Mika", "Jae"]
   }
 }

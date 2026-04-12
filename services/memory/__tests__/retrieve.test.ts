@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import Database from "better-sqlite3";
 import type { TomorrowPlan } from "../../../packages/shared/schemas/plan.js";
 import type { InterventionRecord } from "../../../packages/shared/schemas/intervention.js";
+import { unsafeCastClassroomId } from "../../../packages/shared/schemas/branded.js";
 
 // --- Mock getDb to return in-memory database ---
 let testDb: Database.Database;
@@ -12,6 +13,8 @@ vi.mock("../db.js", () => ({
 }));
 
 import * as retrieve from "../retrieve.js";
+
+const TEST_ROOM = unsafeCastClassroomId("test-room");
 
 // --- DB setup ---
 
@@ -176,14 +179,14 @@ describe("summarizeRecentInterventions", () => {
 
 describe("getRecentPlans (via mock DB)", () => {
   it("returns empty array for empty DB", () => {
-    const plans = retrieve.getRecentPlans("test-room");
+    const plans = retrieve.getRecentPlans(TEST_ROOM);
     expect(plans).toEqual([]);
   });
 
   it("returns plans in descending order by created_at", () => {
     insertPlan(testDb, makePlan({ plan_id: "plan-001" }), "2026-04-01T00:00:00Z");
     insertPlan(testDb, makePlan({ plan_id: "plan-002" }), "2026-04-02T00:00:00Z");
-    const plans = retrieve.getRecentPlans("test-room");
+    const plans = retrieve.getRecentPlans(TEST_ROOM);
     expect(plans).toHaveLength(2);
     expect(plans[0].plan_id).toBe("plan-002");
     expect(plans[1].plan_id).toBe("plan-001");
@@ -194,20 +197,20 @@ describe("getRecentPlans (via mock DB)", () => {
       insertPlan(testDb, makePlan({ plan_id: `plan-${i}` }),
         `2026-04-${String(i + 1).padStart(2, "0")}T00:00:00Z`);
     }
-    const plans = retrieve.getRecentPlans("test-room", 3);
+    const plans = retrieve.getRecentPlans(TEST_ROOM, 3);
     expect(plans).toHaveLength(3);
   });
 });
 
 describe("getRecentInterventions (via mock DB)", () => {
   it("returns empty array for empty DB", () => {
-    expect(retrieve.getRecentInterventions("test-room")).toEqual([]);
+    expect(retrieve.getRecentInterventions(TEST_ROOM)).toEqual([]);
   });
 
   it("returns interventions in descending order", () => {
     insertIntervention(testDb, makeIntervention({ record_id: "int-001" }), "2026-04-01T00:00:00Z");
     insertIntervention(testDb, makeIntervention({ record_id: "int-002" }), "2026-04-02T00:00:00Z");
-    const records = retrieve.getRecentInterventions("test-room");
+    const records = retrieve.getRecentInterventions(TEST_ROOM);
     expect(records).toHaveLength(2);
     expect(records[0].record_id).toBe("int-002");
   });
@@ -215,7 +218,7 @@ describe("getRecentInterventions (via mock DB)", () => {
 
 describe("getLatestPatternReport (via mock DB)", () => {
   it("returns null for empty DB", () => {
-    expect(retrieve.getLatestPatternReport("test-room")).toBeNull();
+    expect(retrieve.getLatestPatternReport(TEST_ROOM)).toBeNull();
   });
 
   it("returns the most recent report", () => {
@@ -227,7 +230,7 @@ describe("getLatestPatternReport (via mock DB)", () => {
     testDb.prepare(
       `INSERT INTO pattern_reports (report_id, classroom_id, report_json, model_id, created_at) VALUES (?, ?, ?, ?, ?)`,
     ).run("pat-002", "test-room", JSON.stringify(r2), "mock", "2026-04-02T00:00:00Z");
-    const result = retrieve.getLatestPatternReport("test-room");
+    const result = retrieve.getLatestPatternReport(TEST_ROOM);
     expect(result).not.toBeNull();
     expect(result!.report_id).toBe("pat-002");
   });
@@ -235,12 +238,12 @@ describe("getLatestPatternReport (via mock DB)", () => {
 
 describe("buildPatternContext (via mock DB)", () => {
   it("returns empty string for empty classroom", () => {
-    expect(retrieve.buildPatternContext("test-room")).toBe("");
+    expect(retrieve.buildPatternContext(TEST_ROOM)).toBe("");
   });
 
   it("includes intervention records when present", () => {
     insertIntervention(testDb, makeIntervention(), "2026-04-01T00:00:00Z");
-    const context = retrieve.buildPatternContext("test-room");
+    const context = retrieve.buildPatternContext(TEST_ROOM);
     expect(context).toContain("INTERVENTION RECORDS:");
     expect(context).toContain("Brody");
     expect(context).toContain("Struggled with transition");
@@ -250,19 +253,19 @@ describe("buildPatternContext (via mock DB)", () => {
     insertIntervention(testDb,
       makeIntervention({ record_id: "int-followup", follow_up_needed: true }),
       "2026-04-01T00:00:00Z");
-    const context = retrieve.buildPatternContext("test-room");
+    const context = retrieve.buildPatternContext(TEST_ROOM);
     expect(context).toContain("PENDING FOLLOW-UPS");
   });
 });
 
 describe("buildEABriefingContext (via mock DB)", () => {
   it("returns empty string for empty classroom", () => {
-    expect(retrieve.buildEABriefingContext("test-room")).toBe("");
+    expect(retrieve.buildEABriefingContext(TEST_ROOM)).toBe("");
   });
 
   it("includes EA actions from most recent plan", () => {
     insertPlan(testDb, makePlan(), "2026-04-01T00:00:00Z");
-    const context = retrieve.buildEABriefingContext("test-room");
+    const context = retrieve.buildEABriefingContext(TEST_ROOM);
     expect(context).toContain("EA ACTIONS:");
     expect(context).toContain("Amira");
     expect(context).toContain("Support Amira with reading");

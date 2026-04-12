@@ -33,22 +33,40 @@ export function useStreamingRequest<T>(opts?: UseStreamingRequestOptions) {
   const mountedRef = useRef(true);
   const progressRef = useRef<ReturnType<typeof setInterval>>(undefined);
   const thinkingRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const tickRef = useRef<ReturnType<typeof setInterval>>(undefined);
+  const resetTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined);
   // Stabilize opts to avoid re-creating execute on every render
   const sectionLabelsKey = opts?.sectionLabels?.join(",") ?? "";
   const stableSectionLabels = useMemo(() => sectionLabelsKey ? sectionLabelsKey.split(",") : [], [sectionLabelsKey]);
 
+  /** Clear all running intervals and pending reset timer */
+  function clearAllTimers() {
+    if (progressRef.current) { clearInterval(progressRef.current); progressRef.current = undefined; }
+    if (thinkingRef.current) { clearInterval(thinkingRef.current); thinkingRef.current = undefined; }
+    if (tickRef.current) { clearInterval(tickRef.current); tickRef.current = undefined; }
+    if (resetTimerRef.current) { clearTimeout(resetTimerRef.current); resetTimerRef.current = undefined; }
+  }
+
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
       mountedRef.current = false;
-      if (progressRef.current) clearInterval(progressRef.current);
-      if (thinkingRef.current) clearInterval(thinkingRef.current);
+      clearAllTimers();
     };
   }, []);
 
   const execute = useCallback(
-    async (fn: (signal: AbortSignal) => Promise<T>, signal?: AbortSignal): Promise<T | null> => {
+    async (fn: () => Promise<T | null>): Promise<T | null> => {
+      // Cancel any pending reset from a prior run
+      clearAllTimers();
+
       // Start thinking phase
       dispatch({ type: "STREAM_START", phase: "thinking" });
+
+      // Elapsed time ticker (1s interval)
+      tickRef.current = setInterval(() => {
+        if (mountedRef.current) dispatch({ type: "STREAM_TICK" });
+      }, 1000);
 
       // Simulate progress increments while waiting
       let progress = 0;
@@ -70,13 +88,17 @@ export function useStreamingRequest<T>(opts?: UseStreamingRequestOptions) {
       }, 1500);
 
       try {
-        const result = await fn(signal ?? new AbortController().signal);
+        const result = await fn();
 
-        if (!mountedRef.current) return null;
+        // Null return means the inner action was cancelled or aborted
+        if (result === null || !mountedRef.current) {
+          clearAllTimers();
+          if (mountedRef.current) dispatch({ type: "STREAM_RESET" });
+          return null;
+        }
 
-        // Stop progress timers
-        if (progressRef.current) clearInterval(progressRef.current);
-        if (thinkingRef.current) clearInterval(thinkingRef.current);
+        // Stop progress/thinking timers (tick already served its purpose)
+        clearAllTimers();
 
         // Transition to structuring phase — animate sections arriving
         dispatch({ type: "STREAM_PROGRESS", progress: 0.9 });
@@ -94,14 +116,13 @@ export function useStreamingRequest<T>(opts?: UseStreamingRequestOptions) {
         dispatch({ type: "STREAM_COMPLETE" });
 
         // Brief pause before resetting so the user sees "complete"
-        setTimeout(() => {
+        resetTimerRef.current = setTimeout(() => {
           if (mountedRef.current) dispatch({ type: "STREAM_RESET" });
         }, 600);
 
         return result;
       } catch (err) {
-        if (progressRef.current) clearInterval(progressRef.current);
-        if (thinkingRef.current) clearInterval(thinkingRef.current);
+        clearAllTimers();
         if (mountedRef.current) dispatch({ type: "STREAM_RESET" });
         throw err;
       }

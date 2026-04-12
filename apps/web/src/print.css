@@ -44,4 +44,55 @@
   .pattern-section {
     break-inside: avoid;
   }
+
+  /* Reset glass surfaces for print */
+  .surface-panel,
+  .form-panel,
+  .contextual-hint,
+  .pending-action-card {
+    background: white !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-color: #ccc !important;
+  }
+
+  /* Collapse workspace layout for print */
+  .workspace-layout {
+    display: block !important;
+  }
+
+  .workspace-rail {
+    margin-bottom: 1rem;
+  }
+
+  /* Hide overlays and toasts */
+  .drill-down-backdrop,
+  .drill-down-drawer,
+  .onboarding-backdrop,
+  .toast-queue,
+  .app-footer,
+  .streaming-indicator,
+  .output-feedback {
+    display: none !important;
+  }
+
+  /* Ensure text contrast for print */
+  .status-chip {
+    border-color: #999 !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Force visible tab panels */
+  .app-main > [role="tabpanel"]:not([hidden]) {
+    animation: none !important;
+  }
+
+  /* Page breaks for multi-section outputs */
+  .ea-briefing-section,
+  .forecast-block,
+  .variant-card,
+  .survival-packet-section {
+    break-inside: avoid;
+  }
 }

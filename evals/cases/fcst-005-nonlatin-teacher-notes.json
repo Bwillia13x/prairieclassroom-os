@@ -1,0 +1,17 @@
+{
+  "id": "fcst-005-nonlatin-teacher-notes",
+  "category": "planning_usefulness",
+  "description": "Complexity forecast tolerates multilingual teacher notes",
+  "prompt_class": "forecast_complexity",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "forecast_date": "2026-04-08",
+    "teacher_notes": "После обеда expect more support needs during math centres. Keep transitions tighter."
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "risk score"
+    ]
+  }
+}

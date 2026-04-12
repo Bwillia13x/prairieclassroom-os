@@ -1,0 +1,56 @@
+{
+  "source_artifact": "output/release-gate/2026-04-08T20-26-50-392Z-12753/80-smoke-api.log",
+  "description": "Replay of the hosted Gemini smoke failure where eaBriefing.briefing.pending_followups[1].student_ref leaked a non-roster alias.",
+  "classroom_id": "demo-okafor-grade34",
+  "allowed_aliases": [
+    "Amira",
+    "Brody",
+    "Chantal",
+    "Daniyal",
+    "Elena",
+    "Farid"
+  ],
+  "raw_response": {
+    "schedule_blocks": [
+      {
+        "time_slot": "8:45-9:10",
+        "student_refs": [
+          "Amira",
+          "Ari"
+        ],
+        "task_description": "Check in on writing start-up and settle math materials.",
+        "materials_needed": [
+          "sentence frames",
+          "visual math cue cards"
+        ]
+      }
+    ],
+    "student_watch_list": [
+      {
+        "student_ref": "Amira",
+        "context_summary": "Recent records show she benefits from oral rehearsal before writing.",
+        "suggested_approach": "Offer sentence stems and a quick verbal check-in."
+      },
+      {
+        "student_ref": "Ari",
+        "context_summary": "This alias should be stripped because it is not on the classroom roster.",
+        "suggested_approach": "Ignore"
+      }
+    ],
+    "pending_followups": [
+      {
+        "student_ref": "Amira",
+        "original_observation": "Needed help sustaining writing after recess.",
+        "days_since": 1,
+        "suggested_action": "Watch whether sentence stems still help after transitions."
+      },
+      {
+        "student_ref": "Ari",
+        "original_observation": "Hosted smoke failure reproduced from the failed gate artifact.",
+        "days_since": 2,
+        "suggested_action": "This entry must be removed by parser-side roster filtering."
+      }
+    ],
+    "teacher_notes_for_ea": "Focus on a calm writing start and keep transitions predictable before numeracy."
+  }
+}

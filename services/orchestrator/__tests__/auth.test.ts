@@ -19,6 +19,7 @@ function mockRes(): { status: any; json: any; _status: number | null; _json: any
   const res: any = {
     _status: null,
     _json: null,
+    locals: {},
     status(code: number) { res._status = code; return res; },
     json(data: any) { res._json = data; return res; },
   };
@@ -103,6 +104,9 @@ describe("createAuthMiddleware", () => {
     expect(next).not.toHaveBeenCalled();
     expect(res._status).toBe(401);
     expect(res._json.error).toContain("Authentication required");
+    expect(res._json.category).toBe("auth");
+    expect(res._json.retryable).toBe(false);
+    expect(res._json.detail_code).toBe("classroom_code_missing");
   });
 
   it("returns 403 when wrong code is provided", () => {
@@ -115,6 +119,9 @@ describe("createAuthMiddleware", () => {
     expect(next).not.toHaveBeenCalled();
     expect(res._status).toBe(403);
     expect(res._json.error).toContain("Invalid classroom code");
+    expect(res._json.category).toBe("auth");
+    expect(res._json.retryable).toBe(false);
+    expect(res._json.detail_code).toBe("classroom_code_invalid");
   });
 
   it("reads classroom_id from params when not in body", () => {
@@ -149,5 +156,41 @@ describe("createAuthMiddleware", () => {
     middleware(req as Request, res as unknown as Response, next);
     expect(next).not.toHaveBeenCalled();
     expect(res._status).toBe(403);
+  });
+
+  it("reads classroom_id from params.id when classroomId is not present", () => {
+    const req = mockReq({
+      body: {},
+      params: { id: "alpha-grade4" },
+      headers: { "x-classroom-code": "prairie-alpha-2026" },
+    });
+    const res = mockRes();
+    middleware(req as Request, res as unknown as Response, next);
+    expect(next).toHaveBeenCalled();
+  });
+
+  it("returns 401 when params.id route is protected and code is missing", () => {
+    const req = mockReq({
+      body: {},
+      params: { id: "alpha-grade4" },
+    });
+    const res = mockRes();
+    middleware(req as Request, res as unknown as Response, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res._status).toBe(401);
+    expect(res._json.detail_code).toBe("classroom_code_missing");
+  });
+
+  it("returns 403 when params.id route is protected and code is wrong", () => {
+    const req = mockReq({
+      body: {},
+      params: { id: "alpha-grade4" },
+      headers: { "x-classroom-code": "wrong-code" },
+    });
+    const res = mockRes();
+    middleware(req as Request, res as unknown as Response, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res._status).toBe(403);
+    expect(res._json.detail_code).toBe("classroom_code_invalid");
   });
 });

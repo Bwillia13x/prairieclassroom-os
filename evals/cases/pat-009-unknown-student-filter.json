@@ -1,0 +1,17 @@
+{
+  "id": "pat-009-unknown-student-filter",
+  "category": "retrieval_relevance",
+  "description": "Support patterns handles an unknown student filter without crashing",
+  "prompt_class": "detect_support_patterns",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_filter": "UnknownStudent",
+    "time_window": 10
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "clinical"
+    ]
+  }
+}

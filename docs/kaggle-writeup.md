@@ -1,170 +1,114 @@
 # PrairieClassroom OS
 
-**Gemma-4-native classroom complexity copilot for Alberta K-6 inclusive classrooms**
+**A Gemma-4-native operating layer for high-complexity inclusive classrooms**
 
----
+## 1. Why this problem matters
 
-## 1. Problem
+The hardest part of teaching an inclusive classroom is usually not writing the lesson. It is coordinating everything around it.
 
-Mrs. Okafor runs a Grade 3/4 split in Lethbridge. Twenty-four students. Three EAL learners: Amira (Tagalog, L2), Daniyal (Urdu, newly arrived, L1), and Farid (Arabic, verbal ahead of written). One student — Brody — with sensory needs and transition difficulties. Ms. Fehr, the educational assistant, is present mornings only. Some families communicate only through translated notes.
+Mrs. Okafor teaches a Grade 3/4 split in Lethbridge. Her day includes differentiating one worksheet into multiple support levels, generating bilingual materials for EAL learners, logging interventions, briefing the educational assistant, planning tomorrow from today’s observations, and drafting family communication that still requires professional review. The bottleneck is not content generation. The bottleneck is coordination under real classroom load.
 
-On any given day: differentiate a fractions worksheet for five learner profiles, generate bilingual vocab cards for Amira's family, log Brody's milestone, brief Ms. Fehr before 8:30, draft a family message, and build tomorrow's plan integrating two weeks of observations. Simultaneously.
+That is where PrairieClassroom OS is focused. Instead of acting like a generic tutor or a chatbot with classroom branding, it treats the classroom as an operating environment: memory, retrieval, safety boundaries, approval gates, and role-specific workflows all matter as much as raw text generation.
 
-The gap is coordination bandwidth, not curriculum. Generic chatbots are untethered from classroom context. Specialized ed-tech solves workflows in isolation. What's missing is an operating layer that holds classroom memory, routes each task to the right model, enforces safety constraints, and serves both teacher and EA.
+## 2. What PrairieClassroom OS does
 
----
+PrairieClassroom OS is a classroom operations copilot for teachers and educational assistants. It is explicitly not a replacement for teacher judgment.
 
-## 2. Product
+The current product is organized around eight workflows:
 
-PrairieClassroom OS is a classroom operations copilot — not a chatbot, not a content generator, not a replacement for teacher judgment. Eight structured workflows deliver the coordination tax reduction:
+1. **Differentiate** one source artifact into learner-specific variants
+2. **Tomorrow Plan** grounded in recent classroom context
+3. **Family Message** drafts that always require teacher approval
+4. **Intervention Log** turning free-text notes into structured records
+5. **Simplify Text** for grade-level and EAL supports
+6. **Vocab Cards** tied to lesson content in multiple languages
+7. **Support Patterns** across recent classroom records
+8. **EA Briefing** for the next school-day handoff
 
-1. **Differentiate** — one source artifact becomes five learner-specific variants; multimodal input accepts pasted text or worksheet images
-2. **Tomorrow Plan** — next-day plan grounded in classroom memory and pattern synthesis
-3. **Family Message** — plain-language drafts with mandatory teacher approval before any downstream action
-4. **Log Intervention** — free-text observations structured into persistent, queryable records
-5. **Simplify Text** — grade-level and EAL-level rewrites, on demand
-6. **Vocab Cards** — bilingual flashcards in 10 languages, tied to lesson content
-7. **Support Patterns** — cross-record synthesis revealing recurring themes and follow-up gaps
-8. **EA Briefing** — morning synthesis document for the educational assistant
+The system’s signature is the closed loop between those workflows. Interventions become structured memory. Pattern detection uses that memory. Tomorrow planning uses the latest patterns and prior plans. The EA briefing uses the same records to create a concise morning handoff. The result is not one more isolated AI tool. It is a classroom operating layer that compounds in usefulness as context accumulates.
 
-The system closes a feedback loop: interventions feed pattern detection, patterns inform plan generation, plans feed EA briefings. Every cycle adds retrieval context that makes outputs more grounded.
+## 3. Why Gemma 4 is central
 
-Two users are served: teacher and educational assistant. All outward-facing communication requires explicit teacher approval. Every workflow has a defined input contract, output schema, model tier, and safety framing.
+PrairieClassroom OS uses a three-service architecture:
 
----
+- **Vite + React UI** for the teacher and EA shell
+- **Express orchestrator** for prompt assembly, retrieval, validation, and approval boundaries
+- **Flask inference service** for model routing and provider-specific execution
 
-## 3. Architecture and Gemma 4
+Classroom memory lives in SQLite. That is a deliberate design choice. The data is structured, bounded, and relational: students, interventions, plans, messages, and pattern reports. For this use case, SQL retrieval is more transparent and controllable than approximate vector search. The system is trying to stay grounded in classroom records, not invent new abstractions around them.
 
-### Three-Service Design
+Gemma 4 matters here for three specific reasons.
 
-```
-┌──────────────────────────────────────────────┐
-│           Teacher / EA Browser               │
-│           Vite UI  :5173                     │
-└───────────────────┬──────────────────────────┘
-                    │  REST (JSON)
-                    ▼
-┌──────────────────────────────────────────────┐
-│         Express Orchestrator  :3100          │
-│  Prompt Builder · Retrieval · Schema Validator│
-│  SQLite Classroom Memory                     │
-│  students · plans · interventions ·          │
-│  messages · pattern_reports                  │
-└───────────────────┬──────────────────────────┘
-                    │  HTTP (JSON)
-                    ▼
-┌──────────────────────────────────────────────┐
-│         Flask Inference  :3200               │
-│  gemma-4-4b-it  (live tier)  ← sub-2s tasks │
-│  gemma-4-27b-it (plan tier)  ← deep synthesis│
-│  Served locally via Ollama                   │
-└──────────────────────────────────────────────┘
-```
+**First, multimodal worksheet handling.** Teachers can submit a worksheet image directly to the Differentiate workflow. Gemma 4 vision extracts the content without requiring manual retyping, which makes the workflow usable at classroom speed.
 
-The Vite UI hosts eight tabs and communicates with the Express orchestrator over REST. The orchestrator owns all business logic: builds prompts from versioned contracts, validates requests with Zod schemas, injects retrieval context from SQLite, validates responses, and gates outward-facing outputs on teacher approval.
+**Second, dual-tier routing.** PrairieClassroom OS routes fast transformation tasks to a live tier and deeper synthesis tasks to a planning tier. Differentiation, simplification, vocab support, intervention structuring, and EA briefing stay on the faster path. Tomorrow planning and pattern detection route to the larger planning model where cross-record reasoning matters.
 
-### Dual-Tier Gemma 4 Routing via Ollama
+**Third, selective thinking mode.** Thinking is enabled only where it creates value: tomorrow planning and support-pattern detection. This keeps the rest of the product fast and operational rather than over-reasoned.
 
-The inference layer runs Gemma 4 locally through Ollama — no cloud dependency, no data leaving the school. Two model tiers handle different task profiles:
+For the hackathon submission, the artifact-backed proof lane is **hosted Gemma 4 through the Gemini API** on synthetic/demo classroom data:
 
-**Live tier (`gemma-4-4b-it`):** Differentiation, simplification, vocab cards, intervention logging, EA briefing — sub-2-second response times for tasks that happen in real classroom moments.
+- live tier: `gemma-4-26b-a4b-it`
+- planning tier: `gemma-4-31b-it`
 
-**Planning tier (`gemma-4-27b-it` with thinking enabled):** Tomorrow plan generation and support pattern detection — cross-record synthesis where a teacher accepts 3–5 seconds for meaningfully better specificity.
+The repo also includes a separate **local/self-hosted Ollama lane** for the intended privacy-preserving school deployment path:
 
-Tier assignment is static. Every prompt class is assigned at definition time.
+- live tier: `gemma4:4b`
+- planning tier: `gemma4:27b`
 
-### Multimodal Worksheet Extraction
+That distinction is important. The hosted lane is the proof path used for the submission artifacts described here. The Ollama lane is the future privacy-first deployment path for local-first school environments. The project keeps those stories separate so the public claims stay accurate.
 
-Gemma 4 vision enables worksheet images submitted directly as multimodal input to the Differentiate workflow. The model extracts content, identifies learning objectives, and generates differentiated variants from the image — no manual copy-paste. This is the primary Gemma 4 differentiator over earlier model families and what makes differentiation practical at classroom speed.
+## 4. Safety by design
 
-### 12 Prompt Classes with Versioned Contracts
+Education software has to be safer than a generic productivity assistant, especially when it touches student records and family communication.
 
-Every model interaction is a versioned prompt contract. Each contract specifies: route name, model tier, thinking mode, retrieval required, output schema version, and forbidden language list.
+PrairieClassroom OS uses two hard prompt-level constraints for classroom-record workflows:
 
-| Class | Tier | Thinking | Retrieval |
-|-------|------|----------|-----------|
-| A. Differentiate (text) | live | off | no |
-| B. Differentiate (image/multimodal) | live | off | no |
-| C. Tomorrow Plan | planning | **on** | yes |
-| D. Family Message | live | off | no |
-| E. Intervention Log | live | off | no |
-| F. Simplify Text | live | off | no |
-| G. Vocab Cards | live | off | no |
-| H. Support Patterns | planning | **on** | yes |
-| I. EA Briefing | live | off | yes |
-| J. Worksheet Extraction | live | off | no |
-| K. Language Detection | live | off | no |
-| L. Translation Scaffold | live | off | no |
+- **Observational language.** The system reflects teacher documentation back as “Your records show...” rather than asserting diagnostic or clinical claims of its own.
+- **Forbidden terminology.** Clinical and stigmatizing terms are excluded from relevant prompt classes to reduce overreach.
 
-Thinking mode is enabled for exactly two classes: tomorrow planning and pattern detection — the only tasks requiring cross-record synthesis and temporal reasoning. All other classes are transformation or extraction tasks where thinking mode adds latency without quality gain.
+The family-message workflow adds a product-level boundary on top of that prompt safety: the system may draft, but it does not send. Teacher approval is required every time. The point is to reduce coordination overhead without removing professional control.
 
-### Retrieval Injection: SQL, Not RAG
+## 5. What is proven today
 
-When a prompt class requires retrieval, the orchestrator runs structured SQL queries against the classroom SQLite file and injects results as formatted context blocks. For tomorrow plan generation, three retrieval functions run before prompt construction: recent plans and EA schedules, recent interventions with follow-up flags, and the latest pattern report.
+The checked-in repo contains 90 evaluation cases covering schema reliability, safety boundaries, retrieval usage, planning usefulness, latency expectations, and content quality.
 
-This is not RAG. Classroom memory is bounded, structured, and relational. SQL on a 5-table SQLite file is faster, more auditable, and more deterministic than approximate vector search for this use case.
+The repo currently proves three different things:
 
----
+- **Mock structural gate:** the current branch passes typecheck, lint, Python tests, TypeScript tests, harness smoke, API smoke, and browser smoke with no paid services
+- **Hosted Gemma 4 proof lane:** the hosted Gemini proof suite passed `10/10`, and the full hosted release gate completed successfully on synthetic/demo data
+- **Local-first deployment lane:** a separate Ollama path exists in the repo for privacy-first deployment, but the artifact-backed submission proof described here is the hosted lane
 
-## 4. Safety
+That separation is part of the product discipline. The submission should claim what is proven, not what is merely intended.
 
-Every prompt class that touches student records includes an explicit safety contract in the system prompt. The contract has two components.
+The current proof sources are:
 
-**Observational language.** All student references use teacher-first attribution: "Your records show..." not "This student has..." The system reflects the teacher's own documentation — no independent claims about students.
+- `docs/eval-baseline.md` for provider-specific status
+- `docs/hackathon-proof-brief.md` for the concise judge-facing proof summary
+- `output/release-gate/2026-04-09T14-26-54-338Z-54148` for the latest passing hosted gate artifact
 
-**15 forbidden clinical/diagnostic terms.** ADHD, autism, dyslexia, behavioral disorder, at-risk, deficit, and nine related terms are excluded from every relevant prompt class. Output using these terms would misrepresent the product's scope and cause professional harm if surfaced to parents or administrators without clinical context.
+The normal hosted refresh order is `npm run proof:check`, `npm run gemini:readycheck`, `npm run release:gate:gemini`, `npm run eval:summary`, and `npm run logs:summary`.
 
-Safety is embedded in each prompt contract — enforced at source, not filtered afterward. Family messages require explicit teacher approval. No auto-send path, no timeout-based auto-approval. This boundary is permanent.
+## 6. Why this is a strong Future of Education entry
 
----
+PrairieClassroom OS is built around a different thesis than most AI education demos. It does not try to replace the teacher with a tutor. It tries to strengthen the teacher’s operating capacity inside a real inclusive classroom.
 
-## 5. Evaluation
+That is why the product combines multilingual support, classroom memory, intervention logging, pattern synthesis, role-specific briefings, and approval-gated family communication in one system. The value is not a single output. The value is a better-coordinated classroom day.
 
-67+ golden-case evals across five categories validate retrieval, injection, and generation together:
+For the hackathon, hosted Gemma 4 on synthetic/demo data proves the system is real, working, and architecturally coherent. For the longer-term Alberta deployment story, the same orchestration model is designed to move toward local or self-hosted Gemma 4 with SQLite classroom memory and privacy-preserving operations.
 
-| Category | Evals | What is tested |
-|----------|-------|----------------|
-| Schema reliability | 22 | All required keys present, correct types, schema version matches |
-| Content quality | 15 | Output is specific, grounded, actionable — not generic |
-| Safety boundaries | 12 | 15 forbidden terms absent; observational language enforced |
-| Latency suitability | 10 | Live tier under 2000ms; planning tier under 6000ms |
-| Cross-feature synthesis | 8 | Outputs correctly reference records from other features |
-
-**Zero safety failures. Zero regressions across 13 sprints.**
-
-Cross-feature synthesis evals seed the database with prior records, run a planning or briefing generation, and assert the output references specific student aliases from those seeded records — confirming the full feedback loop works end-to-end, not each feature in isolation. Safety evals inject adversarial inputs that would elicit clinical language from a naive model and assert the safety framing holds.
-
----
-
-## 6. Local-First Architecture
-
-PrairieClassroom OS runs entirely on a laptop via Ollama. No cloud dependency. No data leaves the school. Privacy by architecture, not by policy.
-
-Each classroom gets a single SQLite file — `{classroom-id}.sqlite`. Five tables: students, plans, interventions, messages, pattern\_reports. The model is stateless; the classroom memory is the state.
-
-The system compounds in usefulness through structured retrieval, not retraining. Every intervention logged feeds pattern detection, every pattern informs the next plan, every plan feeds the morning briefing. Over weeks, retrieval context grows richer — and so do outputs — without any model update or external dependency. Deployable in schools with restrictive IT policies, limited internet, or firm data residency requirements.
-
----
+PrairieClassroom OS is therefore not just a Gemma 4 app. It is a Gemma-4-native operating layer for the human work of inclusive teaching.
 
 ## Technical Summary
 
 | Metric | Value |
 |--------|-------|
+| User-facing workflows | 8 |
 | Prompt classes | 12 |
-| Model tiers | 2 (live: gemma-4-4b-it, planning: gemma-4-27b-it) |
-| Inference backends | 4 (mock, Ollama local, Vertex AI, transformers) |
-| Thinking mode routes | 2 of 12 |
+| Model tiers | 2 |
+| Submission proof models | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` |
+| Privacy-first deployment target | `gemma4:4b`, `gemma4:27b` |
 | API endpoints | 13 |
-| SQLite tables / classroom | 5 |
-| Evaluations | 67+ |
-| Zero safety failures | confirmed |
-| Zero regressions | across 13 sprints |
-| UI tabs | 8 |
-| Forbidden diagnostic terms | 15 |
-| Languages supported (vocab cards) | 10 |
-| Multimodal input | worksheet image extraction via Gemma 4 vision |
-| Auth model | classroom-code (X-Classroom-Code header) |
-| LOC (TypeScript) | ~14,500 |
-| LOC (Python) | ~1,000 |
-| Sprints completed | 13 |
-| Users served | 2 (teacher, educational assistant) |
+| SQLite tables per classroom | 5 |
+| Checked-in eval cases | 90 |
+| Languages in vocab workflow | 10 |
+| Primary user roles | teacher, educational assistant |

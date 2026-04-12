@@ -1,0 +1,14 @@
+{
+  "id": "plan-013-empty-memory-echo",
+  "category": "retrieval_relevance",
+  "description": "Tomorrow plan still returns a bounded response for a classroom with effectively empty memory",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "echo-grade3",
+    "teacher_reflection": "Students needed a simpler entry point into reading response work. I want tomorrow to start calmer and with less writing pressure."
+  },
+  "expected": {
+    "must_not_contain": ["diagnosis", "risk score", "clinical"],
+    "max_latency_ms": 2000
+  }
+}

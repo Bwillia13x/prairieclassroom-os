@@ -1,0 +1,21 @@
+{
+  "id": "diff-013-retryable-503-exhaustion",
+  "category": "schema_reliability",
+  "description": "Differentiate returns a structured retryable service error after repeated 503 responses",
+  "input": {
+    "artifact_id": "artifact-013",
+    "artifact_title": "Word Sort",
+    "artifact_subject": "literacy",
+    "artifact_text": "Sort the words into nouns and verbs, then explain one choice.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Keep the sort concrete and support the explanation step.",
+    "eval_behavior": "http_503"
+  },
+  "expected": {
+    "expected_status": 502,
+    "expected_error_category": "inference",
+    "expected_detail_code": "inference_service_retryable",
+    "expected_retryable": true,
+    "expected_error_substring": "Simulated retryable inference error"
+  }
+}

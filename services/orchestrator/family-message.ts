@@ -1,6 +1,7 @@
 // services/orchestrator/family-message.ts
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface FamilyMessagePrompt {
   system: string;
@@ -19,7 +20,7 @@ export function buildFamilyMessagePrompt(
   classroom: ClassroomProfile,
   input: FamilyMessageInput,
 ): FamilyMessagePrompt {
-  const system = `You are PrairieClassroom OS, a family communication assistant for Alberta K–6 teachers.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a family communication assistant for Alberta K–6 teachers.
 
 Your task: Draft a plain-language family message about a student. The teacher will review and approve this message before it is sent.
 
@@ -40,7 +41,7 @@ RULES:
 - Keep the message brief (3–5 sentences for the main body).
 - If target_language is not "en", write the message in that language.
 - Distinguish observations from inferences.
-- Output only the JSON object, no markdown fencing or commentary.`;
+- Output only the JSON object, no markdown fencing or commentary.`);
 
   const studentContext = input.student_refs
     .map((ref) => {
@@ -59,7 +60,7 @@ ${studentContext}
 
 MESSAGE TYPE: ${input.message_type}
 TARGET LANGUAGE: ${input.target_language}
-${input.context ? `\nCONTEXT: ${input.context}` : ""}
+${input.context ? `\nCONTEXT:\n${renderPromptInput(input.context, "message_context")}` : ""}
 
 Draft a family message as a JSON object.`;
 

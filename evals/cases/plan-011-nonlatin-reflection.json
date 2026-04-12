@@ -1,0 +1,17 @@
+{
+  "id": "plan-011-nonlatin-reflection",
+  "category": "planning_usefulness",
+  "description": "Tomorrow plan handles mixed-script teacher reflections without breaking schema",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "teacher_reflection": "مرحلة ما بعد الغداء كانت صعبة اليوم. Need quieter entry into math and clearer visual supports for transitions.",
+    "teacher_goal": "Build a calmer afternoon plan."
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "clinical"
+    ]
+  }
+}

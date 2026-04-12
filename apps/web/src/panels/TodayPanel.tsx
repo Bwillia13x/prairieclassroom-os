@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { fetchTodaySnapshot, fetchClassroomHealth } from "../api";
@@ -11,12 +11,14 @@ import TimeSuggestion from "../components/TimeSuggestion";
 import PageIntro from "../components/PageIntro";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
+import ErrorBanner from "../components/ErrorBanner";
 import StatusChip from "../components/StatusChip";
 import SectionIcon from "../components/SectionIcon";
 import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import Sparkline from "../components/Sparkline";
+import { HealthDot, TrendIndicator } from "../components/shared";
 import type { TodaySnapshot, ClassroomHealth, DrillDownContext, InterventionPrefill, FamilyMessagePrefill } from "../types";
 import "./TodayPanel.css";
 
@@ -28,7 +30,7 @@ interface Props {
 
 export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
   const { activeClassroom, profile } = useApp();
-  const { loading, error, result, execute } = useAsyncAction<TodaySnapshot>();
+  const { loading, error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
 
@@ -40,7 +42,10 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
   if (!profile) return null;
 
-  const recommendedAction = result ? getRecommendedAction(result) : null;
+  const recommendedAction = useMemo(
+    () => result ? getRecommendedAction(result) : null,
+    [result],
+  );
 
   const attentionStudents = new Set(
     result?.debt_register.items.flatMap((i) => i.student_refs) ?? []
@@ -68,11 +73,35 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         <SkeletonLoader variant="stack" message="Loading today's snapshot..." label="Loading dashboard" />
       ) : null}
 
-      {error && !result ? <div className="error-banner">{error}</div> : null}
+      {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 
       {result ? (
         <div className="today-grid motion-stagger">
           <HealthBar health={health.result ?? null} loading={health.loading} pendingActionCount={result.debt_register.items.length} />
+          {health.result && !health.loading && (
+            <div className="today-health-viz">
+              <HealthDot
+                status={
+                  result.debt_register.items.length > 3 ? "critical"
+                  : result.debt_register.items.length > 0 ? "warning"
+                  : "healthy"
+                }
+                tooltip={`${result.debt_register.items.length} pending action${result.debt_register.items.length !== 1 ? "s" : ""}`}
+              />
+              {health.result.trends.debt_total_14d.length >= 2 && (() => {
+                const d = health.result!.trends.debt_total_14d;
+                const recent = d[d.length - 1];
+                const prev = d[d.length - 2];
+                const delta = prev === 0 ? 0 : ((recent - prev) / Math.abs(prev)) * 100;
+                return (
+                  <TrendIndicator
+                    value={delta}
+                    direction={delta > 5 ? "up" : delta < -5 ? "down" : "flat"}
+                  />
+                );
+              })()}
+            </div>
+          )}
 
           <PendingActionsCard
             items={[

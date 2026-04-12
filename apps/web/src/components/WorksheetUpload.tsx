@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback } from "react";
 import { useAsyncAction } from "../useAsyncAction";
 import { extractWorksheet } from "../api";
+import ErrorBanner from "./ErrorBanner";
 import type { ExtractWorksheetResponse } from "../types";
 import "./WorksheetUpload.css";
 
@@ -13,7 +14,7 @@ export default function WorksheetUpload({ classroomId, onTextExtracted }: Props)
   const [preview, setPreview] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
-  const { loading, error, execute } = useAsyncAction<ExtractWorksheetResponse>();
+  const { loading, error, execute, reset } = useAsyncAction<ExtractWorksheetResponse>();
 
   const processFile = useCallback(async (file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -81,7 +82,7 @@ export default function WorksheetUpload({ classroomId, onTextExtracted }: Props)
           className="worksheet-upload__preview"
         />
       )}
-      {error && <div className="error-banner">{error}</div>}
+      {error && <ErrorBanner message={error} onDismiss={reset} />}
     </div>
   );
 }

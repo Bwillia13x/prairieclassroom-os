@@ -1,0 +1,5 @@
+source_id	claim_id	flag_reason	action_needed
+S-014	C-008	EmbeddingGemma source is 2025 and Gemma-3-based	Recheck if Google ships a Gemma 4-era embedding model before product messaging uses it heavily
+S-018	C-011	Practitioner sentiment source is 2024	Refresh with newer Alberta teacher sentiment data if available before external publication
+S-019	C-005	Competitor feature pages may change quickly	Refresh overlap comparison before any public deck or submission
+S-020	C-005	Competitor feature pages may change quickly	Refresh overlap comparison before any public deck or submission

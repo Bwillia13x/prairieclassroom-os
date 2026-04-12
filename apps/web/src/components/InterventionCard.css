@@ -1,7 +1,7 @@
 .intervention-card {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   padding: var(--space-6);
   box-shadow: var(--shadow-md);
   animation: fade-up 0.35s ease-out both;
@@ -10,27 +10,27 @@
 .intervention-header h2 {
   font-family: var(--font-serif);
   font-size: var(--text-xl);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
   letter-spacing: -0.01em;
 }
 
 .intervention-meta {
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-3);
 }
 
 .intervention-field {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-3);
 }
 
 .intervention-field-label {
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  margin-bottom: 0.3rem;
+  margin-bottom: var(--space-1);
 }
 
 .intervention-field-value {
@@ -53,7 +53,7 @@
   padding: 0.35rem 0.75rem;
   border-radius: var(--radius);
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .followup-badge--yes {
@@ -76,5 +76,5 @@
   border-radius: var(--radius);
   font-size: var(--text-base);
   color: var(--color-text-success);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }

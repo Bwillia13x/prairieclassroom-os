@@ -2,7 +2,7 @@
 
 Gemma-4-native, local-first classroom complexity copilot for Alberta K-6 inclusive classrooms.
 
-PrairieClassroom OS is not a chatbot. It is eight structured workflows that reduce the coordination tax on teachers working in high-complexity classrooms with mixed grades, EAL learners, accessibility needs, and shared staffing.
+PrairieClassroom OS is not a chatbot. It is a teacher command center with 10 primary panels and 12 prompt or retrieval-backed workflows that reduce the coordination tax on teachers working in high-complexity classrooms with mixed grades, EAL learners, accessibility needs, and shared staffing.
 
 ## Quick Start
 
@@ -10,7 +10,9 @@ PrairieClassroom OS is not a chatbot. It is eight structured workflows that redu
 
 - Node.js 20.19.5 (`nvm use` reads [`.nvmrc`](./.nvmrc))
 - Python 3.11.x
-- A GCP project with Vertex AI enabled (for real inference) — or run in mock mode
+- Ollama only if you want the zero-cost live-model lane
+- A Google AI Studio API key only if you want the hosted Gemma 4 hackathon lane
+- A GCP project with Vertex AI enabled only if you explicitly choose the paid validation path
 
 ### Install
 
@@ -28,6 +30,11 @@ If you switch Node versions and `better-sqlite3` stops loading, rebuild the nati
 ```bash
 npm run rebuild:memory
 ```
+
+Mock mode and Ollama are the zero-cost defaults. Hosted Gemini API is the hackathon/demo lane for real Gemma 4 validation without local 27B hardware, but hosted runs are disabled by default until you explicitly export `PRAIRIE_ENABLE_GEMINI_RUNS=true`. Any Vertex-backed path is blocked unless you explicitly export `PRAIRIE_ALLOW_PAID_SERVICES=true`.
+The operator source of truth for the no-spend local lane is [docs/zero-cost-operations.md](docs/zero-cost-operations.md).
+The operator source of truth for the hosted hackathon lane is [docs/hackathon-hosted-operations.md](docs/hackathon-hosted-operations.md).
+The artifact-backed proof registry lives in [docs/live-model-proof-status.md](docs/live-model-proof-status.md) for Ollama-host evidence, while provider comparisons live in [docs/eval-baseline.md](docs/eval-baseline.md).
 
 ### Seed demo data (first time only)
 
@@ -48,12 +55,15 @@ INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 npm run dev -w apps/web
 ```
 
-### Run with Ollama (recommended — zero cost)
+### Run with Ollama (privacy-first target — zero cost)
 
 ```bash
 # Pull Gemma 4 models (one-time)
 ollama pull gemma4:4b
 ollama pull gemma4:27b
+
+# Verify the host can run the zero-cost live-model lane
+npm run host:preflight:ollama
 
 # Terminal 1: Inference service (Ollama mode)
 cd services/inference && python server.py --mode ollama --port 3200
@@ -65,11 +75,30 @@ INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 npm run dev -w apps/web
 ```
 
+### Run with Hosted Gemma 4 via Gemini API (hackathon/demo lane)
+
+```bash
+export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
+export PRAIRIE_ENABLE_GEMINI_RUNS=true
+
+# Terminal 1: Inference service (hosted Gemini API mode)
+cd services/inference && python server.py --mode gemini --port 3200
+
+# Terminal 2: Orchestrator API
+INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
+
+# Terminal 3: UI dev server
+npm run dev -w apps/web
+```
+
+Use this lane only with synthetic/demo content. Do not use real classroom or student data in the hosted lane.
+
 After backend, inference-harness, or memory-layer changes, restart the inference and orchestrator processes before trusting fresh smoke results.
 
 For real Gemma inference via Vertex AI endpoints:
 
 ```bash
+export PRAIRIE_ALLOW_PAID_SERVICES=true
 export GOOGLE_CLOUD_PROJECT=<your-project-id>
 export GOOGLE_CLOUD_LOCATION=us-central1
 gcloud auth application-default login
@@ -85,6 +114,23 @@ cd services/inference && python server.py --mode api --port 3200
 
 Navigate to **http://localhost:5173/?demo=true** for the demo classroom (Mrs. Okafor's Grade 3/4 split, pre-loaded with 2 weeks of classroom memory).
 
+The shell also supports stable deep links:
+
+- `?tab=<panel-id>` restores the active panel on load and refresh
+- `?classroom=<classroom-id>` restores the active classroom
+- `?demo=true` still selects the demo classroom when no explicit classroom is provided
+
+Examples:
+
+```text
+http://localhost:5173/?demo=true&tab=family-message
+http://localhost:5173/?classroom=alpha-grade4&tab=tomorrow-plan
+```
+
+`GET /api/classrooms` now returns non-secret classroom metadata for the shell, including `requires_access_code` and `is_demo`. It never returns the classroom access code itself.
+
+Protected classrooms now work in the browser UI: the shell prompts for the classroom code, stores it locally in that browser, and retries protected `today`, history, and generation requests automatically. Direct API callers still authenticate with the `X-Classroom-Code` header.
+
 ### Smoke Tests
 
 These checks assume the mock inference service, orchestrator, and Vite UI are already running.
@@ -97,6 +143,15 @@ npm run smoke
 ```
 
 The browser smoke saves failure screenshots to `output/playwright/`.
+It now verifies grouped shell navigation, `tab` and `classroom` deep-link restore, the demo classroom flow, and protected classroom auth recovery for missing and invalid codes.
+
+To capture a screenshot bundle for UI review artifacts:
+
+```bash
+npm run ui:evidence
+```
+
+This writes the current desktop and mobile screenshots under `output/playwright/ui-evidence/`.
 
 ### Release Gate
 
@@ -108,9 +163,53 @@ npm run release:gate
 
 If the gate fails because a port is already in use, stop the existing local processes and re-run the command. The gate expects to own `:3200`, `:3100`, and `:5173`.
 
-For credentialed Vertex/Gemma validation, run the real-inference gate. It uses the same startup flow, adds ADC/endpoint preflight checks, runs the real harness smoke + eval suite, saves eval artifacts under `output/evals/<date>-real/`, and refreshes `docs/eval-baseline.md`.
+For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. The checked-in hosted proof is now passing: the curated hosted eval suite passed and the full hosted release gate completed on synthetic/demo data. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present.
+The latest passing hosted artifact is `output/release-gate/2026-04-09T14-26-54-338Z-54148`.
+
+Before any future hosted rerun, keep the local-only preparation flow separate from live execution:
 
 ```bash
+npm run proof:check
+npm run gemini:readycheck
+```
+
+```bash
+export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
+export PRAIRIE_ENABLE_GEMINI_RUNS=true
+npm run release:gate:gemini
+npm run eval:summary
+npm run logs:summary
+```
+
+If you are repairing a single hosted route, you can run a cheaper targeted smoke pass before rerunning the full gate:
+
+```bash
+export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
+export PRAIRIE_ENABLE_GEMINI_RUNS=true
+PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api
+```
+
+For zero-cost live-model validation, use the Ollama gate. It performs the same local startup flow, verifies the required Gemma 4 models are present in Ollama, runs the eval suite locally, and refreshes `docs/eval-baseline.md`.
+
+```bash
+npm run host:preflight:ollama
+npm run release:gate:ollama
+```
+
+The no-spend observability and evidence helpers are:
+
+```bash
+npm run logs:summary
+npm run logs:prune -- --days 14
+npm run eval:summary
+```
+
+Request logs are written inside the repo under `output/request-logs/`. Host preflight artifacts land in `output/host-preflight/`. Eval results and failure summaries land in `output/evals/`.
+
+For credentialed Vertex/Gemma validation, run the real-inference gate only when you intentionally want the paid path. It uses the same startup flow, adds ADC/endpoint preflight checks, runs the real harness smoke + eval suite, saves eval artifacts under `output/evals/<date>-real/`, and refreshes `docs/eval-baseline.md`.
+
+```bash
+export PRAIRIE_ALLOW_PAID_SERVICES=true
 export GOOGLE_CLOUD_PROJECT=<your-project-id>
 export GOOGLE_CLOUD_LOCATION=us-central1
 export PRAIRIE_VERTEX_BACKEND=endpoint
@@ -155,7 +254,7 @@ Teacher / EA Browser (Vite + React)
         │
         ▼  REST JSON
 Express Orchestrator :3100
-  ├─ Prompt builders (8 contracts)
+  ├─ Prompt builders (12 contracts + retrieval-backed routes)
   ├─ Zod request validation
   ├─ Classroom-code auth
   ├─ Retrieval injection (SQL)
@@ -163,11 +262,11 @@ Express Orchestrator :3100
         │
         ▼  HTTP JSON
 Flask Inference :3200
-  ├─ Ollama/Vertex → gemma-4-4b-it   (live tier)
-  └─ Ollama/Vertex → gemma-4-27b-it  (planning tier)
+  ├─ Ollama/Vertex → gemma-4-4b-it / gemma-4-27b-it
+  └─ Gemini API → gemma-4-26b-a4b-it / gemma-4-31b-it
 ```
 
-## Features
+## Core Surfaces
 
 | Workflow | Model Tier | Thinking | Retrieval | Persisted |
 |----------|-----------|----------|-----------|-----------|
@@ -179,6 +278,10 @@ Flask Inference :3200
 | Vocab cards (10 languages) | live | off | no | no |
 | Support patterns | planning | **on** | yes | yes |
 | EA daily briefing | live | off | yes | no |
+| Complexity forecast | planning | **on** | yes | yes |
+| Substitute survival packet | planning | **on** | yes | yes |
+| Scaffold decay review | planning | **on** | yes | yes |
+| Worksheet extraction | live | off | no | no |
 
 ## Safety
 
@@ -189,22 +292,31 @@ Flask Inference :3200
 
 ## Evaluation
 
-64 golden-case evals across schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, and cross-feature synthesis.
+99 checked-in eval cases across schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. 595 unit tests cover 15 Zod schemas, 12 prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
 ```bash
 # Run evals (requires orchestrator + inference running)
 npx tsx evals/runner.ts
+npm run eval:summary
 ```
+
+For public claims, `npm run claims:check` blocks unsupported statements like invented teacher, EA, or parent validation.
 
 ## Key Docs
 
 - [Product spec](docs/spec.md) — MVP scope and user stories
 - [Architecture](docs/architecture.md) — 6-layer system design
-- [Prompt contracts](docs/prompt-contracts.md) — all 8 versioned contracts
+- [Prompt contracts](docs/prompt-contracts.md) — all 12 versioned contracts
 - [Safety governance](docs/safety-governance.md) — hard boundaries and framing rules
 - [Decision log](docs/decision-log.md) — 32 architecture decision records
 - [Kaggle writeup](docs/kaggle-writeup.md) — competition submission document
+- [Hackathon proof brief](docs/hackathon-proof-brief.md) — concise artifact-backed proof summary for judges
 - [Demo script](docs/demo-script.md) — 15-minute walkthrough with narration cues
+- [Video shot list](docs/video-shot-list.md) — 3-minute public-video outline aligned to the hosted proof lane
+- [Hackathon submission checklist](docs/hackathon-submission-checklist.md) — repo-complete items, external publish steps, and claims to avoid
+- [Hackathon hosted operations](docs/hackathon-hosted-operations.md) — hosted Gemma 4 proof lane for the submission
+- [Zero-cost operations](docs/zero-cost-operations.md) — operator checklist for the no-spend mock/Ollama lane
+- [Live-model proof status](docs/live-model-proof-status.md) — current blocked/passed host evidence for the zero-cost Ollama lane
 
 ## Sprint History
 

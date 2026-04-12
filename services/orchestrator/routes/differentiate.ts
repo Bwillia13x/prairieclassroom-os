@@ -5,6 +5,8 @@ import { saveVariants } from "../../memory/store.js";
 import { validateBody, DifferentiateRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { DifferentiatedVariant } from "../../../packages/shared/schemas/artifact.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
 export function createDifferentiateRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -16,7 +18,7 @@ export function createDifferentiateRouter(deps: RouteDeps): Router {
       // Load classroom profile
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+        sendClassroomNotFound(res, classroom_id);
         return;
       }
 
@@ -26,72 +28,24 @@ export function createDifferentiateRouter(deps: RouteDeps): Router {
 
       // Build prompt
       const prompt = buildDifferentiationPrompt(artifact, classroom, teacher_goal);
-
-      // Call inference service
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: route.prompt_class,
-          max_tokens: 4096,
-          mock_context: {
-            classroom_id,
-          },
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 4096,
+        mockContext: { classroom_id },
+        safetyScanSource: { teacher_goal, artifact },
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        model_id: string;
-        latency_ms: number;
-      };
 
       // Parse variants from model output — retry once on parse failure
       let variants: DifferentiatedVariant[];
       try {
         variants = parseVariantsResponse(inferenceData.text, artifact.artifact_id);
-      } catch (firstParseErr) {
-        // Retry inference once — Gemma occasionally produces mixed-encoding JSON
-        const retryResp = await fetch(`${deps.inferenceUrl}/generate`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            prompt: `${prompt.system}\n\n${prompt.user}`,
-            model_tier: route.model_tier,
-            thinking: route.thinking_enabled,
-            prompt_class: route.prompt_class,
-            max_tokens: 4096,
-            mock_context: { classroom_id },
-          }),
-        });
-        if (!retryResp.ok) {
-          res.status(422).json({
-            error: "Failed to parse model output as variants (retry also failed)",
-            raw_output: inferenceData.text,
-            parse_error: firstParseErr instanceof Error ? firstParseErr.message : String(firstParseErr),
-          });
-          return;
-        }
-        const retryData = (await retryResp.json()) as { text: string; model_id: string; latency_ms: number };
-        try {
-          variants = parseVariantsResponse(retryData.text, artifact.artifact_id);
-        } catch (retryParseErr) {
-          res.status(422).json({
-            error: "Failed to parse model output as variants after retry",
-            raw_output: retryData.text,
-            parse_error: retryParseErr instanceof Error ? retryParseErr.message : String(retryParseErr),
-          });
-          return;
-        }
+      } catch (parseErr) {
+        sendParseError(res, "Failed to parse model output as variants", inferenceData.text, parseErr);
+        return;
       }
 
       res.json({
@@ -109,9 +63,7 @@ export function createDifferentiateRouter(deps: RouteDeps): Router {
       }
     } catch (err) {
       console.error("Differentiation error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 

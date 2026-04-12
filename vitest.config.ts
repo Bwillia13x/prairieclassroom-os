@@ -8,6 +8,7 @@ export default defineConfig({
       "packages/**/__tests__/**/*.test.ts",
       "apps/web/src/__tests__/**/*.test.ts",
       "apps/web/src/components/shared/__tests__/**/*.test.tsx",
+      "apps/web/src/panels/__tests__/**/*.test.ts",
     ],
     environment: "node",
     environmentMatchGlobs: [

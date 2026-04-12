@@ -17,6 +17,7 @@ import type {
   EAAction,
   FamilyFollowup,
 } from "../../packages/shared/schemas/plan.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface TomorrowPlanPrompt {
   system: string;
@@ -37,7 +38,7 @@ export function buildTomorrowPlanPrompt(
   interventionSummary?: string,
   patternInsights?: string,
 ): TomorrowPlanPrompt {
-  const system = `You are PrairieClassroom OS, a classroom planning assistant for Alberta K–6 teachers.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom planning assistant for Alberta K–6 teachers.
 
 Your task: Given today's teacher reflection, classroom context, and any lesson artifacts, produce a structured next-day support plan.
 
@@ -72,7 +73,7 @@ RULES:
 - Do not diagnose conditions. Do not assign risk scores. Do not suggest disciplinary actions.
 - Distinguish observations from inferences.
 - If PATTERN INSIGHTS are provided, weave them into support priorities, EA actions, and prep steps. Reference the teacher's documented patterns using language like "your records show" or "based on your documented observations."
-- Output only the JSON object, no markdown fencing or commentary.`;
+- Output only the JSON object, no markdown fencing or commentary.`);
 
   const classroomContext = [
     `Grade: ${classroom.grade_band}`,
@@ -96,7 +97,13 @@ RULES:
 
   const artifactContext = input.artifacts?.length
     ? input.artifacts
-        .map((a) => `  - "${a.title}" (${a.subject}): ${a.raw_text?.slice(0, 200) ?? "(no text)"}`)
+        .map(
+          (a) =>
+            `  - "${a.title}" (${a.subject}):\n${renderPromptInput(
+              a.raw_text?.slice(0, 500) ?? "(no text)",
+              `artifact_${a.artifact_id}`,
+            )}`,
+        )
         .join("\n")
     : "  (no specific artifacts for tomorrow)";
 
@@ -104,11 +111,11 @@ RULES:
 ${classroomContext}
 
 TODAY'S TEACHER REFLECTION:
-${input.teacher_reflection}
+${renderPromptInput(input.teacher_reflection, "teacher_reflection")}
 
 TOMORROW'S ARTIFACTS/MATERIALS:
 ${artifactContext}
-${memorySummary ? `\nCLASSROOM MEMORY:\n${memorySummary}\n` : ""}${interventionSummary ? `\nRECENT INTERVENTIONS:\n${interventionSummary}\n` : ""}${patternInsights ? `\nPATTERN INSIGHTS (from your most recent pattern review):\n${patternInsights}\n` : ""}${input.teacher_goal ? `\nTEACHER GOAL FOR TOMORROW: ${input.teacher_goal}` : ""}
+${memorySummary ? `\nCLASSROOM MEMORY:\n${renderPromptInput(memorySummary, "classroom_memory")}\n` : ""}${interventionSummary ? `\nRECENT INTERVENTIONS:\n${renderPromptInput(interventionSummary, "intervention_summary")}\n` : ""}${patternInsights ? `\nPATTERN INSIGHTS (from your most recent pattern review):\n${renderPromptInput(patternInsights, "pattern_insights")}\n` : ""}${input.teacher_goal ? `\nTEACHER GOAL FOR TOMORROW:\n${renderPromptInput(input.teacher_goal, "teacher_goal")}` : ""}
 
 Produce a structured tomorrow plan as a JSON object.`;
 

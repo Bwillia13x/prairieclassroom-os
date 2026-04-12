@@ -5,9 +5,9 @@
 .simplified-form {
   background: var(--color-bg-muted);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  margin-bottom: 1.5rem;
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 .simplified-form h3 {
@@ -21,13 +21,13 @@
   margin: 0 0 1rem 0;
 }
 
-/* .form-row base styles now in index.css */
+/* .form-row base styles in primitives.css */
 
 .simplified-result {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 1.25rem;
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
   animation: fade-up 0.35s ease-out both;
 }
 
@@ -73,7 +73,7 @@
   padding: 0.2rem 0.6rem;
   border-radius: 12px;
   font-size: 0.85rem;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-text);
 }
 

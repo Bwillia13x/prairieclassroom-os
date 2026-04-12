@@ -1,0 +1,21 @@
+{
+  "id": "diff-010-invalid-json",
+  "category": "schema_reliability",
+  "description": "Differentiate returns structured inference error when the inference service emits invalid JSON",
+  "input": {
+    "artifact_id": "artifact-010",
+    "artifact_title": "Reading Reflection",
+    "artifact_subject": "literacy",
+    "artifact_text": "Read the passage and write two sentences about the main idea.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Keep the task accessible for mixed readiness.",
+    "eval_behavior": "invalid_json"
+  },
+  "expected": {
+    "expected_status": 502,
+    "expected_error_category": "inference",
+    "expected_detail_code": "inference_response_invalid",
+    "expected_retryable": false,
+    "expected_error_substring": "Inference service returned invalid JSON"
+  }
+}

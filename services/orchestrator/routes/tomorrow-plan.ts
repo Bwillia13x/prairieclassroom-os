@@ -8,18 +8,24 @@ import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarize
 import { validateBody, TomorrowPlanRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { TomorrowPlan } from "../../../packages/shared/schemas/plan.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
+import { maybeExposeThinkingSummary } from "../thinking-summary.js";
+import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 
 export function createTomorrowPlanRouter(deps: RouteDeps): Router {
   const router = Router();
 
   router.post("/", validateBody(TomorrowPlanRequestSchema), async (req, res) => {
     try {
-      const { classroom_id, teacher_reflection, artifacts, teacher_goal } = req.body as z.infer<typeof TomorrowPlanRequestSchema>;
+      const body = req.body as z.infer<typeof TomorrowPlanRequestSchema>;
+      const classroom_id = body.classroom_id as ClassroomId;
+      const { teacher_reflection, artifacts, teacher_goal } = body;
 
       // Load classroom profile
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+        sendClassroomNotFound(res, classroom_id);
         return;
       }
 
@@ -67,34 +73,23 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       };
       const prompt = buildTomorrowPlanPrompt(classroom, planInput, memorySummary, interventionSummary, patternInsightsSummary || undefined);
 
-      // Call inference service
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: route.prompt_class,
-          max_tokens: 4096,
-          mock_context: {
-            classroom_id,
-          },
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 4096,
+        mockContext: { classroom_id },
+        safetyScanSource: {
+          teacher_reflection,
+          teacher_goal,
+          artifacts,
+          memorySummary,
+          interventionSummary,
+          patternInsightsSummary,
+        },
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        thinking_text: string | null;
-        model_id: string;
-        latency_ms: number;
-      };
 
       // Parse plan from model output
       let plan: TomorrowPlan;
@@ -102,17 +97,13 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
         const artifactIds = (artifacts ?? []).map((a) => a.artifact_id);
         plan = parseTomorrowPlanResponse(inferenceData.text, classroom_id, artifactIds);
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as tomorrow plan",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as tomorrow plan", inferenceData.text, parseErr);
         return;
       }
 
       res.json({
         plan,
-        thinking_summary: inferenceData.thinking_text ?? null,
+        thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
         pattern_informed: patternInformed,
         model_id: inferenceData.model_id || modelId,
         latency_ms: inferenceData.latency_ms,
@@ -126,9 +117,7 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       }
     } catch (err) {
       console.error("Tomorrow plan error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 

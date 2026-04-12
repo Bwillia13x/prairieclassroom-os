@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import type { ComplexityForecast } from "../types";
 import PrintButton from "./PrintButton";
+import OutputMetaRow from "./OutputMetaRow";
 import "./ForecastViewer.css";
 
 interface Props {
@@ -35,11 +36,19 @@ export default function ForecastViewer({ forecast, thinkingSummary }: Props) {
         <p className="forecast-meta">
           {forecast.classroom_id} &middot; {forecast.forecast_date}
         </p>
+        <OutputMetaRow
+          items={[
+            { label: "Forecast suite", tone: "analysis" },
+            { label: "Retrieval-backed", tone: "provenance" },
+            { label: "Block timeline", tone: "accent" },
+          ]}
+          compact
+        />
       </header>
 
       {thinkingSummary && (
         <details className="forecast-thinking">
-          <summary>Model Thinking</summary>
+          <summary>Reasoning notes</summary>
           <pre>{thinkingSummary}</pre>
         </details>
       )}

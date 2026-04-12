@@ -7,14 +7,18 @@ export function createHealthRouter(deps: RouteDeps): Router {
   async function buildHealthPayload() {
     let ready = false;
 
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
     try {
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/health`);
+      const inferenceResp = await fetch(`${deps.inferenceUrl}/health`, { signal: controller.signal });
       if (inferenceResp.ok) {
         const inferenceData = (await inferenceResp.json()) as { status?: string };
         ready = inferenceData.status === "ok";
       }
     } catch {
       ready = false;
+    } finally {
+      clearTimeout(timeout);
     }
 
     return {

@@ -2,8 +2,9 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { getDb, closeAll } from "../../memory/db.js";
 import { getLatestPlan, getLatestForecast } from "../../memory/retrieve.js";
 import { savePlan } from "../../memory/store.js";
+import { unsafeCastClassroomId } from "../../../packages/shared/schemas/branded.js";
 
-const TEST_CLASSROOM = "test-today-classroom";
+const TEST_CLASSROOM = unsafeCastClassroomId("test-today-classroom");
 
 describe("getLatestPlan", () => {
   beforeEach(() => {

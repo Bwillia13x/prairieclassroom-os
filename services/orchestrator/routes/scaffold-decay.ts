@@ -7,17 +7,23 @@ import { buildScaffoldDecayContext, getLatestScaffoldReview, getStudentIntervent
 import { validateBody, ScaffoldDecayRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { ScaffoldDecayReport } from "../../../packages/shared/schemas/scaffold-decay.js";
+import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendClassroomNotFound, sendParseError, sendRouteError } from "../errors.js";
+import { maybeExposeThinkingSummary } from "../thinking-summary.js";
+import { isValidClassroomId } from "../validate.js";
 
 export function createScaffoldDecayRouter(deps: RouteDeps): Router {
   const router = Router();
 
   router.post("/", validateBody(ScaffoldDecayRequestSchema), async (req, res) => {
     try {
-      const { classroom_id, student_ref, time_window } = req.body;
+      const { classroom_id: raw_classroom_id, student_ref, time_window } = req.body;
+      const classroom_id = raw_classroom_id as ClassroomId;
 
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+        sendClassroomNotFound(res, classroom_id);
         return;
       }
 
@@ -51,40 +57,26 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
 
       const prompt = buildScaffoldDecayPrompt(classroom, decayInput, decayCtx);
 
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: "detect_scaffold_decay",
-          max_tokens: 4096,
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 4096,
+        mockContext: {
+          classroom_id,
+          student_ref,
+          time_window,
+        },
+        safetyScanSource: { ...decayInput, decayCtx },
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        thinking_text: string | null;
-        model_id: string;
-        latency_ms: number;
-      };
 
       let report: ScaffoldDecayReport;
       try {
         report = parseScaffoldDecayResponse(inferenceData.text, classroom_id, student_ref);
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as scaffold decay report",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as scaffold decay report", inferenceData.text, parseErr);
         return;
       }
 
@@ -97,23 +89,26 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
 
       res.json({
         report,
-        thinking_summary: inferenceData.thinking_text ?? null,
+        thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
         model_id: inferenceData.model_id || modelId,
         latency_ms: inferenceData.latency_ms,
       });
     } catch (err) {
       console.error("Scaffold decay error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 
   // ----- Latest Scaffold Review Retrieval -----
 
-  router.get("/latest/:classroomId/:studentRef", (req, res) => {
+  router.get("/latest/:classroomId/:studentRef", deps.authMiddleware, (req, res) => {
     try {
-      const classroomId = req.params.classroomId as string;
+      const rawId = req.params.classroomId as string;
+      if (!isValidClassroomId(rawId)) {
+        sendRouteError(res, 400, { error: "Invalid classroom ID format", category: "validation", retryable: false, detail_code: "invalid_classroom_id" });
+        return;
+      }
+      const classroomId = rawId as ClassroomId;
       const studentRef = req.params.studentRef as string;
       const review = getLatestScaffoldReview(classroomId, studentRef);
       if (!review) {
@@ -123,9 +118,7 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
       res.json({ review });
     } catch (err) {
       console.error("Scaffold review retrieval error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 

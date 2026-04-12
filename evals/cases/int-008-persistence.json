@@ -1,0 +1,18 @@
+{
+  "id": "int-008-persistence",
+  "category": "retrieval_relevance",
+  "description": "Logged intervention is persisted and retrievable via classroom interventions history",
+  "prompt_class": "roundtrip_intervention_persistence",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "student_refs": ["Daniyal"],
+    "teacher_note": "Daniyal had difficulty transitioning from recess to the writing block. Used a visual timer and quiet check-in at his desk. He was able to start his writing task within 5 minutes after the support. Will try a pre-transition cue tomorrow."
+  },
+  "expected": {
+    "required_intervention_keys": ["record_id", "classroom_id", "student_refs", "observation", "action_taken", "follow_up_needed", "schema_version"],
+    "history_must_contain_record_id": true,
+    "history_must_match_classroom_id": true,
+    "history_must_include_student_ref": "Daniyal",
+    "schema_version": "0.1.0"
+  }
+}

@@ -1,9 +1,11 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, type Ref } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
 import type { LessonArtifact } from "../types";
 import FileUploadZone from "./FileUploadZone";
 import WorksheetUpload from "./WorksheetUpload";
 import "./ArtifactUpload.css";
+
+type ArtifactSourceMode = "photo" | "file" | "paste";
 
 interface Props {
   classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
@@ -11,6 +13,7 @@ interface Props {
   onClassroomChange: (id: string) => void;
   onSubmit: (artifact: LessonArtifact, classroomId: string) => void;
   loading: boolean;
+  formRef?: Ref<HTMLFormElement>;
 }
 
 export default function ArtifactUpload({
@@ -19,12 +22,14 @@ export default function ArtifactUpload({
   onClassroomChange,
   onSubmit,
   loading,
+  formRef,
 }: Props) {
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
   const [rawText, setRawText] = useState("");
   const [teacherGoal, setTeacherGoal] = useState("");
   const [touched, setTouched] = useState<Record<string, boolean>>({});
+  const [sourceMode, setSourceMode] = useState<ArtifactSourceMode>("photo");
 
   const { clear: clearDraft } = useFormPersistence(
     `prairie-artifact-${selectedClassroom}`,
@@ -46,7 +51,10 @@ export default function ArtifactUpload({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title.trim() || !rawText.trim()) return;
+    if (!title.trim() || !rawText.trim()) {
+      setTouched((current) => ({ ...current, title: true, rawText: true }));
+      return;
+    }
 
     const artifact: LessonArtifact = {
       artifact_id: `artifact-${Date.now()}`,
@@ -62,8 +70,11 @@ export default function ArtifactUpload({
   }
 
   return (
-    <form className="artifact-upload" onSubmit={handleSubmit}>
-      <h2>Upload Lesson Artifact</h2>
+    <form className="artifact-upload form-panel" onSubmit={handleSubmit} ref={formRef}>
+      <h2>Prepare Lesson Artifact</h2>
+      <p className="form-description">
+        Choose the classroom first, then bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
+      </p>
 
       <div className="field">
         <label htmlFor="classroom">Classroom</label>
@@ -110,35 +121,72 @@ export default function ArtifactUpload({
       </div>
 
       <div className={`field${touched.rawText && !rawText.trim() ? " field--error" : ""}`}>
-        <label htmlFor="raw-text">Lesson Content</label>
-        <WorksheetUpload
-          classroomId={selectedClassroom}
-          onTextExtracted={(text) => {
-            setRawText(text);
-            if (!title.trim()) setTitle("Extracted Worksheet");
-          }}
-        />
-        <p className="field-divider">or upload a document</p>
-        <FileUploadZone onTextExtracted={handleFileExtracted} />
-        <p className="field-divider">or paste text directly</p>
-        <textarea
-          id="raw-text"
-          rows={6}
-          placeholder="Paste or type the lesson content, worksheet text, or instructions…"
-          value={rawText}
-          onChange={(e) => setRawText(e.target.value)}
-          onBlur={() => setTouched((t) => ({ ...t, rawText: true }))}
-          aria-describedby={touched.rawText && !rawText.trim() ? "rawtext-error" : undefined}
-          aria-invalid={touched.rawText && !rawText.trim() ? true : undefined}
-          required
-        />
+        <label htmlFor="raw-text">Artifact Source</label>
+        <div className="artifact-source-switcher" role="tablist" aria-label="Artifact input method">
+          {[
+            { id: "photo", label: "Photo" },
+            { id: "file", label: "File" },
+            { id: "paste", label: "Paste" },
+          ].map((mode) => (
+            <button
+              key={mode.id}
+              className={`artifact-source-switcher__tab${sourceMode === mode.id ? " artifact-source-switcher__tab--active" : ""}`}
+              type="button"
+              role="tab"
+              aria-selected={sourceMode === mode.id}
+              onClick={() => setSourceMode(mode.id as ArtifactSourceMode)}
+            >
+              {mode.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="artifact-source-panel">
+          {sourceMode === "photo" ? (
+            <WorksheetUpload
+              classroomId={selectedClassroom}
+              onTextExtracted={(text) => {
+                setRawText(text);
+                if (!title.trim()) setTitle("Extracted Worksheet");
+              }}
+            />
+          ) : null}
+
+          {sourceMode === "file" ? (
+            <FileUploadZone onTextExtracted={handleFileExtracted} />
+          ) : null}
+
+          {sourceMode === "paste" ? (
+            <textarea
+              id="raw-text"
+              rows={6}
+              placeholder="Paste or type the lesson content, worksheet text, or instructions…"
+              value={rawText}
+              onChange={(e) => setRawText(e.target.value)}
+              onBlur={() => setTouched((t) => ({ ...t, rawText: true }))}
+              aria-describedby={touched.rawText && !rawText.trim() ? "rawtext-error" : undefined}
+              aria-invalid={touched.rawText && !rawText.trim() ? true : undefined}
+              required
+            />
+          ) : null}
+
+          {sourceMode !== "paste" && rawText.trim() ? (
+            <p className="artifact-source-panel__status">
+              Source text captured. Switch to <strong>Paste</strong> if you want to review or edit the extracted content before running differentiation.
+            </p>
+          ) : null}
+        </div>
+
         {touched.rawText && !rawText.trim() && (
           <span id="rawtext-error" className="field-error-hint">Lesson content is required</span>
         )}
       </div>
 
       <div className="field">
-        <label htmlFor="teacher-goal">Teacher Goal (optional)</label>
+        <label htmlFor="teacher-goal">
+          Instructional Focus
+          <span className="field-optional">(optional)</span>
+        </label>
         <textarea
           id="teacher-goal"
           rows={2}

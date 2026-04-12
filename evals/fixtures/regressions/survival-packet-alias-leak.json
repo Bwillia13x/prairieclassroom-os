@@ -1,0 +1,91 @@
+{
+  "source_artifact": "output/release-gate/2026-04-08T21-59-04-041Z-34095/80-smoke-api.log",
+  "description": "Replay of the hosted Gemini smoke failure where survivalPacket.packet.student_support leaked a non-roster alias, plus narrative text that referenced the same off-roster student.",
+  "classroom_id": "demo-okafor-grade34",
+  "allowed_aliases": [
+    "Amira",
+    "Brody",
+    "Chantal",
+    "Daniyal",
+    "Elena",
+    "Farid"
+  ],
+  "known_aliases": [
+    "Amira",
+    "Brody",
+    "Chantal",
+    "Daniyal",
+    "Elena",
+    "Farid",
+    "Ari",
+    "Mika",
+    "Jae"
+  ],
+  "raw_response": {
+    "routines": [
+      {
+        "time_or_label": "Morning arrival",
+        "description": "Students unpack, complete attendance, and review the visual agenda."
+      }
+    ],
+    "student_support": [
+      {
+        "student_ref": "Amira",
+        "current_scaffolds": [
+          "sentence stems",
+          "oral rehearsal"
+        ],
+        "key_strategies": "Amira settles best when another student is already regulated and the instructions are chunked aloud.",
+        "things_to_avoid": "Do not overload the first task with extra written directions."
+      },
+      {
+        "student_ref": "Ari",
+        "current_scaffolds": [
+          "quiet start"
+        ],
+        "key_strategies": "This entry should be removed because Ari is not on the classroom roster."
+      }
+    ],
+    "ea_coordination": {
+      "ea_name": "Ms. Fehr",
+      "schedule_summary": "Arrives before recess and supports literacy through lunch.",
+      "primary_students": [
+        "Amira",
+        "Ari"
+      ],
+      "if_ea_absent": "Use the sentence-frame bin and keep partner work optional."
+    },
+    "simplified_day_plan": [
+      {
+        "time_slot": "8:45-9:30",
+        "activity": "Writing launch",
+        "sub_instructions": "Model the example once, then send students out with the sentence-frame tray.",
+        "materials_location": "Front literacy shelf"
+      }
+    ],
+    "family_comms": [
+      {
+        "student_ref": "Amira",
+        "status": "defer_to_teacher",
+        "notes": "Teacher plans to follow up if writing stamina remains low."
+      },
+      {
+        "student_ref": "Ari",
+        "status": "expecting_message",
+        "notes": "This alias should be removed because it belongs to another classroom."
+      }
+    ],
+    "complexity_peaks": [
+      {
+        "time_slot": "12:45-1:10",
+        "level": "medium",
+        "reason": "Post-lunch reset can take longer after gym days.",
+        "mitigation": "Start with a calm read-aloud before independent work."
+      }
+    ],
+    "heads_up": [
+      "Ari may ask about the unfinished workbook page from yesterday.",
+      "Keep transition language short before numeracy."
+    ]
+  }
+}

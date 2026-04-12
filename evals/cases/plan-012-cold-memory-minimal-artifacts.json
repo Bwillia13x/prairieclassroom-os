@@ -1,0 +1,16 @@
+{
+  "id": "plan-012-cold-memory-minimal-artifacts",
+  "category": "retrieval_relevance",
+  "description": "Tomorrow plan still returns a valid output when there are no explicit artifacts",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "bravo-grade2",
+    "teacher_reflection": "Students needed extra modelling during independent writing. Want a simpler start tomorrow."
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "risk score"
+    ]
+  }
+}

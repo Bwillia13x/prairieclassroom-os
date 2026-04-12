@@ -1,0 +1,18 @@
+{
+  "id": "vocab-003-nonlatin-lesson",
+  "category": "schema_reliability",
+  "description": "Vocab cards handles mixed-language lesson text",
+  "prompt_class": "generate_vocab_cards",
+  "input": {
+    "artifact_text": "Communities need services. También necesitan transportation and communication systems.",
+    "subject": "social studies",
+    "target_language": "Spanish",
+    "grade_band": "3-4"
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "clinical"
+    ]
+  }
+}

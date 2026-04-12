@@ -32,7 +32,7 @@
   height: 8px;
   border-radius: 50%;
   background: var(--color-border);
-  transition: background 0.2s;
+  transition: background var(--motion-base) var(--ease-standard);
 }
 
 .onboarding-dot--active {
@@ -47,7 +47,7 @@
 .onboarding-group-label {
   display: inline-block;
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--color-accent);
@@ -57,7 +57,7 @@
 .onboarding-title {
   font-family: var(--font-serif);
   font-size: var(--text-xl);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   margin-bottom: var(--space-3);
 }

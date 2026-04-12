@@ -6,6 +6,8 @@ import { buildEABriefingContext } from "../../memory/retrieve.js";
 import { validateBody, EABriefingRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { EABriefing } from "../../../packages/shared/schemas/briefing.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
 export function createEABriefingRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -16,7 +18,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
 
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+        sendClassroomNotFound(res, classroom_id);
         return;
       }
 
@@ -34,43 +36,29 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
 
       const prompt = buildEABriefingPrompt(classroom, briefingInput, briefingCtx);
 
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: route.prompt_class,
-          max_tokens: 2048,
-          mock_context: {
-            classroom_id,
-            ea_name,
-          },
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 768,
+        mockContext: {
+          classroom_id,
+          ea_name,
+        },
+        safetyScanSource: { ...briefingInput, briefingCtx },
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        model_id: string;
-        latency_ms: number;
-      };
 
       let briefing: EABriefing;
       try {
-        briefing = parseEABriefingResponse(inferenceData.text, classroom_id);
+        briefing = parseEABriefingResponse(
+          inferenceData.text,
+          classroom_id,
+          classroom.students.map((student) => student.alias),
+        );
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as EA briefing",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as EA briefing", inferenceData.text, parseErr);
         return;
       }
 
@@ -83,9 +71,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
       });
     } catch (err) {
       console.error("EA briefing error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 

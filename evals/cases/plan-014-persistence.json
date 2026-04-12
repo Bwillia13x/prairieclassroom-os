@@ -1,0 +1,17 @@
+{
+  "id": "plan-014-persistence",
+  "category": "retrieval_relevance",
+  "description": "Generated tomorrow plan is persisted and retrievable via classroom plans history",
+  "prompt_class": "roundtrip_plan_persistence",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "teacher_reflection": "Amira struggled during the math block with multi-digit subtraction and needed the hundreds chart. Brody finished his reading response early and distracted Farid. Chantal helped Elena with the science vocab without being asked — great peer support moment.",
+    "teacher_goal": "Better pacing for math block. Prepare an extension task for Brody. Reinforce Chantal's peer mentoring."
+  },
+  "expected": {
+    "required_plan_keys": ["plan_id", "classroom_id", "transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups", "schema_version"],
+    "history_must_contain_plan_id": true,
+    "history_must_match_classroom_id": true,
+    "schema_version": "0.1.0"
+  }
+}

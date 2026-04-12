@@ -30,23 +30,10 @@
 .motion-stagger > *:nth-child(7) { animation-delay: 300ms; }
 .motion-stagger > *:nth-child(8) { animation-delay: 350ms; }
 
-/* Button micro-interaction */
-.btn {
-  transition: background 0.15s, color 0.15s, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.btn:active {
-  transform: scale(0.97);
-}
-
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .motion-stagger > *,
   .app-main > [role="tabpanel"]:not([hidden]) {
     animation: none !important;
-  }
-
-  .btn {
-    transition: background 0.15s, color 0.15s !important;
   }
 }

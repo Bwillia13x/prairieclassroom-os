@@ -6,6 +6,8 @@ import { buildVocabCardsPrompt, parseVocabCardsResponse } from "../vocab-cards.j
 import type { VocabCardsInput } from "../vocab-cards.js";
 import { validateBody, SimplifyRequestSchema, VocabCardsRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendParseError } from "../errors.js";
 
 export function createLanguageToolsRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -20,39 +22,21 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
       const simplifyInput: SimplifyInput = { source_text, grade_band, eal_level };
       const prompt = buildSimplifyPrompt(simplifyInput);
 
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: "simplify_for_student",
-          max_tokens: 2048,
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 2048,
+        safetyScanSource: simplifyInput,
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        model_id: string;
-        latency_ms: number;
-      };
 
       let simplified;
       try {
         simplified = parseSimplifyResponse(inferenceData.text, simplifyInput);
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as simplified text",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as simplified text", inferenceData.text, parseErr);
         return;
       }
 
@@ -63,9 +47,7 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
       });
     } catch (err) {
       console.error("Simplify error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 
@@ -85,39 +67,21 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
       };
       const prompt = buildVocabCardsPrompt(vocabInput);
 
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: "generate_vocab_cards",
-          max_tokens: 2048,
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 2048,
+        safetyScanSource: vocabInput,
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        model_id: string;
-        latency_ms: number;
-      };
 
       let cardSet;
       try {
         cardSet = parseVocabCardsResponse(inferenceData.text, vocabInput);
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as vocab cards",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as vocab cards", inferenceData.text, parseErr);
         return;
       }
 
@@ -128,9 +92,7 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
       });
     } catch (err) {
       console.error("Vocab cards error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 

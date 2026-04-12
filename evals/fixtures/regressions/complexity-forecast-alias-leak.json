@@ -1,0 +1,23 @@
+{
+  "description": "Replay of the hosted Gemini forecast smoke failure where free-text forecast narrative leaked a non-roster alias.",
+  "classroom_id": "demo-okafor-grade34",
+  "forecast_date": "2026-04-10",
+  "allowed_aliases": ["Amira", "Brody", "Chantal", "Daniyal", "Elena", "Farid"],
+  "known_aliases": ["Amira", "Brody", "Chantal", "Daniyal", "Elena", "Farid", "Ari", "Mika", "Jae"],
+  "raw_response": {
+    "blocks": [
+      {
+        "time_slot": "9:30-10:30",
+        "activity": "Literacy block",
+        "level": "high",
+        "contributing_factors": [
+          "Language-heavy content with four EAL students requiring varying levels of support",
+          "Amira and Ari's documented difficulty initiating writing tasks"
+        ],
+        "suggested_mitigation": "Provide sentence frames and visual step cards to Amira and Ari before the assembly transition."
+      }
+    ],
+    "overall_summary": "Morning complexity is driven by the assembly and language supports for Amira and Ari.",
+    "highest_risk_block": "9:30-10:30"
+  }
+}

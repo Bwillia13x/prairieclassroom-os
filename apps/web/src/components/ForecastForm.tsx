@@ -17,26 +17,33 @@ export default function ForecastForm({
   loading,
 }: Props) {
   const [forecastNotes, setForecastNotes] = useState("");
+  const [touched, setTouched] = useState(false);
+
+  const classroomMissing = !selectedClassroom;
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!selectedClassroom) return;
+    setTouched(true);
+    if (classroomMissing) return;
     onSubmit(selectedClassroom, forecastNotes.trim() || undefined);
   }
 
   return (
-    <form className="forecast-form" onSubmit={handleSubmit}>
-      <h2>Complexity Forecast</h2>
-      <p className="forecast-form-description">
-        Generate a per-block complexity forecast for tomorrow based on schedule, student needs, and intervention history.
+    <form className="forecast-form form-panel" onSubmit={handleSubmit}>
+      <h2>Forecast Tomorrow's Complexity</h2>
+      <p className="forecast-form-description form-description">
+        Build a per-block outlook from schedule rhythm, active supports, and recent intervention pressure before the day begins.
       </p>
 
-      <div className="field">
-        <label htmlFor="forecast-classroom">Classroom</label>
+      <div className={`field${touched && classroomMissing ? " field--error" : ""}`}>
+        <label htmlFor="forecast-classroom">Classroom <span className="field-required" aria-hidden="true">*</span></label>
         <select
           id="forecast-classroom"
           value={selectedClassroom}
           onChange={(e) => onClassroomChange(e.target.value)}
+          aria-required="true"
+          aria-invalid={touched && classroomMissing ? "true" : undefined}
+          aria-describedby={touched && classroomMissing ? "forecast-classroom-error" : undefined}
         >
           {classrooms.map((c) => (
             <option key={c.classroom_id} value={c.classroom_id}>
@@ -44,6 +51,9 @@ export default function ForecastForm({
             </option>
           ))}
         </select>
+        {touched && classroomMissing && (
+          <span id="forecast-classroom-error" className="field-error-hint" role="alert">Select a classroom</span>
+        )}
       </div>
 
       <div className="field">
@@ -57,7 +67,7 @@ export default function ForecastForm({
         />
       </div>
 
-      <button type="submit" className="btn btn--primary" disabled={loading || !selectedClassroom}>
+      <button type="submit" className="btn btn--primary" disabled={loading || classroomMissing}>
         {loading ? "Generating Forecast..." : "Generate Forecast"}
       </button>
     </form>

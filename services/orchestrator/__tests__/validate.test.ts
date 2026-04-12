@@ -61,6 +61,8 @@ describe("TomorrowPlanRequestSchema", () => {
     expectInvalid(TomorrowPlanRequestSchema, { classroom_id: "demo" }));
   it("rejects empty teacher_reflection", () =>
     expectInvalid(TomorrowPlanRequestSchema, { ...valid, teacher_reflection: "" }));
+  it("rejects overlong teacher_reflection", () =>
+    expectInvalid(TomorrowPlanRequestSchema, { ...valid, teacher_reflection: "x".repeat(9000) }));
 });
 
 describe("FamilyMessageRequestSchema", () => {
@@ -108,6 +110,8 @@ describe("SimplifyRequestSchema", () => {
     expectInvalid(SimplifyRequestSchema, { ...valid, eal_level: "expert" }));
   it("rejects empty source_text", () =>
     expectInvalid(SimplifyRequestSchema, { ...valid, source_text: "" }));
+  it("rejects overlong source_text", () =>
+    expectInvalid(SimplifyRequestSchema, { ...valid, source_text: "x".repeat(9000) }));
 });
 
 describe("VocabCardsRequestSchema", () => {
@@ -223,6 +227,7 @@ describe("validateBody middleware", () => {
     let statusCode: number | null = null;
     let jsonBody: any = null;
     const res = {
+      locals: {},
       status(code: number) { statusCode = code; return res; },
       json(data: any) { jsonBody = data; return res; },
     } as unknown as Response;
@@ -231,6 +236,9 @@ describe("validateBody middleware", () => {
     expect(next).not.toHaveBeenCalled();
     expect(statusCode).toBe(400);
     expect(jsonBody.error).toBe("Invalid request body");
+    expect(jsonBody.category).toBe("validation");
+    expect(jsonBody.retryable).toBe(false);
+    expect(jsonBody.detail_code).toBe("request_body_invalid");
     expect(Array.isArray(jsonBody.validation_errors)).toBe(true);
     expect(jsonBody.validation_errors.length).toBeGreaterThan(0);
   });

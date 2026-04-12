@@ -1,0 +1,18 @@
+{
+  "id": "int-006-nonlatin-note",
+  "category": "schema_reliability",
+  "description": "Intervention logging handles teacher notes with non-Latin text",
+  "prompt_class": "log_intervention",
+  "input": {
+    "classroom_id": "alpha-grade4",
+    "student_refs": ["Ari"],
+    "teacher_note": "Usé un temporizador visual y luego escribí: 需要一步一步的提醒 during the transition to writing.",
+    "context": "Writing block after lunch."
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "clinical"
+    ]
+  }
+}

@@ -16,12 +16,12 @@
 .toast-item {
   pointer-events: auto;
   display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.6rem 0.75rem;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.8rem 0.9rem 0.95rem;
   border-radius: var(--radius);
   font-size: var(--text-base);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   box-shadow: var(--shadow-md);
   animation: toast-slide-in 0.25s ease-out;
   position: relative;
@@ -41,9 +41,19 @@
 }
 
 .toast-item--error {
-  background: var(--color-bg-danger);
+  background: color-mix(in srgb, var(--color-surface-elevated) 94%, var(--color-bg-danger) 6%);
   border: 1px solid var(--color-border-danger);
-  color: var(--color-text-danger);
+  color: var(--color-text);
+}
+
+.toast-item--error::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: var(--color-danger);
 }
 
 .toast-item--info {
@@ -63,6 +73,7 @@
   flex-shrink: 0;
   width: 1.25rem;
   text-align: center;
+  margin-top: 0.18rem;
 }
 
 .toast-message {
@@ -74,12 +85,12 @@
   background: none;
   border: none;
   color: var(--color-accent);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   font-size: var(--text-base);
   cursor: pointer;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
-  transition: background 0.12s;
+  transition: background var(--motion-fast) var(--ease-standard);
   white-space: nowrap;
 }
 
@@ -88,13 +99,20 @@
 }
 
 .toast-dismiss-btn {
-  background: none;
-  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin-top: -0.15rem;
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+  border-radius: 999px;
   color: inherit;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   padding: 0;
-  opacity: 0.5;
+  opacity: 0.72;
   line-height: 1;
   flex-shrink: 0;
 }

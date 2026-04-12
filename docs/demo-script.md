@@ -2,7 +2,7 @@
 
 **Target audience:** Educators, school leaders, community stakeholders  
 **Duration:** ~15 minutes  
-**System:** Gemma-4-native, local-first classroom complexity copilot  
+**System:** Gemma-4-native classroom complexity copilot  
 **Demo classroom:** Mrs. Okafor's Grade 3/4 split, Lethbridge (6 students)
 
 ---
@@ -17,7 +17,19 @@ Ensure all services are running before starting the demo:
 # Option A: Mock mode (no GPU, canned responses)
 python services/inference/server.py --mode mock --port 3200
 
-# Option B: Real Gemma via Vertex AI (requires GCP credentials)
+# Option B: Zero-cost live Gemma via Ollama
+# ollama pull gemma4:4b
+# ollama pull gemma4:27b
+# npm run host:preflight:ollama
+# python services/inference/server.py --mode ollama --port 3200
+
+# Option C: Hosted Gemma 4 via Gemini API (hackathon/demo only)
+# export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
+# export PRAIRIE_ENABLE_GEMINI_RUNS=true
+# python services/inference/server.py --mode gemini --port 3200
+
+# Paid Vertex validation exists, but it is outside the zero-cost sprint:
+# export PRAIRIE_ALLOW_PAID_SERVICES=true
 # export GOOGLE_CLOUD_PROJECT=<your-project-id>
 # gcloud auth application-default login
 # python services/inference/server.py --mode api --port 3200
@@ -29,7 +41,8 @@ INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 npm run dev -w apps/web
 ```
 
-**Note:** The demo classroom (`demo-okafor-grade34`) bypasses authentication. Other classrooms require an `X-Classroom-Code` header matching their access code.
+**Note:** The demo classroom (`demo-okafor-grade34`) bypasses authentication. Other protected classrooms now prompt for a classroom code in the UI and direct API callers still authenticate with `X-Classroom-Code` on protected reads and writes, including `today` and history routes.
+Use only synthetic/demo data if you run the hosted Gemini lane.
 
 ### Seed demo classroom data
 If this is the first demo run, seed the database with 8 interventions, 3 plans, 1 pattern report, and 1 approved message:
@@ -111,7 +124,7 @@ Fractions Review Worksheet
 - **Challenge version for Chantal:**
   - Multi-step problems
   - Real-world context variation
-- **Latency:** "All five variants generated in under 2 seconds on the live tier—no waiting for teachers."
+- **Latency:** "The live tier is built for classroom-speed responses; for the hosted hackathon lane, frame this as a few seconds rather than promising an exact number."
 
 ---
 
@@ -342,11 +355,11 @@ Mrs. Okafor
 > 5. **Plan tomorrow** using those patterns.
 > 6. **Brief the EA** with a real-time synthesis.
 > 7. **Draft family messages** for teacher approval.
-> 8. And lurking underneath: **routing logic** that sends simpler tasks to the efficient tier and complex reasoning to the full tier.
+> 8. And underneath it: **routing logic** that sends faster transformations to the efficient tier and deeper synthesis to the larger tier.
 >
-> All of this runs on Gemma 4B—open, local, private. The classroom memory is SQL-based and lives on your machine. And crucially: you, the teacher, are never replaced. You make the decisions. The system is a **thinking partner**, not a decision-maker.
+> For this hackathon demo, the real-model proof lane is hosted Gemma 4 through the Gemini API, using synthetic classroom data only. The same orchestration stack also keeps a separate local/Ollama lane for the privacy-preserving school deployment target. The classroom memory is SQL-based and the teacher remains fully in control. This is a **thinking partner**, not a decision-maker.
 >
-> We've evaluated this on 42 realistic classroom scenarios. Zero regressions. Teachers tested it. EAs tested it. Parents approved messages. And every single observation shows one thing: when teachers have a partner that remembers context and surfaces the right information at the right time, they do better by their students.
+> We've evaluated the workflow contracts on realistic classroom scenarios and keep the structural gate green locally. The hosted Gemini lane is the hackathon proof path, and the current checked-in hosted proof now includes a passing full hosted gate on synthetic/demo data. The Ollama lane remains the privacy-first future deployment path. The claim here is still careful and honest: when teachers have a partner that remembers context and surfaces the right information at the right time, the coordination work becomes more manageable.
 >
 > That's the promise of PrairieClassroom OS."
 
@@ -372,11 +385,12 @@ Mrs. Okafor
 
 ## NOTES FOR PRESENTER
 
-- **Live mode:** All latencies shown are from the live tier. If latency spikes, acknowledge it and continue—it's often network or cold-start.
+- **Live mode:** If you are using the hosted Gemini lane, describe latency as classroom-speed rather than promising a fixed sub-2-second number.
 - **Classroom is demo:** Remind audience that this is a demo classroom with seed data, not real student records.
+- **Two-lane story:** Say explicitly that hosted Gemini API is the hackathon proof lane and local/Ollama is the intended privacy-preserving deployment lane.
 - **Two weeks of memory:** The pattern detection is most impressive when the classroom has >7 observations. Less data = less compelling patterns.
 - **Dark mode:** If the UI has a dark mode toggle, use whichever is more visible to your audience.
-- **No internet required:** Emphasize that this runs locally—no data leaves the school, no cloud dependency, no outage risk.
+- **Connectivity claim depends on lane:** If you are demoing Ollama, emphasize the local/privacy-first path. If you are demoing hosted Gemini, do not claim no-internet or no-cloud behavior.
 - **Teacher approval loop:** Repeat this often—every auto-generated output has a human approval gate.
 
 ---
@@ -387,4 +401,3 @@ Mrs. Okafor
 - **If seeding fails:** Check that `data/memory/demo-okafor-grade34.sqlite` exists. If not, run `npx tsx data/demo/seed.ts` again.
 - **If patterns don't show:** Ensure you have at least 4–5 logged interventions. If the demo database is fresh, they may not be seeded. Run the seed script and refresh.
 - **If latency is >10 seconds:** Likely a model cold-start. Wait. Model loading is a one-time cost per session.
-

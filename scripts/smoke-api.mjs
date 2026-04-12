@@ -1,7 +1,10 @@
 import assert from "node:assert/strict";
+import { assertGeminiRunsAllowed } from "./lib/gemini-api-preflight.mjs";
+import { parseSmokeCaseSelection } from "./lib/smoke-api-cases.mjs";
 
 const API_BASE = process.env.PRAIRIE_API_BASE ?? "http://127.0.0.1:3100";
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+const INFERENCE_PROVIDER = (process.env.PRAIRIE_INFERENCE_PROVIDER ?? "").trim().toLowerCase();
 
 function isoTomorrow() {
   const tomorrow = new Date();
@@ -77,6 +80,10 @@ async function postJson(path, body) {
 }
 
 async function main() {
+  if (INFERENCE_PROVIDER === "gemini") {
+    assertGeminiRunsAllowed(process.env, "Hosted Gemini API smoke");
+  }
+
   const classrooms = await getJson("/api/classrooms");
   const demo = classrooms.find((classroom) => classroom.classroom_id === DEMO_CLASSROOM_ID);
   assert.ok(demo, `Expected ${DEMO_CLASSROOM_ID} in /api/classrooms`);
@@ -84,69 +91,82 @@ async function main() {
   const roster = new Set((demo.students ?? []).map((student) => student.alias));
   assert.ok(roster.size > 0, "Demo classroom roster must not be empty");
 
-  const tomorrowPlan = await postJson("/api/tomorrow-plan", {
-    classroom_id: DEMO_CLASSROOM_ID,
-    teacher_reflection: "Brody needed transition support after lunch, and Amira still needed language support before writing.",
-    teacher_goal: "Keep transitions predictable and reduce language load in math writing.",
-  });
-  assert.equal(tomorrowPlan.plan.classroom_id, DEMO_CLASSROOM_ID);
-  assertRosterReferences(tomorrowPlan.plan, roster, "tomorrowPlan.plan");
-  assertNoAlphaAliases(tomorrowPlan, "Tomorrow plan");
-  console.log("PASS tomorrow-plan");
+  const smokeCases = {
+    "tomorrow-plan": async () => {
+      const tomorrowPlan = await postJson("/api/tomorrow-plan", {
+        classroom_id: DEMO_CLASSROOM_ID,
+        teacher_reflection: "Brody needed transition support after lunch, and Amira still needed language support before writing.",
+        teacher_goal: "Keep transitions predictable and reduce language load in math writing.",
+      });
+      assert.equal(tomorrowPlan.plan.classroom_id, DEMO_CLASSROOM_ID);
+      assertRosterReferences(tomorrowPlan.plan, roster, "tomorrowPlan.plan");
+      assertNoAlphaAliases(tomorrowPlan, "Tomorrow plan");
+      console.log("PASS tomorrow-plan");
+    },
+    "family-message": async () => {
+      const familyMessage = await postJson("/api/family-message", {
+        classroom_id: DEMO_CLASSROOM_ID,
+        student_refs: ["Amira"],
+        message_type: "praise",
+        target_language: "en",
+        context: "Prairie hardening smoke test",
+      });
+      assert.deepEqual(familyMessage.draft.student_refs, ["Amira"]);
+      assert.equal(familyMessage.draft.message_type, "praise");
+      assertRosterReferences(familyMessage.draft, roster, "familyMessage.draft");
+      assertNoAlphaAliases(familyMessage, "Family message");
+      console.log("PASS family-message");
+    },
+    "support-patterns": async () => {
+      const supportPatterns = await postJson("/api/support-patterns", {
+        classroom_id: DEMO_CLASSROOM_ID,
+        time_window: 10,
+      });
+      assert.equal(supportPatterns.report.classroom_id, DEMO_CLASSROOM_ID);
+      assertRosterReferences(supportPatterns.report, roster, "supportPatterns.report");
+      assertNoAlphaAliases(supportPatterns, "Support patterns");
+      console.log("PASS support-patterns");
+    },
+    "ea-briefing": async () => {
+      const eaBriefing = await postJson("/api/ea-briefing", {
+        classroom_id: DEMO_CLASSROOM_ID,
+        ea_name: "Ms. Fehr",
+      });
+      assert.equal(eaBriefing.briefing.classroom_id, DEMO_CLASSROOM_ID);
+      assertRosterReferences(eaBriefing.briefing, roster, "eaBriefing.briefing");
+      assertNoAlphaAliases(eaBriefing, "EA briefing");
+      console.log("PASS ea-briefing");
+    },
+    "complexity-forecast": async () => {
+      const complexityForecast = await postJson("/api/complexity-forecast", {
+        classroom_id: DEMO_CLASSROOM_ID,
+        forecast_date: isoTomorrow(),
+        teacher_notes: "Assembly at 10am",
+      });
+      assert.equal(complexityForecast.forecast.classroom_id, DEMO_CLASSROOM_ID);
+      assert.ok(complexityForecast.forecast.blocks.length > 0, "Complexity forecast must include blocks");
+      assertNoAlphaAliases(complexityForecast, "Complexity forecast");
+      console.log("PASS complexity-forecast");
+    },
+    "survival-packet": async () => {
+      const survivalPacket = await postJson("/api/survival-packet", {
+        classroom_id: DEMO_CLASSROOM_ID,
+        target_date: isoTomorrow(),
+        teacher_notes: "Smoke-test packet generation",
+      });
+      assert.equal(survivalPacket.packet.classroom_id, DEMO_CLASSROOM_ID);
+      assert.ok(survivalPacket.packet.routines.length > 0, "Survival packet routines must not be empty");
+      assert.ok(survivalPacket.packet.student_support.length > 0, "Survival packet student_support must not be empty");
+      assert.ok(survivalPacket.packet.heads_up.length > 0, "Survival packet heads_up must not be empty");
+      assertRosterReferences(survivalPacket.packet, roster, "survivalPacket.packet");
+      assertNoAlphaAliases(survivalPacket, "Survival packet");
+      console.log("PASS survival-packet");
+    },
+  };
 
-  const familyMessage = await postJson("/api/family-message", {
-    classroom_id: DEMO_CLASSROOM_ID,
-    student_refs: ["Amira"],
-    message_type: "praise",
-    target_language: "en",
-    context: "Prairie hardening smoke test",
-  });
-  assert.deepEqual(familyMessage.draft.student_refs, ["Amira"]);
-  assert.equal(familyMessage.draft.message_type, "praise");
-  assertRosterReferences(familyMessage.draft, roster, "familyMessage.draft");
-  assertNoAlphaAliases(familyMessage, "Family message");
-  console.log("PASS family-message");
-
-  const supportPatterns = await postJson("/api/support-patterns", {
-    classroom_id: DEMO_CLASSROOM_ID,
-    time_window: 10,
-  });
-  assert.equal(supportPatterns.report.classroom_id, DEMO_CLASSROOM_ID);
-  assertRosterReferences(supportPatterns.report, roster, "supportPatterns.report");
-  assertNoAlphaAliases(supportPatterns, "Support patterns");
-  console.log("PASS support-patterns");
-
-  const eaBriefing = await postJson("/api/ea-briefing", {
-    classroom_id: DEMO_CLASSROOM_ID,
-    ea_name: "Ms. Fehr",
-  });
-  assert.equal(eaBriefing.briefing.classroom_id, DEMO_CLASSROOM_ID);
-  assertRosterReferences(eaBriefing.briefing, roster, "eaBriefing.briefing");
-  assertNoAlphaAliases(eaBriefing, "EA briefing");
-  console.log("PASS ea-briefing");
-
-  const complexityForecast = await postJson("/api/complexity-forecast", {
-    classroom_id: DEMO_CLASSROOM_ID,
-    forecast_date: isoTomorrow(),
-    teacher_notes: "Assembly at 10am",
-  });
-  assert.equal(complexityForecast.forecast.classroom_id, DEMO_CLASSROOM_ID);
-  assert.ok(complexityForecast.forecast.blocks.length > 0, "Complexity forecast must include blocks");
-  assertNoAlphaAliases(complexityForecast, "Complexity forecast");
-  console.log("PASS complexity-forecast");
-
-  const survivalPacket = await postJson("/api/survival-packet", {
-    classroom_id: DEMO_CLASSROOM_ID,
-    target_date: isoTomorrow(),
-    teacher_notes: "Smoke-test packet generation",
-  });
-  assert.equal(survivalPacket.packet.classroom_id, DEMO_CLASSROOM_ID);
-  assert.ok(survivalPacket.packet.routines.length > 0, "Survival packet routines must not be empty");
-  assert.ok(survivalPacket.packet.student_support.length > 0, "Survival packet student_support must not be empty");
-  assert.ok(survivalPacket.packet.heads_up.length > 0, "Survival packet heads_up must not be empty");
-  assertRosterReferences(survivalPacket.packet, roster, "survivalPacket.packet");
-  assertNoAlphaAliases(survivalPacket, "Survival packet");
-  console.log("PASS survival-packet");
+  for (const caseName of parseSmokeCaseSelection(process.env)) {
+    await smokeCases[caseName]();
+  }
 }
 
 main().catch((error) => {

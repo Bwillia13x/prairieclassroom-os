@@ -1,0 +1,17 @@
+{
+  "id": "simp-004-nonlatin-source",
+  "category": "schema_reliability",
+  "description": "Simplify handles multilingual source text without crashing",
+  "prompt_class": "simplify_for_student",
+  "input": {
+    "source_text": "Read the paragraph, then write one sentence about the habitat. 中文提示: think about where the animal lives.",
+    "grade_band": "3-4",
+    "eal_level": "beginner"
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "clinical"
+    ]
+  }
+}

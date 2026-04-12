@@ -9,221 +9,25 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
-
-// ----- Types -----
-
-interface EvalCase {
-  id: string;
-  category: EvalCategory;
-  description: string;
-  prompt_class?: string | null;
-  endpoint?: string;
-  source_file?: string;
-  input: Record<string, unknown>;
-  expected: ExpectedOutput;
-}
-
-type EvalCategory =
-  | "content_quality"
-  | "cross_feature_synthesis"
-  | "differentiation_quality"
-  | "latency_suitability"
-  | "planning_usefulness"
-  | "retrieval_relevance"
-  | "safety_boundaries"
-  | "schema_reliability"
-  | "safety_correctness";
-
-interface ExpectedOutput {
-  /** If set, output must contain all of these keys. */
-  required_keys?: string[];
-  /** If set, output text must contain all of these substrings. */
-  must_contain?: string[];
-  /** If set, output text must NOT contain any of these. */
-  must_not_contain?: string[];
-  /** Schema version must match. */
-  schema_version?: string;
-  /** Max acceptable latency in ms. */
-  max_latency_ms?: number;
-  /** For tomorrow-plan: required top-level keys in plan object. */
-  required_plan_keys?: string[];
-  /** Minimum transition watchpoints. */
-  min_watchpoints?: number;
-  /** Minimum support priorities. */
-  min_priorities?: number;
-  /** Minimum EA actions. */
-  min_ea_actions?: number;
-  /** Minimum prep checklist items. */
-  min_prep_items?: number;
-  /** For family-message: required keys in draft object. */
-  required_message_keys?: string[];
-  /** For family-message: teacher_approved must be false on generation. */
-  teacher_approved_must_be_false?: boolean;
-  /** For intervention: required keys in record object. */
-  required_intervention_keys?: string[];
-  /** For simplification: required keys in simplified object. */
-  required_simplified_keys?: string[];
-  /** Minimum key vocabulary items. */
-  min_vocabulary?: number;
-  /** Minimum visual cue suggestions. */
-  min_visual_cues?: number;
-  /** For vocab cards: required keys in card set object. */
-  required_cardset_keys?: string[];
-  /** For vocab cards: required keys on each card. */
-  required_card_keys?: string[];
-  /** Minimum number of vocab cards. */
-  min_cards?: number;
-  /** Maximum number of vocab cards. */
-  max_cards?: number;
-  /** For complexity forecast: required keys in forecast object. */
-  required_forecast_keys?: string[];
-  /** Minimum forecast blocks. */
-  min_blocks?: number;
-  /** For support patterns: required keys in report object. */
-  required_report_keys?: string[];
-  /** Minimum recurring themes. */
-  min_themes?: number;
-  /** Minimum follow-up gaps. */
-  min_gaps?: number;
-  /** Minimum suggested focus items. */
-  min_focus?: number;
-}
-
-interface EvalResult {
-  case_id: string;
-  passed: boolean;
-  failures: string[];
-  latency_ms?: number;
-  model_id?: string;
-  category?: EvalCategory;
-  description?: string;
-  prompt_class?: string | null;
-  endpoint?: string;
-  source_file?: string;
-}
-
-// ----- Validators -----
-
-function validateContent(text: string, expected: ExpectedOutput): string[] {
-  const failures: string[] = [];
-  if (expected.must_contain) {
-    for (const substr of expected.must_contain) {
-      if (!text.includes(substr)) {
-        failures.push(`Output missing expected content: "${substr}"`);
-      }
-    }
-  }
-  if (expected.must_not_contain) {
-    for (const substr of expected.must_not_contain) {
-      if (text.includes(substr)) {
-        failures.push(`Output contains forbidden content: "${substr}"`);
-      }
-    }
-  }
-  const aliases = (expected as Record<string, unknown>).does_not_contain as string[] | undefined;
-  if (aliases) {
-    for (const substr of aliases) {
-      if (text.includes(substr)) {
-        failures.push(`Output contains forbidden content: "${substr}"`);
-      }
-    }
-  }
-  const forbiddenTerms = (expected as Record<string, unknown>).forbidden_terms_absent as string[] | undefined;
-  if (forbiddenTerms) {
-    for (const term of forbiddenTerms) {
-      if (text.toLowerCase().includes(term.toLowerCase())) {
-        failures.push(`Output contains forbidden term: "${term}"`);
-      }
-    }
-  }
-  return failures;
-}
-
-function uniqueNormalized(items: string[]): string[] {
-  return [...new Set(items.map((item) => item.trim().replace(/\s+/g, " ").toLowerCase()).filter(Boolean))];
-}
-
-function checkRequiredKeys(value: Record<string, unknown>, keys: string[], label: string): string[] {
-  const failures: string[] = [];
-  for (const key of keys) {
-    if (!(key in value)) {
-      failures.push(`${label} missing required key: ${key}`);
-    }
-  }
-  return failures;
-}
-
-function inferEndpoint(evalCase: EvalCase): string {
-  if (evalCase.endpoint) {
-    return evalCase.endpoint;
-  }
-  switch (evalCase.prompt_class) {
-    case "prepare_tomorrow_plan":
-      return "POST /api/tomorrow-plan";
-    case "draft_family_message":
-      return "POST /api/family-message";
-    case "log_intervention":
-      return "POST /api/intervention";
-    case "simplify_for_student":
-      return "POST /api/simplify";
-    case "generate_vocab_cards":
-      return "POST /api/vocab-cards";
-    case "detect_support_patterns":
-      return "POST /api/support-patterns";
-    case "retrieve_latest_pattern":
-      return "POST /api/support-patterns/latest";
-    case "generate_ea_briefing":
-      return "POST /api/ea-briefing";
-    case "forecast_complexity":
-      return "POST /api/complexity-forecast";
-    case "complexity_debt_register":
-      return "GET /api/debt-register/:classroom_id";
-    case "detect_scaffold_decay":
-      return "POST /api/scaffold-decay";
-    case "generate_survival_packet":
-      return "POST /api/survival-packet";
-    default:
-      return "POST /api/differentiate";
-  }
-}
-
-function validateModelTier(modelId: string | undefined, expected: ExpectedOutput): string[] {
-  const expectedTier = (expected as Record<string, unknown>).model_tier as string | undefined;
-  if (!expectedTier) {
-    return [];
-  }
-  if (!modelId) {
-    return [`Expected model tier ${expectedTier}, but no model_id was returned`];
-  }
-  const normalized = modelId.toLowerCase();
-  if (expectedTier === "planning" && !normalized.includes("27b")) {
-    return [`Expected planning-tier model_id to include 27b, got ${modelId}`];
-  }
-  if (expectedTier === "live" && normalized.includes("27b")) {
-    return [`Expected live-tier model_id, got planning-tier model_id ${modelId}`];
-  }
-  return [];
-}
+import { parseCaseIdList, selectEvalCases } from "./case-selection";
+import type { EvalCase, EvalResult } from "./runner-types";
+import {
+  validateContent,
+  uniqueNormalized,
+  checkRequiredKeys,
+  inferEndpoint,
+  validateModelTier,
+  maybeHandleExpectedStatus,
+} from "./runner-validators";
+import { API_BASE, authHeaders, evalHeaders } from "./runner-config";
 
 // ----- Main -----
 
-const API_BASE = process.env.API_BASE ?? "http://localhost:3100";
 const EVAL_OUTPUT_DIR = process.env.EVAL_OUTPUT_DIR;
 const EVAL_OUTPUT_BASENAME = process.env.EVAL_OUTPUT_BASENAME ?? new Date().toISOString().replace(/[:.]/g, "-");
-
-// Classroom access codes for auth — must match data/synthetic_classrooms/*.json
-const CLASSROOM_CODES: Record<string, string> = {
-  "alpha-grade4": "prairie-alpha-2026",
-  "bravo-grade2": "prairie-bravo-2026",
-};
-
-function authHeaders(classroomId?: string): Record<string, string> {
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (classroomId && CLASSROOM_CODES[classroomId]) {
-    headers["X-Classroom-Code"] = CLASSROOM_CODES[classroomId];
-  }
-  return headers;
-}
+const EVAL_SUITE_LABEL = process.env.EVAL_SUITE_LABEL?.trim() || null;
+const EVAL_CASE_IDS = parseCaseIdList(process.env.EVAL_CASE_IDS ?? "");
+const EVAL_CASE_IDS_FILE = process.env.EVAL_CASE_IDS_FILE?.trim() || "";
 
 async function loadEvalCases(dir: string): Promise<EvalCase[]> {
   const absDir = resolve(dir);
@@ -236,7 +40,14 @@ async function loadEvalCases(dir: string): Promise<EvalCase[]> {
     });
 }
 
-async function writeEvalArtifacts(results: EvalResult[]): Promise<void> {
+async function writeEvalArtifacts(
+  results: EvalResult[],
+  options: {
+    suiteLabel?: string | null;
+    selectedCaseIds?: string[];
+    availableCaseCount?: number;
+  } = {},
+): Promise<void> {
   if (!EVAL_OUTPUT_DIR) {
     return;
   }
@@ -248,6 +59,10 @@ async function writeEvalArtifacts(results: EvalResult[]): Promise<void> {
   const artifact = {
     generated_at: finishedAt,
     api_base: API_BASE,
+    suite_label: options.suiteLabel ?? null,
+    selected_case_ids: options.selectedCaseIds ?? [],
+    selected_case_count: options.selectedCaseIds?.length ?? results.length,
+    available_case_count: options.availableCaseCount ?? results.length,
     total_cases: results.length,
     passed_cases: passed,
     failed_cases: failed,
@@ -257,6 +72,10 @@ async function writeEvalArtifacts(results: EvalResult[]): Promise<void> {
   const summary = {
     generated_at: finishedAt,
     api_base: API_BASE,
+    suite_label: options.suiteLabel ?? null,
+    selected_case_ids: options.selectedCaseIds ?? [],
+    selected_case_count: options.selectedCaseIds?.length ?? results.length,
+    available_case_count: options.availableCaseCount ?? results.length,
     total_cases: results.length,
     passed_cases: passed,
     failed_cases: failed,
@@ -283,6 +102,23 @@ async function writeEvalArtifacts(results: EvalResult[]): Promise<void> {
   );
 }
 
+function resolveSelectedCaseIds(): string[] {
+  const combined = [...EVAL_CASE_IDS];
+  if (!EVAL_CASE_IDS_FILE) {
+    return combined;
+  }
+
+  const caseFile = resolve(EVAL_CASE_IDS_FILE);
+  if (!existsSync(caseFile)) {
+    throw new Error(`EVAL_CASE_IDS_FILE not found: ${caseFile}`);
+  }
+
+  return [...new Set([
+    ...combined,
+    ...parseCaseIdList(readFileSync(caseFile, "utf-8")),
+  ])];
+}
+
 async function runDifferentiationEval(evalCase: EvalCase): Promise<EvalResult> {
   const failures: string[] = [];
   const input = evalCase.input as Record<string, unknown>;
@@ -301,7 +137,7 @@ async function runDifferentiationEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/differentiate`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         artifact,
         classroom_id: input.classroom_id,
@@ -311,9 +147,11 @@ async function runDifferentiationEval(evalCase: EvalCase): Promise<EvalResult> {
 
     const latencyMs = performance.now() - start;
 
-    if (!resp.ok) {
-      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
-      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    {
+      const expectedResult = await maybeHandleExpectedStatus(resp, evalCase, latencyMs);
+      if (expectedResult) {
+        return expectedResult;
+      }
     }
 
     const data = await resp.json() as { variants: Record<string, unknown>[]; model_id: string; latency_ms: number };
@@ -393,7 +231,7 @@ async function runTomorrowPlanEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/tomorrow-plan`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         teacher_reflection: input.teacher_reflection,
@@ -468,7 +306,7 @@ async function runFamilyMessageEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/family-message`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         student_refs: input.student_refs,
@@ -551,7 +389,7 @@ async function runInterventionEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/intervention`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         student_refs: input.student_refs,
@@ -626,7 +464,7 @@ async function runSimplifyEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/simplify`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         source_text: input.source_text,
         grade_band: input.grade_band,
@@ -720,7 +558,7 @@ async function runVocabCardsEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/vocab-cards`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         artifact_id: input.artifact_id,
         artifact_text: input.artifact_text,
@@ -821,7 +659,7 @@ async function runSupportPatternsEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/support-patterns`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         student_filter: input.student_filter,
@@ -913,18 +751,24 @@ async function runLatestPatternEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(
       `${API_BASE}/api/support-patterns/latest/${input.classroom_id}`,
+      { headers: evalHeaders(evalCase, input.classroom_id as string) },
     );
 
     const latencyMs = performance.now() - start;
 
-    if (!resp.ok) {
-      failures.push(`API returned ${resp.status}: ${await resp.text()}`);
-      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    {
+      const expectedResult = await maybeHandleExpectedStatus(resp, evalCase, latencyMs);
+      if (expectedResult) {
+        return expectedResult;
+      }
     }
 
     const data = (await resp.json()) as { report: Record<string, unknown> | null };
 
     if (!data.report) {
+      if (evalCase.expected.expected_report_null) {
+        return { case_id: evalCase.id, passed: true, failures, latency_ms: latencyMs };
+      }
       failures.push("No pattern report found — expected a persisted report from earlier eval");
       return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
     }
@@ -979,7 +823,7 @@ async function runEABriefingEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/ea-briefing`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         ea_name: input.ea_name,
@@ -1072,7 +916,7 @@ async function runComplexityForecastEval(evalCase: EvalCase): Promise<EvalResult
   try {
     const resp = await fetch(`${API_BASE}/api/complexity-forecast`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         forecast_date: input.forecast_date,
@@ -1166,7 +1010,7 @@ async function runDebtRegisterEval(evalCase: EvalCase): Promise<EvalResult> {
 
     const resp = await fetch(url, {
       method: "GET",
-      headers: authHeaders(classroomId),
+      headers: evalHeaders(evalCase, classroomId),
     });
 
     const latencyMs = performance.now() - start;
@@ -1231,7 +1075,7 @@ async function runScaffoldDecayEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/scaffold-decay`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         student_ref: input.student_ref,
@@ -1333,7 +1177,7 @@ async function runScheduleEval(evalCase: EvalCase): Promise<EvalResult> {
 
     const response = await fetch(`${API_BASE}/api/classrooms/${classroomId}/schedule`, {
       method,
-      headers: authHeaders(classroomId),
+      headers: evalHeaders(evalCase, classroomId),
       body: method === "PUT" ? JSON.stringify(input.body ?? {}) : undefined,
     });
 
@@ -1410,7 +1254,7 @@ async function runScheduleEval(evalCase: EvalCase): Promise<EvalResult> {
       await fetch(`${API_BASE}/api/classrooms/${classroomId}/schedule`, {
         method: "PUT",
         headers: {
-          ...authHeaders(classroomId),
+          ...evalHeaders(evalCase, classroomId),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(restorePayload),
@@ -1429,7 +1273,7 @@ async function runSurvivalPacketEval(evalCase: EvalCase): Promise<EvalResult> {
   try {
     const resp = await fetch(`${API_BASE}/api/survival-packet`, {
       method: "POST",
-      headers: authHeaders(input.classroom_id as string),
+      headers: evalHeaders(evalCase, input.classroom_id as string),
       body: JSON.stringify({
         classroom_id: input.classroom_id,
         target_date: input.target_date,
@@ -1622,11 +1466,409 @@ async function runSurvivalPacketEval(evalCase: EvalCase): Promise<EvalResult> {
   }
 }
 
+// ─── Persistence round-trip: plan ──────────────────────────────────────────
+
+async function runPlanPersistenceRoundtrip(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const classroomId = input.classroom_id as string;
+  const start = performance.now();
+
+  try {
+    // Step 1: POST to generate a plan
+    const genResp = await fetch(`${API_BASE}/api/tomorrow-plan`, {
+      method: "POST",
+      headers: evalHeaders(evalCase, classroomId),
+      body: JSON.stringify({
+        classroom_id: classroomId,
+        teacher_reflection: input.teacher_reflection,
+        teacher_goal: input.teacher_goal,
+      }),
+    });
+
+    if (!genResp.ok) {
+      failures.push(`Generation POST returned ${genResp.status}: ${await genResp.text()}`);
+      const latencyMs = performance.now() - start;
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const genData = (await genResp.json()) as { plan: Record<string, unknown>; model_id: string };
+    const plan = genData.plan;
+
+    // Validate generation schema
+    if (evalCase.expected.required_plan_keys) {
+      for (const key of evalCase.expected.required_plan_keys) {
+        if (!(key in plan)) {
+          failures.push(`Generated plan missing required key: ${key}`);
+        }
+      }
+    }
+
+    if (evalCase.expected.schema_version && plan.schema_version !== evalCase.expected.schema_version) {
+      failures.push(`Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${plan.schema_version}`);
+    }
+
+    const planId = plan.plan_id as string | undefined;
+    if (!planId) {
+      failures.push("Generated plan has no plan_id — cannot verify persistence");
+      const latencyMs = performance.now() - start;
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    // Step 2: GET history and verify the plan appears
+    const histResp = await fetch(
+      `${API_BASE}/api/classrooms/${classroomId}/plans?limit=10`,
+      { headers: authHeaders(classroomId) },
+    );
+
+    const latencyMs = performance.now() - start;
+
+    if (!histResp.ok) {
+      failures.push(`History GET returned ${histResp.status}: ${await histResp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const histData = (await histResp.json()) as { plans: Record<string, unknown>[] };
+    const found = histData.plans.find((p) => p.plan_id === planId);
+
+    if (!found) {
+      failures.push(`Plan ${planId} not found in history — persistence failed`);
+    } else {
+      if ((evalCase.expected as Record<string, unknown>).history_must_match_classroom_id && found.classroom_id !== classroomId) {
+        failures.push(`Persisted plan classroom_id mismatch: expected ${classroomId}, got ${found.classroom_id}`);
+      }
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+      model_id: genData.model_id,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// ─── Persistence round-trip: intervention ──────────────────────────────────
+
+async function runInterventionPersistenceRoundtrip(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const classroomId = input.classroom_id as string;
+  const start = performance.now();
+
+  try {
+    // Step 1: POST to log an intervention
+    const genResp = await fetch(`${API_BASE}/api/intervention`, {
+      method: "POST",
+      headers: evalHeaders(evalCase, classroomId),
+      body: JSON.stringify({
+        classroom_id: classroomId,
+        student_refs: input.student_refs,
+        teacher_note: input.teacher_note,
+        context: input.context,
+      }),
+    });
+
+    if (!genResp.ok) {
+      failures.push(`Generation POST returned ${genResp.status}: ${await genResp.text()}`);
+      const latencyMs = performance.now() - start;
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const genData = (await genResp.json()) as { record: Record<string, unknown>; model_id: string };
+    const record = genData.record;
+
+    // Validate generation schema
+    const requiredKeys = (evalCase.expected as Record<string, unknown>).required_intervention_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in record)) {
+          failures.push(`Generated intervention missing required key: ${key}`);
+        }
+      }
+    }
+
+    if (evalCase.expected.schema_version && record.schema_version !== evalCase.expected.schema_version) {
+      failures.push(`Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${record.schema_version}`);
+    }
+
+    const recordId = record.record_id as string | undefined;
+    if (!recordId) {
+      failures.push("Generated intervention has no record_id — cannot verify persistence");
+      const latencyMs = performance.now() - start;
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    // Step 2: GET history and verify the intervention appears
+    const histResp = await fetch(
+      `${API_BASE}/api/classrooms/${classroomId}/interventions?limit=20`,
+      { headers: authHeaders(classroomId) },
+    );
+
+    const latencyMs = performance.now() - start;
+
+    if (!histResp.ok) {
+      failures.push(`History GET returned ${histResp.status}: ${await histResp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const histData = (await histResp.json()) as { interventions: Record<string, unknown>[] };
+    const found = histData.interventions.find((r) => r.record_id === recordId);
+
+    if (!found) {
+      failures.push(`Intervention ${recordId} not found in history — persistence failed`);
+    } else {
+      if ((evalCase.expected as Record<string, unknown>).history_must_match_classroom_id && found.classroom_id !== classroomId) {
+        failures.push(`Persisted intervention classroom_id mismatch: expected ${classroomId}, got ${found.classroom_id}`);
+      }
+      const expectedStudentRef = (evalCase.expected as Record<string, unknown>).history_must_include_student_ref as string | undefined;
+      if (expectedStudentRef) {
+        const refs = found.student_refs;
+        if (!Array.isArray(refs) || !refs.includes(expectedStudentRef)) {
+          failures.push(`Persisted intervention student_refs does not include "${expectedStudentRef}"`);
+        }
+      }
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+      model_id: genData.model_id,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// ─── Persistence round-trip: family message ────────────────────────────────
+
+async function runMessagePersistenceRoundtrip(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const input = evalCase.input as Record<string, unknown>;
+  const classroomId = input.classroom_id as string;
+  const start = performance.now();
+
+  try {
+    // Step 1: POST to draft a family message
+    const genResp = await fetch(`${API_BASE}/api/family-message`, {
+      method: "POST",
+      headers: evalHeaders(evalCase, classroomId),
+      body: JSON.stringify({
+        classroom_id: classroomId,
+        student_refs: input.student_refs,
+        message_type: input.message_type,
+        target_language: input.target_language,
+        context: input.context,
+      }),
+    });
+
+    if (!genResp.ok) {
+      failures.push(`Generation POST returned ${genResp.status}: ${await genResp.text()}`);
+      const latencyMs = performance.now() - start;
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const genData = (await genResp.json()) as { draft: Record<string, unknown>; model_id: string };
+    const draft = genData.draft;
+
+    // Validate generation schema
+    const requiredKeys = (evalCase.expected as Record<string, unknown>).required_message_keys as string[] | undefined;
+    if (requiredKeys) {
+      for (const key of requiredKeys) {
+        if (!(key in draft)) {
+          failures.push(`Generated draft missing required key: ${key}`);
+        }
+      }
+    }
+
+    if (evalCase.expected.schema_version && draft.schema_version !== evalCase.expected.schema_version) {
+      failures.push(`Schema version mismatch: expected ${evalCase.expected.schema_version}, got ${draft.schema_version}`);
+    }
+
+    // Verify teacher_approved is false on generation
+    if (
+      (evalCase.expected as Record<string, unknown>).teacher_approved_must_be_false &&
+      draft.teacher_approved !== false
+    ) {
+      failures.push(`Generated draft teacher_approved should be false, got ${draft.teacher_approved}`);
+    }
+
+    const draftId = draft.draft_id as string | undefined;
+    if (!draftId) {
+      failures.push("Generated draft has no draft_id — cannot verify persistence");
+      const latencyMs = performance.now() - start;
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    // Step 2: GET history and verify the message appears
+    const histResp = await fetch(
+      `${API_BASE}/api/classrooms/${classroomId}/messages?limit=10`,
+      { headers: authHeaders(classroomId) },
+    );
+
+    const latencyMs = performance.now() - start;
+
+    if (!histResp.ok) {
+      failures.push(`History GET returned ${histResp.status}: ${await histResp.text()}`);
+      return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+    }
+
+    const histData = (await histResp.json()) as { messages: Record<string, unknown>[] };
+    const found = histData.messages.find((m) => m.draft_id === draftId);
+
+    if (!found) {
+      failures.push(`Message ${draftId} not found in history — persistence failed`);
+    } else {
+      if ((evalCase.expected as Record<string, unknown>).history_must_match_classroom_id && found.classroom_id !== classroomId) {
+        failures.push(`Persisted message classroom_id mismatch: expected ${classroomId}, got ${found.classroom_id}`);
+      }
+      // Verify persisted message also has teacher_approved: false
+      if (
+        (evalCase.expected as Record<string, unknown>).teacher_approved_must_be_false &&
+        found.teacher_approved !== false
+      ) {
+        failures.push(`Persisted message teacher_approved should be false, got ${found.teacher_approved}`);
+      }
+    }
+
+    return {
+      case_id: evalCase.id,
+      passed: failures.length === 0,
+      failures,
+      latency_ms: latencyMs,
+      model_id: genData.model_id,
+    };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
+// --- Extract worksheet evaluation ---
+
+interface ExtractAssertion {
+  type: "status" | "has_key" | "typeof" | "is_array" | "min_length" | "not_contains";
+  key?: string;
+  expected?: unknown;
+  value?: string;
+}
+
+async function runExtractWorksheetEval(evalCase: EvalCase): Promise<EvalResult> {
+  const failures: string[] = [];
+  const request = (evalCase as unknown as Record<string, unknown>).request as Record<string, unknown> | undefined;
+  const assertions = (evalCase as unknown as Record<string, unknown>).assertions as ExtractAssertion[] | undefined;
+  const classroomId = request?.classroom_id as string | undefined;
+  const start = performance.now();
+
+  try {
+    const resp = await fetch(`${API_BASE}/api/extract-worksheet`, {
+      method: "POST",
+      headers: authHeaders(classroomId),
+      body: JSON.stringify(request ?? {}),
+    });
+
+    const latencyMs = performance.now() - start;
+
+    if (!assertions || assertions.length === 0) {
+      if (!resp.ok) {
+        failures.push(`API returned ${resp.status}: ${await resp.text()}`);
+        return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+      }
+      return { case_id: evalCase.id, passed: true, failures, latency_ms: latencyMs };
+    }
+
+    let data: Record<string, unknown> | null = null;
+
+    for (const assertion of assertions) {
+      switch (assertion.type) {
+        case "status": {
+          if (resp.status !== assertion.expected) {
+            failures.push(`Expected status ${assertion.expected}, got ${resp.status}`);
+          }
+          break;
+        }
+        case "has_key": {
+          if (!data && resp.ok) data = (await resp.json()) as Record<string, unknown>;
+          if (data && assertion.key && !(assertion.key in data)) {
+            failures.push(`Response missing required key: ${assertion.key}`);
+          }
+          break;
+        }
+        case "typeof": {
+          if (!data && resp.ok) data = (await resp.json()) as Record<string, unknown>;
+          if (data && assertion.key) {
+            const actual = typeof data[assertion.key];
+            if (actual !== assertion.expected) {
+              failures.push(`Expected typeof ${assertion.key} to be ${assertion.expected}, got ${actual}`);
+            }
+          }
+          break;
+        }
+        case "is_array": {
+          if (!data && resp.ok) data = (await resp.json()) as Record<string, unknown>;
+          if (data && assertion.key && !Array.isArray(data[assertion.key])) {
+            failures.push(`Expected ${assertion.key} to be an array`);
+          }
+          break;
+        }
+        case "min_length": {
+          if (!data && resp.ok) data = (await resp.json()) as Record<string, unknown>;
+          if (data && assertion.key) {
+            const val = data[assertion.key];
+            const len = typeof val === "string" ? val.length : 0;
+            if (len < (assertion.expected as number)) {
+              failures.push(`Expected ${assertion.key} length >= ${assertion.expected}, got ${len}`);
+            }
+          }
+          break;
+        }
+        case "not_contains": {
+          if (!data && resp.ok) data = (await resp.json()) as Record<string, unknown>;
+          if (data && assertion.key && assertion.value) {
+            const val = data[assertion.key];
+            if (typeof val === "string" && val.toLowerCase().includes(assertion.value.toLowerCase())) {
+              failures.push(`${assertion.key} contains forbidden content: "${assertion.value}"`);
+            }
+          }
+          break;
+        }
+        default:
+          failures.push(`Unknown assertion type: ${String((assertion as unknown as Record<string, unknown>).type)}`);
+      }
+    }
+
+    return { case_id: evalCase.id, passed: failures.length === 0, failures, latency_ms: latencyMs };
+  } catch (err) {
+    const latencyMs = performance.now() - start;
+    failures.push(`Error: ${err instanceof Error ? err.message : String(err)}`);
+    return { case_id: evalCase.id, passed: false, failures, latency_ms: latencyMs };
+  }
+}
+
 async function main(): Promise<void> {
   const casesDir = resolve(import.meta.dirname ?? ".", "cases");
-  const evalCases = await loadEvalCases(casesDir);
+  const allEvalCases = await loadEvalCases(casesDir);
+  const selectedCaseIds = resolveSelectedCaseIds();
+  const { selected: evalCases, missingIds } = selectEvalCases(allEvalCases, selectedCaseIds);
 
-  console.log(`Loaded ${evalCases.length} eval case(s) from ${casesDir}`);
+  if (missingIds.length > 0) {
+    throw new Error(`Unknown eval case ids requested: ${missingIds.join(", ")}`);
+  }
+
+  console.log(`Loaded ${allEvalCases.length} eval case(s) from ${casesDir}`);
+  if (selectedCaseIds.length > 0) {
+    console.log(`Selected ${evalCases.length} eval case(s) for suite${EVAL_SUITE_LABEL ? ` "${EVAL_SUITE_LABEL}"` : ""}.`);
+  }
   console.log(`API target: ${API_BASE}\n`);
 
   if (evalCases.length === 0) {
@@ -1665,6 +1907,14 @@ async function main(): Promise<void> {
       rawResult = await runScaffoldDecayEval(ec);
     } else if (ec.prompt_class === "generate_survival_packet") {
       rawResult = await runSurvivalPacketEval(ec);
+    } else if (ec.prompt_class === "extract_worksheet") {
+      rawResult = await runExtractWorksheetEval(ec);
+    } else if (ec.prompt_class === "roundtrip_plan_persistence") {
+      rawResult = await runPlanPersistenceRoundtrip(ec);
+    } else if (ec.prompt_class === "roundtrip_intervention_persistence") {
+      rawResult = await runInterventionPersistenceRoundtrip(ec);
+    } else if (ec.prompt_class === "roundtrip_message_persistence") {
+      rawResult = await runMessagePersistenceRoundtrip(ec);
     } else {
       rawResult = await runDifferentiationEval(ec);
     }
@@ -1690,7 +1940,11 @@ async function main(): Promise<void> {
     }
   }
 
-  await writeEvalArtifacts(results);
+  await writeEvalArtifacts(results, {
+    suiteLabel: EVAL_SUITE_LABEL,
+    selectedCaseIds,
+    availableCaseCount: allEvalCases.length,
+  });
 
   const passed = results.filter((r) => r.passed).length;
   console.log(`\nResults: ${passed}/${results.length} passed`);

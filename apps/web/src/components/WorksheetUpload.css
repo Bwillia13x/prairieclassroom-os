@@ -10,7 +10,9 @@
   padding: var(--space-4);
   text-align: center;
   cursor: pointer;
-  transition: border-color 0.2s, background-color 0.2s;
+  transition:
+    border-color var(--motion-base) var(--ease-standard),
+    background-color var(--motion-base) var(--ease-standard);
 }
 
 .worksheet-upload__dropzone:hover,

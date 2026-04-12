@@ -1,6 +1,7 @@
 // services/orchestrator/simplify.ts
 import type { SimplifiedOutput } from "../../packages/shared/schemas/language.js";
 import { randomUUID } from "node:crypto";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface SimplifyPrompt {
   system: string;
@@ -14,7 +15,7 @@ export interface SimplifyInput {
 }
 
 export function buildSimplifyPrompt(input: SimplifyInput): SimplifyPrompt {
-  const system = `You are PrairieClassroom OS, a language simplification assistant for Alberta K–6 teachers.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a language simplification assistant for Alberta K–6 teachers.
 
 Your task: Take a piece of classroom text (instructions, passage, assignment) and simplify it so a student at the specified EAL level can understand it.
 
@@ -34,13 +35,13 @@ GENERAL RULES:
 - Keep instructions actionable and sequential.
 - Do not add content that was not in the original.
 - Do not diagnose or make assumptions about specific students.
-- Output only the JSON object, no markdown fencing or commentary.`;
+- Output only the JSON object, no markdown fencing or commentary.`);
 
   const user = `GRADE: ${input.grade_band}
 EAL LEVEL: ${input.eal_level}
 
 SOURCE TEXT:
-${input.source_text}
+${renderPromptInput(input.source_text, "source_text")}
 
 Simplify this text as a JSON object.`;
 

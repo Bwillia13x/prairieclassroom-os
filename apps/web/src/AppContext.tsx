@@ -1,13 +1,17 @@
 import { createContext, useContext, type Dispatch } from "react";
 import type { ClassroomProfile } from "./types";
-import type { AppAction, StreamingState, ToastItem } from "./appReducer";
+import type { ActiveTab, AppAction, AuthPromptState, StreamingState, ToastItem } from "./appReducer";
 
 export interface AppContextValue {
   classrooms: ClassroomProfile[];
   activeClassroom: string;
+  activeTab: ActiveTab;
   setActiveClassroom: (id: string) => void;
+  setActiveTab: (tab: ActiveTab) => void;
   profile: ClassroomProfile | undefined;
   students: { alias: string; family_language?: string }[];
+  classroomAccessCodes: Record<string, string>;
+  authPrompt: AuthPromptState | null;
   showSuccess: (msg: string) => void;
   /** Dispatch for the central state reducer */
   dispatch: Dispatch<AppAction>;

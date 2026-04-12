@@ -5,14 +5,16 @@ Provides model loading and generation for the dual-speed architecture:
 - Live route:     self-deployed Gemma live tier (low-latency classroom actions)
 - Planning route: self-deployed Gemma planning tier (deeper reasoning, next-day planning)
 
-Supports three modes:
+Supports four modes:
 1. mock   — returns canned responses for development without GPU
 2. api    — calls remote Vertex AI endpoints
 3. local  — loads model weights locally via transformers
+4. gemini — calls hosted Gemma 4 models through the Gemini API
 
 Usage:
     python harness.py --mode mock --smoke-test
     python harness.py --mode local --model-id google/gemma-4-4b-it --smoke-test
+    python harness.py --mode gemini --smoke-test
 """
 
 from __future__ import annotations
@@ -29,17 +31,63 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Callable
 
+PAID_SERVICES_ENV = "PRAIRIE_ALLOW_PAID_SERVICES"
+GEMINI_API_KEY_ENV_VARS = ("PRAIRIE_GEMINI_API_KEY", "GEMINI_API_KEY")
+GEMINI_HTTP_TIMEOUT_ENV = "PRAIRIE_GEMINI_HTTP_TIMEOUT_MS"
+PROMPT_SPLIT_DELIMITERS = [
+    "\n\nCLASSROOM CONTEXT:",
+    "\n\nARTIFACT:",
+    "\n\nTEACHER INPUT:",
+    "\n\nSTUDENT TEXT:",
+    "\n\nINTERVENTION NOTE:",
+    "\n\nSOURCE TEXT:",
+    "\n\nCLASSROOM MEMORY:",
+    "\n\nWORKSHEET IMAGE:",
+]
+
+try:
+    from google import genai
+except Exception:  # pragma: no cover - dependency presence is validated at runtime
+    genai = None
+
+
+def paid_services_enabled() -> bool:
+    return os.environ.get(PAID_SERVICES_ENV, "").strip().lower() in {"1", "true", "yes", "on"}
+
 
 class InferenceMode(Enum):
     MOCK = "mock"
     API = "api"
     LOCAL = "local"
     OLLAMA = "ollama"
+    GEMINI = "gemini"
+
+
+GEMINI_RUN_GUARD_ENV_VAR = "PRAIRIE_ENABLE_GEMINI_RUNS"
+
+
+def _flag_enabled(value: str | None) -> bool:
+    return (value or "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def require_gemini_run_guard(env: dict[str, str] | None = None) -> None:
+    source = env if env is not None else os.environ
+    if _flag_enabled(source.get(GEMINI_RUN_GUARD_ENV_VAR)):
+        return
+    raise RuntimeError(
+        f"Hosted Gemini runs are disabled by default. Export {GEMINI_RUN_GUARD_ENV_VAR}=true to enable them intentionally."
+    )
 
 
 class ModelTier(Enum):
     LIVE = "live"       # fast classroom actions
     PLANNING = "planning"  # deeper synthesis/planning
+
+
+DEFAULT_GEMINI_HTTP_TIMEOUT_MS_BY_TIER = {
+    ModelTier.LIVE: 100_000,
+    ModelTier.PLANNING: 120_000,
+}
 
 
 @dataclass
@@ -1226,6 +1274,232 @@ def extract_json(raw: str) -> str:
 
 
 # ---------------------------------------------------------------------------
+# Hosted Gemini API backend — calls hosted Gemma 4 via AI Studio / Gemini API
+# ---------------------------------------------------------------------------
+
+
+class GeminiAPIBackend:
+    """Calls hosted Gemma 4 models through the Gemini API."""
+
+    DEFAULT_MODEL_MAP = {
+        ModelTier.LIVE: "gemma-4-26b-a4b-it",
+        ModelTier.PLANNING: "gemma-4-31b-it",
+    }
+
+    def __init__(
+        self,
+        api_key: str | None = None,
+        live_model: str | None = None,
+        planning_model: str | None = None,
+        client: Any | None = None,
+    ) -> None:
+        self.api_key = api_key or self._resolve_api_key()
+        self.live_model = (
+            live_model
+            or os.environ.get("PRAIRIE_GEMINI_MODEL_ID_LIVE", "").strip()
+            or self.DEFAULT_MODEL_MAP[ModelTier.LIVE]
+        )
+        self.planning_model = (
+            planning_model
+            or os.environ.get("PRAIRIE_GEMINI_MODEL_ID_PLANNING", "").strip()
+            or self.DEFAULT_MODEL_MAP[ModelTier.PLANNING]
+        )
+        self.http_timeout_ms_by_tier = {
+            ModelTier.LIVE: self._resolve_http_timeout_ms(ModelTier.LIVE),
+            ModelTier.PLANNING: self._resolve_http_timeout_ms(ModelTier.PLANNING),
+        }
+
+        if client is not None:
+            self.client = client
+            self.client_by_tier = {
+                ModelTier.LIVE: client,
+                ModelTier.PLANNING: client,
+            }
+        else:
+            if genai is None:
+                raise RuntimeError("google-genai dependency is not available for Gemini API mode.")
+            self.client_by_tier = {
+                tier: genai.Client(
+                    api_key=self.api_key,
+                    http_options=genai.types.HttpOptions(timeout=timeout_ms),
+                )
+                for tier, timeout_ms in self.http_timeout_ms_by_tier.items()
+            }
+            self.client = self.client_by_tier[ModelTier.LIVE]
+
+    @staticmethod
+    def _resolve_api_key() -> str:
+        for env_name in GEMINI_API_KEY_ENV_VARS:
+            value = os.environ.get(env_name, "").strip()
+            if value:
+                return value
+        raise RuntimeError(
+            "Gemini API key is required for hosted Gemma 4 mode. "
+            "Set PRAIRIE_GEMINI_API_KEY or GEMINI_API_KEY."
+        )
+
+    @staticmethod
+    def _resolve_http_timeout_ms(tier: ModelTier) -> int:
+        raw = os.environ.get(GEMINI_HTTP_TIMEOUT_ENV, "").strip()
+        if not raw:
+            return DEFAULT_GEMINI_HTTP_TIMEOUT_MS_BY_TIER[tier]
+        try:
+            parsed = int(raw, 10)
+        except ValueError:
+            return DEFAULT_GEMINI_HTTP_TIMEOUT_MS_BY_TIER[tier]
+        return parsed if parsed > 0 else DEFAULT_GEMINI_HTTP_TIMEOUT_MS_BY_TIER[tier]
+
+    def _client_for_tier(self, tier: ModelTier) -> Any:
+        return self.client_by_tier[tier]
+
+    def _model_for_tier(self, tier: ModelTier) -> str:
+        if tier == ModelTier.PLANNING:
+            return self.planning_model
+        return self.live_model
+
+    @staticmethod
+    def _split_prompt(prompt: str) -> tuple[str | None, str]:
+        for delimiter in PROMPT_SPLIT_DELIMITERS:
+            idx = prompt.find(delimiter)
+            if idx > 0:
+                return prompt[:idx].strip(), prompt[idx:].strip()
+        return None, prompt
+
+    @staticmethod
+    def _guess_mime_type(file_path: str) -> str:
+        mime_type, _ = mimetypes.guess_type(file_path)
+        return mime_type or "image/png"
+
+    def _build_contents(self, request: GenerationRequest) -> list[dict[str, Any]]:
+        _system_instruction, user_text = self._split_prompt(request.prompt)
+        parts: list[dict[str, Any]] = []
+
+        for img_path in request.images:
+            try:
+                with open(img_path, "rb") as handle:
+                    image_bytes = handle.read()
+            except OSError:
+                continue
+
+            parts.append(
+                {
+                    "inline_data": {
+                        "mime_type": self._guess_mime_type(img_path),
+                        "data": base64.b64encode(image_bytes).decode("ascii"),
+                    }
+                }
+            )
+
+        parts.append({"text": user_text})
+        return [{"role": "user", "parts": parts}]
+
+    def _build_config(self, request: GenerationRequest) -> dict[str, Any]:
+        system_instruction, _user_text = self._split_prompt(request.prompt)
+        config: dict[str, Any] = {
+            "temperature": 0.7,
+            "max_output_tokens": request.max_tokens,
+        }
+        if system_instruction:
+            config["system_instruction"] = system_instruction
+        return config
+
+    @staticmethod
+    def _normalize_response(value: Any) -> Any:
+        if value is None or isinstance(value, (str, int, float, bool)):
+            return value
+        if isinstance(value, list):
+            return [GeminiAPIBackend._normalize_response(item) for item in value]
+        if isinstance(value, dict):
+            return {key: GeminiAPIBackend._normalize_response(item) for key, item in value.items()}
+        if hasattr(value, "to_json_dict"):
+            try:
+                return GeminiAPIBackend._normalize_response(value.to_json_dict())
+            except Exception:
+                pass
+        if hasattr(value, "model_dump"):
+            try:
+                return GeminiAPIBackend._normalize_response(value.model_dump(mode="json", exclude_none=True))
+            except Exception:
+                pass
+        if hasattr(value, "__dict__"):
+            return GeminiAPIBackend._normalize_response(vars(value))
+        return value
+
+    @staticmethod
+    def _extract_generation(payload: Any, fallback_text: str | None = None) -> tuple[str, str | None]:
+        normalized = GeminiAPIBackend._normalize_response(payload)
+
+        if isinstance(normalized, dict):
+            candidates = normalized.get("candidates")
+            if isinstance(candidates, list) and candidates:
+                candidate = candidates[0]
+                if isinstance(candidate, dict):
+                    content = candidate.get("content", {})
+                    parts = content.get("parts", []) if isinstance(content, dict) else []
+                    text_parts: list[str] = []
+                    thought_parts: list[str] = []
+                    if isinstance(parts, list):
+                        for part in parts:
+                            if not isinstance(part, dict):
+                                continue
+                            text = part.get("text")
+                            if not isinstance(text, str) or not text.strip():
+                                continue
+                            if part.get("thought") or part.get("thought_signature"):
+                                thought_parts.append(text)
+                            else:
+                                text_parts.append(text)
+                    if text_parts or thought_parts:
+                        output_text = "\n".join(text_parts).strip() or (fallback_text or "")
+                        thinking_text = "\n".join(thought_parts).strip() or None
+                        return output_text, thinking_text
+
+            if isinstance(normalized.get("text"), str) and normalized["text"].strip():
+                return normalized["text"], None
+
+        if isinstance(normalized, str) and normalized.strip():
+            return normalized, None
+
+        if fallback_text and fallback_text.strip():
+            return fallback_text, None
+
+        return json.dumps(normalized), None
+
+    def generate(self, request: GenerationRequest) -> GenerationResponse:
+        model = self._model_for_tier(request.model_tier)
+        client = self._client_for_tier(request.model_tier)
+        contents = self._build_contents(request)
+        config = self._build_config(request)
+
+        start = time.perf_counter()
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=contents,
+                config=config,
+            )
+        except Exception as exc:
+            latency_ms = (time.perf_counter() - start) * 1000
+            return GenerationResponse(
+                text=json.dumps({"error": str(exc)}),
+                model_id=model,
+                latency_ms=latency_ms,
+            )
+
+        latency_ms = (time.perf_counter() - start) * 1000
+        fallback_text = getattr(response, "text", None)
+        output_text, thinking_text = self._extract_generation(response, fallback_text=fallback_text)
+        output_text = extract_json(output_text)
+
+        return GenerationResponse(
+            text=output_text,
+            thinking_text=thinking_text,
+            model_id=model,
+            latency_ms=latency_ms,
+        )
+
+
+# ---------------------------------------------------------------------------
 # Vertex AI backend — calls self-deployed Gemma endpoints
 # ---------------------------------------------------------------------------
 
@@ -1254,6 +1528,11 @@ class VertexAIBackend:
     def __init__(self) -> None:
         self._endpoint_clients: dict[ModelTier, Any] = {}
         self._sdk_initialized = False
+        if not paid_services_enabled():
+            raise RuntimeError(
+                "Vertex AI mode is blocked unless PRAIRIE_ALLOW_PAID_SERVICES=true. "
+                "This repo defaults to zero-cloud-spend."
+            )
         backend_mode = os.environ.get("PRAIRIE_VERTEX_BACKEND", "").strip()
         if backend_mode != "endpoint":
             raise RuntimeError(
@@ -1511,6 +1790,8 @@ class GemmaHarness:
         elif mode == InferenceMode.OLLAMA:
             from ollama_backend import OllamaBackend
             self.backend = OllamaBackend()
+        elif mode == InferenceMode.GEMINI:
+            self.backend = GeminiAPIBackend()
         else:
             raise ValueError(f"Unknown inference mode: {mode}")
 
@@ -1631,10 +1912,13 @@ def run_smoke_tests(harness: GemmaHarness) -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="PrairieClassroom OS — Gemma 4 Harness")
-    parser.add_argument("--mode", choices=["mock", "api", "local", "ollama"], default="mock")
+    parser.add_argument("--mode", choices=["mock", "api", "local", "ollama", "gemini"], default="mock")
     parser.add_argument("--model-id", type=str, default=None)
     parser.add_argument("--smoke-test", action="store_true")
     args = parser.parse_args()
+
+    if args.mode == InferenceMode.GEMINI.value:
+        require_gemini_run_guard()
 
     harness = GemmaHarness(
         mode=InferenceMode(args.mode),

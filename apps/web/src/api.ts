@@ -127,7 +127,7 @@ async function requestJson<T>(path: string, options: RequestOptions = {}): Promi
     method: options.method ?? "GET",
     headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
-    signal: options.signal,
+    signal: options.signal ?? AbortSignal.timeout(30_000),
   });
 
   if (!res.ok) {
@@ -416,4 +416,96 @@ export async function fetchMessageHistoryForStudent(
     { classroomId, signal },
   );
   return data.messages;
+}
+
+// ---------------------------------------------------------------------------
+// Feedback & Session API functions (evidence instrumentation)
+// ---------------------------------------------------------------------------
+
+export interface SubmitFeedbackRequest {
+  classroom_id: string;
+  panel_id: string;
+  prompt_class?: string;
+  rating: number;
+  comment?: string;
+  generation_id?: string;
+  session_id?: string;
+}
+
+export interface SubmitFeedbackResponse {
+  id: string;
+  created_at: string;
+}
+
+export interface SubmitSessionRequest {
+  classroom_id: string;
+  session_id: string;
+  started_at: string;
+  ended_at: string;
+  panels_visited: string[];
+  generations_triggered: { panel_id: string; prompt_class: string; timestamp: string }[];
+  feedback_count: number;
+}
+
+export interface SubmitSessionResponse {
+  id: string;
+}
+
+export interface FeedbackSummary {
+  total: number;
+  by_panel: Record<string, { count: number; avg_rating: number; recent_comments: string[] }>;
+  by_week: { week: string; count: number; avg_rating: number }[];
+  top_comments: { text: string; panel_id: string; rating: number; created_at: string }[];
+}
+
+export interface SessionSummary {
+  total_sessions: number;
+  avg_duration_minutes: number;
+  common_flows: { sequence: string[]; count: number }[];
+  panel_time_distribution: Record<string, number>;
+  generations_per_session: number;
+}
+
+export function submitFeedbackApi(
+  request: SubmitFeedbackRequest,
+  signal?: AbortSignal,
+): Promise<SubmitFeedbackResponse> {
+  return requestJson<SubmitFeedbackResponse>("/feedback", {
+    method: "POST",
+    body: request,
+    classroomId: request.classroom_id,
+    signal,
+  });
+}
+
+export function submitSessionApi(
+  request: SubmitSessionRequest,
+  signal?: AbortSignal,
+): Promise<SubmitSessionResponse> {
+  return requestJson<SubmitSessionResponse>("/sessions", {
+    method: "POST",
+    body: request,
+    classroomId: request.classroom_id,
+    signal,
+  });
+}
+
+export function fetchFeedbackSummary(
+  classroomId: string,
+  signal?: AbortSignal,
+): Promise<FeedbackSummary> {
+  return requestJson<FeedbackSummary>(
+    `/feedback/summary/${encodeURIComponent(classroomId)}`,
+    { classroomId, signal },
+  );
+}
+
+export function fetchSessionSummary(
+  classroomId: string,
+  signal?: AbortSignal,
+): Promise<SessionSummary> {
+  return requestJson<SessionSummary>(
+    `/sessions/summary/${encodeURIComponent(classroomId)}`,
+    { classroomId, signal },
+  );
 }

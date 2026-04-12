@@ -7,17 +7,23 @@ import { getLatestForecast, buildForecastContext } from "../../memory/retrieve.j
 import { validateBody, ComplexityForecastRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { ComplexityForecast } from "../../../packages/shared/schemas/forecast.js";
+import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendClassroomNotFound, sendParseError, sendRouteError } from "../errors.js";
+import { maybeExposeThinkingSummary } from "../thinking-summary.js";
+import { isValidClassroomId } from "../validate.js";
 
 export function createForecastRouter(deps: RouteDeps): Router {
   const router = Router();
 
   router.post("/", validateBody(ComplexityForecastRequestSchema), async (req, res) => {
     try {
-      const { classroom_id, forecast_date, teacher_notes } = req.body;
+      const { classroom_id: raw_classroom_id, forecast_date, teacher_notes } = req.body;
+      const classroom_id = raw_classroom_id as ClassroomId;
 
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+        sendClassroomNotFound(res, classroom_id);
         return;
       }
 
@@ -39,45 +45,36 @@ export function createForecastRouter(deps: RouteDeps): Router {
 
       const prompt = buildComplexityForecastPrompt(classroom, forecastInput, forecastCtx || undefined);
 
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: route.prompt_class,
-          max_tokens: 4096,
-          mock_context: {
-            classroom_id,
-            forecast_date,
-            teacher_notes,
-          },
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 4096,
+        mockContext: {
+          classroom_id,
+          forecast_date,
+          teacher_notes,
+        },
+        safetyScanSource: { ...forecastInput, forecastCtx },
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        thinking_text: string | null;
-        model_id: string;
-        latency_ms: number;
-      };
 
       let forecast: ComplexityForecast;
       try {
-        forecast = parseComplexityForecastResponse(inferenceData.text, classroom_id, forecast_date);
+        const allowedAliases = classroom.students.map((student) => student.alias).filter(Boolean);
+        const knownStudentAliases = deps.loadClassrooms().flatMap((profile) =>
+          profile.students.map((student) => student.alias).filter(Boolean),
+        );
+        forecast = parseComplexityForecastResponse(
+          inferenceData.text,
+          classroom_id,
+          forecast_date,
+          allowedAliases,
+          knownStudentAliases,
+        );
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as complexity forecast",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as complexity forecast", inferenceData.text, parseErr);
         return;
       }
 
@@ -90,23 +87,26 @@ export function createForecastRouter(deps: RouteDeps): Router {
 
       res.json({
         forecast,
-        thinking_summary: inferenceData.thinking_text ?? null,
+        thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
         model_id: inferenceData.model_id || modelId,
         latency_ms: inferenceData.latency_ms,
       });
     } catch (err) {
       console.error("Complexity forecast error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 
   // ----- Latest Forecast Retrieval -----
 
-  router.get("/latest/:classroomId", (req, res) => {
+  router.get("/latest/:classroomId", deps.authMiddleware, (req, res) => {
     try {
-      const classroomId = req.params.classroomId as string;
+      const rawId = req.params.classroomId as string;
+      if (!isValidClassroomId(rawId)) {
+        sendRouteError(res, 400, { error: "Invalid classroom ID format", category: "validation", retryable: false, detail_code: "invalid_classroom_id" });
+        return;
+      }
+      const classroomId = rawId as ClassroomId;
       const forecast = getLatestForecast(classroomId);
       if (!forecast) {
         res.json({ forecast: null });
@@ -115,9 +115,7 @@ export function createForecastRouter(deps: RouteDeps): Router {
       res.json({ forecast });
     } catch (err) {
       console.error("Forecast retrieval error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 

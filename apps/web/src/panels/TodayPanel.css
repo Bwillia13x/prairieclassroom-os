@@ -68,7 +68,7 @@
   gap: var(--space-2);
   padding: var(--space-4) var(--space-3);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.54), rgba(255, 255, 255, 0.08)),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 54%, transparent), color-mix(in srgb, var(--color-surface-elevated) 8%, transparent)),
     var(--color-surface);
   border: 1px solid var(--color-border-warning);
   border-radius: var(--radius-md);
@@ -210,6 +210,13 @@
 
 .plan-recap-priority-btn:hover {
   color: var(--color-accent);
+}
+
+.today-health-viz {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-2, var(--space-2));
+  padding: var(--ds-space-2, var(--space-2)) var(--ds-space-3, var(--space-3));
 }
 
 @media (max-width: 760px) {

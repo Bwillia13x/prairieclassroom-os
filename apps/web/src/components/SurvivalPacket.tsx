@@ -1,5 +1,6 @@
 // apps/web/src/components/SurvivalPacket.tsx
 import PrintButton from "./PrintButton";
+import OutputMetaRow from "./OutputMetaRow";
 import "./SurvivalPacket.css";
 
 interface RoutineEntry {
@@ -79,6 +80,14 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
           <p className="survival-packet-meta">
             {packet.classroom_id} &middot; {packet.generated_for_date}
           </p>
+          <OutputMetaRow
+            items={[
+              { label: "Print-ready packet", tone: "accent" },
+              { label: "Retrieval-backed", tone: "provenance" },
+              { label: "Substitute coordination", tone: "analysis" },
+            ]}
+            compact
+          />
         </div>
         <PrintButton label="Print Packet" />
       </div>

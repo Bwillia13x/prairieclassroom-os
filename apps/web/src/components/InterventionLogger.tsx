@@ -31,6 +31,7 @@ export default function InterventionLogger({
     prefill ? [prefill.student_ref] : [],
   );
   const [teacherNote, setTeacherNote] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const { clear: clearDraft } = useFormPersistence(
     `prairie-intervention-${selectedClassroom}`,
@@ -56,6 +57,7 @@ export default function InterventionLogger({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    setTouched(true);
     if (selectedStudents.length === 0 || !teacherNote.trim()) return;
     const context = prefill
       ? `Plan suggested: ${prefill.suggested_action} (reason: ${prefill.reason})`
@@ -65,10 +67,10 @@ export default function InterventionLogger({
   }
 
   return (
-    <form className="intervention-logger" onSubmit={handleSubmit}>
-      <h2>Log Intervention</h2>
-      <p className="logger-description">
-        Describe what you observed and what you did. The system will structure your note for classroom memory.
+    <form className="intervention-logger form-panel" onSubmit={handleSubmit}>
+      <h2>Capture Intervention</h2>
+      <p className="logger-description form-description">
+        Record the students involved, what happened, and the action taken. The note is structured for classroom memory and follow-up review.
       </p>
 
       {prefill && (
@@ -97,9 +99,14 @@ export default function InterventionLogger({
         </select>
       </div>
 
-      <div className="field">
-        <label>Student(s)</label>
-        <div className="student-checkboxes">
+      <div className={`field${touched && selectedStudents.length === 0 ? " field--error" : ""}`}>
+        <label>Student(s) <span className="field-required" aria-hidden="true">*</span></label>
+        <div
+          className="student-checkboxes"
+          role="group"
+          aria-label="Select students"
+          aria-describedby={touched && selectedStudents.length === 0 ? "int-students-error" : undefined}
+        >
           {students.map((s) => (
             <label key={s.alias} className="student-checkbox">
               <input
@@ -111,17 +118,28 @@ export default function InterventionLogger({
             </label>
           ))}
         </div>
+        {touched && selectedStudents.length === 0 && (
+          <span id="int-students-error" className="field-error-hint" role="alert">Select at least one student</span>
+        )}
       </div>
 
-      <div className="field">
-        <label htmlFor="int-note">What happened?</label>
+      <div className={`field${touched && !teacherNote.trim() ? " field--error" : ""}`}>
+        <label htmlFor="int-note">What happened? <span className="field-required" aria-hidden="true">*</span></label>
         <textarea
           id="int-note"
           rows={4}
           placeholder="e.g. 'Ari needed 1:1 support during writing block — used sentence starters and word bank, was able to complete 3 of 5 questions independently by end of period.'"
           value={teacherNote}
           onChange={(e) => setTeacherNote(e.target.value)}
+          onBlur={() => setTouched(true)}
+          required
+          aria-required="true"
+          aria-invalid={touched && !teacherNote.trim() ? "true" : undefined}
+          aria-describedby={touched && !teacherNote.trim() ? "int-note-error" : undefined}
         />
+        {touched && !teacherNote.trim() && (
+          <span id="int-note-error" className="field-error-hint" role="alert">An observation is required</span>
+        )}
       </div>
 
       <button

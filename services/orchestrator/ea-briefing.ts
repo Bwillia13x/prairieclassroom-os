@@ -2,6 +2,7 @@
 import type { EABriefing, ScheduleBlock, StudentWatchItem, PendingFollowup } from "../../packages/shared/schemas/briefing.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import { randomUUID } from "node:crypto";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface EABriefingPrompt {
   system: string;
@@ -19,8 +20,9 @@ export function buildEABriefingPrompt(
   briefingContext: string,
 ): EABriefingPrompt {
   const eaAddr = input.ea_name ? `, addressed to ${input.ea_name}` : "";
+  const rosterAliases = classroom.students.map((student) => student.alias).filter(Boolean);
 
-  const system = `You are PrairieClassroom OS, generating a daily briefing for an educational assistant (EA)${eaAddr}.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, generating a daily briefing for an educational assistant (EA)${eaAddr}.
 
 Your task: Synthesize the teacher's plan, recent interventions, and pattern insights into a concise, actionable briefing the EA can use to start their day.
 
@@ -48,14 +50,23 @@ RULES:
 - Never label students with conditions, disorders, or deficits.
 - This is a coordination document for an EA, not a student report.
 - Keep each field concise and actionable.
+- Prefer compact JSON. Limit the response to the highest-signal items only:
+  - up to 4 schedule blocks
+  - up to 4 student watch-list items
+  - up to 4 pending follow-ups
+  - teacher notes capped at 3 short sentences
+- Use only student aliases from the provided classroom roster.
+- Never reuse aliases from another classroom. If a referenced record contains an alias not on the roster, omit it rather than guessing.
 - Output only the JSON object, no markdown fencing or commentary.
 
 FORBIDDEN TERMS (never use these):
-diagnosis, disorder, deficit, syndrome, spectrum, pathology, clinical, prognosis, regression, at-risk, risk score, behavioral issue, learning disability, cognitive delay, developmental`;
+diagnosis, disorder, deficit, syndrome, spectrum, pathology, clinical, prognosis, regression, at-risk, risk score, behavioral issue, learning disability, cognitive delay, developmental`);
 
   const user = `CLASSROOM: ${classroom.classroom_id} (${classroom.grade_band}, ${classroom.subject_focus})
 
-${briefingContext}
+ROSTER ALIASES: ${rosterAliases.length > 0 ? rosterAliases.join(", ") : "(none provided)"}
+
+${renderPromptInput(briefingContext, "ea_briefing_context", "(no retrieved coordination context available)")}
 
 Generate the EA daily briefing as a JSON object.`;
 
@@ -65,6 +76,7 @@ Generate the EA daily briefing as a JSON object.`;
 export function parseEABriefingResponse(
   raw: string,
   classroomId: string,
+  allowedAliases: Iterable<string> = [],
 ): EABriefing {
   let cleaned = raw.trim();
   if (cleaned.startsWith("```")) {
@@ -77,14 +89,24 @@ export function parseEABriefingResponse(
   }
 
   const p = parsed as Record<string, unknown>;
+  const allowedAliasSet = new Set(Array.from(allowedAliases, String));
+  const isAllowedAlias = (value: unknown): value is string => {
+    if (typeof value !== "string" || !value.trim()) {
+      return false;
+    }
+    if (allowedAliasSet.size === 0) {
+      return true;
+    }
+    return allowedAliasSet.has(value);
+  };
 
   const scheduleBlocks: ScheduleBlock[] = Array.isArray(p.schedule_blocks)
     ? (p.schedule_blocks as Record<string, unknown>[]).map((b) => ({
         time_slot: String(b.time_slot ?? ""),
-        student_refs: Array.isArray(b.student_refs) ? b.student_refs.map(String) : [],
+        student_refs: Array.isArray(b.student_refs) ? b.student_refs.filter(isAllowedAlias).map(String) : [],
         task_description: String(b.task_description ?? ""),
         materials_needed: Array.isArray(b.materials_needed) ? b.materials_needed.map(String) : [],
-      }))
+      })).filter((block) => block.time_slot || block.student_refs.length > 0 || block.task_description || block.materials_needed.length > 0)
     : [];
 
   const studentWatchList: StudentWatchItem[] = Array.isArray(p.student_watch_list)
@@ -92,7 +114,7 @@ export function parseEABriefingResponse(
         student_ref: String(w.student_ref ?? ""),
         context_summary: String(w.context_summary ?? ""),
         suggested_approach: String(w.suggested_approach ?? ""),
-      }))
+      })).filter((item) => isAllowedAlias(item.student_ref))
     : [];
 
   const pendingFollowups: PendingFollowup[] = Array.isArray(p.pending_followups)
@@ -101,7 +123,7 @@ export function parseEABriefingResponse(
         original_observation: String(f.original_observation ?? ""),
         days_since: Number(f.days_since ?? 0),
         suggested_action: String(f.suggested_action ?? ""),
-      }))
+      })).filter((item) => isAllowedAlias(item.student_ref))
     : [];
 
   return {

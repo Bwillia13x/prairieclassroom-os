@@ -7,6 +7,9 @@ import { buildSurvivalContext } from "../../memory/retrieve.js";
 import { validateBody, SurvivalPacketRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { SurvivalPacket } from "../../../packages/shared/schemas/survival-packet.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendClassroomNotFound, sendParseError, sendRouteError } from "../errors.js";
+import { maybeExposeThinkingSummary } from "../thinking-summary.js";
 
 export function createSurvivalPacketRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -17,16 +20,25 @@ export function createSurvivalPacketRouter(deps: RouteDeps): Router {
 
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+        sendClassroomNotFound(res, classroom_id);
         return;
       }
 
       // Check sub_ready gate
       if (!classroom.sub_ready) {
-        res.status(403).json({
-          error: "Survival packet generation requires sub_ready to be enabled for this classroom",
-          hint: "Set sub_ready: true in the classroom profile or use PUT /api/classrooms/:id/schedule",
-        });
+        sendRouteError(
+          res,
+          403,
+          {
+            error: "Survival packet generation requires sub_ready to be enabled for this classroom",
+            category: "validation",
+            retryable: false,
+            detail_code: "survival_packet_sub_ready_required",
+          },
+          {
+            hint: "Set sub_ready: true in the classroom profile or use PUT /api/classrooms/:id/schedule",
+          },
+        );
         return;
       }
 
@@ -39,45 +51,36 @@ export function createSurvivalPacketRouter(deps: RouteDeps): Router {
       const input: SurvivalPacketInput = { classroom_id, target_date, teacher_notes };
       const prompt = buildSurvivalPacketPrompt(classroom, input, survivalContext);
 
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: route.prompt_class,
-          max_tokens: 8192,
-          mock_context: {
-            classroom_id,
-            target_date,
-            teacher_notes,
-          },
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 8192,
+        mockContext: {
+          classroom_id,
+          target_date,
+          teacher_notes,
+        },
+        safetyScanSource: { classroom_id, target_date, teacher_notes, survivalContext },
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        model_id: string;
-        latency_ms: number;
-        thinking_summary?: string;
-      };
 
       let packet: SurvivalPacket;
       try {
-        packet = parseSurvivalPacketResponse(inferenceData.text, classroom_id, target_date);
+        const allowedAliases = classroom.students.map((student) => student.alias).filter(Boolean);
+        const knownStudentAliases = deps.loadClassrooms().flatMap((profile) =>
+          profile.students.map((student) => student.alias).filter(Boolean),
+        );
+        packet = parseSurvivalPacketResponse(
+          inferenceData.text,
+          classroom_id,
+          target_date,
+          allowedAliases,
+          knownStudentAliases,
+        );
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as survival packet",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as survival packet", inferenceData.text, parseErr);
         return;
       }
 
@@ -87,14 +90,11 @@ export function createSurvivalPacketRouter(deps: RouteDeps): Router {
         packet,
         model_id: inferenceData.model_id,
         latency_ms: inferenceData.latency_ms,
-        thinking_summary: inferenceData.thinking_summary,
+        thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
       });
     } catch (err) {
       console.error("Survival packet generation failed:", err);
-      res.status(500).json({
-        error: "Survival packet generation failed",
-        detail: err instanceof Error ? err.message : String(err),
-      });
+      handleRouteError(res, err, "Survival packet generation failed");
     }
   });
 

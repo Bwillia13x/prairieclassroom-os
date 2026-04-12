@@ -1,6 +1,7 @@
 // services/orchestrator/vocab-cards.ts
 import type { VocabCardSet } from "../../packages/shared/schemas/language.js";
 import { randomUUID } from "node:crypto";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface VocabCardsPrompt {
   system: string;
@@ -16,7 +17,7 @@ export interface VocabCardsInput {
 }
 
 export function buildVocabCardsPrompt(input: VocabCardsInput): VocabCardsPrompt {
-  const system = `You are PrairieClassroom OS, a bilingual vocabulary card generator for Alberta K–6 classrooms.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a bilingual vocabulary card generator for Alberta K–6 classrooms.
 
 Your task: Extract 5–8 key vocabulary words from a lesson artifact and produce bilingual flashcard-style cards that help EAL students learn subject-specific vocabulary.
 
@@ -37,14 +38,14 @@ RULES:
 - Produce 5–8 cards. Do not exceed 8.
 - If you are uncertain about a translation, provide the best available translation and mark it with (approx.) after the translation.
 - Do not include proper nouns or student names.
-- Output only the JSON object, no markdown fencing or commentary.`;
+- Output only the JSON object, no markdown fencing or commentary.`);
 
   const user = `SUBJECT: ${input.subject}
 GRADE: ${input.grade_band}
 TARGET LANGUAGE: ${input.target_language}
 
 LESSON TEXT:
-${input.artifact_text}
+${renderPromptInput(input.artifact_text, "artifact_text")}
 
 Generate bilingual vocabulary cards as a JSON object.`;
 

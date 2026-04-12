@@ -1,5 +1,6 @@
 import type { InterventionRecord } from "../types";
 import PrintButton from "./PrintButton";
+import OutputMetaRow from "./OutputMetaRow";
 import "./InterventionCard.css";
 
 interface Props {
@@ -14,6 +15,16 @@ export default function InterventionCard({ record }: Props) {
         <p className="intervention-meta">
           {record.student_refs.join(", ")} · {record.classroom_id}
         </p>
+        <OutputMetaRow
+          items={[
+            { label: "Saved to memory", tone: "provenance" },
+            {
+              label: record.follow_up_needed ? "Follow-up needed" : "Resolved for now",
+              tone: record.follow_up_needed ? "warning" : "success",
+            },
+          ]}
+          compact
+        />
       </header>
 
       <div className="intervention-field">

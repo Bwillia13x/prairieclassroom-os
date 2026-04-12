@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-04-08T02:18:36.983Z",
+  "total_failures": 1,
+  "groups": {
+    "validation": [],
+    "transport": [],
+    "timeout": [],
+    "parse": [],
+    "schema": [],
+    "retrieval": [],
+    "host_preflight": [
+      {
+        "case_id": null,
+        "endpoint": null,
+        "prompt_class": null,
+        "source_file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/host-preflight/2026-04-08T02-18-27-924Z.json",
+        "failures": [
+          "Ollama CLI is not available or `ollama list` failed."
+        ]
+      }
+    ]
+  }
+}

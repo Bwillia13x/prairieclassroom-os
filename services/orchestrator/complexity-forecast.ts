@@ -8,6 +8,7 @@
 
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { ComplexityForecast, ComplexityBlock } from "../../packages/shared/schemas/forecast.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface ComplexityForecastPrompt {
   system: string;
@@ -25,7 +26,9 @@ export function buildComplexityForecastPrompt(
   input: ComplexityForecastInput,
   forecastContext?: string,
 ): ComplexityForecastPrompt {
-  const system = `You are PrairieClassroom OS, a classroom complexity forecasting assistant for Alberta K-6 teachers.
+  const rosterAliases = classroom.students.map((student) => student.alias).filter(Boolean);
+  const rosterLine = rosterAliases.length > 0 ? rosterAliases.join(", ") : "(no aliases provided)";
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom complexity forecasting assistant for Alberta K-6 teachers.
 
 Your task: Given the classroom schedule, student profiles, EA availability, upcoming events, and intervention history, produce a per-block complexity forecast for the next school day.
 
@@ -56,11 +59,13 @@ RULES:
 - Base your forecast on the specific students, routines, and constraints described.
 - Be concrete - reference student aliases when specific students drive complexity.
 - Use student aliases only, never real names.
+- Use only student aliases from the provided classroom roster.
+- Never reuse aliases from another classroom. If a referenced record contains an alias not on the roster, omit it rather than guessing.
 - Do not diagnose conditions. Do not assign risk scores. Do not suggest disciplinary actions.
 - Complexity describes CLASSROOM CONDITIONS, not student behavior. Say "this block has overlapping demands" not "this block will be chaotic."
 - No individual student is a "complexity driver." Complexity arises from the interaction of multiple factors.
 - If INTERVENTION HISTORY shows patterns, reference them using "your records show" or "based on your documented observations."
-- Output only the JSON object, no markdown fencing or commentary.`;
+- Output only the JSON object, no markdown fencing or commentary.`);
 
   const classroomContext = [
     `Grade: ${classroom.grade_band}`,
@@ -103,12 +108,14 @@ RULES:
   const user = `CLASSROOM CONTEXT:
 ${classroomContext}
 
+ROSTER ALIASES: ${rosterLine}
+
 TOMORROW'S SCHEDULE:
 ${scheduleContext}
 
 UPCOMING EVENTS:
 ${eventsContext}
-${forecastContext ? `\nINTERVENTION HISTORY & PATTERNS:\n${forecastContext}\n` : ""}${input.teacher_notes ? `\nTEACHER NOTES FOR TOMORROW: ${input.teacher_notes}` : ""}
+${forecastContext ? `\nINTERVENTION HISTORY & PATTERNS:\n${renderPromptInput(forecastContext, "forecast_context")}\n` : ""}${input.teacher_notes ? `\nTEACHER NOTES FOR TOMORROW:\n${renderPromptInput(input.teacher_notes, "teacher_notes")}` : ""}
 FORECAST DATE: ${input.forecast_date}
 
 Produce a per-block complexity forecast as a JSON object.`;
@@ -123,6 +130,8 @@ export function parseComplexityForecastResponse(
   raw: string,
   classroomId: string,
   forecastDate: string,
+  allowedAliases: Iterable<string> = [],
+  knownStudentAliases: Iterable<string> = [],
 ): ComplexityForecast {
   let cleaned = raw.trim();
   if (cleaned.startsWith("```")) {
@@ -135,6 +144,36 @@ export function parseComplexityForecastResponse(
   }
 
   const p = parsed as Record<string, unknown>;
+  const allowedAliasSet = new Set(Array.from(allowedAliases, String));
+  const disallowedAliasSet = new Set(
+    Array.from(knownStudentAliases, String).filter((alias) => alias && !allowedAliasSet.has(alias)),
+  );
+  const sanitizeText = (value: string): string => {
+    if (!value || disallowedAliasSet.size === 0) {
+      return value;
+    }
+
+    let sanitized = value;
+    for (const alias of disallowedAliasSet) {
+      const pattern = new RegExp(`\\b${alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`, "g");
+      sanitized = sanitized.replace(pattern, "another student");
+    }
+    return sanitized;
+  };
+  const sanitizeNarrativeValue = <T>(value: T): T => {
+    if (typeof value === "string") {
+      return sanitizeText(value) as T;
+    }
+    if (Array.isArray(value)) {
+      return value.map((entry) => sanitizeNarrativeValue(entry)) as T;
+    }
+    if (value && typeof value === "object") {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, child]) => [key, sanitizeNarrativeValue(child)]),
+      ) as T;
+    }
+    return value;
+  };
 
   const validLevels = new Set(["low", "medium", "high"]);
 
@@ -159,7 +198,7 @@ export function parseComplexityForecastResponse(
     ? rawHighest
     : blocks.find((b) => b.level === "high")?.time_slot ?? rawHighest;
 
-  return {
+  return sanitizeNarrativeValue({
     forecast_id: forecastId,
     classroom_id: classroomId,
     forecast_date: forecastDate,
@@ -167,5 +206,5 @@ export function parseComplexityForecastResponse(
     overall_summary: String(p.overall_summary ?? ""),
     highest_risk_block: highestRiskBlock,
     schema_version: "0.1.0",
-  };
+  });
 }

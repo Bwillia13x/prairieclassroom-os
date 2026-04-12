@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { ApiError } from "./api";
 
 export interface AsyncAction<T> {
   loading: boolean;
@@ -6,6 +7,7 @@ export interface AsyncAction<T> {
   result: T | null;
   execute: (fn: (signal: AbortSignal) => Promise<T>) => Promise<T | null>;
   reset: () => void;
+  cancel: () => void;
 }
 
 interface UseAsyncActionOptions {
@@ -22,6 +24,25 @@ function isTransientError(err: unknown): boolean {
   return false;
 }
 
+function friendlyErrorMessage(err: unknown): string {
+  if (err instanceof ApiError) {
+    if (err.status === 401 || err.status === 403) return "Access denied — check your classroom code.";
+    if (err.status === 429) return "Too many requests — wait a moment and try again.";
+    if (err.status === 413) return "The content you submitted is too large. Try a shorter input.";
+    if (err.status === 404) return "That resource could not be found. It may have been removed.";
+    if (err.status >= 500) return "The server encountered an error. Please try again in a few moments.";
+    if (err.status >= 400) return "The request couldn't be processed. Check your input and try again.";
+  }
+  if (err instanceof Error) {
+    const msg = err.message.toLowerCase();
+    if (msg.includes("fetch") || msg.includes("network") || msg.includes("err_connection"))
+      return "Can't reach the server — check your connection and try again.";
+    if (msg.includes("timeout") || msg.includes("timed out"))
+      return "The request took too long. Try again or simplify your input.";
+  }
+  return "Something unexpected happened. Please try again.";
+}
+
 export function useAsyncAction<T>(opts?: UseAsyncActionOptions): AsyncAction<T> {
   const maxRetries = opts?.maxRetries ?? 0;
   const [loading, setLoading] = useState(false);
@@ -31,6 +52,7 @@ export function useAsyncAction<T>(opts?: UseAsyncActionOptions): AsyncAction<T> 
   const mountedRef = useRef(true);
 
   useEffect(() => {
+    mountedRef.current = true;
     return () => {
       mountedRef.current = false;
       controllerRef.current?.abort();
@@ -67,6 +89,12 @@ export function useAsyncAction<T>(opts?: UseAsyncActionOptions): AsyncAction<T> 
         return null;
       } catch (err) {
         if (err instanceof DOMException && err.name === "AbortError") return null;
+        if (err instanceof ApiError && err.handled) {
+          if (mountedRef.current && !controller.signal.aborted) {
+            setLoading(false);
+          }
+          return null;
+        }
         lastErr = err;
         // Only retry on transient errors
         if (attempt < maxRetries && isTransientError(err)) continue;
@@ -75,11 +103,17 @@ export function useAsyncAction<T>(opts?: UseAsyncActionOptions): AsyncAction<T> 
     }
 
     if (mountedRef.current && !controller.signal.aborted) {
-      setError(lastErr instanceof Error ? lastErr.message : "Unknown error");
+      setError(friendlyErrorMessage(lastErr));
       setLoading(false);
     }
     return null;
   }, [maxRetries]);
+
+  const cancel = useCallback(() => {
+    controllerRef.current?.abort();
+    controllerRef.current = null;
+    setLoading(false);
+  }, []);
 
   const reset = useCallback(() => {
     controllerRef.current?.abort();
@@ -89,5 +123,5 @@ export function useAsyncAction<T>(opts?: UseAsyncActionOptions): AsyncAction<T> 
     setLoading(false);
   }, []);
 
-  return { loading, error, result, execute, reset };
+  return { loading, error, result, execute, reset, cancel };
 }

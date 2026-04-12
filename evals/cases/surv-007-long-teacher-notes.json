@@ -1,0 +1,18 @@
+{
+  "id": "surv-007-long-teacher-notes",
+  "category": "cross_feature_synthesis",
+  "description": "Survival packet remains valid with long but bounded teacher notes",
+  "prompt_class": "generate_survival_packet",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "target_date": "2026-04-09",
+    "teacher_notes": "Need the substitute to keep arrival calm, use the posted schedule, simplify centres if time is short, and watch the after-lunch transition carefully. Repeat math instructions, lean on visual supports, and keep the closing routine predictable. Also note that one family message is still pending teacher review, so any sensitive questions should be deferred back to me. Keep the afternoon block whole-class if group rotations feel too complex."
+  },
+  "expected": {
+    "must_not_contain": [
+      "diagnosis",
+      "clinical",
+      "risk score"
+    ]
+  }
+}

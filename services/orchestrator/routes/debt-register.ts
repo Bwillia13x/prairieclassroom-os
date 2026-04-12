@@ -1,17 +1,25 @@
 import { Router } from "express";
 import { buildDebtRegister } from "../../memory/retrieve.js";
 import type { RouteDeps } from "../route-deps.js";
+import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
+import { isValidClassroomId } from "../validate.js";
+import { handleRouteError, sendClassroomNotFound, sendRouteError } from "../errors.js";
 
 export function createDebtRegisterRouter(deps: RouteDeps): Router {
   const router = Router();
 
-  router.get("/:classroomId", (req, res) => {
+  router.get("/:classroomId", deps.authMiddleware, (req, res) => {
     try {
-      const classroomId = req.params.classroomId as string;
+      const rawId = req.params.classroomId as string;
+      if (!isValidClassroomId(rawId)) {
+        sendRouteError(res, 400, { error: "Invalid classroom ID format", category: "validation", retryable: false, detail_code: "invalid_classroom_id" });
+        return;
+      }
+      const classroomId = rawId as ClassroomId;
 
       const classroom = deps.loadClassroom(classroomId);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroomId}' not found` });
+        sendClassroomNotFound(res, classroomId);
         return;
       }
 
@@ -34,9 +42,7 @@ export function createDebtRegisterRouter(deps: RouteDeps): Router {
       res.json({ register });
     } catch (err) {
       console.error("Debt register error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     }
   });
 

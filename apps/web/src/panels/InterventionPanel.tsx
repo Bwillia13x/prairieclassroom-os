@@ -7,6 +7,12 @@ import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ContextualHint from "../components/ContextualHint";
 import HistoryDrawer from "../components/HistoryDrawer";
+import PageIntro from "../components/PageIntro";
+import WorkspaceLayout from "../components/WorkspaceLayout";
+import EmptyStateCard from "../components/EmptyStateCard";
+import EmptyStateIllustration from "../components/EmptyStateIllustration";
+import ErrorBanner from "../components/ErrorBanner";
+import ResultBanner from "../components/ResultBanner";
 import { useHistory } from "../hooks/useHistory";
 import type { InterventionResponse, InterventionRecord, InterventionPrefill } from "../types";
 
@@ -15,7 +21,7 @@ interface Props {
 }
 
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, students, showSuccess, showUndo } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
@@ -60,53 +66,77 @@ export default function InterventionPanel({ prefill }: Props) {
   }
 
   return (
-    <div className={displayResult ? "split-pane" : ""}>
-      <div>
-        <ContextualHint
-          featureKey="log-intervention"
-          title="Log Intervention"
-          description="Describe what happened and the system structures your note into classroom memory. You can undo within a few seconds if needed."
-        />
-        <HistoryDrawer<InterventionRecord>
-          items={history.items}
-          loading={history.loading}
-          error={history.error}
-          renderItem={(rec) => `${rec.student_refs.join(", ")} — ${rec.observation.slice(0, 60)}`}
-          getKey={(rec) => rec.record_id}
-          getTimestamp={(rec) => rec.created_at}
-          onSelect={handleHistorySelect}
-          label="Intervention History"
-        />
-        <InterventionLogger
-          classrooms={classrooms}
-          students={students}
-          selectedClassroom={activeClassroom}
-          onClassroomChange={setActiveClassroom}
-          onSubmit={handleSubmit}
-          loading={loading}
-          prefill={prefill}
-        />
-      </div>
-      <div aria-live="polite">
-        {error && displayResult === null && <div className="error-banner">{error}</div>}
-        {loading && displayResult === null && (
-          <SkeletonLoader variant="single" message="Structuring your intervention note..." label="Structuring intervention note" />
+    <section className="workspace-page">
+      <PageIntro
+        eyebrow="Operations Workspace"
+        title="Log Intervention Notes"
+        sectionTone="slate"
+        sectionIcon="grid"
+        breadcrumb={{ group: "Ops", tab: "Log Intervention" }}
+        description="Log what happened while the moment is still fresh. The result canvas formats the note for classroom memory, follow-up review, and later pattern analysis."
+        badges={[
+          { label: profile ? `Grade ${profile.grade_band}` : "Intervention log", tone: "sun" },
+          { label: "Saved to memory", tone: "provenance" },
+          { label: "Follow-up status", tone: "slate" },
+        ]}
+      />
+
+      <WorkspaceLayout
+        rail={(
+          <>
+            <ContextualHint
+              featureKey="log-intervention"
+              title="Log Intervention"
+              description="Describe what happened and the system structures your note into classroom memory. You can undo within a few seconds if needed."
+              tone="slate"
+            />
+            <HistoryDrawer<InterventionRecord>
+              items={history.items}
+              loading={history.loading}
+              error={history.error}
+              renderItem={(rec) => `${rec.student_refs.join(", ")} — ${rec.observation.slice(0, 60)}`}
+              getKey={(rec) => rec.record_id}
+              getTimestamp={(rec) => rec.created_at}
+              onSelect={handleHistorySelect}
+              label="Intervention History"
+            />
+            <InterventionLogger
+              classrooms={classrooms}
+              students={students}
+              selectedClassroom={activeClassroom}
+              onClassroomChange={setActiveClassroom}
+              onSubmit={handleSubmit}
+              loading={loading}
+              prefill={prefill}
+            />
+          </>
         )}
-        {!loading && displayResult === null && !error && (
-          <div className="empty-state">
-            <svg className="empty-state-icon" viewBox="0 0 48 48" fill="none" aria-hidden="true"><rect x="10" y="4" width="28" height="36" rx="2" stroke="var(--color-border)" strokeWidth="2"/><path d="M16 14h16M16 20h12M16 26h8" stroke="var(--color-accent)" strokeWidth="2" strokeLinecap="round"/><circle cx="16" cy="33" r="1.5" fill="var(--color-accent)"/><path d="M20 33h10" stroke="var(--color-accent)" strokeWidth="1.5" strokeLinecap="round"/></svg>
-            <div className="empty-state-title">No intervention logged</div>
-            <p className="empty-state-description">
-              Select students and describe what happened. The system structures your note for classroom memory.
-            </p>
+        canvas={(
+          <div className="workspace-result" aria-live="polite" aria-busy={loading && displayResult === null}>
+            {error && displayResult === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
+            {loading && displayResult === null ? (
+              <SkeletonLoader variant="single" message="Structuring your intervention note..." label="Structuring intervention note" />
+            ) : null}
+            {!loading && displayResult === null && !error ? (
+              <EmptyStateCard
+                icon={<EmptyStateIllustration name="intervention" />}
+                title="No intervention logged"
+                description="Select students, capture the observation, and the note will land in a structured record you can revisit later."
+              />
+            ) : null}
+            {displayResult ? (
+              <>
+                <ResultBanner
+                  label="Intervention logged"
+                  generatedAt={displayResult.record.created_at}
+                  latencyMs={displayResult.latency_ms || undefined}
+                />
+                <InterventionCard record={displayResult.record} />
+              </>
+            ) : null}
           </div>
         )}
-        {displayResult && (
-          <InterventionCard
-            record={displayResult.record}
-          />
-        )}
-      </div>
-    </div>
+      />
+    </section>
   );
 }

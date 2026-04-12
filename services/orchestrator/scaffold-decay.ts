@@ -7,6 +7,7 @@ import type {
   PositiveSignal,
   WithdrawalPhase,
 } from "../../packages/shared/schemas/scaffold-decay.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface ScaffoldDecayPrompt {
   system: string;
@@ -27,7 +28,7 @@ export function buildScaffoldDecayPrompt(
   const student = classroom.students.find((s) => s.alias === input.student_ref);
   const knownScaffolds = student?.known_successful_scaffolds ?? [];
 
-  const system = `You are PrairieClassroom OS, a classroom support analysis assistant for Alberta K-6 teachers.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom support analysis assistant for Alberta K-6 teachers.
 
 Your task: Analyze a student's intervention records over time to detect whether any scaffolds (supports, strategies, accommodations) are being used less frequently — a signal that the student may be developing independence in that area. When decay is detected, suggest a phased withdrawal plan.
 
@@ -62,7 +63,7 @@ CRITICAL RULES:
 - Use student aliases only, never real names.
 - No clinical, medical, or disciplinary language.
 
-Output only the JSON object, no markdown fencing or commentary.`;
+Output only the JSON object, no markdown fencing or commentary.`);
 
   const scaffoldLine = knownScaffolds.length > 0
     ? `Known successful scaffolds for ${input.student_ref}: ${knownScaffolds.join(", ")}`
@@ -75,7 +76,7 @@ Grade: ${classroom.grade_band}
 STUDENT: ${input.student_ref}
 ${scaffoldLine}
 
-${decayContext}
+${renderPromptInput(decayContext, "scaffold_decay_context", "(no intervention history available)")}
 
 Analyze scaffold usage trends for ${input.student_ref} across ${input.time_window} records. Return a JSON object.`;
 

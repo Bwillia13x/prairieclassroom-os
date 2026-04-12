@@ -46,11 +46,25 @@ import { createSurvivalPacketRouter } from "./routes/survival-packet.js";
 import { createExtractWorksheetRouter } from "./routes/extract-worksheet.js";
 import { createClassroomHealthRouter } from "./routes/classroom-health.js";
 import { createStudentSummaryRouter } from "./routes/student-summary.js";
+import { createFeedbackRouter } from "./routes/feedback.js";
+import { createSessionsRouter } from "./routes/sessions.js";
 
 // ----- Config -----
 
 const PORT = parseInt(process.env.PORT ?? "3100", 10);
+if (Number.isNaN(PORT) || PORT < 1 || PORT > 65535) {
+  console.error(`Invalid PORT: ${process.env.PORT}. Must be a number between 1 and 65535.`);
+  process.exit(1);
+}
+
 const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
+try {
+  new URL(INFERENCE_URL);
+} catch {
+  console.error(`Invalid INFERENCE_URL: ${INFERENCE_URL}. Must be a valid URL (e.g. http://127.0.0.1:3200).`);
+  process.exit(1);
+}
+
 const DEFAULT_DATA_DIR = resolve(import.meta.dirname ?? ".", "../../data/synthetic_classrooms");
 const DATA_DIR = process.env.PRAIRIE_DATA_DIR
   ? resolve(process.env.PRAIRIE_DATA_DIR)
@@ -89,11 +103,11 @@ app.use(requestLogger);
 app.use(inputSanitizer);
 app.use(globalLimiter);
 
-const deps: RouteDeps = { inferenceUrl: INFERENCE_URL, dataDir: DATA_DIR, loadClassroom, loadClassrooms };
-
 // ----- Auth middleware -----
 
 const authMiddleware = createAuthMiddleware(loadClassroom);
+
+const deps: RouteDeps = { inferenceUrl: INFERENCE_URL, dataDir: DATA_DIR, loadClassroom, loadClassrooms, authMiddleware };
 app.use("/api/differentiate", authLimiter, authMiddleware);
 app.use("/api/tomorrow-plan", authLimiter, authMiddleware);
 app.use("/api/family-message", authLimiter, authMiddleware);
@@ -107,6 +121,8 @@ app.use("/api/debt-register", authLimiter, authMiddleware);
 app.use("/api/scaffold-decay", authLimiter, authMiddleware);
 app.use("/api/survival-packet", authLimiter, authMiddleware);
 app.use("/api/extract-worksheet", authLimiter, authMiddleware);
+app.use("/api/feedback", authLimiter, authMiddleware);
+app.use("/api/sessions", authLimiter, authMiddleware);
 
 // ----- Mount routes -----
 
@@ -128,6 +144,8 @@ app.use("/api/classrooms", createStudentSummaryRouter(deps));
 app.use("/api/scaffold-decay", createScaffoldDecayRouter(deps));
 app.use("/api/survival-packet", createSurvivalPacketRouter(deps));
 app.use("/api/extract-worksheet", createExtractWorksheetRouter(deps));
+app.use("/api/feedback", createFeedbackRouter(deps));
+app.use("/api/sessions", createSessionsRouter(deps));
 
 // ----- Start -----
 

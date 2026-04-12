@@ -1,0 +1,22 @@
+# Constraints
+
+- Max iterations: 5
+- Target length: 2500-4000 words
+- Freshness expectations:
+  - Gemma capability and Alberta policy/context claims must be current as of 2026-04-07.
+  - Repo state claims must be grounded in the checked-out workspace.
+- Required source categories:
+  - Internal repository artifacts
+  - Official Google Gemma documentation
+  - Alberta government and school-system materials
+  - Education/teacher association evidence
+  - Competitor product pages for market comparison
+- Prohibited claim types:
+  - Claims of province-wide effectiveness without pilot evidence
+  - Claims that software alone solves structural staffing/resource shortages
+  - Claims that the current stack already uses FunctionGemma, EmbeddingGemma, or ShieldGemma in production paths when it does not
+  - Claims that real Gemma 4 evals are complete when the baseline is pending
+- Required jurisdictions or comparison cases:
+  - Alberta first
+  - Calgary Board of Education as a concrete scale example
+  - North American teacher-AI market for overlap/comparison

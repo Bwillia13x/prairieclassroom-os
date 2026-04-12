@@ -4,8 +4,9 @@ import { getRecentMessages, getRecentPatternReports } from "../../memory/retriev
 import { saveFamilyMessage, savePatternReport } from "../../memory/store.js";
 import type { FamilyMessageDraft } from "../../../packages/shared/schemas/message.js";
 import type { SupportPatternReport } from "../../../packages/shared/schemas/pattern.js";
+import { unsafeCastClassroomId } from "../../../packages/shared/schemas/branded.js";
 
-const TEST_CLASSROOM = "test-history-classroom";
+const TEST_CLASSROOM = unsafeCastClassroomId("test-history-classroom");
 
 function makeMessage(overrides: Partial<FamilyMessageDraft> = {}): FamilyMessageDraft {
   return {

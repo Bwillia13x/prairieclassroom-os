@@ -108,10 +108,10 @@ export default function MessageComposer({
   }
 
   return (
-    <form className="message-composer" onSubmit={handleSubmit}>
-      <h2>Family Message</h2>
-      <p className="composer-description">
-        Draft a plain-language family message. You must review and approve before copying.
+    <form className="message-composer form-panel" onSubmit={handleSubmit}>
+      <h2>Compose Family Message</h2>
+      <p className="composer-description form-description">
+        Select the student, choose the message type, and review the generated draft before anything leaves this workspace.
       </p>
 
       {prefill && !prefillDismissed && (
@@ -119,7 +119,7 @@ export default function MessageComposer({
           <span className="prefill-banner-text">
             Pre-filled from plan: <strong>{prefill.student_ref}</strong> — {prefill.message_type?.replace(/_/g, " ")}
           </span>
-          <button className="prefill-banner-dismiss" onClick={() => setPrefillDismissed(true)} aria-label="Dismiss">
+          <button className="prefill-banner-dismiss" onClick={() => setPrefillDismissed(true)} aria-label="Dismiss" type="button">
             &times;
           </button>
         </div>
@@ -193,7 +193,10 @@ export default function MessageComposer({
       </div>
 
       <div className={`field${prefill && !prefillDismissed ? " field--prefilled" : ""}`}>
-        <label htmlFor="msg-context">Context (optional)</label>
+        <label htmlFor="msg-context">
+          Context
+          <span className="field-optional">(optional)</span>
+        </label>
         <textarea
           id="msg-context"
           rows={3}

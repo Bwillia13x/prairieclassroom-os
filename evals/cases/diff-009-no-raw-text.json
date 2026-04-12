@@ -1,0 +1,15 @@
+{
+  "id": "diff-009-no-raw-text",
+  "category": "schema_reliability",
+  "description": "Differentiate still returns five variants when artifact text is absent",
+  "input": {
+    "artifact_id": "artifact-009",
+    "artifact_title": "Picture Sort",
+    "artifact_subject": "literacy",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Need versions that work even when the source is image-based."
+  },
+  "expected": {
+    "variant_count": 5
+  }
+}

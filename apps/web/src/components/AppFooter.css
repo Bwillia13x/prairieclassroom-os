@@ -1,0 +1,106 @@
+/* ─── AppFooter — keyboard shortcuts + branding ─── */
+
+.app-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-3);
+  margin-top: var(--space-7);
+  border-top: 1px solid var(--color-border);
+}
+
+.app-footer__shortcuts {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.app-footer__shortcuts-label {
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.app-footer__shortcut-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-1);
+}
+
+.app-footer__shortcut {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  transition: border-color var(--motion-fast) var(--ease-standard);
+}
+
+.app-footer__shortcut:hover {
+  border-color: var(--color-border-strong);
+}
+
+.app-footer__key {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.2rem;
+  height: 1.2rem;
+  padding: 0 0.2rem;
+  border-radius: 4px;
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-secondary);
+  line-height: 1;
+  box-shadow: 0 1px 0 var(--color-border);
+}
+
+.app-footer__shortcut-name {
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+}
+
+.app-footer__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.app-footer__brand {
+  font-weight: var(--font-weight-semibold);
+}
+
+.app-footer__sep {
+  opacity: 0.4;
+}
+
+.app-footer__context {
+  font-weight: var(--font-weight-normal);
+}
+
+/* Hide shortcut list on mobile (no physical keyboard) */
+@media (max-width: 600px) {
+  .app-footer__shortcuts {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .app-footer {
+    padding-bottom: 8rem; /* clear mobile nav */
+  }
+}

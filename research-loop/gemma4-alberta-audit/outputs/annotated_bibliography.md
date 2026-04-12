@@ -1,0 +1,24 @@
+# Annotated Bibliography
+
+- S-001. `CLAUDE.md` (internal repo, 2026). Mission-level source for the product thesis: local-first, Gemma-4-native, classroom orchestration, and hard boundaries against diagnosis/surveillance. High relevance, high credibility for intended product scope.
+- S-002. `README.md` (internal repo, 2026). Primary implementation overview: dual-tier routing, workflow list, local/Ollama path, and claimed eval counts. High relevance, but some claims require cross-checking with other repo evidence.
+- S-003. `docs/prompt-contracts.md` (internal repo, 2026). Strong evidence of workflow specificity and operational differentiation, especially forecast, scaffold decay, and substitute packet concepts. High relevance.
+- S-004. `services/orchestrator/router.ts` (internal repo, 2026). Confirms route-to-model mapping and shows actual Gemma tier assignments. High relevance for "Gemma-native" audit.
+- S-005. `services/orchestrator/complexity-forecast.ts` (internal repo, 2026). Demonstrates a complexity-specific workflow that is more novel than generic teacher AI features. High relevance.
+- S-006. `services/inference/harness.py` (internal repo, 2026). Important maturity source. Confirms mock/live modes and explicitly notes tool-call smoke tests are mock-only. High relevance, high audit value.
+- S-007. `docs/eval-baseline.md` (internal repo, 2026). Critical evidence that real Gemma 4 eval baseline is still pending. High relevance.
+- S-008. `services/inference/ollama_backend.py` (internal repo, 2026). Confirms actual local inference path, thinking support, and image handling. High relevance.
+- S-009. `docs/demo-script.md` (internal repo, 2026). Contains outward-facing claims about human testing that appear stronger than the available evidence. High relevance as a possible overclaim source.
+- S-010. Gemma 4 model card, Google AI for Developers (official, 2026). Authoritative capability source: multimodality, context length, deployment sizes, reasoning, agentic support. High quality.
+- S-011. Gemma 4 launch post, Google Blog (official, 2026). Useful concise statement of reasoning, function-calling, structured JSON, and OCR/vision capability. High quality.
+- S-012. FunctionGemma function-calling guide, Google AI for Developers (official, 2026). Shows Google now offers a specialized function-calling variant, which sharpens the audit of what the app does not yet use. High quality.
+- S-013. ShieldGemma overview, Google AI for Developers (official, 2026). Evidence that a dedicated safety-evaluation model exists and could strengthen school-facing governance. High quality.
+- S-014. EmbeddingGemma overview, Google AI for Developers (official, 2025). Supports future multilingual/offline retrieval path. High quality, medium freshness risk because it is based on Gemma 3 rather than Gemma 4.
+- S-015. "Collaborating to support students," Alberta.ca (official, 2026). Important policy-fit source: Alberta emphasizes collaborative, timely, culturally sensitive support. High quality.
+- S-016. "Complexity Teams by School," Alberta.ca (official, 2026). Direct evidence that complexity teams are a live operational category in Alberta, including 118 allocations for Calgary School Division. High quality.
+- S-017. CBE Annual Education Results Report 2024-25 (official, 2025). Strong system-level evidence of multilingual and support complexity in Calgary classrooms. High quality.
+- S-018. ATA "Reporting on Alberta K-12 Schools" (association report, 2024). Strong evidence on AI readiness and equity concerns among Alberta educators. High relevance, medium-to-high quality.
+- S-019. MagicSchool quality/responsible AI page (company, 2026). Market comparison source showing broad overlap on planning, differentiation, and communication features. Medium quality, high relevance.
+- S-020. Brisk Teaching schools/districts page (company, 2026). Market comparison source showing overlap on differentiation, translation, family communication, and sub plans. Medium quality, high relevance.
+- S-021. ATA "Survey highlights ongoing struggles" news item (association, 2022/2023 reporting window). Supplemental context that class size/complexity strain has been persistent, not sudden. Medium quality.
+- S-022. Alberta ATIA overview page (official, 2026). Confirms school boards are local public bodies under Alberta's access/privacy regime, relevant to deployment governance. High quality.

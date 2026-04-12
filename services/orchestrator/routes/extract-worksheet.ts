@@ -7,6 +7,8 @@ import { getRoute, getModelId } from "../router.js";
 import { buildExtractionPrompt, parseExtractionResponse } from "../extract-worksheet.js";
 import { validateBody, ExtractWorksheetRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
+import { callInference } from "../inference-client.js";
+import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
 export function createExtractWorksheetRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -20,7 +22,7 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
       // Load classroom profile
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
-        res.status(404).json({ error: `Classroom '${classroom_id}' not found` });
+        sendClassroomNotFound(res, classroom_id);
         return;
       }
 
@@ -37,45 +39,23 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
       tempFilePath = join(tmpdir(), tempFileName);
       writeFileSync(tempFilePath, Buffer.from(image_base64, "base64"));
 
-      // Call inference service
-      const inferenceResp = await fetch(`${deps.inferenceUrl}/generate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          prompt: `${prompt.system}\n\n${prompt.user}`,
-          images: [tempFilePath],
-          model_tier: route.model_tier,
-          thinking: route.thinking_enabled,
-          prompt_class: route.prompt_class,
-          max_tokens: 4096,
-          mock_context: {
-            classroom_id,
-          },
-        }),
+      const inferenceData = await callInference({
+        deps,
+        req,
+        res,
+        route,
+        prompt,
+        maxTokens: 4096,
+        mockContext: { classroom_id },
+        images: [tempFilePath],
       });
-
-      if (!inferenceResp.ok) {
-        const errText = await inferenceResp.text();
-        res.status(502).json({ error: `Inference service error: ${errText}` });
-        return;
-      }
-
-      const inferenceData = (await inferenceResp.json()) as {
-        text: string;
-        model_id: string;
-        latency_ms: number;
-      };
 
       // Parse extraction response from model output
       let extracted: { extracted_text: string; confidence_notes: string[] };
       try {
         extracted = parseExtractionResponse(inferenceData.text);
       } catch (parseErr) {
-        res.status(422).json({
-          error: "Failed to parse model output as worksheet extraction",
-          raw_output: inferenceData.text,
-          parse_error: parseErr instanceof Error ? parseErr.message : String(parseErr),
-        });
+        sendParseError(res, "Failed to parse model output as worksheet extraction", inferenceData.text, parseErr);
         return;
       }
 
@@ -87,9 +67,7 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
       });
     } catch (err) {
       console.error("Worksheet extraction error:", err);
-      res.status(500).json({
-        error: err instanceof Error ? err.message : "Internal server error",
-      });
+      handleRouteError(res, err);
     } finally {
       // Clean up temp file
       if (tempFilePath) {

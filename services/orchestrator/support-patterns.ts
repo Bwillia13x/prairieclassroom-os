@@ -1,6 +1,7 @@
 // services/orchestrator/support-patterns.ts
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface SupportPatternsPrompt {
   system: string;
@@ -18,7 +19,9 @@ export function buildSupportPatternsPrompt(
   input: SupportPatternsInput,
   patternContext: string,
 ): SupportPatternsPrompt {
-  const system = `You are PrairieClassroom OS, a classroom memory assistant for Alberta K–6 teachers.
+  const rosterAliases = classroom.students.map((student) => student.alias).filter(Boolean);
+  const rosterLine = rosterAliases.length > 0 ? rosterAliases.join(", ") : "(no aliases provided)";
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom memory assistant for Alberta K–6 teachers.
 
 Your task: Analyze the teacher's intervention records, support plans, and follow-up history to identify patterns that deserve the teacher's attention. You are reflecting the teacher's OWN documentation back to them — you are not diagnosing, scoring, or labeling students.
 
@@ -54,9 +57,12 @@ CRITICAL SAFETY RULES:
 - NEVER assign behavioral risk scores or rankings
 - NEVER present model inference as fact — attribute everything to the teacher's own documentation
 - NEVER include student real names — use aliases only
+- ONLY use student aliases that appear in the classroom roster provided below
+- NEVER borrow or reuse aliases from another classroom, prior example, or generic pattern
+- If an observation does not clearly map to one of the provided aliases, omit the alias rather than guessing
 - If records are insufficient to identify patterns, say so honestly rather than fabricating patterns
 
-Output only the JSON object, no markdown fencing or commentary.`;
+Output only the JSON object, no markdown fencing or commentary.`);
 
   const studentLine = input.student_filter
     ? `Filtering for student: ${input.student_filter}`
@@ -66,11 +72,12 @@ Output only the JSON object, no markdown fencing or commentary.`;
 ID: ${classroom.classroom_id}
 Grade: ${classroom.grade_band}
 Subject focus: ${classroom.subject_focus}
+Roster aliases: ${rosterLine}
 
 ${studentLine}
 Time window: last ${input.time_window} records
 
-${patternContext}
+${renderPromptInput(patternContext, "pattern_context", "(no retrieval context available)")}
 
 Analyze these records and identify support patterns. Return a JSON object.`;
 

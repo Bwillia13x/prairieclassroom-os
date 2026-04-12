@@ -1,6 +1,7 @@
 // services/orchestrator/intervention.ts
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export interface InterventionPrompt {
   system: string;
@@ -18,7 +19,7 @@ export function buildInterventionPrompt(
   classroom: ClassroomProfile,
   input: InterventionInput,
 ): InterventionPrompt {
-  const system = `You are PrairieClassroom OS, a classroom documentation assistant for Alberta K–6 teachers.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom documentation assistant for Alberta K–6 teachers.
 
 Your task: Structure a teacher's intervention note into a clear, factual record. The teacher has described what they observed and what they did. Extract the structured fields from their note.
 
@@ -36,7 +37,7 @@ RULES:
 - Do not use clinical, medical, or disciplinary language.
 - Do not assign risk scores or behavioral ratings.
 - Keep each field concise (1–3 sentences).
-- Output only the JSON object, no markdown fencing or commentary.`;
+- Output only the JSON object, no markdown fencing or commentary.`);
 
   const studentContext = input.student_refs
     .map((ref) => {
@@ -52,10 +53,10 @@ Subject focus: ${classroom.subject_focus}
 
 STUDENT(S):
 ${studentContext}
-${input.context ? `\nCONTEXT FROM PLAN: ${input.context}` : ""}
+${input.context ? `\nCONTEXT FROM PLAN:\n${renderPromptInput(input.context, "plan_context")}` : ""}
 
 TEACHER'S NOTE:
-${input.teacher_note}
+${renderPromptInput(input.teacher_note, "teacher_note")}
 
 Structure this intervention note as a JSON object.`;
 

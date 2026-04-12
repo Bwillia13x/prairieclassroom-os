@@ -25,11 +25,28 @@ If you use a different prepared interpreter, export `PRAIRIE_PYTHON=/abs/path/to
 - Runs:
   - `npm run typecheck`
   - `npm run lint`
+  - `npm run test:python`
+  - `npm run test`
   - `python3 -m py_compile services/inference/harness.py services/inference/server.py`
   - `python3 services/inference/harness.py --mode mock --smoke-test`
   - `npm run smoke:api`
   - `npm run smoke:browser`
 - Saves logs under `output/release-gate/`
+
+The browser smoke now covers:
+
+- grouped `Today / Prep / Ops / Review` shell navigation
+- `tab` and `classroom` query-param restore on refresh
+- demo classroom panel handoffs
+- protected classroom auth prompt, invalid-code recovery, and retry success
+
+After a passing gate, capture current UI review artifacts with:
+
+```bash
+npm run ui:evidence
+```
+
+The evidence script writes five screenshots plus a manifest under `output/playwright/ui-evidence/`.
 
 ## Real inference baseline
 

@@ -1,21 +1,21 @@
 .message-composer {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   padding: var(--space-6);
   box-shadow: var(--shadow-sm);
 }
 
 .message-composer h2 {
   font-size: var(--text-lg);
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
   color: var(--color-text);
 }
 
 .composer-description {
   font-size: var(--text-base);
   color: var(--color-text-secondary);
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-3);
 }
 
 .student-checkbox-list {
@@ -38,7 +38,7 @@
   font-size: var(--text-sm);
   cursor: pointer;
   border-radius: calc(var(--radius) / 2);
-  transition: background 0.1s;
+  transition: background var(--motion-fast) var(--ease-standard);
 }
 
 .student-checkbox:hover {

@@ -4,17 +4,28 @@ import "./StreamingIndicator.css";
 /**
  * StreamingIndicator — replaces static skeleton for planning-tier requests.
  * Shows progressive disclosure: thinking phase → structuring phase → complete.
- * Displays real thinking text and a progress bar.
+ * Displays real thinking text, a progress bar, elapsed time, and cancel control.
  */
 interface Props {
   /** Contextual label, e.g. "Generating tomorrow plan" */
   label?: string;
+  /** Cancel callback — aborts the in-flight request */
+  onCancel?: () => void;
 }
 
-export default function StreamingIndicator({ label }: Props) {
+function formatElapsed(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
+export default function StreamingIndicator({ label, onCancel }: Props) {
   const { streaming } = useApp();
 
   if (!streaming.active && streaming.phase !== "complete") return null;
+
+  const elapsed = streaming.elapsedSeconds;
+  const showTimeoutHint = elapsed >= 60;
 
   const phaseLabel =
     streaming.phase === "thinking" ? "Deep reasoning in progress…" :
@@ -30,6 +41,16 @@ export default function StreamingIndicator({ label }: Props) {
       <div className="streaming-header">
         <span className="streaming-phase-icon" aria-hidden="true">{phaseIcon}</span>
         <span className="streaming-phase-label">{phaseLabel}</span>
+        {streaming.active && (
+          <span className="streaming-elapsed" aria-label={`Elapsed: ${formatElapsed(elapsed)}`}>
+            {formatElapsed(elapsed)}
+          </span>
+        )}
+        {streaming.active && onCancel && (
+          <button className="streaming-cancel" onClick={onCancel} type="button" aria-label="Cancel request">
+            Cancel
+          </button>
+        )}
       </div>
 
       {/* Progress bar */}
@@ -39,6 +60,14 @@ export default function StreamingIndicator({ label }: Props) {
           style={{ width: `${Math.max(streaming.progress * 100, 2)}%` }}
         />
       </div>
+
+      {/* Timeout hint */}
+      {streaming.active && showTimeoutHint && (
+        <div className="streaming-timeout-hint" role="alert">
+          Planning-tier reasoning can take up to 90 seconds for complex classrooms.{" "}
+          {onCancel && "You can cancel and retry if needed."}
+        </div>
+      )}
 
       {/* Thinking text — streams in progressively */}
       {streaming.thinkingText && (

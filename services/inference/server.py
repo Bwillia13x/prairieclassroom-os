@@ -17,10 +17,36 @@ from __future__ import annotations
 import json
 import time
 from flask import Flask, request, jsonify
-from harness import GemmaHarness, InferenceMode, GenerationRequest, ModelTier
+from harness import GemmaHarness, InferenceMode, GenerationRequest, ModelTier, require_gemini_run_guard
 
 app = Flask(__name__)
 harness: GemmaHarness | None = None
+
+def _apply_eval_behavior(body: dict) -> tuple[object, int] | None:
+    if harness is None or harness.mode.value != "mock":
+        return None
+
+    context = body.get("mock_context") or {}
+    behavior = context.get("__test_behavior")
+    if not isinstance(behavior, str) or not behavior:
+        return None
+
+    if behavior.startswith("sleep_ms:"):
+        try:
+            delay_ms = max(0, int(behavior.split(":", 1)[1]))
+            time.sleep(delay_ms / 1000)
+        except ValueError:
+            pass
+        return None
+
+    if behavior == "invalid_json":
+        return "{not-json", 200
+    if behavior == "empty_text":
+        return jsonify({"error": "Empty model response — simulated for eval", "latency_ms": 0}), 502
+    if behavior == "http_503":
+        return jsonify({"error": "Simulated retryable inference error", "latency_ms": 0}), 503
+
+    return None
 
 
 @app.route("/health", methods=["GET"])
@@ -36,6 +62,10 @@ def generate():
     body = request.get_json(force=True)
     if not body or "prompt" not in body:
         return jsonify({"error": "Missing 'prompt' in request body"}), 400
+
+    test_behavior_resp = _apply_eval_behavior(body)
+    if test_behavior_resp is not None:
+        return test_behavior_resp
 
     tier_str = body.get("model_tier", "live")
     try:
@@ -79,6 +109,8 @@ def generate():
 
 def create_app(mode: str = "mock", model_id: str | None = None, port: int = 3200) -> None:
     global harness
+    if mode == InferenceMode.GEMINI.value:
+        require_gemini_run_guard()
     harness = GemmaHarness(mode=InferenceMode(mode), model_id=model_id)
     print(f"Inference server starting — mode={mode}, port={port}")
     app.run(host="127.0.0.1", port=port, debug=False)
@@ -87,7 +119,7 @@ def create_app(mode: str = "mock", model_id: str | None = None, port: int = 3200
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="Inference HTTP server")
-    parser.add_argument("--mode", choices=["mock", "api", "local", "ollama"], default="mock")
+    parser.add_argument("--mode", choices=["mock", "api", "local", "ollama", "gemini"], default="mock")
     parser.add_argument("--model-id", type=str, default=None)
     parser.add_argument("--port", type=int, default=3200)
     args = parser.parse_args()

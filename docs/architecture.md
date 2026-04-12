@@ -1,80 +1,165 @@
 # PrairieClassroom OS — Architecture
 
+*Updated 2026-04-10 — reflects the implemented system, not the original aspirational sketch.*
+
 ## System thesis
 
-Use Gemma 4 as the reasoning-and-orchestration substrate for a classroom operating layer.
+Use Gemma 4 as the reasoning-and-orchestration substrate for a classroom operating layer that helps Alberta K-6 teachers manage complexity without replacing their judgment.
 
 ## Core architecture
 
+Six layers, each with a clear boundary and contract surface.
+
 ### 1. Input layer
-Handles:
-- worksheet/photo upload
-- PDF page images
-- typed teacher notes
-- voice notes
-- classroom memory retrieval context
+
+Accepts teacher-initiated input across multiple modalities:
+
+- Typed teacher notes (reflections, intervention observations, forecast context)
+- Lesson artifact text (titles, subjects, raw text, teacher goals)
+- Worksheet/photo upload (base64-encoded images via `extract_worksheet`)
+- URL-backed UI state (`?tab=`, `?classroom=`, `?demo=true`)
+
+Voice notes are spec'd but not yet implemented.
 
 ### 2. Orchestration layer
-Responsible for:
-- task classification
-- model routing
-- prompt contract selection
-- retrieval injection
-- structured output validation
-- tool-call execution
 
-### 3. Model layer
-Two-speed design:
+Express API (`services/orchestrator/`) responsible for:
 
-- **Live route** — small Gemma 4 model for low-latency classroom assistance
-- **Planning route** — larger Gemma 4 model for next-day planning and synthesis
+- **Prompt class routing** — maps each of the 12 prompt classes to a model tier (live or planning) with explicit thinking-mode flags via the routing table in `router.ts`
+- **Request validation** — Zod schemas validate all API request bodies at the boundary (`validate.ts`)
+- **Classroom-code authentication** — `X-Classroom-Code` header validated per request; demo classroom bypasses; rate-limited
+- **Input sanitization** — middleware strips injection patterns and trims text
+- **Retrieval injection** — pulls recent plans, interventions, patterns, and forecasts from classroom memory and injects them into prompt context
+- **Inference dispatch** — calls the Python inference service via HTTP with structured request/response
+- **Output parsing** — parses model JSON responses with fallback error handling (422 on parse failure, 502 on inference failure)
+- **Memory persistence** — stores generated plans, variants, messages, interventions, forecasts, patterns, scaffold reviews, and survival packets to per-classroom SQLite
+
+### 3. Model layer — two-speed prompt class routing
+
+The routing table in `router.ts` assigns every prompt class to a model tier and thinking mode:
+
+| Prompt class | Model tier | Thinking | Retrieval | Purpose |
+|---|---|---|---|---|
+| `differentiate_material` | live | off | no | Real-time material adaptation |
+| `simplify_for_student` | live | off | no | Language simplification |
+| `generate_vocab_cards` | live | off | no | Vocabulary card generation |
+| `draft_family_message` | live | off | no | Family communication drafts |
+| `log_intervention` | live | off | no | Intervention structuring |
+| `generate_ea_briefing` | live | off | yes | EA daily briefing |
+| `extract_worksheet` | live | off | no | Multimodal worksheet extraction |
+| `prepare_tomorrow_plan` | planning | **on** | yes | Next-day plan synthesis |
+| `forecast_complexity` | planning | **on** | yes | 7-day complexity forecasting |
+| `detect_support_patterns` | planning | **on** | yes | Recurring pattern detection |
+| `detect_scaffold_decay` | planning | **on** | yes | Scaffold withdrawal readiness |
+| `generate_survival_packet` | planning | **on** | yes | Supply teacher packet |
+
+The `complexity_debt_register` is deterministic (no model call) — it computes pending actions from memory state.
+
+**Model tier targets:**
+
+| Tier | Local (Ollama) | Hosted (Gemini API) | Paid (Vertex AI) |
+|---|---|---|---|
+| Live | gemma-4-4b-it | gemma-4-26b-a4b-it | Custom endpoint |
+| Planning | gemma-4-27b-it | gemma-4-31b-it | Custom endpoint |
+
+Hosted Gemini uses different model IDs than local targets because Google AI Studio exposes different checkpoints than the open Gemma weights available via Ollama or Vertex.
+
+**Thinking mode** is enabled only for planning-tier classes where deeper chain-of-thought reasoning improves output quality (plans, forecasts, pattern analysis). Live-tier classes use direct generation for lower latency.
 
 ### 4. Memory layer
-Stores and retrieves:
-- student support notes
-- successful scaffolds
-- intervention history
-- family communication preferences
-- class routines
 
-### 5. Tool layer
-Initial tools:
-- `differentiate_material`
-- `prepare_tomorrow_plan`
-- `draft_family_message`
-- `log_intervention`
-- `generate_visual_support`
+Per-classroom SQLite databases (`services/memory/`) with WAL mode for concurrency safety.
+
+**Eight tables per classroom:**
+
+| Table | Key fields | Purpose |
+|---|---|---|
+| `generated_plans` | plan_id, classroom_id, plan_json | Tomorrow plans |
+| `generated_variants` | variant_id, artifact_id, variant_json | Differentiation variants |
+| `family_messages` | draft_id, student_refs, teacher_approved | Draft and approved messages |
+| `interventions` | record_id, student_refs, record_json | Logged interventions |
+| `pattern_reports` | report_id, student_filter, report_json | Support patterns |
+| `complexity_forecasts` | forecast_id, forecast_date, forecast_json | Complexity forecasts |
+| `scaffold_reviews` | report_id, student_ref, report_json | Scaffold decay reviews |
+| `survival_packets` | packet_id, generated_for_date, packet_json | Supply teacher packets |
+
+All tables indexed on `(classroom_id, created_at)`. Student-specific tables add `student_ref` to the index.
+
+**Retrieval functions** (`retrieve.ts`) provide clean interfaces for the orchestrator:
+- `getRecentPlans()`, `getRecentInterventions()`, `getRecentPatternReports()` — feed context into planning-tier prompts
+- `buildDebtRegister()` — computes the complexity debt register deterministically from memory state
+- `getLatestForecast()`, `getLatestPlan()` — power the Today panel
+
+### 5. Prompt class routing layer
+
+Twelve model-routed prompt classes plus one deterministic query, each defined by a versioned contract in `docs/prompt-contracts.md`:
+
+**Live tier (7 classes):** `differentiate_material`, `simplify_for_student`, `generate_vocab_cards`, `draft_family_message`, `log_intervention`, `generate_ea_briefing`, `extract_worksheet`
+
+**Planning tier (5 classes):** `prepare_tomorrow_plan`, `forecast_complexity`, `detect_support_patterns`, `detect_scaffold_decay`, `generate_survival_packet`
+
+**Deterministic:** `complexity_debt_register`
+
+Each prompt class has:
+- A Zod request schema (validated at the API boundary)
+- A prompt builder (constructs the full prompt with classroom context and retrieval injection)
+- A response parser (extracts structured JSON from model output)
+- A shared output schema (in `packages/shared/schemas/`)
+- Mock fixtures for offline development (per-classroom canned responses)
 
 ### 6. Safety layer
-Enforces:
-- no diagnosis
-- no discipline scoring
-- no external send without approval
-- observation/inference separation
-- auditability of outward-facing outputs
 
-## Canonical MVP flow
+Enforces product boundaries at multiple levels:
 
-1. Input artifact arrives.
-2. Orchestrator classifies task.
-3. Relevant classroom memory is retrieved.
-4. Gemma route is selected.
-5. Structured output is generated.
-6. Optional tool action is executed.
-7. Teacher reviews and approves.
-8. Output and interaction are persisted.
+- **15 forbidden diagnostic terms** — rejected in all student-facing output (e.g., "ADHD", "autism", "disability"). Enforced in prompt builders and validated in eval cases.
+- **Observational language framing** — all student references use "your records show" rather than "this student has". No clinical framing.
+- **No diagnosis** — the system describes observed classroom patterns, never suggests medical or psychological diagnoses
+- **No discipline scoring** — no behavior-risk scoring or surveillance features
+- **Human-in-the-loop messaging** — family messages require explicit teacher approval before any external action
+- **No autonomous sends** — the system drafts; teachers decide
+- **Prompt injection detection** — regex-based scanning of all request fields with logging (defense-in-depth alongside model safety filters)
+- **Classroom-code authentication** — rate-limited per-IP access code validation on protected routes
+- **Input sanitization** — middleware neutralizes markdown fences and common injection patterns
+- **Audit trail** — all model-routed outputs persisted with model_id and timestamp
 
-## What to keep modular from day one
+## Canonical flow
 
-- prompt contracts
-- tool schemas
-- output validators
-- retrieval adapters
-- model-routing logic
+1. Teacher interacts via the web UI (tab navigation, form input, file upload).
+2. Request hits the orchestrator API with Zod-validated body and classroom-code auth.
+3. Orchestrator loads the classroom profile and routes to the correct prompt class.
+4. For retrieval-backed classes, relevant memory (plans, interventions, patterns) is injected into the prompt context.
+5. Prompt is dispatched to the inference service with the correct model tier and thinking flag.
+6. Inference service generates structured JSON output (mock, Ollama, Gemini, or Vertex backend).
+7. Orchestrator parses the response, validates structure, and persists to classroom memory.
+8. Structured result is returned to the UI for teacher review.
+9. For family messages, teacher explicitly approves before any external action.
+
+## Inference backends
+
+The Python inference harness (`services/inference/harness.py`) supports five modes:
+
+| Mode | Purpose | Cost | Status |
+|---|---|---|---|
+| `mock` | Default development lane | Free | Passing |
+| `ollama` | Privacy-first local deployment | Free | Code complete, blocked on host |
+| `gemini` | Hackathon demo proof (synthetic data only) | API credits | Passing |
+| `api` | Paid Vertex AI endpoints | Compute + traffic | Gated behind PRAIRIE_ALLOW_PAID_SERVICES |
+| `local` | Direct transformers loading | GPU required | Available, not primary path |
+
+## What to keep modular
+
+- Prompt contracts (versioned, one per class)
+- Output schemas (shared Zod package)
+- Inference backends (swappable without orchestrator changes)
+- Memory retrieval adapters (clean function interfaces)
+- Model-routing logic (single routing table)
+- Safety rules (centralized forbidden-term lists)
 
 ## What not to overbuild yet
 
-- multi-school dashboards
-- external system integrations
-- analytics warehouse
-- fully automated workflow chains
+- Multi-school dashboards
+- External system integrations (LMS, SIS)
+- Analytics warehouse
+- Fully automated workflow chains
+- Student-facing interfaces
+- Cross-classroom pattern aggregation

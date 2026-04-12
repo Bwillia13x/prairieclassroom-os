@@ -9,6 +9,7 @@ const ROOT = path.resolve(__dirname, "..");
 const OUTPUT_ROOT = path.join(ROOT, "output", "vertex-endpoints");
 const RUN_ID = new Date().toISOString().replace(/[:.]/g, "-");
 const RUN_DIR = path.join(OUTPUT_ROOT, RUN_ID);
+const PAID_SERVICES_ENV = "PRAIRIE_ALLOW_PAID_SERVICES";
 
 const TARGETS = [
   {
@@ -80,6 +81,19 @@ function parseArgs(argv) {
 }
 
 const OPTIONS = parseArgs(process.argv.slice(2));
+
+function paidServicesEnabled() {
+  return ["1", "true", "yes", "on"].includes((process.env[PAID_SERVICES_ENV] ?? "").trim().toLowerCase());
+}
+
+function assertPaidServicesAllowed(action) {
+  if (paidServicesEnabled()) {
+    return;
+  }
+  throw new Error(
+    `${action} is blocked unless ${PAID_SERVICES_ENV}=true. This repo defaults to zero-cloud-spend for local development.`,
+  );
+}
 
 async function ensureRunDir() {
   await mkdir(RUN_DIR, { recursive: true });
@@ -395,6 +409,10 @@ async function captureQuotaState(prefix) {
 }
 
 async function main() {
+  if (!OPTIONS.listOnly) {
+    assertPaidServicesAllowed("Vertex endpoint provisioning");
+  }
+
   await ensureRunDir();
   console.log(`Vertex endpoint artifacts: ${RUN_DIR}`);
   await captureQuotaState("before");

@@ -8,6 +8,7 @@
 
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant, VariantType } from "../../packages/shared/schemas/artifact.js";
+import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export const VARIANT_TYPES: VariantType[] = [
   "core",
@@ -27,7 +28,7 @@ export function buildDifferentiationPrompt(
   classroom: ClassroomProfile,
   teacherGoal?: string,
 ): DifferentiationPrompt {
-  const system = `You are PrairieClassroom OS, a classroom differentiation assistant for Alberta K–6 teachers.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom differentiation assistant for Alberta K–6 teachers.
 
 Your task: Given a lesson artifact and classroom context, produce exactly 5 differentiated variants.
 
@@ -51,7 +52,7 @@ RULES:
 - Use plain language appropriate for the grade level.
 - Do not invent content not related to the original artifact.
 - Do not include diagnosis, discipline, or risk scoring.
-- Output only the JSON array, no markdown fencing or commentary.`;
+- Output only the JSON array, no markdown fencing or commentary.`);
 
   const classroomContext = [
     `Grade: ${classroom.grade_band}`,
@@ -69,8 +70,9 @@ ${classroomContext}
 ARTIFACT:
 Title: ${artifact.title}
 Subject: ${artifact.subject}
-Content: ${artifact.raw_text ?? "(no text — image/PDF source)"}
-${teacherGoal ? `\nTEACHER GOAL: ${teacherGoal}` : ""}
+Content:
+${renderPromptInput(artifact.raw_text, "artifact_raw_text", "(no text — image/PDF source)")}
+${teacherGoal ? `\nTEACHER GOAL:\n${renderPromptInput(teacherGoal, "teacher_goal")}` : ""}
 
 Produce 5 differentiated variants as a JSON array.`;
 

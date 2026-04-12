@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "ownership": {
+    "demo_walkthrough": [
+      "data/synthetic_classrooms/classroom_demo.json",
+      "data/demo/seed.ts"
+    ],
+    "proof_fixtures": [
+      "evals/fixtures/classrooms/",
+      "evals/fixtures/memory/",
+      "evals/fixtures/regressions/"
+    ]
+  },
+  "notes": [
+    "Demo data should optimize browser walkthrough quality.",
+    "Eval-only edge cases should move into proof fixture directories over time.",
+    "Use PRAIRIE_DATA_DIR and PRAIRIE_MEMORY_DIR to run against proof fixtures without changing classroom schemas.",
+    "Route-specific regressions may live in evals/fixtures/regressions even when they are not full classroom or memory snapshots."
+  ]
+}

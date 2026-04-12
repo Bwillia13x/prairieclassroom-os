@@ -1,8 +1,7 @@
 name: Release Gate
 
 on:
-  pull_request:
-  push:
+  workflow_dispatch:
 
 permissions:
   contents: read

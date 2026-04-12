@@ -1,0 +1,13 @@
+{
+  "id": "pat-010-latest-retrieval-empty",
+  "category": "retrieval_relevance",
+  "description": "Latest pattern retrieval can return an empty report cleanly for classrooms with no stored pattern history",
+  "prompt_class": "retrieve_latest_pattern",
+  "input": {
+    "classroom_id": "echo-grade3"
+  },
+  "expected": {
+    "expected_report_null": true,
+    "max_latency_ms": 1500
+  }
+}

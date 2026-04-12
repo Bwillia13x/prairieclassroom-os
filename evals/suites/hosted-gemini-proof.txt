@@ -1,0 +1,14 @@
+# Curated hosted proof suite for the hackathon Gemma 4 lane.
+# This keeps live hosted validation bounded while still covering
+# the core classroom-complexity workflows plus prompt safety.
+
+diff-001-reading-schema
+diff-008-prompt-injection
+plan-001-alpha-schema
+plan-010-prompt-injection
+msg-001-alpha-schema
+msg-006-non-english
+ea-001-schema
+fcst-001-demo-schema
+debt-001-schema
+surv-001-schema
