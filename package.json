@@ -10,7 +10,7 @@
     "evals"
   ],
   "scripts": {
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -b apps/web",
     "lint": "eslint .",
     "test": "vitest run",
     "test:python": "cd services/inference && python -m pytest tests/ -v",

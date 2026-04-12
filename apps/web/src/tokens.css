@@ -1,48 +1,57 @@
 /* ============================================================
-   Design Tokens — Shared Component Library
+   Design Tokens — Shared Component Library Aliases
    ============================================================
-   Generic semantic aliases consumed by apps/web/src/components/shared/.
-   These map to the broader Prairie palette in styles/tokens.css
-   but provide stable, component-oriented names for the shared lib.
+   The shared component library (apps/web/src/components/shared/)
+   uses --ds-* semantic names. This file maps those names onto
+   the canonical Prairie palette defined in styles/tokens.css, so
+   shared components inherit the warm Prairie aesthetic and
+   respond to color-scheme: light dark automatically.
+
+   DO NOT define raw color/spacing values here. Only aliases.
+   To change a color, edit styles/tokens.css.
    ============================================================ */
 
 :root {
   /* ---- Surfaces ---- */
-  --ds-surface:          #ffffff;
-  --ds-surface-raised:   #fafbfc;
-  --ds-surface-muted:    #f3f4f6;
+  --ds-surface:          var(--color-surface);
+  --ds-surface-raised:   var(--color-surface-elevated);
+  --ds-surface-muted:    var(--color-surface-muted);
 
   /* ---- Borders ---- */
-  --ds-border:           #d1d5db;
-  --ds-border-light:     #e5e7eb;
+  --ds-border:           var(--color-border);
+  --ds-border-light:     var(--color-border);
 
   /* ---- Text ---- */
-  --ds-text:             #111827;
-  --ds-text-secondary:   #4b5563;
-  --ds-text-muted:       #9ca3af;
+  --ds-text:             var(--color-text);
+  --ds-text-secondary:   var(--color-text-secondary);
+  --ds-text-muted:       var(--color-text-tertiary);
 
   /* ---- Accent ---- */
-  --ds-accent:           #2563eb;
-  --ds-accent-hover:     #1d4ed8;
-  --ds-accent-soft:      #eff6ff;
+  --ds-accent:           var(--color-accent);
+  --ds-accent-hover:     var(--color-accent-hover);
+  --ds-accent-soft:      var(--color-accent-soft);
 
   /* ---- Status: Success ---- */
-  --ds-success:          #059669;
-  --ds-success-soft:     #ecfdf5;
+  --ds-success:          var(--color-success);
+  --ds-success-soft:     var(--color-bg-success);
 
   /* ---- Status: Warning ---- */
-  --ds-warning:          #d97706;
-  --ds-warning-soft:     #fffbeb;
+  --ds-warning:          var(--color-warning);
+  --ds-warning-soft:     var(--color-bg-warning);
 
   /* ---- Status: Danger ---- */
-  --ds-danger:           #dc2626;
-  --ds-danger-soft:      #fef2f2;
+  --ds-danger:           var(--color-danger);
+  --ds-danger-soft:      var(--color-bg-danger);
 
   /* ---- Status: Info ---- */
-  --ds-info:             #0891b2;
-  --ds-info-soft:        #ecfeff;
+  --ds-info:             var(--color-analysis);
+  --ds-info-soft:        var(--color-bg-analysis);
 
-  /* ---- Spacing (4px base) ---- */
+  /* ---- Spacing ----
+     Prairie spacing jumps are larger than a 4px scale, so the
+     shared library keeps a finer-grained scale of its own for
+     tight component internals. These values are fixed (not
+     theme-dependent), so no light-dark() is needed. */
   --ds-space-1:   0.25rem;   /*  4px */
   --ds-space-2:   0.5rem;    /*  8px */
   --ds-space-3:   0.75rem;   /* 12px */
@@ -57,63 +66,29 @@
   --ds-space-12:  3rem;      /* 48px */
 
   /* ---- Type scale ---- */
-  --ds-text-xs:    0.75rem;
-  --ds-text-sm:    0.875rem;
-  --ds-text-base:  1rem;
-  --ds-text-lg:    1.125rem;
-  --ds-text-xl:    1.25rem;
-  --ds-text-2xl:   1.5rem;
+  --ds-text-xs:    var(--text-xs);
+  --ds-text-sm:    var(--text-sm);
+  --ds-text-base:  var(--text-base);
+  --ds-text-lg:    var(--text-lg);
+  --ds-text-xl:    var(--text-xl);
+  --ds-text-2xl:   var(--text-2xl);
 
   /* ---- Font families ---- */
-  --ds-font-sans:  system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --ds-font-mono:  ui-monospace, "SF Mono", "Cascadia Code", monospace;
+  --ds-font-sans:  var(--font-sans);
+  --ds-font-mono:  var(--font-mono);
 
   /* ---- Radii ---- */
-  --ds-radius-sm:   0.25rem;
-  --ds-radius-md:   0.5rem;
-  --ds-radius-lg:   0.75rem;
-  --ds-radius-full: 9999px;
+  --ds-radius-sm:   var(--radius-sm);
+  --ds-radius-md:   var(--radius-md);
+  --ds-radius-lg:   var(--radius-lg);
+  --ds-radius-full: var(--radius-pill);
 
   /* ---- Shadows ---- */
-  --ds-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.05);
-  --ds-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --ds-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --ds-shadow-sm:  var(--shadow-sm);
+  --ds-shadow-md:  var(--shadow-md);
+  --ds-shadow-lg:  var(--shadow-lg);
 
   /* ---- Transitions ---- */
-  --ds-transition-fast:   150ms ease;
-  --ds-transition-normal: 250ms ease;
-}
-
-/* ---- Dark mode overrides ---- */
-[data-theme="dark"] {
-  --ds-surface:          #111827;
-  --ds-surface-raised:   #1f2937;
-  --ds-surface-muted:    #374151;
-
-  --ds-border:           #4b5563;
-  --ds-border-light:     #374151;
-
-  --ds-text:             #f9fafb;
-  --ds-text-secondary:   #d1d5db;
-  --ds-text-muted:       #6b7280;
-
-  --ds-accent:           #60a5fa;
-  --ds-accent-hover:     #3b82f6;
-  --ds-accent-soft:      #1e3a5f;
-
-  --ds-success:          #34d399;
-  --ds-success-soft:     #064e3b;
-
-  --ds-warning:          #fbbf24;
-  --ds-warning-soft:     #78350f;
-
-  --ds-danger:           #f87171;
-  --ds-danger-soft:      #7f1d1d;
-
-  --ds-info:             #22d3ee;
-  --ds-info-soft:        #164e63;
-
-  --ds-shadow-sm:  0 1px 2px rgba(0, 0, 0, 0.3);
-  --ds-shadow-md:  0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.3);
-  --ds-shadow-lg:  0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.4);
+  --ds-transition-fast:   var(--motion-fast) var(--ease-standard);
+  --ds-transition-normal: var(--motion-base) var(--ease-standard);
 }

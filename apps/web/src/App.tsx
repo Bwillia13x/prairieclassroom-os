@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import AppContext from "./AppContext";
+import { SessionProvider } from "./SessionContext";
 import {
   appReducer,
   createInitialState,
@@ -431,6 +432,7 @@ export default function App() {
 
   return (
     <AppContext.Provider value={ctxValue}>
+      <SessionProvider classroomId={activeClassroom}>
       <div className="app-shell">
         <a href="#main-content" className="skip-link">
           Skip to main content
@@ -648,6 +650,7 @@ export default function App() {
           onSubmit={handleAuthSubmit}
         />
       </div>
+      </SessionProvider>
     </AppContext.Provider>
   );
 }

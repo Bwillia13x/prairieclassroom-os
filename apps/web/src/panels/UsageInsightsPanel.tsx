@@ -48,8 +48,11 @@ export default function UsageInsightsPanel() {
   return (
     <div className="usage-insights-panel">
       <PageIntro
-        heading="Usage Insights"
+        eyebrow="Review"
+        title="Usage Insights"
         description="How your classroom uses PrairieClassroom. This view summarises feedback ratings and workflow patterns to help you reflect on which tools are most useful."
+        sectionTone="forest"
+        sectionIcon="check"
       />
 
       <div className="usage-insights-grid">
