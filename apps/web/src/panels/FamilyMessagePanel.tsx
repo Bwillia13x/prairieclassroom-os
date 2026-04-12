@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { draftFamilyMessage, approveFamilyMessage, fetchMessageHistory } from "../api";
 import MessageComposer from "../components/MessageComposer";
@@ -26,16 +27,23 @@ interface Props {
 
 export default function FamilyMessagePanel({ prefill }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<FamilyMessageResponse>();
   const history = useHistory(fetchMessageHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
-  const feedback = useFeedback(activeClassroom, `msg-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("family-message");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       const draftId = (result ?? historicalResult)?.draft.draft_id;
       feedback.submit("family-message", rating, comment, draftId, "draft_family_message");
+      session.recordFeedback();
     },
-    [feedback.submit, result, historicalResult],
+    [feedback.submit, result, historicalResult, session],
   );
 
   const displayResult = result ?? historicalResult;
@@ -68,6 +76,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     );
     if (resp) {
       showSuccess("Message drafted");
+      session.recordGeneration("family-message", "draft_family_message");
       history.refresh();
     }
   }

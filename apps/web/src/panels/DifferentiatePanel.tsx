@@ -1,5 +1,6 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { differentiate } from "../api";
 import ArtifactUpload from "../components/ArtifactUpload";
@@ -19,17 +20,24 @@ import type { LessonArtifact, DifferentiateResponse } from "../types";
 
 export default function DifferentiatePanel() {
   const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<DifferentiateResponse>();
   const [artifactTitle, setArtifactTitle] = useState("");
   const resultRef = useRef<HTMLDivElement>(null);
   const intakeRef = useRef<HTMLFormElement>(null);
   const [resultKey, setResultKey] = useState(0);
-  const feedback = useFeedback(activeClassroom, `diff-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("differentiate");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       feedback.submit("differentiate", rating, comment, `diff-${resultKey}`, "differentiate_material");
+      session.recordFeedback();
     },
-    [feedback.submit, resultKey],
+    [feedback.submit, resultKey, session],
   );
 
   if (classrooms.length === 0) return null;
@@ -43,8 +51,11 @@ export default function DifferentiatePanel() {
         teacher_goal: artifact.teacher_goal,
       }, signal)
     );
-    if (resp) showSuccess("Variants generated");
-    if (resp) setResultKey((k) => k + 1);
+    if (resp) {
+      showSuccess("Variants generated");
+      session.recordGeneration("differentiate", "differentiate_material");
+      setResultKey((k) => k + 1);
+    }
   }
 
   function focusIntake() {

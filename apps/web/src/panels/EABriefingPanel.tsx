@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEABriefing } from "../api";
 import { EABriefingForm, EABriefingResult } from "../components/EABriefing";
@@ -18,14 +19,21 @@ import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
   const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<EABriefingResponse>();
   const [resultKey, setResultKey] = useState(0);
-  const feedback = useFeedback(activeClassroom, `briefing-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("ea-briefing");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       feedback.submit("ea-briefing", rating, comment, `briefing-${resultKey}`, "generate_ea_briefing");
+      session.recordFeedback();
     },
-    [feedback.submit, resultKey],
+    [feedback.submit, resultKey, session],
   );
 
   if (classrooms.length === 0) return null;
@@ -34,8 +42,11 @@ export default function EABriefingPanel() {
     const resp = await execute((signal) =>
       generateEABriefing({ classroom_id: classroomId, ea_name: eaName }, signal)
     );
-    if (resp) showSuccess("Briefing generated");
-    if (resp) setResultKey((k) => k + 1);
+    if (resp) {
+      showSuccess("Briefing generated");
+      session.recordGeneration("ea-briefing", "generate_ea_briefing");
+      setResultKey((k) => k + 1);
+    }
   }
 
   return (

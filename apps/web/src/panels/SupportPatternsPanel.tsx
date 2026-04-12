@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { detectSupportPatterns } from "../api";
 import { PatternReportForm, PatternReportResult } from "../components/PatternReport";
@@ -23,14 +24,21 @@ interface Props {
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<SupportPatternsResponse>();
   const [resultKey, setResultKey] = useState(0);
-  const feedback = useFeedback(activeClassroom, `patterns-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("support-patterns");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       feedback.submit("support-patterns", rating, comment, `patterns-${resultKey}`, "detect_support_patterns");
+      session.recordFeedback();
     },
-    [feedback.submit, resultKey],
+    [feedback.submit, resultKey, session],
   );
 
   if (classrooms.length === 0) return null;
@@ -43,8 +51,11 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
         time_window: timeWindow,
       }, signal)
     );
-    if (resp) showSuccess("Patterns analyzed");
-    if (resp) setResultKey((k) => k + 1);
+    if (resp) {
+      showSuccess("Patterns analyzed");
+      session.recordGeneration("support-patterns", "detect_support_patterns");
+      setResultKey((k) => k + 1);
+    }
   }
 
   return (

@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { simplifyText, generateVocabCards } from "../api";
 import SimplifiedViewer from "../components/SimplifiedViewer";
@@ -21,28 +22,38 @@ type LanguageTool = "simplify" | "vocab";
 
 export default function LanguageToolsPanel() {
   const { profile, showSuccess, activeClassroom } = useApp();
+  const session = useSession();
   const simplify = useAsyncAction<SimplifyResponse>();
   const vocab = useAsyncAction<VocabCardsResponse>();
   const [activeTool, setActiveTool] = useState<LanguageTool>("simplify");
   const [simplifyKey, setSimplifyKey] = useState(0);
   const [vocabKey, setVocabKey] = useState(0);
-  const feedback = useFeedback(activeClassroom, `lang-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("language-tools");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       const outputType = activeTool === "simplify" ? "simplify" : "vocab-cards";
       const promptClass = activeTool === "simplify" ? "simplify_for_student" : "generate_vocab_cards";
       const key = activeTool === "simplify" ? `simplify-${simplifyKey}` : `vocab-${vocabKey}`;
       feedback.submit(outputType, rating, comment, key, promptClass);
+      session.recordFeedback();
     },
-    [feedback.submit, activeTool, simplifyKey, vocabKey],
+    [feedback.submit, activeTool, simplifyKey, vocabKey, session],
   );
 
   async function handleSimplify(sourceText: string, gradeBand: string, ealLevel: "beginner" | "intermediate" | "advanced") {
     const resp = await simplify.execute((signal) =>
       simplifyText({ source_text: sourceText, grade_band: gradeBand, eal_level: ealLevel }, signal)
     );
-    if (resp) showSuccess("Text simplified");
-    if (resp) setSimplifyKey((k) => k + 1);
+    if (resp) {
+      showSuccess("Text simplified");
+      session.recordGeneration("language-tools", "simplify_for_student");
+      setSimplifyKey((k) => k + 1);
+    }
   }
 
   async function handleVocabCards(artifactText: string, subject: string, targetLanguage: string, gradeBand: string) {
@@ -54,8 +65,11 @@ export default function LanguageToolsPanel() {
         grade_band: gradeBand,
       }, signal)
     );
-    if (resp) showSuccess("Cards generated");
-    if (resp) setVocabKey((k) => k + 1);
+    if (resp) {
+      showSuccess("Cards generated");
+      session.recordGeneration("language-tools", "generate_vocab_cards");
+      setVocabKey((k) => k + 1);
+    }
   }
 
   const activeAction = activeTool === "simplify" ? simplify : vocab;

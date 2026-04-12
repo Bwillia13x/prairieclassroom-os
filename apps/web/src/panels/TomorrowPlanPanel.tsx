@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateTomorrowPlan, fetchPlanHistory } from "../api";
 import TeacherReflection from "../components/TeacherReflection";
@@ -29,19 +30,26 @@ interface Props {
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<TomorrowPlanResponse | null>(null);
   const streamer = useStreamingRequest({
     sectionLabels: ["Support priorities", "Prep checklist", "Differentiation notes"],
   });
-  const feedback = useFeedback(activeClassroom, `plan-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("tomorrow-plan");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       const planId = (result ?? historicalResult)?.plan.plan_id;
       feedback.submit("tomorrow-plan", rating, comment, planId, "prepare_tomorrow_plan");
+      session.recordFeedback();
     },
-    [feedback.submit, result, historicalResult],
+    [feedback.submit, result, historicalResult, session],
   );
 
   const displayResult = result ?? historicalResult;
@@ -61,6 +69,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
     );
     if (resp) {
       showSuccess("Plan generated");
+      session.recordGeneration("tomorrow-plan", "prepare_tomorrow_plan");
       history.refresh();
     }
   }

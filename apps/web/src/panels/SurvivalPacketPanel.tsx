@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateSurvivalPacket } from "../api";
 import SurvivalPacketView from "../components/SurvivalPacket";
@@ -20,17 +21,24 @@ import type { SurvivalPacketResponse } from "../types";
 
 export default function SurvivalPacketPanel() {
   const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SurvivalPacketResponse>();
   const streamer = useStreamingRequest({
     sectionLabels: ["Schedule", "Student profiles", "Emergency info"],
   });
   const [resultKey, setResultKey] = useState(0);
-  const feedback = useFeedback(activeClassroom, `packet-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("survival-packet");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       feedback.submit("survival-packet", rating, comment, `packet-${resultKey}`, "generate_survival_packet");
+      session.recordFeedback();
     },
-    [feedback.submit, resultKey],
+    [feedback.submit, resultKey, session],
   );
 
   if (classrooms.length === 0) return null;
@@ -45,8 +53,11 @@ export default function SurvivalPacketPanel() {
         generateSurvivalPacket(activeClassroom, targetDate, undefined, undefined, signal)
       )
     );
-    if (resp) showSuccess("Survival packet generated");
-    if (resp) setResultKey((k) => k + 1);
+    if (resp) {
+      showSuccess("Survival packet generated");
+      session.recordGeneration("survival-packet", "generate_survival_packet");
+      setResultKey((k) => k + 1);
+    }
   }
 
   return (

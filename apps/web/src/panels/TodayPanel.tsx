@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { fetchTodaySnapshot, fetchClassroomHealth } from "../api";
 import type { ActiveTab } from "../appReducer";
@@ -30,9 +31,14 @@ interface Props {
 
 export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
   const { activeClassroom, profile } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
+
+  useEffect(() => {
+    session.recordPanelVisit("today");
+  }, [session]);
 
   useEffect(() => {
     if (!activeClassroom) return;

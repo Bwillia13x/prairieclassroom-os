@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { logIntervention, fetchInterventionHistory } from "../api";
 import InterventionLogger from "../components/InterventionLogger";
@@ -24,16 +25,23 @@ interface Props {
 
 export default function InterventionPanel({ prefill }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
-  const feedback = useFeedback(activeClassroom, `intervention-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("log-intervention");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       const recordId = (result ?? historicalResult)?.record.record_id;
       feedback.submit("log-intervention", rating, comment, recordId, "log_intervention");
+      session.recordFeedback();
     },
-    [feedback.submit, result, historicalResult],
+    [feedback.submit, result, historicalResult, session],
   );
 
   const displayResult = result ?? historicalResult;
@@ -64,6 +72,7 @@ export default function InterventionPanel({ prefill }: Props) {
     );
     if (resp) {
       showSuccess("Intervention logged");
+      session.recordGeneration("log-intervention", "log_intervention");
       showUndo("Intervention logged — undo?", async () => {
         console.log("Undo intervention", resp.record.record_id);
       });

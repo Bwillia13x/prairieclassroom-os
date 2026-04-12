@@ -1,5 +1,6 @@
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useApp } from "../AppContext";
+import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateComplexityForecast } from "../api";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
@@ -22,16 +23,23 @@ import type { ComplexityForecastResponse } from "../types";
 
 export default function ForecastPanel() {
   const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>();
   const streamer = useStreamingRequest({
     sectionLabels: ["Block analysis", "Complexity curves", "Risk assessment"],
   });
-  const feedback = useFeedback(activeClassroom, `forecast-session-${activeClassroom}`);
+  const feedback = useFeedback(activeClassroom, session.sessionId);
+
+  useEffect(() => {
+    session.recordPanelVisit("complexity-forecast");
+  }, [session]);
+
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
       feedback.submit("complexity-forecast", rating, comment, result?.forecast.forecast_id, "forecast_complexity");
+      session.recordFeedback();
     },
-    [feedback.submit, result],
+    [feedback.submit, result, session],
   );
 
   if (classrooms.length === 0) return null;
@@ -50,7 +58,10 @@ export default function ForecastPanel() {
         }, signal)
       )
     );
-    if (resp) showSuccess("Forecast generated");
+    if (resp) {
+      showSuccess("Forecast generated");
+      session.recordGeneration("complexity-forecast", "forecast_complexity");
+    }
   }
 
   return (
