@@ -45,13 +45,12 @@
     break-inside: avoid;
   }
 
-  /* Reset glass surfaces for print */
+  /* Reset panel surfaces for print */
   .surface-panel,
   .form-panel,
   .contextual-hint,
   .pending-action-card {
     background: white !important;
-    backdrop-filter: none !important;
     box-shadow: none !important;
     border-color: #ccc !important;
   }
