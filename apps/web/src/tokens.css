@@ -91,4 +91,16 @@
   /* ---- Transitions ---- */
   --ds-transition-fast:   var(--motion-fast) var(--ease-standard);
   --ds-transition-normal: var(--motion-base) var(--ease-standard);
+
+  /* ---- Motion — letterpress ---- */
+  --ds-motion-letterpress:   var(--motion-letterpress);
+  --ds-ease-letterpress:     var(--ease-letterpress);
+
+  /* ---- Shadow — press state ---- */
+  --ds-shadow-xs:            var(--shadow-xs);
+
+  /* ---- Focus ring ---- */
+  --ds-focus-ring-outline:   var(--focus-ring-outline);
+  --ds-focus-ring-offset:    var(--focus-ring-offset);
+  --ds-focus-ring-halo:      var(--focus-ring-halo);
 }
