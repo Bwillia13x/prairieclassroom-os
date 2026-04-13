@@ -98,17 +98,20 @@
   --color-approve-hover: light-dark(#375c35, #88a87d);
   --color-text-on-accent: light-dark(#000000, #1a1610);
 
-  /* Elevation — shadow color primitives for light-dark switching */
-  --_shadow-xs-a: light-dark(rgba(148, 110, 44, 0.03), rgba(0, 0, 0, 0.10));
-  --_shadow-sm-a: light-dark(rgba(148, 110, 44, 0.04), rgba(0, 0, 0, 0.12));
-  --_shadow-md-a: light-dark(rgba(180, 140, 60, 0.06), rgba(0, 0, 0, 0.14));
-  --_shadow-lg-a: light-dark(rgba(162, 121, 46, 0.06), rgba(0, 0, 0, 0.16));
-  --_shadow-lg-b: light-dark(rgba(162, 121, 46, 0.08), rgba(0, 0, 0, 0.18));
+  /* Elevation — shadow color primitives for light-dark switching
+     Ive-inspired: shadows should whisper, not shout. Barely perceptible
+     ambient occlusion that grounds surfaces without drawing attention. */
+  --_shadow-xs-a: light-dark(rgba(148, 110, 44, 0.015), rgba(0, 0, 0, 0.05));
+  --_shadow-sm-a: light-dark(rgba(148, 110, 44, 0.02), rgba(0, 0, 0, 0.06));
+  --_shadow-md-a: light-dark(rgba(148, 110, 44, 0.02), rgba(0, 0, 0, 0.06));
+  --_shadow-md-b: light-dark(rgba(148, 110, 44, 0.03), rgba(0, 0, 0, 0.08));
+  --_shadow-lg-a: light-dark(rgba(162, 121, 46, 0.02), rgba(0, 0, 0, 0.06));
+  --_shadow-lg-b: light-dark(rgba(162, 121, 46, 0.04), rgba(0, 0, 0, 0.10));
 
-  --shadow-xs: 0 1px 1px var(--_shadow-xs-a), 0 1px 3px var(--_shadow-xs-a);
-  --shadow-sm: 0 1px 2px var(--_shadow-sm-a), 0 2px 6px var(--_shadow-sm-a), 0 6px 16px var(--_shadow-sm-a);
-  --shadow-md: 0 1px 3px var(--_shadow-md-a), 0 4px 10px var(--_shadow-md-a), 0 12px 24px var(--_shadow-md-a), 0 24px 48px var(--_shadow-md-a);
-  --shadow-lg: 0 2px 6px var(--_shadow-lg-a), 0 8px 18px var(--_shadow-lg-a), 0 24px 48px var(--_shadow-lg-b), 0 48px 80px var(--_shadow-lg-b);
+  --shadow-xs: 0 0.5px 1px var(--_shadow-xs-a);
+  --shadow-sm: 0 1px 3px var(--_shadow-sm-a), 0 1px 2px var(--_shadow-sm-a);
+  --shadow-md: 0 2px 4px var(--_shadow-md-a), 0 6px 16px var(--_shadow-md-a), 0 16px 40px var(--_shadow-md-b);
+  --shadow-lg: 0 4px 8px var(--_shadow-lg-a), 0 12px 32px var(--_shadow-lg-a), 0 32px 64px var(--_shadow-lg-b);
 
   /* Inner stroke — elevated-surface rim, warm-shifted for dark mode */
   --_inner-stroke-top: light-dark(
@@ -132,14 +135,15 @@
   --space-8: 4rem;
   --space-9: 5rem;
 
-  /* Radius */
-  --radius-sm: 10px;
+  /* Radius — generous and confident, quiet geometry */
+  --radius-sm: 12px;
   --radius-md: 18px;
-  --radius-lg: 28px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
   --radius-pill: 999px;
   --radius: var(--radius-sm);
 
-  /* Typography */
+  /* Typography — SF-inspired clarity: clean sans for UI, serif for display warmth */
   --font-sans: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: "Fraunces", ui-serif, Georgia, serif;
   --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
@@ -148,42 +152,59 @@
   --text-sm: 0.875rem;
   --text-base: 1rem;
   --text-md: 1.0625rem;
-  --text-lg: 1.1875rem;
-  --text-xl: 1.5rem;
-  --text-2xl: 2.15rem;
-  --text-3xl: 3.1rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.625rem;
+  --text-2xl: 2.25rem;
+  --text-3xl: 3.25rem;
 
-  --leading-tight: 1.15;
-  --leading-snug: 1.32;
-  --leading-base: 1.5;
-  --leading-loose: 1.68;
+  --leading-tight: 1.12;
+  --leading-snug: 1.3;
+  --leading-base: 1.55;
+  --leading-loose: 1.72;
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Layout */
-  --app-max-width: 1320px;
-  --content-max-width: 920px;
-  --rail-width: 360px;
-  --rail-width-compact: 320px;
-  --panel-padding: var(--space-5);
-  --panel-gap: var(--space-5);
+  /* Layout — generous breathing room, Apple-like proportions */
+  --app-max-width: 1360px;
+  --content-max-width: 940px;
+  --rail-width: 380px;
+  --rail-width-compact: 340px;
+  --panel-padding: var(--space-6);
+  --panel-gap: var(--space-6);
 
-  /* Motion */
-  --motion-fast: 140ms;
-  --motion-base: 220ms;
-  --motion-slow: 360ms;
-  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
-  --ease-emphasis: cubic-bezier(0.34, 1.2, 0.64, 1);
+  /* Motion — invisible excellence, never calling attention to itself */
+  --motion-fast: 150ms;
+  --motion-base: 260ms;
+  --motion-slow: 420ms;
+  --motion-slower: 640ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
+  --ease-emphasis: cubic-bezier(0.34, 1.08, 0.64, 1);
 
-  /* Motion — letterpress */
-  --motion-letterpress: 180ms;
-  --ease-letterpress: cubic-bezier(0.16, 1, 0.3, 1);
+  /* Spring-inspired easing — organic momentum with subtle overshoot */
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
+  --ease-spring-heavy: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
+
+  /* Deceleration curve — for elements entering the viewport */
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  /* Acceleration curve — for elements leaving the viewport */
+  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+
+  /* Motion — surface interactions (buttons, cards) */
+  --motion-letterpress: 200ms;
+  --ease-letterpress: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-press: cubic-bezier(0.3, 0.7, 0.4, 1);
+
+  /* Motion — micro scale for tiny responsive feedback */
+  --motion-micro: 100ms;
+  --motion-hover: 180ms;
 
   /* Shadow — press state */
-  --shadow-press: 0 1px 0 var(--_shadow-sm-a);
+  --shadow-press: 0 0.5px 1px var(--_shadow-sm-a);
 
   /* Focus ring — shared between buttons, cards, and form fields */
   --focus-ring-outline: 3px solid color-mix(in srgb, var(--color-accent) 68%, white);

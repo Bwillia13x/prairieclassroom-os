@@ -38,11 +38,13 @@
   font-weight: 600;
   color: var(--ds-text);
   cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-standard);
 }
 
 .result-section__chevron {
   font-size: var(--ds-text-xs);
   color: var(--ds-text-muted);
+  transition: transform var(--motion-base) var(--ease-spring);
 }
 
 .result-section__copy {

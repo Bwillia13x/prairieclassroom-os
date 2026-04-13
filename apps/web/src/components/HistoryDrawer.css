@@ -16,12 +16,21 @@
   cursor: pointer;
   transition:
     color var(--motion-fast) var(--ease-standard),
-    background var(--motion-fast) var(--ease-standard);
+    background var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-spring),
+    box-shadow var(--motion-fast) var(--ease-spring);
 }
 
 .history-drawer-toggle:hover {
   color: var(--color-text);
   background: var(--color-bg-info);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.history-drawer-toggle:active {
+  transform: translateY(0.5px) scale(0.98);
+  transition-duration: 80ms;
 }
 
 .history-drawer-icon {
@@ -37,6 +46,7 @@
   border-radius: var(--radius);
   max-height: 320px;
   overflow-y: auto;
+  animation: reveal-height var(--motion-base) var(--ease-out-expo) both;
 }
 
 .history-drawer-loading,

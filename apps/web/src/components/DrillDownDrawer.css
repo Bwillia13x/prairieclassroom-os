@@ -8,9 +8,10 @@
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  animation: backdrop-blur-in var(--motion-base) var(--ease-decelerate) both;
 }
 
-/* Drawer panel — fixed right edge, slides in */
+/* Drawer panel — fixed right edge, slides in with spring */
 .drill-down-drawer {
   position: fixed;
   top: 0;
@@ -23,15 +24,17 @@
   background: var(--color-surface);
   border-left: 1px solid var(--color-border);
   box-shadow: var(--shadow-lg);
-  animation: drawer-slide-in var(--motion-base) var(--ease-standard) both;
+  animation: drawer-slide-in var(--motion-slow) var(--ease-spring) both;
 }
 
 @keyframes drawer-slide-in {
   from {
     transform: translateX(100%);
+    opacity: 0.5;
   }
   to {
     transform: translateX(0);
+    opacity: 1;
   }
 }
 

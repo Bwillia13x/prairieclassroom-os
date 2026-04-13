@@ -11,12 +11,16 @@ export default function AppFooter() {
       <div className="app-footer__shortcuts" aria-label="Keyboard shortcuts">
         <span className="app-footer__shortcuts-label">Shortcuts</span>
         <div className="app-footer__shortcut-list">
-          {TAB_ORDER.map((tab, i) => (
-            <span key={tab} className="app-footer__shortcut">
-              <kbd className="app-footer__key">{i + 1 <= 9 ? i + 1 : 0}</kbd>
-              <span className="app-footer__shortcut-name">{TAB_META[tab].shortLabel}</span>
-            </span>
-          ))}
+          {TAB_ORDER.map((tab, i) => {
+            const key = i < 9 ? String(i + 1) : i === 9 ? "0" : null;
+            if (!key) return null;
+            return (
+              <span key={tab} className="app-footer__shortcut">
+                <kbd className="app-footer__key">{key}</kbd>
+                <span className="app-footer__shortcut-name">{TAB_META[tab].shortLabel}</span>
+              </span>
+            );
+          })}
         </div>
       </div>
       <div className="app-footer__meta">

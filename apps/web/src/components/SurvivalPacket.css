@@ -77,18 +77,18 @@
 
 /* Card */
 .survival-packet-card {
-  border-radius: var(--radius);
-  border: 1px solid var(--color-border);
-  background: var(--color-surface);
+  border-radius: var(--radius-sm);
+  border: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+  background: var(--color-surface-elevated);
   padding: var(--space-4);
   transition:
-    border-color var(--motion-fast) var(--ease-standard),
-    box-shadow var(--motion-fast) var(--ease-standard);
+    border-color var(--motion-letterpress) var(--ease-letterpress),
+    box-shadow var(--motion-letterpress) var(--ease-letterpress);
 }
 
 .survival-packet-card:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-sm);
+  border-color: color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+  box-shadow: var(--shadow-xs);
 }
 
 /* Card grid (2-col on wider) */

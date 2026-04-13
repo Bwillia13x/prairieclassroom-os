@@ -1,9 +1,14 @@
-/* Centralized animation keyframes and motion utilities */
+/* ============================================================
+   Centralized animation keyframes and motion utilities
+   World-class micro-interaction library
+   ============================================================ */
+
+/* ---- Entry animations ---- */
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -16,24 +21,287 @@
   to { opacity: 1; }
 }
 
-/* Stagger children: each card animates in with slight delay */
-.motion-stagger > * {
-  animation: fade-up 0.25s ease-out both;
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.motion-stagger > *:nth-child(1) { animation-delay: 0ms; }
-.motion-stagger > *:nth-child(2) { animation-delay: 50ms; }
-.motion-stagger > *:nth-child(3) { animation-delay: 100ms; }
-.motion-stagger > *:nth-child(4) { animation-delay: 150ms; }
-.motion-stagger > *:nth-child(5) { animation-delay: 200ms; }
-.motion-stagger > *:nth-child(6) { animation-delay: 250ms; }
-.motion-stagger > *:nth-child(7) { animation-delay: 300ms; }
-.motion-stagger > *:nth-child(8) { animation-delay: 350ms; }
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
 
-/* Respect reduced motion */
+@keyframes scale-in-spring {
+  0% {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ---- Exit animations ---- */
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes fade-out-down {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@keyframes scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+}
+
+/* ---- Ambient / continuous animations ---- */
+
+@keyframes gentle-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-3px); }
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50%      { opacity: 1; transform: scale(1.04); }
+}
+
+@keyframes pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 40%, transparent);
+  }
+  80%, 100% {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-accent) 0%, transparent);
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ---- Success / celebration ---- */
+
+@keyframes success-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+  70% {
+    transform: scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes check-draw {
+  from {
+    stroke-dashoffset: 24;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---- Interaction feedback ---- */
+
+@keyframes ripple-expand {
+  0% {
+    transform: scale(0);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes press-bounce {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(0.96); }
+  70%  { transform: scale(1.01); }
+  100% { transform: scale(1); }
+}
+
+/* ---- Content reveal ---- */
+
+@keyframes reveal-height {
+  from {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+    padding-top: inherit;
+    padding-bottom: inherit;
+  }
+}
+
+@keyframes collapse-height {
+  from {
+    opacity: 1;
+    max-height: 500px;
+  }
+  to {
+    opacity: 0;
+    max-height: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+}
+
+/* ---- Drawer / overlay ---- */
+
+@keyframes backdrop-blur-in {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+}
+
+@keyframes backdrop-blur-out {
+  from {
+    opacity: 1;
+    backdrop-filter: blur(4px);
+  }
+  to {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+}
+
+/* ---- Panel crossfade for tab switching ---- */
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Tabs slide-in ---- */
+
+@keyframes tabs-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ============================================================
+   Stagger children: each card animates in with slight delay
+   ============================================================ */
+
+.motion-stagger > * {
+  animation: fade-up 0.32s var(--ease-out-expo) both;
+}
+
+.motion-stagger > *:nth-child(1)  { animation-delay: 0ms; }
+.motion-stagger > *:nth-child(2)  { animation-delay: 50ms; }
+.motion-stagger > *:nth-child(3)  { animation-delay: 100ms; }
+.motion-stagger > *:nth-child(4)  { animation-delay: 150ms; }
+.motion-stagger > *:nth-child(5)  { animation-delay: 200ms; }
+.motion-stagger > *:nth-child(6)  { animation-delay: 250ms; }
+.motion-stagger > *:nth-child(7)  { animation-delay: 300ms; }
+.motion-stagger > *:nth-child(8)  { animation-delay: 350ms; }
+.motion-stagger > *:nth-child(9)  { animation-delay: 400ms; }
+.motion-stagger > *:nth-child(10) { animation-delay: 450ms; }
+.motion-stagger > *:nth-child(11) { animation-delay: 500ms; }
+.motion-stagger > *:nth-child(12) { animation-delay: 550ms; }
+
+/* ---- Panel entrance ---- */
+.app-main > [role="tabpanel"]:not([hidden]) {
+  animation: panel-enter 0.35s var(--ease-out-expo) both;
+}
+
+/* ============================================================
+   Respect reduced motion
+   ============================================================ */
+
 @media (prefers-reduced-motion: reduce) {
   .motion-stagger > *,
-  .app-main > [role="tabpanel"]:not([hidden]) {
+  .app-main > [role="tabpanel"]:not([hidden]),
+  .empty-state-icon {
     animation: none !important;
   }
 }

@@ -38,11 +38,14 @@
   height: 0.625rem;
   border-radius: var(--ds-radius-full);
   flex-shrink: 0;
+  transition:
+    background var(--motion-base) var(--ease-spring),
+    box-shadow var(--motion-base) var(--ease-spring);
 }
 
 .dataviz-health-dot--healthy  { background: var(--ds-success); }
-.dataviz-health-dot--warning  { background: var(--ds-warning); }
-.dataviz-health-dot--critical { background: var(--ds-danger); }
+.dataviz-health-dot--warning  { background: var(--ds-warning); box-shadow: 0 0 6px color-mix(in srgb, var(--ds-warning) 30%, transparent); }
+.dataviz-health-dot--critical { background: var(--ds-danger); animation: pulse-ring 1.5s var(--ease-standard) infinite; }
 
 /* ---- ProgressBar ---- */
 
@@ -70,5 +73,5 @@
   height: 100%;
   background: var(--ds-accent);
   border-radius: var(--ds-radius-full);
-  transition: width var(--ds-transition-normal);
+  transition: width var(--motion-slow) var(--ease-out-expo);
 }

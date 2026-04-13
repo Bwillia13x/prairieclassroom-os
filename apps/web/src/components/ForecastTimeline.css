@@ -1,25 +1,43 @@
 .forecast-timeline {
   display: flex;
   gap: 2px;
-  border-radius: var(--radius);
+  border-radius: var(--radius-md);
   overflow: hidden;
   margin-bottom: var(--space-4);
 }
 
 .forecast-timeline-segment {
   flex: 1;
-  min-height: 2.5rem;
+  min-height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
-  transition: filter var(--motion-fast) var(--ease-standard);
+  will-change: transform;
+  transition:
+    filter var(--motion-letterpress) var(--ease-letterpress),
+    box-shadow var(--motion-base) var(--ease-spring),
+    transform var(--motion-base) var(--ease-spring);
   padding: var(--space-1) var(--space-2);
 }
 
+.forecast-timeline-segment:first-child {
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.forecast-timeline-segment:last-child {
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.forecast-timeline-segment:only-child {
+  border-radius: var(--radius-sm);
+}
+
 .forecast-timeline-segment:hover {
-  filter: brightness(0.92);
+  filter: brightness(0.94);
+  transform: scaleY(1.08);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 12%, transparent);
 }
 
 .forecast-timeline-segment--low {
@@ -39,6 +57,6 @@
 
 .forecast-timeline-time {
   font-size: var(--text-xs);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   white-space: nowrap;
 }

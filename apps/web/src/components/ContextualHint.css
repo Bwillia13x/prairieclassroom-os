@@ -12,12 +12,12 @@
   border-radius: var(--radius);
   margin-bottom: var(--space-3);
   box-shadow: var(--shadow-sm);
-  animation: hint-appear 0.3s ease-out;
+  animation: fade-up 0.35s var(--ease-out-expo) both;
 }
 
 @keyframes hint-appear {
-  from { opacity: 0; transform: translateY(-4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .contextual-hint-icon {

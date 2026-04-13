@@ -8,19 +8,20 @@
   background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-  animation: onboarding-backdrop-in var(--motion-base) var(--ease-standard) both;
+  animation: backdrop-blur-in var(--motion-base) var(--ease-decelerate) both;
 }
 
 .onboarding-card {
-  background: var(--color-surface);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 60%, transparent) 0%, var(--color-surface) 100%);
   border: 1px solid var(--color-border);
-  border-radius: calc(var(--radius) * 2);
+  border-radius: var(--radius-lg);
   padding: var(--space-7);
   max-width: 420px;
   width: 90%;
   text-align: center;
-  box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.15));
-  animation: onboarding-card-in var(--motion-base) var(--ease-emphasis) both;
+  box-shadow: var(--inner-stroke), var(--shadow-lg);
+  animation: scale-in-spring var(--motion-slow) var(--ease-spring) both;
   animation-delay: 60ms;
 }
 
@@ -32,16 +33,20 @@
 }
 
 .onboarding-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--color-border);
-  transition: background var(--motion-base) var(--ease-standard);
+  transition:
+    background var(--motion-base) var(--ease-spring),
+    transform var(--motion-base) var(--ease-spring),
+    box-shadow var(--motion-base) var(--ease-spring);
 }
 
 .onboarding-dot--active {
   background: var(--color-accent);
-  transform: scale(1.25);
+  transform: scale(1.35);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 18%, transparent);
 }
 
 .onboarding-dot--done {

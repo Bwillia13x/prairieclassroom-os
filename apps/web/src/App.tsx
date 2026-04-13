@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import AppContext from "./AppContext";
 import { SessionProvider } from "./SessionContext";
 import {
@@ -97,6 +97,9 @@ export default function App() {
   const classroomMenuRef = useRef<HTMLDivElement>(null);
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
+  const groupsRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
   const [mountedTabs, setMountedTabs] = useState<Set<ActiveTab>>(() => {
     const initial = new Set<ActiveTab>([state.activeTab]);
     const urlTab = new URLSearchParams(window.location.search).get("tab");
@@ -429,6 +432,68 @@ export default function App() {
   const activeClassroomLabel = profile ? describeClassroom(profile) : "Choose classroom";
   const activeClassroomMeta = profile?.subject_focus.replace(/_/g, " ") ?? "";
 
+  // Sliding indicator: measure active group button position
+  useLayoutEffect(() => {
+    function measure() {
+      const container = groupsRef.current;
+      if (!container) return;
+      const activeBtn = container.querySelector(".shell-nav__group--active") as HTMLElement | null;
+      if (!activeBtn) return;
+      setIndicatorStyle({
+        left: activeBtn.offsetLeft,
+        width: activeBtn.offsetWidth,
+      });
+    }
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [activeGroup]);
+
+  // Scroll active secondary tab into view within the tab bar
+  useEffect(() => {
+    const container = tabsRef.current;
+    if (!container) return;
+    const tabEl = container.querySelector("[aria-selected=\"true\"]") as HTMLElement | null;
+    if (!tabEl) return;
+    const cLeft = container.scrollLeft;
+    const cWidth = container.clientWidth;
+    const tLeft = tabEl.offsetLeft;
+    const tWidth = tabEl.offsetWidth;
+    const pad = 32;
+    if (tLeft < cLeft + pad) {
+      container.scrollTo({ left: Math.max(0, tLeft - pad), behavior: "smooth" });
+    } else if (tLeft + tWidth > cLeft + cWidth - pad) {
+      container.scrollTo({ left: tLeft + tWidth - cWidth + pad, behavior: "smooth" });
+    }
+  }, [activeTab]);
+
+  // WAI-ARIA arrow key navigation within the tablist
+  function handleTabKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+    const currentIdx = secondaryTabs.indexOf(activeTab);
+    let nextIdx = -1;
+    switch (e.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        nextIdx = (currentIdx + 1) % secondaryTabs.length;
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        nextIdx = (currentIdx - 1 + secondaryTabs.length) % secondaryTabs.length;
+        break;
+      case "Home":
+        nextIdx = 0;
+        break;
+      case "End":
+        nextIdx = secondaryTabs.length - 1;
+        break;
+    }
+    if (nextIdx >= 0) {
+      e.preventDefault();
+      setActiveTab(secondaryTabs[nextIdx]);
+      document.getElementById(`tab-${secondaryTabs[nextIdx]}`)?.focus();
+    }
+  }
+
   const ctxValue = useMemo(
     () => ({
       classrooms: state.classrooms,
@@ -580,7 +645,12 @@ export default function App() {
             </div>
 
             <nav className="shell-nav" aria-label="PrairieClassroom navigation">
-              <div className="shell-nav__groups" role="toolbar" aria-label="Primary navigation groups">
+              <div className="shell-nav__groups" role="toolbar" aria-label="Primary navigation groups" ref={groupsRef}>
+                <div
+                  className="shell-nav__group-indicator"
+                  aria-hidden="true"
+                  style={{ left: indicatorStyle.left, width: indicatorStyle.width }}
+                />
                 {NAV_GROUP_ORDER.map((group) => {
                   const meta = NAV_GROUP_META[group];
                   return (
@@ -599,8 +669,8 @@ export default function App() {
               </div>
 
               {showSecondaryTabs ? (
-                <div className="shell-nav__tabs-frame">
-                  <div className="shell-nav__tabs" role="tablist" aria-label={`${activeGroupMeta.label} tools`}>
+                <div className="shell-nav__tabs-frame" key={activeGroup}>
+                  <div className="shell-nav__tabs" role="tablist" aria-label={`${activeGroupMeta.label} tools`} ref={tabsRef} onKeyDown={handleTabKeyDown}>
                     {secondaryTabs.map((tab) => {
                       const count = getTabBadgeCount(tab, debtCounts);
                       const tabIndex1Based = TAB_ORDER.indexOf(tab) + 1;

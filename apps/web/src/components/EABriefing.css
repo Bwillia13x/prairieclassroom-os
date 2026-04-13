@@ -1,10 +1,10 @@
 .ea-briefing-form {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
   border-radius: var(--radius-md);
   padding: var(--space-6);
   margin-bottom: var(--space-6);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
 }
 
 .ea-briefing-form h2 {
@@ -27,11 +27,11 @@
 
 /* Result */
 .ea-briefing-result {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: var(--color-surface-elevated);
+  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  border-radius: var(--radius-lg);
   padding: var(--space-6);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .ea-briefing-header h2 {
@@ -50,10 +50,10 @@
 .ea-briefing-disclaimer {
   font-size: 0.8rem;
   color: var(--color-text-warning);
-  background: var(--color-bg-warning);
-  border: 1px solid var(--color-border-warning);
-  border-radius: var(--radius);
-  padding: 0.5rem 0.75rem;
+  background: color-mix(in srgb, var(--color-bg-warning) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border-warning) 40%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 0.55rem 0.85rem;
   margin-bottom: var(--space-4);
   line-height: 1.4;
 }
@@ -101,10 +101,10 @@
 .ea-notes-text {
   font-size: var(--text-base);
   line-height: 1.6;
-  background: var(--color-bg-muted);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 0.75rem 1rem;
+  background: var(--color-surface-muted);
+  border: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
 }
 
 /* Cards */
@@ -115,20 +115,23 @@
 }
 
 .ea-card {
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius);
-  padding: 0.75rem 1rem;
+  background: var(--color-surface-muted);
+  border: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1.1rem;
   transition:
-    border-color var(--motion-fast) var(--ease-standard),
-    box-shadow var(--motion-fast) var(--ease-standard),
-    transform var(--motion-fast) var(--ease-standard);
+    border-color var(--motion-letterpress) var(--ease-letterpress),
+    box-shadow var(--motion-letterpress) var(--ease-letterpress),
+    transform var(--motion-letterpress) var(--ease-press);
 }
 
 .ea-card:hover {
-  border-color: var(--color-border-strong);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-border-strong) 60%, transparent);
+  box-shadow: var(--shadow-xs);
+}
+
+.ea-card:active {
+  transform: scale(0.99);
 }
 
 .ea-card-label {

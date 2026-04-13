@@ -96,21 +96,25 @@
 }
 
 .today-triage-row:hover {
-  border-color: var(--color-accent);
+  border-color: var(--color-border-accent);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 68%, transparent), color-mix(in srgb, var(--color-surface-elevated) 18%, transparent)),
+    var(--color-surface);
 }
 
 .pending-action-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.2rem;
-  height: 2.2rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 999px;
   background: var(--color-bg-warning);
   color: var(--color-text-warning);
   font-size: 1rem;
+  flex-shrink: 0;
   transition:
     background-color var(--motion-fast) var(--ease-standard),
     transform var(--motion-fast) var(--ease-standard);
@@ -139,15 +143,15 @@
 .today-triage-row__label::after {
   content: "";
   flex: 1;
-  border-bottom: 2px dotted color-mix(in srgb, var(--color-border) 40%, transparent);
-  margin: 0 var(--space-2);
-  opacity: 0.5;
+  border-bottom: 2px dotted color-mix(in srgb, var(--color-border) 50%, transparent);
+  margin: 0 var(--space-3);
+  opacity: 0.6;
   transition: opacity var(--motion-fast) var(--ease-standard), border-bottom-color var(--motion-fast) var(--ease-standard);
 }
 
 .today-triage-row:hover .today-triage-row__label::after {
   opacity: 1;
-  border-bottom-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
 }
 
 .today-triage-row__count {

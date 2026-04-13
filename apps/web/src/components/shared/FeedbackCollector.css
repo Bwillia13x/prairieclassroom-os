@@ -48,19 +48,21 @@
   color: var(--color-text-secondary);
   transition:
     color var(--motion-fast) var(--ease-standard),
-    transform var(--motion-fast) var(--ease-standard);
+    transform var(--motion-fast) var(--ease-spring);
 }
 
 .feedback-collector__star:hover {
-  transform: scale(1.15);
+  transform: scale(1.25) rotate(-8deg);
 }
 
 .feedback-collector__star:active {
-  transform: scale(0.93);
+  transform: scale(0.85);
+  transition-duration: 60ms;
 }
 
 .feedback-collector__star--filled {
   color: var(--color-accent);
+  animation: success-pop 0.35s var(--ease-spring) both;
 }
 
 /* Comment form for lower ratings */

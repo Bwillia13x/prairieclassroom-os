@@ -35,7 +35,7 @@
 .status-card__error {
   margin: 0;
   padding: var(--ds-space-3);
-  background: var(--ds-danger-soft);
+  background: color-mix(in srgb, var(--ds-danger-soft) 60%, transparent);
   color: var(--ds-danger);
   border-radius: var(--ds-radius-sm);
   font-size: var(--ds-text-sm);
@@ -53,7 +53,7 @@
   height: 0.75rem;
   background: var(--ds-surface-muted);
   border-radius: var(--ds-radius-sm);
-  animation: status-card-pulse 1.5s ease-in-out infinite;
+  animation: status-card-pulse 2s ease-in-out infinite;
 }
 
 .status-card__skeleton-line--long   { width: 85%; }

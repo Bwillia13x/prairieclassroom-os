@@ -1,9 +1,9 @@
 .forecast-form {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-surface-elevated);
+  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
   border-radius: var(--radius-md);
   padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-xs);
 }
 
 .forecast-form h2 {

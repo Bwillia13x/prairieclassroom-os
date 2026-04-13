@@ -6,8 +6,9 @@
   padding: var(--space-3);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 32%, transparent) 0%, var(--color-surface) 100%);
+  box-shadow: var(--shadow-sm), var(--inner-stroke);
 }
 
 .health-bar--empty {
@@ -27,11 +28,17 @@
   border-radius: 999px;
   background: var(--color-bg-muted);
   border: 1px solid var(--color-border);
+  transition:
+    background var(--motion-base) var(--ease-spring),
+    border-color var(--motion-base) var(--ease-spring),
+    transform var(--motion-base) var(--ease-spring),
+    box-shadow var(--motion-base) var(--ease-spring);
 }
 
 .health-bar__dot--filled {
   background: var(--color-accent);
   border-color: var(--color-accent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
 
 .health-bar__planning-label {
