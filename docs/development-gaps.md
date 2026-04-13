@@ -31,6 +31,7 @@
 | **G-12** | Teacher dashboard structural gaps | **Closed** | Health Bar (success states), sparkline trends, student roster, drill-down drawer — all four structural gaps from the frontend design audit are now implemented. See details below. |
 | **G-13** | Canonical system inventory drift | **Closed for current surface** | `npm run system:inventory` now generates `docs/system-inventory.md` and `docs/api-surface.md`, while `npm run system:inventory:check` catches panel, prompt, tier, and exact endpoint drift across canonical docs. |
 | **G-14** | Pilot readiness and real-data governance | **Partial** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) now cover operating modes, memory lifecycle, initial teacher/EA boundaries, per-request access evidence, and the paperwork a first real pilot session would need. Dedicated substitute/reviewer views remain the last structural blocker before real classroom data is acceptable. |
+| **G-15** | Synthetic classroom fixture convention drift | Partial | Surfaced 2026-04-13 during the 26-student demo expansion review: `classroom_demo.json` uses `eal_level_1/2/3` on the preserved D1/D4/D6 students while the other five classrooms use `emerging_english`, creating two parallel vocabularies for the same concept. Separately, `Amira` appears as an alias in both `classroom_demo` and `classroom_charlie`, silently defeating the `evals/fixtures/regressions/*-alias-leak.json` fixtures for that specific name. Preserved as-is in the 2026-04-13 expansion because of byte-for-byte preservation of the 6 original demo students, but needs deliberate unification before the next major fixture evolution. |
 
 ## Gap details
 
@@ -207,3 +208,29 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 
 - Extend the initial teacher/EA API role scopes into dedicated substitute and reviewer views before those roles use real classroom records.
 - Add structured human-validation artifacts: de-identified observation notes, teacher/EA usefulness rubrics, consent assumptions, friction logs, and a public claims ledger.
+
+### G-15 — Synthetic classroom fixture convention drift
+
+**Status:** Partial. Surfaced 2026-04-13 during the post-implementation code review of the 26-student demo classroom expansion (commits `013994f`..`e828be3`).
+
+**Findings**
+
+1. **EAL tag vocabulary fragmentation.** `classroom_demo.json` applies `eal_level_1`, `eal_level_2`, and `eal_level_3` to D1 Amira, D4 Daniyal, and D6 Farid respectively. All five non-demo classrooms (`classroom_alpha/bravo/charlie/delta/echo.json`) use `emerging_english` as the EAL tag, sometimes with variants like `eal_for_academic_vocabulary`. Two parallel vocabularies for the same concept will fragment any pattern-detection, EA-load, or support-patterns heuristic that keys on the tag. The 2026-04-13 expansion preserved the `eal_level_N` convention within the demo classroom for consistency with the 6 preserved students, and extended it to the 4 new EAL students (Imani, Navpreet, Sebastián, Uyen), rather than violate the byte-for-byte preservation constraint on the originals. The cross-fixture inconsistency therefore predates the expansion and was explicitly out of scope for that plan.
+
+2. **Cross-fixture alias collision: `Amira`.** The alias `Amira` appears in both `data/synthetic_classrooms/classroom_demo.json` (D1) and `data/synthetic_classrooms/classroom_charlie.json`. The regression fixtures under `evals/fixtures/regressions/*-alias-leak.json` assume aliases uniquely identify a source classroom; a cross-classroom leak of `Amira` between these two fixtures would not be caught. This collision predates the 2026-04-13 expansion — it was present on `main` before the plan started — and was out of scope. The three new collisions the expansion initially introduced (`Priya`, `Tomás`, `Yasmin`) were caught in the code review and fixed in commit `86a3422` before they shipped; `Amira` remains.
+
+**Remediation options**
+
+- **Option A — Unify vocabulary and rename.** Back-fill the 5 non-demo classrooms to `eal_level_N` (or the other direction: rename demo's `eal_level_N` to `emerging_english` and encode proficiency in `communication_notes`). In the same pass, rename one of the two `Amira` aliases to a unique alternative. Requires careful inspection of every eval case, prompt golden, and doc snippet that references these tags or aliases, plus re-running `npm run system:inventory` and the affected regression fixtures.
+- **Option B — Guard the status quo.** Add a regression fixture under `evals/fixtures/regressions/` that explicitly checks cross-fixture alias uniqueness and tag-vocabulary consistency, and documents the intentional exceptions. Minimum-viable; preserves the historical status quo but makes the trade-off visible and blocks future contributors from making the same mistake.
+
+**What is already closed**
+
+- The 3 new alias collisions introduced by the 26-student expansion (Priya, Tomás, Yasmin) were renamed before they shipped. Commit `86a3422`.
+- Navpreet's redundant third support tag was removed in the same fix. Commit `86a3422`.
+- The spec at `docs/superpowers/specs/2026-04-13-full-classroom-seed-design.md` §3.2 "Naming integrity rule" now documents the review finding and the rename, so future contributors see the history.
+
+**What remains**
+
+- Pick Option A or Option B and execute as a dedicated sprint, not as a side-quest during other fixture work.
+- Until then: flag this debt in any code review that touches synthetic classroom fixtures so the inconsistency does not propagate further.
