@@ -3,7 +3,7 @@
   "grade_band": "3-4",
   "subject_focus": "cross_curricular",
   "classroom_notes": [
-    "Split grade 3/4 class with 24 students.",
+    "Split grade 3/4 class with 26 students.",
     "EA (Ms. Fehr) available mornings only — afternoons are teacher-only.",
     "Three EAL students at different proficiency levels.",
     "Sensory corner set up near the window; one student uses it daily.",
@@ -76,17 +76,165 @@
       "known_successful_scaffolds": ["academic_vocabulary_previews", "sentence_frames_for_writing"],
       "communication_notes": ["Family speaks Arabic", "Mother is comfortable with English communication"],
       "family_language": "ar"
+    },
+    {
+      "student_id": "D7",
+      "alias": "Gabriel",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D8",
+      "alias": "Hannah",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D9",
+      "alias": "Imani",
+      "eal_flag": true,
+      "support_tags": ["eal_level_1", "new_to_school_system", "needs_visual_supports"],
+      "known_successful_scaffolds": ["visual_schedule", "buddy_system", "picture_cues"],
+      "communication_notes": ["Family speaks Somali", "Older cousin attends grade 6 at the same school and can translate for urgent messages"],
+      "family_language": "so"
+    },
+    {
+      "student_id": "D10",
+      "alias": "Jasper",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D11",
+      "alias": "Kiana",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D12",
+      "alias": "Liam",
+      "eal_flag": false,
+      "support_tags": ["attention_during_transitions", "benefits_from_pre_correction"],
+      "known_successful_scaffolds": ["advance_notice_of_transitions", "visual_timer", "clear_step_checklist"]
+    },
+    {
+      "student_id": "D13",
+      "alias": "Maya",
+      "eal_flag": false,
+      "support_tags": ["strong_writer", "needs_extension_tasks", "peer_mentor"],
+      "known_successful_scaffolds": ["independent_extension_menu", "leadership_roles_in_group_work"]
+    },
+    {
+      "student_id": "D14",
+      "alias": "Navpreet",
+      "eal_flag": true,
+      "support_tags": ["eal_level_3", "social_language_stronger_than_academic", "benefits_from_academic_vocabulary_previews"],
+      "known_successful_scaffolds": ["academic_vocabulary_previews", "sentence_frames_for_writing", "bilingual_word_walls"],
+      "communication_notes": ["Family speaks Punjabi at home", "Mother prefers phone calls over app messages"],
+      "family_language": "pa"
+    },
+    {
+      "student_id": "D15",
+      "alias": "Oliver",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D16",
+      "alias": "Priya",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D17",
+      "alias": "Quinn",
+      "eal_flag": false,
+      "support_tags": ["anxiety_about_mistakes", "benefits_from_low_stakes_practice"],
+      "known_successful_scaffolds": ["draft_framing_for_practice_tasks", "private_feedback", "choice_of_representation"]
+    },
+    {
+      "student_id": "D18",
+      "alias": "Rania",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D19",
+      "alias": "Sebastián",
+      "eal_flag": true,
+      "support_tags": ["eal_level_2", "benefits_from_visual_examples", "strong_verbal_reasoning"],
+      "known_successful_scaffolds": ["sentence_frames_for_writing", "bilingual_word_walls", "paired_examples"],
+      "communication_notes": ["Family speaks Spanish at home", "Father bilingual in English and Spanish"],
+      "family_language": "es"
+    },
+    {
+      "student_id": "D20",
+      "alias": "Tomás",
+      "eal_flag": false,
+      "support_tags": ["articulation_support_biweekly_slp", "benefits_from_pre_reading_familiar_vocabulary"],
+      "known_successful_scaffolds": ["slow_partner_read_aloud", "vocabulary_pre_teach", "choice_to_share_or_pass"]
+    },
+    {
+      "student_id": "D21",
+      "alias": "Uyen",
+      "eal_flag": true,
+      "support_tags": ["eal_level_2", "new_to_school_system", "needs_routine_support"],
+      "known_successful_scaffolds": ["visual_schedule", "buddy_system", "simplified_instructions"],
+      "communication_notes": ["Family speaks Vietnamese at home", "Parents both learning English — app translations helpful"],
+      "family_language": "vi"
+    },
+    {
+      "student_id": "D22",
+      "alias": "Violet",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D23",
+      "alias": "Wesley",
+      "eal_flag": false,
+      "support_tags": ["strong_math_reasoning", "needs_extension_tasks", "pattern_recognition"],
+      "known_successful_scaffolds": ["independent_extension_menu", "cross_grade_challenge_problems", "leadership_roles_in_group_work"]
+    },
+    {
+      "student_id": "D24",
+      "alias": "Xavier",
+      "eal_flag": false,
+      "support_tags": ["movement_needs", "benefits_from_standing_option", "sensory_breaks_during_literacy"],
+      "known_successful_scaffolds": ["standing_desk_option", "fidget_tools", "movement_break_between_tasks"]
+    },
+    {
+      "student_id": "D25",
+      "alias": "Yasmin",
+      "eal_flag": false,
+      "support_tags": [],
+      "known_successful_scaffolds": []
+    },
+    {
+      "student_id": "D26",
+      "alias": "Zayn",
+      "eal_flag": false,
+      "support_tags": ["executive_function_checklist", "benefits_from_materials_routine"],
+      "known_successful_scaffolds": ["laminated_desk_checklist", "materials_station_routine", "visual_agenda"]
     }
   ],
   "schedule": [
-    { "time_slot": "8:30-9:15", "activity": "Bell work journal + calendar math", "ea_available": true, "ea_student_refs": ["Amira", "Daniyal"] },
-    { "time_slot": "9:15-9:30", "activity": "Recess transition", "ea_available": true, "notes": "Historically difficult - sensory needs peak", "ea_student_refs": ["Brody"] },
-    { "time_slot": "9:30-10:30", "activity": "Literacy block", "ea_available": true, "ea_student_refs": ["Amira", "Daniyal", "Farid"] },
+    { "time_slot": "8:30-9:15", "activity": "Bell work journal + calendar math", "ea_available": true, "ea_student_refs": ["Amira", "Daniyal", "Imani"] },
+    { "time_slot": "9:15-9:30", "activity": "Recess transition", "ea_available": true, "notes": "Historically difficult - sensory needs peak", "ea_student_refs": ["Brody", "Liam"] },
+    { "time_slot": "9:30-10:30", "activity": "Literacy block", "ea_available": true, "ea_student_refs": ["Amira", "Daniyal", "Farid", "Imani", "Tomás"] },
     { "time_slot": "10:30-10:45", "activity": "Snack break", "ea_available": true, "ea_student_refs": [] },
-    { "time_slot": "10:45-11:45", "activity": "Science / Social Studies", "ea_available": true, "notes": "EA departs at noon - last full-support block", "ea_student_refs": ["Amira", "Brody"] },
+    { "time_slot": "10:45-11:45", "activity": "Science / Social Studies", "ea_available": true, "notes": "EA departs at noon - last full-support block", "ea_student_refs": ["Amira", "Brody", "Xavier"] },
     { "time_slot": "11:45-12:30", "activity": "Lunch", "ea_available": false },
     { "time_slot": "12:30-12:45", "activity": "Body break + transition to math", "ea_available": false, "notes": "Post-lunch transition - consistently hard per classroom notes" },
-    { "time_slot": "12:45-1:45", "activity": "Math block", "ea_available": false, "notes": "No EA - teacher solo with 24 students, split grades" },
+    { "time_slot": "12:45-1:45", "activity": "Math block", "ea_available": false, "notes": "No EA - teacher solo with 26 students, split grades" },
     { "time_slot": "1:45-2:00", "activity": "Afternoon recess transition", "ea_available": false },
     { "time_slot": "2:00-2:45", "activity": "Art / Music / Phys Ed", "ea_available": false },
     { "time_slot": "2:45-3:00", "activity": "Learning reflection + pack-up", "ea_available": false }
