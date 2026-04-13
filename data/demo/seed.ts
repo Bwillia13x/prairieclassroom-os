@@ -301,7 +301,7 @@ const interventions: InterventionRecord[] = [
     classroom_id: CLASSROOM,
     student_refs: ["Imani", "Chantal"],
     observation:
-      "During snack break, Chantal noticed Imani hesitating at the snack table — unfamiliar with the routine of grabbing a napkin first. Without being asked, Chantal walked over and demonstrated: napkin, snack, sit at the round table. Imani followed exactly. Both girls then sat together for the snack.",
+      "During snack break, Chantal noticed Imani hesitating at the snack table — unfamiliar with the routine of grabbing a napkin first. Without being asked, Chantal walked over and demonstrated: napkin, snack, sit at the round table. Imani followed exactly. They sat together for the rest of snack.",
     action_taken:
       "Observed without intervening. At end of snack, quietly acknowledged Chantal privately: 'That was kind and exactly right — you taught without making her feel watched.' Did not make it a classroom announcement.",
     outcome:
@@ -403,7 +403,7 @@ const interventions: InterventionRecord[] = [
     action_taken:
       "Observed from a distance. Did not interrupt. At the end of the period, made a brief note to pair them again on Thursday for the vocabulary quiz practice.",
     outcome:
-      "Both boys produced correct vocabulary matching sheets. Navpreet's written work was more complete than usual (he stayed focused to explain concepts to Farid) and Farid's pronunciation of the two target words improved. Mutual benefit — this pairing is worth repeating.",
+      "Both students produced correct vocabulary matching sheets. Navpreet's written work was more complete than usual (he stayed focused to explain concepts to Farid) and Farid's pronunciation of the two target words improved. Mutual benefit — this pairing is worth repeating.",
     follow_up_needed: false,
     created_at: "2026-04-10T09:30:00.000Z",
     schema_version: SCHEMA_V,
@@ -413,7 +413,7 @@ const interventions: InterventionRecord[] = [
     classroom_id: CLASSROOM,
     student_refs: ["Zayn"],
     observation:
-      "Zayn arrived at his desk before the morning bell and immediately pulled out his laminated desk checklist (5 items: bag away, pencil box out, agenda open, water bottle on desk, check carpet number). He worked through all five items without prompting and sat ready before the bell rang. First fully independent morning setup in two weeks.",
+      "Zayn arrived at his desk before the morning bell and immediately pulled out his laminated desk checklist (5 items: bag away, pencil box out, agenda open, water bottle on desk, check carpet number). He worked through all five items without prompting and sat ready before the bell rang. First fully independent morning setup since I introduced the laminated checklist.",
     action_taken:
       "Did not draw attention to it — acknowledged him with a small nod and a quiet 'good start today' at his desk. Kept the routine private so it stays his own accomplishment rather than something performed for adults.",
     outcome:
