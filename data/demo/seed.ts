@@ -281,6 +281,175 @@ const interventions: InterventionRecord[] = [
     created_at: "2025-03-31T10:30:00.000Z",
     schema_version: SCHEMA_V,
   },
+  // ─── Full-roster interventions (2026-04 week) — referencing new aliases ────
+  {
+    record_id: "int-demo-020",
+    classroom_id: CLASSROOM,
+    student_refs: ["Imani"],
+    observation:
+      "Imani's first day. Sat quietly through morning meeting and appeared overwhelmed when the group moved to literacy centres — stood beside her desk watching the room. Followed other students to the carpet when Chantal gestured her over. Made eye contact briefly twice during the read-aloud. No verbal contribution but tracked the picture book with her eyes.",
+    action_taken:
+      "Placed visual schedule card on her desk before she arrived. Asked Chantal privately to model the morning routine — pack bag away, get pencil box, go to carpet — without explicit language instructions. Kept all verbal communication brief and paired with gestures or picture cues.",
+    outcome:
+      "Imani followed each step of the morning routine by end of day. No verbal English but she mimicked Chantal's actions accurately. Left with her belongings organized and a small smile. Follow-up: coordinate with settlement services for home-language support this week.",
+    follow_up_needed: true,
+    created_at: "2026-04-07T09:12:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-021",
+    classroom_id: CLASSROOM,
+    student_refs: ["Imani", "Chantal"],
+    observation:
+      "During snack break, Chantal noticed Imani hesitating at the snack table — unfamiliar with the routine of grabbing a napkin first. Without being asked, Chantal walked over and demonstrated: napkin, snack, sit at the round table. Imani followed exactly. Both girls then sat together for the snack.",
+    action_taken:
+      "Observed without intervening. At end of snack, quietly acknowledged Chantal privately: 'That was kind and exactly right — you taught without making her feel watched.' Did not make it a classroom announcement.",
+    outcome:
+      "Chantal's peer mentor role (see int-demo-006, Mar 26) extends naturally to the new arrival. Imani has a clear ally for routine questions. Mental note: Chantal's informal support is saving many teacher interventions per day during Imani's first week.",
+    follow_up_needed: false,
+    created_at: "2026-04-08T10:45:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-022",
+    classroom_id: CLASSROOM,
+    student_refs: ["Liam"],
+    observation:
+      "Liam didn't follow the post-lunch transition back to math. Continued playing with a puzzle at his choice station even after the whole class had moved to their desks. Not defiant — visibly absorbed. First time observing this specific pattern; usually his attention drift is at morning transitions.",
+    action_taken:
+      "Walked to his station, tapped twice on the puzzle box, said 'Liam, math in 60 seconds — finish or pause.' Gave a visible countdown on fingers. Liam paused the puzzle at 30 seconds and moved to his desk without argument.",
+    outcome:
+      "Liam settled into math within a minute of sitting down. Noted that the 60-second countdown worked better than the usual 2-minute advance notice at this time of day. Try the shorter countdown as a standing afternoon support.",
+    follow_up_needed: true,
+    created_at: "2026-04-08T12:47:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-023",
+    classroom_id: CLASSROOM,
+    student_refs: ["Maya"],
+    observation:
+      "Maya finished the literacy grammar worksheet in 10 minutes — the class had 25. Came to the front quietly and asked 'do you have anything else I could do?' without interrupting the students still working.",
+    action_taken:
+      "Pulled out the independent extension menu (prepared last week for moments like this) and offered the poetry-analysis option, which she had flagged as interesting. Set it on her desk and said 'try as much as you want; tell me if you get stuck.'",
+    outcome:
+      "Maya worked on the poetry analysis for the remaining 15 minutes. Produced a thoughtful paragraph on imagery. Independent engagement the whole time. The extension menu is finally working at the pace we hoped for.",
+    follow_up_needed: false,
+    created_at: "2026-04-08T09:52:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-024",
+    classroom_id: CLASSROOM,
+    student_refs: ["Quinn"],
+    observation:
+      "Math fact practice sheet — 20 questions, 5 minutes. Quinn completed 3 questions then put her pencil down and stared at the paper. When I walked by she whispered 'I keep thinking I'll get one wrong.' Conceptual understanding is fine; the issue is the weight she's putting on each attempt.",
+    action_taken:
+      "Reframed the sheet as a draft: 'This isn't graded. Draw a little D in the corner. The D means draft. Drafts can be wrong — that's how you find what to practice.' Took back the sheet, wrote D in the corner, and handed it back.",
+    outcome:
+      "Quinn completed 17 of 20 questions in the remaining time. 16 correct. Said 'I didn't know practice could be a draft' at the end of class. The framing matters; she needs written permission to be wrong on practice work.",
+    follow_up_needed: true,
+    created_at: "2026-04-09T10:22:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-025",
+    classroom_id: CLASSROOM,
+    student_refs: ["Marco"],
+    observation:
+      "Marco signed up for next Friday's class share (oral report on a book he chose). He flagged three words to the SLP at last week's consult as ones he worries about mispronouncing: 'expedition,' 'archaeologist,' and 'hieroglyph.' Today he practiced reading his draft report to me at his desk.",
+    action_taken:
+      "Pre-taught the three flagged words using the SLP's suggested sequence: break into syllables, hum the rhythm, then say it. Practiced each word three times. Had him read the draft once with me following along silently.",
+    outcome:
+      "Marco read the draft fluently, including the three flagged words. He said 'I don't feel the throat tightness on archaeologist anymore.' Sharing is next Friday — repeat the preview on Thursday. Follow-up: confirm SLP consult schedule covers next week.",
+    follow_up_needed: true,
+    created_at: "2026-04-09T11:35:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-026",
+    classroom_id: CLASSROOM,
+    student_refs: ["Xavier"],
+    observation:
+      "Xavier started the journal writing task at his seat and within 5 minutes was squirming and tapping his feet loudly. First instinct was to redirect, but remembered the standing option I'd set up at the side counter.",
+    action_taken:
+      "Walked over quietly and said 'Xavier, you can take your journal to the standing spot if you want.' Pointed to the counter. Didn't make it conditional on his behaviour — made it a choice.",
+    outcome:
+      "Xavier moved to the standing spot within 10 seconds. Completed a full journal entry (6 sentences, his longest in two weeks) over the remaining 15 minutes. Came back to his desk calmly at the end of the block. The standing option is working — make it a permanent fixture, not an intervention.",
+    follow_up_needed: false,
+    created_at: "2026-04-09T09:45:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-027",
+    classroom_id: CLASSROOM,
+    student_refs: ["Sebastián"],
+    observation:
+      "Sebastián stalled on a word problem during math. Similar profile to what we see with Amira (int-demo-002, Mar 21): the math was clear to him, but the English phrasing was blocking the entry. He read the problem aloud twice and said quietly 'I know what to do but I can't find the words.'",
+    action_taken:
+      "Sat beside him and offered the same sentence frame card ('First I need to find ___, then I need to ___') that we use with Amira. No one in class shares Spanish, so paired him with Farid as a verbal-first thinking partner — Farid's approach of 'say it aloud before you write' translated well across languages.",
+    outcome:
+      "Sebastián wrote three sentences of working, solved the problem correctly, and the final answer was in English with a Spanish annotation next to it ('= cinco'). Kept the Spanish annotation intact — it's his thinking, not an error. Pattern match with Amira's language-scaffolding need is strong.",
+    follow_up_needed: false,
+    created_at: "2026-04-10T10:08:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-028",
+    classroom_id: CLASSROOM,
+    student_refs: ["Navpreet", "Farid"],
+    observation:
+      "During vocabulary work for this week's social studies unit (community roles), Navpreet and Farid chose to pair up at the same table without being assigned. Navpreet's spoken English is stronger than Farid's; Farid's reading comprehension is stronger than Navpreet's. They took turns reading definitions and Navpreet helped Farid pronounce 'municipality' and 'council' after the third attempt.",
+    action_taken:
+      "Observed from a distance. Did not interrupt. At the end of the period, made a brief note to pair them again on Thursday for the vocabulary quiz practice.",
+    outcome:
+      "Both boys produced correct vocabulary matching sheets. Navpreet's written work was more complete than usual (he stayed focused to explain concepts to Farid) and Farid's pronunciation of the two target words improved. Mutual benefit — this pairing is worth repeating.",
+    follow_up_needed: false,
+    created_at: "2026-04-10T09:30:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-029",
+    classroom_id: CLASSROOM,
+    student_refs: ["Zayn"],
+    observation:
+      "Zayn arrived at his desk before the morning bell and immediately pulled out his laminated desk checklist (5 items: bag away, pencil box out, agenda open, water bottle on desk, check carpet number). He worked through all five items without prompting and sat ready before the bell rang. First fully independent morning setup in two weeks.",
+    action_taken:
+      "Did not draw attention to it — acknowledged him with a small nod and a quiet 'good start today' at his desk. Kept the routine private so it stays his own accomplishment rather than something performed for adults.",
+    outcome:
+      "Zayn stayed regulated for the entire morning block. The laminated checklist is load-bearing for his morning setup; do not remove it, do not replace it with verbal reminders. Monday will be the test — do the same setup before he arrives.",
+    follow_up_needed: false,
+    created_at: "2026-04-10T08:38:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-030",
+    classroom_id: CLASSROOM,
+    student_refs: ["Uyen"],
+    observation:
+      "Uyen's third week. Recess transition back to the classroom was overwhelming — she stood at the doorway holding her coat, visibly tense, not moving. Other students walked around her. She appeared to not know where to hang her coat despite having done so successfully the previous two days. Sensory overwhelm, not forgetting.",
+    action_taken:
+      "Walked to the doorway, took her coat without comment, hung it in her spot, and pointed to her desk. She followed, sat down, and took three minutes to resettle. Did not ask her to explain.",
+    outcome:
+      "Uyen resettled within 5 minutes and engaged with the literacy block. Note for tomorrow: pair her with Imani on the way back from recess this week — they're both still in the routine-learning window and can anchor each other. Follow-up: confirm whether hallway noise is a specific trigger for her.",
+    follow_up_needed: true,
+    created_at: "2026-04-11T10:28:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-031",
+    classroom_id: CLASSROOM,
+    student_refs: ["Wesley"],
+    observation:
+      "Wesley finished the grade 4 multiplication worksheet (12 questions) in 8 minutes with every answer correct. Sat at his desk drawing number patterns on scrap paper while the rest of the class continued. When I walked by, he asked 'is there a harder version?'",
+    action_taken:
+      "Pulled the grade 5 multi-step pattern problem I'd been saving for him (prime numbers and sequences — extends well beyond the grade 4 curriculum). Offered it as a 'try it and show me what you think' task, not an assigned piece. Sat with him for 30 seconds to read the question together.",
+    outcome:
+      "Wesley solved it in 12 minutes, with a correct written explanation. His reasoning was more structured than I expected — he identified the pattern in two steps and checked his work. Worth documenting as an anchor observation for the GATE program conversation with the resource teacher. Not a referral yet — an observation.",
+    follow_up_needed: false,
+    created_at: "2026-04-12T13:10:00.000Z",
+    schema_version: SCHEMA_V,
+  },
 ];
 
 // ─── PLANS ────────────────────────────────────────────────────────────────────
