@@ -34,6 +34,15 @@ export function getDb(classroomId: ClassroomId): Database.Database {
   return db;
 }
 
+export function assertMemoryBackendReady(): void {
+  const db = new Database(":memory:");
+  try {
+    db.prepare("SELECT 1 AS ok").get();
+  } finally {
+    db.close();
+  }
+}
+
 export function checkpointAll(): void {
   for (const [id, db] of connections.entries()) {
     try {

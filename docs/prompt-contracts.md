@@ -11,9 +11,12 @@ Input:
 - artifact text and/or image
 - classroom profile summary
 - target variants
+- optional Alberta curriculum selection (`entry_id` plus 1-3 focus statements from the local curriculum catalog)
 
 Output:
 - structured list of lesson variants
+
+Notes: When a curriculum selection is provided, the prompt injects an `ALBERTA CURRICULUM ALIGNMENT` block sourced from the local Alberta catalog. The model is instructed to stay inside that focus rather than drifting into adjacent expectations.
 
 ### B. Tomorrow plan
 Route: `prepare_tomorrow_plan`
@@ -100,12 +103,13 @@ Input:
 - subject (reading, math, science, social-studies)
 - target language (es, ar, pa, tl, zh, fr, ur, so, vi, ko)
 - grade band (K-2, 3-4, 5-6)
+- optional Alberta curriculum selection (`entry_id` plus 1-3 focus statements from the local curriculum catalog)
 
 Output:
 - cards[] (5-8 bilingual vocabulary cards)
   - term, definition, target_translation, example_sentence, visual_hint
 
-Notes: Output is ephemeral. Card count bounded 5-8 to keep sets manageable. Supports 10 target languages reflecting common EAL populations in Canadian classrooms.
+Notes: Output is ephemeral. Card count bounded 5-8 to keep sets manageable. Supports 10 target languages reflecting common EAL populations in Canadian classrooms. When curriculum alignment is supplied, the prompt prioritizes terms that directly support that Alberta focus instead of general topical vocabulary.
 
 ### G. Detect support patterns
 Route: `detect_support_patterns`

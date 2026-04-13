@@ -9,11 +9,13 @@ export default defineConfig({
       "apps/web/src/__tests__/**/*.test.ts",
       "apps/web/src/components/shared/__tests__/**/*.test.tsx",
       "apps/web/src/panels/__tests__/**/*.test.ts",
+      "apps/web/src/panels/__tests__/**/*.test.tsx",
       "apps/web/src/hooks/__tests__/**/*.test.tsx",
     ],
     environment: "node",
     environmentMatchGlobs: [
       ["apps/web/src/components/shared/__tests__/**", "jsdom"],
+      ["apps/web/src/panels/__tests__/**", "jsdom"],
       ["apps/web/src/hooks/__tests__/**", "jsdom"],
     ],
     setupFiles: ["apps/web/src/components/shared/__tests__/setup.ts"],

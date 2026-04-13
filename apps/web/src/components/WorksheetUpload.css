@@ -32,3 +32,44 @@
   font-size: var(--type-sm);
   color: var(--color-text-muted);
 }
+
+.worksheet-upload__result {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.worksheet-upload__notes,
+.worksheet-upload__suggestions {
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.worksheet-upload__label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+}
+
+.worksheet-upload__notes ul,
+.worksheet-upload__suggestions ul {
+  margin: 0;
+  padding-left: 1rem;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.worksheet-upload__suggestions li + li,
+.worksheet-upload__notes li + li {
+  margin-top: 0.3rem;
+}
+
+.worksheet-upload__suggestions li span {
+  display: block;
+}

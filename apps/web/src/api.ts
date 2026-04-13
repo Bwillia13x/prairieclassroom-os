@@ -1,5 +1,9 @@
 import type {
   ClassroomHealth,
+  CurriculumEntry,
+  CurriculumGrade,
+  CurriculumSubjectCode,
+  CurriculumSubjectSummary,
   ComplexityForecastRequest,
   ComplexityForecastResponse,
   ClassroomProfile,
@@ -58,6 +62,7 @@ interface RequestOptions {
   signal?: AbortSignal;
   classroomId?: string;
   classroomCode?: string;
+  keepalive?: boolean;
 }
 
 const apiClientConfig: ApiClientConfig = {};
@@ -129,6 +134,7 @@ async function requestJson<T>(path: string, options: RequestOptions = {}): Promi
     method: options.method ?? "GET",
     headers,
     body: options.body ? JSON.stringify(options.body) : undefined,
+    keepalive: options.keepalive,
     signal: options.signal ?? AbortSignal.timeout(30_000),
   });
 
@@ -163,6 +169,32 @@ async function requestVoid(path: string, options: RequestOptions = {}): Promise<
 
 export function listClassrooms(): Promise<ClassroomProfile[]> {
   return requestJson<ClassroomProfile[]>("/classrooms");
+}
+
+export async function listCurriculumSubjects(
+  signal?: AbortSignal,
+): Promise<CurriculumSubjectSummary[]> {
+  const data = await requestJson<{ subjects: CurriculumSubjectSummary[] }>("/curriculum/subjects", {
+    signal,
+  });
+  return data.subjects;
+}
+
+export async function listCurriculumEntries(
+  filters?: {
+    subjectCode?: CurriculumSubjectCode;
+    grade?: CurriculumGrade;
+  },
+  signal?: AbortSignal,
+): Promise<CurriculumEntry[]> {
+  const params = new URLSearchParams();
+  if (filters?.subjectCode) params.set("subject", filters.subjectCode);
+  if (filters?.grade) params.set("grade", filters.grade);
+  const suffix = params.size ? `?${params.toString()}` : "";
+  const data = await requestJson<{ entries: CurriculumEntry[] }>(`/curriculum/entries${suffix}`, {
+    signal,
+  });
+  return data.entries;
 }
 
 export function differentiate(
@@ -494,11 +526,13 @@ export function submitFeedbackApi(
 export function submitSessionApi(
   request: SubmitSessionRequest,
   signal?: AbortSignal,
+  options?: Pick<RequestOptions, "keepalive">,
 ): Promise<SubmitSessionResponse> {
   return requestJson<SubmitSessionResponse>("/sessions", {
     method: "POST",
     body: request,
     classroomId: request.classroom_id,
+    keepalive: options?.keepalive,
     signal,
   });
 }

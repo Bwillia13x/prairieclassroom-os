@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { CurriculumEntrySchema } from "./curriculum.js";
 
 export const ExtractWorksheetRequestSchema = z.object({
   classroom_id: z.string().min(1),
@@ -9,6 +10,7 @@ export const ExtractWorksheetRequestSchema = z.object({
 export const ExtractWorksheetResponseSchema = z.object({
   extracted_text: z.string(),
   confidence_notes: z.array(z.string()),
+  curriculum_suggestions: z.array(CurriculumEntrySchema).default([]),
 });
 
 export type ExtractWorksheetRequest = z.infer<typeof ExtractWorksheetRequestSchema>;

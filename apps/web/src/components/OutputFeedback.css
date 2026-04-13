@@ -98,8 +98,9 @@
 }
 
 .output-feedback-note-input:focus {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 1px;
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-halo);
 }
 
 .output-feedback-submit {

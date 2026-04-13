@@ -16,7 +16,7 @@ import OutputMetaRow from "../components/OutputMetaRow";
 import ResultBanner from "../components/ResultBanner";
 import { Card, FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
-import type { LessonArtifact, DifferentiateResponse } from "../types";
+import type { CurriculumSelection, LessonArtifact, DifferentiateResponse } from "../types";
 
 export default function DifferentiatePanel() {
   const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess } = useApp();
@@ -42,13 +42,18 @@ export default function DifferentiatePanel() {
 
   if (classrooms.length === 0) return null;
 
-  async function handleDifferentiate(artifact: LessonArtifact, classroomId: string) {
+  async function handleDifferentiate(
+    artifact: LessonArtifact,
+    classroomId: string,
+    curriculumSelection: CurriculumSelection | null,
+  ) {
     setArtifactTitle(artifact.title);
     const resp = await execute((signal) =>
       differentiate({
         artifact,
         classroom_id: classroomId,
         teacher_goal: artifact.teacher_goal,
+        curriculum_selection: curriculumSelection ?? undefined,
       }, signal)
     );
     if (resp) {

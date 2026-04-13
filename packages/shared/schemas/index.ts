@@ -42,6 +42,27 @@ export type {
 } from "./artifact.js";
 
 export {
+  CurriculumJurisdictionSchema,
+  CurriculumSubjectCodeSchema,
+  CurriculumGradeSchema,
+  CurriculumSourceKindSchema,
+  CurriculumImplementationStatusSchema,
+  CurriculumFocusItemSchema,
+  CurriculumEntrySchema,
+  CurriculumSelectionSchema,
+} from "./curriculum.js";
+export type {
+  CurriculumJurisdiction,
+  CurriculumSubjectCode,
+  CurriculumGrade,
+  CurriculumSourceKind,
+  CurriculumImplementationStatus,
+  CurriculumFocusItem,
+  CurriculumEntry,
+  CurriculumSelection,
+} from "./curriculum.js";
+
+export {
   TomorrowPlanSchema,
   TransitionWatchpointSchema,
   SupportPrioritySchema,

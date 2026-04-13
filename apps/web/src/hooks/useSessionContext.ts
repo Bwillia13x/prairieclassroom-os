@@ -27,7 +27,8 @@ function generateSessionId(): string {
  *
  * Generates a unique session ID per classroom visit. Tracks panels visited,
  * generations triggered, and feedback count. Flushes the session record
- * to POST /api/sessions on visibilitychange (hidden) or classroom switch.
+ * to POST /api/sessions with fetch keepalive on visibilitychange (hidden)
+ * or classroom switch.
  * Falls back to localStorage queue on network failure.
  */
 export function useSessionContext(classroomId: string): UseSessionContextResult {
@@ -53,20 +54,10 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
       feedback_count: feedbackCountRef.current,
     };
 
-    // Use sendBeacon for visibilitychange if available, otherwise fetch
-    const payload = JSON.stringify(request);
-    const apiBase = import.meta.env.VITE_API_URL || "/api";
-    const sent = navigator.sendBeacon?.(
-      `${apiBase}/sessions`,
-      new Blob([payload], { type: "application/json" }),
-    );
-
-    if (!sent) {
-      // Fallback to regular API call with no-wait
-      submitSessionApi(request).catch(() => {
-        queueSession(request);
-      });
-    }
+    // keepalive preserves classroom auth headers for protected classrooms.
+    submitSessionApi(request, undefined, { keepalive: true }).catch(() => {
+      queueSession(request);
+    });
   }, [sessionId]);
 
   // Reset on classroom change

@@ -3,6 +3,8 @@ import {
   ApiError,
   configureApiClient,
   listClassrooms,
+  listCurriculumEntries,
+  listCurriculumSubjects,
   differentiate,
   fetchTodaySnapshot,
   generateSurvivalPacket,
@@ -73,6 +75,52 @@ describe("API client basics", () => {
     const [url, init] = mockFetch.mock.calls[0];
     expect(url).toContain("/classrooms");
     expect(init.method).toBe("GET");
+  });
+
+  it("fetches curriculum subjects from the public curriculum endpoint", async () => {
+    const payload = {
+      subjects: [
+        { subject_code: "mathematics", subject_label: "Mathematics" },
+      ],
+    };
+    mockFetch.mockResolvedValueOnce(jsonResponse(200, payload));
+
+    const result = await listCurriculumSubjects();
+
+    expect(result).toEqual(payload.subjects);
+    const [url] = mockFetch.mock.calls[0];
+    expect(url).toContain("/curriculum/subjects");
+  });
+
+  it("fetches filtered curriculum entries with subject and grade query params", async () => {
+    const payload = {
+      entries: [
+        {
+          entry_id: "ab-science-4",
+          jurisdiction: "ab",
+          subject_code: "science",
+          subject_label: "Science",
+          grade: "4",
+          grade_label: "Grade 4",
+          title: "Habitats and evidence",
+          summary: "Students investigate local habitats.",
+          focus_items: [{ focus_id: "focus-habitats-4", text: "Investigate habitats." }],
+          implementation_status: "implemented",
+          source_kind: "subject_overview",
+          source_title: "Science Subject Overview",
+          source_url: "https://example.com/science.pdf",
+          source_updated_at: "2024-09-01",
+          last_verified_at: "2026-04-13",
+        },
+      ],
+    };
+    mockFetch.mockResolvedValueOnce(jsonResponse(200, payload));
+
+    const result = await listCurriculumEntries({ subjectCode: "science", grade: "4" });
+
+    expect(result).toEqual(payload.entries);
+    const [url] = mockFetch.mock.calls[0];
+    expect(url).toContain("/curriculum/entries?subject=science&grade=4");
   });
 
   it("successful POST request sends body and returns parsed JSON", async () => {

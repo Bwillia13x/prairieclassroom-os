@@ -14,9 +14,11 @@ import "./TimeSuggestion.css";
 
 interface Props {
   onNavigate: (tab: ActiveTab) => void;
+  compact?: boolean;
+  suggestion?: Suggestion | null;
 }
 
-interface Suggestion {
+export interface Suggestion {
   kind: "morning" | "midday" | "afternoon" | "evening";
   label: string;
   message: string;
@@ -24,7 +26,7 @@ interface Suggestion {
   secondaryAction?: { label: string; tab: ActiveTab };
 }
 
-function getSuggestion(hour: number): Suggestion | null {
+export function getSuggestion(hour: number): Suggestion | null {
   if (hour >= 5 && hour < 11) {
     return {
       kind: "morning",
@@ -101,13 +103,13 @@ function renderSuggestionIcon(kind: Suggestion["kind"]) {
   }
 }
 
-export default function TimeSuggestion({ onNavigate }: Props) {
-  const suggestion = getSuggestion(new Date().getHours());
+export default function TimeSuggestion({ onNavigate, compact = false, suggestion: providedSuggestion }: Props) {
+  const suggestion = providedSuggestion ?? getSuggestion(new Date().getHours());
 
   if (!suggestion) return null;
 
   return (
-    <div className={`time-suggestion time-suggestion--${suggestion.kind}`}>
+    <div className={`time-suggestion time-suggestion--${suggestion.kind}${compact ? " time-suggestion--compact" : ""}`}>
       <span className="time-suggestion-icon" aria-hidden="true">{renderSuggestionIcon(suggestion.kind)}</span>
       <div className="time-suggestion-copy">
         <span className="time-suggestion-kicker">{suggestion.label}</span>

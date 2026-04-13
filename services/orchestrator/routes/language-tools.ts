@@ -1,5 +1,9 @@
 import { Router } from "express";
 import { getRoute, getModelId } from "../router.js";
+import {
+  formatCurriculumSelectionForPrompt,
+  resolveCurriculumSelection,
+} from "../curriculum-registry.js";
 import { buildSimplifyPrompt, parseSimplifyResponse } from "../simplify.js";
 import type { SimplifyInput } from "../simplify.js";
 import { buildVocabCardsPrompt, parseVocabCardsResponse } from "../vocab-cards.js";
@@ -7,7 +11,7 @@ import type { VocabCardsInput } from "../vocab-cards.js";
 import { validateBody, SimplifyRequestSchema, VocabCardsRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import { callInference } from "../inference-client.js";
-import { handleRouteError, sendParseError } from "../errors.js";
+import { handleRouteError, sendParseError, sendRouteError } from "../errors.js";
 
 export function createLanguageToolsRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -53,10 +57,20 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
 
   router.post("/vocab-cards", validateBody(VocabCardsRequestSchema), async (req, res) => {
     try {
-      const { artifact_id, artifact_text, subject, target_language, grade_band } = req.body;
+      const { artifact_id, artifact_text, subject, target_language, grade_band, curriculum_selection } = req.body;
 
       const route = getRoute("generate_vocab_cards");
       const modelId = getModelId(route.model_tier);
+      const hydratedCurriculum = resolveCurriculumSelection(curriculum_selection);
+      if (curriculum_selection && !hydratedCurriculum) {
+        sendRouteError(res, 400, {
+          error: "Curriculum selection is invalid for the Alberta curriculum catalog",
+          category: "validation",
+          retryable: false,
+          detail_code: "curriculum_selection_invalid",
+        });
+        return;
+      }
 
       const vocabInput: VocabCardsInput = {
         artifact_id: artifact_id || "unknown",
@@ -64,6 +78,7 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
         subject,
         target_language,
         grade_band,
+        curriculumContext: formatCurriculumSelectionForPrompt(hydratedCurriculum),
       };
       const prompt = buildVocabCardsPrompt(vocabInput);
 
@@ -74,7 +89,10 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
         route,
         prompt,
         maxTokens: 2048,
-        safetyScanSource: vocabInput,
+        safetyScanSource: {
+          ...vocabInput,
+          curriculum_selection,
+        },
       });
 
       let cardSet;

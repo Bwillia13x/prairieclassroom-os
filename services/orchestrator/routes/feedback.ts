@@ -5,14 +5,16 @@ import { FeedbackRequestSchema } from "../../../packages/shared/schemas/feedback
 import { isValidClassroomId } from "../validate.js";
 import { saveFeedback, getFeedbackSummary } from "../../memory/store.js";
 import { handleRouteError, sendRouteError, sendClassroomNotFound } from "../errors.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 
 export function createFeedbackRouter(deps: RouteDeps): Router {
   const router = Router();
+  const authMiddleware = deps.authMiddleware;
+  const teacherOrEa = requireRoles(deps, ["teacher", "ea"]);
 
   // POST / — submit teacher feedback on generated panel content
-  router.post("/", validateBody(FeedbackRequestSchema), (req, res) => {
+  router.post("/", authMiddleware, teacherOrEa, validateBody(FeedbackRequestSchema), (req, res) => {
     try {
       const body = req.body;
       const rawId = body.classroom_id as string;
@@ -47,7 +49,7 @@ export function createFeedbackRouter(deps: RouteDeps): Router {
   });
 
   // GET /summary/:classroomId — aggregated feedback summary
-  router.get("/summary/:classroomId", (req, res) => {
+  router.get("/summary/:classroomId", authMiddleware, teacherOrEa, (req, res) => {
     try {
       const rawId = req.params.classroomId as string;
 
@@ -58,6 +60,12 @@ export function createFeedbackRouter(deps: RouteDeps): Router {
           retryable: false,
           detail_code: "invalid_classroom_id",
         });
+        return;
+      }
+
+      const classroom = deps.loadClassroom(rawId);
+      if (!classroom) {
+        sendClassroomNotFound(res, rawId);
         return;
       }
 

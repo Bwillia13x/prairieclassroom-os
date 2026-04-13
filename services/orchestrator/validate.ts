@@ -4,6 +4,7 @@
  */
 import { z } from "zod";
 import { LessonArtifactSchema } from "../../packages/shared/schemas/artifact.js";
+import { CurriculumSelectionSchema } from "../../packages/shared/schemas/curriculum.js";
 import type { Request, Response, NextFunction } from "express";
 import { sendRouteError } from "./errors.js";
 
@@ -37,6 +38,7 @@ export const DifferentiateRequestSchema = z.object({
   artifact: ValidatedLessonArtifactSchema,
   classroom_id: requiredString(SHORT_TEXT_MAX),
   teacher_goal: optionalString(MEDIUM_TEXT_MAX),
+  curriculum_selection: CurriculumSelectionSchema.optional(),
 });
 
 export const TomorrowPlanRequestSchema = z.object({
@@ -78,6 +80,7 @@ export const VocabCardsRequestSchema = z.object({
   subject: requiredString(SHORT_TEXT_MAX),
   target_language: requiredString(SHORT_TEXT_MAX),
   grade_band: requiredString(SHORT_TEXT_MAX),
+  curriculum_selection: CurriculumSelectionSchema.optional(),
 });
 
 export const SupportPatternsRequestSchema = z.object({

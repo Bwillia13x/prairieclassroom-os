@@ -52,8 +52,8 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 
 ## API Mounts
 
-- Mounted Express route bases: 20
-- Exact endpoints: 34
+- Mounted Express route bases: 21
+- Exact endpoints: 37
 - `/api/differentiate`
 - `/api/tomorrow-plan`
 - `/api/family-message`
@@ -73,6 +73,7 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 - `/api/sessions`
 - `/`
 - `/api/classrooms`
+- `/api/curriculum`
 - `/api`
 
 ## API Endpoints
@@ -84,6 +85,9 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 | GET | `/api/classrooms` | `services/orchestrator/routes/classrooms.ts` | open/demo metadata | none |
 | GET | `/api/classrooms/:id/schedule` | `services/orchestrator/routes/classrooms.ts` | open/demo metadata | none |
 | PUT | `/api/classrooms/:id/schedule` | `services/orchestrator/routes/classrooms.ts` | classroom-code | teacher |
+| GET | `/api/curriculum/subjects` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |
+| GET | `/api/curriculum/entries` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |
+| GET | `/api/curriculum/entries/:entryId` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |
 | POST | `/api/differentiate` | `services/orchestrator/routes/differentiate.ts` | classroom-code | teacher |
 | POST | `/api/tomorrow-plan` | `services/orchestrator/routes/tomorrow-plan.ts` | classroom-code | teacher |
 | POST | `/api/family-message` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |
@@ -116,7 +120,7 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 
 ## Eval Corpus
 
-- Eval case files: 120
+- Eval case files: 126
 
 ## Canonical Docs
 

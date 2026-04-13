@@ -40,6 +40,10 @@ import type {
   EALoadProfile,
   EALoadBlock,
   EALoadLevel,
+  CurriculumEntry,
+  CurriculumSelection,
+  CurriculumSubjectCode,
+  CurriculumGrade,
 } from "@prairie/shared";
 
 // ── Domain model re-exports ─────────────────────────────────────────────────
@@ -81,6 +85,10 @@ export type {
   EALoadProfile,
   EALoadBlock,
   EALoadLevel,
+  CurriculumEntry,
+  CurriculumSelection,
+  CurriculumSubjectCode,
+  CurriculumGrade,
 };
 
 // ── Classroom profile (sanitized API view) ──────────────────────────────────
@@ -105,6 +113,7 @@ export interface DifferentiateRequest {
   artifact: LessonArtifact;
   classroom_id: string;
   teacher_goal?: string;
+  curriculum_selection?: CurriculumSelection;
 }
 
 export interface TomorrowPlanRequest {
@@ -141,6 +150,12 @@ export interface VocabCardsRequest {
   subject: string;
   target_language: string;
   grade_band: string;
+  curriculum_selection?: CurriculumSelection;
+}
+
+export interface CurriculumSubjectSummary {
+  subject_code: CurriculumSubjectCode;
+  subject_label: string;
 }
 
 export interface SupportPatternsRequest {
@@ -244,6 +259,7 @@ export interface SurvivalPacketResponse {
 export interface ExtractWorksheetResponse {
   extracted_text: string;
   confidence_notes: string[];
+  curriculum_suggestions: CurriculumEntry[];
   model_id: string;
   latency_ms: number;
 }

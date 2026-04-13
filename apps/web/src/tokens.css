@@ -97,7 +97,7 @@
   --ds-ease-letterpress:     var(--ease-letterpress);
 
   /* ---- Shadow — press state ---- */
-  --ds-shadow-xs:            var(--shadow-xs);
+  --ds-shadow-press:         var(--shadow-press);
 
   /* ---- Focus ring ---- */
   --ds-focus-ring-outline:   var(--focus-ring-outline);

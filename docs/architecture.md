@@ -17,6 +17,7 @@ Accepts teacher-initiated input across multiple modalities:
 - Typed teacher notes (reflections, intervention observations, forecast context)
 - Lesson artifact text (titles, subjects, raw text, teacher goals)
 - Worksheet/photo upload (base64-encoded images via `extract_worksheet`)
+- Optional Alberta curriculum alignment chosen from a local catalog of official Alberta K-6 curriculum entries
 - URL-backed UI state (`?tab=`, `?classroom=`, `?demo=true`)
 
 Voice notes are spec'd but not yet implemented.
@@ -27,9 +28,11 @@ Express API (`services/orchestrator/`) responsible for:
 
 - **Prompt class routing** — maps each of the 12 prompt classes to a model tier (live or planning) with explicit thinking-mode flags via the routing table in `router.ts`
 - **Request validation** — Zod schemas validate all API request bodies at the boundary (`validate.ts`)
+- **Curriculum registry access** — serves a read-only Alberta curriculum catalog from `data/curriculum/alberta/catalog.json` and validates curriculum selections before prompt injection
 - **Classroom-code authentication** — `X-Classroom-Code` header validated per request; demo classroom bypasses; rate-limited
 - **Input sanitization** — middleware strips injection patterns and trims text
 - **Retrieval injection** — pulls recent plans, interventions, patterns, and forecasts from classroom memory and injects them into prompt context
+- **Curriculum context injection** — injects a bounded Alberta curriculum summary into differentiate and vocabulary prompts when the teacher selects one
 - **Inference dispatch** — calls the Python inference service via HTTP with structured request/response
 - **Output parsing** — parses model JSON responses with fallback error handling (422 on parse failure, 502 on inference failure)
 - **Memory persistence** — stores generated plans, variants, messages, interventions, forecasts, patterns, scaffold reviews, and survival packets to per-classroom SQLite

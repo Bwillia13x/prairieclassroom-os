@@ -5,8 +5,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(2px);
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: onboarding-backdrop-in var(--motion-base) var(--ease-standard) both;
 }
 
 .onboarding-card {
@@ -18,6 +20,8 @@
   width: 90%;
   text-align: center;
   box-shadow: var(--shadow-lg, 0 8px 24px rgba(0,0,0,0.15));
+  animation: onboarding-card-in var(--motion-base) var(--ease-emphasis) both;
+  animation-delay: 60ms;
 }
 
 .onboarding-progress {
@@ -87,4 +91,27 @@
 
 .onboarding-skip:hover {
   color: var(--color-text);
+}
+
+@keyframes onboarding-backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes onboarding-card-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .onboarding-backdrop,
+  .onboarding-card {
+    animation: none;
+  }
 }

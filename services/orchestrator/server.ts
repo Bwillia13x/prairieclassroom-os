@@ -16,7 +16,7 @@ import express from "express";
 import cors from "cors";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import { checkpointAll } from "../memory/db.js";
+import { assertMemoryBackendReady, checkpointAll } from "../memory/db.js";
 import { createAuthMiddleware, requireClassroomRole } from "./auth.js";
 import { isValidClassroomId } from "./validate.js";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
@@ -49,6 +49,7 @@ import { createClassroomHealthRouter } from "./routes/classroom-health.js";
 import { createStudentSummaryRouter } from "./routes/student-summary.js";
 import { createFeedbackRouter } from "./routes/feedback.js";
 import { createSessionsRouter } from "./routes/sessions.js";
+import { createCurriculumRouter } from "./routes/curriculum.js";
 
 // ----- Config -----
 
@@ -118,6 +119,15 @@ const deps: RouteDeps = {
   authMiddleware,
   requireClassroomRole,
 };
+
+try {
+  assertMemoryBackendReady();
+} catch (error) {
+  console.error("Memory backend preflight failed. Ensure the repo is running on the supported Node version and rebuild better-sqlite3.");
+  console.error(error instanceof Error ? error.message : String(error));
+  process.exit(1);
+}
+
 app.use("/api/differentiate", authLimiter, authMiddleware, teacherOnly);
 app.use("/api/tomorrow-plan", authLimiter, authMiddleware, teacherOnly);
 app.use("/api/family-message", authLimiter, authMiddleware, teacherOnly);
@@ -140,6 +150,7 @@ app.use("/api/sessions", authLimiter, authMiddleware, teacherOrEa);
 
 app.use("/", createHealthRouter(deps));
 app.use("/api/classrooms", createClassroomsRouter(deps));
+app.use("/api/curriculum", createCurriculumRouter());
 app.use("/api/differentiate", createDifferentiateRouter(deps));
 app.use("/api/tomorrow-plan", createTomorrowPlanRouter(deps));
 app.use("/api/family-message", createFamilyMessageRouter(deps));

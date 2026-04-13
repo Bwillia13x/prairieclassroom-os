@@ -1,12 +1,11 @@
 @media print {
   /* Hide non-content elements */
   .app-header,
-  .app-tabs,
+  .shell-nav,
   .mobile-nav,
   .print-btn,
   .btn,
-  .history-drawer-container,
-  .tab-badge {
+  .history-drawer-container {
     display: none !important;
   }
 
@@ -35,10 +34,6 @@
     display: none !important;
   }
 
-  .split-pane {
-    display: block;
-  }
-
   /* Page breaks */
   .plan-section,
   .pattern-section {
@@ -48,8 +43,7 @@
   /* Reset panel surfaces for print */
   .surface-panel,
   .form-panel,
-  .contextual-hint,
-  .pending-action-card {
+  .contextual-hint {
     background: white !important;
     box-shadow: none !important;
     border-color: #ccc !important;
@@ -88,10 +82,9 @@
   }
 
   /* Page breaks for multi-section outputs */
-  .ea-briefing-section,
+  .ea-section,
   .forecast-block,
-  .variant-card,
-  .survival-packet-section {
+  .variant-card {
     break-inside: avoid;
   }
 }

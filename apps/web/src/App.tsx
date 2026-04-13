@@ -36,6 +36,9 @@ import OnboardingOverlay from "./components/OnboardingOverlay";
 import ThemeToggle from "./components/ThemeToggle";
 import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
+import { reportError } from "./errorReporter";
+import { flushFeedbackQueue } from "./hooks/useFeedback";
+import { flushSessionQueue } from "./hooks/useSessionContext";
 import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
@@ -92,6 +95,7 @@ export default function App() {
   const classroomsRef = useRef<ClassroomProfile[]>(state.classrooms);
   const classroomCodesRef = useRef(state.classroomAccessCodes);
   const classroomMenuRef = useRef<HTMLDivElement>(null);
+  const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
   const [mountedTabs, setMountedTabs] = useState<Set<ActiveTab>>(() => {
     const initial = new Set<ActiveTab>([state.activeTab]);
@@ -123,6 +127,27 @@ export default function App() {
 
   const dismissToast = useCallback((id: string) => {
     dispatch({ type: "DISMISS_TOAST", id });
+  }, []);
+
+  const flushQueuedClientArtifacts = useCallback(() => {
+    if (queuedFlushPromiseRef.current) return queuedFlushPromiseRef.current;
+
+    queuedFlushPromiseRef.current = Promise.allSettled([
+      flushFeedbackQueue(),
+      flushSessionQueue(),
+    ])
+      .then((results) => {
+        for (const result of results) {
+          if (result.status === "rejected") {
+            reportError(result.reason instanceof Error ? result.reason : String(result.reason));
+          }
+        }
+      })
+      .finally(() => {
+        queuedFlushPromiseRef.current = null;
+      });
+
+    return queuedFlushPromiseRef.current;
   }, []);
 
   const submitFeedback = useCallback((outputId: string, outputType: string, rating: "up" | "down", note?: string) => {
@@ -245,6 +270,19 @@ export default function App() {
       });
     };
   }, [requestClassroomCode, state.classroomAccessCodes]);
+
+  useEffect(() => {
+    void flushQueuedClientArtifacts();
+  }, [flushQueuedClientArtifacts, state.classroomAccessCodes]);
+
+  useEffect(() => {
+    function handleOnline() {
+      void flushQueuedClientArtifacts();
+    }
+
+    window.addEventListener("online", handleOnline);
+    return () => window.removeEventListener("online", handleOnline);
+  }, [flushQueuedClientArtifacts]);
 
   useEffect(() => {
     if (!state.activeClassroom) return;

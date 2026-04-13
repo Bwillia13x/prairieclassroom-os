@@ -427,9 +427,11 @@ describe("system inventory helpers", () => {
     expect(inventory.prompts.planning_count).toBe(6);
     expect(inventory.prompts.classes.map((entry: { name: string }) => entry.name)).toContain("extract_worksheet");
     expect(inventory.prompts.classes.map((entry: { name: string }) => entry.name)).toContain("balance_ea_load");
-    expect(inventory.api.endpoint_count).toBe(34);
+    expect(inventory.api.endpoint_count).toBe(37);
     expect(inventory.api.endpoints).toEqual(expect.arrayContaining([
       expect.objectContaining({ method: "PUT", path: "/api/classrooms/:id/schedule" }),
+      expect.objectContaining({ method: "GET", path: "/api/curriculum/subjects", role_scope: null }),
+      expect.objectContaining({ method: "GET", path: "/api/curriculum/entries/:entryId", role_scope: null }),
       expect.objectContaining({ method: "POST", path: "/api/family-message/approve" }),
       expect.objectContaining({ method: "GET", path: "/api/classrooms/:id/student-summary", role_scope: ["teacher"] }),
       expect.objectContaining({ method: "GET", path: "/api/today/:classroomId", role_scope: ["teacher", "ea"] }),
@@ -496,7 +498,7 @@ describe("system inventory helpers", () => {
 
     expect(markdown).toContain("# System Inventory");
     expect(markdown).toContain("- Primary panels: 12");
-    expect(markdown).toContain("- Exact endpoints: 34");
+    expect(markdown).toContain("- Exact endpoints: 37");
     expect(markdown).toContain("| `prepare_tomorrow_plan` | planning | yes | yes | yes |");
   });
 
@@ -506,7 +508,8 @@ describe("system inventory helpers", () => {
     const markdown = formatApiSurfaceMarkdown(inventory);
 
     expect(markdown).toContain("# API Surface Inventory");
-    expect(markdown).toContain("- Exact endpoints: 34");
+    expect(markdown).toContain("- Exact endpoints: 37");
+    expect(markdown).toContain("| GET | `/api/curriculum/subjects` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |");
     expect(markdown).toContain("| POST | `/api/family-message/approve` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |");
     expect(markdown).toContain("| GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea |");
   });

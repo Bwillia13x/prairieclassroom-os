@@ -44,12 +44,28 @@ function expectInvalid(schema: any, input: any, pathFragment?: string) {
 describe("DifferentiateRequestSchema", () => {
   const valid = { artifact: VALID_ARTIFACT, classroom_id: "demo" };
   it("accepts valid input", () => expectValid(DifferentiateRequestSchema, valid));
+  it("accepts valid Alberta curriculum selection", () =>
+    expectValid(DifferentiateRequestSchema, {
+      ...valid,
+      curriculum_selection: {
+        entry_id: "ab-math-3",
+        selected_focus_ids: ["focus-number-3", "focus-represent-3"],
+      },
+    }));
   it("rejects missing classroom_id", () =>
     expectInvalid(DifferentiateRequestSchema, { artifact: VALID_ARTIFACT }));
   it("rejects missing artifact", () =>
     expectInvalid(DifferentiateRequestSchema, { classroom_id: "demo" }));
   it("rejects empty classroom_id", () =>
     expectInvalid(DifferentiateRequestSchema, { ...valid, classroom_id: "" }));
+  it("rejects curriculum selection with more than three focus ids", () =>
+    expectInvalid(DifferentiateRequestSchema, {
+      ...valid,
+      curriculum_selection: {
+        entry_id: "ab-math-3",
+        selected_focus_ids: ["a", "b", "c", "d"],
+      },
+    }, "curriculum_selection.selected_focus_ids"));
 });
 
 describe("TomorrowPlanRequestSchema", () => {
@@ -122,6 +138,14 @@ describe("VocabCardsRequestSchema", () => {
     grade_band: "3-4",
   };
   it("accepts valid input", () => expectValid(VocabCardsRequestSchema, valid));
+  it("accepts valid Alberta curriculum selection", () =>
+    expectValid(VocabCardsRequestSchema, {
+      ...valid,
+      curriculum_selection: {
+        entry_id: "ab-social-3",
+        selected_focus_ids: ["focus-community-3"],
+      },
+    }));
   it("rejects missing subject", () =>
     expectInvalid(VocabCardsRequestSchema, {
       artifact_text: "text", target_language: "Spanish", grade_band: "3-4",

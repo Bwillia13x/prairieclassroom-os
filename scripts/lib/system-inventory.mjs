@@ -125,7 +125,7 @@ function parseServerRouteMounts(source) {
   }
 
   const mounts = [];
-  const mountPattern = /app\.use\("([^"]+)",\s*(create[A-Za-z0-9]+Router)\(deps\)\)/g;
+  const mountPattern = /app\.use\("([^"]+)",\s*(create[A-Za-z0-9]+Router)\(([^)]*)\)\)/g;
   for (const match of source.matchAll(mountPattern)) {
     const factory = match[2];
     const routeFile = importsByFactory.get(factory);

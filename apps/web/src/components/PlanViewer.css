@@ -255,9 +255,7 @@
   .plan-thinking,
   .plan-card-intervention-link,
   .plan-card-action-hint,
-  .app-header,
-  .app-tabs,
-  .classroom-context {
+  .app-header {
     display: none !important;
   }
 

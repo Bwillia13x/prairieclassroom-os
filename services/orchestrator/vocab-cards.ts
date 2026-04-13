@@ -14,6 +14,7 @@ export interface VocabCardsInput {
   subject: string;
   target_language: string;
   grade_band: string;
+  curriculumContext?: string | null;
 }
 
 export function buildVocabCardsPrompt(input: VocabCardsInput): VocabCardsPrompt {
@@ -34,6 +35,7 @@ RULES:
 - Prioritize subject-specific and academic terms that EAL students are less likely to know.
 - Keep definitions simple and grade-appropriate.
 - Use the lesson content for example sentences — do not invent unrelated examples.
+- If ALBERTA CURRICULUM ALIGNMENT is provided, prioritize terms that help students access that specific curriculum focus.
 - Visual hints should be concrete and drawable (e.g., "drawing of a plant with roots labeled" not "abstract concept").
 - Produce 5–8 cards. Do not exceed 8.
 - If you are uncertain about a translation, provide the best available translation and mark it with (approx.) after the translation.
@@ -46,6 +48,7 @@ TARGET LANGUAGE: ${input.target_language}
 
 LESSON TEXT:
 ${renderPromptInput(input.artifact_text, "artifact_text")}
+${input.curriculumContext ? `\n\n${input.curriculumContext}` : ""}
 
 Generate bilingual vocabulary cards as a JSON object.`;
 

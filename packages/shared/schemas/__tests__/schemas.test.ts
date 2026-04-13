@@ -61,6 +61,8 @@ import {
   FamilyCommsEntrySchema,
   ComplexityPeakSchema,
   SurvivalPacketSchema,
+  CurriculumEntrySchema,
+  CurriculumSelectionSchema,
 } from "../index.js";
 
 import {
@@ -134,6 +136,61 @@ describe("VariantTypeSchema", () => {
 
   it("rejects an unknown variant type", () => {
     expect(VariantTypeSchema.safeParse("honours").success).toBe(false);
+  });
+});
+
+describe("CurriculumEntrySchema", () => {
+  const valid = {
+    entry_id: "ab-math-3",
+    jurisdiction: "ab" as const,
+    subject_code: "mathematics" as const,
+    subject_label: "Mathematics",
+    grade: "3" as const,
+    grade_label: "Grade 3",
+    title: "Number sense to 1 000",
+    summary: "Students build flexible number understanding.",
+    focus_items: [
+      { focus_id: "focus-number-3", text: "Represent numbers in multiple ways." },
+      { focus_id: "focus-estimate-3", text: "Estimate and explain quantities." },
+    ],
+    implementation_status: "implemented" as const,
+    source_kind: "subject_overview" as const,
+    source_title: "Mathematics Subject Overview",
+    source_url: "https://curriculum.learnalberta.ca/cdn/ciihub/docs/Mathematics%20Subject%20Overview_Final.pdf",
+    source_updated_at: "2024-09-01",
+    last_verified_at: "2026-04-13",
+  };
+
+  it("accepts a valid curriculum entry", () => {
+    expect(CurriculumEntrySchema.safeParse(valid).success).toBe(true);
+  });
+
+  it("rejects entries without focus items", () => {
+    expect(CurriculumEntrySchema.safeParse({ ...valid, focus_items: [] }).success).toBe(false);
+  });
+});
+
+describe("CurriculumSelectionSchema", () => {
+  it("accepts one to three selected focus ids", () => {
+    expect(CurriculumSelectionSchema.safeParse({
+      entry_id: "ab-math-3",
+      selected_focus_ids: ["focus-number-3"],
+    }).success).toBe(true);
+    expect(CurriculumSelectionSchema.safeParse({
+      entry_id: "ab-math-3",
+      selected_focus_ids: ["focus-number-3", "focus-estimate-3", "focus-represent-3"],
+    }).success).toBe(true);
+  });
+
+  it("rejects empty or overlong focus selections", () => {
+    expect(CurriculumSelectionSchema.safeParse({
+      entry_id: "ab-math-3",
+      selected_focus_ids: [],
+    }).success).toBe(false);
+    expect(CurriculumSelectionSchema.safeParse({
+      entry_id: "ab-math-3",
+      selected_focus_ids: ["a", "b", "c", "d"],
+    }).success).toBe(false);
   });
 });
 

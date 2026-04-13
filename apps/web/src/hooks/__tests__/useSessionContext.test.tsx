@@ -28,7 +28,6 @@ describe("useSessionContext", () => {
     installLocalStorage();
     localStorage.clear();
     vi.restoreAllMocks();
-    Object.assign(navigator, { sendBeacon: vi.fn().mockReturnValue(true) });
   });
 
   afterEach(() => {
@@ -49,7 +48,6 @@ describe("useSessionContext", () => {
 
   it("dedupes consecutive duplicate panel visits", () => {
     const spy = vi.spyOn(api, "submitSessionApi").mockResolvedValue({ id: "sess-1" });
-    Object.assign(navigator, { sendBeacon: vi.fn().mockReturnValue(false) });
 
     const { result, unmount } = renderHook(() => useSessionContext("demo"));
 
@@ -74,7 +72,6 @@ describe("useSessionContext", () => {
 
   it("records generation events with panel, prompt class, and timestamp", () => {
     const spy = vi.spyOn(api, "submitSessionApi").mockResolvedValue({ id: "sess-1" });
-    Object.assign(navigator, { sendBeacon: vi.fn().mockReturnValue(false) });
 
     const { result, unmount } = renderHook(() => useSessionContext("demo"));
     act(() => {
@@ -102,8 +99,7 @@ describe("useSessionContext", () => {
   });
 
   it("does not flush when no panels have been visited", () => {
-    const beacon = vi.fn().mockReturnValue(true);
-    Object.assign(navigator, { sendBeacon: beacon });
+    const spy = vi.spyOn(api, "submitSessionApi").mockResolvedValue({ id: "sess-1" });
 
     const { result } = renderHook(() => useSessionContext("demo"));
 
@@ -112,13 +108,12 @@ describe("useSessionContext", () => {
       document.dispatchEvent(new Event("visibilitychange"));
     });
 
-    expect(beacon).not.toHaveBeenCalled();
+    expect(spy).not.toHaveBeenCalled();
     expect(result.current.sessionId).toBeTruthy();
   });
 
   it("resets session state when classroomId changes", () => {
-    const beacon = vi.fn().mockReturnValue(true);
-    Object.assign(navigator, { sendBeacon: beacon });
+    const spy = vi.spyOn(api, "submitSessionApi").mockResolvedValue({ id: "sess-1" });
 
     const { result, rerender } = renderHook(
       ({ id }: { id: string }) => useSessionContext(id),
@@ -134,7 +129,11 @@ describe("useSessionContext", () => {
 
     const secondSessionId = result.current.sessionId;
     expect(secondSessionId).not.toBe(firstSessionId);
-    expect(beacon).toHaveBeenCalled();
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(expect.objectContaining({
+      classroom_id: "classroom-a",
+      panels_visited: ["today"],
+    }), undefined, { keepalive: true });
   });
 });
 

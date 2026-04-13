@@ -16,7 +16,7 @@ import SkeletonLoader from "../components/SkeletonLoader";
 import ResultBanner from "../components/ResultBanner";
 import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
-import type { SimplifyResponse, VocabCardsResponse } from "../types";
+import type { CurriculumSelection, SimplifyResponse, VocabCardsResponse } from "../types";
 
 type LanguageTool = "simplify" | "vocab";
 
@@ -56,13 +56,20 @@ export default function LanguageToolsPanel() {
     }
   }
 
-  async function handleVocabCards(artifactText: string, subject: string, targetLanguage: string, gradeBand: string) {
+  async function handleVocabCards(
+    artifactText: string,
+    subject: string,
+    targetLanguage: string,
+    gradeBand: string,
+    curriculumSelection: CurriculumSelection | null,
+  ) {
     const resp = await vocab.execute((signal) =>
       generateVocabCards({
         artifact_text: artifactText,
         subject,
         target_language: targetLanguage,
         grade_band: gradeBand,
+        curriculum_selection: curriculumSelection ?? undefined,
       }, signal)
     );
     if (resp) {

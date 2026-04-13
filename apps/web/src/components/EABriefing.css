@@ -198,7 +198,7 @@
   .ea-briefing--split .ea-briefing-form {
     flex: 0 0 340px;
     position: sticky;
-    top: 1.5rem;
+    top: var(--shell-sticky-offset);
     margin-bottom: 0;
   }
 
@@ -218,9 +218,7 @@
   .ea-briefing-print,
   .ea-briefing-meta,
   .app-header,
-  .app-tabs,
-  .mobile-nav,
-  .classroom-context {
+  .mobile-nav {
     display: none !important;
   }
 

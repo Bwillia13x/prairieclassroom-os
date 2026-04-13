@@ -1,8 +1,9 @@
 import { useState, useCallback, type Ref } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
-import type { LessonArtifact } from "../types";
+import type { CurriculumEntry, CurriculumSelection, LessonArtifact } from "../types";
 import FileUploadZone from "./FileUploadZone";
 import WorksheetUpload from "./WorksheetUpload";
+import CurriculumPicker from "./CurriculumPicker";
 import { Card, ActionButton } from "./shared";
 import "./ArtifactUpload.css";
 
@@ -12,7 +13,7 @@ interface Props {
   classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
   selectedClassroom: string;
   onClassroomChange: (id: string) => void;
-  onSubmit: (artifact: LessonArtifact, classroomId: string) => void;
+  onSubmit: (artifact: LessonArtifact, classroomId: string, curriculumSelection: CurriculumSelection | null) => void;
   loading: boolean;
   formRef?: Ref<HTMLFormElement>;
 }
@@ -29,17 +30,27 @@ export default function ArtifactUpload({
   const [subject, setSubject] = useState("");
   const [rawText, setRawText] = useState("");
   const [teacherGoal, setTeacherGoal] = useState("");
+  const [curriculumSelection, setCurriculumSelection] = useState<CurriculumSelection | null>(null);
+  const [curriculumSuggestions, setCurriculumSuggestions] = useState<CurriculumEntry[]>([]);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [sourceMode, setSourceMode] = useState<ArtifactSourceMode>("photo");
+  const selectedClassroomProfile = classrooms.find((classroom) => classroom.classroom_id === selectedClassroom);
 
   const { clear: clearDraft } = useFormPersistence(
     `prairie-artifact-${selectedClassroom}`,
-    { title, subject, rawText, teacherGoal },
-    useCallback((saved: Partial<{ title: string; subject: string; rawText: string; teacherGoal: string }>) => {
+    { title, subject, rawText, teacherGoal, curriculumSelection },
+    useCallback((saved: Partial<{
+      title: string;
+      subject: string;
+      rawText: string;
+      teacherGoal: string;
+      curriculumSelection: CurriculumSelection | null;
+    }>) => {
       if (saved.title !== undefined) setTitle(saved.title);
       if (saved.subject !== undefined) setSubject(saved.subject);
       if (saved.rawText !== undefined) setRawText(saved.rawText);
       if (saved.teacherGoal !== undefined) setTeacherGoal(saved.teacherGoal);
+      if (saved.curriculumSelection !== undefined) setCurriculumSelection(saved.curriculumSelection);
     }, []),
   );
 
@@ -66,7 +77,7 @@ export default function ArtifactUpload({
       teacher_goal: teacherGoal.trim() || undefined,
     };
 
-    onSubmit(artifact, selectedClassroom);
+    onSubmit(artifact, selectedClassroom, curriculumSelection);
     clearDraft();
   }
 
@@ -152,6 +163,7 @@ export default function ArtifactUpload({
                 setRawText(text);
                 if (!title.trim()) setTitle("Extracted Worksheet");
               }}
+              onCurriculumSuggested={(entries) => setCurriculumSuggestions(entries)}
             />
           ) : null}
 
@@ -198,6 +210,14 @@ export default function ArtifactUpload({
           onChange={(e) => setTeacherGoal(e.target.value)}
         />
       </div>
+
+      <CurriculumPicker
+        value={curriculumSelection}
+        onChange={setCurriculumSelection}
+        subjectHint={subject || selectedClassroomProfile?.subject_focus}
+        gradeHint={selectedClassroomProfile?.grade_band}
+        suggestedEntries={curriculumSuggestions}
+      />
 
       <ActionButton
         type="submit"

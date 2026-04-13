@@ -1,18 +1,19 @@
 import { Router } from "express";
-import { randomUUID } from "node:crypto";
 import { validateBody } from "../validate.js";
 import { SessionRequestSchema } from "../../../packages/shared/schemas/session.js";
 import { isValidClassroomId } from "../validate.js";
 import { saveSession, getSessionSummary } from "../../memory/store.js";
 import { handleRouteError, sendRouteError, sendClassroomNotFound } from "../errors.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 
 export function createSessionsRouter(deps: RouteDeps): Router {
   const router = Router();
+  const authMiddleware = deps.authMiddleware;
+  const teacherOrEa = requireRoles(deps, ["teacher", "ea"]);
 
   // POST / — record a session summary (flushed on visibilitychange or classroom switch)
-  router.post("/", validateBody(SessionRequestSchema), (req, res) => {
+  router.post("/", authMiddleware, teacherOrEa, validateBody(SessionRequestSchema), (req, res) => {
     try {
       const body = req.body;
       const rawId = body.classroom_id as string;
@@ -47,7 +48,7 @@ export function createSessionsRouter(deps: RouteDeps): Router {
   });
 
   // GET /summary/:classroomId — aggregated session usage summary
-  router.get("/summary/:classroomId", (req, res) => {
+  router.get("/summary/:classroomId", authMiddleware, teacherOrEa, (req, res) => {
     try {
       const rawId = req.params.classroomId as string;
 
@@ -58,6 +59,12 @@ export function createSessionsRouter(deps: RouteDeps): Router {
           retryable: false,
           detail_code: "invalid_classroom_id",
         });
+        return;
+      }
+
+      const classroom = deps.loadClassroom(rawId);
+      if (!classroom) {
+        sendClassroomNotFound(res, rawId);
         return;
       }
 

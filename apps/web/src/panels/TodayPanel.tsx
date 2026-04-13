@@ -8,7 +8,6 @@ import PendingActionsCard from "../components/PendingActionsCard";
 import PlanRecap from "../components/PlanRecap";
 import ForecastTimeline from "../components/ForecastTimeline";
 import SkeletonLoader from "../components/SkeletonLoader";
-import TimeSuggestion from "../components/TimeSuggestion";
 import PageIntro from "../components/PageIntro";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
@@ -18,8 +17,8 @@ import SectionIcon from "../components/SectionIcon";
 import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
-import Sparkline from "../components/Sparkline";
-import { HealthDot, TrendIndicator, Card, ActionButton } from "../components/shared";
+import TimeSuggestion, { getSuggestion } from "../components/TimeSuggestion";
+import { Card, ActionButton } from "../components/shared";
 import type { TodaySnapshot, ClassroomHealth, DrillDownContext, InterventionPrefill, FamilyMessagePrefill } from "../types";
 import "./TodayPanel.css";
 
@@ -51,10 +50,55 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     [result],
   );
 
+  const suggestion = useMemo(() => getSuggestion(new Date().getHours()), []);
+  const totalActionCount = useMemo(
+    () => result?.debt_register.items.length ?? 0,
+    [result],
+  );
+
   const attentionStudents = useMemo(
     () => new Set(result?.debt_register.items.flatMap((i) => i.student_refs) ?? []),
     [result],
   );
+
+  const studentsToCheckFirst = useMemo(() => {
+    if (!result) return [];
+
+    const categoryPriority: Record<string, number> = {
+      unapproved_message: 0,
+      stale_followup: 1,
+      unaddressed_pattern: 2,
+      approaching_review: 3,
+    };
+
+    const seen = new Set<string>();
+    const ordered: string[] = [];
+    const prioritizedItems = [...result.debt_register.items].sort((a, b) => {
+      const aRank = categoryPriority[a.category] ?? Number.MAX_SAFE_INTEGER;
+      const bRank = categoryPriority[b.category] ?? Number.MAX_SAFE_INTEGER;
+      if (aRank !== bRank) return aRank - bRank;
+      return b.age_days - a.age_days;
+    });
+
+    for (const item of prioritizedItems) {
+      for (const studentRef of item.student_refs) {
+        if (!studentRef || seen.has(studentRef)) continue;
+        seen.add(studentRef);
+        ordered.push(studentRef);
+        if (ordered.length === 5) {
+          return ordered;
+        }
+      }
+    }
+
+    return ordered;
+  }, [result]);
+
+  const showTimeSuggestion = useMemo(() => {
+    if (!suggestion) return false;
+    if (!recommendedAction) return true;
+    return totalActionCount === 0 || suggestion.primaryAction.tab !== recommendedAction.tab;
+  }, [recommendedAction, suggestion, totalActionCount]);
 
   if (!profile) return null;
 
@@ -66,15 +110,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         sectionTone="sun"
         sectionIcon="sun"
         breadcrumb={{ group: "Today", tab: "Command Center" }}
-        description={`Monitor what needs attention first, review yesterday's planning signal, and move directly into the next action for Grade ${profile.grade_band}.`}
+        description={`Start with the active queue, carry forward what still matters, and move directly into the next classroom action for Grade ${profile.grade_band}.`}
         badges={[
           { label: `${profile.students.length} students`, tone: "sun" },
-          { label: "Pending actions first", tone: "pending" },
-          { label: "Planning recap next", tone: "analysis" },
+          { label: "Morning triage first", tone: "pending" },
         ]}
       />
-
-      <TimeSuggestion onNavigate={onTabChange} />
 
       {loading && !result ? (
         <SkeletonLoader variant="stack" message="Loading today's snapshot..." label="Loading dashboard" />
@@ -84,98 +125,60 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
       {result ? (
         <div className="today-grid motion-stagger">
-          <HealthBar health={health.result ?? null} loading={health.loading} pendingActionCount={result.debt_register.items.length} />
-          {health.result && !health.loading && (
-            <div className="today-health-viz">
-              <HealthDot
-                status={
-                  result.debt_register.items.length > 3 ? "critical"
-                  : result.debt_register.items.length > 0 ? "warning"
-                  : "healthy"
-                }
-                tooltip={`${result.debt_register.items.length} pending action${result.debt_register.items.length !== 1 ? "s" : ""}`}
-              />
-              {health.result.trends.debt_total_14d.length >= 2 && (() => {
-                const d = health.result!.trends.debt_total_14d;
-                const recent = d[d.length - 1];
-                const prev = d[d.length - 2];
-                const delta = prev === 0 ? 0 : ((recent - prev) / Math.abs(prev)) * 100;
-                return (
-                  <TrendIndicator
-                    value={delta}
-                    direction={delta > 5 ? "up" : delta < -5 ? "down" : "flat"}
-                  />
-                );
-              })()}
-            </div>
-          )}
-
           <PendingActionsCard
             items={[
               {
+                key: "unapproved_message",
                 label: "unapproved messages",
                 count: result.debt_register.item_count_by_category.unapproved_message ?? 0,
                 targetTab: "family-message",
                 icon: <SectionIcon name="mail" className="shell-nav__group-icon" />,
               },
               {
+                key: "stale_followup",
                 label: "stale follow-ups",
                 count: result.debt_register.item_count_by_category.stale_followup ?? 0,
                 targetTab: "log-intervention",
                 icon: <SectionIcon name="alert" className="shell-nav__group-icon" />,
               },
               {
+                key: "unaddressed_pattern",
                 label: "unaddressed patterns",
                 count: result.debt_register.item_count_by_category.unaddressed_pattern ?? 0,
                 targetTab: "support-patterns",
                 icon: <SectionIcon name="star" className="shell-nav__group-icon" />,
               },
               {
+                key: "approaching_review",
                 label: "approaching review",
                 count: result.debt_register.item_count_by_category.approaching_review ?? 0,
                 targetTab: "support-patterns",
                 icon: <SectionIcon name="clock" className="shell-nav__group-icon" />,
               },
             ]}
+            primaryAction={recommendedAction!}
             onNavigate={onTabChange}
-            sparklineData={health.result?.trends.debt_total_14d}
-            onItemClick={(label) => {
-              const categoryMap: Record<string, string> = {
-                "unapproved messages": "unapproved_message",
-                "stale follow-ups": "stale_followup",
-                "unaddressed patterns": "unaddressed_pattern",
-                "approaching review": "approaching_review",
-              };
-              const category = categoryMap[label];
-              if (category) {
+            totalCount={totalActionCount}
+            studentsToCheckFirst={studentsToCheckFirst}
+            onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
+            onItemClick={(item) => {
+              if (item.key) {
+                const category = item.key;
                 const items = result.debt_register.items.filter((i) => i.category === category);
                 setDrillDown({ type: "debt-category", category, items });
               }
             }}
           />
 
-          {recommendedAction ? (
-            <Card variant="raised" tone="priority" accent className="today-priority-card">
-              <Card.Body>
-                <div className="today-priority-header">
-                  <div>
-                    <h3>Recommended Next Step</h3>
-                    <p>{recommendedAction.description}</p>
-                  </div>
-                  <StatusChip label={recommendedAction.label} tone={recommendedAction.tone} />
-                </div>
-                <ActionButton variant="primary" onClick={() => onTabChange(recommendedAction.tab)}>
-                  Open {recommendedAction.cta}
-                </ActionButton>
-              </Card.Body>
-            </Card>
-          ) : null}
+          {showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
+
+          <HealthBar health={health.result ?? null} loading={health.loading} pendingActionCount={totalActionCount} />
 
           {result.latest_plan ? (
             <PlanRecap
               plan={result.latest_plan}
-              sparklineData={health.result?.trends.plans_14d}
               onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
+              onOpenPlan={() => onTabChange("tomorrow-plan")}
             />
           ) : null}
 
@@ -183,12 +186,17 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             <Card variant="raised" className="today-forecast-section">
               <Card.Body>
                 <div className="today-forecast-header">
-                  <h3>Latest Forecast Recap</h3>
+                  <div>
+                    <h3>Risk Windows</h3>
+                    <p className="today-forecast-summary">
+                      {getForecastSummary(result.latest_forecast.overall_summary)}
+                    </p>
+                  </div>
                   <div className="today-forecast-header-right">
-                    {health.result?.trends.peak_complexity_14d ? (
-                      <Sparkline data={health.result.trends.peak_complexity_14d} label="Complexity trend over 14 days" />
-                    ) : null}
                     <StatusChip label={result.latest_forecast.highest_risk_block || "Forecast ready"} tone="analysis" />
+                    <ActionButton size="sm" variant="secondary" onClick={() => onTabChange("complexity-forecast")}>
+                      Open Forecast
+                    </ActionButton>
                   </div>
                 </div>
                 <ForecastTimeline
@@ -198,7 +206,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                     if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
                   }}
                 />
-                <p className="today-forecast-summary">{result.latest_forecast.overall_summary}</p>
               </Card.Body>
             </Card>
           ) : null}
@@ -259,6 +266,24 @@ function getRecommendedAction(snapshot: TodaySnapshot) {
       "warning",
     );
   }
+  if ((counts.unaddressed_pattern ?? 0) > 0) {
+    return makeAction(
+      "Support patterns need review before they quietly become the default classroom routine.",
+      "support-patterns",
+      "Support Patterns",
+      "Pattern review",
+      "analysis",
+    );
+  }
+  if ((counts.approaching_review ?? 0) > 0) {
+    return makeAction(
+      "Several supports are approaching their review window. Tighten the pattern record before it goes stale.",
+      "support-patterns",
+      "Support Patterns",
+      "Review due",
+      "analysis",
+    );
+  }
   if (!snapshot.latest_plan) {
     return makeAction(
       "There is no current plan on record. Capture today's signal so tomorrow starts with clear priorities.",
@@ -284,4 +309,19 @@ function getRecommendedAction(snapshot: TodaySnapshot) {
     "Prep ready",
     "success",
   );
+}
+
+function getForecastSummary(summary: string): string {
+  const normalized = summary.trim().replace(/\s+/g, " ");
+  if (!normalized) {
+    return "Review the riskiest block first, then open the full forecast for mitigation details.";
+  }
+  const sentenceMatch = normalized.match(/^.*?[.!?](?=\s|$)/);
+  if (sentenceMatch?.[0]) {
+    return sentenceMatch[0];
+  }
+  if (normalized.length <= 150) {
+    return normalized;
+  }
+  return `${normalized.slice(0, 147).trimEnd()}...`;
 }

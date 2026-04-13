@@ -5,6 +5,7 @@ import { tmpdir } from "node:os";
 import { randomUUID } from "node:crypto";
 import { getRoute, getModelId } from "../router.js";
 import { buildExtractionPrompt, parseExtractionResponse } from "../extract-worksheet.js";
+import { suggestCurriculumEntries } from "../curriculum-registry.js";
 import { validateBody, ExtractWorksheetRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import { callInference } from "../inference-client.js";
@@ -59,9 +60,12 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
         return;
       }
 
+      const curriculumSuggestions = suggestCurriculumEntries(classroom, extracted.extracted_text);
+
       res.json({
         extracted_text: extracted.extracted_text,
         confidence_notes: extracted.confidence_notes,
+        curriculum_suggestions: curriculumSuggestions,
         model_id: inferenceData.model_id || modelId,
         latency_ms: inferenceData.latency_ms,
       });

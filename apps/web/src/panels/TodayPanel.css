@@ -8,7 +8,6 @@
   gap: var(--space-4);
 }
 
-.today-priority-header,
 .today-forecast-header {
   display: flex;
   align-items: flex-start;
@@ -16,19 +15,10 @@
   gap: var(--space-3);
 }
 
-.today-priority-header h3,
 .today-forecast-header h3 {
   font-size: var(--text-base);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
-}
-
-.today-priority-header p {
-  margin-top: var(--space-2);
-  max-width: 56ch;
-  color: var(--color-text-secondary);
-  font-size: var(--text-sm);
-  line-height: 1.6;
 }
 
 .pending-actions-heading {
@@ -50,25 +40,54 @@
   font-weight: var(--font-weight-medium);
 }
 
-.pending-actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+.today-triage-card__body {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
 }
 
-.pending-action-card {
+.today-triage-card__header-copy {
   display: flex;
   flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.today-triage-card__meta {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-4) var(--space-3);
+}
+
+.today-triage-card__description {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.6;
+}
+
+.today-triage-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.today-triage-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-3);
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 54%, transparent), color-mix(in srgb, var(--color-surface-elevated) 8%, transparent)),
     var(--color-surface);
-  border: 1px solid var(--color-border-warning);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-sm);
   cursor: pointer;
+  text-align: left;
   transition:
     transform var(--motion-fast) var(--ease-standard),
     box-shadow var(--motion-fast) var(--ease-standard),
@@ -76,9 +95,9 @@
     background-color var(--motion-fast) var(--ease-standard);
 }
 
-.pending-action-card:hover {
+.today-triage-row:hover {
   border-color: var(--color-accent);
-  transform: translateY(-2px) scale(1.01);
+  transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
@@ -97,7 +116,7 @@
     transform var(--motion-fast) var(--ease-standard);
 }
 
-.pending-action-card:hover .pending-action-icon {
+.today-triage-row:hover .pending-action-icon {
   background: color-mix(in srgb, var(--color-bg-warning) 70%, var(--color-accent) 30%);
   transform: scale(1.08);
 }
@@ -107,18 +126,77 @@
   height: 1.15rem;
 }
 
-.pending-action-count {
-  font-size: clamp(1.7rem, 3vw, 2rem);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-warning);
-  line-height: 1;
+.today-triage-row__label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  gap: var(--space-2);
 }
 
-.pending-action-label {
+.today-triage-row__label::after {
+  content: "";
+  flex: 1;
+  border-bottom: 2px dotted color-mix(in srgb, var(--color-border) 40%, transparent);
+  margin: 0 var(--space-2);
+  opacity: 0.5;
+  transition: opacity var(--motion-fast) var(--ease-standard), border-bottom-color var(--motion-fast) var(--ease-standard);
+}
+
+.today-triage-row:hover .today-triage-row__label::after {
+  opacity: 1;
+  border-bottom-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+.today-triage-row__count {
+  min-width: 2.2rem;
+  text-align: right;
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-warning);
+}
+
+.today-triage-students {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.today-triage-students__label {
   font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--color-text-secondary);
-  text-align: center;
-  line-height: 1.45;
+}
+
+.today-triage-students__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.today-triage-students__chip {
+  border: 1px solid var(--color-border-warning);
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-warning);
+  color: var(--color-text-warning);
+  padding: 0.35rem 0.75rem;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
+.today-triage-students__chip:hover {
+  background: color-mix(in srgb, var(--color-bg-warning) 62%, var(--color-surface) 38%);
+  border-color: var(--color-accent);
+  color: var(--color-text);
 }
 
 .plan-recap {
@@ -134,6 +212,14 @@
   margin-bottom: 0;
   font-size: var(--text-base);
   font-weight: var(--font-weight-semibold);
+}
+
+.plan-recap-subtitle {
+  margin: var(--space-1) 0 0;
+  max-width: 48ch;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.5;
 }
 
 .plan-recap-section {
@@ -157,19 +243,32 @@
 
 .plan-recap-list li {
   font-size: var(--text-sm);
-  padding: 0.7rem 0;
+  padding: 0.65rem 0;
   border-bottom: 1px solid var(--color-border);
+  line-height: 1.55;
 }
 
 .plan-recap-list li:last-child {
   border-bottom: none;
 }
 
+.plan-recap-overflow {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+.plan-recap-summary {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+  line-height: 1.55;
+}
+
 .today-forecast-summary {
-  margin-top: var(--space-2);
+  margin: var(--space-1) 0 0;
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  line-height: 1.6;
+  line-height: 1.5;
 }
 
 .pending-actions-header-row,
@@ -184,6 +283,7 @@
 .today-forecast-header-right {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--space-2);
 }
 
@@ -203,16 +303,27 @@
   color: var(--color-accent);
 }
 
-.today-health-viz {
-  display: flex;
-  align-items: center;
-  gap: var(--ds-space-2, var(--space-2));
-  padding: var(--ds-space-2, var(--space-2)) var(--ds-space-3, var(--space-3));
+.today-forecast-section .forecast-timeline {
+  margin-top: var(--space-3);
 }
 
 @media (max-width: 760px) {
-  .today-priority-header,
+  .pending-actions-header-row,
+  .plan-recap-header-row,
   .today-forecast-header {
     flex-direction: column;
+    align-items: stretch;
+  }
+
+  .today-triage-row {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .today-triage-row__count {
+    min-width: auto;
+  }
+
+  .today-triage-students__chips {
+    gap: var(--space-1);
   }
 }

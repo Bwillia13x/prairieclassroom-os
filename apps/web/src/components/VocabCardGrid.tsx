@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { VocabCardsResponse } from "../types";
+import type { CurriculumSelection, VocabCardsResponse } from "../types";
+import CurriculumPicker from "./CurriculumPicker";
 import PrintButton from "./PrintButton";
 import "./VocabCardGrid.css";
 
@@ -9,6 +10,7 @@ interface Props {
     subject: string,
     targetLanguage: string,
     gradeBand: string,
+    curriculumSelection: CurriculumSelection | null,
   ) => void;
   result: VocabCardsResponse | null;
   loading: boolean;
@@ -32,11 +34,12 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
   const [subject, setSubject] = useState("ELA");
   const [targetLang, setTargetLang] = useState("es");
   const [gradeBand, setGradeBand] = useState("Grade 4");
+  const [curriculumSelection, setCurriculumSelection] = useState<CurriculumSelection | null>(null);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!artifactText.trim()) return;
-    onSubmit(artifactText.trim(), subject, targetLang, gradeBand);
+    onSubmit(artifactText.trim(), subject, targetLang, gradeBand, curriculumSelection);
   }
 
   return (
@@ -91,6 +94,13 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
             </select>
           </div>
         </div>
+
+        <CurriculumPicker
+          value={curriculumSelection}
+          onChange={setCurriculumSelection}
+          subjectHint={subject}
+          gradeHint={gradeBand}
+        />
 
         <button className="btn btn--primary" type="submit" disabled={loading || !artifactText.trim()}>
           {loading ? "Generating…" : "Generate Cards"}

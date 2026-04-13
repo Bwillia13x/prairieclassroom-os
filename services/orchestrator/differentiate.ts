@@ -27,6 +27,7 @@ export function buildDifferentiationPrompt(
   artifact: LessonArtifact,
   classroom: ClassroomProfile,
   teacherGoal?: string,
+  curriculumContext?: string | null,
 ): DifferentiationPrompt {
   const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom differentiation assistant for Alberta K–6 teachers.
 
@@ -51,6 +52,7 @@ RULES:
 - All variants must be genuinely distinct and usable.
 - Use plain language appropriate for the grade level.
 - Do not invent content not related to the original artifact.
+- If ALBERTA CURRICULUM ALIGNMENT is provided, keep the variants aligned to that focus without introducing unrelated content.
 - Do not include diagnosis, discipline, or risk scoring.
 - Output only the JSON array, no markdown fencing or commentary.`);
 
@@ -72,7 +74,7 @@ Title: ${artifact.title}
 Subject: ${artifact.subject}
 Content:
 ${renderPromptInput(artifact.raw_text, "artifact_raw_text", "(no text — image/PDF source)")}
-${teacherGoal ? `\nTEACHER GOAL:\n${renderPromptInput(teacherGoal, "teacher_goal")}` : ""}
+${teacherGoal ? `\nTEACHER GOAL:\n${renderPromptInput(teacherGoal, "teacher_goal")}` : ""}${curriculumContext ? `\n${curriculumContext}\n` : ""}
 
 Produce 5 differentiated variants as a JSON array.`;
 

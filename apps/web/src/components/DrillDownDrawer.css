@@ -5,7 +5,7 @@
   position: fixed;
   inset: 0;
   z-index: 90;
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
 }
@@ -84,8 +84,8 @@
 }
 
 .drill-down-drawer__close:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 2px;
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Scrollable body */
@@ -271,13 +271,6 @@
 
 .drill-down-trend-table tr:last-child td {
   border-bottom: none;
-}
-
-/* Small button variant */
-.btn--sm {
-  min-height: 44px;
-  padding: 0.45rem 0.85rem;
-  font-size: var(--text-xs);
 }
 
 /* Empty / error states inside drawer */

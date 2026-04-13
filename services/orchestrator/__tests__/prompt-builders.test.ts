@@ -129,6 +129,17 @@ describe("differentiate", () => {
       expect(withGoal.user).toContain("Focus on number sense");
     });
 
+    it("includes Alberta curriculum context when provided", () => {
+      const withCurriculum = buildDifferentiationPrompt(
+        DEMO_ARTIFACT,
+        DEMO_CLASSROOM,
+        undefined,
+        "ALBERTA CURRICULUM ALIGNMENT: Mathematics Grade 3\n- represent numbers to 1 000",
+      );
+      expect(withCurriculum.user).toContain("ALBERTA CURRICULUM ALIGNMENT");
+      expect(withCurriculum.user).toContain("represent numbers to 1 000");
+    });
+
     it("omits teacher goal section when not provided", () => {
       expect(prompt.user).not.toContain("TEACHER GOAL:");
     });
@@ -541,6 +552,15 @@ describe("vocab-cards", () => {
       buildVocabCardsPrompt(vocabInput).user,
       "artifact_text",
     );
+
+    it("includes Alberta curriculum context when provided", () => {
+      const withCurriculum = buildVocabCardsPrompt({
+        ...vocabInput,
+        curriculumContext: "ALBERTA CURRICULUM ALIGNMENT: Mathematics Grade 3\n- model place value with manipulatives",
+      });
+      expect(withCurriculum.user).toContain("ALBERTA CURRICULUM ALIGNMENT");
+      expect(withCurriculum.user).toContain("model place value with manipulatives");
+    });
   });
 
   describe("parseVocabCardsResponse", () => {

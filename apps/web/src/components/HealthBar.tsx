@@ -11,7 +11,6 @@ interface Props {
 function isZeroState(health: ClassroomHealth): boolean {
   return (
     health.streak_days === 0 &&
-    health.messages_total === 0 &&
     health.plans_last_7.every((p) => !p)
   );
 }
@@ -80,13 +79,6 @@ export default function HealthBar({ health, loading, pendingActionCount = 0 }: P
           {`${plannedCount} of 7 planned`}
         </span>
       </span>
-
-      {health.messages_total > 0 && (
-        <StatusChip
-          tone={health.messages_approved === health.messages_total ? "success" : "pending"}
-          label={`${health.messages_approved} of ${health.messages_total} approved`}
-        />
-      )}
 
       <StatusChip tone={overallTone} label={overallLabel} />
     </div>

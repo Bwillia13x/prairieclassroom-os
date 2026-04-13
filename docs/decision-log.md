@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-13 — Bounded Alberta curriculum catalog for prompt alignment
+
+- **Decision:** Add a local Alberta curriculum registry backed by `data/curriculum/alberta/catalog.json`, expose it through read-only `/api/curriculum/*` routes, and let differentiation plus vocabulary-card requests carry an optional `curriculum_selection` that references one catalog entry and up to three official focus statements.
+- **Why:** The product is built specifically for Alberta classrooms, so leaving curriculum entirely implicit makes outputs harder to trust and harder to steer. A bounded local catalog gives teachers real Alberta anchors without forcing every prompt through live web retrieval or opening the door to broad, noisy curriculum scraping.
+- **Alternatives considered:** Keep curriculum as free-text teacher goals only, or fetch Alberta curriculum pages live at generation time. Free-text goals were too loose for reliable alignment; live fetches would add latency, parsing drift, and prompt-size variability to otherwise fast classroom flows.
+- **Consequences:** The UI now exposes optional curriculum selection in the differentiate and vocabulary workflows. Worksheet extraction returns curriculum suggestions inferred from classroom context and extracted text. Social Studies grades 4-6 are explicitly marked `optional` in the seed catalog to reflect the 2025-26 / 2026-27 rollout nuance, so downstream prompts can carry that context instead of implying universal implementation.
+- **What would change this:** A future production deployment that needs broader jurisdiction coverage or full strand/outcome depth would likely move the catalog into a versioned content pipeline or database, with richer metadata and update automation rather than a hand-curated local JSON seed.
+
+---
+
 ### 2026-04-12 — Letterpress Tactility for cards and buttons
 
 **Context:** The 2026-04-12 light-palette editorial-letterpress sprint

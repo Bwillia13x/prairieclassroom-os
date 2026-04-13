@@ -1,27 +1,44 @@
 import type { TomorrowPlan } from "../types";
-import Sparkline from "./Sparkline";
+import { ActionButton } from "./shared";
 
 interface Props {
   plan: TomorrowPlan;
-  sparklineData?: number[];
   onPriorityClick?: (studentRef: string) => void;
+  onOpenPlan?: () => void;
 }
 
-export default function PlanRecap({ plan, sparklineData, onPriorityClick }: Props) {
+function renderOverflowLabel(count: number, singular: string, plural = `${singular}s`) {
+  if (count <= 0) return null;
+  return `+${count} more ${count === 1 ? singular : plural}`;
+}
+
+export default function PlanRecap({ plan, onPriorityClick, onOpenPlan }: Props) {
+  const visiblePriorities = plan.support_priorities.slice(0, 3);
+  const visibleChecklist = plan.prep_checklist.slice(0, 3);
+  const hiddenPriorityCount = Math.max(plan.support_priorities.length - visiblePriorities.length, 0);
+  const hiddenChecklistCount = Math.max(plan.prep_checklist.length - visibleChecklist.length, 0);
+  const firstFollowup = plan.family_followups[0] ?? null;
+  const hiddenFollowupCount = Math.max(plan.family_followups.length - 1, 0);
+
   return (
     <div className="plan-recap">
       <div className="plan-recap-header-row">
-        <h3 className="plan-recap-heading">Yesterday's Plan</h3>
-        {sparklineData && sparklineData.length >= 3 ? (
-          <Sparkline data={sparklineData} label="Plans trend over 14 days" />
+        <div>
+          <h3 className="plan-recap-heading">Carry Forward</h3>
+          <p className="plan-recap-subtitle">Keep the priorities that still matter before opening a fresh planning pass.</p>
+        </div>
+        {onOpenPlan ? (
+          <ActionButton size="sm" variant="secondary" onClick={onOpenPlan}>
+            Open Tomorrow Plan
+          </ActionButton>
         ) : null}
       </div>
 
-      {plan.support_priorities.length > 0 && (
+      {visiblePriorities.length > 0 && (
         <div className="plan-recap-section">
           <h4>Support Priorities</h4>
           <ul className="plan-recap-list">
-            {plan.support_priorities.map((p, i) => (
+            {visiblePriorities.map((p, i) => (
               <li key={i}>
                 {onPriorityClick ? (
                   <button
@@ -38,33 +55,38 @@ export default function PlanRecap({ plan, sparklineData, onPriorityClick }: Prop
                 )}
               </li>
             ))}
+            {hiddenPriorityCount > 0 ? (
+              <li className="plan-recap-overflow">{renderOverflowLabel(hiddenPriorityCount, "priority")}</li>
+            ) : null}
           </ul>
         </div>
       )}
 
-      {plan.prep_checklist.length > 0 && (
+      {visibleChecklist.length > 0 && (
         <div className="plan-recap-section">
           <h4>Prep Checklist</h4>
           <ul className="plan-recap-list">
-            {plan.prep_checklist.map((item, i) => (
+            {visibleChecklist.map((item, i) => (
               <li key={i}>{item}</li>
             ))}
+            {hiddenChecklistCount > 0 ? (
+              <li className="plan-recap-overflow">{renderOverflowLabel(hiddenChecklistCount, "item")}</li>
+            ) : null}
           </ul>
         </div>
       )}
 
-      {plan.family_followups.length > 0 && (
+      {firstFollowup ? (
         <div className="plan-recap-section">
           <h4>Family Follow-ups</h4>
-          <ul className="plan-recap-list">
-            {plan.family_followups.map((f, i) => (
-              <li key={i}>
-                <strong>{f.student_ref}</strong> — {f.message_type.replace(/_/g, " ")}
-              </li>
-            ))}
-          </ul>
+          <p className="plan-recap-summary">
+            <strong>{plan.family_followups.length} follow-up{plan.family_followups.length !== 1 ? "s" : ""}</strong>
+            {" — "}
+            {firstFollowup.student_ref} · {firstFollowup.message_type.replace(/_/g, " ")}
+            {hiddenFollowupCount > 0 ? ` · ${renderOverflowLabel(hiddenFollowupCount, "follow-up")}` : ""}
+          </p>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

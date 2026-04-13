@@ -3,6 +3,8 @@ import express from "express";
 import type { Server } from "node:http";
 import { createTodayRouter } from "../routes/today.js";
 import { createHistoryRouter } from "../routes/history.js";
+import { createFeedbackRouter } from "../routes/feedback.js";
+import { createSessionsRouter } from "../routes/sessions.js";
 import { closeAll } from "../../memory/db.js";
 import type { ClassroomProfile } from "../../../packages/shared/schemas/classroom.js";
 import type { RouteDeps } from "../route-deps.js";
@@ -50,6 +52,8 @@ async function startServer() {
   app.use("/api/today", deps.authMiddleware, requireClassroomRole(["teacher", "ea"]));
   app.use("/api/today", createTodayRouter(deps));
   app.use("/api/classrooms", createHistoryRouter(deps));
+  app.use("/api/feedback", createFeedbackRouter(deps));
+  app.use("/api/sessions", createSessionsRouter(deps));
 
   const server = await new Promise<Server>((resolve) => {
     const nextServer = app.listen(0, "127.0.0.1", () => resolve(nextServer));
@@ -163,6 +167,55 @@ describe("protected classroom routes", () => {
         role: "ea",
         allowed_roles: ["teacher"],
       },
+    });
+  });
+
+  it("protects feedback and session summaries for protected classrooms", async () => {
+    const feedbackMissingCode = await fetch(`${baseUrl}/api/feedback/summary/${PROTECTED_CLASSROOM_ID}`);
+    expect(feedbackMissingCode.status).toBe(401);
+    await expect(feedbackMissingCode.json()).resolves.toMatchObject({
+      detail_code: "classroom_code_missing",
+    });
+
+    const sessionWrongCode = await fetch(`${baseUrl}/api/sessions/summary/${PROTECTED_CLASSROOM_ID}`, {
+      headers: { "X-Classroom-Code": "wrong-code" },
+    });
+    expect(sessionWrongCode.status).toBe(403);
+    await expect(sessionWrongCode.json()).resolves.toMatchObject({
+      detail_code: "classroom_code_invalid",
+    });
+
+    const feedbackAllowed = await fetch(`${baseUrl}/api/feedback/summary/${PROTECTED_CLASSROOM_ID}`, {
+      headers: { "X-Classroom-Code": PROTECTED_CODE },
+    });
+    expect(feedbackAllowed.status).toBe(200);
+    await expect(feedbackAllowed.json()).resolves.toMatchObject({
+      total: 0,
+    });
+
+    const sessionEaAllowed = await fetch(`${baseUrl}/api/sessions/summary/${PROTECTED_CLASSROOM_ID}`, {
+      headers: {
+        "X-Classroom-Code": PROTECTED_CODE,
+        "X-Classroom-Role": "ea",
+      },
+    });
+    expect(sessionEaAllowed.status).toBe(200);
+    await expect(sessionEaAllowed.json()).resolves.toMatchObject({
+      total_sessions: 0,
+    });
+  });
+
+  it("returns 404 for summary endpoints when the classroom does not exist", async () => {
+    const feedbackMissingClassroom = await fetch(`${baseUrl}/api/feedback/summary/missing-classroom`);
+    expect(feedbackMissingClassroom.status).toBe(404);
+    await expect(feedbackMissingClassroom.json()).resolves.toMatchObject({
+      detail_code: "classroom_not_found",
+    });
+
+    const sessionMissingClassroom = await fetch(`${baseUrl}/api/sessions/summary/missing-classroom`);
+    expect(sessionMissingClassroom.status).toBe(404);
+    await expect(sessionMissingClassroom.json()).resolves.toMatchObject({
+      detail_code: "classroom_not_found",
     });
   });
 });
