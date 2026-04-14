@@ -20,6 +20,7 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
 import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
+import RoleContextPill from "./components/RoleContextPill";
 import DifferentiatePanel from "./panels/DifferentiatePanel";
 import TomorrowPlanPanel from "./panels/TomorrowPlanPanel";
 import FamilyMessagePanel from "./panels/FamilyMessagePanel";
@@ -650,6 +651,8 @@ export default function App() {
                   </div>
                 ) : null}
               </div>
+
+              <RoleContextPill />
 
               <div className="shell-bar__actions">
                 <ThemeToggle />
