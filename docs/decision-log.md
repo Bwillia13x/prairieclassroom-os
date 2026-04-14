@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-14 — OutputActionBar shared component and dual-step family-message approval
+
+- **Decision:** Introduce `OutputActionBar` as a shared UI component (`apps/web/src/components/shared/OutputActionBar.tsx`) that renders a consistent row of output actions (Print, Copy, Download, Save to Tomorrow, Share with EA, Review approval) below the `FeedbackCollector` in every generation panel. Require family-message approval to go through a two-step `MessageApprovalDialog` rather than a single confirm button.
+- **Why:** Eight generation panels had no consistent affordance for acting on outputs once generated. Ad-hoc per-panel buttons created maintenance divergence and inconsistent teacher affordance. The dual-step approval ceremony for family messages reflects the legal and communication weight of school-to-family correspondence — a single button underplays that weight.
+- **Alternatives considered:** Per-panel action buttons with no shared contract (current state before this plan); a floating toolbar. Per-panel buttons were already diverging; a floating toolbar adds positioning complexity without adding clarity.
+- **Consequences:** All eight panels (Differentiate, TomorrowPlan, SupportPatterns, EABriefing, Forecast, SurvivalPacket, LanguageTools, FamilyMessage) now render a consistent `OutputActionBar`. New supporting hooks: `useCopyToClipboard` (clipboard API + execCommand fallback) and `useDownloadBlob` (blob URL + filename sanitization). New `tomorrowNotes: TomorrowNote[]` AppState slot persisted to localStorage enables cross-panel "Save to Tomorrow" aggregation.
+- **What would change this:** Evidence that teachers need different action sets per panel would motivate a richer per-panel action registry rather than the current per-panel `actions` prop.
+
+---
+
 ### 2026-04-13 — Bounded Alberta curriculum catalog for prompt alignment
 
 - **Decision:** Add a local Alberta curriculum registry backed by `data/curriculum/alberta/catalog.json`, expose it through read-only `/api/curriculum/*` routes, and let differentiation plus vocabulary-card requests carry an optional `curriculum_selection` that references one catalog entry and up to three official focus statements.

@@ -74,6 +74,8 @@ function makeContext(streamingOverride?: Partial<StreamingState>): AppContextVal
     submitFeedback: vi.fn(),
     showUndo: vi.fn(),
     dismissToast: vi.fn(),
+    tomorrowNotes: [],
+    appendTomorrowNote: vi.fn(),
   };
 }
 

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -14,9 +14,12 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
-import { ActionButton, FeedbackCollector, FormSection } from "../components/shared";
+import { ActionButton, FeedbackCollector, FormSection, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import { useDownloadBlob } from "../hooks/useDownloadBlob";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
+import { serializeSurvivalPacketToMarkdown } from "./outputActionBarHelpers";
 import type { SurvivalPacketResponse } from "../types";
 
 export default function SurvivalPacketPanel() {
@@ -28,6 +31,41 @@ export default function SurvivalPacketPanel() {
   });
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const { copy } = useCopyToClipboard();
+  const { download } = useDownloadBlob();
+
+  const actions = useMemo<OutputAction[]>(() => {
+    if (!result) return [];
+    const packet = result.packet;
+    return [
+      {
+        key: "print",
+        label: "Print",
+        icon: "pencil",
+        onClick: () => window.print(),
+      },
+      {
+        key: "copy",
+        label: "Copy",
+        icon: "check",
+        onClick: async () => {
+          await copy(serializeSurvivalPacketToMarkdown(packet));
+          showSuccess("Copied");
+        },
+      },
+      {
+        key: "download",
+        label: "Download",
+        icon: "grid",
+        onClick: () =>
+          download({
+            filename: `survival-packet-${packet.generated_for_date}.md`,
+            content: serializeSurvivalPacketToMarkdown(packet),
+            mime: "text/markdown",
+          }),
+      },
+    ];
+  }, [result, copy, download, showSuccess]);
 
   useEffect(() => {
     session.recordPanelVisit("survival-packet");
@@ -139,6 +177,7 @@ export default function SurvivalPacketPanel() {
                   submitted={feedback.submitted}
                   panelLabel="survival packet"
                 />
+                <OutputActionBar actions={actions} contextLabel="Survival packet output" />
               </>
             ) : null}
           </div>

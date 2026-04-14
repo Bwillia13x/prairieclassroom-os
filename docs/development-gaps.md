@@ -34,6 +34,7 @@
 | **G-15** | Synthetic classroom fixture convention drift | Partial | Surfaced 2026-04-13 during the 26-student demo expansion review: `classroom_demo.json` uses `eal_level_1/2/3` on the preserved D1/D4/D6 students while the other five classrooms use `emerging_english`, creating two parallel vocabularies for the same concept. Separately, `Amira` appears as an alias in both `classroom_demo` and `classroom_charlie`, silently defeating the `evals/fixtures/regressions/*-alias-leak.json` fixtures for that specific name. Preserved as-is in the 2026-04-13 expansion because of byte-for-byte preservation of the 6 original demo students, but needs deliberate unification before the next major fixture evolution. |
 | **G-16** | Wire clickable chart drill-downs on Tomorrow Plan, Differentiate, Support Patterns, and Intervention panels | Deferred from Plan 5 (2026-04-14) | Plan 5 wired drill-downs on TodayPanel and HealthBar only. Five chart components on four other panels (`PlanCoverageRadar`, `VariantSummaryStrip`, `SupportPatternRadar`, `FollowUpSuccessRate`, `InterventionTimeline`) expose `onSegmentClick`/`onDotClick` but their parent panels don't yet mount `DrillDownDrawer` or pass the callbacks. Estimate: ~4-6 tasks per panel, approximately 1 day of focused work. |
 | **G-17** | Intervention capture velocity | **Closed** | `QuickCaptureTray` chip-first flow shipped 2026-04-14. Legacy `InterventionLogger` preserved in a `<details>` expansion; auto-opens on Tomorrow-Plan prefill. No schema or API changes — frontend-only addition on top of the existing `logIntervention` contract. |
+| **G-18** | OutputActionBar rollout — Plan 4 | **Closed** | Shipped 2026-04-14. All eight generation panels now render a consistent `OutputActionBar`. Supporting hooks `useCopyToClipboard` and `useDownloadBlob` extracted. `tomorrowNotes` AppState slot added for cross-panel output aggregation. `FamilyMessagePanel` approval promoted to a two-step `MessageApprovalDialog`. See `docs/decision-log.md` 2026-04-14 entry. |
 
 ## Gap details
 
@@ -256,3 +257,16 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 ### Intervention capture velocity
 
 - **G-17 (2026-04-14, shipped):** `QuickCaptureTray` reduces hallway logging friction with a chip-first 5-second submission flow. The legacy `InterventionLogger` remains available in a `<details>` expansion and auto-opens when a Tomorrow-Plan prefill arrives. Downstream impact: higher intervention-record density strengthens `detect_support_patterns` and `forecast_complexity` inputs.
+
+### G-18 — OutputActionBar rollout — Plan 4
+
+**Status:** Closed 2026-04-14.
+
+**What was added**
+
+- `apps/web/src/components/shared/OutputActionBar.tsx` — shared component with `OutputAction` contract (`key`, `label`, `icon`, `onClick`, `variant?`, `disabled?`, `disabledReason?`). Renders below `FeedbackCollector` in every generation panel.
+- Eight panels wired: Differentiate, TomorrowPlan, SupportPatterns, EABriefing, Forecast, SurvivalPacket, LanguageTools, FamilyMessage. Panel-specific actions: Print, Copy, Download, Save-to-Tomorrow, Share-with-EA, Review-approval.
+- `useCopyToClipboard` hook — clipboard API with execCommand fallback.
+- `useDownloadBlob` hook — blob URL download with filename sanitization.
+- `tomorrowNotes: TomorrowNote[]` AppState slot persisted to localStorage — enables "Save to Tomorrow" cross-panel output aggregation.
+- `MessageApprovalDialog` — promotes FamilyMessagePanel approval to a two-step dialog reflecting the legal/communication weight of family messaging.

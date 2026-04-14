@@ -54,6 +54,9 @@ function makeAppContext(): AppContextValue {
     },
     students: [{ alias: "Amira" }, { alias: "Brody" }, { alias: "Farid" }],
     classroomAccessCodes: {},
+    classroomRoles: {},
+    activeRole: "teacher" as const,
+    setClassroomRole: vi.fn(),
     authPrompt: null,
     showSuccess: vi.fn(),
     dispatch: vi.fn(),
@@ -70,6 +73,8 @@ function makeAppContext(): AppContextValue {
     submitFeedback: vi.fn(),
     showUndo: vi.fn(),
     dismissToast: vi.fn(),
+    tomorrowNotes: [],
+    appendTomorrowNote: vi.fn(),
   };
 }
 

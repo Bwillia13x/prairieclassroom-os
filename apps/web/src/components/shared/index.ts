@@ -10,3 +10,5 @@ export { Sparkline, TrendIndicator, HealthDot, ProgressBar } from "./DataViz";
 export { default as ResultDisplay } from "./ResultDisplay";
 export { default as SessionBanner } from "./SessionBanner";
 export { default as FeedbackCollector } from "./FeedbackCollector";
+export { default as OutputActionBar } from "./OutputActionBar";
+export type { OutputAction, OutputActionKey, OutputActionVariant, OutputActionBarProps } from "./OutputActionBar";

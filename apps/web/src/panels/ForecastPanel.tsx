@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -16,20 +16,59 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
-import { FeedbackCollector, Sparkline as SharedSparkline } from "../components/shared";
+import { FeedbackCollector, OutputActionBar, Sparkline as SharedSparkline, type OutputAction } from "../components/shared";
 import { ComplexityHeatmap } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
+import { serializeForecastToPlainText } from "./outputActionBarHelpers";
 import type { ComplexityForecastResponse } from "../types";
 
 export default function ForecastPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>();
   const streamer = useStreamingRequest({
     sectionLabels: ["Block analysis", "Complexity curves", "Risk assessment"],
   });
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const { copy } = useCopyToClipboard();
+
+  const actions = useMemo<OutputAction[]>(() => {
+    if (!result) return [];
+    const forecast = result.forecast;
+    return [
+      {
+        key: "print",
+        label: "Print",
+        icon: "pencil",
+        onClick: () => window.print(),
+      },
+      {
+        key: "copy",
+        label: "Copy",
+        icon: "check",
+        onClick: async () => {
+          await copy(serializeForecastToPlainText(forecast));
+          showSuccess("Copied");
+        },
+      },
+      {
+        key: "save-to-tomorrow",
+        label: "Save to Tomorrow",
+        icon: "star",
+        variant: "primary",
+        onClick: () => {
+          appendTomorrowNote({
+            sourcePanel: "complexity-forecast",
+            sourceType: "forecast_complexity",
+            summary: `Forecast for ${forecast.forecast_date}: highest risk ${forecast.highest_risk_block}`,
+          });
+          showSuccess("Saved to Tomorrow Plan");
+        },
+      },
+    ];
+  }, [result, copy, appendTomorrowNote, showSuccess]);
 
   useEffect(() => {
     session.recordPanelVisit("complexity-forecast");
@@ -133,6 +172,7 @@ export default function ForecastPanel() {
                   submitted={feedback.submitted}
                   panelLabel="complexity forecast"
                 />
+                <OutputActionBar actions={actions} contextLabel="Forecast output" />
               </>
             ) : null}
           </div>

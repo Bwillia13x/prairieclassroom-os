@@ -5,7 +5,7 @@
  * Enables undo toasts, streaming state, contextual onboarding, and time-aware nav.
  */
 
-import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
+import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 import type { SectionIconName } from "./components/SectionIcon";
 
 // ─── Active Tab ───
@@ -193,6 +193,9 @@ export interface AppState {
 
   // Role prompt dialog state
   rolePrompt: { classroomId: string } | null;
+
+  // Tomorrow notes collected from output panels (persisted to localStorage)
+  tomorrowNotes: TomorrowNote[];
 }
 
 // ─── Actions ───
@@ -227,7 +230,9 @@ export type AppAction =
   | { type: "CLOSE_AUTH_PROMPT" }
   | { type: "SET_CLASSROOM_ROLE"; classroomId: string; role: ClassroomRole }
   | { type: "OPEN_ROLE_PROMPT"; classroomId: string }
-  | { type: "CLOSE_ROLE_PROMPT" };
+  | { type: "CLOSE_ROLE_PROMPT" }
+  | { type: "APPEND_TOMORROW_NOTE"; note: TomorrowNote }
+  | { type: "CLEAR_TOMORROW_NOTES" };
 
 // ─── Initial State ───
 
@@ -285,6 +290,15 @@ function loadClassroomRoles(): Record<string, ClassroomRole> {
   }
 }
 
+function loadTomorrowNotes(): TomorrowNote[] {
+  try {
+    const raw = localStorage.getItem("prairie-tomorrow-notes");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
 export function createInitialState(): AppState {
   return {
     classrooms: [],
@@ -310,6 +324,7 @@ export function createInitialState(): AppState {
     authPrompt: null,
     classroomRoles: loadClassroomRoles(),
     rolePrompt: null,
+    tomorrowNotes: loadTomorrowNotes(),
   };
 }
 
@@ -472,6 +487,18 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case "CLOSE_ROLE_PROMPT":
       return { ...state, rolePrompt: null };
+
+    // ─── Tomorrow Notes ───
+
+    case "APPEND_TOMORROW_NOTE": {
+      const tomorrowNotes = [...state.tomorrowNotes, action.note];
+      try { localStorage.setItem("prairie-tomorrow-notes", JSON.stringify(tomorrowNotes)); } catch { /* noop */ }
+      return { ...state, tomorrowNotes };
+    }
+
+    case "CLEAR_TOMORROW_NOTES":
+      try { localStorage.removeItem("prairie-tomorrow-notes"); } catch { /* noop */ }
+      return { ...state, tomorrowNotes: [] };
 
     default:
       return state;

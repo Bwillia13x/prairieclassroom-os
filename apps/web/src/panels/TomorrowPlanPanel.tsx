@@ -17,8 +17,13 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
-import { FeedbackCollector } from "../components/shared";
+import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import {
+  serializePlanToPlainText,
+  serializePlanToEABriefingSummary,
+} from "./TomorrowPlanPanel.helpers";
 import { useHistory } from "../hooks/useHistory";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
@@ -52,6 +57,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
     sectionLabels: ["Support priorities", "Prep checklist", "Differentiation notes"],
   });
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const { copy } = useCopyToClipboard();
 
   useEffect(() => {
     session.recordPanelVisit("tomorrow-plan");
@@ -67,6 +73,46 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   );
 
   const displayResult = result ?? historicalResult;
+
+  const actions = useMemo<OutputAction[]>(() => {
+    if (!displayResult) return [];
+    const plan = displayResult.plan;
+    return [
+      {
+        key: "print",
+        label: "Print",
+        icon: "pencil",
+        onClick: () => window.print(),
+      },
+      {
+        key: "copy",
+        label: "Copy",
+        icon: "check",
+        onClick: async () => {
+          await copy(serializePlanToPlainText(plan));
+          showSuccess("Plan copied");
+        },
+      },
+      {
+        key: "save-to-tomorrow",
+        label: "Save to Tomorrow",
+        icon: "star",
+        disabled: true,
+        disabledReason: "You are already editing tomorrow's plan",
+        onClick: () => {},
+      },
+      {
+        key: "share-with-ea",
+        label: "Share with EA",
+        icon: "mail",
+        variant: "primary",
+        onClick: async () => {
+          await copy(serializePlanToEABriefingSummary(plan));
+          showSuccess("EA summary copied — paste into Slack/email");
+        },
+      },
+    ];
+  }, [displayResult, copy, showSuccess]);
 
   if (classrooms.length === 0) return null;
 
@@ -179,6 +225,10 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}
                   panelLabel="tomorrow plan"
+                />
+                <OutputActionBar
+                  actions={actions}
+                  contextLabel="Tomorrow plan output"
                 />
               </>
             ) : null}

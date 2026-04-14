@@ -33,6 +33,8 @@ function wrap(role: ClassroomRole) {
     submitFeedback: vi.fn(),
     showUndo: vi.fn(),
     dismissToast: vi.fn(),
+    tomorrowNotes: [],
+    appendTomorrowNote: vi.fn(),
   };
 
   function Probe() {

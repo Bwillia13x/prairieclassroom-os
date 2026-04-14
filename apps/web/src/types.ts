@@ -276,6 +276,24 @@ export interface TodaySnapshot {
 
 // ── UI-only types ───────────────────────────────────────────────────────────
 
+export type TomorrowNoteSource =
+  | "differentiate"
+  | "tomorrow-plan"
+  | "support-patterns"
+  | "ea-briefing"
+  | "complexity-forecast"
+  | "survival-packet"
+  | "language-tools"
+  | "family-message";
+
+export interface TomorrowNote {
+  id: string;
+  sourcePanel: TomorrowNoteSource;
+  sourceType: string; // e.g. "differentiate_material"
+  summary: string;
+  createdAt: string; // ISO-8601
+}
+
 export interface FamilyMessagePrefill {
   student_ref: string;
   reason: string;

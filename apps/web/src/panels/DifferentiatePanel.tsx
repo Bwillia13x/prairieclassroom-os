@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -16,12 +16,27 @@ import DifferentiateEmptyState from "../components/DifferentiateEmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import OutputMetaRow from "../components/OutputMetaRow";
 import ResultBanner from "../components/ResultBanner";
-import { Card, FeedbackCollector } from "../components/shared";
+import { Card, FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import { useDownloadBlob } from "../hooks/useDownloadBlob";
+import {
+  serializeVariantsToPlainText,
+  serializeVariantsToMarkdown,
+  summarizeVariantsForTomorrow,
+} from "./DifferentiatePanel.helpers";
 import type { CurriculumSelection, LessonArtifact, DifferentiateResponse } from "../types";
 
 export default function DifferentiatePanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const {
+    classrooms,
+    activeClassroom,
+    setActiveClassroom,
+    profile,
+    showSuccess,
+    streaming,
+    appendTomorrowNote,
+  } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<DifferentiateResponse>();
   const [artifactTitle, setArtifactTitle] = useState("");
@@ -33,6 +48,54 @@ export default function DifferentiatePanel() {
     sectionLabels: ["Readiness variants", "Scaffolded chunking", "Extension variants", "Language support"],
     structuringDelayMs: 2000,
   });
+  const { copy } = useCopyToClipboard();
+  const { download } = useDownloadBlob();
+
+  const actions = useMemo<OutputAction[]>(() => {
+    if (!result) return [];
+    return [
+      {
+        key: "print",
+        label: "Print",
+        icon: "pencil",
+        onClick: () => window.print(),
+      },
+      {
+        key: "copy",
+        label: "Copy",
+        icon: "check",
+        onClick: async () => {
+          await copy(serializeVariantsToPlainText(artifactTitle, result.variants));
+          showSuccess("Copied");
+        },
+      },
+      {
+        key: "download",
+        label: "Download",
+        icon: "grid",
+        onClick: () =>
+          download({
+            filename: `${slugify(artifactTitle)}.md`,
+            content: serializeVariantsToMarkdown(artifactTitle, result.variants),
+            mime: "text/markdown",
+          }),
+      },
+      {
+        key: "save-to-tomorrow",
+        label: "Save to Tomorrow",
+        icon: "star",
+        variant: "primary",
+        onClick: () => {
+          appendTomorrowNote({
+            sourcePanel: "differentiate",
+            sourceType: "differentiate_material",
+            summary: summarizeVariantsForTomorrow(artifactTitle, result.variants),
+          });
+          showSuccess("Saved to Tomorrow Plan");
+        },
+      },
+    ];
+  }, [result, artifactTitle, copy, download, appendTomorrowNote, showSuccess]);
 
   useEffect(() => {
     session.recordPanelVisit("differentiate");
@@ -149,6 +212,7 @@ export default function DifferentiatePanel() {
                   submitted={feedback.submitted}
                   panelLabel="differentiation"
                 />
+                {result ? <OutputActionBar actions={actions} contextLabel="Variants output" /> : null}
               </>
             ) : null}
           </div>
@@ -160,4 +224,8 @@ export default function DifferentiatePanel() {
 
 function describeSource(gradeBand: string) {
   return `Grade ${gradeBand} classroom`;
+}
+
+function slugify(s: string): string {
+  return (s || "variants").replace(/[^A-Za-z0-9._-]+/g, "_").slice(0, 80);
 }

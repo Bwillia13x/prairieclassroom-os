@@ -182,6 +182,8 @@ function makeAppContext(): AppContextValue {
     submitFeedback: vi.fn(),
     showUndo: vi.fn(),
     dismissToast: vi.fn(),
+    tomorrowNotes: [],
+    appendTomorrowNote: vi.fn(),
   };
 }
 
