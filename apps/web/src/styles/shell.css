@@ -50,6 +50,22 @@
   opacity: 0.85;
 }
 
+.app-logo {
+  display: block;
+  width: auto;
+  height: clamp(2.4rem, 4.6vw, 3.2rem);
+  max-width: min(260px, 42vw);
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+@media (max-width: 720px) {
+  .app-logo {
+    height: 2.2rem;
+    max-width: 56vw;
+  }
+}
+
 .shell-brand__wordmark {
   display: inline-flex;
   align-items: center;

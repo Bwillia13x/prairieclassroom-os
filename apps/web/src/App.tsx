@@ -546,16 +546,15 @@ export default function App() {
         <header className="app-header">
           <div className="app-header__inner">
             <div className="shell-bar">
-              <div className="shell-brand" aria-label="PrairieClassroom home">
-                <svg className="app-mark" viewBox="0 0 40 24" aria-hidden="true" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M0 18 Q5 10 10 14 Q14 6 18 12 Q22 4 26 10 Q30 6 34 12 Q37 8 40 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-                  <line x1="0" y1="20" x2="40" y2="20" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
-                  <circle cx="10" cy="8" r="3" fill="currentColor" opacity="0.2" />
-                </svg>
-                <div className="shell-brand__wordmark">
-                  <span className="app-wordmark">PrairieClassroom</span>
-                  <span className="app-title-os">OS</span>
-                </div>
+              <div className="shell-brand" aria-label="PrairieGem OS home">
+                <img
+                  className="app-logo"
+                  src="/prairiegem-logo.png"
+                  alt="PrairieGem OS"
+                  width={1536}
+                  height={1024}
+                  decoding="async"
+                />
               </div>
 
               <div className="shell-classroom-anchor" ref={classroomMenuRef}>
@@ -644,7 +643,7 @@ export default function App() {
               </div>
             </div>
 
-            <nav className="shell-nav" aria-label="PrairieClassroom navigation">
+            <nav className="shell-nav" aria-label="PrairieGem OS navigation">
               <div className="shell-nav__groups" role="toolbar" aria-label="Primary navigation groups" ref={groupsRef}>
                 <div
                   className="shell-nav__group-indicator"
