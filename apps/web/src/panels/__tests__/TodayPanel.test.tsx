@@ -6,13 +6,17 @@ import TodayPanel from "../TodayPanel";
 import type { ClassroomHealth, TodaySnapshot } from "../../types";
 import * as TimeSuggestionModule from "../../components/TimeSuggestion";
 
-vi.mock("../../api", () => ({
-  fetchTodaySnapshot: vi.fn(),
-  fetchClassroomHealth: vi.fn(),
-  fetchStudentSummary: vi.fn(),
-  fetchInterventionHistoryForStudent: vi.fn(),
-  fetchMessageHistoryForStudent: vi.fn(),
-}));
+vi.mock("../../api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../api")>();
+  return {
+    ...actual,
+    fetchTodaySnapshot: vi.fn(),
+    fetchClassroomHealth: vi.fn(),
+    fetchStudentSummary: vi.fn(),
+    fetchInterventionHistoryForStudent: vi.fn(),
+    fetchMessageHistoryForStudent: vi.fn(),
+  };
+});
 
 import {
   fetchTodaySnapshot,
@@ -400,5 +404,33 @@ describe("TodayPanel", () => {
     expect(
       await screen.findByText(/student priority/i),
     ).toBeInTheDocument();
+  });
+
+  it("shows an inline health error without blocking the rest of the dashboard", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockRejectedValue(
+      new Error("network down"),
+    );
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("alert"),
+      ).toHaveTextContent(/health summary/i);
+    });
+
+    expect(
+      screen.queryByText(/could not be loaded/i),
+    ).not.toBeInTheDocument();
   });
 });
