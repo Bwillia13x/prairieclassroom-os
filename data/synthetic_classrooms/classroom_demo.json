@@ -173,10 +173,10 @@
       "student_id": "D18",
       "alias": "Rania",
       "eal_flag": true,
+      "family_language": "ar",
       "support_tags": ["eal_level_2", "needs_visual_supports", "strong_oral_storytelling", "benefits_from_peer_models"],
       "known_successful_scaffolds": ["simplified_instructions", "visual_supports", "peer_buddy_system", "bilingual_word_walls", "story_retell_before_writing"],
-      "communication_notes": ["Family speaks Arabic", "Settlement worker available for translated meetings", "Parents prefer in-person meetings with interpreter present"],
-      "family_language": "ar"
+      "communication_notes": ["Family speaks Arabic", "Settlement worker available for translated meetings", "Parents prefer in-person meetings with interpreter present"]
     },
     {
       "student_id": "D19",
