@@ -190,6 +190,9 @@ export interface AppState {
 
   // Per-classroom role selection (persisted locally)
   classroomRoles: Record<string, ClassroomRole>;
+
+  // Role prompt dialog state
+  rolePrompt: { classroomId: string } | null;
 }
 
 // ─── Actions ───
@@ -222,7 +225,9 @@ export type AppAction =
   | { type: "SET_CLASSROOM_ACCESS_CODE"; classroomId: string; code: string }
   | { type: "OPEN_AUTH_PROMPT"; prompt: AuthPromptState }
   | { type: "CLOSE_AUTH_PROMPT" }
-  | { type: "SET_CLASSROOM_ROLE"; classroomId: string; role: ClassroomRole };
+  | { type: "SET_CLASSROOM_ROLE"; classroomId: string; role: ClassroomRole }
+  | { type: "OPEN_ROLE_PROMPT"; classroomId: string }
+  | { type: "CLOSE_ROLE_PROMPT" };
 
 // ─── Initial State ───
 
@@ -304,6 +309,7 @@ export function createInitialState(): AppState {
     classroomAccessCodes: loadClassroomAccessCodes(),
     authPrompt: null,
     classroomRoles: loadClassroomRoles(),
+    rolePrompt: null,
   };
 }
 
@@ -460,6 +466,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       }
       return { ...state, classroomRoles };
     }
+
+    case "OPEN_ROLE_PROMPT":
+      return { ...state, rolePrompt: { classroomId: action.classroomId } };
+
+    case "CLOSE_ROLE_PROMPT":
+      return { ...state, rolePrompt: null };
 
     default:
       return state;

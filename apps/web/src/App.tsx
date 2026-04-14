@@ -21,6 +21,7 @@ import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
 import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
 import RoleContextPill from "./components/RoleContextPill";
+import RolePromptDialog from "./components/RolePromptDialog";
 import DifferentiatePanel from "./panels/DifferentiatePanel";
 import TomorrowPlanPanel from "./panels/TomorrowPlanPanel";
 import FamilyMessagePanel from "./panels/FamilyMessagePanel";
@@ -508,6 +509,18 @@ export default function App() {
   const activeRole: ClassroomRole =
     state.classroomRoles[activeClassroom] ?? "teacher";
 
+  // Prompt for role when a classroom is loaded but has no stored role
+  useEffect(() => {
+    if (
+      activeClassroom &&
+      profile &&
+      !state.classroomRoles[activeClassroom] &&
+      !state.rolePrompt
+    ) {
+      dispatch({ type: "OPEN_ROLE_PROMPT", classroomId: activeClassroom });
+    }
+  }, [activeClassroom, profile, state.classroomRoles, state.rolePrompt]);
+
   const ctxValue = useMemo(
     () => ({
       classrooms: state.classrooms,
@@ -776,6 +789,9 @@ export default function App() {
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
 
         {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
+        {state.rolePrompt ? (
+          <RolePromptDialog classroomId={state.rolePrompt.classroomId} />
+        ) : null}
         <ClassroomAccessDialog
           open={Boolean(authPrompt)}
           classroomId={authPrompt?.classroomId ?? activeClassroom}

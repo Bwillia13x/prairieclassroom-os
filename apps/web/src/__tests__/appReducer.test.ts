@@ -124,6 +124,28 @@ describe("createInitialState — classroomRoles hydration", () => {
   });
 });
 
+describe("appReducer — role prompt", () => {
+  beforeEach(() => {
+    installLocalStorage();
+    localStorage.clear();
+  });
+
+  it("OPEN_ROLE_PROMPT sets the prompt classroom id", () => {
+    const initial = baseState();
+    const next = appReducer(initial, {
+      type: "OPEN_ROLE_PROMPT",
+      classroomId: "classroom-a",
+    });
+    expect(next.rolePrompt).toEqual({ classroomId: "classroom-a" });
+  });
+
+  it("CLOSE_ROLE_PROMPT clears the prompt", () => {
+    const initial = baseState({ rolePrompt: { classroomId: "classroom-a" } });
+    const next = appReducer(initial, { type: "CLOSE_ROLE_PROMPT" });
+    expect(next.rolePrompt).toBeNull();
+  });
+});
+
 describe("ClassroomRole literal shape", () => {
   it("exports the four supported role values", () => {
     const roles: ClassroomRole[] = ["teacher", "ea", "substitute", "reviewer"];

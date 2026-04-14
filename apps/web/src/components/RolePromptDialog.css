@@ -1,0 +1,116 @@
+.role-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--color-backdrop, #000) 55%, transparent);
+  z-index: 100;
+}
+
+.role-prompt-dialog {
+  width: min(28rem, 92vw);
+  padding: var(--space-6);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-xl, 0 8px 32px rgba(0,0,0,.18));
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.role-prompt-dialog__title {
+  margin: 0;
+  font-size: 1.15rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.role-prompt-dialog__subtitle {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+.role-prompt-dialog__options {
+  border: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.role-prompt-dialog__option {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.role-prompt-dialog__option:hover {
+  background: var(--color-surface);
+}
+
+.role-prompt-dialog__option--selected {
+  border-color: var(--color-border-strong);
+  background: var(--color-surface);
+}
+
+.role-prompt-dialog__radio {
+  margin-top: 0.2rem;
+}
+
+.role-prompt-dialog__option-chip {
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-top: 0.2rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.role-prompt-dialog__option-chip[data-role="teacher"] {
+  background: var(--color-role-teacher);
+}
+
+.role-prompt-dialog__option-chip[data-role="ea"] {
+  background: var(--color-role-ea);
+}
+
+.role-prompt-dialog__option-chip[data-role="substitute"] {
+  background: var(--color-role-sub);
+}
+
+.role-prompt-dialog__option-chip[data-role="reviewer"] {
+  background: var(--color-role-reviewer);
+}
+
+.role-prompt-dialog__option-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.role-prompt-dialog__option-label {
+  font-weight: var(--font-weight-semibold);
+}
+
+.role-prompt-dialog__option-desc {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  line-height: 1.35;
+}
+
+.role-prompt-dialog__actions {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: flex-end;
+  margin-top: var(--space-2);
+}
