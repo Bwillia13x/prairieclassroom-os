@@ -217,9 +217,11 @@ describe("TodayPanel", () => {
 
     expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
     expect(screen.getByText("4 actions waiting")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Open Family Message" })).toBeInTheDocument();
+    // Hero and PendingActionsCard both render "Open Family Message" until Task 3 retires it from PendingActionsCard.
+    const openButtons = screen.getAllByRole("button", { name: "Open Family Message" });
+    expect(openButtons.length).toBeGreaterThanOrEqual(1);
 
-    await user.click(screen.getByRole("button", { name: "Open Family Message" }));
+    await user.click(openButtons[0]);
     expect(onTabChange).toHaveBeenCalledWith("family-message");
   });
 
@@ -404,6 +406,31 @@ describe("TodayPanel", () => {
     expect(
       await screen.findByText(/student priority/i),
     ).toBeInTheDocument();
+  });
+
+  it("renders the TodayHero landmark above the grid", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockResolvedValue(makeHealth());
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    const { container } = render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".today-hero")).toBeInTheDocument();
+    });
+    const hero = container.querySelector(".today-hero")!;
+    const grid = container.querySelector(".today-grid")!;
+    expect(grid).toBeInTheDocument();
+    // DOM order: hero must appear before the grid.
+    expect(
+      hero.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
   });
 
   it("shows an inline health error without blocking the rest of the dashboard", async () => {

@@ -21,7 +21,7 @@ import TimeSuggestion, { getSuggestion } from "../components/TimeSuggestion";
 import { Card, ActionButton } from "../components/shared";
 import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
-import TodayStory from "../components/TodayStory";
+import TodayHero from "../components/TodayHero";
 import type { TodaySnapshot, ClassroomHealth, StudentSummary, DrillDownContext, InterventionPrefill, FamilyMessagePrefill } from "../types";
 import "./TodayPanel.css";
 
@@ -130,6 +130,20 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 
+      {result ? (
+        <TodayHero
+          snapshot={result}
+          health={health.result ?? null}
+          students={studentSummaries.result ?? []}
+          recommendedAction={recommendedAction}
+          onCtaClick={() => {
+            if (recommendedAction) onTabChange(recommendedAction.tab);
+          }}
+        />
+      ) : (
+        <SectionSkeleton label="Loading today story" variant="story" lines={2} />
+      )}
+
       <div className="today-grid motion-stagger">
         {result ? (
           <DayArc
@@ -145,16 +159,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           />
         ) : (
           <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
-        )}
-
-        {result ? (
-          <TodayStory
-            snapshot={result}
-            health={health.result ?? null}
-            students={studentSummaries.result ?? []}
-          />
-        ) : (
-          <SectionSkeleton label="Loading today story" variant="story" lines={2} />
         )}
 
         {result ? (
