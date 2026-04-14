@@ -225,6 +225,14 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           <ComplexityDebtGauge
             debtItems={result.debt_register.items}
             previousTotal={previousDebtTotal}
+            onSegmentClick={(payload) =>
+              setDrillDown({
+                type: "trend",
+                trendKey: payload.trendKey,
+                data: health.result?.trends?.debt_total_14d ?? payload.data,
+                label: payload.label,
+              })
+            }
           />
         )}
 
@@ -247,7 +255,18 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         ) : null}
 
         {profile && profile.students.length > 0 && (
-          <ClassroomCompositionRings students={profile.students} />
+          <ClassroomCompositionRings
+            students={profile.students}
+            onSegmentClick={(payload) =>
+              setDrillDown({
+                type: "student-tag-group",
+                groupKind: payload.groupKind,
+                tag: payload.tag,
+                label: payload.label,
+                students: payload.students,
+              })
+            }
+          />
         )}
 
         {result && showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
@@ -323,6 +342,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         context={drillDown}
         onClose={() => setDrillDown(null)}
         onNavigate={(tab) => { setDrillDown(null); onTabChange(tab); }}
+        onContextChange={setDrillDown}
         onInterventionPrefill={onInterventionPrefill}
         onMessagePrefill={onMessagePrefill}
       />
