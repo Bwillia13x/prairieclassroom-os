@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -15,14 +15,17 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ResultBanner from "../components/ResultBanner";
-import { FeedbackCollector } from "../components/shared";
+import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import { useDownloadBlob } from "../hooks/useDownloadBlob";
+import { serializeLanguageOutputToPlainText, serializeVocabCardSetToMarkdown } from "./outputActionBarHelpers";
 import type { CurriculumSelection, SimplifyResponse, VocabCardsResponse } from "../types";
 
 type LanguageTool = "simplify" | "vocab";
 
 export default function LanguageToolsPanel() {
-  const { profile, showSuccess, activeClassroom } = useApp();
+  const { profile, showSuccess, appendTomorrowNote, activeClassroom } = useApp();
   const session = useSession();
   const simplify = useAsyncAction<SimplifyResponse>();
   const vocab = useAsyncAction<VocabCardsResponse>();
@@ -30,6 +33,102 @@ export default function LanguageToolsPanel() {
   const [simplifyKey, setSimplifyKey] = useState(0);
   const [vocabKey, setVocabKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const { copy } = useCopyToClipboard();
+  const { download } = useDownloadBlob();
+
+  const actions = useMemo<OutputAction[]>(() => {
+    if (activeTool === "simplify") {
+      if (!simplify.result) return [];
+      const simplified = simplify.result.simplified;
+      return [
+        {
+          key: "print",
+          label: "Print",
+          icon: "pencil",
+          onClick: () => window.print(),
+        },
+        {
+          key: "copy",
+          label: "Copy",
+          icon: "check",
+          onClick: async () => {
+            await copy(serializeLanguageOutputToPlainText(simplified));
+            showSuccess("Copied");
+          },
+        },
+        {
+          key: "download",
+          label: "Download",
+          icon: "grid",
+          onClick: () =>
+            download({
+              filename: "simplified-text.txt",
+              content: serializeLanguageOutputToPlainText(simplified),
+              mime: "text/plain",
+            }),
+        },
+        {
+          key: "save-to-tomorrow",
+          label: "Save to Tomorrow",
+          icon: "star",
+          variant: "primary",
+          onClick: () => {
+            appendTomorrowNote({
+              sourcePanel: "language-tools",
+              sourceType: "simplify_for_student",
+              summary: `Simplified text (${simplified.eal_level}, Grade ${simplified.grade_band})`,
+            });
+            showSuccess("Saved to Tomorrow Plan");
+          },
+        },
+      ];
+    } else {
+      if (!vocab.result) return [];
+      const cardSet = vocab.result.card_set;
+      return [
+        {
+          key: "print",
+          label: "Print",
+          icon: "pencil",
+          onClick: () => window.print(),
+        },
+        {
+          key: "copy",
+          label: "Copy",
+          icon: "check",
+          onClick: async () => {
+            await copy(serializeLanguageOutputToPlainText(cardSet));
+            showSuccess("Copied");
+          },
+        },
+        {
+          key: "download",
+          label: "Download",
+          icon: "grid",
+          onClick: () =>
+            download({
+              filename: `vocab-cards-${cardSet.target_language}.md`,
+              content: serializeVocabCardSetToMarkdown(cardSet),
+              mime: "text/markdown",
+            }),
+        },
+        {
+          key: "save-to-tomorrow",
+          label: "Save to Tomorrow",
+          icon: "star",
+          variant: "primary",
+          onClick: () => {
+            appendTomorrowNote({
+              sourcePanel: "language-tools",
+              sourceType: "generate_vocab_cards",
+              summary: `${cardSet.cards.length} vocab cards (${cardSet.target_language}, ${cardSet.subject})`,
+            });
+            showSuccess("Saved to Tomorrow Plan");
+          },
+        },
+      ];
+    }
+  }, [activeTool, simplify.result, vocab.result, copy, download, appendTomorrowNote, showSuccess]);
 
   useEffect(() => {
     session.recordPanelVisit("language-tools");
@@ -168,6 +267,7 @@ export default function LanguageToolsPanel() {
                   submitted={feedback.submitted}
                   panelLabel="simplified text"
                 />
+                <OutputActionBar actions={actions} contextLabel="Language tools output" />
               </>
             ) : null}
             {vocab.result && activeTool === "vocab" ? (
@@ -180,6 +280,7 @@ export default function LanguageToolsPanel() {
                   submitted={feedback.submitted}
                   panelLabel="vocabulary cards"
                 />
+                <OutputActionBar actions={actions} contextLabel="Language tools output" />
               </>
             ) : null}
           </div>

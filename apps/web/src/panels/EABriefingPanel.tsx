@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -13,16 +13,68 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
-import { FeedbackCollector } from "../components/shared";
+import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import { useDownloadBlob } from "../hooks/useDownloadBlob";
+import { serializeEABriefingToPlainText, serializeEABriefingToMarkdown } from "./outputActionBarHelpers";
 import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, appendTomorrowNote } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<EABriefingResponse>();
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const { copy } = useCopyToClipboard();
+  const { download } = useDownloadBlob();
+
+  const actions = useMemo<OutputAction[]>(() => {
+    if (!result) return [];
+    const briefing = result.briefing;
+    return [
+      {
+        key: "print",
+        label: "Print",
+        icon: "pencil",
+        onClick: () => window.print(),
+      },
+      {
+        key: "copy",
+        label: "Copy",
+        icon: "check",
+        onClick: async () => {
+          await copy(serializeEABriefingToPlainText(briefing));
+          showSuccess("Copied");
+        },
+      },
+      {
+        key: "download",
+        label: "Download",
+        icon: "grid",
+        onClick: () =>
+          download({
+            filename: `ea-briefing-${briefing.date}.md`,
+            content: serializeEABriefingToMarkdown(briefing),
+            mime: "text/markdown",
+          }),
+      },
+      {
+        key: "save-to-tomorrow",
+        label: "Save to Tomorrow",
+        icon: "star",
+        variant: "primary",
+        onClick: () => {
+          appendTomorrowNote({
+            sourcePanel: "ea-briefing",
+            sourceType: "generate_ea_briefing",
+            summary: `EA briefing for ${briefing.date}: ${briefing.schedule_blocks.length} blocks, ${briefing.student_watch_list.length} watch items`,
+          });
+          showSuccess("Saved to Tomorrow Plan");
+        },
+      },
+    ];
+  }, [result, copy, download, appendTomorrowNote, showSuccess]);
 
   useEffect(() => {
     session.recordPanelVisit("ea-briefing");
@@ -106,6 +158,7 @@ export default function EABriefingPanel() {
                   submitted={feedback.submitted}
                   panelLabel="EA briefing"
                 />
+                <OutputActionBar actions={actions} contextLabel="EA briefing output" />
               </>
             ) : null}
           </div>

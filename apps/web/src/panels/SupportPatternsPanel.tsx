@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -13,8 +13,10 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
-import { FeedbackCollector } from "../components/shared";
+import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import { serializeSupportPatternsToPlainText } from "./outputActionBarHelpers";
 import type { SupportPatternsResponse, FamilyMessagePrefill, InterventionPrefill } from "../types";
 
 interface Props {
@@ -23,11 +25,57 @@ interface Props {
 }
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, appendTomorrowNote } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<SupportPatternsResponse>();
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const { copy } = useCopyToClipboard();
+
+  const actions = useMemo<OutputAction[]>(() => {
+    if (!result) return [];
+    const report = result.report;
+    return [
+      {
+        key: "print",
+        label: "Print",
+        icon: "pencil",
+        onClick: () => window.print(),
+      },
+      {
+        key: "copy",
+        label: "Copy",
+        icon: "check",
+        onClick: async () => {
+          await copy(serializeSupportPatternsToPlainText(report));
+          showSuccess("Copied");
+        },
+      },
+      {
+        key: "save-to-tomorrow",
+        label: "Save to Tomorrow",
+        icon: "star",
+        variant: "primary",
+        onClick: () => {
+          appendTomorrowNote({
+            sourcePanel: "support-patterns",
+            sourceType: "detect_support_patterns",
+            summary: `${report.recurring_themes.length} recurring themes, ${report.suggested_focus.length} focus areas identified`,
+          });
+          showSuccess("Saved to Tomorrow Plan");
+        },
+      },
+      {
+        key: "share-with-ea",
+        label: "Share with EA",
+        icon: "mail",
+        onClick: async () => {
+          await copy(serializeSupportPatternsToPlainText(report));
+          showSuccess("EA summary copied — paste into Slack/email");
+        },
+      },
+    ];
+  }, [result, copy, appendTomorrowNote, showSuccess]);
 
   useEffect(() => {
     session.recordPanelVisit("support-patterns");
@@ -120,6 +168,7 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
                   submitted={feedback.submitted}
                   panelLabel="support patterns"
                 />
+                <OutputActionBar actions={actions} contextLabel="Support patterns output" />
               </>
             ) : null}
           </div>
