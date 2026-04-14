@@ -168,3 +168,19 @@ describe("TodayHero", () => {
     ).toBeInTheDocument();
   });
 });
+
+describe("TodayHero css hygiene", () => {
+  it("does not introduce raw hex colors", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const cssPath = path.resolve(
+      __dirname,
+      "..",
+      "TodayHero.css",
+    );
+    const css = fs.readFileSync(cssPath, "utf8");
+    // Match #abc or #aabbcc hex literals (excluding var refs).
+    const hexMatches = css.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
+    expect(hexMatches).toEqual([]);
+  });
+});
