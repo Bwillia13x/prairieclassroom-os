@@ -265,16 +265,18 @@ export default function App() {
   useEffect(() => {
     configureApiClient({
       getClassroomCode: (classroomId) => state.classroomAccessCodes[classroomId],
+      getClassroomRole: (classroomId) => state.classroomRoles[classroomId] ?? "teacher",
       requestClassroomCode,
     });
 
     return () => {
       configureApiClient({
         getClassroomCode: undefined,
+        getClassroomRole: undefined,
         requestClassroomCode: undefined,
       });
     };
-  }, [requestClassroomCode, state.classroomAccessCodes]);
+  }, [requestClassroomCode, state.classroomAccessCodes, state.classroomRoles]);
 
   useEffect(() => {
     void flushQueuedClientArtifacts();

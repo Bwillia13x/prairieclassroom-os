@@ -52,6 +52,7 @@ interface AuthChallenge {
 
 interface ApiClientConfig {
   getClassroomCode?: (classroomId: string) => string | undefined;
+  getClassroomRole?: (classroomId: string) => string | undefined;
   requestClassroomCode?: (challenge: AuthChallenge) => Promise<string | null>;
 }
 
@@ -128,6 +129,11 @@ async function requestJson<T>(path: string, options: RequestOptions = {}): Promi
     ?? (classroomId ? apiClientConfig.getClassroomCode?.(classroomId) : undefined);
   if (classroomCode) {
     headers.set("X-Classroom-Code", classroomCode);
+  }
+
+  const classroomRole = classroomId ? apiClientConfig.getClassroomRole?.(classroomId) : undefined;
+  if (classroomRole) {
+    headers.set("X-Classroom-Role", classroomRole);
   }
 
   const res = await fetch(`${API_BASE}${path}`, {

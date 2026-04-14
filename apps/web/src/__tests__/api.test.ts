@@ -49,6 +49,7 @@ beforeEach(() => {
   // Reset the api client config to a clean state between tests
   configureApiClient({
     getClassroomCode: undefined,
+    getClassroomRole: undefined,
     requestClassroomCode: undefined,
   });
 });
@@ -657,5 +658,114 @@ describe("classroomId resolution from body", () => {
     const [, init] = mockFetch.mock.calls[0];
     const headers = new Headers(init.headers);
     expect(headers.get("X-Classroom-Code")).toBe("code-from-body");
+  });
+});
+
+// ===========================================================================
+// X-Classroom-Role header
+// ===========================================================================
+
+describe("X-Classroom-Role header", () => {
+  it("is included when getClassroomRole returns a role for the classroom", async () => {
+    configureApiClient({
+      getClassroomRole: (id: string) => (id === "c1" ? "ea" : undefined),
+    });
+    mockFetch.mockResolvedValueOnce(jsonResponse(200, {
+      debt_register: { register_id: "r", classroom_id: "c1", items: [], item_count_by_category: {}, generated_at: "", schema_version: "1" },
+      latest_plan: null,
+      latest_forecast: null,
+      student_count: 0,
+      last_activity_at: null,
+    }));
+
+    await fetchTodaySnapshot("c1");
+
+    const [, init] = mockFetch.mock.calls[0];
+    const headers = new Headers(init.headers);
+    expect(headers.get("X-Classroom-Role")).toBe("ea");
+  });
+
+  it("is NOT included when getClassroomRole returns undefined", async () => {
+    configureApiClient({
+      getClassroomRole: () => undefined,
+    });
+    mockFetch.mockResolvedValueOnce(jsonResponse(200, {
+      debt_register: { register_id: "r", classroom_id: "c1", items: [], item_count_by_category: {}, generated_at: "", schema_version: "1" },
+      latest_plan: null,
+      latest_forecast: null,
+      student_count: 0,
+      last_activity_at: null,
+    }));
+
+    await fetchTodaySnapshot("c1");
+
+    const [, init] = mockFetch.mock.calls[0];
+    const headers = new Headers(init.headers);
+    expect(headers.get("X-Classroom-Role")).toBeNull();
+  });
+
+  it("resolves classroomId from body for POST and sends the role", async () => {
+    configureApiClient({
+      getClassroomRole: (id: string) => (id === "c1" ? "substitute" : undefined),
+    });
+    mockFetch.mockResolvedValueOnce(jsonResponse(200, {
+      artifact_id: "a1",
+      variants: [],
+      model_id: "mock",
+      latency_ms: 5,
+    }));
+
+    await differentiate({
+      artifact: { artifact_id: "a1", title: "T", subject: "math", source_type: "text" },
+      classroom_id: "c1",
+    });
+
+    const [, init] = mockFetch.mock.calls[0];
+    const headers = new Headers(init.headers);
+    expect(headers.get("X-Classroom-Role")).toBe("substitute");
+  });
+
+  it("is NOT included when classroomId cannot be resolved", async () => {
+    configureApiClient({
+      getClassroomRole: () => "ea",
+    });
+    mockFetch.mockResolvedValueOnce(jsonResponse(200, [
+      { classroom_id: "c1", grade_band: "3-4", subject_focus: "math", classroom_notes: [], students: [] },
+    ]));
+
+    // listClassrooms has no classroomId in path or body
+    await listClassrooms();
+
+    const [, init] = mockFetch.mock.calls[0];
+    const headers = new Headers(init.headers);
+    expect(headers.get("X-Classroom-Role")).toBeNull();
+  });
+
+  it("is carried through to the retry after an auth challenge", async () => {
+    const requestClassroomCode = vi.fn().mockResolvedValue("new-code");
+    configureApiClient({
+      getClassroomCode: () => undefined,
+      getClassroomRole: () => "teacher",
+      requestClassroomCode,
+    });
+
+    mockFetch
+      .mockResolvedValueOnce(jsonResponse(401, {
+        error: "auth",
+        category: "auth",
+        detail_code: "classroom_code_missing",
+      }))
+      .mockResolvedValueOnce(jsonResponse(200, {
+        debt_register: { register_id: "r", classroom_id: "c1", items: [], item_count_by_category: {}, generated_at: "", schema_version: "1" },
+        latest_plan: null,
+        latest_forecast: null,
+        student_count: 0,
+        last_activity_at: null,
+      }));
+
+    await fetchTodaySnapshot("c1");
+    const [, retryInit] = mockFetch.mock.calls[1];
+    const retryHeaders = new Headers(retryInit.headers);
+    expect(retryHeaders.get("X-Classroom-Role")).toBe("teacher");
   });
 });
