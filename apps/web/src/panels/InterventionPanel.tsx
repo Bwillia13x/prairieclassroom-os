@@ -18,7 +18,8 @@ import ResultBanner from "../components/ResultBanner";
 import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
-import type { InterventionResponse, InterventionRecord, InterventionPrefill } from "../types";
+import QuickCaptureTray from "../components/quickCapture/QuickCaptureTray";
+import type { InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
 
 interface Props {
   prefill: InterventionPrefill | null;
@@ -81,6 +82,15 @@ export default function InterventionPanel({ prefill }: Props) {
     }
   }
 
+  function handleQuickSubmit(request: InterventionRequest) {
+    void handleSubmit(
+      request.classroom_id,
+      request.student_refs,
+      request.teacher_note,
+      request.context,
+    );
+  }
+
   function handleHistorySelect(record: InterventionRecord) {
     setHistoricalResult({ record, model_id: "", latency_ms: 0 });
   }
@@ -104,6 +114,12 @@ export default function InterventionPanel({ prefill }: Props) {
       <WorkspaceLayout
         rail={(
           <>
+            <QuickCaptureTray
+              classroomId={activeClassroom}
+              students={students}
+              loading={loading}
+              onSubmit={handleQuickSubmit}
+            />
             <ContextualHint
               featureKey="log-intervention"
               title="Log Intervention"
@@ -126,15 +142,18 @@ export default function InterventionPanel({ prefill }: Props) {
                 <FollowUpSuccessRate records={history.items} />
               </>
             )}
-            <InterventionLogger
-              classrooms={classrooms}
-              students={students}
-              selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
-              onSubmit={handleSubmit}
-              loading={loading}
-              prefill={prefill}
-            />
+            <details className="intervention-structured-details">
+              <summary>Structured details (optional)</summary>
+              <InterventionLogger
+                classrooms={classrooms}
+                students={students}
+                selectedClassroom={activeClassroom}
+                onClassroomChange={setActiveClassroom}
+                onSubmit={handleSubmit}
+                loading={loading}
+                prefill={prefill}
+              />
+            </details>
           </>
         )}
         canvas={(
