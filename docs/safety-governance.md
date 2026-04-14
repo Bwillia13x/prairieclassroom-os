@@ -15,6 +15,7 @@ PrairieClassroom OS supports classroom adults. It does not replace judgment, dia
 ## Output policy
 
 ### Allowed
+
 - lesson differentiation
 - support planning
 - plain-language communication drafts
@@ -22,6 +23,7 @@ PrairieClassroom OS supports classroom adults. It does not replace judgment, dia
 - retrieval-grounded summaries
 
 ### Restricted
+
 - anything that sounds medical, clinical, or disciplinary
 - high-confidence claims unsupported by current context
 - parent messaging that bypasses teacher review
@@ -29,6 +31,7 @@ PrairieClassroom OS supports classroom adults. It does not replace judgment, dia
 ## Logging expectations
 
 For any outward-facing draft or structured action, preserve:
+
 - source prompt class
 - model route used
 - tool calls made
@@ -38,6 +41,7 @@ For any outward-facing draft or structured action, preserve:
 ## Review triggers
 
 Require a safety review when:
+
 - a new tool is introduced
 - classroom images are used in a new way
 - parent messaging behavior changes
@@ -47,24 +51,42 @@ Require a safety review when:
 
 Safety posture depends on the data lane:
 
-| Mode | Real classroom data | Hosted model calls | Notes |
-|---|---:|---:|---|
-| Demo | no | allowed only with synthetic/demo data | Public demos and judging. |
-| Synthetic proof | no | allowed only with synthetic/demo data | Eval, release-gate, and proof artifacts. |
-| Local pilot rehearsal | no | no | Fake or manually de-identified records only. |
-| Local real-data pilot | gated | no | Requires pilot-readiness blockers to be closed. |
-| Hosted real-data use | prohibited | prohibited | No exception in the current product. |
+| Mode                  | Real classroom data |                    Hosted model calls | Notes                                           |
+| --------------------- | ------------------: | ------------------------------------: | ----------------------------------------------- |
+| Demo                  |                  no | allowed only with synthetic/demo data | Public demos and judging.                       |
+| Synthetic proof       |                  no | allowed only with synthetic/demo data | Eval, release-gate, and proof artifacts.        |
+| Local pilot rehearsal |                  no |                                    no | Fake or manually de-identified records only.    |
+| Local real-data pilot |               gated |                                    no | Requires pilot-readiness blockers to be closed. |
+| Hosted real-data use  |          prohibited |                            prohibited | No exception in the current product.            |
 
 ## Adult role boundaries
 
-Classroom-code auth is sufficient for demo and local rehearsal only. The current API adds an initial adult role boundary through optional `X-Classroom-Role`, with route scopes generated in `docs/api-surface.md`.
+Classroom-code auth is sufficient for demo and local rehearsal only. The current API adds an initial adult role boundary through the mandatory `X-Classroom-Role` header, with route scopes generated in `docs/api-surface.md`.
+
+### Client-side role system (Role Identity Pill)
+
+Each classroom stores a locally persisted role selection (`localStorage` key `prairie-classroom-roles`). On first load of a classroom with no stored role, the `RolePromptDialog` prompts the adult to self-select. The selection is surfaced in the header via the `RoleContextPill` dropdown and sent on every API request as `X-Classroom-Role`.
+
+### Supported roles and capabilities
+
+| Role           | `canWrite` | `canApproveMessages` | `canLogInterventions` | `canEditSchedule` |
+| -------------- | :--------: | :------------------: | :-------------------: | :---------------: |
+| **teacher**    |    yes     |         yes          |          yes          |        yes        |
+| **ea**         |    yes     |          no          |          yes          |        no         |
+| **substitute** |    yes     |          no          |          yes          |        no         |
+| **reviewer**   |     no     |          no          |          no           |        no         |
+
+The `useRole()` hook (`apps/web/src/hooks/useRole.ts`) exposes these capabilities. The pure `roleCapabilities()` function can be reused server-side.
+
+### Scope notes
 
 - Teacher owner scope currently covers generation, schedule writes, raw classroom history, classroom health, and student summaries.
-- EA collaborator scope currently covers Today, EA briefing, debt register, feedback, and session-summary routes.
+- EA collaborator scope currently covers Today, EA briefing, debt register, feedback, and session-summary routes. Family message approval is gated client-side via `canApproveMessages`.
 - Substitute view should see only teacher-approved survival-packet content for a bounded date; this dedicated view is not implemented yet.
 - Reviewer/read-only roles should inspect de-identified summaries only; this dedicated view is not implemented yet.
 - No role receives unrestricted raw intervention history by default.
 - This is not a district identity system, SSO integration, or authenticated audit log. Those remain future requirements for multi-user or school-managed deployment.
+- Client-side gating is a UX affordance, not a security boundary. Server-side enforcement of `X-Classroom-Role` is required before real-data pilot.
 
 ## Data lifecycle expectations
 
