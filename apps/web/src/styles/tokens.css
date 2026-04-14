@@ -98,6 +98,12 @@
   --color-approve-hover: light-dark(#375c35, #88a87d);
   --color-text-on-accent: light-dark(#000000, #0c0c0a);
 
+  /* Role identity chip colors */
+  --color-role-teacher: light-dark(#4f7a56, #70a080);
+  --color-role-ea: light-dark(#7a5c6c, #a08090);
+  --color-role-sub: light-dark(#a07830, #d0a050);
+  --color-role-reviewer: light-dark(#6a7a8a, #90a0b0);
+
   /* Elevation — shadow color primitives for light-dark switching
      Ive-inspired: shadows should whisper, not shout. Barely perceptible
      ambient occlusion that grounds surfaces without drawing attention.
