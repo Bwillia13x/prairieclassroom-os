@@ -26,6 +26,13 @@ interface Props {
   prefill: InterventionPrefill | null;
 }
 
+/**
+ * Intervention capture uses a dual-path design:
+ * - `QuickCaptureTray` is the primary, chip-first flow — designed for 5-second hallway capture.
+ * - The legacy `InterventionLogger` is preserved inside a `<details>` expansion for structured
+ *   contexts (classroom switching, Tomorrow-Plan prefill, full-form logging). The details panel
+ *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
+ */
 export default function InterventionPanel({ prefill }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
   const session = useSession();

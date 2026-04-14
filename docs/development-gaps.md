@@ -32,6 +32,7 @@
 | **G-13** | Canonical system inventory drift | **Closed for current surface** | `npm run system:inventory` now generates `docs/system-inventory.md` and `docs/api-surface.md`, while `npm run system:inventory:check` catches panel, prompt, tier, and exact endpoint drift across canonical docs. |
 | **G-14** | Pilot readiness and real-data governance | **Partial** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) now cover operating modes, memory lifecycle, initial teacher/EA boundaries, per-request access evidence, and the paperwork a first real pilot session would need. Dedicated substitute/reviewer views remain the last structural blocker before real classroom data is acceptable. |
 | **G-15** | Synthetic classroom fixture convention drift | Partial | Surfaced 2026-04-13 during the 26-student demo expansion review: `classroom_demo.json` uses `eal_level_1/2/3` on the preserved D1/D4/D6 students while the other five classrooms use `emerging_english`, creating two parallel vocabularies for the same concept. Separately, `Amira` appears as an alias in both `classroom_demo` and `classroom_charlie`, silently defeating the `evals/fixtures/regressions/*-alias-leak.json` fixtures for that specific name. Preserved as-is in the 2026-04-13 expansion because of byte-for-byte preservation of the 6 original demo students, but needs deliberate unification before the next major fixture evolution. |
+| **G-16** | Intervention capture velocity | **Closed** | `QuickCaptureTray` chip-first flow shipped 2026-04-14. Legacy `InterventionLogger` preserved in a `<details>` expansion; auto-opens on Tomorrow-Plan prefill. No schema or API changes — frontend-only addition on top of the existing `logIntervention` contract. |
 
 ## Gap details
 
@@ -234,3 +235,7 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 
 - Pick Option A or Option B and execute as a dedicated sprint, not as a side-quest during other fixture work.
 - Until then: flag this debt in any code review that touches synthetic classroom fixtures so the inconsistency does not propagate further.
+
+### Intervention capture velocity
+
+- **G-16 (2026-04-14, shipped):** `QuickCaptureTray` reduces hallway logging friction with a chip-first 5-second submission flow. The legacy `InterventionLogger` remains available in a `<details>` expansion and auto-opens when a Tomorrow-Plan prefill arrives. Downstream impact: higher intervention-record density strengthens `detect_support_patterns` and `forecast_complexity` inputs.
