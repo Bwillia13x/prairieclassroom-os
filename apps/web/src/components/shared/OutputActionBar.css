@@ -21,7 +21,7 @@
 .output-action-bar--sticky {
   position: sticky;
   bottom: 0;
-  z-index: 2;
+  z-index: var(--z-sticky, 10);
   box-shadow: 0 -4px 12px color-mix(in srgb, var(--color-border) 50%, transparent);
 }
 
