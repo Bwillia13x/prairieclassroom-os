@@ -62,3 +62,6 @@ apps/web/tsconfig.tsbuildinfo
 data/memory/*.sqlite
 data/memory/*.sqlite-wal
 data/memory/*.sqlite-shm
+
+# Git worktrees for isolated feature development
+.worktrees/
