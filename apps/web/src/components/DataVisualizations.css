@@ -1323,3 +1323,35 @@
     filter: brightness(1.08);
   }
 }
+
+/* Task 5c: clickable composition/pattern chart affordances */
+.viz-composition__segment--clickable,
+.viz-pattern-radar__axis-hit,
+.viz-followup-rate--clickable,
+.viz-int-timeline__dot--clickable {
+  cursor: pointer;
+}
+
+.viz-composition__segment--clickable:focus-visible,
+.viz-pattern-radar__axis-hit:focus-visible,
+.viz-followup-rate--clickable:focus-visible,
+.viz-int-timeline__dot--clickable:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .viz-composition__segment--clickable,
+  .viz-pattern-radar__axis-hit,
+  .viz-followup-rate--clickable,
+  .viz-int-timeline__dot--clickable {
+    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+  }
+
+  .viz-composition__segment--clickable:hover,
+  .viz-pattern-radar__axis-hit:hover,
+  .viz-followup-rate--clickable:hover,
+  .viz-int-timeline__dot--clickable:hover {
+    filter: brightness(1.08);
+  }
+}

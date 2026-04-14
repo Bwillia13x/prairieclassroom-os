@@ -7,8 +7,12 @@ import {
   PlanStreakCalendar,
   VariantSummaryStrip,
   PlanCoverageRadar,
+  ClassroomCompositionRings,
+  SupportPatternRadar,
+  FollowUpSuccessRate,
+  InterventionTimeline,
 } from "../DataVisualizations";
-import type { DebtItem } from "../../types";
+import type { DebtItem, InterventionRecord, RecurringTheme } from "../../types";
 
 // ----------------------------------------------------------------
 // Shared synthetic data
@@ -399,5 +403,217 @@ describe("PlanCoverageRadar — onSegmentClick", () => {
       />
     );
     expect(screen.queryByTestId("viz-plan-radar-axis-watchpoints")).toBeNull();
+  });
+});
+
+// ----------------------------------------------------------------
+// Block 7 — ClassroomCompositionRings click a ring segment
+// ----------------------------------------------------------------
+
+const COMPOSITION_STUDENTS = [
+  { alias: "Amira", eal_flag: true, support_tags: ["eal_level_2"], family_language: "Arabic" },
+  { alias: "Ben", eal_flag: true, support_tags: ["eal_level_2"], family_language: "Arabic" },
+  { alias: "Chen", eal_flag: true, support_tags: ["eal_level_3"], family_language: "Mandarin" },
+  { alias: "Dara", eal_flag: false, support_tags: [], family_language: undefined },
+  { alias: "Evie", eal_flag: true, support_tags: ["eal_level_1"], family_language: "Mandarin" },
+  { alias: "Farah", eal_flag: true, support_tags: ["eal_level_2"], family_language: "Arabic" },
+];
+
+describe("ClassroomCompositionRings — onSegmentClick", () => {
+  it("fires onSegmentClick with correct payload when eal_level_2 segment is clicked", () => {
+    const spy = vi.fn();
+    render(<ClassroomCompositionRings students={COMPOSITION_STUDENTS} onSegmentClick={spy} />);
+    const seg = screen.getByTestId("viz-composition-segment-eal-eal_level_2");
+    fireEvent.click(seg);
+    expect(spy).toHaveBeenCalledTimes(1);
+    const payload = spy.mock.calls[0][0];
+    expect(payload.groupKind).toBe("eal");
+    expect(payload.tag).toBe("eal_level_2");
+    expect(payload.label).toBe("EAL Level 2");
+    expect(payload.students).toHaveLength(3);
+    expect(payload.students.map((s: { alias: string }) => s.alias).sort()).toEqual(["Amira", "Ben", "Farah"]);
+  });
+
+  it("fires onSegmentClick with groupKind family_language when Arabic segment is clicked", () => {
+    const spy = vi.fn();
+    render(<ClassroomCompositionRings students={COMPOSITION_STUDENTS} onSegmentClick={spy} />);
+    const seg = screen.getByTestId("viz-composition-segment-family_language-Arabic");
+    fireEvent.click(seg);
+    expect(spy).toHaveBeenCalledTimes(1);
+    const payload = spy.mock.calls[0][0];
+    expect(payload.groupKind).toBe("family_language");
+    expect(payload.tag).toBe("Arabic");
+    expect(payload.students).toHaveLength(3);
+  });
+
+  it("eal segment has a non-empty aria-label containing the tag label", () => {
+    const spy = vi.fn();
+    render(<ClassroomCompositionRings students={COMPOSITION_STUDENTS} onSegmentClick={spy} />);
+    const seg = screen.getByTestId("viz-composition-segment-eal-eal_level_2");
+    const label = seg.getAttribute("aria-label");
+    expect(label).toBeTruthy();
+    expect(label!.length).toBeGreaterThan(0);
+    expect(label).toContain("EAL Level 2");
+  });
+
+  it("fires onSegmentClick on Enter keydown", () => {
+    const spy = vi.fn();
+    render(<ClassroomCompositionRings students={COMPOSITION_STUDENTS} onSegmentClick={spy} />);
+    const seg = screen.getByTestId("viz-composition-segment-eal-eal_level_2");
+    fireEvent.keyDown(seg, { key: "Enter" });
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders without testid when onSegmentClick is absent (no regression)", () => {
+    render(<ClassroomCompositionRings students={COMPOSITION_STUDENTS} />);
+    expect(screen.queryByTestId("viz-composition-segment-eal-eal_level_2")).toBeNull();
+  });
+});
+
+// ----------------------------------------------------------------
+// Block 8 — SupportPatternRadar theme axis click
+// ----------------------------------------------------------------
+
+const PATTERN_THEMES: RecurringTheme[] = [
+  { theme: "transition routine", student_refs: ["Amira", "Ben", "Chen"], evidence_count: 3, example_observations: ["obs1"] },
+  { theme: "focus and attention issues", student_refs: ["Dara", "Evie"], evidence_count: 2, example_observations: ["obs2"] },
+  { theme: "reading comprehension", student_refs: ["Amira", "Farah"], evidence_count: 4, example_observations: ["obs3"] },
+  { theme: "math difficulties", student_refs: ["Ben"], evidence_count: 1, example_observations: ["obs4"] },
+  { theme: "social peer conflict", student_refs: ["Chen", "Dara"], evidence_count: 2, example_observations: ["obs5"] },
+];
+
+describe("SupportPatternRadar — onSegmentClick", () => {
+  it("fires onSegmentClick with correct payload when transition axis is clicked", () => {
+    const spy = vi.fn();
+    render(<SupportPatternRadar themes={PATTERN_THEMES} onSegmentClick={spy} />);
+    const hit = screen.getByTestId("viz-pattern-radar-axis-transition");
+    fireEvent.click(hit);
+    expect(spy).toHaveBeenCalledTimes(1);
+    const payload = spy.mock.calls[0][0];
+    expect(payload.axis).toBe("transition");
+    expect(payload.label).toBe("Transitions");
+    // themes that map to transition axis
+    expect(payload.themes.length).toBeGreaterThan(0);
+    expect(payload.themes.every((t: RecurringTheme) => /transition|routine|arrival|settling|pack|after.?lunch/.test(t.theme.toLowerCase()))).toBe(true);
+  });
+
+  it("fires onSegmentClick on Enter keydown", () => {
+    const spy = vi.fn();
+    render(<SupportPatternRadar themes={PATTERN_THEMES} onSegmentClick={spy} />);
+    const hit = screen.getByTestId("viz-pattern-radar-axis-transition");
+    fireEvent.keyDown(hit, { key: "Enter" });
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it("axis hit target has a non-empty aria-label", () => {
+    const spy = vi.fn();
+    render(<SupportPatternRadar themes={PATTERN_THEMES} onSegmentClick={spy} />);
+    const hit = screen.getByTestId("viz-pattern-radar-axis-transition");
+    const label = hit.getAttribute("aria-label");
+    expect(label).toBeTruthy();
+    expect(label!.length).toBeGreaterThan(0);
+  });
+
+  it("renders without testid when onSegmentClick is absent (no regression)", () => {
+    render(<SupportPatternRadar themes={PATTERN_THEMES} />);
+    expect(screen.queryByTestId("viz-pattern-radar-axis-transition")).toBeNull();
+  });
+});
+
+// ----------------------------------------------------------------
+// Block 9 — FollowUpSuccessRate click
+// ----------------------------------------------------------------
+
+const FOLLOWUP_RECORDS: InterventionRecord[] = [
+  { record_id: "r1", classroom_id: "cls1", student_refs: ["s1"], observation: "obs1", action_taken: "act1", follow_up_needed: true, created_at: "2026-01-01T10:00:00Z", schema_version: "1" },
+  { record_id: "r2", classroom_id: "cls1", student_refs: ["s2"], observation: "obs2", action_taken: "act2", follow_up_needed: false, created_at: "2026-01-02T10:00:00Z", schema_version: "1" },
+  { record_id: "r3", classroom_id: "cls1", student_refs: ["s3"], observation: "obs3", action_taken: "act3", follow_up_needed: true, created_at: "2026-01-03T10:00:00Z", schema_version: "1" },
+  { record_id: "r4", classroom_id: "cls1", student_refs: ["s4"], observation: "obs4", action_taken: "act4", follow_up_needed: false, created_at: "2026-01-04T10:00:00Z", schema_version: "1" },
+];
+
+describe("FollowUpSuccessRate — onSegmentClick", () => {
+  it("fires onSegmentClick with stale_followup payload when the rate indicator is clicked", () => {
+    const spy = vi.fn();
+    render(<FollowUpSuccessRate records={FOLLOWUP_RECORDS} onSegmentClick={spy} />);
+    const hit = screen.getByTestId("viz-followup-rate-hit");
+    fireEvent.click(hit);
+    expect(spy).toHaveBeenCalledTimes(1);
+    const payload = spy.mock.calls[0][0];
+    expect(payload.category).toBe("stale_followup");
+    expect(payload.items).toHaveLength(2);
+    expect(payload.items.every((r: InterventionRecord) => r.follow_up_needed === true)).toBe(true);
+  });
+
+  it("fires onSegmentClick on Enter keydown", () => {
+    const spy = vi.fn();
+    render(<FollowUpSuccessRate records={FOLLOWUP_RECORDS} onSegmentClick={spy} />);
+    const hit = screen.getByTestId("viz-followup-rate-hit");
+    fireEvent.keyDown(hit, { key: "Enter" });
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
+
+  it("hit target has a non-empty aria-label", () => {
+    const spy = vi.fn();
+    render(<FollowUpSuccessRate records={FOLLOWUP_RECORDS} onSegmentClick={spy} />);
+    const hit = screen.getByTestId("viz-followup-rate-hit");
+    const label = hit.getAttribute("aria-label");
+    expect(label).toBeTruthy();
+    expect(label!.length).toBeGreaterThan(0);
+  });
+
+  it("renders without testid when onSegmentClick is absent (no regression)", () => {
+    render(<FollowUpSuccessRate records={FOLLOWUP_RECORDS} />);
+    expect(screen.queryByTestId("viz-followup-rate-hit")).toBeNull();
+  });
+});
+
+// ----------------------------------------------------------------
+// Block 10 — InterventionTimeline dot click
+// ----------------------------------------------------------------
+
+const TIMELINE_RECORDS: InterventionRecord[] = [
+  { record_id: "t1", classroom_id: "cls1", student_refs: ["Alice"], observation: "obs1", action_taken: "act1", follow_up_needed: false, created_at: "2026-01-01T10:00:00Z", schema_version: "1" },
+  { record_id: "t2", classroom_id: "cls1", student_refs: ["Ben"], observation: "obs2", action_taken: "act2", follow_up_needed: true, created_at: "2026-01-03T10:00:00Z", schema_version: "1" },
+  { record_id: "t3", classroom_id: "cls1", student_refs: ["Chen"], observation: "obs3", action_taken: "act3", follow_up_needed: false, created_at: "2026-01-05T10:00:00Z", schema_version: "1" },
+  { record_id: "t4", classroom_id: "cls1", student_refs: ["Dara"], observation: "obs4", action_taken: "act4", follow_up_needed: true, created_at: "2026-01-07T10:00:00Z", schema_version: "1" },
+  { record_id: "t5", classroom_id: "cls1", student_refs: ["Evie"], observation: "obs5", action_taken: "act5", follow_up_needed: false, created_at: "2026-01-09T10:00:00Z", schema_version: "1" },
+];
+
+describe("InterventionTimeline — onDotClick", () => {
+  it("fires onDotClick with the correct record when the 3rd dot is clicked", () => {
+    const spy = vi.fn();
+    render(<InterventionTimeline records={TIMELINE_RECORDS} onDotClick={spy} />);
+    const dot = screen.getByTestId("viz-int-timeline-dot-t3");
+    fireEvent.click(dot);
+    expect(spy).toHaveBeenCalledTimes(1);
+    const called = spy.mock.calls[0][0];
+    expect(called.record_id).toBe("t3");
+  });
+
+  it("each dot has role=button, tabIndex=0, and non-empty aria-label", () => {
+    const spy = vi.fn();
+    render(<InterventionTimeline records={TIMELINE_RECORDS} onDotClick={spy} />);
+    for (const record of TIMELINE_RECORDS) {
+      const dot = screen.getByTestId(`viz-int-timeline-dot-${record.record_id}`);
+      expect(dot).toHaveAttribute("role", "button");
+      expect(dot).toHaveAttribute("tabindex", "0");
+      const label = dot.getAttribute("aria-label");
+      expect(label).toBeTruthy();
+      expect(label!.length).toBeGreaterThan(0);
+    }
+  });
+
+  it("fires onDotClick on Enter keydown", () => {
+    const spy = vi.fn();
+    render(<InterventionTimeline records={TIMELINE_RECORDS} onDotClick={spy} />);
+    const dot = screen.getByTestId("viz-int-timeline-dot-t3");
+    fireEvent.keyDown(dot, { key: "Enter" });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy.mock.calls[0][0].record_id).toBe("t3");
+  });
+
+  it("renders without testid when onDotClick is absent (no regression)", () => {
+    render(<InterventionTimeline records={TIMELINE_RECORDS} />);
+    expect(screen.queryByTestId("viz-int-timeline-dot-t3")).toBeNull();
   });
 });

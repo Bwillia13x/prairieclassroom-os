@@ -363,18 +363,38 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
    Answers: "Who is in my room?"
    ================================================================ */
 
+interface CompositionRingsStudent {
+  alias: string;
+  eal_flag?: boolean;
+  support_tags?: string[];
+  family_language?: string;
+}
+
 interface CompositionRingsProps {
-  students: {
-    alias: string;
-    eal_flag?: boolean;
-    support_tags?: string[];
-    family_language?: string;
-  }[];
+  students: CompositionRingsStudent[];
+  onSegmentClick?: (payload: {
+    groupKind: "eal" | "support_cluster" | "family_language";
+    tag: string;
+    label: string;
+    students: CompositionRingsStudent[];
+  }) => void;
+}
+
+interface DonutSegment {
+  label: string;
+  value: number;
+  color: string;
+  clickable?: {
+    testid: string;
+    ariaLabel: string;
+    onClick: () => void;
+    onKeyDown: (e: KeyboardEvent<SVGCircleElement>) => void;
+  };
 }
 
 function drawDonutRing(
   cx: number, cy: number, radius: number, strokeWidth: number,
-  segments: { label: string; value: number; color: string }[],
+  segments: DonutSegment[],
 ): ReactElement[] {
   const total = segments.reduce((s, seg) => s + seg.value, 0);
   if (total === 0) return [];
@@ -386,6 +406,17 @@ function drawDonutRing(
   for (const seg of segments) {
     const pct = seg.value / total;
     const dashLength = pct * circumference;
+    const clickProps = seg.clickable
+      ? {
+          role: "button" as const,
+          tabIndex: 0,
+          className: "viz-composition__segment--clickable",
+          "data-testid": seg.clickable.testid,
+          "aria-label": seg.clickable.ariaLabel,
+          onClick: seg.clickable.onClick,
+          onKeyDown: seg.clickable.onKeyDown,
+        }
+      : {};
     elements.push(
       <circle
         key={`${seg.label}-${radius}`}
@@ -396,6 +427,7 @@ function drawDonutRing(
         strokeDashoffset={-offset}
         transform={`rotate(-90 ${cx} ${cy})`}
         opacity={0.85}
+        {...clickProps}
       >
         <title>{seg.label}: {seg.value}</title>
       </circle>,
@@ -421,7 +453,7 @@ const LANG_LABELS: Record<string, string> = {
   so: "Somali", pa: "Punjabi", es: "Spanish", vi: "Vietnamese",
 };
 
-export function ClassroomCompositionRings({ students }: CompositionRingsProps) {
+export function ClassroomCompositionRings({ students, onSegmentClick }: CompositionRingsProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -455,10 +487,41 @@ export function ClassroomCompositionRings({ students }: CompositionRingsProps) {
   const cx = 90;
   const cy = 90;
 
-  const ealSegments = [
-    { label: "EAL Level 1", value: stats.ealLevels.eal_level_1 ?? 0, color: "var(--color-danger)" },
-    { label: "EAL Level 2", value: stats.ealLevels.eal_level_2 ?? 0, color: "var(--color-warning)" },
-    { label: "EAL Level 3", value: stats.ealLevels.eal_level_3 ?? 0, color: "var(--color-success)" },
+  function makeClickable(
+    groupKind: "eal" | "support_cluster" | "family_language",
+    tag: string,
+    label: string,
+    count: number,
+    filterFn: (s: CompositionRingsStudent) => boolean,
+  ): DonutSegment["clickable"] | undefined {
+    if (!onSegmentClick) return undefined;
+    const filtered = students.filter(filterFn);
+    return {
+      testid: `viz-composition-segment-${groupKind}-${tag}`,
+      ariaLabel: `${label}: ${count} students`,
+      onClick: () => onSegmentClick({ groupKind, tag, label, students: filtered }),
+      onKeyDown: (e: KeyboardEvent<SVGCircleElement>) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSegmentClick({ groupKind, tag, label, students: filtered });
+        }
+      },
+    };
+  }
+
+  const EAL_TAGS: { tag: string; label: string; color: string }[] = [
+    { tag: "eal_level_1", label: "EAL Level 1", color: "var(--color-danger)" },
+    { tag: "eal_level_2", label: "EAL Level 2", color: "var(--color-warning)" },
+    { tag: "eal_level_3", label: "EAL Level 3", color: "var(--color-success)" },
+  ];
+
+  const ealSegments: DonutSegment[] = [
+    ...EAL_TAGS.map(({ tag, label, color }) => ({
+      label,
+      value: stats.ealLevels[tag] ?? 0,
+      color,
+      clickable: makeClickable("eal", tag, label, stats.ealLevels[tag] ?? 0, (s) => (s.support_tags ?? []).includes(tag)),
+    })),
     { label: "Non-EAL", value: students.length - Object.values(stats.ealLevels).reduce((a, b) => a + b, 0), color: "var(--color-border)" },
   ].filter((s) => s.value > 0);
 
@@ -473,17 +536,28 @@ export function ClassroomCompositionRings({ students }: CompositionRingsProps) {
     other: "var(--color-section-slate)",
   };
 
-  const tagSegments = clusterOrder
+  const tagSegments: DonutSegment[] = clusterOrder
     .filter((c) => (stats.tagClusters[c] ?? 0) > 0)
-    .map((c) => ({ label: c, value: stats.tagClusters[c], color: clusterColors[c] ?? "var(--color-border)" }));
-
-  const langSegments = Object.entries(stats.languages)
-    .sort((a, b) => b[1] - a[1])
-    .map(([code, count]) => ({
-      label: LANG_LABELS[code] ?? code,
-      value: count,
-      color: LANG_COLORS[code] ?? "var(--color-section-slate)",
+    .map((c) => ({
+      label: c,
+      value: stats.tagClusters[c],
+      color: clusterColors[c] ?? "var(--color-border)",
+      clickable: makeClickable("support_cluster", c, c, stats.tagClusters[c], (s) => (s.support_tags ?? []).some((t) => tagToCluster(t) === c)),
     }));
+
+  const langSegments: DonutSegment[] = Object.entries(stats.languages)
+    .sort((a, b) => b[1] - a[1])
+    .map(([code, count]) => {
+      const langLabel = LANG_LABELS[code] ?? code;
+      // For family_language groupKind, tag is the actual language name (not code) to match filtering
+      const langName = LANG_LABELS[code] ?? code;
+      return {
+        label: langLabel,
+        value: count,
+        color: LANG_COLORS[code] ?? "var(--color-section-slate)",
+        clickable: makeClickable("family_language", langName, langLabel, count, (s) => (s.family_language ?? "English") === langName),
+      };
+    });
 
   const ealTotal = Object.values(stats.ealLevels).reduce((a, b) => a + b, 0);
   const langCount = Object.keys(stats.languages).length;
@@ -798,6 +872,7 @@ export function EALoadStackedBars({ blocks }: EALoadStackedBarsProps) {
 
 interface PatternRadarProps {
   themes: RecurringTheme[];
+  onSegmentClick?: (payload: { axis: string; label: string; themes: RecurringTheme[] }) => void;
 }
 
 const RADAR_AXES = [
@@ -820,7 +895,7 @@ function themeToAxis(theme: string): string {
   return "academic"; // default bucket
 }
 
-export function SupportPatternRadar({ themes }: PatternRadarProps) {
+export function SupportPatternRadar({ themes, onSegmentClick }: PatternRadarProps) {
   const axisData = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const theme of themes) {
@@ -898,6 +973,32 @@ export function SupportPatternRadar({ themes }: PatternRadarProps) {
             <title>{axisData[i].label}: {axisData[i].raw} records</title>
           </circle>
         ))}
+        {/* Axis hit targets — only rendered when onSegmentClick is provided */}
+        {onSegmentClick && axisData.map((a, i) => {
+          const end = toPoint(i, maxR + 6);
+          const axisThemes = themes.filter((t) => themeToAxis(t.theme) === a.key);
+          return (
+            <circle
+              key={`hit-${a.key}`}
+              cx={end.x}
+              cy={end.y}
+              r={8}
+              fill="transparent"
+              className="viz-pattern-radar__axis-hit"
+              role="button"
+              tabIndex={0}
+              aria-label={`${a.label}: ${a.raw} records`}
+              data-testid={`viz-pattern-radar-axis-${a.key}`}
+              onClick={() => onSegmentClick({ axis: a.key, label: a.label, themes: axisThemes })}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSegmentClick({ axis: a.key, label: a.label, themes: axisThemes });
+                }
+              }}
+            />
+          );
+        })}
       </svg>
     </div>
   );
@@ -1368,9 +1469,10 @@ export function ComplexityTrendCalendar({ data, onSegmentClick }: ComplexityTren
 
 interface IntTimelineProps {
   records: InterventionRecord[];
+  onDotClick?: (record: InterventionRecord) => void;
 }
 
-export function InterventionTimeline({ records }: IntTimelineProps) {
+export function InterventionTimeline({ records, onDotClick }: IntTimelineProps) {
   const sorted = useMemo(() => {
     return [...records]
       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
@@ -1402,6 +1504,25 @@ export function InterventionTimeline({ records }: IntTimelineProps) {
           const fill = record.follow_up_needed
             ? "var(--color-warning)"
             : "var(--color-success)";
+          const dateStr = new Date(record._ts).toLocaleDateString();
+          const studentsStr = record.student_refs.join(", ");
+          const dotAriaLabel = `Intervention on ${dateStr}: ${studentsStr}`;
+          const clickProps = onDotClick
+            ? {
+                role: "button" as const,
+                tabIndex: 0,
+                className: "viz-int-timeline__dot--clickable",
+                "data-testid": `viz-int-timeline-dot-${record.record_id}`,
+                "aria-label": dotAriaLabel,
+                onClick: () => onDotClick(record),
+                onKeyDown: (e: KeyboardEvent<SVGCircleElement>) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onDotClick(record);
+                  }
+                },
+              }
+            : {};
           return (
             <circle
               key={record.record_id}
@@ -1410,9 +1531,10 @@ export function InterventionTimeline({ records }: IntTimelineProps) {
               r={4}
               fill={fill}
               opacity={0.85}
+              {...clickProps}
             >
               <title>
-                {new Date(record._ts).toLocaleDateString()} — {record.follow_up_needed ? "Needs follow-up" : "Resolved"}
+                {dateStr} — {record.follow_up_needed ? "Needs follow-up" : "Resolved"}
               </title>
             </circle>
           );
@@ -1436,9 +1558,10 @@ export function InterventionTimeline({ records }: IntTimelineProps) {
 
 interface FollowUpRateProps {
   records: InterventionRecord[];
+  onSegmentClick?: (payload: { category: "stale_followup"; items: InterventionRecord[] }) => void;
 }
 
-export function FollowUpSuccessRate({ records }: FollowUpRateProps) {
+export function FollowUpSuccessRate({ records, onSegmentClick }: FollowUpRateProps) {
   const { resolved, total, pct } = useMemo(() => {
     const t = records.length;
     const r = records.filter((rec) => !rec.follow_up_needed).length;
@@ -1454,8 +1577,29 @@ export function FollowUpSuccessRate({ records }: FollowUpRateProps) {
   const offset = circumference * (1 - pct / 100);
   const tone = pct >= 70 ? "success" : pct >= 40 ? "warning" : "danger";
 
+  const staleItems = records.filter((r) => r.follow_up_needed);
+  const handleFollowUpClick = onSegmentClick
+    ? () => onSegmentClick({ category: "stale_followup", items: staleItems })
+    : undefined;
+  const handleFollowUpKeyDown = onSegmentClick
+    ? (e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSegmentClick({ category: "stale_followup", items: staleItems });
+        }
+      }
+    : undefined;
+
   return (
-    <div className="viz-followup-rate" role="img" aria-label={`${pct}% resolution rate`}>
+    <div
+      className={`viz-followup-rate${onSegmentClick ? " viz-followup-rate--clickable" : ""}`}
+      role={onSegmentClick ? "button" : "img"}
+      aria-label={onSegmentClick ? `${pct}% resolved — click to review ${staleItems.length} pending follow-ups` : `${pct}% resolution rate`}
+      tabIndex={onSegmentClick ? 0 : undefined}
+      data-testid={onSegmentClick ? "viz-followup-rate-hit" : undefined}
+      onClick={handleFollowUpClick}
+      onKeyDown={handleFollowUpKeyDown}
+    >
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <circle
           cx={size / 2} cy={size / 2} r={radius}
