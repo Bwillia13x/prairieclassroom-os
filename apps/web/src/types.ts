@@ -292,4 +292,7 @@ export type DrillDownContext =
   | { type: "forecast-block"; blockIndex: number; block: ComplexityBlock }
   | { type: "student"; alias: string; initialData?: StudentSummary }
   | { type: "debt-category"; category: string; items: DebtItem[] }
-  | { type: "trend"; trendKey: "debt" | "plans" | "complexity"; data: number[]; label: string };
+  | { type: "trend"; trendKey: "debt" | "plans" | "complexity"; data: number[]; label: string; highlightIndex?: number }
+  | { type: "plan-coverage-section"; section: "watchpoints" | "priorities" | "ea_actions" | "prep_items" | "family_followups"; label: string; items: string[] }
+  | { type: "student-tag-group"; groupKind: "eal" | "support_cluster" | "family_language"; tag: string; label: string; students: { alias: string; eal_flag?: boolean; support_tags?: string[]; family_language?: string }[] }
+  | { type: "variant-lane"; variantType: string; label: string; variants: { variant_type: string; estimated_minutes: number; title: string }[] };

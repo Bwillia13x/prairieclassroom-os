@@ -35,6 +35,12 @@ function computeTitle(context: DrillDownContext): string {
       return `${context.items.length} ${context.category.replace(/_/g, " ")}`;
     case "trend":
       return `${context.label} — 14-day trend`;
+    case "plan-coverage-section":
+      return context.label;
+    case "student-tag-group":
+      return context.label;
+    case "variant-lane":
+      return context.label;
   }
 }
 
