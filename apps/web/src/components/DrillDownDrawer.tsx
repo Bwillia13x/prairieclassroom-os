@@ -7,12 +7,22 @@ import StudentDetailView from "./StudentDetailView";
 import ForecastBlockView from "./ForecastBlockView";
 import DebtCategoryView from "./DebtCategoryView";
 import TrendDetailView from "./TrendDetailView";
+import PlanCoverageSectionView from "./PlanCoverageSectionView";
+import StudentTagGroupView from "./StudentTagGroupView";
+import VariantLaneView from "./VariantLaneView";
 import "./DrillDownDrawer.css";
 
 interface Props {
   context: DrillDownContext | null;
   onClose: () => void;
   onNavigate: (tab: ActiveTab) => void;
+  /**
+   * Called when a child view needs to escalate to a different context
+   * without closing the drawer (e.g., student-tag-group → student detail).
+   * Required when rendering `student-tag-group` context; omitting it silently
+   * disables student escalation from that view.
+   */
+  onContextChange?: (next: DrillDownContext) => void;
   onInterventionPrefill?: (prefill: {
     student_ref: string;
     suggested_action: string;
@@ -35,6 +45,14 @@ function computeTitle(context: DrillDownContext): string {
       return `${context.items.length} ${context.category.replace(/_/g, " ")}`;
     case "trend":
       return `${context.label} — 14-day trend`;
+    case "plan-coverage-section":
+      return `${context.label} — ${context.items.length} ${context.items.length === 1 ? "item" : "items"}`;
+    case "student-tag-group":
+      return `${context.label} — ${context.students.length} ${context.students.length === 1 ? "student" : "students"}`;
+    case "variant-lane": {
+      const count = context.variants.filter((v) => v.variant_type === context.variantType).length;
+      return `${context.label} — ${count} ${count === 1 ? "variant" : "variants"}`;
+    }
   }
 }
 
@@ -42,6 +60,7 @@ export default function DrillDownDrawer({
   context,
   onClose,
   onNavigate,
+  onContextChange,
   onInterventionPrefill,
   onMessagePrefill,
 }: Props) {
@@ -139,6 +158,21 @@ export default function DrillDownDrawer({
           )}
 
           {context.type === "trend" && <TrendDetailView context={context} />}
+
+          {context.type === "plan-coverage-section" && (
+            <PlanCoverageSectionView context={context} />
+          )}
+
+          {context.type === "student-tag-group" && (
+            <StudentTagGroupView
+              context={context}
+              onStudentSelect={(alias) => {
+                onContextChange?.({ type: "student", alias });
+              }}
+            />
+          )}
+
+          {context.type === "variant-lane" && <VariantLaneView context={context} />}
         </div>
       </div>
     </>

@@ -1249,3 +1249,109 @@
 .viz-readability-gauge__legend-item--after::before {
   background: var(--color-accent, #0d6efd);
 }
+
+/* Task 5a: clickable trend chart affordances */
+.viz-debt-gauge--clickable,
+.viz-debt-trend--clickable {
+  cursor: pointer;
+}
+
+.viz-debt-gauge--clickable:focus-visible,
+.viz-debt-trend--clickable:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.viz-complexity-cal__cell--clickable {
+  appearance: none;
+  background: inherit;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.viz-complexity-cal__cell--clickable:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .viz-debt-gauge--clickable,
+  .viz-debt-trend--clickable,
+  .viz-complexity-cal__cell--clickable {
+    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+  }
+
+  .viz-debt-gauge--clickable:hover,
+  .viz-debt-trend--clickable:hover,
+  .viz-complexity-cal__cell--clickable:hover {
+    filter: brightness(1.08);
+  }
+}
+
+/* Task 5b: clickable plan chart affordances */
+.viz-plan-streak__cell--clickable,
+.viz-variant-strip__item--clickable,
+.viz-plan-radar__axis-hit {
+  cursor: pointer;
+}
+
+.viz-plan-streak__cell--clickable:focus-visible,
+.viz-variant-strip__item--clickable:focus-visible,
+.viz-plan-radar__axis-hit:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.viz-variant-strip__item--clickable {
+  appearance: none;
+  background: inherit;
+  border: none;
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .viz-plan-streak__cell--clickable,
+  .viz-variant-strip__item--clickable,
+  .viz-plan-radar__axis-hit {
+    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+  }
+
+  .viz-plan-streak__cell--clickable:hover,
+  .viz-variant-strip__item--clickable:hover,
+  .viz-plan-radar__axis-hit:hover {
+    filter: brightness(1.08);
+  }
+}
+
+/* Task 5c: clickable composition/pattern chart affordances */
+.viz-composition__segment--clickable,
+.viz-pattern-radar__axis-hit,
+.viz-followup-rate--clickable,
+.viz-int-timeline__dot--clickable {
+  cursor: pointer;
+}
+
+.viz-composition__segment--clickable:focus-visible,
+.viz-pattern-radar__axis-hit:focus-visible,
+.viz-followup-rate--clickable:focus-visible,
+.viz-int-timeline__dot--clickable:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .viz-composition__segment--clickable,
+  .viz-pattern-radar__axis-hit,
+  .viz-followup-rate--clickable,
+  .viz-int-timeline__dot--clickable {
+    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+  }
+
+  .viz-composition__segment--clickable:hover,
+  .viz-pattern-radar__axis-hit:hover,
+  .viz-followup-rate--clickable:hover,
+  .viz-int-timeline__dot--clickable:hover {
+    filter: brightness(1.08);
+  }
+}

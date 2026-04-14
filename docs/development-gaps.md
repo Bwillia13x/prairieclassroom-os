@@ -32,8 +32,25 @@
 | **G-13** | Canonical system inventory drift | **Closed for current surface** | `npm run system:inventory` now generates `docs/system-inventory.md` and `docs/api-surface.md`, while `npm run system:inventory:check` catches panel, prompt, tier, and exact endpoint drift across canonical docs. |
 | **G-14** | Pilot readiness and real-data governance | **Partial** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) now cover operating modes, memory lifecycle, initial teacher/EA boundaries, per-request access evidence, and the paperwork a first real pilot session would need. Dedicated substitute/reviewer views remain the last structural blocker before real classroom data is acceptable. |
 | **G-15** | Synthetic classroom fixture convention drift | Partial | Surfaced 2026-04-13 during the 26-student demo expansion review: `classroom_demo.json` uses `eal_level_1/2/3` on the preserved D1/D4/D6 students while the other five classrooms use `emerging_english`, creating two parallel vocabularies for the same concept. Separately, `Amira` appears as an alias in both `classroom_demo` and `classroom_charlie`, silently defeating the `evals/fixtures/regressions/*-alias-leak.json` fixtures for that specific name. Preserved as-is in the 2026-04-13 expansion because of byte-for-byte preservation of the 6 original demo students, but needs deliberate unification before the next major fixture evolution. |
+| **G-16** | Wire clickable chart drill-downs on Tomorrow Plan, Differentiate, Support Patterns, and Intervention panels | Deferred from Plan 5 (2026-04-14) | Plan 5 wired drill-downs on TodayPanel and HealthBar only. Five chart components on four other panels (`PlanCoverageRadar`, `VariantSummaryStrip`, `SupportPatternRadar`, `FollowUpSuccessRate`, `InterventionTimeline`) expose `onSegmentClick`/`onDotClick` but their parent panels don't yet mount `DrillDownDrawer` or pass the callbacks. Estimate: ~4-6 tasks per panel, approximately 1 day of focused work. |
 
 ## Gap details
+
+### G-16 — Wire clickable chart drill-downs on Tomorrow Plan, Differentiate, Support Patterns, and Intervention panels
+
+**Status:** Deferred from Plan 5 (`2026-04-14-clickable-chart-drill-downs.md`).
+
+**Context**
+
+Plan 5 added `onSegmentClick` props to 10 chart components in `DataVisualizations.tsx` and wired the 2 charts actually rendered on `TodayPanel.tsx` (ComplexityDebtGauge, ClassroomCompositionRings) plus HealthBar's 3 internal charts. The following chart drill-downs remain unwired — the charts expose the prop but their parent panels don't consume it yet:
+
+- `PlanCoverageRadar` on `TomorrowPlanPanel` — needs `onSegmentClick` wired to open the `plan-coverage-section` drill-down, with `sectionItems` built from the plan's watchpoints/priorities/ea_actions/prep_items/family_followups.
+- `VariantSummaryStrip` on `DifferentiatePanel` — needs `onSegmentClick` wired to open the `variant-lane` drill-down.
+- `SupportPatternRadar` on `SupportPatternsPanel` — needs `onSegmentClick` wired to open a `student-tag-group` drill-down derived from recurring themes.
+- `FollowUpSuccessRate` on `InterventionPanel` — needs `onSegmentClick` wired to open a `debt-category` drill-down (InterventionRecord[] → DebtItem[] mapping required).
+- `InterventionTimeline` on `InterventionPanel` — needs `onDotClick` wired to open a `student` drill-down or similar.
+
+All 5 parent panels will also need to mount `DrillDownDrawer` with `onContextChange={setDrillDown}` so student-tag-group escalation works there too. Estimate: ~4-6 tasks per panel (similar shape to Plan 5 Task 7), approximately 1 day of focused work.
 
 ### G-01 — Hosted Gemini baseline execution
 

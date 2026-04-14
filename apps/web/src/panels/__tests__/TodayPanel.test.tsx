@@ -6,13 +6,17 @@ import TodayPanel from "../TodayPanel";
 import type { ClassroomHealth, TodaySnapshot } from "../../types";
 import * as TimeSuggestionModule from "../../components/TimeSuggestion";
 
-vi.mock("../../api", () => ({
-  fetchTodaySnapshot: vi.fn(),
-  fetchClassroomHealth: vi.fn(),
-  fetchStudentSummary: vi.fn(),
-  fetchInterventionHistoryForStudent: vi.fn(),
-  fetchMessageHistoryForStudent: vi.fn(),
-}));
+vi.mock("../../api", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("../../api")>();
+  return {
+    ...actual,
+    fetchTodaySnapshot: vi.fn(),
+    fetchClassroomHealth: vi.fn(),
+    fetchStudentSummary: vi.fn(),
+    fetchInterventionHistoryForStudent: vi.fn(),
+    fetchMessageHistoryForStudent: vi.fn(),
+  };
+});
 
 import {
   fetchTodaySnapshot,
@@ -159,6 +163,9 @@ function makeAppContext(): AppContextValue {
     },
     students: [{ alias: "Amira" }, { alias: "Brody" }, { alias: "Farid" }],
     classroomAccessCodes: {},
+    classroomRoles: {},
+    activeRole: "teacher" as const,
+    setClassroomRole: vi.fn(),
     authPrompt: null,
     showSuccess: vi.fn(),
     dispatch: vi.fn(),
@@ -339,5 +346,142 @@ describe("TodayPanel", () => {
 
     expect(await screen.findByRole("dialog", { name: /10:00-10:45/i })).toBeInTheDocument();
     expect(screen.getByText("Suggested mitigation")).toBeInTheDocument();
+  });
+
+  it("renders the snapshot section even while health is still pending", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockImplementation(
+      () => new Promise(() => {}),
+    );
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    const appContext = makeAppContext();
+    render(
+      <AppContext.Provider value={appContext}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
+
+    const healthSkeleton = screen.getByRole("status", { name: /loading health/i });
+    expect(healthSkeleton).toBeInTheDocument();
+    expect(healthSkeleton).toHaveAttribute("aria-busy", "true");
+
+    expect(
+      screen.queryByLabelText("Loading dashboard"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders the visualization strip after studentSummaries arrives even if health is still pending", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockImplementation(
+      () => new Promise(() => {}),
+    );
+    mockedFetchStudentSummary.mockResolvedValue([
+      {
+        alias: "Amira",
+        pending_action_count: 2,
+        active_pattern_count: 1,
+        pending_message_count: 0,
+        last_intervention_days: 3,
+        latest_priority_reason: "Pending follow-up",
+      },
+    ] as never);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("status", { name: /loading health/i }),
+      ).toBeInTheDocument();
+    });
+    expect(
+      await screen.findByText(/student priority/i),
+    ).toBeInTheDocument();
+  });
+
+  it("renders a 'Classroom pulse' section wrapping the grid", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockResolvedValue(makeHealth());
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    const { container } = render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".today-pulse")).toBeInTheDocument();
+    });
+    expect(
+      screen.getByRole("heading", { name: /classroom pulse/i }),
+    ).toBeInTheDocument();
+    const pulseSection = container.querySelector(".today-pulse")!;
+    expect(pulseSection.querySelector(".today-grid")).toBeInTheDocument();
+  });
+
+  it("renders the TodayHero landmark above the grid", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockResolvedValue(makeHealth());
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    const { container } = render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".today-hero")).toBeInTheDocument();
+    });
+    const hero = container.querySelector(".today-hero")!;
+    const grid = container.querySelector(".today-grid")!;
+    expect(grid).toBeInTheDocument();
+    // DOM order: hero must appear before the grid.
+    expect(
+      hero.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("shows an inline health error without blocking the rest of the dashboard", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockRejectedValue(
+      new Error("network down"),
+    );
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("alert"),
+      ).toHaveTextContent(/health summary/i);
+    });
+
+    expect(
+      screen.queryByText(/could not be loaded/i),
+    ).not.toBeInTheDocument();
   });
 });

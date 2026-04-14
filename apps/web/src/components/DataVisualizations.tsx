@@ -194,9 +194,10 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
 interface DebtGaugeProps {
   debtItems: DebtItem[];
   previousTotal?: number;
+  onSegmentClick?: (payload: { trendKey: "debt"; label: string; data: number[] }) => void;
 }
 
-export function ComplexityDebtGauge({ debtItems, previousTotal }: DebtGaugeProps) {
+export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }: DebtGaugeProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -253,8 +254,33 @@ export function ComplexityDebtGauge({ debtItems, previousTotal }: DebtGaugeProps
     (delta !== null ? `, ${delta > 0 ? "up" : "down"} ${Math.abs(delta)} from last check` : "") +
     ".";
 
+  const handleGaugeClick = onSegmentClick
+    ? () => onSegmentClick({ trendKey: "debt", label: "Complexity debt", data: [debtItems.length] })
+    : undefined;
+
+  const handleGaugeKeyDown = onSegmentClick
+    ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter" || e.key === " ") {
+          if (e.key === " ") e.preventDefault();
+          onSegmentClick({ trendKey: "debt", label: "Complexity debt", data: [debtItems.length] });
+        }
+      }
+    : undefined;
+
   return (
-    <div className={`viz-debt-gauge${mounted ? " viz-debt-gauge--mounted" : ""}`}>
+    <div
+      className={`viz-debt-gauge${mounted ? " viz-debt-gauge--mounted" : ""}${onSegmentClick ? " viz-debt-gauge--clickable" : ""}`}
+      {...(onSegmentClick
+        ? {
+            role: "button",
+            tabIndex: 0,
+            "aria-label": ariaLabel,
+            "data-testid": "viz-debt-gauge-hit",
+            onClick: handleGaugeClick,
+            onKeyDown: handleGaugeKeyDown,
+          }
+        : {})}
+    >
       <div className="viz-header">
         <h4 className="viz-title">Complexity Debt</h4>
         <div className="viz-debt-gauge__badges">
@@ -337,18 +363,38 @@ export function ComplexityDebtGauge({ debtItems, previousTotal }: DebtGaugeProps
    Answers: "Who is in my room?"
    ================================================================ */
 
+interface CompositionRingsStudent {
+  alias: string;
+  eal_flag?: boolean;
+  support_tags?: string[];
+  family_language?: string;
+}
+
 interface CompositionRingsProps {
-  students: {
-    alias: string;
-    eal_flag?: boolean;
-    support_tags?: string[];
-    family_language?: string;
-  }[];
+  students: CompositionRingsStudent[];
+  onSegmentClick?: (payload: {
+    groupKind: "eal" | "support_cluster" | "family_language";
+    tag: string;
+    label: string;
+    students: CompositionRingsStudent[];
+  }) => void;
+}
+
+interface DonutSegment {
+  label: string;
+  value: number;
+  color: string;
+  clickable?: {
+    testid: string;
+    ariaLabel: string;
+    onClick: () => void;
+    onKeyDown: (e: KeyboardEvent<SVGCircleElement>) => void;
+  };
 }
 
 function drawDonutRing(
   cx: number, cy: number, radius: number, strokeWidth: number,
-  segments: { label: string; value: number; color: string }[],
+  segments: DonutSegment[],
 ): ReactElement[] {
   const total = segments.reduce((s, seg) => s + seg.value, 0);
   if (total === 0) return [];
@@ -360,6 +406,17 @@ function drawDonutRing(
   for (const seg of segments) {
     const pct = seg.value / total;
     const dashLength = pct * circumference;
+    const clickProps = seg.clickable
+      ? {
+          role: "button" as const,
+          tabIndex: 0,
+          className: "viz-composition__segment--clickable",
+          "data-testid": seg.clickable.testid,
+          "aria-label": seg.clickable.ariaLabel,
+          onClick: seg.clickable.onClick,
+          onKeyDown: seg.clickable.onKeyDown,
+        }
+      : {};
     elements.push(
       <circle
         key={`${seg.label}-${radius}`}
@@ -370,6 +427,7 @@ function drawDonutRing(
         strokeDashoffset={-offset}
         transform={`rotate(-90 ${cx} ${cy})`}
         opacity={0.85}
+        {...clickProps}
       >
         <title>{seg.label}: {seg.value}</title>
       </circle>,
@@ -395,7 +453,7 @@ const LANG_LABELS: Record<string, string> = {
   so: "Somali", pa: "Punjabi", es: "Spanish", vi: "Vietnamese",
 };
 
-export function ClassroomCompositionRings({ students }: CompositionRingsProps) {
+export function ClassroomCompositionRings({ students, onSegmentClick }: CompositionRingsProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -429,10 +487,41 @@ export function ClassroomCompositionRings({ students }: CompositionRingsProps) {
   const cx = 90;
   const cy = 90;
 
-  const ealSegments = [
-    { label: "EAL Level 1", value: stats.ealLevels.eal_level_1 ?? 0, color: "var(--color-danger)" },
-    { label: "EAL Level 2", value: stats.ealLevels.eal_level_2 ?? 0, color: "var(--color-warning)" },
-    { label: "EAL Level 3", value: stats.ealLevels.eal_level_3 ?? 0, color: "var(--color-success)" },
+  function makeClickable(
+    groupKind: "eal" | "support_cluster" | "family_language",
+    tag: string,
+    label: string,
+    count: number,
+    filterFn: (s: CompositionRingsStudent) => boolean,
+  ): DonutSegment["clickable"] | undefined {
+    if (!onSegmentClick) return undefined;
+    const filtered = students.filter(filterFn);
+    return {
+      testid: `viz-composition-segment-${groupKind}-${tag}`,
+      ariaLabel: `${label}: ${count} students`,
+      onClick: () => onSegmentClick({ groupKind, tag, label, students: filtered }),
+      onKeyDown: (e: KeyboardEvent<SVGCircleElement>) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSegmentClick({ groupKind, tag, label, students: filtered });
+        }
+      },
+    };
+  }
+
+  const EAL_TAGS: { tag: string; label: string; color: string }[] = [
+    { tag: "eal_level_1", label: "EAL Level 1", color: "var(--color-danger)" },
+    { tag: "eal_level_2", label: "EAL Level 2", color: "var(--color-warning)" },
+    { tag: "eal_level_3", label: "EAL Level 3", color: "var(--color-success)" },
+  ];
+
+  const ealSegments: DonutSegment[] = [
+    ...EAL_TAGS.map(({ tag, label, color }) => ({
+      label,
+      value: stats.ealLevels[tag] ?? 0,
+      color,
+      clickable: makeClickable("eal", tag, label, stats.ealLevels[tag] ?? 0, (s) => (s.support_tags ?? []).includes(tag)),
+    })),
     { label: "Non-EAL", value: students.length - Object.values(stats.ealLevels).reduce((a, b) => a + b, 0), color: "var(--color-border)" },
   ].filter((s) => s.value > 0);
 
@@ -447,17 +536,28 @@ export function ClassroomCompositionRings({ students }: CompositionRingsProps) {
     other: "var(--color-section-slate)",
   };
 
-  const tagSegments = clusterOrder
+  const tagSegments: DonutSegment[] = clusterOrder
     .filter((c) => (stats.tagClusters[c] ?? 0) > 0)
-    .map((c) => ({ label: c, value: stats.tagClusters[c], color: clusterColors[c] ?? "var(--color-border)" }));
-
-  const langSegments = Object.entries(stats.languages)
-    .sort((a, b) => b[1] - a[1])
-    .map(([code, count]) => ({
-      label: LANG_LABELS[code] ?? code,
-      value: count,
-      color: LANG_COLORS[code] ?? "var(--color-section-slate)",
+    .map((c) => ({
+      label: c,
+      value: stats.tagClusters[c],
+      color: clusterColors[c] ?? "var(--color-border)",
+      clickable: makeClickable("support_cluster", c, c, stats.tagClusters[c], (s) => (s.support_tags ?? []).some((t) => tagToCluster(t) === c)),
     }));
+
+  const langSegments: DonutSegment[] = Object.entries(stats.languages)
+    .sort((a, b) => b[1] - a[1])
+    .map(([code, count]) => {
+      const langLabel = LANG_LABELS[code] ?? code;
+      // For family_language groupKind, tag is the actual language name (not code) to match filtering
+      const langName = LANG_LABELS[code] ?? code;
+      return {
+        label: langLabel,
+        value: count,
+        color: LANG_COLORS[code] ?? "var(--color-section-slate)",
+        clickable: makeClickable("family_language", langName, langLabel, count, (s) => (s.family_language ?? "English") === langName),
+      };
+    });
 
   const ealTotal = Object.values(stats.ealLevels).reduce((a, b) => a + b, 0);
   const langCount = Object.keys(stats.languages).length;
@@ -772,6 +872,7 @@ export function EALoadStackedBars({ blocks }: EALoadStackedBarsProps) {
 
 interface PatternRadarProps {
   themes: RecurringTheme[];
+  onSegmentClick?: (payload: { axis: string; label: string; themes: RecurringTheme[] }) => void;
 }
 
 const RADAR_AXES = [
@@ -794,7 +895,7 @@ function themeToAxis(theme: string): string {
   return "academic"; // default bucket
 }
 
-export function SupportPatternRadar({ themes }: PatternRadarProps) {
+export function SupportPatternRadar({ themes, onSegmentClick }: PatternRadarProps) {
   const axisData = useMemo(() => {
     const counts: Record<string, number> = {};
     for (const theme of themes) {
@@ -872,6 +973,32 @@ export function SupportPatternRadar({ themes }: PatternRadarProps) {
             <title>{axisData[i].label}: {axisData[i].raw} records</title>
           </circle>
         ))}
+        {/* Axis hit targets — only rendered when onSegmentClick is provided */}
+        {onSegmentClick && axisData.map((a, i) => {
+          const end = toPoint(i, maxR + 6);
+          const axisThemes = themes.filter((t) => themeToAxis(t.theme) === a.key);
+          return (
+            <circle
+              key={`hit-${a.key}`}
+              cx={end.x}
+              cy={end.y}
+              r={8}
+              fill="transparent"
+              className="viz-pattern-radar__axis-hit"
+              role="button"
+              tabIndex={0}
+              aria-label={`${a.label}: ${a.raw} records`}
+              data-testid={`viz-pattern-radar-axis-${a.key}`}
+              onClick={() => onSegmentClick({ axis: a.key, label: a.label, themes: axisThemes })}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSegmentClick({ axis: a.key, label: a.label, themes: axisThemes });
+                }
+              }}
+            />
+          );
+        })}
       </svg>
     </div>
   );
@@ -888,9 +1015,10 @@ export function SupportPatternRadar({ themes }: PatternRadarProps) {
 
 interface PlanStreakCalendarProps {
   plans14d: (0 | 1)[];
+  onSegmentClick?: (payload: { dayIndex: number; planned: boolean }) => void;
 }
 
-export function PlanStreakCalendar({ plans14d }: PlanStreakCalendarProps) {
+export function PlanStreakCalendar({ plans14d, onSegmentClick }: PlanStreakCalendarProps) {
   // Fill to 20 cells (4 weeks of weekdays) — pad with nulls for future
   const cells: (0 | 1 | null)[] = [];
 
@@ -912,6 +1040,9 @@ export function PlanStreakCalendar({ plans14d }: PlanStreakCalendarProps) {
   const svgH = rows * (cellSize + gap);
   const planned = plans14d.filter((p) => p === 1).length;
 
+  // Map from cell idx to the original plans14d index
+  const dataOffset = 20 - plans14d.length;
+
   return (
     <div className="viz-plan-streak">
       <div className="viz-plan-streak__header">
@@ -929,12 +1060,43 @@ export function PlanStreakCalendar({ plans14d }: PlanStreakCalendarProps) {
             : val === 1
               ? "var(--color-success)"
               : "color-mix(in srgb, var(--color-border) 50%, transparent)";
-          return (
-            <rect key={idx} x={x} y={y} width={cellSize} height={cellSize} rx={3}
+          const baseRect = (
+            <rect x={x} y={y} width={cellSize} height={cellSize} rx={3}
               fill={fill} opacity={val === null ? 0.3 : 0.85}>
               <title>{val === null ? "No data" : val === 1 ? "Planned" : "No plan"}</title>
             </rect>
           );
+          if (onSegmentClick && val !== null) {
+            const dayIndex = idx - dataOffset;
+            const isPlanned = val === 1;
+            const ariaLabel = `Day ${dayIndex + 1}: ${isPlanned ? "Planned" : "Missed"}`;
+            return (
+              <g key={idx}>
+                {baseRect}
+                <rect
+                  x={x}
+                  y={y}
+                  width={cellSize}
+                  height={cellSize}
+                  rx={3}
+                  fill="transparent"
+                  className="viz-plan-streak__cell--clickable"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={ariaLabel}
+                  data-testid={`viz-plan-streak-cell-${dayIndex}`}
+                  onClick={() => onSegmentClick({ dayIndex, planned: isPlanned })}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSegmentClick({ dayIndex, planned: isPlanned });
+                    }
+                  }}
+                />
+              </g>
+            );
+          }
+          return <g key={idx}>{baseRect}</g>;
         })}
       </svg>
     </div>
@@ -1154,9 +1316,10 @@ export function StudentSparkIndicator({ student }: StudentSparkProps) {
 
 interface DebtTrendProps {
   data: number[];
+  onSegmentClick?: (payload: { trendKey: "debt"; label: string; data: number[] }) => void;
 }
 
-export function DebtTrendSparkline({ data }: DebtTrendProps) {
+export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
   const w = 140;
   const h = 32;
   const pad = 4;
@@ -1183,7 +1346,24 @@ export function DebtTrendSparkline({ data }: DebtTrendProps) {
   const count = Math.min(data.length, 14);
 
   return (
-    <div className="viz-debt-trend" role="img" aria-label={`Debt trend over ${count} days: ${trend}`}>
+    <div
+      className={`viz-debt-trend${onSegmentClick ? " viz-debt-trend--clickable" : ""}`}
+      role={onSegmentClick ? "button" : "img"}
+      aria-label={`Debt trend over ${count} days: ${trend}`}
+      {...(onSegmentClick
+        ? {
+            tabIndex: 0,
+            "data-testid": "viz-debt-trend-hit",
+            onClick: () => onSegmentClick({ trendKey: "debt", label: "Debt trend", data }),
+            onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === "Enter" || e.key === " ") {
+                if (e.key === " ") e.preventDefault();
+                onSegmentClick({ trendKey: "debt", label: "Debt trend", data });
+              }
+            },
+          }
+        : {})}
+    >
       <div className="viz-header">
         <span className="viz-title">Debt Trend</span>
         <span className={`viz-tone-badge viz-tone-badge--${toneClass}`}>
@@ -1215,6 +1395,7 @@ export function DebtTrendSparkline({ data }: DebtTrendProps) {
 
 interface ComplexityTrendProps {
   data: number[];
+  onSegmentClick?: (payload: { trendKey: "complexity"; label: string; data: number[]; highlightIndex: number }) => void;
 }
 
 const COMPLEXITY_LEVEL_COLORS: Record<number, string> = {
@@ -1231,7 +1412,7 @@ const COMPLEXITY_LEVEL_LABELS: Record<number, string> = {
   3: "Critical",
 };
 
-export function ComplexityTrendCalendar({ data }: ComplexityTrendProps) {
+export function ComplexityTrendCalendar({ data, onSegmentClick }: ComplexityTrendProps) {
   const trimmed = useMemo(() => data.slice(-14), [data]);
   if (trimmed.length === 0) return null;
 
@@ -1243,6 +1424,23 @@ export function ComplexityTrendCalendar({ data }: ComplexityTrendProps) {
       <div className="viz-complexity-cal__grid">
         {trimmed.map((level, i) => {
           const clamped = Math.min(Math.max(level, 0), 3);
+          if (onSegmentClick) {
+            return (
+              <button
+                key={i}
+                type="button"
+                tabIndex={0}
+                className="viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+                style={{ background: COMPLEXITY_LEVEL_COLORS[clamped] }}
+                title={`Day ${i + 1}: ${COMPLEXITY_LEVEL_LABELS[clamped]}`}
+                aria-label={`Day ${i + 1}: ${COMPLEXITY_LEVEL_LABELS[clamped]}`}
+                data-testid="viz-complexity-cell"
+                onClick={() =>
+                  onSegmentClick({ trendKey: "complexity", label: "Peak complexity", data, highlightIndex: i })
+                }
+              />
+            );
+          }
           return (
             <div
               key={i}
@@ -1271,9 +1469,10 @@ export function ComplexityTrendCalendar({ data }: ComplexityTrendProps) {
 
 interface IntTimelineProps {
   records: InterventionRecord[];
+  onDotClick?: (record: InterventionRecord) => void;
 }
 
-export function InterventionTimeline({ records }: IntTimelineProps) {
+export function InterventionTimeline({ records, onDotClick }: IntTimelineProps) {
   const sorted = useMemo(() => {
     return [...records]
       .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
@@ -1305,6 +1504,25 @@ export function InterventionTimeline({ records }: IntTimelineProps) {
           const fill = record.follow_up_needed
             ? "var(--color-warning)"
             : "var(--color-success)";
+          const dateStr = new Date(record._ts).toLocaleDateString();
+          const studentsStr = record.student_refs.join(", ");
+          const dotAriaLabel = `Intervention on ${dateStr}: ${studentsStr}`;
+          const clickProps = onDotClick
+            ? {
+                role: "button" as const,
+                tabIndex: 0,
+                className: "viz-int-timeline__dot--clickable",
+                "data-testid": `viz-int-timeline-dot-${record.record_id}`,
+                "aria-label": dotAriaLabel,
+                onClick: () => onDotClick(record),
+                onKeyDown: (e: KeyboardEvent<SVGCircleElement>) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    onDotClick(record);
+                  }
+                },
+              }
+            : {};
           return (
             <circle
               key={record.record_id}
@@ -1313,9 +1531,10 @@ export function InterventionTimeline({ records }: IntTimelineProps) {
               r={4}
               fill={fill}
               opacity={0.85}
+              {...clickProps}
             >
               <title>
-                {new Date(record._ts).toLocaleDateString()} — {record.follow_up_needed ? "Needs follow-up" : "Resolved"}
+                {dateStr} — {record.follow_up_needed ? "Needs follow-up" : "Resolved"}
               </title>
             </circle>
           );
@@ -1339,9 +1558,10 @@ export function InterventionTimeline({ records }: IntTimelineProps) {
 
 interface FollowUpRateProps {
   records: InterventionRecord[];
+  onSegmentClick?: (payload: { category: "stale_followup"; items: InterventionRecord[] }) => void;
 }
 
-export function FollowUpSuccessRate({ records }: FollowUpRateProps) {
+export function FollowUpSuccessRate({ records, onSegmentClick }: FollowUpRateProps) {
   const { resolved, total, pct } = useMemo(() => {
     const t = records.length;
     const r = records.filter((rec) => !rec.follow_up_needed).length;
@@ -1357,8 +1577,29 @@ export function FollowUpSuccessRate({ records }: FollowUpRateProps) {
   const offset = circumference * (1 - pct / 100);
   const tone = pct >= 70 ? "success" : pct >= 40 ? "warning" : "danger";
 
+  const staleItems = records.filter((r) => r.follow_up_needed);
+  const handleFollowUpClick = onSegmentClick
+    ? () => onSegmentClick({ category: "stale_followup", items: staleItems })
+    : undefined;
+  const handleFollowUpKeyDown = onSegmentClick
+    ? (e: KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSegmentClick({ category: "stale_followup", items: staleItems });
+        }
+      }
+    : undefined;
+
   return (
-    <div className="viz-followup-rate" role="img" aria-label={`${pct}% resolution rate`}>
+    <div
+      className={`viz-followup-rate${onSegmentClick ? " viz-followup-rate--clickable" : ""}`}
+      role={onSegmentClick ? "button" : "img"}
+      aria-label={onSegmentClick ? `${pct}% resolved — click to review ${staleItems.length} pending follow-ups` : `${pct}% resolution rate`}
+      tabIndex={onSegmentClick ? 0 : undefined}
+      data-testid={onSegmentClick ? "viz-followup-rate-hit" : undefined}
+      onClick={handleFollowUpClick}
+      onKeyDown={handleFollowUpKeyDown}
+    >
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <circle
           cx={size / 2} cy={size / 2} r={radius}
@@ -1453,6 +1694,7 @@ interface VariantSummaryItem {
 
 interface VariantSummaryStripProps {
   variants: VariantSummaryItem[];
+  onSegmentClick?: (payload: { variantType: string; label: string; variants: VariantSummaryItem[] }) => void;
 }
 
 const VARIANT_TONE: Record<string, string> = {
@@ -1467,28 +1709,48 @@ function prettyVariantType(vt: string): string {
   return vt.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export function VariantSummaryStrip({ variants }: VariantSummaryStripProps) {
+export function VariantSummaryStrip({ variants, onSegmentClick }: VariantSummaryStripProps) {
   if (variants.length === 0) return null;
 
   const maxMin = Math.max(...variants.map((v) => v.estimated_minutes), 1);
 
   return (
     <div className="viz-variant-strip" role="img" aria-label="Variant summary">
-      {variants.map((v, i) => (
-        <div key={i} className="viz-variant-strip__item">
-          <div className="viz-variant-strip__bar-wrap">
-            <div
-              className="viz-variant-strip__bar"
-              style={{
-                width: `${Math.max(10, (v.estimated_minutes / maxMin) * 100)}%`,
-                backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate, #6c757d)",
-              }}
-            />
+      {variants.map((v, i) => {
+        const inner = (
+          <>
+            <div className="viz-variant-strip__bar-wrap">
+              <div
+                className="viz-variant-strip__bar"
+                style={{
+                  width: `${Math.max(10, (v.estimated_minutes / maxMin) * 100)}%`,
+                  backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate, #6c757d)",
+                }}
+              />
+            </div>
+            <span className="viz-variant-strip__type">{prettyVariantType(v.variant_type)}</span>
+            <span className="viz-variant-strip__min">{v.estimated_minutes}m</span>
+          </>
+        );
+        if (onSegmentClick) {
+          return (
+            <button
+              key={i}
+              type="button"
+              className="viz-variant-strip__item viz-variant-strip__item--clickable"
+              aria-label={`Show ${prettyVariantType(v.variant_type)} variants`}
+              onClick={() => onSegmentClick({ variantType: v.variant_type, label: prettyVariantType(v.variant_type), variants })}
+            >
+              {inner}
+            </button>
+          );
+        }
+        return (
+          <div key={i} className="viz-variant-strip__item">
+            {inner}
           </div>
-          <span className="viz-variant-strip__type">{prettyVariantType(v.variant_type)}</span>
-          <span className="viz-variant-strip__min">{v.estimated_minutes}m</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -1599,15 +1861,19 @@ export function StudentThemeHeatmap({ themes }: StudentThemeHeatmapProps) {
    Answers: "How comprehensive is this plan?"
    ================================================================ */
 
+type PlanRadarSection = "watchpoints" | "priorities" | "eaActions" | "prepItems" | "familyFollowups";
+
 interface PlanCoverageRadarProps {
   watchpoints: number;
   priorities: number;
   eaActions: number;
   prepItems: number;
   familyFollowups: number;
+  onSegmentClick?: (payload: { section: PlanRadarSection; label: string; items: string[] }) => void;
+  sectionItems?: Partial<Record<PlanRadarSection, string[]>>;
 }
 
-const PLAN_RADAR_AXES: { key: keyof Omit<PlanCoverageRadarProps, never>; label: string; max: number }[] = [
+const PLAN_RADAR_AXES: { key: PlanRadarSection; label: string; max: number }[] = [
   { key: "watchpoints", label: "Watchpoints", max: 6 },
   { key: "priorities", label: "Priorities", max: 8 },
   { key: "eaActions", label: "EA Actions", max: 6 },
@@ -1616,6 +1882,7 @@ const PLAN_RADAR_AXES: { key: keyof Omit<PlanCoverageRadarProps, never>; label: 
 ];
 
 export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
+  const { onSegmentClick, sectionItems, ...countProps } = props;
   const size = 160;
   const cx = size / 2;
   const cy = size / 2;
@@ -1633,7 +1900,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
 
   // Shape points
   const shapePoints = PLAN_RADAR_AXES.map((axis, i) => {
-    const val = Math.min(props[axis.key], axis.max);
+    const val = Math.min(countProps[axis.key], axis.max);
     return polarXY(i, val / axis.max);
   });
   const shapePath = shapePoints.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ") + " Z";
@@ -1685,6 +1952,35 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
         {shapePoints.map(([x, y], i) => (
           <circle key={i} cx={x} cy={y} r="3" fill="var(--color-accent, #0d6efd)" />
         ))}
+
+        {/* Axis hit targets — only rendered when onSegmentClick is provided */}
+        {onSegmentClick && PLAN_RADAR_AXES.map((axis, i) => {
+          const [x, y] = polarXY(i, 1);
+          const count = countProps[axis.key];
+          const items = sectionItems?.[axis.key] ?? [];
+          const ariaLabel = `${axis.label}: ${count}`;
+          return (
+            <circle
+              key={`hit-${axis.key}`}
+              cx={x}
+              cy={y}
+              r="8"
+              fill="transparent"
+              className="viz-plan-radar__axis-hit"
+              role="button"
+              tabIndex={0}
+              aria-label={ariaLabel}
+              data-testid={`viz-plan-radar-axis-${axis.key}`}
+              onClick={() => onSegmentClick({ section: axis.key, label: axis.label, items })}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSegmentClick({ section: axis.key, label: axis.label, items });
+                }
+              }}
+            />
+          );
+        })}
       </svg>
     </div>
   );

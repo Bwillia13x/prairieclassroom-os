@@ -1,6 +1,6 @@
 import type { ActiveTab } from "../appReducer";
 import StatusChip from "./StatusChip";
-import { ActionButton, Card } from "./shared";
+import { Card } from "./shared";
 
 import type { ReactNode } from "react";
 
@@ -12,18 +12,8 @@ interface ActionItem {
   icon: ReactNode;
 }
 
-interface PrimaryAction {
-  description: string;
-  tab: ActiveTab;
-  cta: string;
-  label: string;
-  tone: "pending" | "warning" | "analysis" | "provenance" | "success";
-}
-
 interface Props {
   items: ActionItem[];
-  primaryAction: PrimaryAction;
-  onNavigate: (tab: ActiveTab) => void;
   onItemClick?: (item: ActionItem) => void;
   totalCount: number;
   studentsToCheckFirst?: string[];
@@ -38,8 +28,6 @@ function formatActionCount(totalCount: number): string {
 
 export default function PendingActionsCard({
   items,
-  primaryAction,
-  onNavigate,
   onItemClick,
   totalCount,
   studentsToCheckFirst = [],
@@ -58,13 +46,8 @@ export default function PendingActionsCard({
                 label={formatActionCount(totalCount)}
                 tone={totalCount > 0 ? "warning" : "success"}
               />
-              <StatusChip label={primaryAction.label} tone={primaryAction.tone} />
             </div>
-            <p className="today-triage-card__description">{primaryAction.description}</p>
           </div>
-          <ActionButton variant="primary" onClick={() => onNavigate(primaryAction.tab)}>
-            Open {primaryAction.cta}
-          </ActionButton>
         </div>
 
         {activeItems.length > 0 ? (
@@ -73,13 +56,7 @@ export default function PendingActionsCard({
               <button
                 key={`${item.key}-${item.targetTab}`}
                 className="today-triage-row"
-                onClick={() => {
-                  if (onItemClick) {
-                    onItemClick(item);
-                  } else {
-                    onNavigate(item.targetTab);
-                  }
-                }}
+                onClick={() => onItemClick?.(item)}
                 type="button"
               >
                 <span className="pending-action-icon" aria-hidden="true">{item.icon}</span>

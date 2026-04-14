@@ -6,7 +6,8 @@ import { differentiate } from "../api";
 import ArtifactUpload from "../components/ArtifactUpload";
 import VariantGrid from "../components/VariantGrid";
 import { VariantSummaryStrip } from "../components/DataVisualizations";
-import SkeletonLoader from "../components/SkeletonLoader";
+import StreamingIndicator from "../components/StreamingIndicator";
+import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
 import ContextualHint from "../components/ContextualHint";
 import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
@@ -20,14 +21,18 @@ import { useFeedback } from "../hooks/useFeedback";
 import type { CurriculumSelection, LessonArtifact, DifferentiateResponse } from "../types";
 
 export default function DifferentiatePanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, reset } = useAsyncAction<DifferentiateResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<DifferentiateResponse>();
   const [artifactTitle, setArtifactTitle] = useState("");
   const resultRef = useRef<HTMLDivElement>(null);
   const intakeRef = useRef<HTMLFormElement>(null);
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const streamer = useEmulatedStreaming({
+    sectionLabels: ["Readiness variants", "Scaffolded chunking", "Extension variants", "Language support"],
+    structuringDelayMs: 2000,
+  });
 
   useEffect(() => {
     session.recordPanelVisit("differentiate");
@@ -49,13 +54,15 @@ export default function DifferentiatePanel() {
     curriculumSelection: CurriculumSelection | null,
   ) {
     setArtifactTitle(artifact.title);
-    const resp = await execute((signal) =>
-      differentiate({
-        artifact,
-        classroom_id: classroomId,
-        teacher_goal: artifact.teacher_goal,
-        curriculum_selection: curriculumSelection ?? undefined,
-      }, signal)
+    const resp = await streamer.execute(() =>
+      execute((signal) =>
+        differentiate({
+          artifact,
+          classroom_id: classroomId,
+          teacher_goal: artifact.teacher_goal,
+          curriculum_selection: curriculumSelection ?? undefined,
+        }, signal)
+      )
     );
     if (resp) {
       showSuccess("Variants generated");
@@ -107,8 +114,8 @@ export default function DifferentiatePanel() {
         canvas={(
           <div className="workspace-result" aria-live="polite" aria-busy={loading && result === null} ref={resultRef}>
             {error && result === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
-            {loading && result === null ? (
-              <SkeletonLoader variant="grid" message="Differentiating lesson into multiple variants..." label="Loading differentiated variants" />
+            {(loading || streaming.active) && result === null ? (
+              <StreamingIndicator label="Generating lesson variants" onCancel={cancel} />
             ) : null}
             {!loading && result === null && !error ? (
               <DifferentiateEmptyState onStart={focusIntake} />

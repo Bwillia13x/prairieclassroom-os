@@ -344,3 +344,42 @@
     gap: var(--space-1);
   }
 }
+
+.today-health-error {
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-bg-warning);
+  border: 1px solid var(--color-border-warning);
+  border-radius: var(--radius-md);
+  color: var(--color-text-warning);
+  font-size: var(--text-sm);
+}
+
+.today-pulse {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.today-pulse__header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent);
+}
+
+.today-pulse__title {
+  margin: 0;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+}
+
+.today-pulse__subtitle {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
+  max-width: 62ch;
+}

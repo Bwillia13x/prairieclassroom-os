@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { FamilyMessageDraft } from "../types";
+import { useRole } from "../hooks/useRole";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
 import "./MessageDraft.css";
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function MessageDraft({ draft, onApprove }: Props) {
+  const { canApproveMessages } = useRole();
   const [copied, setCopied] = useState(false);
   const [approved, setApproved] = useState(draft.teacher_approved);
 
@@ -65,8 +67,14 @@ export default function MessageDraft({ draft, onApprove }: Props) {
             Approved {copied ? "& Copied" : ""}
           </div>
         ) : (
-          <button className="btn btn--approve" type="button" onClick={handleApproveAndCopy}>
-            Approve & Copy to Clipboard
+          <button
+            className="btn btn--approve"
+            type="button"
+            onClick={handleApproveAndCopy}
+            disabled={!canApproveMessages}
+            title={canApproveMessages ? undefined : "Only teachers may approve messages"}
+          >
+            {canApproveMessages ? "Approve & Copy to Clipboard" : "Approval restricted"}
           </button>
         )}
         <p className="draft-approval-note">

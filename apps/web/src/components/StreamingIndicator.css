@@ -167,12 +167,17 @@
     animation: none;
   }
 
+  .streaming-phase-icon {
+    animation: none;
+  }
+
   .streaming-dot {
     animation: none;
     opacity: 0.5;
   }
 
   .streaming-progress-bar {
+    animation: none;
     transition: none;
   }
 }

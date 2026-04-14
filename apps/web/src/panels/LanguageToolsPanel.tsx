@@ -13,7 +13,8 @@ import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
-import SkeletonLoader from "../components/SkeletonLoader";
+import StreamingIndicator from "../components/StreamingIndicator";
+import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
 import ResultBanner from "../components/ResultBanner";
 import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
@@ -22,7 +23,7 @@ import type { CurriculumSelection, SimplifyResponse, VocabCardsResponse } from "
 type LanguageTool = "simplify" | "vocab";
 
 export default function LanguageToolsPanel() {
-  const { profile, showSuccess, activeClassroom } = useApp();
+  const { profile, showSuccess, activeClassroom, streaming } = useApp();
   const session = useSession();
   const simplify = useAsyncAction<SimplifyResponse>();
   const vocab = useAsyncAction<VocabCardsResponse>();
@@ -30,6 +31,10 @@ export default function LanguageToolsPanel() {
   const [simplifyKey, setSimplifyKey] = useState(0);
   const [vocabKey, setVocabKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const streamer = useEmulatedStreaming({
+    sectionLabels: ["Processing text", "Applying language models", "Formatting output"],
+    structuringDelayMs: 1500,
+  });
 
   useEffect(() => {
     session.recordPanelVisit("language-tools");
@@ -47,8 +52,10 @@ export default function LanguageToolsPanel() {
   );
 
   async function handleSimplify(sourceText: string, gradeBand: string, ealLevel: "beginner" | "intermediate" | "advanced") {
-    const resp = await simplify.execute((signal) =>
-      simplifyText({ source_text: sourceText, grade_band: gradeBand, eal_level: ealLevel }, signal)
+    const resp = await streamer.execute(() =>
+      simplify.execute((signal) =>
+        simplifyText({ source_text: sourceText, grade_band: gradeBand, eal_level: ealLevel }, signal)
+      )
     );
     if (resp) {
       showSuccess("Text simplified");
@@ -64,14 +71,16 @@ export default function LanguageToolsPanel() {
     gradeBand: string,
     curriculumSelection: CurriculumSelection | null,
   ) {
-    const resp = await vocab.execute((signal) =>
-      generateVocabCards({
-        artifact_text: artifactText,
-        subject,
-        target_language: targetLanguage,
-        grade_band: gradeBand,
-        curriculum_selection: curriculumSelection ?? undefined,
-      }, signal)
+    const resp = await streamer.execute(() =>
+      vocab.execute((signal) =>
+        generateVocabCards({
+          artifact_text: artifactText,
+          subject,
+          target_language: targetLanguage,
+          grade_band: gradeBand,
+          curriculum_selection: curriculumSelection ?? undefined,
+        }, signal)
+      )
     );
     if (resp) {
       showSuccess("Cards generated");
@@ -133,15 +142,14 @@ export default function LanguageToolsPanel() {
           </>
         )}
         canvas={(
-          <div className="workspace-result" aria-live="polite" aria-busy={activeAction.loading && activeAction.result === null}>
+          <div className="workspace-result" aria-live="polite" aria-busy={(activeAction.loading || streaming.active) && activeAction.result === null}>
             {activeAction.error && activeAction.result === null ? (
               <ErrorBanner message={activeAction.error} onDismiss={activeAction.reset} />
             ) : null}
-            {activeAction.loading && activeAction.result === null ? (
-              <SkeletonLoader
-                variant={activeTool === "vocab" ? "grid" : "single"}
-                message={activeTool === "simplify" ? "Simplifying text for EAL learners..." : "Generating bilingual vocabulary cards..."}
-                label={activeTool === "simplify" ? "Simplifying text" : "Generating vocabulary cards"}
+            {(activeAction.loading || streaming.active) && activeAction.result === null ? (
+              <StreamingIndicator
+                label={activeTool === "simplify" ? "Simplifying text for EAL learners" : "Generating bilingual vocabulary cards"}
+                onCancel={activeAction.cancel}
               />
             ) : null}
             {!activeAction.loading && activeAction.result === null && !activeAction.error ? (

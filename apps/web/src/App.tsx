@@ -13,12 +13,15 @@ import {
   TAB_ORDER,
   type ActiveTab,
   type AuthPromptState,
+  type ClassroomRole,
 } from "./appReducer";
 import { configureApiClient, fetchTodaySnapshot, listClassrooms } from "./api";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
 import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
+import RoleContextPill from "./components/RoleContextPill";
+import RolePromptDialog from "./components/RolePromptDialog";
 import DifferentiatePanel from "./panels/DifferentiatePanel";
 import TomorrowPlanPanel from "./panels/TomorrowPlanPanel";
 import FamilyMessagePanel from "./panels/FamilyMessagePanel";
@@ -263,16 +266,18 @@ export default function App() {
   useEffect(() => {
     configureApiClient({
       getClassroomCode: (classroomId) => state.classroomAccessCodes[classroomId],
+      getClassroomRole: (classroomId) => state.classroomRoles[classroomId] ?? "teacher",
       requestClassroomCode,
     });
 
     return () => {
       configureApiClient({
         getClassroomCode: undefined,
+        getClassroomRole: undefined,
         requestClassroomCode: undefined,
       });
     };
-  }, [requestClassroomCode, state.classroomAccessCodes]);
+  }, [requestClassroomCode, state.classroomAccessCodes, state.classroomRoles]);
 
   useEffect(() => {
     void flushQueuedClientArtifacts();
@@ -494,6 +499,28 @@ export default function App() {
     }
   }
 
+  const setClassroomRole = useCallback(
+    (classroomId: string, role: ClassroomRole) => {
+      dispatch({ type: "SET_CLASSROOM_ROLE", classroomId, role });
+    },
+    [],
+  );
+
+  const activeRole: ClassroomRole =
+    state.classroomRoles[activeClassroom] ?? "teacher";
+
+  // Prompt for role when a classroom is loaded but has no stored role
+  useEffect(() => {
+    if (
+      activeClassroom &&
+      profile &&
+      !state.classroomRoles[activeClassroom] &&
+      !state.rolePrompt
+    ) {
+      dispatch({ type: "OPEN_ROLE_PROMPT", classroomId: activeClassroom });
+    }
+  }, [activeClassroom, profile, state.classroomRoles, state.rolePrompt]);
+
   const ctxValue = useMemo(
     () => ({
       classrooms: state.classrooms,
@@ -504,6 +531,9 @@ export default function App() {
       profile,
       students,
       classroomAccessCodes: state.classroomAccessCodes,
+      classroomRoles: state.classroomRoles,
+      activeRole,
+      setClassroomRole,
       authPrompt,
       showSuccess,
       dispatch,
@@ -516,15 +546,18 @@ export default function App() {
     }),
     [
       activeClassroom,
+      activeRole,
       activeTab,
       authPrompt,
       dismissToast,
       profile,
       setActiveClassroom,
       setActiveTab,
+      setClassroomRole,
       showSuccess,
       showUndo,
       state.classroomAccessCodes,
+      state.classroomRoles,
       state.classrooms,
       state.featuresSeen,
       state.streaming,
@@ -633,6 +666,8 @@ export default function App() {
                   </div>
                 ) : null}
               </div>
+
+              <RoleContextPill />
 
               <div className="shell-bar__actions">
                 <ThemeToggle />
@@ -754,6 +789,9 @@ export default function App() {
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
 
         {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
+        {state.rolePrompt ? (
+          <RolePromptDialog classroomId={state.rolePrompt.classroomId} />
+        ) : null}
         <ClassroomAccessDialog
           open={Boolean(authPrompt)}
           classroomId={authPrompt?.classroomId ?? activeClassroom}

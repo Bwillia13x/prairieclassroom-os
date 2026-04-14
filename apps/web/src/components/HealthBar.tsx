@@ -7,6 +7,12 @@ interface Props {
   health: ClassroomHealth | null;
   loading: boolean;
   pendingActionCount?: number;
+  onTrendClick?: (payload: {
+    trendKey: "debt" | "plans" | "complexity";
+    label: string;
+    data: number[];
+    highlightIndex?: number;
+  }) => void;
 }
 
 function isZeroState(health: ClassroomHealth): boolean {
@@ -30,7 +36,7 @@ function getOverallLabel(tone: "success" | "pending" | "warning"): string {
   return "Catching up";
 }
 
-export default function HealthBar({ health, loading, pendingActionCount = 0 }: Props) {
+export default function HealthBar({ health, loading, pendingActionCount = 0, onTrendClick }: Props) {
   if (loading) {
     return (
       <div className="health-bar health-bar--loading" aria-busy="true" aria-label="Loading health summary">
@@ -84,13 +90,32 @@ export default function HealthBar({ health, loading, pendingActionCount = 0 }: P
       <StatusChip tone={overallTone} label={overallLabel} />
 
       {health.trends?.plans_14d && health.trends.plans_14d.length > 0 && (
-        <PlanStreakCalendar plans14d={health.trends.plans_14d} />
+        <PlanStreakCalendar
+          plans14d={health.trends.plans_14d}
+          onSegmentClick={
+            onTrendClick
+              ? (payload) =>
+                  onTrendClick({
+                    trendKey: "plans",
+                    label: "Planning streak",
+                    data: health.trends!.plans_14d,
+                    highlightIndex: payload.dayIndex,
+                  })
+              : undefined
+          }
+        />
       )}
       {health.trends?.debt_total_14d && health.trends.debt_total_14d.length > 1 && (
-        <DebtTrendSparkline data={health.trends.debt_total_14d} />
+        <DebtTrendSparkline
+          data={health.trends.debt_total_14d}
+          onSegmentClick={onTrendClick}
+        />
       )}
       {health.trends?.peak_complexity_14d && health.trends.peak_complexity_14d.length > 0 && (
-        <ComplexityTrendCalendar data={health.trends.peak_complexity_14d} />
+        <ComplexityTrendCalendar
+          data={health.trends.peak_complexity_14d}
+          onSegmentClick={onTrendClick}
+        />
       )}
     </div>
   );
