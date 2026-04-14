@@ -350,4 +350,15 @@
   .drill-down-drawer {
     width: 100vw;
   }
+
+  .drill-down-viz-row {
+    flex-direction: column;
+  }
+}
+
+.drill-down-viz-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: flex-start;
 }

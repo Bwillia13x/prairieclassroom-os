@@ -1,9 +1,11 @@
 .forecast-timeline {
   display: flex;
-  gap: 2px;
+  gap: 3px;
   border-radius: var(--radius-md);
   overflow: hidden;
   margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-xs);
+  box-shadow: var(--shadow-xs);
 }
 
 .forecast-timeline-segment {
@@ -23,15 +25,15 @@
 }
 
 .forecast-timeline-segment:first-child {
-  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
 }
 
 .forecast-timeline-segment:last-child {
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
 }
 
 .forecast-timeline-segment:only-child {
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
 }
 
 .forecast-timeline-segment:hover {

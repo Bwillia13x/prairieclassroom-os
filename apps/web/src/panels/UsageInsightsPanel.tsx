@@ -4,6 +4,7 @@ import { useAsyncAction } from "../useAsyncAction";
 import { fetchFeedbackSummary, fetchSessionSummary } from "../api";
 import type { FeedbackSummary, SessionSummary } from "../api";
 import { StatusCard, ProgressBar, Sparkline } from "../components/shared";
+import { WorkflowFlowStrip } from "../components/DataVisualizations";
 import PageIntro from "../components/PageIntro";
 import "./UsageInsightsPanel.css";
 
@@ -123,6 +124,7 @@ export default function UsageInsightsPanel() {
                   <p className="usage-insights-sparkline-label" style={{ marginTop: "var(--ds-space-3, var(--space-3))" }}>
                     Common workflows
                   </p>
+                  <WorkflowFlowStrip flows={sessions.result.common_flows.slice(0, 5)} />
                   <ol className="usage-insights-flow-list">
                     {sessions.result.common_flows.slice(0, 5).map((flow, i) => (
                       <li key={i}>

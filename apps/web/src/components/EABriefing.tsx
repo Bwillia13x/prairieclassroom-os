@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ClassroomProfile, EABriefingResponse } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { FollowUpDecayIndicators, ScheduleLoadStrip } from "./DataVisualizations";
 import "./EABriefing.css";
 
 /* ── Form ─────────────────────────────────────────────────────────── */
@@ -102,6 +103,13 @@ export function EABriefingResult({ result }: ResultProps) {
       {result.briefing.schedule_blocks.length > 0 && (
         <section className="ea-section ea-section--schedule">
           <h3><span className="ea-icon">🕐</span> Today's Schedule</h3>
+          <ScheduleLoadStrip
+            blocks={result.briefing.schedule_blocks.map((block) => ({
+              time_slot: block.time_slot,
+              student_count: block.student_refs.length,
+              label: block.task_description,
+            }))}
+          />
           <div className="ea-cards">
             {result.briefing.schedule_blocks.map((block, i) => (
               <div key={i} className="ea-card ea-card--schedule">
@@ -143,6 +151,14 @@ export function EABriefingResult({ result }: ResultProps) {
       {result.briefing.pending_followups.length > 0 && (
         <section className="ea-section ea-section--followups">
           <h3><span className="ea-icon">⏰</span> Pending Follow-ups</h3>
+          <FollowUpDecayIndicators
+            gaps={result.briefing.pending_followups.map((f) => ({
+              original_record_id: f.student_ref,
+              student_refs: [f.student_ref],
+              observation: f.original_observation,
+              days_since: f.days_since,
+            }))}
+          />
           <div className="ea-cards">
             {result.briefing.pending_followups.map((f, i) => (
               <div key={i} className="ea-card ea-card--followup">

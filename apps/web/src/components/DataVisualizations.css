@@ -1003,3 +1003,249 @@
     transform: none;
   }
 }
+
+/* ================================================================
+   17. SCHEDULE LOAD STRIP
+   ================================================================ */
+
+.viz-schedule-strip {
+  display: flex;
+  gap: 4px;
+  align-items: flex-end;
+  height: 56px;
+  padding: var(--space-sm, 8px) 0;
+}
+
+.viz-schedule-strip__slot {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  min-width: 0;
+}
+
+.viz-schedule-strip__bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.3s ease;
+}
+
+.viz-schedule-strip__label {
+  font-size: 0.65rem;
+  color: var(--color-text-secondary, #6c757d);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* ================================================================
+   18. VARIANT SUMMARY STRIP
+   ================================================================ */
+
+.viz-variant-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-sm, 8px) 0;
+}
+
+.viz-variant-strip__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-variant-strip__bar-wrap {
+  flex: 1;
+  height: 10px;
+  background: var(--color-surface-secondary, #f1f3f5);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.viz-variant-strip__bar {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.3s ease;
+}
+
+.viz-variant-strip__type {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #212529);
+  min-width: 80px;
+}
+
+.viz-variant-strip__min {
+  font-size: 0.7rem;
+  color: var(--color-text-secondary, #6c757d);
+  min-width: 28px;
+  text-align: right;
+}
+
+/* ================================================================
+   19. STUDENT–THEME HEATMAP
+   ================================================================ */
+
+.viz-student-theme-heatmap {
+  padding: var(--space-sm, 8px) 0;
+  overflow-x: auto;
+}
+
+.viz-student-theme-heatmap svg {
+  display: block;
+  min-width: 240px;
+}
+
+/* ================================================================
+   20. PLAN COVERAGE RADAR
+   ================================================================ */
+
+.viz-plan-radar {
+  padding: var(--space-sm, 8px) 0;
+  max-width: 220px;
+  margin: 0 auto;
+}
+
+/* ================================================================
+   21. WORKFLOW FLOW STRIP
+   ================================================================ */
+
+.viz-workflow-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: var(--space-sm, 8px) 0;
+}
+
+.viz-workflow-strip__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.viz-workflow-strip__count {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-text-secondary, #6c757d);
+  min-width: 28px;
+  text-align: right;
+}
+
+.viz-workflow-strip__lane {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-wrap: wrap;
+}
+
+.viz-workflow-strip__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #212529);
+  background: var(--color-surface-secondary, #f1f3f5);
+  border: 1.5px solid;
+  border-radius: 12px;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.viz-workflow-strip__arrow {
+  font-size: 0.75rem;
+  margin-left: 4px;
+}
+
+/* ================================================================
+   22. READABILITY COMPARISON GAUGE
+   ================================================================ */
+
+.viz-readability-gauge {
+  padding: var(--space-sm, 8px) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.viz-readability-gauge__row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.viz-readability-gauge__label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--color-text-primary, #212529);
+}
+
+.viz-readability-gauge__bars {
+  width: 100%;
+}
+
+.viz-readability-gauge__bar-pair {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.viz-readability-gauge__bar {
+  height: 16px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  padding: 0 6px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: #fff;
+  min-width: 32px;
+  transition: width 0.3s ease;
+}
+
+.viz-readability-gauge__bar--before {
+  background: var(--color-text-secondary, #6c757d);
+  opacity: 0.6;
+}
+
+.viz-readability-gauge__bar--after {
+  background: var(--color-accent, #0d6efd);
+}
+
+.viz-readability-gauge__bar--improved {
+  background: var(--color-sage, #5cb85c);
+}
+
+.viz-readability-gauge__legend {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.viz-readability-gauge__legend-item {
+  font-size: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.viz-readability-gauge__legend-item::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.viz-readability-gauge__legend-item--before::before {
+  background: var(--color-text-secondary, #6c757d);
+  opacity: 0.6;
+}
+
+.viz-readability-gauge__legend-item--after::before {
+  background: var(--color-accent, #0d6efd);
+}

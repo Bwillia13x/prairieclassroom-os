@@ -6,6 +6,7 @@ import type {
 } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { SupportPatternRadar, FollowUpDecayIndicators, ScaffoldEffectivenessChart, StudentThemeHeatmap } from "./DataVisualizations";
 import "./PatternReport.css";
 
 /* ------------------------------------------------------------------ */
@@ -139,6 +140,27 @@ export function PatternReportResult({
         </details>
       )}
 
+      {/* Visual overview: radar + heatmap + decay */}
+      {report.recurring_themes.length > 0 && (
+        <SupportPatternRadar themes={report.recurring_themes} />
+      )}
+
+      {report.recurring_themes.length > 1 && (
+        <StudentThemeHeatmap themes={report.recurring_themes} />
+      )}
+
+      {report.follow_up_gaps.length > 0 && (
+        <FollowUpDecayIndicators
+          gaps={report.follow_up_gaps}
+          onStudentClick={onInterventionClick ? (alias) =>
+            onInterventionClick({
+              student_ref: alias,
+              suggested_action: "Follow up on previous intervention",
+              reason: "Flagged by follow-up decay indicator",
+            }) : undefined}
+        />
+      )}
+
       {report.recurring_themes.length > 0 && (
         <section className="pattern-section pattern-section--themes">
           <h3>Recurring Themes</h3>
@@ -252,6 +274,15 @@ export function PatternReportResult({
             </div>
           ))}
         </section>
+      )}
+
+      {report.recurring_themes.length > 0 && (
+        <ScaffoldEffectivenessChart
+          scaffolds={report.recurring_themes.map((t) => ({
+            name: t.theme,
+            count: t.evidence_count,
+          }))}
+        />
       )}
 
       <PrintButton label="Print Report" />

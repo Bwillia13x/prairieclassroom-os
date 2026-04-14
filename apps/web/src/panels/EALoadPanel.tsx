@@ -15,6 +15,7 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import { FeedbackCollector } from "../components/shared";
+import { EALoadStackedBars } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import type { ClassroomProfile, EALoadBlock, EALoadLevel, EALoadResponse } from "../types";
@@ -166,6 +167,10 @@ function EALoadViewer({ response }: EALoadViewerProps) {
   const { profile } = response;
   return (
     <div className="ea-load-viewer">
+      {profile.blocks.length > 0 && (
+        <EALoadStackedBars blocks={profile.blocks} />
+      )}
+
       {profile.overall_summary ? (
         <section className="ea-load-viewer__summary" aria-label="Overall summary">
           <h2>Overall summary</h2>

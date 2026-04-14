@@ -547,14 +547,18 @@ export default function App() {
           <div className="app-header__inner">
             <div className="shell-bar">
               <div className="shell-brand" aria-label="PrairieGem OS home">
-                <img
-                  className="app-logo"
-                  src="/prairiegem-logo.png"
-                  alt="PrairieGem OS"
-                  width={1536}
-                  height={1024}
-                  decoding="async"
-                />
+                <picture>
+                  <source srcSet="/prairiegem-logo.webp" type="image/webp" />
+                  <img
+                    className="app-logo"
+                    src="/prairiegem-logo.png"
+                    alt="PrairieGem OS"
+                    width={583}
+                    height={400}
+                    decoding="async"
+                    fetchPriority="high"
+                  />
+                </picture>
               </div>
 
               <div className="shell-classroom-anchor" ref={classroomMenuRef}>

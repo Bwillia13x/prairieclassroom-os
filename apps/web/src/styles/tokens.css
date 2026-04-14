@@ -2,20 +2,20 @@
   color-scheme: light dark;
 
   /* Color tokens — Prairie palette */
-  --color-bg: light-dark(#f5eddb, #1a1610);
-  --color-surface: light-dark(#fbf6ea, #231d16);
-  --color-surface-elevated: light-dark(#fffbf0, #2b241c);
-  --color-surface-muted: light-dark(#efe6d2, #1f1a14);
-  --color-surface-glass: light-dark(rgba(251, 246, 234, 0.72), rgba(35, 29, 22, 0.7));
-  --color-border: light-dark(#e2d6ba, #4a3d2d);
-  --color-border-strong: light-dark(#c9b896, #6a563d);
+  --color-bg: light-dark(#f5eddb, #0c0c0a);
+  --color-surface: light-dark(#fbf6ea, #151412);
+  --color-surface-elevated: light-dark(#fffbf0, #1d1b18);
+  --color-surface-muted: light-dark(#efe6d2, #101010);
+  --color-surface-glass: light-dark(rgba(251, 246, 234, 0.72), rgba(21, 20, 18, 0.75));
+  --color-border: light-dark(#e2d6ba, #3a3126);
+  --color-border-strong: light-dark(#c9b896, #5c4d38);
   --color-border-input: light-dark(#7d6e4c, #a89072);
   --color-text: light-dark(#2b2014, #f5ecdf);
   --color-text-secondary: light-dark(#6b5d48, #c8baa4);
-  --color-text-tertiary: light-dark(#73654e, #9f927d);
+  --color-text-tertiary: light-dark(#73654e, #a49780);
   --color-accent: light-dark(#ae671a, #d4a15c);
   --color-accent-hover: light-dark(#935110, #e3b26e);
-  --color-accent-soft: light-dark(#f3e0c2, #3a2c1a);
+  --color-accent-soft: light-dark(#f3e0c2, #1e1710);
   --color-success: light-dark(#4a6648, #86a883);
   --color-warning: light-dark(#a86f08, #d7a15b);
   --color-danger: light-dark(#a8502e, #cf8a69);
@@ -24,33 +24,33 @@
   --color-pending: light-dark(#b47a26, #ddb06b);
 
   /* Semantic tinted backgrounds */
-  --color-bg-muted: light-dark(#f1e8d4, #241d16);
-  --color-bg-info: light-dark(#f0e9d8, #2b241d);
-  --color-bg-success: light-dark(#eaf0e3, #1e2720);
-  --color-bg-warning: light-dark(#faecc9, #322615);
-  --color-bg-danger: light-dark(#f4ebe2, #31221c);
-  --color-bg-accent: light-dark(#f5e6cc, #382a18);
-  --color-bg-analysis: light-dark(#eeebf5, #27263a);
-  --color-bg-provenance: light-dark(#ebf1f0, #1d2a2a);
-  --color-bg-pending: light-dark(#fdeed5, #392a18);
-  --color-bg-sun: light-dark(#faecc9, #322615);
-  --color-bg-sage: light-dark(#e9eee8, #202821);
-  --color-bg-slate: light-dark(#ebeff5, #1d2430);
-  --color-bg-forest: light-dark(#e7efea, #1d2620);
+  --color-bg-muted: light-dark(#f1e8d4, #131210);
+  --color-bg-info: light-dark(#f0e9d8, #151412);
+  --color-bg-success: light-dark(#eaf0e3, #101510);
+  --color-bg-warning: light-dark(#faecc9, #181410);
+  --color-bg-danger: light-dark(#f4ebe2, #18110e);
+  --color-bg-accent: light-dark(#f5e6cc, #1a1510);
+  --color-bg-analysis: light-dark(#eeebf5, #14131e);
+  --color-bg-provenance: light-dark(#ebf1f0, #0e1616);
+  --color-bg-pending: light-dark(#fdeed5, #1a1510);
+  --color-bg-sun: light-dark(#faecc9, #181410);
+  --color-bg-sage: light-dark(#e9eee8, #101510);
+  --color-bg-slate: light-dark(#ebeff5, #101318);
+  --color-bg-forest: light-dark(#e7efea, #101510);
 
-  /* Semantic borders */
-  --color-border-info: light-dark(#d8cbae, #64543a);
-  --color-border-success: light-dark(#bccfb6, #445c46);
-  --color-border-warning: light-dark(#e3be7a, #87653a);
-  --color-border-danger: light-dark(#d9aea0, #7f5445);
-  --color-border-accent: light-dark(#dfc298, #8c693c);
-  --color-border-analysis: light-dark(#cec4e0, #555576);
-  --color-border-provenance: light-dark(#c2d3d2, #486463);
-  --color-border-pending: light-dark(#e7c487, #8d6a3d);
-  --color-border-sun: light-dark(#e3be7a, #87653a);
-  --color-border-sage: light-dark(#c4d2c2, #566957);
-  --color-border-slate: light-dark(#c5cfe0, #53617c);
-  --color-border-forest: light-dark(#b9cdc0, #4d6a57);
+  /* Semantic borders — warm beige accents in dark mode */
+  --color-border-info: light-dark(#d8cbae, #4d3f2c);
+  --color-border-success: light-dark(#bccfb6, #344a36);
+  --color-border-warning: light-dark(#e3be7a, #6d5230);
+  --color-border-danger: light-dark(#d9aea0, #6a4438);
+  --color-border-accent: light-dark(#dfc298, #7a5830);
+  --color-border-analysis: light-dark(#cec4e0, #454568);
+  --color-border-provenance: light-dark(#c2d3d2, #385450);
+  --color-border-pending: light-dark(#e7c487, #7a5830);
+  --color-border-sun: light-dark(#e3be7a, #6d5230);
+  --color-border-sage: light-dark(#c4d2c2, #3e5640);
+  --color-border-slate: light-dark(#c5cfe0, #3e4e68);
+  --color-border-forest: light-dark(#b9cdc0, #3e5840);
 
   /* Semantic text */
   --color-text-info: light-dark(#6a5740, #d5c09f);
@@ -85,44 +85,60 @@
 
   /* Forecast colors */
   --color-forecast-low: light-dark(#4a8a5a, #70b080);
-  --color-forecast-low-bg: light-dark(#edf5ef, #1a2a1e);
+  --color-forecast-low-bg: light-dark(#edf5ef, #0f1a12);
   --color-forecast-low-text: light-dark(#2a5a38, #8ad0a0);
   --color-forecast-medium: light-dark(#c4920e, #daa040);
-  --color-forecast-medium-bg: light-dark(#fdf5e8, #2c2414);
+  --color-forecast-medium-bg: light-dark(#fdf5e8, #18140c);
   --color-forecast-medium-text: light-dark(#7a5610, #e0c070);
   --color-forecast-high: light-dark(#c45a3a, #d07060);
-  --color-forecast-high-bg: light-dark(#fceeed, #2c1c18);
+  --color-forecast-high-bg: light-dark(#fceeed, #18100c);
   --color-forecast-high-text: light-dark(#8a3020, #e0a090);
 
   --color-approve: light-dark(#476d45, #77996f);
   --color-approve-hover: light-dark(#375c35, #88a87d);
-  --color-text-on-accent: light-dark(#000000, #1a1610);
+  --color-text-on-accent: light-dark(#000000, #0c0c0a);
 
   /* Elevation — shadow color primitives for light-dark switching
      Ive-inspired: shadows should whisper, not shout. Barely perceptible
-     ambient occlusion that grounds surfaces without drawing attention. */
-  --_shadow-xs-a: light-dark(rgba(148, 110, 44, 0.015), rgba(0, 0, 0, 0.05));
-  --_shadow-sm-a: light-dark(rgba(148, 110, 44, 0.02), rgba(0, 0, 0, 0.06));
-  --_shadow-md-a: light-dark(rgba(148, 110, 44, 0.02), rgba(0, 0, 0, 0.06));
-  --_shadow-md-b: light-dark(rgba(148, 110, 44, 0.03), rgba(0, 0, 0, 0.08));
-  --_shadow-lg-a: light-dark(rgba(162, 121, 46, 0.02), rgba(0, 0, 0, 0.06));
-  --_shadow-lg-b: light-dark(rgba(162, 121, 46, 0.04), rgba(0, 0, 0, 0.10));
+     ambient occlusion that grounds surfaces without drawing attention.
+     Three-layer model: contact shadow (tight), penumbra (mid), ambient (diffuse). */
+  --_shadow-xs-a: light-dark(rgba(148, 110, 44, 0.018), rgba(0, 0, 0, 0.06));
+  --_shadow-sm-a: light-dark(rgba(148, 110, 44, 0.024), rgba(0, 0, 0, 0.07));
+  --_shadow-sm-b: light-dark(rgba(148, 110, 44, 0.012), rgba(0, 0, 0, 0.04));
+  --_shadow-md-a: light-dark(rgba(148, 110, 44, 0.024), rgba(0, 0, 0, 0.07));
+  --_shadow-md-b: light-dark(rgba(148, 110, 44, 0.035), rgba(0, 0, 0, 0.09));
+  --_shadow-md-c: light-dark(rgba(148, 110, 44, 0.015), rgba(0, 0, 0, 0.05));
+  --_shadow-lg-a: light-dark(rgba(162, 121, 46, 0.024), rgba(0, 0, 0, 0.07));
+  --_shadow-lg-b: light-dark(rgba(162, 121, 46, 0.045), rgba(0, 0, 0, 0.11));
+  --_shadow-lg-c: light-dark(rgba(162, 121, 46, 0.018), rgba(0, 0, 0, 0.05));
 
-  --shadow-xs: 0 0.5px 1px var(--_shadow-xs-a);
-  --shadow-sm: 0 1px 3px var(--_shadow-sm-a), 0 1px 2px var(--_shadow-sm-a);
-  --shadow-md: 0 2px 4px var(--_shadow-md-a), 0 6px 16px var(--_shadow-md-a), 0 16px 40px var(--_shadow-md-b);
-  --shadow-lg: 0 4px 8px var(--_shadow-lg-a), 0 12px 32px var(--_shadow-lg-a), 0 32px 64px var(--_shadow-lg-b);
+  --shadow-xs:
+    0 0.5px 1px var(--_shadow-xs-a),
+    0 0 0.5px var(--_shadow-xs-a);
+  --shadow-sm:
+    0 1px 2px var(--_shadow-sm-a),
+    0 3px 6px var(--_shadow-sm-b),
+    0 0 0.5px var(--_shadow-sm-b);
+  --shadow-md:
+    0 1px 2px var(--_shadow-md-a),
+    0 4px 12px var(--_shadow-md-b),
+    0 12px 32px var(--_shadow-md-c);
+  --shadow-lg:
+    0 2px 4px var(--_shadow-lg-a),
+    0 8px 24px var(--_shadow-lg-b),
+    0 24px 48px var(--_shadow-lg-c);
 
-  /* Inner stroke — elevated-surface rim, warm-shifted for dark mode */
+  /* Inner stroke — elevated-surface rim, warm-shifted for dark mode.
+     Subtle top-edge catch light and 1px boundary ring for surface clarity. */
   --_inner-stroke-top: light-dark(
-    color-mix(in srgb, white 18%, transparent),
-    color-mix(in srgb, var(--color-surface-elevated) 38%, transparent)
+    color-mix(in srgb, white 20%, transparent),
+    color-mix(in srgb, var(--color-surface-elevated) 42%, transparent)
   );
   --_inner-stroke-ring: light-dark(
-    color-mix(in srgb, white 5%, transparent),
-    color-mix(in srgb, var(--color-surface-elevated) 14%, transparent)
+    color-mix(in srgb, white 6%, transparent),
+    color-mix(in srgb, var(--color-surface-elevated) 16%, transparent)
   );
-  --inner-stroke: inset 0 1px 0 var(--_inner-stroke-top), inset 0 0 0 1px var(--_inner-stroke-ring);
+  --inner-stroke: inset 0 1px 0 var(--_inner-stroke-top), inset 0 0 0 0.5px var(--_inner-stroke-ring);
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -135,13 +151,21 @@
   --space-8: 4rem;
   --space-9: 5rem;
 
-  /* Radius — generous and confident, quiet geometry */
+  /* Radius — proportional scale based on 4px grid.
+     Edges should feel precise and intentional, never arbitrary.
+     Squircle-inspired optics: slightly larger than expected for warmth. */
+  --radius-xs: 8px;
   --radius-sm: 12px;
-  --radius-md: 18px;
-  --radius-lg: 24px;
-  --radius-xl: 32px;
+  --radius-md: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
   --radius-pill: 999px;
   --radius: var(--radius-sm);
+
+  /* Button radius — sized to match the btn min-height for optical balance */
+  --radius-btn: 14px;
+  --radius-btn-sm: 10px;
+  --radius-btn-lg: 16px;
 
   /* Typography — SF-inspired clarity: clean sans for UI, serif for display warmth */
   --font-sans: "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;

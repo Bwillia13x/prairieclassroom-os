@@ -29,7 +29,7 @@ The system is *architecturally healthy*. This upgrade fixes a small number of co
 - No changes to non-color tokens (spacing, type, motion, layout)
 - No new component CSS unless required by a specific fix
 
-The warm-brown dark palette (`#1a1610` bg, `#231d16` surface, `#f5ecdf` text) is a deliberate brand decision and stays.
+The warm-brown dark palette has been replaced (2026-04-13) with a near-black base (`#0c0c0a` bg, `#151412` surface) that uses warm beige accents (`#3a3126` borders, `#d4a15c` accent) to carry the prairie identity. The base is dark, the accents are warm.
 
 ## Audit Findings
 

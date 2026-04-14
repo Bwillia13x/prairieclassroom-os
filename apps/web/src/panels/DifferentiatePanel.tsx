@@ -5,6 +5,7 @@ import { useAsyncAction } from "../useAsyncAction";
 import { differentiate } from "../api";
 import ArtifactUpload from "../components/ArtifactUpload";
 import VariantGrid from "../components/VariantGrid";
+import { VariantSummaryStrip } from "../components/DataVisualizations";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ContextualHint from "../components/ContextualHint";
 import OutputFeedback from "../components/OutputFeedback";
@@ -133,6 +134,7 @@ export default function DifferentiatePanel() {
                     />
                   </Card.Body>
                 </Card>
+                <VariantSummaryStrip variants={result.variants} />
                 <VariantGrid artifactTitle={artifactTitle} variants={result.variants} />
                 <OutputFeedback outputId={`diff-${resultKey}`} outputType="differentiate" />
                 <FeedbackCollector

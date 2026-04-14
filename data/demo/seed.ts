@@ -450,6 +450,149 @@ const interventions: InterventionRecord[] = [
     created_at: "2026-04-12T13:10:00.000Z",
     schema_version: SCHEMA_V,
   },
+
+  // ─── ENRICHED-STUDENT INTERVENTIONS (D7-D25 newly-complex) ─────────────────
+
+  {
+    record_id: "int-demo-032",
+    classroom_id: CLASSROOM,
+    student_refs: ["Gabriel"],
+    observation:
+      "Assembly day. Gabriel's hearing aids picked up feedback from the gym PA system — he was visibly uncomfortable, covering his ears and leaning away. Other students didn't notice the issue.",
+    action_taken:
+      "Moved Gabriel to a seat farther from the speaker. Checked in quietly after assembly — he said the high-pitched sound was 'like a whistle inside my head.' Noted for future assemblies: seat him near the gym door, not the stage.",
+    outcome:
+      "Gabriel recovered within minutes once moved. Participated in the post-assembly discussion. Need to flag this with the music teacher before Friday concert rehearsal — gym acoustics are the issue, not classroom volume.",
+    follow_up_needed: true,
+    created_at: "2026-04-08T10:45:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-033",
+    classroom_id: CLASSROOM,
+    student_refs: ["Hannah"],
+    observation:
+      "Literacy block writing task. Hannah spent 12 minutes producing two laboured sentences by hand. Her ideas were complex — she was narrating verbally to her neighbour the whole time — but the physical act of handwriting was the bottleneck. She looked frustrated and stopped writing mid-word twice.",
+    action_taken:
+      "Offered the classroom Chromebook for the remainder of the task. Hannah typed three full paragraphs in 15 minutes — fluent, detailed, well-organized. The contrast between her handwritten and typed output is stark.",
+    outcome:
+      "Hannah's typed output was the strongest narrative in the class today. This confirms the OT recommendation: keyboard access is not a convenience, it is an access tool. Will ensure Chromebook is on her desk at the start of every writing block going forward. Follow up with OT to document.",
+    follow_up_needed: true,
+    created_at: "2026-04-08T09:50:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-034",
+    classroom_id: CLASSROOM,
+    student_refs: ["Jasper"],
+    observation:
+      "Science lab — new format today (partner experiment with unfamiliar materials). Jasper froze at the transition from desks to lab tables. He stood beside his desk while the rest of the class moved. His face was neutral but his hands were gripping the desk edge.",
+    action_taken:
+      "Read the social story I'd prepared the night before (3 sentences about what lab time looks like). Walked through the lab layout with him before other students arrived at tables. Paired him with Oliver, who is calm and predictable.",
+    outcome:
+      "Jasper participated fully once he understood the sequence. He actually led the measurement recording because he noticed a pattern in the data that Oliver missed. The social story + preview combination is reliable for him — need to prep these before any new-format activity.",
+    follow_up_needed: false,
+    created_at: "2026-04-09T10:55:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-035",
+    classroom_id: CLASSROOM,
+    student_refs: ["Kiana"],
+    observation:
+      "Kiana's energy dropped noticeably during the literacy block — she missed her scheduled break because the class was in a read-aloud and she didn't want to interrupt. She was pale and quiet by 10:15, not her usual engaged self.",
+    action_taken:
+      "Discreetly reminded her that her break schedule is non-negotiable — she doesn't need to ask. Sent her to the office for her check-in with her buddy (Anaya). Updated the visual timer on her desk to beep silently (vibrate mode) rather than waiting for her to notice the clock.",
+    outcome:
+      "Kiana returned after 10 minutes looking much better. Need to reinforce with the whole class that some students have break schedules that aren't optional — frame it as 'everyone's body has different needs' without singling her out. The vibrate timer should prevent this from recurring.",
+    follow_up_needed: true,
+    created_at: "2026-04-09T10:20:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-036",
+    classroom_id: CLASSROOM,
+    student_refs: ["Oliver"],
+    observation:
+      "Journal writing period. Oliver sat for 8 minutes with a blank page, pen in hand. When I asked what he was thinking about, he gave a detailed, eloquent oral response about his weekend camping trip — vivid details, sequence, description. Then said 'I just can't make my hand write all that.'",
+    action_taken:
+      "Offered speech-to-text on the Chromebook. Oliver dictated for 6 minutes straight. Then read it back, made two edits, and added a conclusion. Also sketched a quick diagram of the campsite in the margin of his printed version.",
+    outcome:
+      "Oliver's dictated journal entry was one of the most detailed in the class. The gap between his oral and written expression is the widest I've seen. The resource teacher is monitoring monthly — will share this sample at the next check-in. The key insight: he doesn't lack ideas or language, he lacks an output channel that matches his capacity.",
+    follow_up_needed: true,
+    created_at: "2026-04-10T09:40:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-037",
+    classroom_id: CLASSROOM,
+    student_refs: ["Anaya"],
+    observation:
+      "Social studies — Alberta geography unit. Anaya raised her hand and said 'we did this differently in Ontario.' She described the Ontario curriculum's approach to Canadian geography, which was actually more advanced in some respects. Other students were interested.",
+    action_taken:
+      "Invited Anaya to share what she'd learned about the Great Lakes in Ontario as a compare-and-contrast with Alberta's river systems. Framed it as 'Anaya is our Ontario expert.' This gave her a role in the classroom and validated her prior learning.",
+    outcome:
+      "Anaya was visibly more confident for the rest of the period. Two students asked her questions about Ontario afterward. This is the first time she's spontaneously contributed in social studies since transferring. The bridge between her prior curriculum knowledge and Alberta content is a strength, not a gap.",
+    follow_up_needed: false,
+    created_at: "2026-04-10T11:00:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-038",
+    classroom_id: CLASSROOM,
+    student_refs: ["Rania", "Farid"],
+    observation:
+      "Social studies vocabulary work. Rania was stalled on a vocabulary matching activity — she understood the concepts when I explained them in simpler English but couldn't parse the textbook definitions. Farid noticed and moved his chair closer without being asked.",
+    action_taken:
+      "Let the pair work together. Farid explained three terms to Rania using both Arabic and English — his L3 proficiency made him an effective bridge. Rania's oral storytelling strength meant she could then explain the concepts back to the table group in her own words.",
+    outcome:
+      "Rania completed the activity and Farid reported that explaining helped him understand the terms better too. Mutual benefit — exactly the peer model dynamic the EAL literature describes. Will seat them together for vocabulary-heavy tasks. Note: Farid and Rania speak different Arabic dialects but communicate effectively.",
+    follow_up_needed: false,
+    created_at: "2026-04-11T11:15:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-039",
+    classroom_id: CLASSROOM,
+    student_refs: ["Violet"],
+    observation:
+      "Art period — clay work. The classroom was louder than usual (clay tools, excited voices, moving chairs). Violet put her headphones on within 2 minutes and moved to the corner of her table. She was still working but her shoulders were up near her ears and she was pressing the clay very hard.",
+    action_taken:
+      "Offered the quiet workspace (desk near the bookshelf) as an option. Violet nodded and moved without speaking. She continued the clay project at her own pace in the quieter spot. Did not ask her to rejoin the main group.",
+    outcome:
+      "Violet produced a detailed and careful clay piece — her fine motor control was excellent when she wasn't managing sensory overload simultaneously. She returned to her regular desk when the cleanup announcement came, calm and ready. Fire drill practice is Thursday — need to send parent a heads-up tonight so they can prepare her.",
+    follow_up_needed: true,
+    created_at: "2026-04-11T14:15:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-040",
+    classroom_id: CLASSROOM,
+    student_refs: ["Nadia"],
+    observation:
+      "Nadia was absent Monday and Tuesday. Returned Wednesday morning. At morning check-in she was quiet but made eye contact. When I asked 'what's one thing you need today?' she said 'just time.' She went to her desk and began drawing in her journal — not the assigned bell work, but her own artwork.",
+    action_taken:
+      "Let her draw for the full bell-work period without redirecting. After 15 minutes she transitioned to calendar math on her own. At snack break, I checked in again — she said she was 'okay now.' Did not press for details about the absence.",
+    outcome:
+      "Nadia engaged with the rest of the morning. The art-as-processing strategy is working — she regulates through drawing and then re-enters academic tasks independently. The school counselor confirmed the flexible attendance arrangement is still in place. Key: the morning check-in must happen every day she's present, especially after absences.",
+    follow_up_needed: true,
+    created_at: "2026-04-12T08:40:00.000Z",
+    schema_version: SCHEMA_V,
+  },
+  {
+    record_id: "int-demo-041",
+    classroom_id: CLASSROOM,
+    student_refs: ["Gabriel", "Violet"],
+    observation:
+      "Both Gabriel and Violet requested the quiet workspace during the same math test period. Gabriel because the classroom pencil-scratching noise was amplified by his hearing aids, Violet because of general noise sensitivity. There is only one quiet workspace desk.",
+    action_taken:
+      "Set up a second quiet workspace using the reading nook with a portable desk. Gabriel took the bookshelf desk (closer to the front, per his preferential seating needs), Violet took the reading nook (which she prefers anyway — it's enclosed). Both had their full test materials and the same time.",
+    outcome:
+      "Both completed their math tests comfortably. Gabriel scored 92%, Violet scored 88% — both above their typical range, suggesting the noise was impacting their performance in the main room. Need to make the two-workspace setup standard for test days. Will request a second desk from the resource room.",
+    follow_up_needed: false,
+    created_at: "2026-04-12T13:30:00.000Z",
+    schema_version: SCHEMA_V,
+  },
 ];
 
 // ─── PLANS ────────────────────────────────────────────────────────────────────

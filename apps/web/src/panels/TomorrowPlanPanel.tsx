@@ -1,10 +1,11 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateTomorrowPlan, fetchPlanHistory } from "../api";
 import TeacherReflection from "../components/TeacherReflection";
 import PlanViewer from "../components/PlanViewer";
+import { PlanStreakCalendar, PlanCoverageRadar } from "../components/DataVisualizations";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
 import ContextualHint from "../components/ContextualHint";
@@ -34,6 +35,19 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<TomorrowPlanResponse | null>(null);
+
+  const plans14d = useMemo(() => {
+    const now = Date.now();
+    const dayMs = 86_400_000;
+    const arr: (0 | 1)[] = Array(14).fill(0) as (0 | 1)[];
+    for (const plan of history.items) {
+      const ts = parseRecordTimestamp(plan.plan_id);
+      if (!ts) continue;
+      const age = Math.floor((now - new Date(ts).getTime()) / dayMs);
+      if (age >= 0 && age < 14) arr[13 - age] = 1;
+    }
+    return arr;
+  }, [history.items]);
   const streamer = useStreamingRequest({
     sectionLabels: ["Support priorities", "Prep checklist", "Differentiation notes"],
   });
@@ -113,6 +127,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
               onSelect={handleHistorySelect}
               label="Plan History"
             />
+            {history.items.length > 0 && <PlanStreakCalendar plans14d={plans14d} />}
             <TeacherReflection
               classrooms={classrooms}
               selectedClassroom={activeClassroom}
@@ -144,6 +159,13 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   generatedAt={parseRecordTimestamp(displayResult.plan.plan_id)}
                   modelId={displayResult.model_id || undefined}
                   latencyMs={displayResult.latency_ms || undefined}
+                />
+                <PlanCoverageRadar
+                  watchpoints={displayResult.plan.transition_watchpoints.length}
+                  priorities={displayResult.plan.support_priorities.length}
+                  eaActions={displayResult.plan.ea_actions.length}
+                  prepItems={displayResult.plan.prep_checklist.length}
+                  familyFollowups={displayResult.plan.family_followups.length}
                 />
                 <PlanViewer
                   plan={displayResult.plan}

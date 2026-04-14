@@ -57,6 +57,15 @@
   max-width: min(260px, 42vw);
   object-fit: contain;
   flex-shrink: 0;
+  /* Ensure transparent PNG composites cleanly over backdrop-filter header */
+  image-rendering: auto;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: filter var(--motion-fast, 0.15s) ease;
+}
+
+:root[data-theme="dark"] .app-logo {
+  filter: brightness(2.2) drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
 }
 
 @media (max-width: 720px) {
@@ -96,11 +105,17 @@
   background: color-mix(in srgb, var(--color-bg-accent) 50%, transparent);
   color: var(--color-text-accent);
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.18em;
   line-height: 1;
   text-transform: uppercase;
+  opacity: 0.75;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+.app-title-os:hover {
+  opacity: 1;
 }
 
 .shell-classroom-anchor {
@@ -417,7 +432,10 @@
   bottom: 0;
   width: 3rem;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-bg) 94%, transparent));
+  background: linear-gradient(90deg, transparent, var(--color-bg));
+  mask-image: linear-gradient(90deg, transparent 0%, black 60%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 60%);
+  opacity: 0.92;
 }
 
 .shell-nav__tabs {
@@ -427,7 +445,7 @@
   overflow-x: auto;
   white-space: nowrap;
   scrollbar-width: none;
-  padding: 0.2rem 0;
+  padding: 0.2rem 3rem 0.2rem 0;
   scroll-padding-inline-end: 3rem;
 }
 

@@ -11,7 +11,8 @@
     background-color var(--motion-letterpress) var(--ease-letterpress),
     border-color var(--motion-letterpress) var(--ease-letterpress),
     box-shadow var(--motion-base) var(--ease-spring),
-    transform var(--motion-base) var(--ease-spring);
+    transform var(--motion-base) var(--ease-spring),
+    filter var(--motion-letterpress) var(--ease-letterpress);
 }
 
 /* Variants */
@@ -23,12 +24,23 @@
 
 .card--raised {
   background: var(--color-surface-elevated);
-  box-shadow: var(--shadow-xs);
+  box-shadow:
+    var(--shadow-sm),
+    var(--inner-stroke);
+}
+
+.card--raised:hover:not(.card--interactive) {
+  box-shadow:
+    var(--shadow-md),
+    var(--inner-stroke);
+  transform: translateY(-1px);
 }
 
 .card--floating {
   background: var(--color-surface-elevated);
-  box-shadow: var(--shadow-sm);
+  box-shadow:
+    var(--shadow-md),
+    var(--inner-stroke);
 }
 
 .card--inset {
@@ -125,20 +137,31 @@
 }
 
 .card--interactive:hover {
-  box-shadow: var(--shadow-sm);
-  border-color: color-mix(in srgb, var(--color-border-accent) 45%, transparent);
-  transform: translateY(-1.5px);
+  box-shadow:
+    var(--shadow-md),
+    var(--inner-stroke),
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 10%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-accent) 50%, transparent);
+  transform: translateY(-2px);
+  filter: brightness(1.015);
 }
 
 .card--interactive:active {
   transform: translateY(0.5px) scale(0.985);
-  box-shadow: var(--shadow-xs);
+  box-shadow:
+    var(--shadow-xs),
+    var(--inner-stroke);
+  filter: brightness(0.985);
   transition-duration: 80ms;
 }
 
 .card--interactive:focus-visible {
   outline: var(--focus-ring-outline);
   outline-offset: var(--focus-ring-offset);
+  box-shadow:
+    var(--shadow-sm),
+    var(--inner-stroke),
+    var(--focus-ring-halo);
 }
 
 /* Slots */
@@ -151,8 +174,19 @@
   gap: var(--space-3);
 }
 
+.card__header + .card__body {
+  padding-top: var(--space-3);
+}
+
 .card__body {
   padding: var(--space-5);
+}
+
+.card__body + .card__footer {
+  padding-top: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 18%, transparent);
+  margin-top: calc(-1 * var(--space-2));
+  padding-top: var(--space-4);
 }
 
 .card__footer {

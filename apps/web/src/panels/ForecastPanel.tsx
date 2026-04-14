@@ -17,6 +17,7 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import { FeedbackCollector, Sparkline as SharedSparkline } from "../components/shared";
+import { ComplexityHeatmap } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import type { ComplexityForecastResponse } from "../types";
@@ -113,6 +114,7 @@ export default function ForecastPanel() {
                   latencyMs={result.latency_ms || undefined}
                 />
                 <ForecastTimeline blocks={result.forecast.blocks} />
+                <ComplexityHeatmap blocks={result.forecast.blocks} />
                 {result.forecast.blocks.length >= 2 && (
                   <div className="forecast-trend-sparkline">
                     <SharedSparkline

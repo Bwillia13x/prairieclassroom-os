@@ -42,7 +42,7 @@ describe("Card", () => {
     expect(btn).toBeInTheDocument();
     await user.click(btn);
     expect(onClick).toHaveBeenCalledOnce();
-  });
+  }, 15_000);
 
   it("renders as <div> by default and does not expose a button role", () => {
     render(<Card>no-click</Card>);

@@ -8,6 +8,7 @@ import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ContextualHint from "../components/ContextualHint";
 import HistoryDrawer from "../components/HistoryDrawer";
+import { InterventionTimeline, FollowUpSuccessRate } from "../components/DataVisualizations";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -119,6 +120,12 @@ export default function InterventionPanel({ prefill }: Props) {
               onSelect={handleHistorySelect}
               label="Intervention History"
             />
+            {history.items.length > 0 && (
+              <>
+                <InterventionTimeline records={history.items} />
+                <FollowUpSuccessRate records={history.items} />
+              </>
+            )}
             <InterventionLogger
               classrooms={classrooms}
               students={students}
