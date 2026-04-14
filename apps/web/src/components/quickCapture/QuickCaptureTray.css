@@ -1,0 +1,204 @@
+/* QuickCaptureTray — layout + component styles
+   Token substitutions vs. plan spec:
+   - --color-text-muted     → --color-text-secondary (--color-text-muted does not exist)
+   - --font-size-sm/md/xs   → --text-sm/md/xs with literal fallbacks (--font-size-* do not exist)
+   - --color-surface-raised → --color-surface-elevated (--color-surface-raised does not exist)
+   - --color-border-muted   → --color-border (--color-border-muted does not exist)
+   - --shadow-inset-press   → omitted (does not exist)
+   Class names match actual QuickCaptureTray.tsx output:
+   - __avatar-row (not __row--students)
+   - __chip-row   (not __row)
+   - __controls   (not __actions)
+*/
+
+.quick-capture-tray {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.quick-capture-tray__heading {
+  margin: 0;
+  font-size: var(--text-md, 1rem);
+  font-weight: 600;
+}
+
+.quick-capture-tray__subtitle {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm, 0.875rem);
+}
+
+.quick-capture-tray__label {
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* Avatar row — horizontal scroll strip */
+.quick-capture-tray__avatar-row {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  padding-bottom: var(--space-1);
+}
+
+.quick-capture-tray__avatar-row > * {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Chip row — wrapping flex */
+.quick-capture-tray__chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.quick-capture-tray__note {
+  width: 100%;
+  padding: var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  background: var(--color-surface);
+  color: var(--color-text);
+  resize: vertical;
+  min-height: 4rem;
+}
+
+.quick-capture-tray__note:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.quick-capture-tray__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.quick-capture-tray__mic {
+  flex-shrink: 0;
+}
+
+/* ── StudentAvatar ─────────────────────────────────────────── */
+
+.student-avatar {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+  min-width: 64px;
+  min-height: 64px;
+  padding: var(--space-2);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text);
+}
+
+.student-avatar__initial {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--color-bg-muted);
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.student-avatar__name {
+  font-size: var(--text-xs, 0.75rem);
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-avatar--selected {
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  border-color: var(--color-accent);
+}
+
+.student-avatar--selected .student-avatar__initial {
+  background: var(--color-accent);
+  color: var(--color-surface);
+}
+
+.student-avatar:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.student-avatar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── InterventionChip ──────────────────────────────────────── */
+
+.intervention-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text);
+}
+
+.intervention-chip__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.intervention-chip__label {
+  font-weight: 500;
+}
+
+.intervention-chip--selected {
+  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.intervention-chip:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ── Reduced-motion transitions ────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  .student-avatar,
+  .intervention-chip {
+    transition:
+      background-color 150ms var(--ease-standard, ease-out),
+      border-color 150ms var(--ease-standard, ease-out),
+      transform 150ms var(--ease-standard, ease-out);
+  }
+
+  .student-avatar:active,
+  .intervention-chip:active {
+    transform: scale(0.97);
+  }
+}

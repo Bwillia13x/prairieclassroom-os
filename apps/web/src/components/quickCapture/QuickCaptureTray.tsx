@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import "./QuickCaptureTray.css";
 import StudentAvatar from "./StudentAvatar";
 import InterventionChip from "./InterventionChip";
 import { INTERVENTION_CHIP_DEFS, type InterventionChipKey } from "./interventionChipDefs";
@@ -162,6 +163,7 @@ export default function QuickCaptureTray({
       <textarea
         className="quick-capture-tray__note"
         rows={3}
+        aria-label="Intervention note"
         value={note}
         onChange={handleNoteChange}
       />

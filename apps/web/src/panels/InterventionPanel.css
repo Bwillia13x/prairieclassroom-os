@@ -1,0 +1,31 @@
+/* InterventionPanel — structured-details disclosure widget styles */
+
+.intervention-structured-details {
+  margin-top: var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-muted);
+}
+
+.intervention-structured-details > summary {
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  font-size: var(--text-sm, 0.875rem);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  list-style: none;
+}
+
+.intervention-structured-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.intervention-structured-details > summary:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.intervention-structured-details[open] > summary {
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+}

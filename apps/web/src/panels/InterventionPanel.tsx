@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import "./InterventionPanel.css";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
