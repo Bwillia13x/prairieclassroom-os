@@ -272,7 +272,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         {result && showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
 
         {health.result ? (
-          <HealthBar health={health.result} loading={false} pendingActionCount={totalActionCount} />
+          <HealthBar
+            health={health.result ?? null}
+            loading={false}
+            pendingActionCount={totalActionCount}
+            onTrendClick={(payload) => setDrillDown({ type: "trend", ...payload })}
+          />
         ) : health.error ? (
           <div className="today-health-error" role="alert">Couldn&apos;t load health summary: {health.error}</div>
         ) : (
