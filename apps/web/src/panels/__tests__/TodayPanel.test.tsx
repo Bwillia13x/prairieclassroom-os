@@ -406,6 +406,29 @@ describe("TodayPanel", () => {
     ).toBeInTheDocument();
   });
 
+  it("renders a 'Classroom pulse' section wrapping the grid", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockResolvedValue(makeHealth());
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    const { container } = render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".today-pulse")).toBeInTheDocument();
+    });
+    expect(
+      screen.getByRole("heading", { name: /classroom pulse/i }),
+    ).toBeInTheDocument();
+    const pulseSection = container.querySelector(".today-pulse")!;
+    expect(pulseSection.querySelector(".today-grid")).toBeInTheDocument();
+  });
+
   it("renders the TodayHero landmark above the grid", async () => {
     mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
     mockedFetchClassroomHealth.mockResolvedValue(makeHealth());

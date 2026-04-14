@@ -144,7 +144,19 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         <SectionSkeleton label="Loading today story" variant="story" lines={2} />
       )}
 
-      <div className="today-grid motion-stagger">
+      <section
+        className="today-pulse"
+        aria-labelledby="today-pulse-heading"
+      >
+        <header className="today-pulse__header">
+          <h2 id="today-pulse-heading" className="today-pulse__title">
+            Classroom pulse
+          </h2>
+          <p className="today-pulse__subtitle">
+            The full snapshot — visualizations, attention queue, and forecast.
+          </p>
+        </header>
+        <div className="today-grid motion-stagger">
         {result ? (
           <DayArc
             forecast={result.latest_forecast}
@@ -305,6 +317,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           />
         ) : null}
       </div>
+      </section>
 
       <DrillDownDrawer
         context={drillDown}
