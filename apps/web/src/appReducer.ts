@@ -5,7 +5,7 @@
  * Enables undo toasts, streaming state, contextual onboarding, and time-aware nav.
  */
 
-import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
+import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 import type { SectionIconName } from "./components/SectionIcon";
 
 // ─── Active Tab ───
@@ -172,6 +172,9 @@ export interface AppState {
 
   // Auth prompt state for protected classroom flows
   authPrompt: AuthPromptState | null;
+
+  // Tomorrow notes collected from output panels (persisted to localStorage)
+  tomorrowNotes: TomorrowNote[];
 }
 
 // ─── Actions ───
@@ -203,7 +206,9 @@ export type AppAction =
   | { type: "FLUSH_FEEDBACK" }
   | { type: "SET_CLASSROOM_ACCESS_CODE"; classroomId: string; code: string }
   | { type: "OPEN_AUTH_PROMPT"; prompt: AuthPromptState }
-  | { type: "CLOSE_AUTH_PROMPT" };
+  | { type: "CLOSE_AUTH_PROMPT" }
+  | { type: "APPEND_TOMORROW_NOTE"; note: TomorrowNote }
+  | { type: "CLEAR_TOMORROW_NOTES" };
 
 // ─── Initial State ───
 
@@ -234,6 +239,15 @@ function loadClassroomAccessCodes(): Record<string, string> {
   }
 }
 
+function loadTomorrowNotes(): TomorrowNote[] {
+  try {
+    const raw = localStorage.getItem("prairie-tomorrow-notes");
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
 export function createInitialState(): AppState {
   return {
     classrooms: [],
@@ -257,6 +271,7 @@ export function createInitialState(): AppState {
     feedbackQueue: loadFeedbackQueue(),
     classroomAccessCodes: loadClassroomAccessCodes(),
     authPrompt: null,
+    tomorrowNotes: loadTomorrowNotes(),
   };
 }
 
@@ -400,6 +415,18 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case "CLOSE_AUTH_PROMPT":
       return { ...state, authPrompt: null };
+
+    // ─── Tomorrow Notes ───
+
+    case "APPEND_TOMORROW_NOTE": {
+      const tomorrowNotes = [...state.tomorrowNotes, action.note];
+      try { localStorage.setItem("prairie-tomorrow-notes", JSON.stringify(tomorrowNotes)); } catch { /* noop */ }
+      return { ...state, tomorrowNotes };
+    }
+
+    case "CLEAR_TOMORROW_NOTES":
+      try { localStorage.removeItem("prairie-tomorrow-notes"); } catch { /* noop */ }
+      return { ...state, tomorrowNotes: [] };
 
     default:
       return state;

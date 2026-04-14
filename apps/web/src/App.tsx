@@ -39,7 +39,7 @@ import AppFooter from "./components/AppFooter";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
-import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "./types";
+import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 
@@ -159,6 +159,22 @@ export default function App() {
       feedback: { outputId, outputType, rating, note, timestamp: new Date().toISOString() },
     });
   }, []);
+
+  const appendTomorrowNote = useCallback(
+    (note: Omit<TomorrowNote, "id" | "createdAt">) => {
+      dispatch({
+        type: "APPEND_TOMORROW_NOTE",
+        note: {
+          ...note,
+          id: typeof crypto !== "undefined" && crypto.randomUUID
+            ? crypto.randomUUID()
+            : `note-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          createdAt: new Date().toISOString(),
+        },
+      });
+    },
+    [],
+  );
 
   const setActiveTab = useCallback((tab: ActiveTab) => {
     dispatch({ type: "SET_ACTIVE_TAB", tab });
@@ -513,10 +529,13 @@ export default function App() {
       submitFeedback,
       showUndo,
       dismissToast,
+      tomorrowNotes: state.tomorrowNotes,
+      appendTomorrowNote,
     }),
     [
       activeClassroom,
       activeTab,
+      appendTomorrowNote,
       authPrompt,
       dismissToast,
       profile,
@@ -529,6 +548,7 @@ export default function App() {
       state.featuresSeen,
       state.streaming,
       state.toasts,
+      state.tomorrowNotes,
       students,
       submitFeedback,
     ],

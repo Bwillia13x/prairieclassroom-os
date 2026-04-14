@@ -1,5 +1,5 @@
 import { createContext, useContext, type Dispatch } from "react";
-import type { ClassroomProfile } from "./types";
+import type { ClassroomProfile, TomorrowNote } from "./types";
 import type { ActiveTab, AppAction, AuthPromptState, StreamingState, ToastItem } from "./appReducer";
 
 export interface AppContextValue {
@@ -27,6 +27,10 @@ export interface AppContextValue {
   showUndo: (label: string, rollback: () => Promise<void>) => void;
   /** Dismiss a specific toast by id */
   dismissToast: (id: string) => void;
+  /** Tomorrow notes collected across output panels */
+  tomorrowNotes: TomorrowNote[];
+  /** Append a tomorrow note (auto-generates id and createdAt) */
+  appendTomorrowNote: (note: Omit<TomorrowNote, "id" | "createdAt">) => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);
