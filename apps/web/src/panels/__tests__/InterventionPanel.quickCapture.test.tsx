@@ -3,6 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import InterventionPanel from "../InterventionPanel";
+import type { InterventionPrefill } from "../../types";
 
 // ── API mock ─────────────────────────────────────────────────────────────────
 vi.mock("../../api", () => ({
@@ -72,7 +73,7 @@ function makeAppContext(): AppContextValue {
   };
 }
 
-function renderPanel(prefill = null) {
+function renderPanel(prefill: InterventionPrefill | null = null) {
   const appContext = makeAppContext();
   const user = userEvent.setup();
 
@@ -135,6 +136,19 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
 
     // The legacy form's textarea is reachable.
     expect(await screen.findByLabelText(/What happened/i)).toBeInTheDocument();
+  });
+
+  it("auto-opens the structured details panel when a prefill is present", () => {
+    const prefill: InterventionPrefill = {
+      student_ref: "Ari",
+      suggested_action: "Redirect and check for understanding",
+      reason: "Frequent off-task moments in math block",
+    };
+    renderPanel(prefill);
+    // The details element should be open so the legacy form (and its prefill ingestion) is visible.
+    const details = screen.getByText(/Structured details/i).closest("details");
+    expect(details).not.toBeNull();
+    expect(details).toHaveAttribute("open");
   });
 
   it("QuickCaptureTray submit calls logIntervention via handleSubmit", async () => {

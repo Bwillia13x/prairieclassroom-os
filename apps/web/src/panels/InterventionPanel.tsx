@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -54,6 +54,14 @@ export default function InterventionPanel({ prefill }: Props) {
       setHistoricalResult(null);
     }
   }, [prefill, reset]);
+
+  const detailsRef = useRef<HTMLDetailsElement | null>(null);
+
+  useEffect(() => {
+    if (prefill && detailsRef.current) {
+      detailsRef.current.open = true;
+    }
+  }, [prefill]);
 
   if (classrooms.length === 0) return null;
 
@@ -142,7 +150,7 @@ export default function InterventionPanel({ prefill }: Props) {
                 <FollowUpSuccessRate records={history.items} />
               </>
             )}
-            <details className="intervention-structured-details">
+            <details ref={detailsRef} className="intervention-structured-details">
               <summary>Structured details (optional)</summary>
               <InterventionLogger
                 classrooms={classrooms}
