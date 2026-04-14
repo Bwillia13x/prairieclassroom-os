@@ -168,4 +168,22 @@ describe("useSpeechCapture", () => {
     const stopCalled = fakes[0].stop.mock.calls.length > 0;
     expect(abortCalled || stopCalled).toBe(true);
   });
+
+  it("double start() creates only one instance (guards against race)", () => {
+    const fakes: FakeSpeechRecognition[] = [];
+    class Trackable extends FakeSpeechRecognition {
+      constructor() {
+        super();
+        fakes.push(this);
+      }
+    }
+    vi.stubGlobal("SpeechRecognition", Trackable);
+    const { result } = renderHook(() => useSpeechCapture());
+    act(() => result.current.start());
+    act(() => result.current.start());
+    // Only one instance should have been created
+    expect(fakes).toHaveLength(1);
+    // And its start() should have only been called once
+    expect(fakes[0].start).toHaveBeenCalledTimes(1);
+  });
 });

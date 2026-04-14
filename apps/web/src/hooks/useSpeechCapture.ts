@@ -74,6 +74,7 @@ export function useSpeechCapture(): UseSpeechCaptureResult {
   }, []);
 
   const start = useCallback(() => {
+    if (recognizerRef.current) return; // already recording — ignore double-start
     const Ctor = getSpeechRecognitionCtor();
     if (!Ctor) return; // unsupported — safe no-op
 
