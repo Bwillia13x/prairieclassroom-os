@@ -266,6 +266,8 @@ describe("VariantSummaryStrip — onSegmentClick", () => {
       label: "Eal Supported",
       variants: [...VARIANTS],
     });
+    expect(buttons[1]).toHaveAttribute("aria-label");
+    expect(buttons[1].getAttribute("aria-label")).toMatch(/eal supported/i);
   });
 
   it("renders without button wrapper when onSegmentClick is absent (no regression)", () => {

@@ -1594,6 +1594,7 @@ export function VariantSummaryStrip({ variants, onSegmentClick }: VariantSummary
               key={i}
               type="button"
               className="viz-variant-strip__item viz-variant-strip__item--clickable"
+              aria-label={`Show ${prettyVariantType(v.variant_type)} variants`}
               onClick={() => onSegmentClick({ variantType: v.variant_type, label: prettyVariantType(v.variant_type), variants })}
             >
               {inner}
