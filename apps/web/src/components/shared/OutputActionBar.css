@@ -1,0 +1,104 @@
+/* Token substitutions applied:
+   --space-sm → --space-2 (0.5rem)
+   --space-md → --space-3 (1rem)
+   --transition-base → not used; inline transition uses --motion-fast (150ms) with literal ease-out
+   --color-text-primary → --color-text (project uses --color-text)
+   --radius-md → exists as-is (16px) with 8px literal fallback preserved
+   --shadow-sm → exists as-is
+   --focus-ring-outline → exists as-is
+*/
+
+.output-action-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md, 8px);
+}
+
+.output-action-bar--sticky {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  box-shadow: 0 -4px 12px color-mix(in srgb, var(--color-border) 50%, transparent);
+}
+
+.output-action-bar__list {
+  display: flex;
+  gap: var(--space-2);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+}
+
+.output-action-bar__item {
+  list-style: none;
+}
+
+.output-action-bar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--text-sm, 0.875rem);
+  color: var(--color-text);
+  min-height: 44px;
+}
+
+.output-action-bar__btn:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.output-action-bar__btn:disabled,
+.output-action-bar__btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.output-action-bar__btn--ghost {
+  background: transparent;
+  border-color: var(--color-border);
+}
+
+.output-action-bar__btn--ghost:hover:not(:disabled) {
+  background: var(--color-bg-muted);
+}
+
+.output-action-bar__btn--primary {
+  background: var(--color-accent);
+  color: var(--color-surface);
+  border-color: var(--color-accent);
+}
+
+.output-action-bar__btn--approve {
+  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.output-action-bar__icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .output-action-bar__btn {
+    transition: background-color var(--motion-fast, 150ms) ease-out, border-color var(--motion-fast, 150ms) ease-out;
+  }
+}
+
+@media (max-width: 600px) {
+  .output-action-bar__btn--collapsible .output-action-bar__label {
+    display: none;
+  }
+}
