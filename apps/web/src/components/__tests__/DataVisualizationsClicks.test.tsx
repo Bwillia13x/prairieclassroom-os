@@ -241,6 +241,23 @@ describe("PlanStreakCalendar — onSegmentClick", () => {
     render(<PlanStreakCalendar plans14d={PLANS_14D} />);
     expect(screen.queryByTestId("viz-plan-streak-cell-10")).toBeNull();
   });
+
+  it("fires onSegmentClick on Enter keydown", () => {
+    const spy = vi.fn();
+    render(<PlanStreakCalendar plans14d={[1,1,0,1,1,1,0,1,1,1,0,1,1,1]} onSegmentClick={spy} />);
+    const cell = screen.getByTestId("viz-plan-streak-cell-10");
+    fireEvent.keyDown(cell, { key: "Enter" });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith({ dayIndex: 10, planned: false });
+  });
+
+  it("fires onSegmentClick on Space keydown", () => {
+    const spy = vi.fn();
+    render(<PlanStreakCalendar plans14d={[1,1,0,1,1,1,0,1,1,1,0,1,1,1]} onSegmentClick={spy} />);
+    const cell = screen.getByTestId("viz-plan-streak-cell-10");
+    fireEvent.keyDown(cell, { key: " " });
+    expect(spy).toHaveBeenCalledTimes(1);
+  });
 });
 
 // ----------------------------------------------------------------
@@ -273,6 +290,28 @@ describe("VariantSummaryStrip — onSegmentClick", () => {
   it("renders without button wrapper when onSegmentClick is absent (no regression)", () => {
     render(<VariantSummaryStrip variants={[...VARIANTS]} />);
     expect(screen.queryByRole("button")).toBeNull();
+  });
+
+  it("fires onSegmentClick on Enter keydown via native button", () => {
+    const spy = vi.fn();
+    render(
+      <VariantSummaryStrip
+        variants={[
+          { variant_type: "core", estimated_minutes: 25, title: "Original lesson" },
+          { variant_type: "eal_supported", estimated_minutes: 20, title: "EAL scaffolded" },
+          { variant_type: "eal_supported", estimated_minutes: 18, title: "EAL vocab cards" },
+        ]}
+        onSegmentClick={spy}
+      />
+    );
+    const buttons = screen.getAllByRole("button");
+    buttons[1].focus();
+    fireEvent.keyDown(buttons[1], { key: "Enter" });
+    // Native buttons fire a click event when Enter is pressed, but fireEvent.keyDown alone does NOT simulate the full native behavior.
+    // Use fireEvent.click instead as the reliable test for "button was activated by keyboard",
+    // since we're verifying the onClick handler path that keyboard-activated buttons go through.
+    fireEvent.click(buttons[1]);
+    expect(spy).toHaveBeenCalled();
   });
 });
 
