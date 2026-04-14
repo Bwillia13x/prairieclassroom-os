@@ -1,0 +1,394 @@
+/* ================================================================
+   DayArc.css — Signature hero visualization styles
+   ================================================================
+   The Day Arc tells the day's story in one continuous landscape.
+   Mount motion draws the ridge, places the stars, and drifts the
+   motes in. prefers-reduced-motion disables everything below.
+   ================================================================ */
+
+.day-arc {
+  position: relative;
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 84%, transparent),
+      color-mix(in srgb, var(--color-surface-elevated) 38%, transparent)
+    ),
+    var(--color-surface);
+  box-shadow: var(--shadow-md), var(--inner-stroke);
+  overflow: hidden;
+}
+
+.day-arc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse at 18% 0%,
+      color-mix(in srgb, var(--color-accent) 10%, transparent),
+      transparent 55%
+    ),
+    radial-gradient(
+      ellipse at 82% 100%,
+      color-mix(in srgb, var(--color-analysis) 8%, transparent),
+      transparent 55%
+    );
+  opacity: 0.9;
+  z-index: 0;
+}
+
+.day-arc > * {
+  position: relative;
+  z-index: 1;
+}
+
+.day-arc__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.day-arc__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+  font-optical-sizing: auto;
+}
+
+.day-arc__subtitle {
+  margin: var(--space-1) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: var(--font-weight-medium);
+}
+
+.day-arc__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 340px;
+  overflow: visible;
+}
+
+/* ── Empty state ─────────────────────────────────────────────── */
+
+.day-arc--empty {
+  padding: var(--space-5);
+}
+
+.day-arc__empty-text {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  font-style: italic;
+  max-width: 42ch;
+  line-height: var(--leading-snug);
+}
+
+/* ── Ridge path: stroke draws, then fill materializes ─────────── */
+
+.day-arc__ridge-fill {
+  fill-opacity: 0;
+  transition: fill-opacity var(--motion-slower, 640ms) var(--ease-out-expo, ease-out) 120ms;
+}
+
+.day-arc__ridge-stroke {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 900ms var(--ease-out-expo, ease-out) 60ms;
+}
+
+.day-arc--mounted .day-arc__ridge-fill {
+  fill-opacity: 1;
+}
+
+.day-arc--mounted .day-arc__ridge-stroke {
+  stroke-dashoffset: 0;
+}
+
+/* ── Block markers and labels ────────────────────────────────── */
+
+.day-arc__block-group {
+  opacity: 0;
+  animation: day-arc-block-fade var(--motion-base, 260ms)
+    var(--ease-out-expo, ease-out) both;
+  /* animation-delay is set per element via inline style so each block
+     staggers in. */
+}
+
+.day-arc--mounted .day-arc__block-group {
+  opacity: 1;
+}
+
+@keyframes day-arc-block-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.day-arc__block-label {
+  font-size: 10px;
+  font-family: var(--font-sans);
+  fill: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+}
+
+.day-arc__block-hit {
+  cursor: pointer;
+}
+
+.day-arc__block-hit > rect {
+  transition: fill var(--motion-fast) var(--ease-standard);
+}
+
+.day-arc__block-hit:hover > rect {
+  fill: color-mix(in srgb, var(--color-accent) 7%, transparent);
+}
+
+.day-arc__block-hit:focus {
+  outline: none;
+}
+
+.day-arc__block-hit:focus-visible > rect {
+  fill: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+
+/* ── Now line: breathing accent ──────────────────────────────── */
+
+.day-arc__now-line {
+  transform-origin: center;
+  animation: day-arc-now-breath 3.2s var(--ease-in-out-circ, ease-in-out)
+    infinite;
+}
+
+.day-arc__now-dot {
+  animation: day-arc-now-pulse 3.2s var(--ease-in-out-circ, ease-in-out)
+    infinite;
+}
+
+.day-arc__now-label {
+  font-size: 9px;
+  font-family: var(--font-sans);
+  fill: var(--color-accent);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@keyframes day-arc-now-breath {
+  0%,
+  100% {
+    opacity: 0.78;
+  }
+  50% {
+    opacity: 0.42;
+  }
+}
+
+@keyframes day-arc-now-pulse {
+  0%,
+  100% {
+    r: 3;
+  }
+  50% {
+    r: 4.2;
+  }
+}
+
+/* ── Student constellation ───────────────────────────────────── */
+
+.day-arc__star {
+  opacity: 0;
+  animation: day-arc-star-pop 520ms var(--ease-spring, ease-out) both;
+  /* animation-delay set inline per star for stagger. */
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.day-arc__star-halo {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: day-arc-star-halo 3.4s var(--ease-in-out-circ, ease-in-out)
+    infinite;
+}
+
+@keyframes day-arc-star-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-1px) scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes day-arc-star-halo {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.22;
+  }
+  50% {
+    transform: scale(1.14);
+    opacity: 0.36;
+  }
+}
+
+.day-arc__star-label {
+  font-size: 9px;
+  font-family: var(--font-sans);
+  fill: var(--color-text);
+  font-weight: var(--font-weight-medium);
+}
+
+.day-arc__star--danger .day-arc__star-label {
+  fill: var(--color-text-danger);
+  font-weight: var(--font-weight-semibold);
+}
+
+.day-arc__star--warning .day-arc__star-label {
+  fill: var(--color-text-warning);
+}
+
+.day-arc__star--clickable {
+  cursor: pointer;
+}
+
+.day-arc__star-hit {
+  transition: fill var(--motion-fast) var(--ease-standard);
+}
+
+.day-arc__star--clickable:hover .day-arc__star-hit {
+  fill: color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+.day-arc__star--clickable:focus {
+  outline: none;
+}
+
+.day-arc__star--clickable:focus-visible .day-arc__star-hit {
+  fill: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  stroke: var(--color-accent);
+  stroke-width: 2;
+}
+
+.day-arc__star--clickable:hover .day-arc__star-halo {
+  animation-duration: 1.8s;
+}
+
+/* ── Debt motes ──────────────────────────────────────────────── */
+
+.day-arc__mote {
+  opacity: 0;
+  animation: day-arc-mote-drift 680ms var(--ease-spring-heavy, ease-out) both;
+  /* animation-delay set inline per mote for stagger. */
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes day-arc-mote-drift {
+  0% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.7);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.day-arc__mote-count {
+  font-size: 10px;
+  font-family: var(--font-sans);
+  fill: var(--color-text-pending);
+  font-weight: var(--font-weight-bold);
+  pointer-events: none;
+}
+
+/* ── Hover micro-reactions ───────────────────────────────────── */
+
+.day-arc__svg g.day-arc__star:hover circle:first-of-type {
+  /* halo intensification handled above via animation-duration */
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+  .day-arc {
+    padding: var(--space-3);
+  }
+
+  .day-arc__title {
+    font-size: var(--text-lg);
+  }
+
+  .day-arc__subtitle {
+    font-size: 10px;
+    gap: var(--space-1);
+  }
+
+  .day-arc__svg {
+    max-height: 260px;
+  }
+
+  .day-arc__block-label {
+    font-size: 9px;
+  }
+}
+
+/* ── Reduced motion: everything still, shape still right ─────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .day-arc__ridge-fill {
+    fill-opacity: 1;
+    transition: none;
+  }
+
+  .day-arc__ridge-stroke {
+    stroke-dasharray: none;
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .day-arc__block-group,
+  .day-arc__star,
+  .day-arc__star-halo,
+  .day-arc__mote,
+  .day-arc__now-line,
+  .day-arc__now-dot {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+}

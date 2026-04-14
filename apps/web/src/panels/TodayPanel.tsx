@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
-import { fetchTodaySnapshot, fetchClassroomHealth } from "../api";
+import { fetchTodaySnapshot, fetchClassroomHealth, fetchStudentSummary } from "../api";
 import type { ActiveTab } from "../appReducer";
 import PendingActionsCard from "../components/PendingActionsCard";
 import PlanRecap from "../components/PlanRecap";
@@ -19,7 +19,10 @@ import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import TimeSuggestion, { getSuggestion } from "../components/TimeSuggestion";
 import { Card, ActionButton } from "../components/shared";
-import type { TodaySnapshot, ClassroomHealth, DrillDownContext, InterventionPrefill, FamilyMessagePrefill } from "../types";
+import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
+import DayArc from "../components/DayArc";
+import TodayStory from "../components/TodayStory";
+import type { TodaySnapshot, ClassroomHealth, StudentSummary, DrillDownContext, InterventionPrefill, FamilyMessagePrefill } from "../types";
 import "./TodayPanel.css";
 
 interface Props {
@@ -33,6 +36,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
+  const studentSummaries = useAsyncAction<StudentSummary[]>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
 
   useEffect(() => {
@@ -43,7 +47,8 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     if (!activeClassroom) return;
     execute((signal) => fetchTodaySnapshot(activeClassroom, signal));
     health.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
-  }, [activeClassroom, execute, health.execute]);
+    studentSummaries.execute((signal) => fetchStudentSummary(activeClassroom, undefined, signal));
+  }, [activeClassroom, execute, health.execute, studentSummaries.execute]);
 
   const recommendedAction = useMemo(
     () => result ? getRecommendedAction(result) : null,
@@ -60,6 +65,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     () => new Set(result?.debt_register.items.flatMap((i) => i.student_refs) ?? []),
     [result],
   );
+
+  const previousDebtTotal = useMemo(() => {
+    const series = health.result?.trends?.debt_total_14d;
+    if (!series || series.length < 2) return undefined;
+    return series[series.length - 2];
+  }, [health.result]);
 
   const studentsToCheckFirst = useMemo(() => {
     if (!result) return [];
@@ -125,6 +136,24 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
       {result ? (
         <div className="today-grid motion-stagger">
+          <DayArc
+            forecast={result.latest_forecast}
+            students={studentSummaries.result ?? []}
+            debtItems={result.debt_register.items}
+            health={health.result ?? null}
+            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+            onBlockClick={(index) => {
+              const block = result.latest_forecast?.blocks[index];
+              if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+            }}
+          />
+
+          <TodayStory
+            snapshot={result}
+            health={health.result ?? null}
+            students={studentSummaries.result ?? []}
+          />
+
           <PendingActionsCard
             items={[
               {
@@ -170,21 +199,49 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             }}
           />
 
+          {/* Visualization strip: Debt Gauge + Priority Matrix + Recency Timeline */}
+          {result.debt_register.items.length > 0 && (
+            <ComplexityDebtGauge
+              debtItems={result.debt_register.items}
+              previousTotal={previousDebtTotal}
+            />
+          )}
+
+          {studentSummaries.result && studentSummaries.result.length > 0 && (
+            <StudentPriorityMatrix
+              students={studentSummaries.result}
+              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+            />
+          )}
+
+          {studentSummaries.result && studentSummaries.result.length > 0 && (
+            <InterventionRecencyTimeline
+              students={studentSummaries.result}
+              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+            />
+          )}
+
+          {profile && profile.students.length > 0 && (
+            <ClassroomCompositionRings students={profile.students} />
+          )}
+
           {showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
 
           <HealthBar health={health.result ?? null} loading={health.loading} pendingActionCount={totalActionCount} />
 
-          {result.latest_plan ? (
-            <PlanRecap
-              plan={result.latest_plan}
-              onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
-              onOpenPlan={() => onTabChange("tomorrow-plan")}
-            />
-          ) : null}
+          {(result.latest_plan || result.latest_forecast) ? (
+            <div className="today-grid--secondary">
+              {result.latest_plan ? (
+                <PlanRecap
+                  plan={result.latest_plan}
+                  onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
+                  onOpenPlan={() => onTabChange("tomorrow-plan")}
+                />
+              ) : null}
 
-          {result.latest_forecast ? (
-            <Card variant="raised" className="today-forecast-section">
-              <Card.Body>
+              {result.latest_forecast ? (
+                <Card variant="raised" className="today-forecast-section">
+                  <Card.Body>
                 <div className="today-forecast-header">
                   <div>
                     <h3>Risk Windows</h3>
@@ -208,6 +265,8 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                 />
               </Card.Body>
             </Card>
+          ) : null}
+            </div>
           ) : null}
 
           <StudentRoster

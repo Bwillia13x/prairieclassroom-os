@@ -1,0 +1,143 @@
+/* ================================================================
+   TodayStory.css — Narrative ribbon styles
+   ================================================================
+   Fraunces serif is used at display weights so the eye lands here
+   first. Tone-keyed accent glyph telegraphs the mood without being
+   a full status chip.
+   ================================================================ */
+
+.today-story {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-4);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-surface-elevated) 76%, transparent),
+      color-mix(in srgb, var(--color-surface-elevated) 24%, transparent)
+    ),
+    var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm), var(--inner-stroke);
+}
+
+.today-story__glyph {
+  flex-shrink: 0;
+  width: 10px;
+  height: 10px;
+  margin-top: 0.55em;
+  border-radius: 999px;
+  /* Tone-keyed color is driven by the --story-tone-color custom property,
+     which each tone modifier (`--focus`, `--watch`, `--calm`, `--empty`)
+     overrides below. The box-shadow keyframe reads the same variable, so
+     light and dark themes stay in sync without relying on currentColor. */
+  --story-tone-color: var(--color-accent);
+  background: var(--story-tone-color);
+  box-shadow: 0 0 0 4px
+    color-mix(in srgb, var(--story-tone-color) 14%, transparent);
+  position: relative;
+}
+
+.today-story__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.today-story__lede {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+  letter-spacing: -0.005em;
+  font-optical-sizing: auto;
+  font-variation-settings: "opsz" 36;
+}
+
+.today-story__sub {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text-secondary);
+  letter-spacing: 0.01em;
+  max-width: 68ch;
+}
+
+/* ── Tone-keyed accent glyph ─────────────────────────────────── */
+
+.today-story--focus .today-story__glyph {
+  --story-tone-color: var(--color-danger);
+}
+
+.today-story--focus .today-story__lede {
+  color: var(--color-text);
+}
+
+.today-story--watch .today-story__glyph {
+  --story-tone-color: var(--color-warning);
+}
+
+.today-story--calm .today-story__glyph {
+  --story-tone-color: var(--color-success);
+}
+
+.today-story--empty .today-story__glyph {
+  --story-tone-color: var(--color-text-tertiary);
+  box-shadow: none;
+  opacity: 0.6;
+}
+
+.today-story--empty .today-story__lede {
+  color: var(--color-text-secondary);
+  font-style: italic;
+}
+
+/* ── Gentle glyph breath ─────────────────────────────────────── */
+
+.today-story--focus .today-story__glyph,
+.today-story--watch .today-story__glyph {
+  animation: today-story-breath 3.4s var(--ease-in-out-circ, ease-in-out)
+    infinite;
+}
+
+@keyframes today-story-breath {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px
+      color-mix(in srgb, var(--story-tone-color) 16%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 6px
+      color-mix(in srgb, var(--story-tone-color) 22%, transparent);
+  }
+}
+
+/* ── Responsive ──────────────────────────────────────────────── */
+
+@media (max-width: 760px) {
+  .today-story {
+    padding: var(--space-3);
+  }
+
+  .today-story__lede {
+    font-size: var(--text-lg);
+  }
+
+  .today-story__sub {
+    font-size: var(--text-xs);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .today-story--focus .today-story__glyph,
+  .today-story--watch .today-story__glyph {
+    animation: none;
+  }
+}
