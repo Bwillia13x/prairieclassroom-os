@@ -193,8 +193,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                 icon: <SectionIcon name="clock" className="shell-nav__group-icon" />,
               },
             ]}
-            primaryAction={recommendedAction!}
-            onNavigate={onTabChange}
             totalCount={totalActionCount}
             studentsToCheckFirst={studentsToCheckFirst}
             onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}

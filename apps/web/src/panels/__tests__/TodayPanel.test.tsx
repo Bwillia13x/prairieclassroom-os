@@ -217,11 +217,9 @@ describe("TodayPanel", () => {
 
     expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
     expect(screen.getByText("4 actions waiting")).toBeInTheDocument();
-    // Hero and PendingActionsCard both render "Open Family Message" until Task 3 retires it from PendingActionsCard.
-    const openButtons = screen.getAllByRole("button", { name: "Open Family Message" });
-    expect(openButtons.length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole("button", { name: "Open Family Message" })).toBeInTheDocument();
 
-    await user.click(openButtons[0]);
+    await user.click(screen.getByRole("button", { name: "Open Family Message" }));
     expect(onTabChange).toHaveBeenCalledWith("family-message");
   });
 
