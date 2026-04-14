@@ -340,4 +340,65 @@ describe("TodayPanel", () => {
     expect(await screen.findByRole("dialog", { name: /10:00-10:45/i })).toBeInTheDocument();
     expect(screen.getByText("Suggested mitigation")).toBeInTheDocument();
   });
+
+  it("renders the snapshot section even while health is still pending", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockImplementation(
+      () => new Promise(() => {}),
+    );
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    const appContext = makeAppContext();
+    render(
+      <AppContext.Provider value={appContext}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
+
+    const healthSkeleton = screen.getByRole("status", { name: /loading health/i });
+    expect(healthSkeleton).toBeInTheDocument();
+    expect(healthSkeleton).toHaveAttribute("aria-busy", "true");
+
+    expect(
+      screen.queryByLabelText("Loading dashboard"),
+    ).not.toBeInTheDocument();
+  });
+
+  it("renders the visualization strip after studentSummaries arrives even if health is still pending", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockImplementation(
+      () => new Promise(() => {}),
+    );
+    mockedFetchStudentSummary.mockResolvedValue([
+      {
+        alias: "Amira",
+        pending_action_count: 2,
+        active_pattern_count: 1,
+        pending_message_count: 0,
+        last_intervention_days: 3,
+        latest_priority_reason: "Pending follow-up",
+      },
+    ] as never);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("status", { name: /loading health/i }),
+      ).toBeInTheDocument();
+    });
+    expect(
+      await screen.findByText(/student priority/i),
+    ).toBeInTheDocument();
+  });
 });

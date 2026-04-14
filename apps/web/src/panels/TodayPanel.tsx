@@ -7,7 +7,7 @@ import type { ActiveTab } from "../appReducer";
 import PendingActionsCard from "../components/PendingActionsCard";
 import PlanRecap from "../components/PlanRecap";
 import ForecastTimeline from "../components/ForecastTimeline";
-import SkeletonLoader from "../components/SkeletonLoader";
+import SectionSkeleton from "../components/SectionSkeleton";
 import PageIntro from "../components/PageIntro";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
@@ -34,7 +34,7 @@ interface Props {
 export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
   const { activeClassroom, profile } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
+  const { error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
   const studentSummaries = useAsyncAction<StudentSummary[]>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
@@ -128,14 +128,10 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         ]}
       />
 
-      {loading && !result ? (
-        <SkeletonLoader variant="stack" message="Loading today's snapshot..." label="Loading dashboard" />
-      ) : null}
-
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 
-      {result ? (
-        <div className="today-grid motion-stagger">
+      <div className="today-grid motion-stagger">
+        {result ? (
           <DayArc
             forecast={result.latest_forecast}
             students={studentSummaries.result ?? []}
@@ -147,13 +143,21 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
               if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
             }}
           />
+        ) : (
+          <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
+        )}
 
+        {result ? (
           <TodayStory
             snapshot={result}
             health={health.result ?? null}
             students={studentSummaries.result ?? []}
           />
+        ) : (
+          <SectionSkeleton label="Loading today story" variant="story" lines={2} />
+        )}
 
+        {result ? (
           <PendingActionsCard
             items={[
               {
@@ -198,50 +202,63 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
               }
             }}
           />
+        ) : (
+          <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
+        )}
 
-          {/* Visualization strip: Debt Gauge + Priority Matrix + Recency Timeline */}
-          {result.debt_register.items.length > 0 && (
-            <ComplexityDebtGauge
-              debtItems={result.debt_register.items}
-              previousTotal={previousDebtTotal}
-            />
-          )}
+        {/* Visualization strip: Debt Gauge + Priority Matrix + Recency Timeline */}
+        {result && result.debt_register.items.length > 0 && (
+          <ComplexityDebtGauge
+            debtItems={result.debt_register.items}
+            previousTotal={previousDebtTotal}
+          />
+        )}
 
-          {studentSummaries.result && studentSummaries.result.length > 0 && (
-            <StudentPriorityMatrix
-              students={studentSummaries.result}
-              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            />
-          )}
+        {studentSummaries.result && studentSummaries.result.length > 0 ? (
+          <StudentPriorityMatrix
+            students={studentSummaries.result}
+            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+          />
+        ) : studentSummaries.loading ? (
+          <SectionSkeleton label="Loading student priority matrix" variant="matrix" lines={3} />
+        ) : null}
 
-          {studentSummaries.result && studentSummaries.result.length > 0 && (
-            <InterventionRecencyTimeline
-              students={studentSummaries.result}
-              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            />
-          )}
+        {studentSummaries.result && studentSummaries.result.length > 0 ? (
+          <InterventionRecencyTimeline
+            students={studentSummaries.result}
+            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+          />
+        ) : studentSummaries.loading ? (
+          <SectionSkeleton label="Loading intervention recency" variant="matrix" lines={3} />
+        ) : null}
 
-          {profile && profile.students.length > 0 && (
-            <ClassroomCompositionRings students={profile.students} />
-          )}
+        {profile && profile.students.length > 0 && (
+          <ClassroomCompositionRings students={profile.students} />
+        )}
 
-          {showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
+        {result && showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
 
-          <HealthBar health={health.result ?? null} loading={health.loading} pendingActionCount={totalActionCount} />
+        {health.result ? (
+          <HealthBar health={health.result} loading={false} pendingActionCount={totalActionCount} />
+        ) : health.error ? (
+          <div className="today-health-error" role="alert">Couldn&apos;t load health summary: {health.error}</div>
+        ) : (
+          <SectionSkeleton label="Loading health summary" variant="health" lines={2} />
+        )}
 
-          {(result.latest_plan || result.latest_forecast) ? (
-            <div className="today-grid--secondary">
-              {result.latest_plan ? (
-                <PlanRecap
-                  plan={result.latest_plan}
-                  onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
-                  onOpenPlan={() => onTabChange("tomorrow-plan")}
-                />
-              ) : null}
+        {result && (result.latest_plan || result.latest_forecast) ? (
+          <div className="today-grid--secondary">
+            {result.latest_plan ? (
+              <PlanRecap
+                plan={result.latest_plan}
+                onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
+                onOpenPlan={() => onTabChange("tomorrow-plan")}
+              />
+            ) : null}
 
-              {result.latest_forecast ? (
-                <Card variant="raised" className="today-forecast-section">
-                  <Card.Body>
+            {result.latest_forecast ? (
+              <Card variant="raised" className="today-forecast-section">
+                <Card.Body>
                 <div className="today-forecast-header">
                   <div>
                     <h3>Risk Windows</h3>
@@ -266,25 +283,26 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
               </Card.Body>
             </Card>
           ) : null}
-            </div>
-          ) : null}
+          </div>
+        ) : null}
 
+        {result ? (
           <StudentRoster
             attentionCount={attentionStudents.size}
             onDrillDown={(context) => setDrillDown(context)}
           />
+        ) : null}
 
-          {!result.latest_plan && !result.latest_forecast && result.debt_register.items.length === 0 ? (
-            <EmptyStateCard
-              icon={<EmptyStateIllustration name="prairie" />}
-              title="Fresh start"
-              description="No classroom debt or prior planning signal yet. Start with tomorrow planning or log an intervention so the command center has something to track."
-              actionLabel="Build Tomorrow Plan"
-              onAction={() => onTabChange("tomorrow-plan")}
-            />
-          ) : null}
-        </div>
-      ) : null}
+        {result && !result.latest_plan && !result.latest_forecast && result.debt_register.items.length === 0 ? (
+          <EmptyStateCard
+            icon={<EmptyStateIllustration name="prairie" />}
+            title="Fresh start"
+            description="No classroom debt or prior planning signal yet. Start with tomorrow planning or log an intervention so the command center has something to track."
+            actionLabel="Build Tomorrow Plan"
+            onAction={() => onTabChange("tomorrow-plan")}
+          />
+        ) : null}
+      </div>
 
       <DrillDownDrawer
         context={drillDown}
