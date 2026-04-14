@@ -13,6 +13,7 @@ export default defineConfig({
       "apps/web/src/components/quickCapture/__tests__/**/*.test.tsx",
       "apps/web/src/panels/__tests__/**/*.test.ts",
       "apps/web/src/panels/__tests__/**/*.test.tsx",
+      "apps/web/src/hooks/__tests__/**/*.test.ts",
       "apps/web/src/hooks/__tests__/**/*.test.tsx",
     ],
     environment: "node",
