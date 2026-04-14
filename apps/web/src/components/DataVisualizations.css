@@ -1249,3 +1249,37 @@
 .viz-readability-gauge__legend-item--after::before {
   background: var(--color-accent, #0d6efd);
 }
+
+/* Task 5a: clickable trend chart affordances */
+.viz-debt-gauge--clickable,
+.viz-debt-trend--clickable {
+  cursor: pointer;
+}
+
+.viz-debt-gauge--clickable:focus-visible,
+.viz-debt-trend--clickable:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.viz-complexity-cal__cell--clickable {
+  appearance: none;
+  background: inherit;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.viz-complexity-cal__cell--clickable:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .viz-debt-gauge--clickable:hover,
+  .viz-debt-trend--clickable:hover,
+  .viz-complexity-cal__cell--clickable:hover {
+    filter: brightness(1.08);
+    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+  }
+}

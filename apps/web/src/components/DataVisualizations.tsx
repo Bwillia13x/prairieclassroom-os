@@ -194,9 +194,10 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
 interface DebtGaugeProps {
   debtItems: DebtItem[];
   previousTotal?: number;
+  onSegmentClick?: (payload: { trendKey: "debt"; label: string; data: number[] }) => void;
 }
 
-export function ComplexityDebtGauge({ debtItems, previousTotal }: DebtGaugeProps) {
+export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }: DebtGaugeProps) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -253,8 +254,32 @@ export function ComplexityDebtGauge({ debtItems, previousTotal }: DebtGaugeProps
     (delta !== null ? `, ${delta > 0 ? "up" : "down"} ${Math.abs(delta)} from last check` : "") +
     ".";
 
+  const handleGaugeClick = onSegmentClick
+    ? () => onSegmentClick({ trendKey: "debt", label: "Complexity debt", data: [debtItems.length] })
+    : undefined;
+
+  const handleGaugeKeyDown = onSegmentClick
+    ? (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === "Enter" || e.key === " ") {
+          if (e.key === " ") e.preventDefault();
+          onSegmentClick({ trendKey: "debt", label: "Complexity debt", data: [debtItems.length] });
+        }
+      }
+    : undefined;
+
   return (
-    <div className={`viz-debt-gauge${mounted ? " viz-debt-gauge--mounted" : ""}`}>
+    <div
+      className={`viz-debt-gauge${mounted ? " viz-debt-gauge--mounted" : ""}${onSegmentClick ? " viz-debt-gauge--clickable" : ""}`}
+      {...(onSegmentClick
+        ? {
+            role: "button",
+            tabIndex: 0,
+            "data-testid": "viz-debt-gauge-hit",
+            onClick: handleGaugeClick,
+            onKeyDown: handleGaugeKeyDown,
+          }
+        : {})}
+    >
       <div className="viz-header">
         <h4 className="viz-title">Complexity Debt</h4>
         <div className="viz-debt-gauge__badges">
@@ -1154,9 +1179,10 @@ export function StudentSparkIndicator({ student }: StudentSparkProps) {
 
 interface DebtTrendProps {
   data: number[];
+  onSegmentClick?: (payload: { trendKey: "debt"; label: string; data: number[] }) => void;
 }
 
-export function DebtTrendSparkline({ data }: DebtTrendProps) {
+export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
   const w = 140;
   const h = 32;
   const pad = 4;
@@ -1183,7 +1209,24 @@ export function DebtTrendSparkline({ data }: DebtTrendProps) {
   const count = Math.min(data.length, 14);
 
   return (
-    <div className="viz-debt-trend" role="img" aria-label={`Debt trend over ${count} days: ${trend}`}>
+    <div
+      className={`viz-debt-trend${onSegmentClick ? " viz-debt-trend--clickable" : ""}`}
+      role={onSegmentClick ? "button" : "img"}
+      aria-label={onSegmentClick ? undefined : `Debt trend over ${count} days: ${trend}`}
+      {...(onSegmentClick
+        ? {
+            tabIndex: 0,
+            "data-testid": "viz-debt-trend-hit",
+            onClick: () => onSegmentClick({ trendKey: "debt", label: "Debt trend", data }),
+            onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => {
+              if (e.key === "Enter" || e.key === " ") {
+                if (e.key === " ") e.preventDefault();
+                onSegmentClick({ trendKey: "debt", label: "Debt trend", data });
+              }
+            },
+          }
+        : {})}
+    >
       <div className="viz-header">
         <span className="viz-title">Debt Trend</span>
         <span className={`viz-tone-badge viz-tone-badge--${toneClass}`}>
@@ -1215,6 +1258,7 @@ export function DebtTrendSparkline({ data }: DebtTrendProps) {
 
 interface ComplexityTrendProps {
   data: number[];
+  onSegmentClick?: (payload: { trendKey: "complexity"; label: string; data: number[]; highlightIndex: number }) => void;
 }
 
 const COMPLEXITY_LEVEL_COLORS: Record<number, string> = {
@@ -1231,7 +1275,7 @@ const COMPLEXITY_LEVEL_LABELS: Record<number, string> = {
   3: "Critical",
 };
 
-export function ComplexityTrendCalendar({ data }: ComplexityTrendProps) {
+export function ComplexityTrendCalendar({ data, onSegmentClick }: ComplexityTrendProps) {
   const trimmed = useMemo(() => data.slice(-14), [data]);
   if (trimmed.length === 0) return null;
 
@@ -1243,6 +1287,23 @@ export function ComplexityTrendCalendar({ data }: ComplexityTrendProps) {
       <div className="viz-complexity-cal__grid">
         {trimmed.map((level, i) => {
           const clamped = Math.min(Math.max(level, 0), 3);
+          if (onSegmentClick) {
+            return (
+              <button
+                key={i}
+                type="button"
+                tabIndex={0}
+                className="viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+                style={{ background: COMPLEXITY_LEVEL_COLORS[clamped] }}
+                title={`Day ${i + 1}: ${COMPLEXITY_LEVEL_LABELS[clamped]}`}
+                aria-label={`Day ${i + 1}: ${COMPLEXITY_LEVEL_LABELS[clamped]}`}
+                data-testid="viz-complexity-cell"
+                onClick={() =>
+                  onSegmentClick({ trendKey: "complexity", label: "Peak complexity", data, highlightIndex: i })
+                }
+              />
+            );
+          }
           return (
             <div
               key={i}
