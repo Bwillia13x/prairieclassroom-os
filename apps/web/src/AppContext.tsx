@@ -1,6 +1,13 @@
 import { createContext, useContext, type Dispatch } from "react";
 import type { ClassroomProfile } from "./types";
-import type { ActiveTab, AppAction, AuthPromptState, StreamingState, ToastItem } from "./appReducer";
+import type {
+  ActiveTab,
+  AppAction,
+  AuthPromptState,
+  ClassroomRole,
+  StreamingState,
+  ToastItem,
+} from "./appReducer";
 
 export interface AppContextValue {
   classrooms: ClassroomProfile[];
@@ -11,6 +18,12 @@ export interface AppContextValue {
   profile: ClassroomProfile | undefined;
   students: { alias: string; family_language?: string }[];
   classroomAccessCodes: Record<string, string>;
+  /** Per-classroom role selections (persisted locally) */
+  classroomRoles: Record<string, ClassroomRole>;
+  /** Computed role for the active classroom, defaulting to 'teacher' */
+  activeRole: ClassroomRole;
+  /** Set the stored role for a classroom */
+  setClassroomRole: (classroomId: string, role: ClassroomRole) => void;
   authPrompt: AuthPromptState | null;
   showSuccess: (msg: string) => void;
   /** Dispatch for the central state reducer */

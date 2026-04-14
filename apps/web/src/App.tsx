@@ -13,6 +13,7 @@ import {
   TAB_ORDER,
   type ActiveTab,
   type AuthPromptState,
+  type ClassroomRole,
 } from "./appReducer";
 import { configureApiClient, fetchTodaySnapshot, listClassrooms } from "./api";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -494,6 +495,16 @@ export default function App() {
     }
   }
 
+  const setClassroomRole = useCallback(
+    (classroomId: string, role: ClassroomRole) => {
+      dispatch({ type: "SET_CLASSROOM_ROLE", classroomId, role });
+    },
+    [],
+  );
+
+  const activeRole: ClassroomRole =
+    state.classroomRoles[activeClassroom] ?? "teacher";
+
   const ctxValue = useMemo(
     () => ({
       classrooms: state.classrooms,
@@ -504,6 +515,9 @@ export default function App() {
       profile,
       students,
       classroomAccessCodes: state.classroomAccessCodes,
+      classroomRoles: state.classroomRoles,
+      activeRole,
+      setClassroomRole,
       authPrompt,
       showSuccess,
       dispatch,
@@ -516,15 +530,18 @@ export default function App() {
     }),
     [
       activeClassroom,
+      activeRole,
       activeTab,
       authPrompt,
       dismissToast,
       profile,
       setActiveClassroom,
       setActiveTab,
+      setClassroomRole,
       showSuccess,
       showUndo,
       state.classroomAccessCodes,
+      state.classroomRoles,
       state.classrooms,
       state.featuresSeen,
       state.streaming,
