@@ -143,6 +143,21 @@ export interface AuthPromptState {
   retry?: (code?: string) => Promise<unknown>;
 }
 
+// ─── Classroom Role ───
+
+export type ClassroomRole = "teacher" | "ea" | "substitute" | "reviewer";
+
+export const CLASSROOM_ROLES: readonly ClassroomRole[] = [
+  "teacher",
+  "ea",
+  "substitute",
+  "reviewer",
+] as const;
+
+export function isClassroomRole(value: unknown): value is ClassroomRole {
+  return typeof value === "string" && (CLASSROOM_ROLES as readonly string[]).includes(value);
+}
+
 // ─── App State ───
 
 export interface AppState {
@@ -172,6 +187,9 @@ export interface AppState {
 
   // Auth prompt state for protected classroom flows
   authPrompt: AuthPromptState | null;
+
+  // Per-classroom role selection (persisted locally)
+  classroomRoles: Record<string, ClassroomRole>;
 }
 
 // ─── Actions ───
@@ -203,7 +221,8 @@ export type AppAction =
   | { type: "FLUSH_FEEDBACK" }
   | { type: "SET_CLASSROOM_ACCESS_CODE"; classroomId: string; code: string }
   | { type: "OPEN_AUTH_PROMPT"; prompt: AuthPromptState }
-  | { type: "CLOSE_AUTH_PROMPT" };
+  | { type: "CLOSE_AUTH_PROMPT" }
+  | { type: "SET_CLASSROOM_ROLE"; classroomId: string; role: ClassroomRole };
 
 // ─── Initial State ───
 
@@ -234,6 +253,33 @@ function loadClassroomAccessCodes(): Record<string, string> {
   }
 }
 
+function loadClassroomRoles(): Record<string, ClassroomRole> {
+  try {
+    const raw = localStorage.getItem("prairie-classroom-roles");
+    if (!raw) return {};
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return {};
+    const result: Record<string, ClassroomRole> = {};
+    let hadInvalid = false;
+    for (const [classroomId, value] of Object.entries(parsed as Record<string, unknown>)) {
+      if (isClassroomRole(value)) {
+        result[classroomId] = value;
+      } else {
+        hadInvalid = true;
+        result[classroomId] = "teacher";
+      }
+    }
+    if (hadInvalid) {
+      console.warn(
+        "[appReducer] Dropped unknown role values from prairie-classroom-roles; defaulted to 'teacher'.",
+      );
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
 export function createInitialState(): AppState {
   return {
     classrooms: [],
@@ -257,6 +303,7 @@ export function createInitialState(): AppState {
     feedbackQueue: loadFeedbackQueue(),
     classroomAccessCodes: loadClassroomAccessCodes(),
     authPrompt: null,
+    classroomRoles: loadClassroomRoles(),
   };
 }
 
@@ -400,6 +447,19 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case "CLOSE_AUTH_PROMPT":
       return { ...state, authPrompt: null };
+
+    case "SET_CLASSROOM_ROLE": {
+      const classroomRoles = {
+        ...state.classroomRoles,
+        [action.classroomId]: action.role,
+      };
+      try {
+        localStorage.setItem("prairie-classroom-roles", JSON.stringify(classroomRoles));
+      } catch {
+        /* noop */
+      }
+      return { ...state, classroomRoles };
+    }
 
     default:
       return state;
