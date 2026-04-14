@@ -77,8 +77,34 @@ export function createAuthMiddleware(
       return;
     }
 
-    // TODO: Classroom locks temporarily disabled for development access.
-    // Re-enable the access_code check before any pilot or production use.
+    // If classroom has no access_code set, auth is not required
+    if (!classroom.access_code) {
+      setClassroomAuthContext(res, { classroomId, role, demoBypass: false });
+      next();
+      return;
+    }
+
+    const providedCode = req.headers["x-classroom-code"] as string | undefined;
+    if (!providedCode) {
+      sendRouteError(res, 401, {
+        error: "Authentication required. Provide X-Classroom-Code header.",
+        category: "auth",
+        retryable: false,
+        detail_code: "classroom_code_missing",
+      });
+      return;
+    }
+
+    if (providedCode !== classroom.access_code) {
+      sendRouteError(res, 403, {
+        error: "Invalid classroom code.",
+        category: "auth",
+        retryable: false,
+        detail_code: "classroom_code_invalid",
+      });
+      return;
+    }
+
     setClassroomAuthContext(res, { classroomId, role, demoBypass: false });
     next();
   };
