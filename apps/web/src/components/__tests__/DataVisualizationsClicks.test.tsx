@@ -104,6 +104,21 @@ describe("ComplexityDebtGauge — onSegmentClick", () => {
     render(<ComplexityDebtGauge debtItems={DEBT_ITEMS} previousTotal={3} />);
     expect(screen.queryByTestId("viz-debt-gauge-hit")).toBeNull();
   });
+
+  it("has an accessible aria-label when clickable", () => {
+    const spy = vi.fn();
+    render(
+      <ComplexityDebtGauge
+        debtItems={DEBT_ITEMS}
+        previousTotal={3}
+        onSegmentClick={spy}
+      />
+    );
+    const hit = screen.getByTestId("viz-debt-gauge-hit");
+    const label = hit.getAttribute("aria-label");
+    expect(label).toBeTruthy();
+    expect(label!.length).toBeGreaterThan(0);
+  });
 });
 
 // ----------------------------------------------------------------
@@ -127,6 +142,15 @@ describe("DebtTrendSparkline — onSegmentClick", () => {
   it("renders without testid when onSegmentClick is absent (no regression)", () => {
     render(<DebtTrendSparkline data={TREND_DATA} />);
     expect(screen.queryByTestId("viz-debt-trend-hit")).toBeNull();
+  });
+
+  it("has an accessible aria-label when clickable", () => {
+    const spy = vi.fn();
+    render(<DebtTrendSparkline data={TREND_DATA} onSegmentClick={spy} />);
+    const hit = screen.getByTestId("viz-debt-trend-hit");
+    const label = hit.getAttribute("aria-label");
+    expect(label).toBeTruthy();
+    expect(label!.length).toBeGreaterThan(0);
   });
 });
 

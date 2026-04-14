@@ -274,6 +274,7 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
         ? {
             role: "button",
             tabIndex: 0,
+            "aria-label": ariaLabel,
             "data-testid": "viz-debt-gauge-hit",
             onClick: handleGaugeClick,
             onKeyDown: handleGaugeKeyDown,
@@ -1212,7 +1213,7 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
     <div
       className={`viz-debt-trend${onSegmentClick ? " viz-debt-trend--clickable" : ""}`}
       role={onSegmentClick ? "button" : "img"}
-      aria-label={onSegmentClick ? undefined : `Debt trend over ${count} days: ${trend}`}
+      aria-label={`Debt trend over ${count} days: ${trend}`}
       {...(onSegmentClick
         ? {
             tabIndex: 0,

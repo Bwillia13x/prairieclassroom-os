@@ -1276,10 +1276,15 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
+  .viz-debt-gauge--clickable,
+  .viz-debt-trend--clickable,
+  .viz-complexity-cal__cell--clickable {
+    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+  }
+
   .viz-debt-gauge--clickable:hover,
   .viz-debt-trend--clickable:hover,
   .viz-complexity-cal__cell--clickable:hover {
     filter: brightness(1.08);
-    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
   }
 }
