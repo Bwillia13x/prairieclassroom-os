@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import type { FamilyMessageDraft } from "../types";
-import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
 import "./MessageDraft.css";
 
@@ -9,27 +8,13 @@ interface Props {
   onApprove: (draftId: string) => void;
 }
 
-export default function MessageDraft({ draft, onApprove }: Props) {
-  const [copied, setCopied] = useState(false);
+// onApprove is kept in Props for backward compatibility; approval is now triggered via MessageApprovalDialog
+export default function MessageDraft({ draft }: Props) {
   const [approved, setApproved] = useState(draft.teacher_approved);
 
   useEffect(() => {
-    setCopied(false);
     setApproved(draft.teacher_approved);
   }, [draft.draft_id, draft.teacher_approved]);
-
-  async function handleApproveAndCopy() {
-    try {
-      await navigator.clipboard.writeText(draft.plain_language_text);
-      setCopied(true);
-      setApproved(true);
-      onApprove(draft.draft_id);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setApproved(true);
-      onApprove(draft.draft_id);
-    }
-  }
 
   return (
     <div className="message-draft">
@@ -60,22 +45,16 @@ export default function MessageDraft({ draft, onApprove }: Props) {
       )}
 
       <div className="draft-approval">
-        {approved ? (
+        {approved && (
           <div className="draft-approved-badge">
-            Approved {copied ? "& Copied" : ""}
+            Approved
           </div>
-        ) : (
-          <button className="btn btn--approve" type="button" onClick={handleApproveAndCopy}>
-            Approve & Copy to Clipboard
-          </button>
         )}
         <p className="draft-approval-note">
           This message will not be sent automatically. Copy and paste it into your
           preferred communication channel.
         </p>
       </div>
-
-      <PrintButton label="Print Message" />
     </div>
   );
 }

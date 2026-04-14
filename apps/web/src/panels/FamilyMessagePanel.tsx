@@ -5,6 +5,7 @@ import { useAsyncAction } from "../useAsyncAction";
 import { draftFamilyMessage, approveFamilyMessage, fetchMessageHistory, fetchClassroomHealth } from "../api";
 import MessageComposer from "../components/MessageComposer";
 import MessageDraft from "../components/MessageDraft";
+import MessageApprovalDialog from "../components/MessageApprovalDialog";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ContextualHint from "../components/ContextualHint";
 import OutputFeedback from "../components/OutputFeedback";
@@ -15,10 +16,12 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
-import { FeedbackCollector } from "../components/shared";
+import { FeedbackCollector, OutputActionBar } from "../components/shared";
+import type { OutputAction } from "../components/shared";
 import { MessageApprovalFunnel } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
+import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
 import type { FamilyMessageResponse, FamilyMessageDraft, FamilyMessagePrefill, ClassroomHealth } from "../types";
 
@@ -33,6 +36,8 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   const healthAction = useAsyncAction<ClassroomHealth>();
   const history = useHistory(fetchMessageHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const { copy, status: copyStatus } = useCopyToClipboard();
   const feedback = useFeedback(activeClassroom, session.sessionId);
 
   useEffect(() => {
@@ -105,6 +110,38 @@ export default function FamilyMessagePanel({ prefill }: Props) {
       console.warn("Approval persistence failed:", err);
     }
   }
+
+  async function handleDialogConfirm() {
+    if (!displayResult) return;
+    await copy(displayResult.draft.plain_language_text);
+    await handleApprove(displayResult.draft.draft_id);
+    showSuccess("Message approved and copied");
+    setDialogOpen(false);
+  }
+
+  const actions: OutputAction[] = displayResult ? [
+    {
+      key: "review-approval",
+      label: displayResult.draft.teacher_approved ? "Approved" : "Review approval",
+      icon: "check",
+      variant: "approve",
+      onClick: () => setDialogOpen(true),
+    },
+    {
+      key: "print",
+      label: "Print",
+      icon: "grid",
+      variant: "ghost",
+      onClick: () => window.print(),
+    },
+    {
+      key: "copy",
+      label: "Copy",
+      icon: "pencil",
+      variant: "ghost",
+      onClick: () => void copy(displayResult.draft.plain_language_text),
+    },
+  ] : [];
 
   return (
     <section className="workspace-page">
@@ -184,6 +221,14 @@ export default function FamilyMessagePanel({ prefill }: Props) {
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}
                   panelLabel="family message"
+                />
+                <OutputActionBar actions={actions} contextLabel="Family message output" />
+                <MessageApprovalDialog
+                  open={dialogOpen}
+                  draft={displayResult.draft}
+                  onConfirm={handleDialogConfirm}
+                  onCancel={() => setDialogOpen(false)}
+                  copyStatus={copyStatus}
                 />
               </>
             ) : null}
