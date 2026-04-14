@@ -100,7 +100,7 @@ export interface ClassroomProfile {
   grade_band: string;
   subject_focus: string;
   classroom_notes: string[];
-  students: { alias: string; family_language?: string }[];
+  students: { alias: string; family_language?: string; eal_flag?: boolean; support_tags?: string[] }[];
   requires_access_code?: boolean;
   is_demo?: boolean;
   schedule?: ScheduleBlockInput[];

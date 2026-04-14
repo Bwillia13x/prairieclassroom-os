@@ -12,6 +12,7 @@ import type {
 import type { ActiveTab } from "../appReducer";
 import SkeletonLoader from "./SkeletonLoader";
 import StatusChip from "./StatusChip";
+import { InterventionTimeline, FollowUpSuccessRate } from "./DataVisualizations";
 
 interface Props {
   context: Extract<DrillDownContext, { type: "student" }>;
@@ -110,6 +111,15 @@ export default function StudentDetailView({
             </div>
           )}
         </>
+      )}
+
+      {interventionAction.result && interventionAction.result.length > 0 && (
+        <div className="drill-down-section">
+          <div className="drill-down-viz-row">
+            <InterventionTimeline records={interventionAction.result} />
+            <FollowUpSuccessRate records={interventionAction.result} />
+          </div>
+        </div>
       )}
 
       <div className="drill-down-section">

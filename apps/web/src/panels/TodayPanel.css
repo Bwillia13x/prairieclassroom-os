@@ -8,6 +8,19 @@
   gap: var(--space-4);
 }
 
+/* Secondary content cards flow side-by-side on wide viewports */
+.today-grid--secondary {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+@media (min-width: 860px) {
+  .today-grid--secondary {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .today-forecast-header {
   display: flex;
   align-items: flex-start;
@@ -85,7 +98,7 @@
     var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-sm), var(--inner-stroke);
   cursor: pointer;
   text-align: left;
   transition:
@@ -205,11 +218,11 @@
 
 .plan-recap {
   padding: var(--space-4);
-  background: var(--color-surface);
+  background: var(--color-surface-elevated);
   border: 1px solid var(--color-border);
   border-left: 3px solid var(--color-section-priority);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm), var(--inner-stroke);
 }
 
 .plan-recap-heading {

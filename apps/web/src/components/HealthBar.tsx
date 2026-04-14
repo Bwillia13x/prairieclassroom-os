@@ -1,4 +1,5 @@
 import StatusChip from "./StatusChip";
+import { PlanStreakCalendar, DebtTrendSparkline, ComplexityTrendCalendar } from "./DataVisualizations";
 import type { ClassroomHealth } from "../types";
 import "./HealthBar.css";
 
@@ -81,6 +82,16 @@ export default function HealthBar({ health, loading, pendingActionCount = 0 }: P
       </span>
 
       <StatusChip tone={overallTone} label={overallLabel} />
+
+      {health.trends?.plans_14d && health.trends.plans_14d.length > 0 && (
+        <PlanStreakCalendar plans14d={health.trends.plans_14d} />
+      )}
+      {health.trends?.debt_total_14d && health.trends.debt_total_14d.length > 1 && (
+        <DebtTrendSparkline data={health.trends.debt_total_14d} />
+      )}
+      {health.trends?.peak_complexity_14d && health.trends.peak_complexity_14d.length > 0 && (
+        <ComplexityTrendCalendar data={health.trends.peak_complexity_14d} />
+      )}
     </div>
   );
 }

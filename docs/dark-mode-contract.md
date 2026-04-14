@@ -5,19 +5,20 @@
 
 This document is the single source of truth for the dark mode color system. When you touch anything in `apps/web/src/styles/tokens.css`, `apps/web/src/tokens.css`, or any component CSS that defines color, read this first.
 
-## 1. Brand identity: warm, not gray
+## 1. Brand identity: dark canvas, warm accents
 
-Prairie dark mode uses a **warm-brown** palette, not a neutral-gray palette. This is a brand decision, not a bug.
+Prairie dark mode uses a **near-black** base with **warm beige accents**, not a warm-brown or neutral-gray palette. The base surfaces are intentionally very dark — almost black — while borders, accent colors, and text tones carry the familiar prairie warmth from the light mode.
 
 | Role | Light | Dark |
 |---|---|---|
-| `--color-bg` | `#f7f1e5` (cream) | `#1a1610` (deep warm brown) |
-| `--color-surface` | `#fdfaf5` (soft cream) | `#231d16` (warm brown) |
-| `--color-surface-elevated` | `#fffdf9` | `#2b241c` |
-| `--color-text` | `#30251a` (warm near-black) | `#f5ecdf` (warm near-white) |
-| `--color-accent` | `#c07624` (prairie sun) | `#d4a15c` (lifted sun) |
+| `--color-bg` | `#f5eddb` (cream) | `#0c0c0a` (near-black) |
+| `--color-surface` | `#fbf6ea` (soft cream) | `#151412` (very dark, barely warm) |
+| `--color-surface-elevated` | `#fffbf0` | `#1d1b18` |
+| `--color-text` | `#2b2014` (warm near-black) | `#f5ecdf` (warm near-white) |
+| `--color-accent` | `#ae671a` (prairie sun) | `#d4a15c` (lifted sun) |
+| `--color-border` | `#e2d6ba` (soft beige) | `#3a3126` (warm beige accent) |
 
-The warm palette reflects Prairie's pedagogical story — the copilot is a classroom companion, not a surveillance dashboard. If you ever feel pressure to neutralize the palette "for modern look," push back, or bring the case to `docs/decision-log.md` first.
+The dark canvas lets the warm accents breathe — borders, pills, and accent highlights read as prairie warmth against a receding black backdrop. The copilot feels like a focused, professional tool in dim classrooms while the beige accent family keeps the brand identity unmistakable. If you ever feel pressure to flatten the accents toward neutral gray, push back, or bring the case to `docs/decision-log.md` first.
 
 ## 2. Switching mechanism
 
@@ -141,7 +142,7 @@ When you change anything that touches color:
 ## 9. Known trade-offs documented here
 
 - **Decorative borders read below 3:1.** Accepted for aesthetic reasons (see §5). Mitigated by routing all form affordances through `--color-border-input`.
-- **No AMOLED / true-black variant.** Out of scope; the warm-brown palette is non-negotiable as a brand anchor.
+- **Near-black, not true AMOLED black.** The base bg `#0c0c0a` is near-black with a barely perceptible warm shift, not pure `#000000`. This avoids OLED smearing artifacts while still reading as decisively dark.
 - **`::selection` uses `color-mix`.** Requires modern browsers; fallback is not provided because Prairie's target matrix already requires `light-dark()` support.
 - **Grain texture is suppressed in dark mode.** Non-configurable. If a future design wants grain in dark mode, design a new dark-tuned noise pattern rather than reusing the light one.
 

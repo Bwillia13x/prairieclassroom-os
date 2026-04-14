@@ -56,7 +56,7 @@ export function saveVariants(
 export function saveFamilyMessage(
   classroomId: ClassroomId,
   draft: FamilyMessageDraft,
-  modelId: string,
+  _modelId: string,
 ): void {
   const db = getDb(classroomId);
   db.prepare(`

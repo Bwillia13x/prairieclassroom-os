@@ -7,6 +7,7 @@ import SimplifiedViewer from "../components/SimplifiedViewer";
 import VocabCardGrid from "../components/VocabCardGrid";
 import ContextualHint from "../components/ContextualHint";
 import ErrorBanner from "../components/ErrorBanner";
+import { ReadabilityComparisonGauge } from "../components/DataVisualizations";
 import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
@@ -156,6 +157,10 @@ export default function LanguageToolsPanel() {
             {simplify.result && activeTool === "simplify" ? (
               <>
                 <ResultBanner label="Text simplified" generatedAt={Date.now()} />
+                <ReadabilityComparisonGauge
+                  sourceText={simplify.result.simplified.source_text}
+                  simplifiedText={simplify.result.simplified.simplified_text}
+                />
                 <SimplifiedViewer onSubmit={handleSimplify} result={simplify.result} loading={simplify.loading} />
                 <OutputFeedback outputId={`simplify-${simplifyKey}`} outputType="simplify" />
                 <FeedbackCollector

@@ -125,7 +125,7 @@ Exact endpoint inventory is generated in `docs/api-surface.md`; do not maintain 
 
 ### Toolchain
 
-- Node: `v20.19.5` from `.nvmrc`
+- Node: `v25.8.2` from `.nvmrc`
 - Python: `3.11.x` is the expected path for the inference service and release gate
 - Package manager: `npm` with workspaces
 

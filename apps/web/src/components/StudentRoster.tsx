@@ -5,6 +5,7 @@ import { fetchStudentSummary } from "../api";
 import type { DrillDownContext, StudentSummary } from "../types";
 import SectionIcon from "./SectionIcon";
 import SkeletonLoader from "./SkeletonLoader";
+import { StudentSparkIndicator } from "./DataVisualizations";
 import "./StudentRoster.css";
 
 const STORAGE_KEY = "prairie-roster-expanded";
@@ -59,7 +60,10 @@ function StudentCard({ student, onDrillDown }: StudentCardProps) {
       type="button"
     >
       <div className="student-card__header">
-        <span className="student-card__name">{student.alias}</span>
+        <span className="student-card__name">
+          {student.alias}
+          <StudentSparkIndicator student={student} />
+        </span>
         {hasAttention && (
           <span className="student-card__count" aria-hidden="true">
             {student.pending_action_count}

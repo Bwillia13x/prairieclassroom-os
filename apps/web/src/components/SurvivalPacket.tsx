@@ -1,6 +1,7 @@
 // apps/web/src/components/SurvivalPacket.tsx
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { ComplexityHeatmap } from "./DataVisualizations";
 import "./SurvivalPacket.css";
 
 interface RoutineEntry {
@@ -242,6 +243,15 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
           <h3 id="complexity-peaks-heading" className="survival-packet-heading">
             Complexity Peaks
           </h3>
+          <ComplexityHeatmap
+            blocks={packet.complexity_peaks.map((peak) => ({
+              time_slot: peak.time_slot,
+              level: peak.level,
+              activity: peak.reason,
+              contributing_factors: [peak.reason],
+              suggested_mitigation: peak.mitigation,
+            }))}
+          />
           <div className="survival-packet-stack">
             {packet.complexity_peaks.map((peak, i) => (
               <div key={i} className="survival-packet-card">

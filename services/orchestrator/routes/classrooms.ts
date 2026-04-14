@@ -21,7 +21,7 @@ export function createClassroomsRouter(deps: RouteDeps): Router {
           classroom_notes: c.classroom_notes,
           requires_access_code: Boolean(c.access_code),
           is_demo: c.classroom_id === "demo-okafor-grade34",
-          students: (c.students ?? []).map((s) => ({ alias: s.alias, family_language: s.family_language })),
+          students: (c.students ?? []).map((s) => ({ alias: s.alias, family_language: s.family_language, eal_flag: s.eal_flag, support_tags: s.support_tags })),
         })),
       );
     } catch (err) {

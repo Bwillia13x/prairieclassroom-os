@@ -1390,3 +1390,421 @@ export function FollowUpSuccessRate({ records }: FollowUpRateProps) {
     </div>
   );
 }
+
+/* ================================================================
+   17. SCHEDULE LOAD STRIP
+   ================================================================
+   Horizontal time-block strip: each slot is a coloured pill
+   proportional to student_count. Answers: "Where is the EA busiest?"
+   ================================================================ */
+
+interface ScheduleLoadBlock {
+  time_slot: string;
+  student_count: number;
+  label: string;
+}
+
+interface ScheduleLoadStripProps {
+  blocks: ScheduleLoadBlock[];
+}
+
+export function ScheduleLoadStrip({ blocks }: ScheduleLoadStripProps) {
+  if (blocks.length === 0) return null;
+
+  const max = Math.max(...blocks.map((b) => b.student_count), 1);
+
+  function tone(count: number): string {
+    const ratio = count / max;
+    if (ratio >= 0.75) return "var(--color-alert, #e74c3c)";
+    if (ratio >= 0.5) return "var(--color-sun, #f0ad4e)";
+    return "var(--color-sage, #5cb85c)";
+  }
+
+  return (
+    <div className="viz-schedule-strip" role="img" aria-label="Schedule load by time slot">
+      {blocks.map((block, i) => (
+        <div key={i} className="viz-schedule-strip__slot" title={`${block.time_slot}: ${block.label} (${block.student_count} students)`}>
+          <div
+            className="viz-schedule-strip__bar"
+            style={{
+              height: `${Math.max(20, (block.student_count / max) * 100)}%`,
+              backgroundColor: tone(block.student_count),
+            }}
+          />
+          <span className="viz-schedule-strip__label">{block.time_slot}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ================================================================
+   18. VARIANT SUMMARY STRIP
+   ================================================================
+   Small horizontal summary showing variant type distribution
+   and time comparison bars. Answers: "What did differentiation produce?"
+   ================================================================ */
+
+interface VariantSummaryItem {
+  variant_type: string;
+  estimated_minutes: number;
+  title: string;
+}
+
+interface VariantSummaryStripProps {
+  variants: VariantSummaryItem[];
+}
+
+const VARIANT_TONE: Record<string, string> = {
+  core: "var(--color-slate, #6c757d)",
+  eal_supported: "var(--color-accent, #0d6efd)",
+  chunked: "var(--color-sage, #5cb85c)",
+  ea_small_group: "var(--color-sun, #f0ad4e)",
+  extension: "var(--color-analysis, #8b5cf6)",
+};
+
+function prettyVariantType(vt: string): string {
+  return vt.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+export function VariantSummaryStrip({ variants }: VariantSummaryStripProps) {
+  if (variants.length === 0) return null;
+
+  const maxMin = Math.max(...variants.map((v) => v.estimated_minutes), 1);
+
+  return (
+    <div className="viz-variant-strip" role="img" aria-label="Variant summary">
+      {variants.map((v, i) => (
+        <div key={i} className="viz-variant-strip__item">
+          <div className="viz-variant-strip__bar-wrap">
+            <div
+              className="viz-variant-strip__bar"
+              style={{
+                width: `${Math.max(10, (v.estimated_minutes / maxMin) * 100)}%`,
+                backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate, #6c757d)",
+              }}
+            />
+          </div>
+          <span className="viz-variant-strip__type">{prettyVariantType(v.variant_type)}</span>
+          <span className="viz-variant-strip__min">{v.estimated_minutes}m</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ================================================================
+   19. STUDENT–THEME HEATMAP
+   ================================================================
+   Grid of student × recurring-theme cells. Colour intensity =
+   how many themes a student appears in.
+   Answers: "Which students cluster on which needs?"
+   ================================================================ */
+
+interface StudentThemeHeatmapProps {
+  themes: RecurringTheme[];
+}
+
+export function StudentThemeHeatmap({ themes }: StudentThemeHeatmapProps) {
+  const { students, cells, maxVal } = useMemo(() => {
+    const studentSet = new Set<string>();
+    for (const t of themes) t.student_refs.forEach((s) => studentSet.add(s));
+    const stuArr = [...studentSet].sort();
+    const grid: Record<string, Record<string, number>> = {};
+    let mx = 1;
+    for (const t of themes) {
+      for (const s of t.student_refs) {
+        grid[s] = grid[s] ?? {};
+        grid[s][t.theme] = (grid[s][t.theme] ?? 0) + t.evidence_count;
+        if (grid[s][t.theme] > mx) mx = grid[s][t.theme];
+      }
+    }
+    return { students: stuArr, cells: grid, maxVal: mx };
+  }, [themes]);
+
+  if (themes.length === 0 || students.length === 0) return null;
+
+  const cellH = 28;
+  const cellW = 40;
+  const labelW = 80;
+  const headerH = 60;
+  const svgW = labelW + themes.length * cellW;
+  const svgH = headerH + students.length * cellH;
+
+  function fill(val: number): string {
+    const ratio = val / maxVal;
+    if (ratio === 0) return "var(--color-surface-secondary, #f1f3f5)";
+    const alpha = 0.2 + ratio * 0.8;
+    return `rgba(var(--color-alert-rgb, 231, 76, 60), ${alpha.toFixed(2)})`;
+  }
+
+  return (
+    <div className="viz-student-theme-heatmap" role="img" aria-label="Student theme heatmap">
+      <svg viewBox={`0 0 ${svgW} ${svgH}`} width="100%" preserveAspectRatio="xMinYMin meet">
+        {/* Column headers — theme names */}
+        {themes.map((t, ci) => (
+          <text
+            key={`h-${ci}`}
+            x={labelW + ci * cellW + cellW / 2}
+            y={headerH - 6}
+            textAnchor="end"
+            fontSize="9"
+            fill="var(--color-text-secondary, #6c757d)"
+            transform={`rotate(-45, ${labelW + ci * cellW + cellW / 2}, ${headerH - 6})`}
+          >
+            {t.theme.length > 12 ? `${t.theme.slice(0, 12)}…` : t.theme}
+          </text>
+        ))}
+
+        {/* Rows */}
+        {students.map((stu, ri) => (
+          <g key={stu}>
+            <text
+              x={labelW - 6}
+              y={headerH + ri * cellH + cellH / 2 + 4}
+              textAnchor="end"
+              fontSize="10"
+              fill="var(--color-text-primary, #212529)"
+            >
+              {stu.length > 10 ? `${stu.slice(0, 10)}…` : stu}
+            </text>
+            {themes.map((t, ci) => {
+              const val = cells[stu]?.[t.theme] ?? 0;
+              return (
+                <rect
+                  key={`c-${ri}-${ci}`}
+                  x={labelW + ci * cellW + 2}
+                  y={headerH + ri * cellH + 2}
+                  width={cellW - 4}
+                  height={cellH - 4}
+                  rx={3}
+                  fill={fill(val)}
+                >
+                  <title>{`${stu} × ${t.theme}: ${val} records`}</title>
+                </rect>
+              );
+            })}
+          </g>
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ================================================================
+   20. PLAN COVERAGE RADAR
+   ================================================================
+   Five-axis spider chart showing how "complete" a plan is across
+   watchpoints / priorities / EA actions / prep items / family followups.
+   Answers: "How comprehensive is this plan?"
+   ================================================================ */
+
+interface PlanCoverageRadarProps {
+  watchpoints: number;
+  priorities: number;
+  eaActions: number;
+  prepItems: number;
+  familyFollowups: number;
+}
+
+const PLAN_RADAR_AXES: { key: keyof Omit<PlanCoverageRadarProps, never>; label: string; max: number }[] = [
+  { key: "watchpoints", label: "Watchpoints", max: 6 },
+  { key: "priorities", label: "Priorities", max: 8 },
+  { key: "eaActions", label: "EA Actions", max: 6 },
+  { key: "prepItems", label: "Prep Items", max: 8 },
+  { key: "familyFollowups", label: "Family", max: 5 },
+];
+
+export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
+  const size = 160;
+  const cx = size / 2;
+  const cy = size / 2;
+  const maxR = size / 2 - 24;
+  const n = PLAN_RADAR_AXES.length;
+  const step = (Math.PI * 2) / n;
+
+  function polarXY(index: number, ratio: number): [number, number] {
+    const angle = -Math.PI / 2 + index * step;
+    return [cx + Math.cos(angle) * maxR * ratio, cy + Math.sin(angle) * maxR * ratio];
+  }
+
+  // Background rings
+  const rings = [0.33, 0.66, 1];
+
+  // Shape points
+  const shapePoints = PLAN_RADAR_AXES.map((axis, i) => {
+    const val = Math.min(props[axis.key], axis.max);
+    return polarXY(i, val / axis.max);
+  });
+  const shapePath = shapePoints.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ") + " Z";
+
+  return (
+    <div className="viz-plan-radar" role="img" aria-label="Plan coverage radar">
+      <svg viewBox={`0 0 ${size} ${size}`} width="100%" preserveAspectRatio="xMidYMid meet">
+        {/* Background rings */}
+        {rings.map((r) => (
+          <polygon
+            key={r}
+            points={Array.from({ length: n }, (_, i) => polarXY(i, r).join(",")).join(" ")}
+            fill="none"
+            stroke="var(--color-border, #dee2e6)"
+            strokeWidth="0.5"
+            opacity="0.5"
+          />
+        ))}
+
+        {/* Axis lines */}
+        {PLAN_RADAR_AXES.map((_, i) => {
+          const [x, y] = polarXY(i, 1);
+          return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--color-border, #dee2e6)" strokeWidth="0.5" opacity="0.4" />;
+        })}
+
+        {/* Data shape */}
+        <path d={shapePath} fill="var(--color-accent, #0d6efd)" fillOpacity="0.18" stroke="var(--color-accent, #0d6efd)" strokeWidth="1.5" />
+
+        {/* Axis labels */}
+        {PLAN_RADAR_AXES.map((axis, i) => {
+          const [x, y] = polarXY(i, 1.2);
+          return (
+            <text
+              key={axis.key}
+              x={x}
+              y={y}
+              textAnchor="middle"
+              dominantBaseline="central"
+              fontSize="8"
+              fill="var(--color-text-secondary, #6c757d)"
+              fontWeight="600"
+            >
+              {axis.label}
+            </text>
+          );
+        })}
+
+        {/* Value dots */}
+        {shapePoints.map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="3" fill="var(--color-accent, #0d6efd)" />
+        ))}
+      </svg>
+    </div>
+  );
+}
+
+/* ================================================================
+   21. WORKFLOW FLOW STRIP
+   ================================================================
+   Horizontal lane diagram showing the top common workflow sequences.
+   Each flow is a row of connected pills.
+   Answers: "What workflow patterns does this teacher use?"
+   ================================================================ */
+
+interface WorkflowFlow {
+  sequence: string[];
+  count: number;
+}
+
+interface WorkflowFlowStripProps {
+  flows: WorkflowFlow[];
+}
+
+function flowColor(index: number): string {
+  const palette = [
+    "var(--color-accent, #0d6efd)",
+    "var(--color-sage, #5cb85c)",
+    "var(--color-sun, #f0ad4e)",
+    "var(--color-analysis, #8b5cf6)",
+    "var(--color-alert, #e74c3c)",
+  ];
+  return palette[index % palette.length];
+}
+
+export function WorkflowFlowStrip({ flows }: WorkflowFlowStripProps) {
+  if (flows.length === 0) return null;
+
+  const top = flows.slice(0, 5);
+
+  return (
+    <div className="viz-workflow-strip" role="img" aria-label="Common workflow patterns">
+      {top.map((flow, fi) => (
+        <div key={fi} className="viz-workflow-strip__row">
+          <span className="viz-workflow-strip__count">{flow.count}×</span>
+          <div className="viz-workflow-strip__lane">
+            {flow.sequence.map((step, si) => (
+              <span key={si} className="viz-workflow-strip__step" style={{ borderColor: flowColor(fi) }}>
+                {step.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                {si < flow.sequence.length - 1 && (
+                  <span className="viz-workflow-strip__arrow" style={{ color: flowColor(fi) }}>→</span>
+                )}
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/* ================================================================
+   22. READABILITY COMPARISON GAUGE
+   ================================================================
+   Before/after comparison bars derived from source_text vs
+   simplified_text. Shows word count, sentence count, avg word length.
+   Answers: "Did the simplification actually make things simpler?"
+   ================================================================ */
+
+interface ReadabilityComparisonGaugeProps {
+  sourceText: string;
+  simplifiedText: string;
+}
+
+function textMetrics(text: string) {
+  const words = text.split(/\s+/).filter(Boolean);
+  const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+  const avgWordLen = words.length > 0 ? words.reduce((s, w) => s + w.length, 0) / words.length : 0;
+  return { wordCount: words.length, sentenceCount: sentences.length, avgWordLen };
+}
+
+export function ReadabilityComparisonGauge({ sourceText, simplifiedText }: ReadabilityComparisonGaugeProps) {
+  const src = useMemo(() => textMetrics(sourceText), [sourceText]);
+  const sim = useMemo(() => textMetrics(simplifiedText), [simplifiedText]);
+
+  const metrics: { label: string; before: number; after: number; unit: string; lowerIsBetter: boolean }[] = [
+    { label: "Words", before: src.wordCount, after: sim.wordCount, unit: "", lowerIsBetter: true },
+    { label: "Sentences", before: src.sentenceCount, after: sim.sentenceCount, unit: "", lowerIsBetter: true },
+    { label: "Avg word length", before: Math.round(src.avgWordLen * 10) / 10, after: Math.round(sim.avgWordLen * 10) / 10, unit: " chars", lowerIsBetter: true },
+  ];
+
+  return (
+    <div className="viz-readability-gauge" role="img" aria-label="Readability comparison">
+      {metrics.map((m) => {
+        const max = Math.max(m.before, m.after, 1);
+        const improved = m.lowerIsBetter ? m.after < m.before : m.after > m.before;
+        return (
+          <div key={m.label} className="viz-readability-gauge__row">
+            <span className="viz-readability-gauge__label">{m.label}</span>
+            <div className="viz-readability-gauge__bars">
+              <div className="viz-readability-gauge__bar-pair">
+                <div
+                  className="viz-readability-gauge__bar viz-readability-gauge__bar--before"
+                  style={{ width: `${(m.before / max) * 100}%` }}
+                >
+                  <span>{m.before}{m.unit}</span>
+                </div>
+                <div
+                  className={`viz-readability-gauge__bar viz-readability-gauge__bar--after${improved ? " viz-readability-gauge__bar--improved" : ""}`}
+                  style={{ width: `${(m.after / max) * 100}%` }}
+                >
+                  <span>{m.after}{m.unit}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+      <div className="viz-readability-gauge__legend">
+        <span className="viz-readability-gauge__legend-item viz-readability-gauge__legend-item--before">Original</span>
+        <span className="viz-readability-gauge__legend-item viz-readability-gauge__legend-item--after">Simplified</span>
+      </div>
+    </div>
+  );
+}

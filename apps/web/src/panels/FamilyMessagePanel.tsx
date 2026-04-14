@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
-import { draftFamilyMessage, approveFamilyMessage, fetchMessageHistory } from "../api";
+import { draftFamilyMessage, approveFamilyMessage, fetchMessageHistory, fetchClassroomHealth } from "../api";
 import MessageComposer from "../components/MessageComposer";
 import MessageDraft from "../components/MessageDraft";
 import SkeletonLoader from "../components/SkeletonLoader";
@@ -16,10 +16,11 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import { FeedbackCollector } from "../components/shared";
+import { MessageApprovalFunnel } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
-import type { FamilyMessageResponse, FamilyMessageDraft, FamilyMessagePrefill } from "../types";
+import type { FamilyMessageResponse, FamilyMessageDraft, FamilyMessagePrefill, ClassroomHealth } from "../types";
 
 interface Props {
   prefill: FamilyMessagePrefill | null;
@@ -29,6 +30,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<FamilyMessageResponse>();
+  const healthAction = useAsyncAction<ClassroomHealth>();
   const history = useHistory(fetchMessageHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
   const feedback = useFeedback(activeClassroom, session.sessionId);
@@ -36,6 +38,11 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   useEffect(() => {
     session.recordPanelVisit("family-message");
   }, [session]);
+
+  useEffect(() => {
+    if (!activeClassroom) return;
+    healthAction.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
+  }, [activeClassroom, healthAction.execute]);
 
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
@@ -124,6 +131,12 @@ export default function FamilyMessagePanel({ prefill }: Props) {
               description="Draft plain-language messages for families. You review every message before it can be shared — nothing sends automatically."
               tone="forest"
             />
+            {healthAction.result && healthAction.result.messages_total > 0 && (
+              <MessageApprovalFunnel
+                messagesTotal={healthAction.result.messages_total}
+                messagesApproved={healthAction.result.messages_approved}
+              />
+            )}
             <HistoryDrawer<FamilyMessageDraft>
               items={history.items}
               loading={history.loading}

@@ -7,6 +7,12 @@
   text-align: center;
   gap: var(--ds-space-1);
   animation: fade-up 0.4s var(--ease-out-expo) both;
+  background: linear-gradient(160deg, color-mix(in srgb, var(--color-bg-accent) 30%, transparent), transparent 65%);
+  border-radius: var(--radius-md);
+  border: 1px dashed color-mix(in srgb, var(--color-border) 35%, transparent);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--color-bg-accent) 30%, transparent), transparent 65%);
+  border-radius: var(--radius-md);
+  border: 1px dashed color-mix(in srgb, var(--color-border) 35%, transparent);
 }
 
 .empty-state__title {

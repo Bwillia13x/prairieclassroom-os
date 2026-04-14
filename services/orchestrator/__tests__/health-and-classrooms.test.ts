@@ -219,12 +219,11 @@ describe("GET /api/classrooms", () => {
     expect(openEntry).toBeDefined();
     expect(openEntry!.requires_access_code).toBe(false);
 
-    // Students should be sanitized to alias + family_language only
+    // Students should be sanitized — no student_id or internal fields
     const students = openEntry!.students as Array<Record<string, unknown>>;
     expect(students).toHaveLength(1);
-    expect(students[0]).toEqual({ alias: "Fern", family_language: "English" });
+    expect(students[0]).toEqual({ alias: "Fern", family_language: "English", eal_flag: false, support_tags: [] });
     expect(students[0]).not.toHaveProperty("student_id");
-    expect(students[0]).not.toHaveProperty("support_tags");
   });
 });
 
