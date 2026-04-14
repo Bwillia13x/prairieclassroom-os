@@ -1,4 +1,4 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import SectionSkeleton from "../SectionSkeleton";
 
@@ -31,5 +31,26 @@ describe("SectionSkeleton", () => {
     render(<SectionSkeleton variant="health" label="Loading health" />);
     const el = screen.getByRole("status", { name: /loading health/i });
     expect(el).toHaveAttribute("data-variant", "health");
+  });
+
+  it("renders without error when prefers-reduced-motion is active", () => {
+    const originalMatchMedia = window.matchMedia;
+    window.matchMedia = vi.fn().mockImplementation((query: string) => ({
+      matches: query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    try {
+      render(<SectionSkeleton />);
+      expect(screen.getByRole("status")).toBeInTheDocument();
+    } finally {
+      window.matchMedia = originalMatchMedia;
+    }
   });
 });
