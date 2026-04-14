@@ -16,6 +16,12 @@ interface Props {
   context: DrillDownContext | null;
   onClose: () => void;
   onNavigate: (tab: ActiveTab) => void;
+  /**
+   * Called when a child view needs to escalate to a different context
+   * without closing the drawer (e.g., student-tag-group → student detail).
+   * Required when rendering `student-tag-group` context; omitting it silently
+   * disables student escalation from that view.
+   */
   onContextChange?: (next: DrillDownContext) => void;
   onInterventionPrefill?: (prefill: {
     student_ref: string;
@@ -156,6 +162,7 @@ export default function DrillDownDrawer({
           {context.type === "plan-coverage-section" && (
             <PlanCoverageSectionView context={context} />
           )}
+
           {context.type === "student-tag-group" && (
             <StudentTagGroupView
               context={context}
@@ -164,6 +171,7 @@ export default function DrillDownDrawer({
               }}
             />
           )}
+
           {context.type === "variant-lane" && <VariantLaneView context={context} />}
         </div>
       </div>
