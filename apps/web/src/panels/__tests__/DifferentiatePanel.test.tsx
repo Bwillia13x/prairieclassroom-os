@@ -1,8 +1,11 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import DifferentiatePanel from "../DifferentiatePanel";
 import type { StreamingState } from "../../appReducer";
+
+const mockCancel = vi.fn();
 
 vi.mock("../../api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api")>();
@@ -11,6 +14,17 @@ vi.mock("../../api", async (importOriginal) => {
     differentiate: vi.fn(),
   };
 });
+
+vi.mock("../../useAsyncAction", () => ({
+  useAsyncAction: () => ({
+    loading: false,
+    error: null,
+    result: null,
+    execute: vi.fn(),
+    cancel: mockCancel,
+    reset: vi.fn(),
+  }),
+}));
 
 
 
@@ -104,5 +118,21 @@ describe("DifferentiatePanel", () => {
     );
 
     expect(screen.getByText("Build Lesson Variants")).toBeInTheDocument();
+  });
+
+  it("cancel button calls cancel when streaming is active", async () => {
+    const ctx = makeContext({ active: true, phase: "thinking" });
+    const user = userEvent.setup();
+
+    render(
+      <AppContext.Provider value={ctx}>
+        <DifferentiatePanel />
+      </AppContext.Provider>,
+    );
+
+    const cancelBtn = screen.getByRole("button", { name: /cancel request/i });
+    await user.click(cancelBtn);
+
+    expect(mockCancel).toHaveBeenCalledTimes(1);
   });
 });
