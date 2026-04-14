@@ -1288,3 +1288,38 @@
     filter: brightness(1.08);
   }
 }
+
+/* Task 5b: clickable plan chart affordances */
+.viz-plan-streak__cell--clickable,
+.viz-variant-strip__item--clickable,
+.viz-plan-radar__axis-hit {
+  cursor: pointer;
+}
+
+.viz-plan-streak__cell--clickable:focus-visible,
+.viz-variant-strip__item--clickable:focus-visible,
+.viz-plan-radar__axis-hit:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.viz-variant-strip__item--clickable {
+  appearance: none;
+  background: inherit;
+  border: none;
+  padding: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .viz-plan-streak__cell--clickable,
+  .viz-variant-strip__item--clickable,
+  .viz-plan-radar__axis-hit {
+    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+  }
+
+  .viz-plan-streak__cell--clickable:hover,
+  .viz-variant-strip__item--clickable:hover,
+  .viz-plan-radar__axis-hit:hover {
+    filter: brightness(1.08);
+  }
+}

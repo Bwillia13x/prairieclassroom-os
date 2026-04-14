@@ -914,9 +914,10 @@ export function SupportPatternRadar({ themes }: PatternRadarProps) {
 
 interface PlanStreakCalendarProps {
   plans14d: (0 | 1)[];
+  onSegmentClick?: (payload: { dayIndex: number; planned: boolean }) => void;
 }
 
-export function PlanStreakCalendar({ plans14d }: PlanStreakCalendarProps) {
+export function PlanStreakCalendar({ plans14d, onSegmentClick }: PlanStreakCalendarProps) {
   // Fill to 20 cells (4 weeks of weekdays) — pad with nulls for future
   const cells: (0 | 1 | null)[] = [];
 
@@ -938,6 +939,9 @@ export function PlanStreakCalendar({ plans14d }: PlanStreakCalendarProps) {
   const svgH = rows * (cellSize + gap);
   const planned = plans14d.filter((p) => p === 1).length;
 
+  // Map from cell idx to the original plans14d index
+  const dataOffset = 20 - plans14d.length;
+
   return (
     <div className="viz-plan-streak">
       <div className="viz-plan-streak__header">
@@ -955,12 +959,43 @@ export function PlanStreakCalendar({ plans14d }: PlanStreakCalendarProps) {
             : val === 1
               ? "var(--color-success)"
               : "color-mix(in srgb, var(--color-border) 50%, transparent)";
-          return (
-            <rect key={idx} x={x} y={y} width={cellSize} height={cellSize} rx={3}
+          const baseRect = (
+            <rect x={x} y={y} width={cellSize} height={cellSize} rx={3}
               fill={fill} opacity={val === null ? 0.3 : 0.85}>
               <title>{val === null ? "No data" : val === 1 ? "Planned" : "No plan"}</title>
             </rect>
           );
+          if (onSegmentClick && val !== null) {
+            const dayIndex = idx - dataOffset;
+            const isPlanned = val === 1;
+            const ariaLabel = `Day ${dayIndex + 1}: ${isPlanned ? "Planned" : "Missed"}`;
+            return (
+              <g key={idx}>
+                {baseRect}
+                <rect
+                  x={x}
+                  y={y}
+                  width={cellSize}
+                  height={cellSize}
+                  rx={3}
+                  fill="transparent"
+                  className="viz-plan-streak__cell--clickable"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={ariaLabel}
+                  data-testid={`viz-plan-streak-cell-${dayIndex}`}
+                  onClick={() => onSegmentClick({ dayIndex, planned: isPlanned })}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSegmentClick({ dayIndex, planned: isPlanned });
+                    }
+                  }}
+                />
+              </g>
+            );
+          }
+          return <g key={idx}>{baseRect}</g>;
         })}
       </svg>
     </div>
@@ -1515,6 +1550,7 @@ interface VariantSummaryItem {
 
 interface VariantSummaryStripProps {
   variants: VariantSummaryItem[];
+  onSegmentClick?: (payload: { variantType: string; label: string; variants: VariantSummaryItem[] }) => void;
 }
 
 const VARIANT_TONE: Record<string, string> = {
@@ -1529,28 +1565,47 @@ function prettyVariantType(vt: string): string {
   return vt.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-export function VariantSummaryStrip({ variants }: VariantSummaryStripProps) {
+export function VariantSummaryStrip({ variants, onSegmentClick }: VariantSummaryStripProps) {
   if (variants.length === 0) return null;
 
   const maxMin = Math.max(...variants.map((v) => v.estimated_minutes), 1);
 
   return (
     <div className="viz-variant-strip" role="img" aria-label="Variant summary">
-      {variants.map((v, i) => (
-        <div key={i} className="viz-variant-strip__item">
-          <div className="viz-variant-strip__bar-wrap">
-            <div
-              className="viz-variant-strip__bar"
-              style={{
-                width: `${Math.max(10, (v.estimated_minutes / maxMin) * 100)}%`,
-                backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate, #6c757d)",
-              }}
-            />
+      {variants.map((v, i) => {
+        const inner = (
+          <>
+            <div className="viz-variant-strip__bar-wrap">
+              <div
+                className="viz-variant-strip__bar"
+                style={{
+                  width: `${Math.max(10, (v.estimated_minutes / maxMin) * 100)}%`,
+                  backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate, #6c757d)",
+                }}
+              />
+            </div>
+            <span className="viz-variant-strip__type">{prettyVariantType(v.variant_type)}</span>
+            <span className="viz-variant-strip__min">{v.estimated_minutes}m</span>
+          </>
+        );
+        if (onSegmentClick) {
+          return (
+            <button
+              key={i}
+              type="button"
+              className="viz-variant-strip__item viz-variant-strip__item--clickable"
+              onClick={() => onSegmentClick({ variantType: v.variant_type, label: prettyVariantType(v.variant_type), variants })}
+            >
+              {inner}
+            </button>
+          );
+        }
+        return (
+          <div key={i} className="viz-variant-strip__item">
+            {inner}
           </div>
-          <span className="viz-variant-strip__type">{prettyVariantType(v.variant_type)}</span>
-          <span className="viz-variant-strip__min">{v.estimated_minutes}m</span>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }
@@ -1661,15 +1716,19 @@ export function StudentThemeHeatmap({ themes }: StudentThemeHeatmapProps) {
    Answers: "How comprehensive is this plan?"
    ================================================================ */
 
+type PlanRadarSection = "watchpoints" | "priorities" | "eaActions" | "prepItems" | "familyFollowups";
+
 interface PlanCoverageRadarProps {
   watchpoints: number;
   priorities: number;
   eaActions: number;
   prepItems: number;
   familyFollowups: number;
+  onSegmentClick?: (payload: { section: PlanRadarSection; label: string; items: string[] }) => void;
+  sectionItems?: Partial<Record<PlanRadarSection, string[]>>;
 }
 
-const PLAN_RADAR_AXES: { key: keyof Omit<PlanCoverageRadarProps, never>; label: string; max: number }[] = [
+const PLAN_RADAR_AXES: { key: PlanRadarSection; label: string; max: number }[] = [
   { key: "watchpoints", label: "Watchpoints", max: 6 },
   { key: "priorities", label: "Priorities", max: 8 },
   { key: "eaActions", label: "EA Actions", max: 6 },
@@ -1678,6 +1737,7 @@ const PLAN_RADAR_AXES: { key: keyof Omit<PlanCoverageRadarProps, never>; label: 
 ];
 
 export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
+  const { onSegmentClick, sectionItems, ...countProps } = props;
   const size = 160;
   const cx = size / 2;
   const cy = size / 2;
@@ -1695,7 +1755,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
 
   // Shape points
   const shapePoints = PLAN_RADAR_AXES.map((axis, i) => {
-    const val = Math.min(props[axis.key], axis.max);
+    const val = Math.min(countProps[axis.key], axis.max);
     return polarXY(i, val / axis.max);
   });
   const shapePath = shapePoints.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ") + " Z";
@@ -1747,6 +1807,35 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
         {shapePoints.map(([x, y], i) => (
           <circle key={i} cx={x} cy={y} r="3" fill="var(--color-accent, #0d6efd)" />
         ))}
+
+        {/* Axis hit targets — only rendered when onSegmentClick is provided */}
+        {onSegmentClick && PLAN_RADAR_AXES.map((axis, i) => {
+          const [x, y] = polarXY(i, 1);
+          const count = countProps[axis.key];
+          const items = sectionItems?.[axis.key] ?? [];
+          const ariaLabel = `${axis.label}: ${count}`;
+          return (
+            <circle
+              key={`hit-${axis.key}`}
+              cx={x}
+              cy={y}
+              r="8"
+              fill="transparent"
+              className="viz-plan-radar__axis-hit"
+              role="button"
+              tabIndex={0}
+              aria-label={ariaLabel}
+              data-testid={`viz-plan-radar-axis-${axis.key}`}
+              onClick={() => onSegmentClick({ section: axis.key, label: axis.label, items })}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSegmentClick({ section: axis.key, label: axis.label, items });
+                }
+              }}
+            />
+          );
+        })}
       </svg>
     </div>
   );
