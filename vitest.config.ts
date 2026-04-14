@@ -9,6 +9,7 @@ export default defineConfig({
       "apps/web/src/__tests__/**/*.test.ts",
       "apps/web/src/components/__tests__/**/*.test.tsx",
       "apps/web/src/components/shared/__tests__/**/*.test.tsx",
+      "apps/web/src/components/quickCapture/__tests__/**/*.test.ts",
       "apps/web/src/panels/__tests__/**/*.test.ts",
       "apps/web/src/panels/__tests__/**/*.test.tsx",
       "apps/web/src/hooks/__tests__/**/*.test.tsx",
@@ -17,6 +18,7 @@ export default defineConfig({
     environmentMatchGlobs: [
       ["apps/web/src/components/__tests__/**", "jsdom"],
       ["apps/web/src/components/shared/__tests__/**", "jsdom"],
+      ["apps/web/src/components/quickCapture/__tests__/**", "node"],
       ["apps/web/src/panels/__tests__/**", "jsdom"],
       ["apps/web/src/hooks/__tests__/**", "jsdom"],
     ],
