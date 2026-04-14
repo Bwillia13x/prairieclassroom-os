@@ -1,4 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
+import "./InterventionPanel.css";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -18,12 +19,20 @@ import ResultBanner from "../components/ResultBanner";
 import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
-import type { InterventionResponse, InterventionRecord, InterventionPrefill } from "../types";
+import QuickCaptureTray from "../components/quickCapture/QuickCaptureTray";
+import type { InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
 
 interface Props {
   prefill: InterventionPrefill | null;
 }
 
+/**
+ * Intervention capture uses a dual-path design:
+ * - `QuickCaptureTray` is the primary, chip-first flow — designed for 5-second hallway capture.
+ * - The legacy `InterventionLogger` is preserved inside a `<details>` expansion for structured
+ *   contexts (classroom switching, Tomorrow-Plan prefill, full-form logging). The details panel
+ *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
+ */
 export default function InterventionPanel({ prefill }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
   const session = useSession();
@@ -54,6 +63,14 @@ export default function InterventionPanel({ prefill }: Props) {
     }
   }, [prefill, reset]);
 
+  const detailsRef = useRef<HTMLDetailsElement | null>(null);
+
+  useEffect(() => {
+    if (prefill && detailsRef.current) {
+      detailsRef.current.open = true;
+    }
+  }, [prefill]);
+
   if (classrooms.length === 0) return null;
 
   async function handleSubmit(
@@ -81,6 +98,15 @@ export default function InterventionPanel({ prefill }: Props) {
     }
   }
 
+  function handleQuickSubmit(request: InterventionRequest) {
+    void handleSubmit(
+      request.classroom_id,
+      request.student_refs,
+      request.teacher_note,
+      request.context,
+    );
+  }
+
   function handleHistorySelect(record: InterventionRecord) {
     setHistoricalResult({ record, model_id: "", latency_ms: 0 });
   }
@@ -104,6 +130,12 @@ export default function InterventionPanel({ prefill }: Props) {
       <WorkspaceLayout
         rail={(
           <>
+            <QuickCaptureTray
+              classroomId={activeClassroom}
+              students={students}
+              loading={loading}
+              onSubmit={handleQuickSubmit}
+            />
             <ContextualHint
               featureKey="log-intervention"
               title="Log Intervention"
@@ -126,15 +158,18 @@ export default function InterventionPanel({ prefill }: Props) {
                 <FollowUpSuccessRate records={history.items} />
               </>
             )}
-            <InterventionLogger
-              classrooms={classrooms}
-              students={students}
-              selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
-              onSubmit={handleSubmit}
-              loading={loading}
-              prefill={prefill}
-            />
+            <details ref={detailsRef} className="intervention-structured-details">
+              <summary>Structured details (optional)</summary>
+              <InterventionLogger
+                classrooms={classrooms}
+                students={students}
+                selectedClassroom={activeClassroom}
+                onClassroomChange={setActiveClassroom}
+                onSubmit={handleSubmit}
+                loading={loading}
+                prefill={prefill}
+              />
+            </details>
           </>
         )}
         canvas={(

@@ -603,3 +603,9 @@ raw-class call sites in one sprint.
 - **Alternatives considered:** (1) Continue with CREATE IF NOT EXISTS and manual ALTER TABLE scripts — fragile, no version tracking, easy to miss a database. (2) Full ORM with auto-migration (Drizzle, Prisma) — too heavyweight for per-classroom SQLite files. (3) Embedded migration in application code instead of SQL files — harder to audit and version.
 - **Consequences:** The `getDb()` function now calls `runMigrations(db)` on first open instead of executing inline DDL. Existing databases are backward-compatible because migration 001 uses `IF NOT EXISTS`. Future schema changes are added as 002, 003, etc. Migration state is per-database (each classroom's SQLite file tracks its own version independently). The _migrations table adds ~100 bytes per database.
 - **What would change this:** If classroom databases are moved to a shared PostgreSQL instance, the migration framework should be replaced with a proper migration tool (e.g., Drizzle Kit) that supports concurrent multi-instance migrations.
+
+---
+
+### 2026-04-14 — Intervention Quick-Capture shipped
+
+- **Intervention Quick-Capture shipped.** Primary capture path is now the chip-first `QuickCaptureTray`. Legacy `InterventionLogger` preserved in a `<details>` expansion for structured flows and Tomorrow-Plan prefill (auto-opens when prefill present). No schema, API, or orchestrator changes — frontend-only addition on top of existing `logIntervention` contract.
