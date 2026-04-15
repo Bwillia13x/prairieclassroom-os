@@ -22,6 +22,10 @@ async function prepareContext(browser, viewport, theme = "auto") {
   const context = await browser.newContext({ viewport });
   await context.addInitScript((currentTheme) => {
     globalThis.localStorage.setItem("prairie-onboarding-done", "true");
+    globalThis.localStorage.setItem(
+      "prairie-classroom-roles",
+      JSON.stringify({ "demo-okafor-grade34": "teacher" }),
+    );
     if (currentTheme === "dark") {
       globalThis.localStorage.setItem("prairie-theme", "dark");
     } else if (currentTheme === "light") {

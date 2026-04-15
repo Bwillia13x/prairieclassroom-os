@@ -67,7 +67,24 @@ async function expectCheckedStudentInPanel(page, panelId, student, label) {
   assert.equal(await checkbox.isChecked(), true, `${label} expected ${student} to be checked`);
 }
 
+async function dismissRolePromptIfPresent(page) {
+  // Plan 2's RolePromptDialog opens on first load for protected classrooms.
+  // It intercepts pointer events, so we must dismiss it before clicking into
+  // the shell. "Skip" defaults the role to Teacher, which is the smoke test's
+  // expected role for all assertions.
+  const skipBtn = page.locator(".role-prompt-dialog__skip");
+  try {
+    await skipBtn.waitFor({ state: "visible", timeout: 1_000 });
+  } catch {
+    return;
+  }
+
+  await skipBtn.click();
+  await page.locator(".role-prompt-overlay").waitFor({ state: "detached", timeout: 3_000 });
+}
+
 async function openClassroomPanel(page) {
+  await dismissRolePromptIfPresent(page);
   await page.click("#shell-classroom-trigger");
   await page.waitForSelector("#shell-classroom-panel");
 }
@@ -78,6 +95,7 @@ async function selectShellClassroom(page, classroomId) {
 }
 
 async function openTab(page, id) {
+  await dismissRolePromptIfPresent(page);
   const groupLabel = TAB_GROUPS[id];
   if (groupLabel) {
     await page.locator(".shell-nav__groups").getByRole("button", { name: groupLabel, exact: true }).click();
@@ -96,6 +114,7 @@ async function expectPrimaryGroups(page) {
 }
 
 async function openGroup(page, groupLabel, expectedTabId) {
+  await dismissRolePromptIfPresent(page);
   await page.locator(".shell-nav__groups").getByRole("button", { name: groupLabel, exact: true }).click();
   if (await page.locator(`#tab-${expectedTabId}`).count()) {
     await page.waitForSelector(`#tab-${expectedTabId}[aria-selected="true"]`);
@@ -300,6 +319,7 @@ async function main() {
     const tabletPage = await tabletContext.newPage();
     await tabletPage.goto(`${WEB_BASE}/?demo=true&tab=tomorrow-plan&classroom=${DEMO_CLASSROOM_ID}`, { waitUntil: "networkidle" });
     await tabletPage.waitForSelector("#panel-tomorrow-plan:not([hidden])");
+    await dismissRolePromptIfPresent(tabletPage);
     await expectScrollableSubtabs(tabletPage);
     await expectStickyShell(tabletPage);
     await tabletContext.close();
@@ -311,6 +331,7 @@ async function main() {
     const mobilePage = await mobileContext.newPage();
     await mobilePage.goto(`${WEB_BASE}/?demo=true&tab=family-message&classroom=${DEMO_CLASSROOM_ID}`, { waitUntil: "networkidle" });
     await mobilePage.waitForSelector(".mobile-nav");
+    await dismissRolePromptIfPresent(mobilePage);
     const navBox = await mobilePage.locator(".mobile-nav").boundingBox();
     assert.ok(navBox && navBox.y + navBox.height <= 852.5, "Mobile nav should stay pinned to the viewport bottom");
     await mobilePage.locator(".mobile-nav-groups").getByRole("button", { name: "Ops", exact: true }).click();
@@ -326,8 +347,8 @@ async function main() {
     }));
     assert.equal(themeState.theme, "dark", "Theme toggle should reach dark mode");
     assert.ok(
-      themeState.colorBg === "#1a1610" || themeState.colorBg.includes("#1a1610"),
-      "Dark theme should apply prairie-night background token",
+      themeState.colorBg === "#0c0c0a" || themeState.colorBg.includes("#0c0c0a"),
+      "Dark theme should apply the near-black Prairie background token",
     );
 
     if (pageErrors.length > 0) {

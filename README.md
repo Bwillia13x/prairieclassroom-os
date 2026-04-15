@@ -8,7 +8,7 @@ PrairieClassroom OS is not a chatbot. It is a teacher command center with 12 pri
 
 ### Prerequisites
 
-- Node.js 20.19.5 (`nvm use` reads [`.nvmrc`](./.nvmrc))
+- Node.js 25.8.2 (`nvm use` reads [`.nvmrc`](./.nvmrc))
 - Python 3.11.x
 - Ollama only if you want the zero-cost live-model lane
 - A Google AI Studio API key only if you want the hosted Gemma 4 hackathon lane
