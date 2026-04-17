@@ -40,6 +40,8 @@ import ThemeToggle from "./components/ThemeToggle";
 import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
 import ShortcutSheet from "./components/ShortcutSheet";
+import CommandPalette from "./components/CommandPalette";
+import { usePaletteEntries } from "./hooks/usePaletteEntries";
 import TomorrowChip from "./components/TomorrowChip";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
@@ -100,6 +102,7 @@ export default function App() {
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
   const [shortcutSheetOpen, setShortcutSheetOpen] = useState(false);
+  const [paletteOpen, setPaletteOpen] = useState(false);
   const groupsRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
@@ -420,6 +423,14 @@ export default function App() {
       const tag = (el?.tagName ?? "").toLowerCase();
       const isEditable = tag === "input" || tag === "textarea" || tag === "select" || (el as HTMLElement)?.isContentEditable;
 
+      // Cmd/Ctrl+K → command palette (works even when input is focused; gated against other modals)
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        if (state.authPrompt || state.rolePrompt || state.showOnboarding || shortcutSheetOpen) return;
+        setPaletteOpen(true);
+        return;
+      }
+
       // "?" → open shortcut sheet (not when typing)
       if (e.key === "?" && !isEditable) {
         e.preventDefault();
@@ -444,7 +455,7 @@ export default function App() {
 
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
-  }, [setActiveTab]);
+  }, [setActiveTab, state.authPrompt, state.rolePrompt, state.showOnboarding, shortcutSheetOpen]);
 
   function handleDismissOnboarding() {
     localStorage.setItem("prairie-onboarding-done", "true");
@@ -460,6 +471,28 @@ export default function App() {
     dispatch({ type: "SET_INTERVENTION_PREFILL", prefill });
     setActiveTab("log-intervention");
   }
+
+  const paletteEntries = usePaletteEntries({
+    classrooms: state.classrooms,
+    activeClassroom: state.activeClassroom,
+    debtRegister: null,
+    onNavigate: (tab) => {
+      setActiveTab(tab);
+      setPaletteOpen(false);
+    },
+    onSwitchClassroom: (id) => {
+      dispatch({ type: "SET_ACTIVE_CLASSROOM", classroomId: id });
+      setPaletteOpen(false);
+    },
+    onMessagePrefill: (prefill) => {
+      dispatch({ type: "SET_MESSAGE_PREFILL", prefill });
+      setActiveTab("family-message");
+    },
+    onInterventionPrefill: (prefill) => {
+      dispatch({ type: "SET_INTERVENTION_PREFILL", prefill });
+      setActiveTab("log-intervention");
+    },
+  });
 
   const { activeClassroom, activeTab, authPrompt, debtCounts, initError } = state;
   const activeGroup = getGroupForTab(activeTab);
@@ -873,6 +906,7 @@ export default function App() {
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
 
         <ShortcutSheet open={shortcutSheetOpen} onClose={() => setShortcutSheetOpen(false)} />
+        <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} entries={paletteEntries} />
 
         {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
         {state.rolePrompt ? (
