@@ -185,7 +185,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
               },
               {
                 key: "stale_followup",
-                label: "stale follow-ups",
+                label: "open follow-ups",
                 count: result.debt_register.item_count_by_category.stale_followup ?? 0,
                 targetTab: "log-intervention",
                 icon: <SectionIcon name="alert" className="shell-nav__group-icon" />,

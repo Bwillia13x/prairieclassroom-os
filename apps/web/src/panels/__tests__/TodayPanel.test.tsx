@@ -334,10 +334,10 @@ describe("TodayPanel", () => {
   it("opens the debt drawer from a triage row", async () => {
     const { user } = renderTodayPanel(makeSnapshot());
 
-    expect(await screen.findByRole("button", { name: /stale follow-ups/i })).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: /stale follow-ups/i }));
+    expect(await screen.findByRole("button", { name: /open follow-ups/i })).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /open follow-ups/i }));
 
-    expect(await screen.findByRole("dialog", { name: /stale followup/i })).toBeInTheDocument();
+    expect(await screen.findByRole("dialog", { name: /open follow-ups/i })).toBeInTheDocument();
     expect(screen.getByText("Follow-up still needs logging")).toBeInTheDocument();
   });
 
