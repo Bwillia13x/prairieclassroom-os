@@ -39,6 +39,7 @@ import OnboardingOverlay from "./components/OnboardingOverlay";
 import ThemeToggle from "./components/ThemeToggle";
 import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
+import ShortcutSheet from "./components/ShortcutSheet";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
@@ -97,6 +98,7 @@ export default function App() {
   const classroomMenuRef = useRef<HTMLDivElement>(null);
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
+  const [shortcutSheetOpen, setShortcutSheetOpen] = useState(false);
   const groupsRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
@@ -411,8 +413,16 @@ export default function App() {
     function handleKeydown(e: KeyboardEvent) {
       const el = document.activeElement;
       const tag = (el?.tagName ?? "").toLowerCase();
-      if (tag === "input" || tag === "textarea" || tag === "select") return;
-      if ((el as HTMLElement)?.isContentEditable) return;
+      const isEditable = tag === "input" || tag === "textarea" || tag === "select" || (el as HTMLElement)?.isContentEditable;
+
+      // "?" → open shortcut sheet (not when typing)
+      if (e.key === "?" && !isEditable) {
+        e.preventDefault();
+        setShortcutSheetOpen(true);
+        return;
+      }
+
+      if (isEditable) return;
 
       // "1"–"9" → tabs 1–9; "0" → tab 10. Tabs 11–12 have no shortcut.
       if (e.key === "0" && TAB_ORDER.length >= 10) {
@@ -849,6 +859,8 @@ export default function App() {
         <AppFooter />
 
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
+
+        <ShortcutSheet open={shortcutSheetOpen} onClose={() => setShortcutSheetOpen(false)} />
 
         {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
         {state.rolePrompt ? (
