@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Inference (Python Flask, mock mode)",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["services/inference/server.py", "--mode", "mock", "--port", "3200"],
+      "port": 3200
+    },
+    {
+      "name": "Orchestrator (Express)",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["tsx", "services/orchestrator/server.ts"],
+      "port": 3100
+    },
+    {
+      "name": "Web (Vite + React)",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "-w", "apps/web"],
+      "port": 5173
+    }
+  ]
+}

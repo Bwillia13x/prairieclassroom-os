@@ -65,3 +65,8 @@ data/memory/*.sqlite-shm
 
 # Git worktrees for isolated feature development
 .worktrees/
+
+# QA demo capture artifacts — large PNG/MP4 binaries, regenerate locally
+qa/demo-script/screenshots/
+qa/demo-script/videos/
+qa/demo-script/flows/

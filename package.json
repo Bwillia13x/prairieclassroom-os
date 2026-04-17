@@ -13,7 +13,7 @@
     "typecheck": "tsc --noEmit && tsc -b apps/web",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:python": "cd services/inference && python -m pytest tests/ -v",
+    "test:python": "node scripts/run-python-tests.mjs",
     "eval": "tsx evals/runner.ts",
     "rebuild:memory": "npm rebuild better-sqlite3 --workspace @prairie/memory",
     "provision:vertex-endpoints": "node scripts/provision-vertex-endpoints.mjs",

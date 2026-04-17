@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from "node:child_process";
+import { spawn } from "node:child_process";
 import { createWriteStream, existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import net from "node:net";
@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { buildBaselineMarkdown } from "./lib/eval-baseline-doc.mjs";
 import { DEFAULT_GEMINI_MODEL_IDS, GEMINI_RUN_GUARD_ENV_VAR, writeGeminiPreflight } from "./lib/gemini-api-preflight.mjs";
 import { REQUIRED_OLLAMA_MODELS, buildHostSummary, readLatestHostPreflight, runOllamaHostPreflight } from "./lib/ollama-host-preflight.mjs";
+import { resolvePrairiePythonBin } from "./lib/python-bin.mjs";
 import { updateProofStatusDoc } from "./lib/proof-status.mjs";
 import { parseReleaseGateArgs, releaseGateCommandForMode, releaseGateEvalLabelForMode } from "./lib/release-gate-helpers.mjs";
 
@@ -57,7 +58,7 @@ const REAL_ENDPOINTS = {
   live: process.env.PRAIRIE_VERTEX_ENDPOINT_LIVE?.trim() || "",
   planning: process.env.PRAIRIE_VERTEX_ENDPOINT_PLANNING?.trim() || "",
 };
-const PYTHON_BIN = resolvePythonBin();
+const PYTHON_BIN = resolvePrairiePythonBin(ROOT);
 
 function currentGateCommand() {
   return releaseGateCommandForMode(OPTIONS.inferenceMode);
@@ -89,45 +90,6 @@ const runSummary = {
 
 function bin(name) {
   return process.platform === "win32" ? `${name}.cmd` : name;
-}
-
-function resolvePythonBin() {
-  const configured = process.env.PRAIRIE_PYTHON?.trim();
-  if (configured) {
-    return configured;
-  }
-
-  const candidatePaths = [
-    path.join(
-      INFERENCE_DIR,
-      ".venv",
-      process.platform === "win32" ? "Scripts" : "bin",
-      process.platform === "win32" ? "python.exe" : "python",
-    ),
-    path.join(
-      INFERENCE_DIR,
-      ".venv311",
-      process.platform === "win32" ? "Scripts" : "bin",
-      process.platform === "win32" ? "python.exe" : "python",
-    ),
-    "python3.11",
-    "python3",
-  ];
-
-  for (const candidate of candidatePaths) {
-    if (candidate.includes(path.sep) && !existsSync(candidate)) {
-      continue;
-    }
-
-    const versionCheck = spawnSync(candidate, ["-c", "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"], {
-      encoding: "utf8",
-    });
-    if (versionCheck.status === 0 && versionCheck.stdout.trim() === "3.11") {
-      return candidate;
-    }
-  }
-
-  return "python3";
 }
 
 function sleep(ms) {
