@@ -79,6 +79,38 @@ export interface HydratedCurriculumSelection {
   focusItems: CurriculumEntry["focus_items"];
 }
 
+export interface CurriculumOutcomeLookupInput {
+  grade: string;
+  subject: string;
+  keyword: string;
+  limit?: number;
+}
+
+export interface CurriculumOutcomeLookupMatch {
+  entry_id: string;
+  subject_code: CurriculumSubjectCode;
+  subject_label: string;
+  grade: string;
+  grade_label: string;
+  focus_id: string;
+  focus_text: string;
+  implementation_status: CurriculumEntry["implementation_status"];
+  implementation_notes?: string;
+  source_title: string;
+  source_url: string;
+}
+
+export interface CurriculumOutcomeLookupResult {
+  matched: boolean;
+  query: {
+    grade: string;
+    subject: string;
+    keyword: string;
+  };
+  matches: CurriculumOutcomeLookupMatch[];
+  message: string;
+}
+
 function loadCatalog(): CurriculumEntry[] {
   if (cachedEntries) return cachedEntries;
   const raw = JSON.parse(readFileSync(CATALOG_PATH, "utf-8")) as unknown[];
@@ -207,4 +239,105 @@ export function suggestCurriculumEntries(
     .sort((a, b) => b.score - a.score || a.entry.subject_label.localeCompare(b.entry.subject_label))
     .slice(0, limit)
     .map(({ entry }) => entry);
+}
+
+function normalizeLookupGrade(rawGrade: string): string {
+  const normalized = rawGrade.trim().toUpperCase();
+  if (normalized === "K" || normalized === "KINDERGARTEN") return "K";
+  const digit = normalized.match(/\d+/)?.[0];
+  return digit ?? normalized;
+}
+
+function normalizeLookupSubject(rawSubject: string): CurriculumSubjectCode | null {
+  const lowered = rawSubject.trim().toLowerCase().replace(/[_-]+/g, " ");
+  if (!lowered) return null;
+  if (/\b(ela|english|language arts|literacy|reading|writing)\b/.test(lowered)) {
+    return "english_language_arts_and_literature";
+  }
+  if (/\b(math|mathematics|numeracy|number|fractions?|geometry|algebra)\b/.test(lowered)) {
+    return "mathematics";
+  }
+  if (/\b(science|stem|ecosystem|energy|forces?|matter)\b/.test(lowered)) {
+    return "science";
+  }
+  if (/\b(social|social studies|history|geography|citizenship|community)\b/.test(lowered)) {
+    return "social_studies";
+  }
+
+  const exact = loadCatalog().find(
+    (entry) =>
+      entry.subject_code === rawSubject ||
+      entry.subject_label.toLowerCase() === rawSubject.trim().toLowerCase(),
+  );
+  return exact?.subject_code ?? null;
+}
+
+function scoreFocusText(entry: CurriculumEntry, focusText: string, keyword: string): number {
+  const normalizedKeyword = keyword.trim().toLowerCase();
+  if (!normalizedKeyword) return 0;
+  const focusHaystack = focusText.toLowerCase();
+  const entryHaystack = [entry.title, entry.summary].join(" ").toLowerCase();
+
+  if (focusHaystack.includes(normalizedKeyword)) return 20;
+  if (entryHaystack.includes(normalizedKeyword)) return 4;
+
+  const terms = normalizedKeyword.split(/\s+/).filter((term) => term.length >= 3);
+  return terms.reduce((score, term) => {
+    if (focusHaystack.includes(term)) return score + 4;
+    if (entryHaystack.includes(term)) return score + 1;
+    return score;
+  }, 0);
+}
+
+export function lookupCurriculumOutcome(
+  input: CurriculumOutcomeLookupInput,
+): CurriculumOutcomeLookupResult {
+  const grade = normalizeLookupGrade(input.grade);
+  const subjectCode = normalizeLookupSubject(input.subject);
+  const keyword = input.keyword.trim();
+  const limit = Math.max(1, Math.min(input.limit ?? 3, 5));
+
+  if (!subjectCode) {
+    return {
+      matched: false,
+      query: { grade, subject: input.subject, keyword },
+      matches: [],
+      message: `No Alberta curriculum subject matched "${input.subject}".`,
+    };
+  }
+
+  const candidates = listCurriculumEntries({ subjectCode, grade })
+    .flatMap((entry) =>
+      entry.focus_items.map((focus) => ({
+        entry,
+        focus,
+        score: scoreFocusText(entry, focus.text, keyword),
+      })),
+    )
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || a.focus.focus_id.localeCompare(b.focus.focus_id))
+    .slice(0, limit);
+
+  const matches = candidates.map(({ entry, focus }) => ({
+    entry_id: entry.entry_id,
+    subject_code: entry.subject_code,
+    subject_label: entry.subject_label,
+    grade: entry.grade,
+    grade_label: entry.grade_label,
+    focus_id: focus.focus_id,
+    focus_text: focus.text,
+    implementation_status: entry.implementation_status,
+    implementation_notes: entry.implementation_notes,
+    source_title: entry.source_title,
+    source_url: entry.source_url,
+  }));
+
+  return {
+    matched: matches.length > 0,
+    query: { grade, subject: input.subject, keyword },
+    matches,
+    message: matches.length
+      ? `Found ${matches.length} Alberta curriculum focus item(s) for grade ${grade} ${input.subject}.`
+      : `No Alberta curriculum focus item matched "${keyword}" for grade ${grade} ${input.subject}.`,
+  };
 }

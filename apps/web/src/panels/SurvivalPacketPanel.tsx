@@ -166,12 +166,17 @@ export default function SurvivalPacketPanel() {
                 icon={<EmptyStateIllustration name="packet" />}
                 title="No packet yet"
                 description="Select a classroom and generate a full survival packet for tomorrow's substitute."
+                steps={[
+                  "Confirm the active classroom in the header pill.",
+                  "Review today's schedule and any pending interventions before generating.",
+                  "Press Generate packet. The canvas will build the complete substitute-ready document — schedule, student watchpoints, routines, and emergency contacts.",
+                ]}
               />
             ) : null}
             {result ? (
               <>
                 <ResultBanner label="Survival packet generated" generatedAt={Date.now()} />
-                <SurvivalPacketView packet={result.packet} />
+                <SurvivalPacketView packet={result.packet} meta={result} />
                 <OutputFeedback outputId={`packet-${resultKey}`} outputType="survival-packet" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

@@ -6,6 +6,7 @@ import type {
 } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { buildModelMetaItems } from "./buildModelMetaItems";
 import { SupportPatternRadar, FollowUpDecayIndicators, ScaffoldEffectivenessChart, StudentThemeHeatmap } from "./DataVisualizations";
 import "./PatternReport.css";
 
@@ -133,6 +134,7 @@ export function PatternReportResult({
             { label: "Analysis suite", tone: "analysis" },
             { label: "Retrieval-backed", tone: "provenance" },
             { label: "Teacher review only", tone: "pending" },
+            ...buildModelMetaItems(result),
           ]}
           compact
         />

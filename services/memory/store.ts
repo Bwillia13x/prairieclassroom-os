@@ -72,14 +72,33 @@ export function saveFamilyMessage(
   );
 }
 
-export function approveFamilyMessage(classroomId: ClassroomId, draftId: string): void {
+export function approveFamilyMessage(
+  classroomId: ClassroomId,
+  draftId: string,
+  editedText?: string,
+): void {
   const db = getDb(classroomId);
   const now = new Date().toISOString();
-  db.prepare(`
-    UPDATE family_messages
-    SET teacher_approved = 1, approval_timestamp = ?
-    WHERE draft_id = ?
-  `).run(now, draftId);
+  // SQLite's json_set updates a field inside the message_json blob in place.
+  // When editedText is undefined we leave message_json untouched (operator
+  // approved the AI draft verbatim). When provided, we persist it inside the
+  // draft JSON so future reads (history, MessageDraft) can prefer it over
+  // plain_language_text for display.
+  if (editedText === undefined) {
+    db.prepare(`
+      UPDATE family_messages
+      SET teacher_approved = 1, approval_timestamp = ?
+      WHERE draft_id = ?
+    `).run(now, draftId);
+  } else {
+    db.prepare(`
+      UPDATE family_messages
+      SET teacher_approved = 1,
+          approval_timestamp = ?,
+          message_json = json_set(message_json, '$.edited_text', ?)
+      WHERE draft_id = ?
+    `).run(now, editedText, draftId);
+  }
 }
 
 export function saveIntervention(
@@ -227,6 +246,46 @@ export function saveSession(
     record.feedback_count,
     new Date().toISOString(),
   );
+}
+
+/**
+ * Return low-rated feedback rows for a classroom, optionally bounded by a
+ * created_at cutoff. Used by the feedback-harvest script (F14) to materialize
+ * draft eval candidate files in `evals/cases/_pending/`.
+ */
+export interface LowRatedFeedbackRow {
+  id: string;
+  classroom_id: string;
+  panel_id: string;
+  prompt_class: string | null;
+  rating: number;
+  comment: string | null;
+  generation_id: string | null;
+  session_id: string | null;
+  created_at: string;
+}
+
+export function getLowRatedFeedback(
+  classroomId: ClassroomId,
+  ratingMax: number,
+  sinceIso?: string,
+): LowRatedFeedbackRow[] {
+  const db = getDb(classroomId);
+  const where = sinceIso
+    ? "WHERE classroom_id = ? AND rating <= ? AND created_at >= ?"
+    : "WHERE classroom_id = ? AND rating <= ?";
+  const params: unknown[] = sinceIso
+    ? [classroomId, ratingMax, sinceIso]
+    : [classroomId, ratingMax];
+  return db
+    .prepare(
+      `SELECT id, classroom_id, panel_id, prompt_class, rating, comment,
+              generation_id, session_id, created_at
+       FROM feedback
+       ${where}
+       ORDER BY created_at DESC`,
+    )
+    .all(...params) as LowRatedFeedbackRow[];
 }
 
 export function getFeedbackSummary(classroomId: ClassroomId): FeedbackSummary {

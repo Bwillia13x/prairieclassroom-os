@@ -1,13 +1,15 @@
 import type { InterventionRecord } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
 import "./InterventionCard.css";
 
 interface Props {
   record: InterventionRecord;
+  meta?: ModelMetaInput;
 }
 
-export default function InterventionCard({ record }: Props) {
+export default function InterventionCard({ record, meta }: Props) {
   return (
     <div className="intervention-card">
       <header className="intervention-header">
@@ -22,6 +24,7 @@ export default function InterventionCard({ record }: Props) {
               label: record.follow_up_needed ? "Follow-up needed" : "Resolved for now",
               tone: record.follow_up_needed ? "warning" : "success",
             },
+            ...buildModelMetaItems(meta ?? {}),
           ]}
           compact
         />

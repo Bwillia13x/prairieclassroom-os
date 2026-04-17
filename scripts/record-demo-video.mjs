@@ -165,7 +165,9 @@ async function main() {
   await page.addInitScript(() => {
     try {
       localStorage.setItem("prairie-theme", "dark");
-    } catch {}
+    } catch {
+      // localStorage may be unavailable before the page context is ready.
+    }
   });
 
   // Anchor the timing manifest to the moment the video recording starts.

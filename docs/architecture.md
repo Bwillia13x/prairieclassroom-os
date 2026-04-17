@@ -26,7 +26,7 @@ Voice notes are spec'd but not yet implemented.
 
 Express API (`services/orchestrator/`) responsible for:
 
-- **Prompt class routing** — maps each of the 12 prompt classes to a model tier (live or planning) with explicit thinking-mode flags via the routing table in `router.ts`
+- **Prompt class routing** — maps each of the 13 prompt classes to a model tier (live or planning) with explicit thinking-mode and tool-capability flags via the routing table in `router.ts`
 - **Request validation** — Zod schemas validate all API request bodies at the boundary (`validate.ts`)
 - **Curriculum registry access** — serves a read-only Alberta curriculum catalog from `data/curriculum/alberta/catalog.json` and validates curriculum selections before prompt injection
 - **Classroom-code authentication** — `X-Classroom-Code` header validated per request; demo classroom bypasses; rate-limited
@@ -34,6 +34,7 @@ Express API (`services/orchestrator/`) responsible for:
 - **Retrieval injection** — pulls recent plans, interventions, patterns, and forecasts from classroom memory and injects them into prompt context
 - **Curriculum context injection** — injects a bounded Alberta curriculum summary into differentiate and vocabulary prompts when the teacher selects one
 - **Inference dispatch** — calls the Python inference service via HTTP with structured request/response
+- **Tool-call orchestration** — when a route is tool-capable, attaches route-scoped tool definitions, executes approved local JS tools after a model tool-call response, and sends a provider-native follow-up generation with the tool results
 - **Output parsing** — parses model JSON responses with fallback error handling (422 on parse failure, 502 on inference failure)
 - **Memory persistence** — stores generated plans, variants, messages, interventions, forecasts, patterns, scaffold reviews, and survival packets to per-classroom SQLite
 
@@ -55,6 +56,7 @@ The routing table in `router.ts` assigns every prompt class to a model tier and 
 | `detect_support_patterns` | planning | **on** | yes | Recurring pattern detection |
 | `detect_scaffold_decay` | planning | **on** | yes | Scaffold withdrawal readiness |
 | `generate_survival_packet` | planning | **on** | yes | Supply teacher packet |
+| `balance_ea_load` | planning | **on** | yes | EA cognitive load balancing |
 
 The `complexity_debt_register` is deterministic (no model call) — it computes pending actions from memory state.
 
@@ -68,6 +70,15 @@ The `complexity_debt_register` is deterministic (no model call) — it computes 
 Hosted Gemini uses different model IDs than local targets because Google AI Studio exposes different checkpoints than the open Gemma weights available via Ollama or Vertex.
 
 **Thinking mode** is enabled only for planning-tier classes where deeper chain-of-thought reasoning improves output quality (plans, forecasts, pattern analysis). Live-tier classes use direct generation for lower latency.
+
+**Tool calling** is enabled only where the routing table declares it and the orchestrator has a registered local tool. Current tools are:
+
+| Prompt class | Tool | Data source | Boundary |
+|---|---|---|---|
+| `differentiate_material` | `lookup_curriculum_outcome(grade, subject, keyword)` | Local Alberta curriculum catalog | Curriculum grounding only |
+| `prepare_tomorrow_plan` | `query_intervention_history(student_ref, days, limit)` | Active classroom SQLite memory | Observational intervention history only |
+
+The Python inference service forwards tool definitions to Gemini API, Ollama, and Vertex/OpenAI-compatible payloads, and returns model-emitted tool calls to the TypeScript orchestrator. The orchestrator executes the JavaScript tool implementation and asks for a final JSON response in a follow-up turn.
 
 ### 4. Memory layer
 
@@ -132,10 +143,11 @@ Enforces product boundaries at multiple levels:
 3. Orchestrator loads the classroom profile and routes to the correct prompt class.
 4. For retrieval-backed classes, relevant memory (plans, interventions, patterns) is injected into the prompt context.
 5. Prompt is dispatched to the inference service with the correct model tier and thinking flag.
-6. Inference service generates structured JSON output (mock, Ollama, Gemini, or Vertex backend).
-7. Orchestrator parses the response, validates structure, and persists to classroom memory.
-8. Structured result is returned to the UI for teacher review.
-9. For family messages, teacher explicitly approves before any external action.
+6. If the route has registered tools and the model emits tool calls, the orchestrator executes those local tools and sends one provider-native follow-up generation containing the tool results.
+7. Inference service generates structured JSON output (mock, Ollama, Gemini, or Vertex backend).
+8. Orchestrator parses the response, validates structure, and persists to classroom memory.
+9. Structured result is returned to the UI for teacher review.
+10. For family messages, teacher explicitly approves before any external action.
 
 ## Inference backends
 

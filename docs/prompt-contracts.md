@@ -7,16 +7,25 @@ Every major model interaction should be treated as a versioned contract, not an 
 ## Current prompt classes
 
 ### A. Differentiate material
+Route: `differentiate_material`
+Model tier: live (gemma-4-4b-it)
+Thinking: off
+Retrieval: no
+Tool-call: yes
+Schema version: 0.1.0
+
 Input:
 - artifact text and/or image
 - classroom profile summary
 - target variants
 - optional Alberta curriculum selection (`entry_id` plus 1-3 focus statements from the local curriculum catalog)
+- optional tool grounding through `lookup_curriculum_outcome(grade, subject, keyword)` against the local Alberta curriculum catalog
 
 Output:
 - structured list of lesson variants
 
 Notes: When a curriculum selection is provided, the prompt injects an `ALBERTA CURRICULUM ALIGNMENT` block sourced from the local Alberta catalog. The model is instructed to stay inside that focus rather than drifting into adjacent expectations.
+When the model needs a curriculum anchor that was not explicitly selected by the teacher, the tool-capable path can call the local `lookup_curriculum_outcome` registry tool. Tool results are local catalog facts only; they do not fetch the web or broaden the prompt beyond Alberta K-6 curriculum context.
 
 ### B. Tomorrow plan
 Route: `prepare_tomorrow_plan`
@@ -32,6 +41,7 @@ Input:
 - classroom memory summary (auto-injected from recent plans)
 - intervention summary (auto-injected from recent interventions)
 - pattern insights (auto-injected from latest persisted pattern report, Sprint 7)
+- optional tool grounding through `query_intervention_history(student_ref, days, limit)` against the active classroom's local SQLite memory
 
 Output:
 - transition watchpoints
@@ -41,6 +51,7 @@ Output:
 - family followups
 
 Notes: When a pattern report exists for the classroom, the PATTERN INSIGHTS section is injected into the prompt. The system prompt instructs the model to weave pattern insights using "your records show" or "based on your documented observations" language. Response includes `pattern_informed: boolean` indicating whether pattern context was available.
+The tool-capable path is bounded to already-local classroom memory; it does not infer diagnosis, assign discipline risk, or message families autonomously.
 
 ### C. Family message
 Input:

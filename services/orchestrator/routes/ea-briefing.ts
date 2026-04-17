@@ -7,6 +7,7 @@ import { validateBody, EABriefingRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { EABriefing } from "../../../packages/shared/schemas/briefing.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
 export function createEABriefingRouter(deps: RouteDeps): Router {
@@ -66,8 +67,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
 
       res.json({
         briefing,
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("EA briefing error:", err);

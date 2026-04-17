@@ -78,6 +78,7 @@ def generate():
         images=body.get("images", []),
         thinking=body.get("thinking", False),
         tools=body.get("tools"),
+        tool_interactions=body.get("tool_interactions"),
         model_tier=tier,
         max_tokens=body.get("max_tokens", 2048),
         prompt_class=body.get("prompt_class"),
@@ -104,6 +105,9 @@ def generate():
         "thinking_text": resp.thinking_text,
         "model_id": resp.model_id,
         "latency_ms": resp.latency_ms or total_ms,
+        "prompt_tokens": resp.prompt_tokens,
+        "output_tokens": resp.output_tokens,
+        "total_tokens": resp.total_tokens,
     })
 
 

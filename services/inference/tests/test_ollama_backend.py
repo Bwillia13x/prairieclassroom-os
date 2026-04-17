@@ -17,17 +17,53 @@ from ollama_backend import OllamaBackend
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _mock_response(content: str, thinking: str | None = None, status_code: int = 200) -> MagicMock:
+def _mock_response(
+    content: str,
+    thinking: str | None = None,
+    status_code: int = 200,
+    prompt_eval_count: int | None = None,
+    eval_count: int | None = None,
+    tool_calls: list[dict] | None = None,
+) -> MagicMock:
     """Build a mock requests.Response for Ollama /api/chat."""
     message: dict = {"role": "assistant", "content": content}
     if thinking is not None:
         message["thinking"] = thinking
-    payload = {"message": message, "done": True}
+    if tool_calls is not None:
+        message["tool_calls"] = tool_calls
+    payload: dict = {"message": message, "done": True}
+    if prompt_eval_count is not None:
+        payload["prompt_eval_count"] = prompt_eval_count
+    if eval_count is not None:
+        payload["eval_count"] = eval_count
     mock_resp = MagicMock()
     mock_resp.status_code = status_code
     mock_resp.json.return_value = payload
     mock_resp.text = json.dumps(payload)
     return mock_resp
+
+
+class TestUsageExtraction:
+    def test_extract_usage_reads_ollama_token_fields(self) -> None:
+        prompt_t, output_t, total_t = OllamaBackend._extract_usage(
+            {"prompt_eval_count": 42, "eval_count": 13}
+        )
+        assert (prompt_t, output_t, total_t) == (42, 13, 55)
+
+    def test_extract_usage_returns_none_when_fields_missing(self) -> None:
+        assert OllamaBackend._extract_usage({"done": True}) == (None, None, None)
+        assert OllamaBackend._extract_usage("not a dict") == (None, None, None)
+
+    @patch("ollama_backend.requests.post")
+    def test_generate_populates_token_counts(self, mock_post: MagicMock) -> None:
+        mock_post.return_value = _mock_response(
+            '{"result": "ok"}', prompt_eval_count=70, eval_count=21
+        )
+        backend = OllamaBackend()
+        resp = backend.generate(GenerationRequest(prompt="Hello", model_tier=ModelTier.LIVE))
+        assert resp.prompt_tokens == 70
+        assert resp.output_tokens == 21
+        assert resp.total_tokens == 91
 
 
 # ---------------------------------------------------------------------------
@@ -56,6 +92,90 @@ class TestTextGeneration:
         assert resp.text
         assert resp.latency_ms >= 0
         mock_post.assert_called_once()
+
+    @patch("ollama_backend.requests.post")
+    def test_payload_requests_json_format(self, mock_post: MagicMock) -> None:
+        mock_post.return_value = _mock_response('{"result": "ok"}')
+        backend = OllamaBackend()
+        backend.generate(GenerationRequest(prompt="Hello", model_tier=ModelTier.LIVE))
+
+        sent_payload = mock_post.call_args.kwargs["json"]
+        # Structured-output mode locks Ollama into JSON for every PrairieClassroom call.
+        assert sent_payload["format"] == "json"
+
+    @patch("ollama_backend.requests.post")
+    def test_payload_forwards_tools(self, mock_post: MagicMock) -> None:
+        mock_post.return_value = _mock_response('{"result": "ok"}')
+        backend = OllamaBackend()
+        backend.generate(GenerationRequest(
+            prompt="Hello",
+            model_tier=ModelTier.LIVE,
+            tools=[{
+                "name": "lookup_curriculum_outcome",
+                "description": "Look up Alberta curriculum focus items.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {"grade": {"type": "string"}},
+                },
+            }],
+        ))
+
+        sent_payload = mock_post.call_args.kwargs["json"]
+        assert sent_payload["tools"] == [{
+            "type": "function",
+            "function": {
+                "name": "lookup_curriculum_outcome",
+                "description": "Look up Alberta curriculum focus items.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {"grade": {"type": "string"}},
+                },
+            },
+        }]
+
+    @patch("ollama_backend.requests.post")
+    def test_payload_adds_tool_result_history_messages(self, mock_post: MagicMock) -> None:
+        mock_post.return_value = _mock_response('{"result": "ok"}')
+        backend = OllamaBackend()
+        backend.generate(GenerationRequest(
+            prompt="You are a helper.\n\nCLASSROOM CONTEXT:\nGrade 3",
+            model_tier=ModelTier.LIVE,
+            tools=[{
+                "name": "lookup_curriculum_outcome",
+                "parameters": {"type": "object", "properties": {}},
+            }],
+            tool_interactions=[{
+                "tool_call_id": "call_1",
+                "tool_name": "lookup_curriculum_outcome",
+                "arguments": {"grade": "3"},
+                "result": {"ok": True},
+            }],
+        ))
+
+        sent_payload = mock_post.call_args.kwargs["json"]
+        assert sent_payload["messages"] == [
+            {"role": "system", "content": "You are a helper."},
+            {"role": "user", "content": "CLASSROOM CONTEXT:\nGrade 3"},
+            {
+                "role": "assistant",
+                "content": "",
+                "tool_calls": [{
+                    "id": "call_1",
+                    "type": "function",
+                    "function": {
+                        "index": 0,
+                        "name": "lookup_curriculum_outcome",
+                        "arguments": {"grade": "3"},
+                    },
+                }],
+            },
+            {
+                "role": "tool",
+                "tool_call_id": "call_1",
+                "tool_name": "lookup_curriculum_outcome",
+                "content": "{\"ok\":true}",
+            },
+        ]
 
     @patch("ollama_backend.requests.post")
     def test_response_model_id_is_set(self, mock_post: MagicMock) -> None:
@@ -181,6 +301,35 @@ class TestThinkingExtraction:
         req = GenerationRequest(prompt="Simple question", model_tier=ModelTier.LIVE)
         resp = backend.generate(req)
         assert resp.thinking_text is None
+
+
+class TestToolCallExtraction:
+    @patch("ollama_backend.requests.post")
+    def test_tool_calls_are_extracted_from_message(self, mock_post: MagicMock) -> None:
+        mock_post.return_value = _mock_response(
+            "",
+            tool_calls=[{
+                "function": {
+                    "name": "lookup_curriculum_outcome",
+                    "arguments": "{\"grade\":\"3\",\"subject\":\"math\"}",
+                }
+            }],
+        )
+        backend = OllamaBackend()
+        resp = backend.generate(GenerationRequest(
+            prompt="Use a tool",
+            model_tier=ModelTier.LIVE,
+            tools=[{
+                "name": "lookup_curriculum_outcome",
+                "parameters": {"type": "object", "properties": {}},
+            }],
+        ))
+
+        assert resp.tool_calls == [{
+            "name": "lookup_curriculum_outcome",
+            "arguments": {"grade": "3", "subject": "math"},
+        }]
+        assert "tool_calls" in resp.text
 
 
 class TestSplitPrompt:

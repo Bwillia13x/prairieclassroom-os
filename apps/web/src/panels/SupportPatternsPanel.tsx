@@ -152,6 +152,12 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
                 icon={<EmptyStateIllustration name="patterns" />}
                 title="No patterns analyzed yet"
                 description="Select a classroom, optionally filter by student, and run the analysis to surface recurring themes and follow-up gaps."
+                steps={[
+                  "Confirm the active classroom in the header pill.",
+                  "Optionally narrow the scope to a single student.",
+                  "Press Analyze patterns. Results land here grouped by theme, with follow-up gaps surfaced explicitly.",
+                  "Click any theme to drill into its underlying interventions.",
+                ]}
               />
             ) : null}
             {result ? (

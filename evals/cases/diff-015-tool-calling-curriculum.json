@@ -1,0 +1,19 @@
+{
+  "id": "diff-015-tool-calling-curriculum",
+  "category": "tool_calling",
+  "description": "Differentiation route exercises the tool-capable path before returning schema-valid variants",
+  "input": {
+    "artifact_id": "artifact-015",
+    "artifact_title": "Grade 3 Multiplication Practice",
+    "artifact_subject": "mathematics",
+    "artifact_text": "Students practise multiplication facts with arrays, skip counting, and word problems using equal groups.",
+    "classroom_id": "alpha-grade4",
+    "teacher_goal": "Keep the variants grounded in Alberta Grade 3 multiplication outcomes while making the task accessible to EAL learners."
+  },
+  "expected": {
+    "variant_count": 5,
+    "required_variant_types": ["core", "eal_supported", "chunked", "ea_small_group", "extension"],
+    "required_keys": ["variant_type", "title", "student_facing_instructions", "teacher_notes", "required_materials", "estimated_minutes"],
+    "schema_version": "0.1.0"
+  }
+}

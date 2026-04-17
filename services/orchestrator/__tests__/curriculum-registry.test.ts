@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   formatCurriculumSelectionForPrompt,
+  lookupCurriculumOutcome,
   listCurriculumEntries,
   listCurriculumSubjects,
   resolveCurriculumSelection,
@@ -59,5 +60,18 @@ describe("curriculum registry", () => {
     expect(suggestions.length).toBeGreaterThan(0);
     expect(suggestions[0].subject_code).toBe("science");
     expect(["4", "5"]).toContain(suggestions[0].grade);
+  });
+
+  it("looks up bounded curriculum outcomes by grade, subject, and keyword", () => {
+    const result = lookupCurriculumOutcome({
+      grade: "Grade 3",
+      subject: "math",
+      keyword: "multiplication",
+    });
+
+    expect(result.matched).toBe(true);
+    expect(result.matches[0]?.entry_id).toBe("ab-math-3");
+    expect(result.matches[0]?.subject_code).toBe("mathematics");
+    expect(result.matches[0]?.focus_text.toLowerCase()).toContain("multiplication");
   });
 });

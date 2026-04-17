@@ -15,6 +15,7 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import DifferentiateEmptyState from "../components/DifferentiateEmptyState";
 import ErrorBanner from "../components/ErrorBanner";
 import OutputMetaRow from "../components/OutputMetaRow";
+import { buildModelMetaItems } from "../components/buildModelMetaItems";
 import ResultBanner from "../components/ResultBanner";
 import { Card, FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
@@ -200,6 +201,7 @@ export default function DifferentiatePanel() {
                         { label: profile ? describeSource(profile.grade_band) : "Classroom-linked", tone: "accent" },
                         { label: "Retrieval-backed profiles", tone: "provenance" },
                         { label: "Differentiation suite", tone: "analysis" },
+                        ...buildModelMetaItems(result),
                       ]}
                     />
                   </Card.Body>

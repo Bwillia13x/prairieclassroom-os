@@ -9,6 +9,7 @@ import { suggestCurriculumEntries } from "../curriculum-registry.js";
 import { validateBody, ExtractWorksheetRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
 export function createExtractWorksheetRouter(deps: RouteDeps): Router {
@@ -66,8 +67,7 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
         extracted_text: extracted.extracted_text,
         confidence_notes: extracted.confidence_notes,
         curriculum_suggestions: curriculumSuggestions,
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("Worksheet extraction error:", err);

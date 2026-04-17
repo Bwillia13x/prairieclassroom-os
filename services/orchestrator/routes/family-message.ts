@@ -7,6 +7,7 @@ import { validateBody, FamilyMessageRequestSchema, ApproveMessageRequestSchema }
 import type { RouteDeps } from "../route-deps.js";
 import type { FamilyMessageDraft } from "../../../packages/shared/schemas/message.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
 export function createFamilyMessageRouter(deps: RouteDeps): Router {
@@ -67,8 +68,7 @@ export function createFamilyMessageRouter(deps: RouteDeps): Router {
 
       res.json({
         draft,
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("Family message error:", err);
@@ -78,10 +78,10 @@ export function createFamilyMessageRouter(deps: RouteDeps): Router {
 
   router.post("/approve", validateBody(ApproveMessageRequestSchema), async (req, res) => {
     try {
-      const { classroom_id, draft_id } = req.body;
+      const { classroom_id, draft_id, edited_text } = req.body;
 
-      approveFamilyMessage(classroom_id, draft_id);
-      res.json({ approved: true, draft_id });
+      approveFamilyMessage(classroom_id, draft_id, edited_text);
+      res.json({ approved: true, draft_id, edited: edited_text !== undefined });
     } catch (err) {
       console.error("Approval error:", err);
       handleRouteError(res, err);

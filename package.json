@@ -31,6 +31,10 @@
     "host:preflight:ollama": "node scripts/host-preflight-ollama.mjs",
     "logs:summary": "node scripts/logs-summary.mjs",
     "logs:prune": "node scripts/logs-prune.mjs",
+    "cost:rollup": "node scripts/cost-rollup.mjs",
+    "cost:status": "node scripts/cost-status.mjs",
+    "eval:regression": "node scripts/eval-regression.mjs",
+    "feedback:harvest": "node scripts/feedback-harvest.mjs",
     "audit:log": "node scripts/audit-log.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "release:gate": "node scripts/release-gate.mjs --inference-mode mock --update-baseline",
@@ -39,7 +43,9 @@
     "release:gate:real": "node scripts/release-gate.mjs --inference-mode api --update-baseline",
     "eval:summary": "node scripts/eval-summary.mjs",
     "evidence:generate": "npx tsx scripts/evidence-generate.ts",
-    "evidence:snapshot": "npx tsx scripts/evidence-snapshot.ts"
+    "evidence:snapshot": "npx tsx scripts/evidence-snapshot.ts",
+    "video:studio": "npm run studio -w @prairie/marketing-video",
+    "video:render": "npm run render -w @prairie/marketing-video"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

@@ -26,14 +26,13 @@
 
 import {
   existsSync,
-  mkdirSync,
   mkdtempSync,
   readdirSync,
   readFileSync,
   statSync,
 } from "node:fs";
-import { execFileSync, execSync } from "node:child_process";
-import { join, dirname, basename } from "node:path";
+import { execFileSync } from "node:child_process";
+import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 

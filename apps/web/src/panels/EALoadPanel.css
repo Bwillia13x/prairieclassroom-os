@@ -71,15 +71,15 @@
 }
 
 .ea-load-block--leaf {
-  border-left: 4px solid var(--color-success, #4caf50);
+  border-left: 4px solid var(--color-success);
 }
 
 .ea-load-block--sun {
-  border-left: 4px solid var(--color-warning, #f5a623);
+  border-left: 4px solid var(--color-warning);
 }
 
 .ea-load-block--rose {
-  border-left: 4px solid var(--color-danger, #d64545);
+  border-left: 4px solid var(--color-danger);
 }
 
 .ea-load-block--slate {
@@ -113,18 +113,18 @@
 }
 
 .ea-load-block__badge--leaf {
-  background: color-mix(in srgb, var(--color-success, #4caf50) 15%, transparent);
-  color: var(--color-success, #2f7d35);
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-text-success);
 }
 
 .ea-load-block__badge--sun {
-  background: color-mix(in srgb, var(--color-warning, #f5a623) 18%, transparent);
-  color: var(--color-warning, #a76308);
+  background: color-mix(in srgb, var(--color-warning) 18%, transparent);
+  color: var(--color-text-warning);
 }
 
 .ea-load-block__badge--rose {
-  background: color-mix(in srgb, var(--color-danger, #d64545) 15%, transparent);
-  color: var(--color-danger, #8d1a1a);
+  background: color-mix(in srgb, var(--color-danger) 15%, transparent);
+  color: var(--color-text-danger);
 }
 
 .ea-load-block__badge--slate {

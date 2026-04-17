@@ -146,6 +146,11 @@ export default function EABriefingPanel() {
                 icon={<EmptyStateIllustration name="briefing" />}
                 title="No briefing yet"
                 description="Select a classroom and optionally add the EA's name, then generate the coordination document for today."
+                steps={[
+                  "Confirm the active classroom in the header pill.",
+                  "Optionally add the EA's name and any coordination notes.",
+                  "Press Generate briefing. The canvas will surface today's schedule, priority students, and shared watchpoints.",
+                ]}
               />
             ) : null}
             {result ? (

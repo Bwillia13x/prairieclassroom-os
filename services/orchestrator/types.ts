@@ -60,11 +60,26 @@ export interface OrchestrationResponse {
 // ----- Tool call types -----
 
 export interface ToolCallRecord {
+  tool_call_id?: string;
+  thought_signature?: string;
   tool_name: string;
   arguments: Record<string, unknown>;
   result?: unknown;
   executed: boolean;
   timestamp: string;
+}
+
+export type ToolJsonSchema = {
+  type: "object";
+  properties: Record<string, unknown>;
+  required?: string[];
+  additionalProperties?: boolean;
+};
+
+export interface ToolDefinition {
+  name: string;
+  description: string;
+  parameters: ToolJsonSchema;
 }
 
 // ----- Audit log entry -----

@@ -7,6 +7,7 @@ import { validateBody, InterventionRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { InterventionRecord } from "../../../packages/shared/schemas/intervention.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
 export function createInterventionRouter(deps: RouteDeps): Router {
@@ -64,8 +65,7 @@ export function createInterventionRouter(deps: RouteDeps): Router {
 
       res.json({
         record,
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("Intervention logging error:", err);

@@ -1,6 +1,7 @@
 // apps/web/src/components/SurvivalPacket.tsx
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
 import { ComplexityHeatmap } from "./DataVisualizations";
 import "./SurvivalPacket.css";
 
@@ -71,7 +72,7 @@ const LEVEL_CLASS: Record<string, string> = {
   high: "survival-packet-badge--high",
 };
 
-export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData }) {
+export default function SurvivalPacket({ packet, meta }: { packet: SurvivalPacketData; meta?: ModelMetaInput }) {
   return (
     <div className="survival-packet">
       {/* Header */}
@@ -86,6 +87,7 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
               { label: "Print-ready packet", tone: "accent" },
               { label: "Retrieval-backed", tone: "provenance" },
               { label: "Substitute coordination", tone: "analysis" },
+              ...buildModelMetaItems(meta ?? {}),
             ]}
             compact
           />

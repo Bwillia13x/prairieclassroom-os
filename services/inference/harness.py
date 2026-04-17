@@ -97,6 +97,7 @@ class GenerationRequest:
     images: list[str] = field(default_factory=list)  # file paths
     thinking: bool = False
     tools: list[dict[str, Any]] | None = None
+    tool_interactions: list[dict[str, Any]] | None = None
     model_tier: ModelTier = ModelTier.LIVE
     max_tokens: int = 2048
     prompt_class: str | None = None
@@ -111,6 +112,275 @@ class GenerationResponse:
     thinking_text: str | None = None
     model_id: str = ""
     latency_ms: float = 0.0
+    # Token usage — None when backend cannot report it (e.g. mock, ollama-without-options)
+    prompt_tokens: int | None = None
+    output_tokens: int | None = None
+    total_tokens: int | None = None
+
+
+def _coerce_json_object(value: Any) -> dict[str, Any]:
+    if isinstance(value, dict):
+        return value
+    if isinstance(value, str):
+        try:
+            parsed = json.loads(value)
+        except json.JSONDecodeError:
+            return {}
+        return parsed if isinstance(parsed, dict) else {}
+    return {}
+
+
+def gemini_function_declarations(tools: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """Convert Prairie tool definitions to Gemini function_declarations."""
+    declarations: list[dict[str, Any]] = []
+    for tool in tools or []:
+        name = tool.get("name")
+        parameters = _coerce_json_object(tool.get("parameters"))
+        if not isinstance(name, str) or not name:
+            continue
+        declaration: dict[str, Any] = {"name": name}
+        if isinstance(tool.get("description"), str):
+            declaration["description"] = tool["description"]
+        if parameters:
+            declaration["parameters"] = parameters
+        declarations.append(declaration)
+    return declarations
+
+
+def openai_chat_tools(tools: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """Convert Prairie tool definitions to OpenAI-compatible chat tools."""
+    declarations = gemini_function_declarations(tools)
+    return [
+        {
+            "type": "function",
+            "function": declaration,
+        }
+        for declaration in declarations
+    ]
+
+
+def _json_dumps_compact(value: Any) -> str:
+    return json.dumps(value, ensure_ascii=False, separators=(",", ":"))
+
+
+def _tool_interaction_name(interaction: dict[str, Any]) -> str:
+    return str(interaction.get("tool_name") or interaction.get("name") or "")
+
+
+def _tool_interaction_id(interaction: dict[str, Any], index: int) -> str:
+    raw = interaction.get("tool_call_id") or interaction.get("id")
+    return str(raw) if raw else f"tool_call_{index}"
+
+
+def _tool_interaction_arguments(interaction: dict[str, Any]) -> dict[str, Any]:
+    return _coerce_json_object(interaction.get("arguments"))
+
+
+def _tool_interaction_result(interaction: dict[str, Any]) -> Any:
+    return interaction.get("result")
+
+
+def _tool_interaction_thought_signature(interaction: dict[str, Any]) -> str | None:
+    raw = interaction.get("thought_signature") or interaction.get("thoughtSignature")
+    return raw if isinstance(raw, str) and raw else None
+
+
+def gemini_tool_history_contents(tool_interactions: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """Build Gemini model/functionResponse turns from executed tool calls."""
+    if not tool_interactions:
+        return []
+
+    model_parts: list[dict[str, Any]] = []
+    response_parts: list[dict[str, Any]] = []
+    for index, interaction in enumerate(tool_interactions):
+        if not isinstance(interaction, dict):
+            continue
+        name = _tool_interaction_name(interaction)
+        if not name:
+            continue
+        call_id = _tool_interaction_id(interaction, index)
+        model_part: dict[str, Any] = {
+            "function_call": {
+                "name": name,
+                "args": _tool_interaction_arguments(interaction),
+                "id": call_id,
+            }
+        }
+        thought_signature = _tool_interaction_thought_signature(interaction)
+        if thought_signature:
+            model_part["thought_signature"] = thought_signature
+        model_parts.append(model_part)
+        response_parts.append({
+            "function_response": {
+                "name": name,
+                "response": {"result": _tool_interaction_result(interaction)},
+                "id": call_id,
+            }
+        })
+
+    if not model_parts or not response_parts:
+        return []
+    return [
+        {"role": "model", "parts": model_parts},
+        {"role": "user", "parts": response_parts},
+    ]
+
+
+def ollama_tool_history_messages(tool_interactions: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """Build Ollama /api/chat history for executed tool calls."""
+    if not tool_interactions:
+        return []
+
+    tool_calls: list[dict[str, Any]] = []
+    result_messages: list[dict[str, Any]] = []
+    for index, interaction in enumerate(tool_interactions):
+        if not isinstance(interaction, dict):
+            continue
+        name = _tool_interaction_name(interaction)
+        if not name:
+            continue
+        call_id = _tool_interaction_id(interaction, index)
+        tool_calls.append({
+            "id": call_id,
+            "type": "function",
+            "function": {
+                "index": index,
+                "name": name,
+                "arguments": _tool_interaction_arguments(interaction),
+            },
+        })
+        result_messages.append({
+            "role": "tool",
+            "tool_call_id": call_id,
+            "tool_name": name,
+            "content": _json_dumps_compact(_tool_interaction_result(interaction)),
+        })
+
+    if not tool_calls:
+        return []
+    return [
+        {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": tool_calls,
+        },
+        *result_messages,
+    ]
+
+
+def openai_tool_history_messages(tool_interactions: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
+    """Build OpenAI-compatible chat history for executed tool calls."""
+    if not tool_interactions:
+        return []
+
+    tool_calls: list[dict[str, Any]] = []
+    result_messages: list[dict[str, Any]] = []
+    for index, interaction in enumerate(tool_interactions):
+        if not isinstance(interaction, dict):
+            continue
+        name = _tool_interaction_name(interaction)
+        if not name:
+            continue
+        call_id = _tool_interaction_id(interaction, index)
+        tool_calls.append({
+            "id": call_id,
+            "type": "function",
+            "function": {
+                "name": name,
+                "arguments": _json_dumps_compact(_tool_interaction_arguments(interaction)),
+            },
+        })
+        result_messages.append({
+            "role": "tool",
+            "tool_call_id": call_id,
+            "content": _json_dumps_compact(_tool_interaction_result(interaction)),
+        })
+
+    if not tool_calls:
+        return []
+    return [
+        {
+            "role": "assistant",
+            "content": None,
+            "tool_calls": tool_calls,
+        },
+        *result_messages,
+    ]
+
+
+def _normalize_tool_call(value: Any) -> dict[str, Any] | None:
+    call = _coerce_json_object(value)
+    function_payload = _coerce_json_object(
+        call.get("function") or call.get("function_call") or call.get("functionCall")
+    )
+    name = call.get("name") or function_payload.get("name")
+    if not isinstance(name, str) or not name:
+        return None
+    args = (
+        _coerce_json_object(call.get("arguments"))
+        or _coerce_json_object(call.get("args"))
+        or _coerce_json_object(function_payload.get("arguments"))
+        or _coerce_json_object(function_payload.get("args"))
+    )
+    normalized: dict[str, Any] = {"name": name, "arguments": args}
+    call_id = call.get("id") or call.get("tool_call_id") or function_payload.get("id")
+    if isinstance(call_id, str) and call_id:
+        normalized["id"] = call_id
+    thought_signature = (
+        call.get("thought_signature")
+        or call.get("thoughtSignature")
+        or function_payload.get("thought_signature")
+        or function_payload.get("thoughtSignature")
+    )
+    if isinstance(thought_signature, str) and thought_signature:
+        normalized["thought_signature"] = thought_signature
+    return normalized
+
+
+def extract_tool_calls(payload: Any) -> list[dict[str, Any]]:
+    """Extract OpenAI, Ollama, or Gemini function-call suggestions."""
+    calls: list[dict[str, Any]] = []
+
+    def visit(value: Any) -> None:
+        if isinstance(value, list):
+            for item in value:
+                visit(item)
+            return
+        if not isinstance(value, dict):
+            return
+
+        direct_calls = value.get("tool_calls") or value.get("toolCalls") or value.get("functionCalls")
+        if isinstance(direct_calls, list):
+            for item in direct_calls:
+                normalized = _normalize_tool_call(item)
+                if normalized is not None:
+                    calls.append(normalized)
+
+        for key in ("function_call", "functionCall"):
+            if key in value:
+                normalized = _normalize_tool_call({
+                    key: value[key],
+                    "thought_signature": value.get("thought_signature"),
+                    "thoughtSignature": value.get("thoughtSignature"),
+                })
+                if normalized is not None:
+                    calls.append(normalized)
+
+        for child in value.values():
+            if isinstance(child, (dict, list)):
+                visit(child)
+
+    visit(payload)
+
+    unique: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for call in calls:
+        marker = json.dumps(call, sort_keys=True)
+        if marker in seen:
+            continue
+        seen.add(marker)
+        unique.append(call)
+    return unique
 
 
 @dataclass(frozen=True)
@@ -1169,10 +1439,21 @@ MOCK_RESPONSES: dict[str, str] = {
     ),
     "tool_call": json.dumps({
         "tool_calls": [{
-            "name": "differentiate_material",
+            "name": "lookup_curriculum_outcome",
             "arguments": {
-                "artifact_id": "artifact-001",
-                "variant_types": ["core", "eal_supported", "chunked", "ea_small_group", "extension"]
+                "grade": "3",
+                "subject": "mathematics",
+                "keyword": "multiplication"
+            }
+        }]
+    }),
+    "plan_tool_call": json.dumps({
+        "tool_calls": [{
+            "name": "query_intervention_history",
+            "arguments": {
+                "student_ref": "Ari",
+                "days": 14,
+                "limit": 3
             }
         }]
     }),
@@ -1183,8 +1464,8 @@ class MockBackend:
     """Returns canned responses for offline development."""
 
     def generate(self, request: GenerationRequest) -> GenerationResponse:
-        if request.tools:
-            text = MOCK_RESPONSES["tool_call"]
+        if request.tools and not request.tool_interactions:
+            text = MOCK_RESPONSES["plan_tool_call"] if request.prompt_class == "prepare_tomorrow_plan" else MOCK_RESPONSES["tool_call"]
             tool_calls = json.loads(text).get("tool_calls", [])
             return GenerationResponse(
                 text=text, tool_calls=tool_calls, model_id="mock"
@@ -1493,7 +1774,10 @@ class GeminiAPIBackend:
             )
 
         parts.append({"text": user_text})
-        return [{"role": "user", "parts": parts}]
+        return [
+            {"role": "user", "parts": parts},
+            *gemini_tool_history_contents(request.tool_interactions),
+        ]
 
     def _build_config(self, request: GenerationRequest) -> dict[str, Any]:
         system_instruction, _user_text = self._split_prompt(request.prompt)
@@ -1503,6 +1787,14 @@ class GeminiAPIBackend:
         }
         if system_instruction:
             config["system_instruction"] = system_instruction
+        # All 13 PrairieClassroom prompt classes emit JSON. Locking the response
+        # MIME type cuts the "model returned prose instead of JSON" failure mode
+        # at its source. extract_json() in the harness still defends against
+        # legacy markdown-fenced replies from older Gemma builds.
+        config["response_mime_type"] = "application/json"
+        declarations = gemini_function_declarations(request.tools)
+        if declarations:
+            config["tools"] = [{"function_declarations": declarations}]
         return config
 
     @staticmethod
@@ -1591,14 +1883,53 @@ class GeminiAPIBackend:
         latency_ms = (time.perf_counter() - start) * 1000
         fallback_text = getattr(response, "text", None)
         output_text, thinking_text = self._extract_generation(response, fallback_text=fallback_text)
+        tool_calls = extract_tool_calls(self._normalize_response(response))
         output_text = extract_json(output_text)
+        prompt_tokens, output_tokens, total_tokens = self._extract_usage(response)
 
         return GenerationResponse(
             text=output_text,
+            tool_calls=tool_calls,
             thinking_text=thinking_text,
             model_id=model,
             latency_ms=latency_ms,
+            prompt_tokens=prompt_tokens,
+            output_tokens=output_tokens,
+            total_tokens=total_tokens,
         )
+
+    @staticmethod
+    def _extract_usage(response: Any) -> tuple[int | None, int | None, int | None]:
+        """Pull token counts from Gemini's usage_metadata; tolerate missing fields."""
+        usage = getattr(response, "usage_metadata", None)
+        if usage is None:
+            normalized = GeminiAPIBackend._normalize_response(response)
+            if isinstance(normalized, dict):
+                usage = normalized.get("usage_metadata") or normalized.get("usageMetadata")
+        if usage is None:
+            return None, None, None
+
+        def _read(obj: Any, *keys: str) -> int | None:
+            for key in keys:
+                if isinstance(obj, dict) and key in obj and obj[key] is not None:
+                    try:
+                        return int(obj[key])
+                    except (TypeError, ValueError):
+                        continue
+                value = getattr(obj, key, None)
+                if value is not None:
+                    try:
+                        return int(value)
+                    except (TypeError, ValueError):
+                        continue
+            return None
+
+        prompt_tokens = _read(usage, "prompt_token_count", "promptTokenCount")
+        output_tokens = _read(usage, "candidates_token_count", "candidatesTokenCount")
+        total_tokens = _read(usage, "total_token_count", "totalTokenCount")
+        if total_tokens is None and prompt_tokens is not None and output_tokens is not None:
+            total_tokens = prompt_tokens + output_tokens
+        return prompt_tokens, output_tokens, total_tokens
 
 
 # ---------------------------------------------------------------------------
@@ -1751,6 +2082,7 @@ class VertexAIBackend:
 
         user_content.append({"type": "text", "text": user_text})
         messages.append({"role": "user", "content": user_content})
+        messages.extend(openai_tool_history_messages(request.tool_interactions))
         return messages
 
     def _build_payload(self, request: GenerationRequest) -> dict[str, Any]:
@@ -1762,6 +2094,10 @@ class VertexAIBackend:
         }
         if request.thinking:
             instance["metadata"] = {"thinking_requested": True}
+        tools = openai_chat_tools(request.tools)
+        if tools:
+            instance["tools"] = tools
+            instance["tool_choice"] = "auto"
         return {"instances": [instance]}
 
     @staticmethod
@@ -1858,10 +2194,12 @@ class VertexAIBackend:
             response_payload = response.text
 
         output_text, thinking_text = self._extract_generation(response_payload)
+        tool_calls = extract_tool_calls(response_payload)
         output_text = extract_json(output_text)
 
         return GenerationResponse(
             text=output_text,
+            tool_calls=tool_calls,
             thinking_text=thinking_text,
             model_id=endpoint_config.model_id,
             latency_ms=latency_ms,

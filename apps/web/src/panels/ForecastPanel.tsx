@@ -143,6 +143,12 @@ export default function ForecastPanel() {
                 icon={<EmptyStateIllustration name="forecast" />}
                 title="No forecast yet"
                 description="Run the forecast once the classroom and any day-specific notes are ready. The canvas will surface the highest-risk blocks first."
+                steps={[
+                  "Confirm the active classroom in the header pill.",
+                  "Optionally add day-specific context in the notes field.",
+                  "Choose a block structure (schedule-driven or custom).",
+                  "Press Generate forecast. Results land here as a timeline, heatmap, and trend sparkline.",
+                ]}
               />
             ) : null}
             {result ? (
@@ -165,7 +171,7 @@ export default function ForecastPanel() {
                     />
                   </div>
                 )}
-                <ForecastViewer forecast={result.forecast} thinkingSummary={result.thinking_summary} />
+                <ForecastViewer forecast={result.forecast} thinkingSummary={result.thinking_summary} meta={result} />
                 <OutputFeedback outputId={result.forecast.forecast_id} outputType="complexity-forecast" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

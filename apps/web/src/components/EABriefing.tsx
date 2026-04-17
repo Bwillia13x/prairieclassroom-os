@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { ClassroomProfile, EABriefingResponse } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { buildModelMetaItems } from "./buildModelMetaItems";
 import { FollowUpDecayIndicators, ScheduleLoadStrip } from "./DataVisualizations";
 import "./EABriefing.css";
 
@@ -82,6 +83,7 @@ export function EABriefingResult({ result }: ResultProps) {
             { label: "Coordination document", tone: "analysis" },
             { label: "Retrieval-backed", tone: "provenance" },
             { label: "Print-ready", tone: "accent" },
+            ...buildModelMetaItems(result),
           ]}
           compact
         />

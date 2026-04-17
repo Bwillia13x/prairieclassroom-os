@@ -282,19 +282,23 @@ async function main() {
     assert.equal(printCalls, 1, "Print should be invoked exactly once during smoke test");
 
     await selectShellClassroom(page, PROTECTED_CLASSROOM_ID);
+    await dismissRolePromptIfPresent(page);
     await expectAuthPromptVisible(page);
     await page.waitForFunction(() => {
       const element = globalThis.document.querySelector(".access-dialog__description");
       const text = element?.textContent ?? "";
-      return /Authentication required|needs an access code/i.test(text);
+      return /Authentication required|needs an access code|protected.*access code/i.test(text);
     });
 
     await submitAccessCode(page, "wrong-code");
     await page.waitForFunction(() => {
       const element = globalThis.document.querySelector(".access-dialog__description");
-      return Boolean(element?.textContent?.includes("Invalid classroom code"));
+      return /Invalid classroom code|access code (?:didn't|did not) match/i.test(element?.textContent ?? "");
     });
-    assert.match(await page.locator(".access-dialog__description").innerText(), /Invalid classroom code/i);
+    assert.match(
+      await page.locator(".access-dialog__description").innerText(),
+      /Invalid classroom code|access code (?:didn't|did not) match/i,
+    );
 
     await submitAccessCode(page, PROTECTED_CLASSROOM_CODE);
     await page.waitForSelector("#classroom-access-title", { state: "detached" });
@@ -347,7 +351,7 @@ async function main() {
     }));
     assert.equal(themeState.theme, "dark", "Theme toggle should reach dark mode");
     assert.ok(
-      themeState.colorBg === "#0c0c0a" || themeState.colorBg.includes("#0c0c0a"),
+      themeState.colorBg === "#070a0f" || themeState.colorBg.includes("#070a0f"),
       "Dark theme should apply the near-black Prairie background token",
     );
 

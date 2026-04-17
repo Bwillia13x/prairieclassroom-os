@@ -1,17 +1,19 @@
 import type { TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
 import "./PlanViewer.css";
 
 interface Props {
   plan: TomorrowPlan;
   thinkingSummary: string | null;
   patternInformed?: boolean;
+  meta?: ModelMetaInput;
   onFollowupClick?: (prefill: FamilyMessagePrefill) => void;
   onInterventionClick?: (prefill: InterventionPrefill) => void;
 }
 
-export default function PlanViewer({ plan, thinkingSummary, patternInformed, onFollowupClick, onInterventionClick }: Props) {
+export default function PlanViewer({ plan, thinkingSummary, patternInformed, meta, onFollowupClick, onInterventionClick }: Props) {
   return (
     <div className="plan-viewer">
       <header className="plan-header">
@@ -24,6 +26,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, onF
             { label: "Planning suite", tone: "analysis" },
             { label: "Retrieval-backed", tone: "provenance" },
             ...(patternInformed ? [{ label: "Pattern-informed", tone: "analysis" as const }] : []),
+            ...buildModelMetaItems(meta ?? {}),
           ]}
           compact
         />

@@ -26,6 +26,9 @@ from harness import (
     GenerationResponse,
     ModelTier,
     extract_json,
+    extract_tool_calls,
+    ollama_tool_history_messages,
+    openai_chat_tools,
 )
 
 
@@ -76,6 +79,9 @@ class OllamaBackend:
             "model": model,
             "messages": messages,
             "stream": False,
+            # All 13 prompt classes emit JSON. Ollama's `format: "json"` constrains
+            # the decoder to valid JSON, eliminating prose-leak failures.
+            "format": "json",
             "options": {
                 "num_predict": request.max_tokens,
                 "temperature": 0.7,
@@ -84,6 +90,10 @@ class OllamaBackend:
 
         if request.thinking:
             payload["think"] = True
+
+        tools = openai_chat_tools(request.tools)
+        if tools:
+            payload["tools"] = tools
 
         if request.images:
             encoded_images = self._encode_images(request.images)
@@ -122,14 +132,45 @@ class OllamaBackend:
             response_payload = {"message": {"content": response.text}}
 
         output_text, thinking_text = self._extract_generation(response_payload)
+        tool_calls = extract_tool_calls(response_payload)
+        if not output_text.strip() and tool_calls:
+            output_text = json.dumps({"tool_calls": tool_calls})
         output_text = extract_json(output_text)
+        prompt_tokens, output_tokens, total_tokens = self._extract_usage(response_payload)
 
         return GenerationResponse(
             text=output_text,
+            tool_calls=tool_calls,
             thinking_text=thinking_text,
             model_id=model,
             latency_ms=latency_ms,
+            prompt_tokens=prompt_tokens,
+            output_tokens=output_tokens,
+            total_tokens=total_tokens,
         )
+
+    @staticmethod
+    def _extract_usage(payload: dict[str, Any]) -> tuple[int | None, int | None, int | None]:
+        """Read Ollama's prompt_eval_count / eval_count if present."""
+        if not isinstance(payload, dict):
+            return None, None, None
+
+        def _coerce(value: Any) -> int | None:
+            if value is None:
+                return None
+            try:
+                return int(value)
+            except (TypeError, ValueError):
+                return None
+
+        prompt_tokens = _coerce(payload.get("prompt_eval_count"))
+        output_tokens = _coerce(payload.get("eval_count"))
+        total_tokens = (
+            prompt_tokens + output_tokens
+            if prompt_tokens is not None and output_tokens is not None
+            else None
+        )
+        return prompt_tokens, output_tokens, total_tokens
 
     # ------------------------------------------------------------------
     # Private helpers
@@ -159,6 +200,7 @@ class OllamaBackend:
             messages.append({"role": "system", "content": system_instruction})
 
         messages.append({"role": "user", "content": user_text})
+        messages.extend(ollama_tool_history_messages(request.tool_interactions))
         return messages
 
     @staticmethod

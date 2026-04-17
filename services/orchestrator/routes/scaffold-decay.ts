@@ -9,6 +9,7 @@ import type { RouteDeps } from "../route-deps.js";
 import type { ScaffoldDecayReport } from "../../../packages/shared/schemas/scaffold-decay.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError, sendRouteError } from "../errors.js";
 import { maybeExposeThinkingSummary } from "../thinking-summary.js";
 import { isValidClassroomId } from "../validate.js";
@@ -90,8 +91,7 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
       res.json({
         report,
         thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("Scaffold decay error:", err);

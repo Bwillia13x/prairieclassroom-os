@@ -1,24 +1,38 @@
 # Dark Mode Contract
 
-**Status:** Canonical. Last updated 2026-04-12.
+**Status:** Canonical. Last updated 2026-04-17 (round 2 — material hierarchy).
 **Scope:** `apps/web` — the teacher-facing PrairieClassroom UI.
 
-This document is the single source of truth for the dark mode color system. When you touch anything in `apps/web/src/styles/tokens.css`, `apps/web/src/tokens.css`, or any component CSS that defines color, read this first.
+This document is the single source of truth for the light/dark color system. When you touch anything in `apps/web/src/styles/tokens.css`, `apps/web/src/tokens.css`, or any component CSS that defines color, read this first.
 
-## 1. Brand identity: dark canvas, warm accents
+## 1. Brand identity: three-layer material hierarchy on a desaturated Alberta-navy primary
 
-Prairie dark mode uses a **near-black** base with **warm beige accents**, not a warm-brown or neutral-gray palette. The base surfaces are intentionally very dark — almost black — while borders, accent colors, and text tones carry the familiar prairie warmth from the light mode.
+**2026-04-17 repositioning.** The prior warm-cream + cognac identity was retired in favor of an institutional neutral canvas with an Alberta-navy primary accent. The classroom-ops product sits in front of Alberta K-6 teachers, principals, and Learning Services reviewers; its visual register must read as *trusted education software* (alberta.ca, PowerSchool, Edsby, LearnAlberta), not *editorial lifestyle brand*.
+
+**2026-04-17 round 2 — material hierarchy.** The first pass reached the right *register* but still felt blocky and cartoony because content cards floated directly on the page canvas with no mediating surface between them. Round 2 introduces a third layer: every page now renders on a `canvas → workspace → surface` stack, with tonal steps that create material depth. The navy accent was also desaturated for a more mature, "considered" feel. Full rationale and alternatives considered: `docs/decision-log.md` 2026-04-17 entries (both rounds).
+
+### Material hierarchy
+
+| Layer | Token | Light | Dark | Selector |
+|---|---|---|---|---|
+| 0 — page canvas | `--color-bg` | `#e8ebf0` | `#070a0f` | `body` |
+| 1 — application workspace | `--color-workspace` | `#f4f6fa` | `#12161e` | `.app-main` |
+| 2 — content surface (cards) | `--color-surface` | `#ffffff` | `#1c212a` | `.card`, `.empty-state`, etc. |
+| 2a — elevated / modal surface | `--color-surface-elevated` | `#ffffff` | `#222832` | `.card--raised`, dialogs |
+| 2b — inset / muted surface | `--color-surface-muted` | `#eef1f5` | `#151a22` | nested panels, `.empty-state-steps` |
+
+The tonal steps are ~10 RGB units per tier in light mode, producing depth that reads as *material* rather than *color banding*. Contributors **must not** put content cards directly on `--color-bg`; the workspace surface is the semantic home for app content. If a surface genuinely needs to sit on the canvas (full-bleed marketing, error walls, launch overlays) it should be styled explicitly with that intent documented in the component CSS.
+
+### Primary accent
 
 | Role | Light | Dark |
 |---|---|---|
-| `--color-bg` | `#f5eddb` (cream) | `#0c0c0a` (near-black) |
-| `--color-surface` | `#fbf6ea` (soft cream) | `#151412` (very dark, barely warm) |
-| `--color-surface-elevated` | `#fffbf0` | `#1d1b18` |
-| `--color-text` | `#2b2014` (warm near-black) | `#f5ecdf` (warm near-white) |
-| `--color-accent` | `#ae671a` (prairie sun) | `#d4a15c` (lifted sun) |
-| `--color-border` | `#e2d6ba` (soft beige) | `#3a3126` (warm beige accent) |
+| `--color-accent` | `#1b4b80` (desaturated Alberta navy) | `#7aa7d9` (lifted desaturated navy) |
+| `--color-accent-hover` | `#143a65` | `#91b9e3` |
+| `--color-accent-soft` / `--color-bg-accent` | `#e7ecf4` | `#101827` |
+| `--color-brand-highlight` | `#ae671a` (Prairie cognac, legacy brand) | `#d4a15c` (lifted cognac) |
 
-The dark canvas lets the warm accents breathe — borders, pills, and accent highlights read as prairie warmth against a receding black backdrop. The copilot feels like a focused, professional tool in dim classrooms while the beige accent family keeps the brand identity unmistakable. If you ever feel pressure to flatten the accents toward neutral gray, push back, or bring the case to `docs/decision-log.md` first.
+The accent was desaturated from the round-1 value (`#0f4c9e`) to reduce the "generic app blue" feel of the fully-saturated hue. Contributors: if you feel pressure to bring back cream surfaces, re-saturate the navy, or collapse the three-layer stack back to two, push back, or bring the case to `docs/decision-log.md` first.
 
 ## 2. Switching mechanism
 
@@ -67,9 +81,9 @@ Run it whenever you change a color token. It is also expected to run as part of 
 ### When it fails
 
 1. Open `output/contrast-report.md` to see the exact ratio and target for the failing pair
-2. Lift the *lower-contrast* side (usually the foreground) by adjusting **lightness** within the warm Prairie hue family — **never shift the hue** to fix contrast
+2. Lift the *lower-contrast* side (usually the foreground) by adjusting **lightness** within the same hue family (neutral-grey for canvas tokens, Alberta-navy for accent tokens, semantic hue for status families) — **never shift the hue** to fix contrast
 3. Re-run `npm run check:contrast` until clean
-4. Smoke-test visually in `npm run dev` — make sure the lifted value still feels like the Prairie palette
+4. Smoke-test visually in `npm run dev` — make sure the lifted value still feels like the institutional palette
 
 ### Adding a new pair to the check
 
@@ -102,7 +116,11 @@ This respects users who have disabled transparency at the OS level (typically fo
 
 ### Dark-mode grain suppression
 
-The `body::before` film-grain texture is suppressed in dark mode regardless of `prefers-reduced-transparency`. On the warm-brown dark palette, the same pattern that reads as analog warmth in light mode compounds visible noise and hurts legibility.
+The `body::before` film-grain texture is suppressed in dark mode regardless of `prefers-reduced-transparency`. On the neutral dark canvas, the grain reads as noise rather than texture and hurts legibility.
+
+### Body background (2026-04-17 round 2)
+
+The body is now a flat `background: var(--color-bg)` with no gradient. All visual framing is provided by the `.app-main` Layer-1 workspace, which sits on the canvas with `box-shadow: var(--shadow-lg)` and `border-radius: var(--radius-xl)`. The prior linear-gradient top-fade was retired because the three-layer stack provides better material separation than any single-surface gradient can.
 
 ## 7. Derivation rules for new tokens
 
@@ -142,7 +160,7 @@ When you change anything that touches color:
 ## 9. Known trade-offs documented here
 
 - **Decorative borders read below 3:1.** Accepted for aesthetic reasons (see §5). Mitigated by routing all form affordances through `--color-border-input`.
-- **Near-black, not true AMOLED black.** The base bg `#0c0c0a` is near-black with a barely perceptible warm shift, not pure `#000000`. This avoids OLED smearing artifacts while still reading as decisively dark.
+- **Near-black, not true AMOLED black.** The base bg `#0e1116` is a cool near-black, not pure `#000000`. This avoids OLED smearing artifacts while still reading as decisively dark.
 - **`::selection` uses `color-mix`.** Requires modern browsers; fallback is not provided because Prairie's target matrix already requires `light-dark()` support.
 - **Grain texture is suppressed in dark mode.** Non-configurable. If a future design wants grain in dark mode, design a new dark-tuned noise pattern rather than reusing the light one.
 

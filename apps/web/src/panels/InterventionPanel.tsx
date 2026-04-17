@@ -192,7 +192,7 @@ export default function InterventionPanel({ prefill }: Props) {
                   generatedAt={displayResult.record.created_at}
                   latencyMs={displayResult.latency_ms || undefined}
                 />
-                <InterventionCard record={displayResult.record} />
+                <InterventionCard record={displayResult.record} meta={displayResult} />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

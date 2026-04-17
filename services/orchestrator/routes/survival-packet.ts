@@ -8,6 +8,7 @@ import { validateBody, SurvivalPacketRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { SurvivalPacket } from "../../../packages/shared/schemas/survival-packet.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError, sendRouteError } from "../errors.js";
 import { maybeExposeThinkingSummary } from "../thinking-summary.js";
 
@@ -88,9 +89,8 @@ export function createSurvivalPacketRouter(deps: RouteDeps): Router {
 
       res.json({
         packet,
-        model_id: inferenceData.model_id,
-        latency_ms: inferenceData.latency_ms,
         thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("Survival packet generation failed:", err);

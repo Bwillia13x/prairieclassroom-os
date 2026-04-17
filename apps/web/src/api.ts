@@ -256,12 +256,20 @@ export function draftFamilyMessage(
   });
 }
 
-export function approveFamilyMessage(classroomId: string, draftId: string): Promise<void> {
+export function approveFamilyMessage(
+  classroomId: string,
+  draftId: string,
+  editedText?: string,
+): Promise<void> {
   return requestVoid("/family-message/approve", {
     method: "POST",
     body: {
       classroom_id: classroomId,
       draft_id: draftId,
+      // Only include edited_text when the teacher actually edited the draft.
+      // Sending it on every approve would write the AI draft back as an
+      // "edit," polluting the audit trail.
+      ...(editedText !== undefined ? { edited_text: editedText } : {}),
     },
     classroomId,
   });

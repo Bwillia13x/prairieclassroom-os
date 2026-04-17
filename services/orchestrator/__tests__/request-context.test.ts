@@ -150,3 +150,43 @@ describe("buildRequestLogRecord — access audit enrichment", () => {
     expect(record.demo_bypass).toBeNull();
   });
 });
+
+describe("buildRequestLogRecord — token usage capture", () => {
+  it("records prompt/output/total tokens and model_id when supplied", () => {
+    const req = makeReq();
+    const res = makeRes(200);
+    initializeRequestContext(req, res);
+    setRequestContext(res, {
+      prompt_class: "differentiate_material",
+      model_tier: "live",
+      model_id: "gemma-4-26b-a4b-it",
+      prompt_tokens: 412,
+      output_tokens: 180,
+      total_tokens: 592,
+    });
+
+    const record = buildRequestLogRecord(req, res);
+    expect(record.prompt_tokens).toBe(412);
+    expect(record.output_tokens).toBe(180);
+    expect(record.total_tokens).toBe(592);
+    expect(record.model_id).toBe("gemma-4-26b-a4b-it");
+    expect(record.prompt_class).toBe("differentiate_material");
+    expect(record.model_tier).toBe("live");
+  });
+
+  it("defaults token fields to null when the backend cannot report them (mock/local)", () => {
+    const req = makeReq();
+    const res = makeRes(200);
+    initializeRequestContext(req, res);
+    setRequestContext(res, {
+      prompt_class: "draft_family_message",
+      model_tier: "live",
+    });
+
+    const record = buildRequestLogRecord(req, res);
+    expect(record.prompt_tokens).toBeNull();
+    expect(record.output_tokens).toBeNull();
+    expect(record.total_tokens).toBeNull();
+    expect(record.model_id).toBeNull();
+  });
+});

@@ -8,6 +8,7 @@ import type { RouteDeps } from "../route-deps.js";
 import type { EALoadProfile } from "../../../packages/shared/schemas/ea-load.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 import { maybeExposeThinkingSummary } from "../thinking-summary.js";
 
@@ -82,8 +83,7 @@ export function createEALoadRouter(deps: RouteDeps): Router {
       res.json({
         profile,
         thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("EA load error:", err);

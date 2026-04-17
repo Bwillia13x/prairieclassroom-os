@@ -16,33 +16,14 @@ html {
 }
 
 body {
+  /* Layer 0 — the page canvas.
+     Flat --color-bg, slightly darker than the workspace above it.
+     The elevated Layer-1 .app-main surface provides all visual framing;
+     the canvas just holds it. */
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at 15% -5%, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 30%),
-    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--color-accent-soft) 16%, transparent), transparent 26%),
-    radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--color-accent-soft) 5%, transparent), transparent 50%),
-    linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg) 18rem);
+  background: var(--color-bg);
   color: var(--color-text);
-}
-
-/* Dark mode — deeper ambient gradient for premium depth */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) body {
-    background:
-      radial-gradient(circle at 15% -5%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 34%),
-      radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--color-accent-soft) 12%, transparent), transparent 30%),
-      radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--color-accent-soft) 4%, transparent), transparent 45%),
-      linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg) 24rem);
-  }
-}
-
-:root[data-theme="dark"] body {
-  background:
-    radial-gradient(circle at 15% -5%, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 34%),
-    radial-gradient(circle at 85% 0%, color-mix(in srgb, var(--color-accent-soft) 12%, transparent), transparent 30%),
-    radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--color-accent-soft) 4%, transparent), transparent 45%),
-    linear-gradient(180deg, var(--color-bg-accent) 0%, var(--color-bg) 24rem);
 }
 
 h1,

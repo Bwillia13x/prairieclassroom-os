@@ -3,11 +3,13 @@ import { useRef } from "react";
 import type { ComplexityForecast } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
 import "./ForecastViewer.css";
 
 interface Props {
   forecast: ComplexityForecast;
   thinkingSummary: string | null;
+  meta?: ModelMetaInput;
 }
 
 const LEVEL_ICON: Record<string, string> = {
@@ -22,7 +24,7 @@ const LEVEL_LABEL: Record<string, string> = {
   high: "High",
 };
 
-export default function ForecastViewer({ forecast, thinkingSummary }: Props) {
+export default function ForecastViewer({ forecast, thinkingSummary, meta }: Props) {
   const blockRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   function scrollToBlock(index: number) {
@@ -41,6 +43,7 @@ export default function ForecastViewer({ forecast, thinkingSummary }: Props) {
             { label: "Forecast suite", tone: "analysis" },
             { label: "Retrieval-backed", tone: "provenance" },
             { label: "Block timeline", tone: "accent" },
+            ...buildModelMetaItems(meta ?? {}),
           ]}
           compact
         />

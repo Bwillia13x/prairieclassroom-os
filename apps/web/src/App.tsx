@@ -34,6 +34,7 @@ import ForecastPanel from "./panels/ForecastPanel";
 import SurvivalPacketPanel from "./panels/SurvivalPacketPanel";
 import TodayPanel from "./panels/TodayPanel";
 import UsageInsightsPanel from "./panels/UsageInsightsPanel";
+import BrandMark from "./components/BrandMark";
 import MobileNav from "./components/MobileNav";
 import OnboardingOverlay from "./components/OnboardingOverlay";
 import ThemeToggle from "./components/ThemeToggle";
@@ -723,19 +724,8 @@ export default function App() {
         <header className="app-header">
           <div className="app-header__inner">
             <div className="shell-bar">
-              <div className="shell-brand" aria-label="PrairieGem OS home">
-                <picture>
-                  <source srcSet="/prairiegem-logo.webp" type="image/webp" />
-                  <img
-                    className="app-logo"
-                    src="/prairiegem-logo.png"
-                    alt="PrairieGem OS"
-                    width={583}
-                    height={400}
-                    decoding="async"
-                    fetchPriority="high"
-                  />
-                </picture>
+              <div className="shell-brand" aria-label="PrairieClassroom home">
+                <BrandMark className="app-logo" />
               </div>
 
               <div className="shell-classroom-anchor" ref={classroomMenuRef}>

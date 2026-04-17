@@ -64,9 +64,9 @@
   transition: filter var(--motion-fast, 0.15s) ease;
 }
 
-:root[data-theme="dark"] .app-logo {
-  filter: brightness(2.2) drop-shadow(0 0 2px rgba(255, 255, 255, 0.2));
-}
+/* Dark-mode logo filter retired 2026-04-17 alongside the SVG BrandMark.
+   The SVG uses --color-text / --color-accent directly, so it adapts to
+   both themes via the token system without a filter. */
 
 @media (max-width: 720px) {
   .app-logo {
@@ -94,29 +94,10 @@
   white-space: nowrap;
 }
 
-.app-title-os {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 1.4rem;
-  padding: 0.14rem 0.48rem;
-  border: 1px solid color-mix(in srgb, var(--color-border-accent) 60%, transparent);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-bg-accent) 50%, transparent);
-  color: var(--color-text-accent);
-  font-family: var(--font-mono);
-  font-size: 0.58rem;
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.18em;
-  line-height: 1;
-  text-transform: uppercase;
-  opacity: 0.75;
-  transition: opacity var(--motion-fast) var(--ease-standard);
-}
-
-.app-title-os:hover {
-  opacity: 1;
-}
+/* .app-title-os / .app-title-os:hover rules retired 2026-04-17 —
+   the "OS" monospace pill was dead CSS (no JSX consumer) and its
+   developer-tool visual idiom conflicted with the institutional
+   repositioning. See docs/decision-log.md. */
 
 .shell-classroom-anchor {
   position: relative;
@@ -602,11 +583,32 @@
   }
 }
 
+/* Layer 1 — the application workspace surface.
+   See docs/dark-mode-contract.md §1 ("material hierarchy").
+   Cards inside this container sit on a real surface, rather than
+   floating directly on the page canvas. */
 .app-main {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding-top: var(--space-5);
+  gap: var(--space-5);
+  margin-top: var(--space-4);
+  padding: var(--space-6);
+  background: var(--color-workspace);
+  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Subtle catchlight on the top edge of the workspace — tells the eye
+   "this is a real surface with a light source above it". */
+.app-main::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: var(--inner-stroke);
 }
 
 .app-main > [role="tabpanel"]:not([hidden]) {

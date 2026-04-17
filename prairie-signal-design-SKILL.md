@@ -1,9 +1,11 @@
 ---
 name: prairie-signal-design
-description: Generate UI, UX, and interface concepts in the Prairie Signal design language: calm, premium, high-legibility, consulting-grade, spacious, and decision-oriented. Use for React/Tailwind, HTML/CSS, dashboards, studios, briefings, and operational tools.
+description: Generate UI, UX, and interface concepts in the Prairie Signal CONSULTING-STUDIO design language (calm, premium, editorial-warm, serif display, cream canvas). Do NOT apply to the PrairieClassroom product, which uses a different, institutional palette — see scope note below.
 ---
 
 # Prairie Signal Design
+
+> **Scope note (added 2026-04-17).** This skill is authored for the **PrairieSignal consulting-studio / founder-facing brand**. It is *not* the design system for the **PrairieClassroom** teacher-facing product. PrairieClassroom was repositioned to an institutional neutral + Alberta-navy palette on 2026-04-17 (see `docs/decision-log.md` and `docs/dark-mode-contract.md`). If your task is in `apps/web` or touches classroom-product surfaces, **do not invoke this skill** — use the product's token system (`apps/web/src/styles/tokens.css`) as the source of truth instead.
 
 A design-system skill for generating interfaces in the **Prairie Signal** visual language.
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FamilyMessageDraft } from "../types";
 import type { CopyStatus } from "../hooks/useCopyToClipboard";
 import "./MessageApprovalDialog.css";
@@ -6,7 +6,11 @@ import "./MessageApprovalDialog.css";
 interface Props {
   open: boolean;
   draft: FamilyMessageDraft;
-  onConfirm: () => Promise<void>;
+  // onConfirm receives the *teacher-reviewed* text — the AI draft as edited
+  // by the teacher in the textarea. The teacher's edits are what gets copied
+  // to the clipboard for sending. CLAUDE.md is explicit: family messaging
+  // is human-in-the-loop, which means the human gets the last word on text.
+  onConfirm: (editedText: string) => Promise<void>;
   onCancel: () => void;
   copyStatus: CopyStatus;
 }
@@ -14,6 +18,14 @@ interface Props {
 export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel, copyStatus }: Props) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const cancelBtnRef = useRef<HTMLButtonElement>(null);
+  // Edits live in dialog-local state. Reset only when the underlying draft
+  // identity or text changes — closing/reopening the same draft preserves
+  // the teacher's in-progress edits, which is what they expect.
+  const [editedText, setEditedText] = useState(draft.plain_language_text);
+
+  useEffect(() => {
+    setEditedText(draft.plain_language_text);
+  }, [draft.draft_id, draft.plain_language_text]);
 
   useEffect(() => {
     const d = dialogRef.current;
@@ -39,7 +51,7 @@ export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel
 
   async function handleApproveClick() {
     try {
-      await onConfirm();
+      await onConfirm(editedText);
     } catch (err) {
       console.warn("Approval failed:", err);
     }
@@ -50,6 +62,8 @@ export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel
     copyStatus === "copying" ? "Copying..." :
     copyStatus === "error" ? "Copy failed" :
     "";
+
+  const editedDiffersFromDraft = editedText !== draft.plain_language_text;
 
   return (
     <dialog
@@ -65,10 +79,26 @@ export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel
         <span>{draft.target_language}</span>
         <span>·</span>
         <span>{draft.message_type}</span>
+        {editedDiffersFromDraft && (
+          <>
+            <span>·</span>
+            <span className="message-approval-dialog__edited-tag">Edited</span>
+          </>
+        )}
       </div>
 
       <div className="message-approval-dialog__preview">
-        <p>{draft.plain_language_text}</p>
+        <label className="message-approval-dialog__edit-label" htmlFor="dialog-edit">
+          Family message (editable)
+        </label>
+        <textarea
+          id="dialog-edit"
+          className="message-approval-dialog__edit"
+          value={editedText}
+          onChange={(e) => setEditedText(e.target.value)}
+          rows={Math.max(4, Math.min(12, editedText.split("\n").length + 1))}
+          aria-label="Family message text — edit before approving and copying"
+        />
         {draft.simplified_student_text && (
           <>
             <h3>Student version</h3>
@@ -94,7 +124,7 @@ export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel
           type="button"
           className="btn btn--primary"
           onClick={handleApproveClick}
-          disabled={copyStatus === "copying"}
+          disabled={copyStatus === "copying" || editedText.trim().length === 0}
         >
           {copyStatus === "copying" ? "Approving..." : "Approve & Copy"}
         </button>

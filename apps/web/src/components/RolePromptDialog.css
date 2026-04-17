@@ -4,7 +4,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: color-mix(in srgb, var(--color-backdrop, #000) 55%, transparent);
+  /* Pure neutral modal overlay — exempted from the tokens-only rule
+     per dark-mode-contract §8.1 (reads the same in both modes). */
+  background: rgba(0, 0, 0, 0.55);
   z-index: 100;
 }
 

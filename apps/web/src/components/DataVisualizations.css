@@ -585,7 +585,7 @@
 .viz-funnel__bar-text {
   font-size: var(--text-xs);
   font-weight: var(--font-weight-bold);
-  color: var(--color-surface, #fff);
+  color: var(--color-text-on-accent);
 }
 
 /* ── 11. Scaffold Effectiveness Chart ── */
@@ -1033,7 +1033,7 @@
 
 .viz-schedule-strip__label {
   font-size: 0.65rem;
-  color: var(--color-text-secondary, #6c757d);
+  color: var(--color-text-secondary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1060,7 +1060,7 @@
 .viz-variant-strip__bar-wrap {
   flex: 1;
   height: 10px;
-  background: var(--color-surface-secondary, #f1f3f5);
+  background: var(--color-surface-muted);
   border-radius: 5px;
   overflow: hidden;
 }
@@ -1074,13 +1074,13 @@
 .viz-variant-strip__type {
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--color-text-primary, #212529);
+  color: var(--color-text);
   min-width: 80px;
 }
 
 .viz-variant-strip__min {
   font-size: 0.7rem;
-  color: var(--color-text-secondary, #6c757d);
+  color: var(--color-text-secondary);
   min-width: 28px;
   text-align: right;
 }
@@ -1129,7 +1129,7 @@
 .viz-workflow-strip__count {
   font-size: 0.7rem;
   font-weight: 700;
-  color: var(--color-text-secondary, #6c757d);
+  color: var(--color-text-secondary);
   min-width: 28px;
   text-align: right;
 }
@@ -1147,8 +1147,8 @@
   gap: 4px;
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--color-text-primary, #212529);
-  background: var(--color-surface-secondary, #f1f3f5);
+  color: var(--color-text);
+  background: var(--color-surface-muted);
   border: 1.5px solid;
   border-radius: 12px;
   padding: 2px 8px;
@@ -1180,7 +1180,7 @@
 .viz-readability-gauge__label {
   font-size: 0.7rem;
   font-weight: 600;
-  color: var(--color-text-primary, #212529);
+  color: var(--color-text);
 }
 
 .viz-readability-gauge__bars {
@@ -1201,22 +1201,22 @@
   padding: 0 6px;
   font-size: 0.65rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--color-text-on-accent);
   min-width: 32px;
   transition: width 0.3s ease;
 }
 
 .viz-readability-gauge__bar--before {
-  background: var(--color-text-secondary, #6c757d);
+  background: var(--color-text-secondary);
   opacity: 0.6;
 }
 
 .viz-readability-gauge__bar--after {
-  background: var(--color-accent, #0d6efd);
+  background: var(--color-accent);
 }
 
 .viz-readability-gauge__bar--improved {
-  background: var(--color-sage, #5cb85c);
+  background: var(--color-success);
 }
 
 .viz-readability-gauge__legend {
@@ -1242,12 +1242,12 @@
 }
 
 .viz-readability-gauge__legend-item--before::before {
-  background: var(--color-text-secondary, #6c757d);
+  background: var(--color-text-secondary);
   opacity: 0.6;
 }
 
 .viz-readability-gauge__legend-item--after::before {
-  background: var(--color-accent, #0d6efd);
+  background: var(--color-accent);
 }
 
 /* Task 5a: clickable trend chart affordances */

@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
 import type { FamilyMessageDraft } from "../types";
 import OutputMetaRow from "./OutputMetaRow";
+import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
 import "./MessageDraft.css";
 
 interface Props {
   draft: FamilyMessageDraft;
+  meta?: ModelMetaInput;
   // onApprove is kept in Props for backward compatibility; approval is now
   // triggered via MessageApprovalDialog in FamilyMessagePanel. Role gating
   // applies at the panel level via useRole()'s canApproveMessages.
   onApprove: (draftId: string) => void;
 }
 
-export default function MessageDraft({ draft }: Props) {
+export default function MessageDraft({ draft, meta }: Props) {
   const [approved, setApproved] = useState(draft.teacher_approved);
 
   useEffect(() => {
@@ -30,13 +32,23 @@ export default function MessageDraft({ draft }: Props) {
             { label: approved ? "Approved" : "Approval required", tone: approved ? "success" : "pending" },
             { label: "Plain-language draft", tone: "analysis" },
             { label: "Manual send only", tone: "provenance" },
+            ...buildModelMetaItems(meta ?? {}),
           ]}
           compact
         />
       </header>
 
       <div className="draft-body">
-        <p className="draft-text">{draft.plain_language_text}</p>
+        {/* F12.5: when the teacher edited the AI draft at approval time,
+            the persisted edited_text is the source of truth for what was
+            sent to the family. Show that here (with a small "edited" tag),
+            falling back to the AI draft when no edits exist. */}
+        <p className="draft-text">{draft.edited_text ?? draft.plain_language_text}</p>
+        {draft.edited_text && draft.edited_text !== draft.plain_language_text && (
+          <p className="draft-edited-tag" aria-label="This message was edited by the teacher before sending">
+            Edited by teacher
+          </p>
+        )}
       </div>
 
       {draft.simplified_student_text && (

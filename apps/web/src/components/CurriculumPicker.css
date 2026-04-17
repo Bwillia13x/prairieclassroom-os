@@ -147,7 +147,7 @@
 }
 
 .curriculum-picker__error {
-  color: var(--color-danger-text, #8c2f1f);
+  color: var(--color-text-danger);
 }
 
 @media (max-width: 720px) {

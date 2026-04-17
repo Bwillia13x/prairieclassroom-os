@@ -188,6 +188,9 @@ export interface DifferentiateResponse {
   variants: DifferentiatedVariant[];
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface TomorrowPlanResponse {
@@ -196,30 +199,45 @@ export interface TomorrowPlanResponse {
   pattern_informed: boolean;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface FamilyMessageResponse {
   draft: FamilyMessageDraft;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface InterventionResponse {
   record: InterventionRecord;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface SimplifyResponse {
   simplified: SimplifiedOutput;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface VocabCardsResponse {
   card_set: VocabCardSet;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface SupportPatternsResponse {
@@ -227,12 +245,18 @@ export interface SupportPatternsResponse {
   thinking_summary: string | null;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface EABriefingResponse {
   briefing: EABriefing;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface ComplexityForecastResponse {
@@ -240,6 +264,9 @@ export interface ComplexityForecastResponse {
   thinking_summary: string | null;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface EALoadResponse {
@@ -247,6 +274,9 @@ export interface EALoadResponse {
   thinking_summary: string | null;
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface SurvivalPacketResponse {
@@ -254,6 +284,9 @@ export interface SurvivalPacketResponse {
   model_id: string;
   latency_ms: number;
   thinking_summary?: string;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 export interface ExtractWorksheetResponse {
@@ -262,6 +295,9 @@ export interface ExtractWorksheetResponse {
   curriculum_suggestions: CurriculumEntry[];
   model_id: string;
   latency_ms: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
 }
 
 // ── Composite API types ─────────────────────────────────────────────────────

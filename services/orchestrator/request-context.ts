@@ -8,7 +8,7 @@ import type { ModelTier, PromptClass } from "./types.js";
 // import.meta.dirname is undefined under tsx's CJS register hook; derive from URL as a fallback
 const _dirname = import.meta.dirname ?? fileURLToPath(new URL(".", import.meta.url));
 
-export type ErrorCategory = "inference" | "validation" | "memory" | "auth";
+export type ErrorCategory = "inference" | "validation" | "memory" | "auth" | "cost_budget";
 
 // Structural snapshot of auth.ts ClassroomAuthContext. Inlined to avoid a
 // circular import through errors.ts; keep in sync with auth.ts.
@@ -40,9 +40,13 @@ interface RequestContextState {
   startedAt: number;
   prompt_class?: PromptClass;
   model_tier?: ModelTier;
+  model_id?: string;
   timeout_ms?: number;
   retry_count?: number;
   latency_ms?: number;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
   category?: ErrorCategory;
   retryable?: boolean;
   detail_code?: string;
@@ -211,10 +215,14 @@ export function buildRequestLogRecord(
     auth_outcome: deriveAuthOutcome(req, res, context, auth),
     prompt_class: context.prompt_class ?? null,
     model_tier: context.model_tier ?? null,
+    model_id: context.model_id ?? null,
     inference_provider: process.env.PRAIRIE_INFERENCE_PROVIDER ?? "mock",
     timeout_ms: context.timeout_ms ?? null,
     retry_count: context.retry_count ?? 0,
     latency_ms: context.latency_ms ?? null,
+    prompt_tokens: context.prompt_tokens ?? null,
+    output_tokens: context.output_tokens ?? null,
+    total_tokens: context.total_tokens ?? null,
     status_code: res.statusCode,
     category: context.category ?? inferDefaultCategory(res.statusCode) ?? null,
     retryable: context.retryable ?? false,

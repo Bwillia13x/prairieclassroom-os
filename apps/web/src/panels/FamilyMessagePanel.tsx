@@ -99,10 +99,10 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     setHistoricalResult({ draft, model_id: "", latency_ms: 0 });
   }
 
-  async function handleApprove(draftId: string) {
+  async function handleApprove(draftId: string, editedText?: string) {
     if (!displayResult) return;
     try {
-      await approveFamilyMessage(displayResult.draft.classroom_id, draftId);
+      await approveFamilyMessage(displayResult.draft.classroom_id, draftId, editedText);
       showSuccess("Message approved");
       showUndo("Message approved — undo?", async () => {
         // Undo: re-draft or mark unapproved (best-effort)
@@ -113,10 +113,18 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     }
   }
 
-  async function handleDialogConfirm() {
+  async function handleDialogConfirm(editedText: string) {
     if (!displayResult) return;
-    await copy(displayResult.draft.plain_language_text);
-    await handleApprove(displayResult.draft.draft_id);
+    // F12.5: when the teacher's edit diverges from the AI draft, persist the
+    // edited text alongside the original on the server so the audit trail
+    // matches the clipboard. When the teacher approved verbatim, omit
+    // edited_text — that keeps "approved as drafted" rows clean of noise.
+    const editedDiffersFromDraft = editedText !== displayResult.draft.plain_language_text;
+    await copy(editedText);
+    await handleApprove(
+      displayResult.draft.draft_id,
+      editedDiffersFromDraft ? editedText : undefined,
+    );
     showSuccess("Message approved and copied");
     setDialogOpen(false);
   }
@@ -216,6 +224,12 @@ export default function FamilyMessagePanel({ prefill }: Props) {
                 icon={<EmptyStateIllustration name="message" />}
                 title="No draft yet"
                 description="Select one or more students, choose the message type, and add any important context before drafting."
+                steps={[
+                  "Pick one or more students from the roster.",
+                  "Choose the message type (update, concern, celebration, or follow-up).",
+                  "Add any classroom context the family should know.",
+                  "Press Draft message. The draft lands here for your review before any send.",
+                ]}
               />
             ) : null}
             {displayResult ? (
@@ -225,7 +239,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
                   generatedAt={parseRecordTimestamp(displayResult.draft.draft_id)}
                   latencyMs={displayResult.latency_ms || undefined}
                 />
-                <MessageDraft draft={displayResult.draft} onApprove={handleApprove} />
+                <MessageDraft draft={displayResult.draft} meta={displayResult} onApprove={handleApprove} />
                 <OutputFeedback outputId={displayResult.draft.draft_id} outputType="family-message" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

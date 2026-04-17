@@ -59,6 +59,10 @@ export const FamilyMessageRequestSchema = z.object({
 export const ApproveMessageRequestSchema = z.object({
   classroom_id: requiredString(SHORT_TEXT_MAX),
   draft_id: requiredString(SHORT_TEXT_MAX),
+  // F12.5: when the teacher edited the AI draft in the approval dialog,
+  // the orchestrator persists the edited text so the audit trail matches
+  // what was actually copied to the clipboard. Absent = approved verbatim.
+  edited_text: optionalString(MEDIUM_TEXT_MAX),
 });
 
 export const InterventionRequestSchema = z.object({

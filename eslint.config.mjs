@@ -15,15 +15,19 @@ export default tseslint.config(
         fetch: "readonly",
         process: "readonly",
         setTimeout: "readonly",
+        URL: "readonly",
       },
     },
   },
   {
-    files: ["scripts/record-walkthrough.mjs"],
+    files: ["scripts/record-walkthrough.mjs", "scripts/record-demo-video.mjs"],
     languageOptions: {
       globals: {
         document: "readonly",
+        Event: "readonly",
         localStorage: "readonly",
+        performance: "readonly",
+        requestAnimationFrame: "readonly",
         window: "readonly",
       },
     },

@@ -10,6 +10,7 @@ import { validateBody, DifferentiateRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { DifferentiatedVariant } from "../../../packages/shared/schemas/artifact.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import {
   handleRouteError,
   sendClassroomNotFound,
@@ -76,8 +77,7 @@ export function createDifferentiateRouter(deps: RouteDeps): Router {
       res.json({
         artifact_id: artifact.artifact_id,
         variants,
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
 
       // Persist variants to classroom memory

@@ -3,6 +3,7 @@
 # the core classroom-complexity workflows plus prompt safety.
 
 diff-001-reading-schema
+diff-015-tool-calling-curriculum
 diff-008-prompt-injection
 plan-001-alpha-schema
 plan-010-prompt-injection
@@ -12,3 +13,7 @@ ea-001-schema
 fcst-001-demo-schema
 debt-001-schema
 surv-001-schema
+# extract_worksheet is the only multimodal route. Without this case the hosted
+# lane never proves that image-input through Gemini's inline_data path actually
+# works end-to-end, even though extract_worksheet ships in production.
+extract-001-schema

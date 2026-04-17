@@ -11,6 +11,7 @@ import type { VocabCardsInput } from "../vocab-cards.js";
 import { validateBody, SimplifyRequestSchema, VocabCardsRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import { callInference } from "../inference-client.js";
+import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendParseError, sendRouteError } from "../errors.js";
 
 export function createLanguageToolsRouter(deps: RouteDeps): Router {
@@ -46,8 +47,7 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
 
       res.json({
         simplified,
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("Simplify error:", err);
@@ -105,8 +105,7 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
 
       res.json({
         card_set: cardSet,
-        model_id: inferenceData.model_id || modelId,
-        latency_ms: inferenceData.latency_ms,
+        ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
       console.error("Vocab cards error:", err);

@@ -44,7 +44,7 @@ describe("MessageApprovalDialog", () => {
     expect(dialog).not.toHaveAttribute("open");
   });
 
-  it("dialog shows recipient count and preview when open", () => {
+  it("dialog shows recipient count and editable draft text when open", () => {
     render(
       <MessageApprovalDialog
         open={true}
@@ -55,7 +55,8 @@ describe("MessageApprovalDialog", () => {
       />,
     );
     expect(screen.getByText(/2 recipients/i)).toBeInTheDocument();
-    expect(screen.getByText(/good day at school/i)).toBeInTheDocument();
+    // The draft text is now in an editable textarea, not a static <p>.
+    expect(screen.getByDisplayValue(/good day at school/i)).toBeInTheDocument();
   });
 
   it("Cancel button calls onCancel", async () => {
@@ -74,7 +75,7 @@ describe("MessageApprovalDialog", () => {
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
-  it("Approve & Copy button calls onConfirm", async () => {
+  it("Approve & Copy button calls onConfirm with the unmodified draft text", async () => {
     const spy = vi.fn().mockResolvedValue(undefined);
     const user = userEvent.setup();
     render(
@@ -88,6 +89,97 @@ describe("MessageApprovalDialog", () => {
     );
     await user.click(screen.getByRole("button", { name: /Approve & Copy/i }));
     expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(DRAFT.plain_language_text);
+  });
+
+  it("teacher edits flow through onConfirm — F12 human-in-the-loop guarantee", async () => {
+    const spy = vi.fn().mockResolvedValue(undefined);
+    const user = userEvent.setup();
+    render(
+      <MessageApprovalDialog
+        open={true}
+        draft={DRAFT}
+        onConfirm={spy}
+        onCancel={vi.fn()}
+        copyStatus="idle"
+      />,
+    );
+
+    const textarea = screen.getByDisplayValue(/good day at school/i);
+    await user.clear(textarea);
+    await user.type(textarea, "Edited family note from the teacher.");
+
+    await user.click(screen.getByRole("button", { name: /Approve & Copy/i }));
+
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith("Edited family note from the teacher.");
+  });
+
+  it("shows an Edited badge once the textarea diverges from the draft", async () => {
+    const user = userEvent.setup();
+    render(
+      <MessageApprovalDialog
+        open={true}
+        draft={DRAFT}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+        copyStatus="idle"
+      />,
+    );
+
+    expect(screen.queryByText(/^Edited$/)).not.toBeInTheDocument();
+
+    const textarea = screen.getByDisplayValue(/good day at school/i);
+    await user.type(textarea, " More context.");
+
+    expect(screen.getByText(/^Edited$/)).toBeInTheDocument();
+  });
+
+  it("Approve & Copy is disabled when the teacher empties the textarea", async () => {
+    const user = userEvent.setup();
+    render(
+      <MessageApprovalDialog
+        open={true}
+        draft={DRAFT}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+        copyStatus="idle"
+      />,
+    );
+
+    const textarea = screen.getByDisplayValue(/good day at school/i);
+    await user.clear(textarea);
+
+    expect(screen.getByRole("button", { name: /Approve & Copy/i })).toBeDisabled();
+  });
+
+  it("resets the textarea when a new draft (different draft_id) is loaded", () => {
+    const { rerender } = render(
+      <MessageApprovalDialog
+        open={true}
+        draft={DRAFT}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+        copyStatus="idle"
+      />,
+    );
+
+    const newDraft: FamilyMessageDraft = {
+      ...DRAFT,
+      draft_id: "d2",
+      plain_language_text: "A different message about a class field trip.",
+    };
+    rerender(
+      <MessageApprovalDialog
+        open={true}
+        draft={newDraft}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+        copyStatus="idle"
+      />,
+    );
+
+    expect(screen.getByDisplayValue(/different message about a class field trip/i)).toBeInTheDocument();
   });
 
   it("shows 'Approving...' label when copyStatus is 'copying'", () => {

@@ -196,6 +196,11 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                 icon={<EmptyStateIllustration name="plan" />}
                 title="No plan yet"
                 description="Use the reflection rail to capture the day. The result canvas will fill with tomorrow's priorities, prep actions, and family follow-through."
+                steps={[
+                  "Capture what worked and what slipped in today's reflection rail.",
+                  "Flag any students who need targeted support tomorrow.",
+                  "Press Generate plan. The canvas will organize priorities, prep actions, and family follow-through.",
+                ]}
               />
             ) : null}
             {displayResult ? (
@@ -217,6 +222,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   plan={displayResult.plan}
                   thinkingSummary={displayResult.thinking_summary}
                   patternInformed={displayResult.pattern_informed}
+                  meta={displayResult}
                   onFollowupClick={onFollowupClick}
                   onInterventionClick={onInterventionClick}
                 />

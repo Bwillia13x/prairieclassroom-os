@@ -50,6 +50,7 @@ output/release-gate/
 output/evals/
 output/vertex-endpoints/
 output/request-logs/
+output/cost-budget/
 output/memory-admin/
 output/access-audit/
 output/host-preflight/
