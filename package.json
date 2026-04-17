@@ -26,6 +26,8 @@
     "system:inventory:check": "node scripts/system-inventory.mjs --check",
     "ops:status": "node scripts/ops-status.mjs",
     "memory:admin": "node scripts/memory-admin.mjs",
+    "pilot:reset": "node scripts/pilot-reset.mjs",
+    "pilot:start": "node scripts/pilot-start.mjs",
     "proof:check": "node scripts/proof-check.mjs",
     "gemini:readycheck": "node scripts/gemini-readycheck.mjs",
     "host:preflight:ollama": "node scripts/host-preflight-ollama.mjs",

@@ -32,34 +32,43 @@ Use this form during in-classroom observation sessions. One form per observation
 
 ## Workflow Observation
 
-Record each panel the teacher visits during the session.
+Pre-filled with the panel set the [cold-start-protocol.md](./cold-start-protocol.md)
+walks through. Add a row at the bottom for any unscripted panel the teacher visits.
+Leave a row blank if the scenario was skipped.
 
-| # | Panel | Time spent (approx) | What teacher did | Outcome (useful output?) | Teacher reaction |
-|---|-------|---------------------|------------------|--------------------------|------------------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
-| 6 | | | | | |
+| # | Scenario | Panel | Time spent | What teacher did | Outcome (useful output?) | Teacher reaction |
+|---|----------|-------|-----------|------------------|--------------------------|------------------|
+| 1 | "Where should I start today?" | Today | | | | |
+| 2 | "Three versions of this lesson by tomorrow" | Prep → Differentiate | | | | |
+| 3 | "Routine update home about Amira in Punjabi" | Review → Family Message | | | | |
+| 4 | "90 seconds between blocks, log what just happened" | Ops → Log Intervention | | | | |
+| 5 | "Build me tomorrow's plan from what I just typed" | Prep → Tomorrow Plan | | | | |
+| 6 | "What does tomorrow's complexity look like?" | Ops → Forecast | | | | |
+| 7 | "What have I been letting slip?" | Today → open follow-ups drawer | | | | |
+| 8 | (unscripted exploration) | | | | | |
 
-**Workflow sequence** (list panel order): 
+**Workflow sequence** (list panel order, including any teacher-initiated detours):
 
-**Did the teacher skip any panels?** If so, which and why?
+**Did the teacher skip any scripted scenarios?** If so, which and why?
+
+**Did the teacher abandon a scenario mid-way?** If so, what triggered it?
 
 ---
 
 ## Output Quality
 
-For each generation the teacher triggered, note quality.
+For each generation the teacher triggered, note quality. Inference lane matters
+here: in mock mode the panel-level "Mock fixture output" banner should be
+clearly visible — record whether the teacher noticed it before forming a
+quality judgment.
 
-| # | Panel / prompt class | Was the output useful? (Y/N/Partial) | Did the teacher edit the output? | Did the teacher rate it (thumbs up/down)? | Notes |
-|---|---------------------|---------------------------------------|----------------------------------|-------------------------------------------|-------|
-| 1 | | | | | |
-| 2 | | | | | |
-| 3 | | | | | |
-| 4 | | | | | |
-| 5 | | | | | |
+| # | Panel / prompt class | Was the output useful? (Y/N/Partial) | Did teacher notice mock-mode banner? (Y/N/n-a) | Did the teacher edit the output? | Did the teacher rate it (thumbs up/down)? | Notes |
+|---|---------------------|---------------------------------------|------------------------------------------------|----------------------------------|-------------------------------------------|-------|
+| 1 | differentiate_material | | | | | |
+| 2 | draft_family_message | | | | | |
+| 3 | log_intervention | | | | | |
+| 4 | prepare_tomorrow_plan | | | | | |
+| 5 | forecast_complexity | | | | | |
 
 ---
 

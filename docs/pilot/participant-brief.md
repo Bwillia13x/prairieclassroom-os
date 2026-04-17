@@ -28,10 +28,10 @@ If you see the system doing anything that looks like the above, stop using it an
 ## What you will be asked to do in this pilot
 
 1. Read this brief and the safety governance summary below.
-2. Walk through a small set of product scenarios (typically 6–8) during a 45–60 minute session.
-3. Fill out a usefulness rubric (`docs/pilot/usefulness-rubric.md`) after the session — 1-to-5 scale on five dimensions. Takes about 5 minutes.
-4. Optionally keep a lightweight self-log of additional sessions using `docs/pilot/session-log-template.md`.
-5. Report any concern — safety, privacy, access, or output quality — to the pilot coordinator using `docs/pilot/incident-log.md`.
+2. Walk through a small set of product scenarios (typically 6–8) during a 45–60 minute session, using the deterministic [cold-start-protocol.md](./cold-start-protocol.md) which tells you exactly which tab to click and what to type.
+3. Fill out a usefulness rubric ([usefulness-rubric.md](./usefulness-rubric.md)) after the session — 1-to-5 scale on five dimensions. Takes about 5 minutes.
+4. Optionally keep a lightweight self-log of additional sessions using [session-log-template.md](./session-log-template.md).
+5. Report any concern — safety, privacy, access, or output quality — to the pilot coordinator using [incident-log.md](./incident-log.md).
 
 You are not being asked to:
 
@@ -55,6 +55,7 @@ You are not being asked to:
 - A point-in-time access audit artifact can be generated at the end of your session with `npm run audit:log -- --classroom <id> --from <date> --artifact`.
 - Classroom memory can be exported, anonymized, backed up, or purged at any time through `npm run memory:admin`.
 - Any classroom memory created in the demo environment during your session can be fully purged when the session ends, if you prefer — `npm run memory:admin -- purge --classroom <id> --confirm`.
+- The coordinator resets the demo classroom to a known state at the start of every session with `npm run pilot:reset`, so what you see is reproducible across participants. Each reset writes a tombstone artifact under `output/pilot/`.
 
 ## Hosted vs. local model lanes
 
@@ -104,4 +105,4 @@ If this brief does not answer a question you have, stop before the session start
 
 ---
 
-*Participant Brief v1. Keep under `docs/pilot/` as a companion to `observation-template.md`, `usefulness-rubric.md`, `session-log-template.md`, `claims-ledger.md`, and `incident-log.md`.*
+*Participant Brief v1. Keep under `docs/pilot/` as a companion to [cold-start-protocol.md](./cold-start-protocol.md), [observation-template.md](./observation-template.md), [usefulness-rubric.md](./usefulness-rubric.md), [session-log-template.md](./session-log-template.md), [claims-ledger.md](./claims-ledger.md), and [incident-log.md](./incident-log.md).*

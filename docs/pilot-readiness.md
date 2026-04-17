@@ -55,12 +55,13 @@ Create these artifacts before making any product claims from a pilot:
 2. Run `npm run release:gate` on the target machine.
 3. If testing live local inference, run `npm run host:preflight:ollama` and `npm run release:gate:ollama`.
 4. Confirm the route role scopes in `docs/api-surface.md` match the adult workflow being rehearsed.
-5. Run `npm run memory:admin -- summary --classroom <id>` before the session and save a backup with `npm run memory:admin -- backup --classroom <id>`.
-6. Use only demo or de-identified records unless real-data blockers are closed.
-7. If evidence leaves the local pilot machine, use `npm run memory:admin -- anonymize --classroom <id>` and manually review free-text fields.
-8. Ask the teacher or EA to complete one workflow loop: Today, Prep, Ops, Review.
-9. Capture usefulness ratings and friction notes.
-10. Update the claims ledger before public copy changes.
+5. Run `npm run pilot:reset` to purge and re-seed the demo classroom from the canonical seed (writes a tombstone artifact under `output/pilot/`).
+6. Run `npm run pilot:start` to bring up inference + orchestrator + web in one command. Open http://localhost:5173/?demo=true.
+7. Use only demo or de-identified records unless real-data blockers are closed.
+8. If evidence leaves the local pilot machine, use `npm run memory:admin -- anonymize --classroom <id>` and manually review free-text fields.
+9. Hand the teacher or EA `docs/pilot/cold-start-protocol.md` and run the 8 scenarios.
+10. Capture usefulness ratings (`docs/pilot/usefulness-rubric.md`) and friction notes (`docs/pilot/observation-template.md`).
+11. Update `docs/pilot/claims-ledger.md` before any public copy changes.
 
 ## Memory Lifecycle Commands
 
