@@ -44,6 +44,8 @@ export interface AppContextValue {
   tomorrowNotes: TomorrowNote[];
   /** Append a tomorrow note (auto-generates id and createdAt) */
   appendTomorrowNote: (note: Omit<TomorrowNote, "id" | "createdAt">) => void;
+  /** Remove a tomorrow note by id */
+  removeTomorrowNote: (id: string) => void;
 }
 
 const AppContext = createContext<AppContextValue | null>(null);

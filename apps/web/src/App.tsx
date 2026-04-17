@@ -181,6 +181,10 @@ export default function App() {
     [],
   );
 
+  const removeTomorrowNote = useCallback((id: string) => {
+    dispatch({ type: "REMOVE_TOMORROW_NOTE", id });
+  }, []);
+
   const setActiveTab = useCallback((tab: ActiveTab) => {
     // Mount the target tab in the same React batch as the active-tab change,
     // so the panel renders on the next frame instead of after a second render.
@@ -603,6 +607,7 @@ export default function App() {
       dismissToast,
       tomorrowNotes: state.tomorrowNotes,
       appendTomorrowNote,
+      removeTomorrowNote,
     }),
     [
       activeClassroom,
@@ -612,6 +617,7 @@ export default function App() {
       authPrompt,
       dismissToast,
       profile,
+      removeTomorrowNote,
       setActiveClassroom,
       setActiveTab,
       setClassroomRole,

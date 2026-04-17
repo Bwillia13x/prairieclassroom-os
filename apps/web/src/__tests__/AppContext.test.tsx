@@ -34,6 +34,7 @@ function makeContext(overrides: Partial<AppContextValue> = {}): AppContextValue 
     dismissToast: vi.fn(),
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
+    removeTomorrowNote: vi.fn(),
     ...overrides,
   };
 }

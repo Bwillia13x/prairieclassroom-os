@@ -37,6 +37,7 @@ function makeContext(dispatch = vi.fn()): AppContextValue {
     dismissToast: vi.fn(),
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
+    removeTomorrowNote: vi.fn(),
   };
 }
 

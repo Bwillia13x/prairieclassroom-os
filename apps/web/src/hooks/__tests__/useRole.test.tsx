@@ -35,6 +35,7 @@ function wrap(role: ClassroomRole) {
     dismissToast: vi.fn(),
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
+    removeTomorrowNote: vi.fn(),
   };
 
   function Probe() {
