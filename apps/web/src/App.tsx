@@ -40,6 +40,7 @@ import ThemeToggle from "./components/ThemeToggle";
 import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
 import ShortcutSheet from "./components/ShortcutSheet";
+import TomorrowChip from "./components/TomorrowChip";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
@@ -738,6 +739,11 @@ export default function App() {
               <RoleContextPill />
 
               <div className="shell-bar__actions">
+                <TomorrowChip
+                  notes={state.tomorrowNotes}
+                  onRemove={(id) => dispatch({ type: "REMOVE_TOMORROW_NOTE", id })}
+                  onReviewAll={() => setActiveTab("tomorrow-plan")}
+                />
                 <ThemeToggle />
                 <button
                   className="btn btn--ghost app-help-btn"
