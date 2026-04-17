@@ -127,7 +127,14 @@ export default function QuickCaptureTray({
       <h3>Quick capture</h3>
       <p>Tap, tap, done.</p>
 
-      {/* Who? — avatar row */}
+      {/* Who? — avatar row. With large classes the rail scrolls horizontally;
+          surface the full count so teachers know the row isn't truncated. */}
+      {students.length > 0 ? (
+        <p className="quick-capture-tray__roster-hint" aria-live="polite">
+          {students.length === 1 ? "1 student" : `${students.length} students`}
+          {students.length > 6 ? " — scroll the row to reach anyone" : null}
+        </p>
+      ) : null}
       <div
         className="quick-capture-tray__avatar-row"
         ref={avatarRowRef}

@@ -71,7 +71,7 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
   const attentionCount = data.filter((d) => d.hasAttention).length;
   const mostStale = data.reduce((worst, d) => (d.x > worst.x ? d : worst), data[0]);
   const ariaLabel =
-    `Priority matrix: ${data.length} ${data.length === 1 ? "student" : "students"} tracked, ` +
+    `Priority matrix: ${data.length} ${data.length === 1 ? "student" : "students"} with recent activity to plot, ` +
     `${attentionCount} needing attention. Most stale: ${mostStale.alias} at ${mostStale.x} days.`;
 
   function handleBubbleKey(
@@ -90,7 +90,7 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
       <div className="viz-header">
         <h4 className="viz-title">Student Priority View</h4>
         <span className="viz-subtitle">
-          Size = pattern count · Position = urgency
+          Showing {data.length} with recent activity · Size = pattern count · Position = urgency
         </span>
       </div>
       <svg
@@ -744,7 +744,7 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
     (s) => (s.last_intervention_days ?? 0) > 7,
   ).length;
   const ariaLabel =
-    `Intervention recency: ${sorted.length} ${sorted.length === 1 ? "student" : "students"} tracked` +
+    `Intervention recency: top ${sorted.length} ${sorted.length === 1 ? "student" : "students"} by longest gap since last intervention` +
     (staleCount > 0
       ? `, ${staleCount} over a week without a check-in.`
       : ", all within a week.");
@@ -753,7 +753,7 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
     <div className="viz-recency" role="group" aria-label={ariaLabel}>
       <div className="viz-header">
         <h4 className="viz-title">Intervention Recency</h4>
-        <span className="viz-subtitle">Days since last check-in</span>
+        <span className="viz-subtitle">Top {sorted.length} by longest gap · Days since last check-in</span>
       </div>
       <div className="viz-recency__list">
         {sorted.map((s, i) => {

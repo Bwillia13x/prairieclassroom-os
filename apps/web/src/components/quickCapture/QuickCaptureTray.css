@@ -40,19 +40,40 @@
   margin: 0;
 }
 
-/* Avatar row — horizontal scroll strip */
+/* Avatar row — horizontal scroll strip.
+   Teachers with 20+ students need a clear signal that the rail scrolls.
+   Fade mask + thin scrollbar give an affordance without a chrome-heavy chevron. */
 .quick-capture-tray__avatar-row {
   display: flex;
   flex-wrap: nowrap;
   gap: var(--space-2);
   overflow-x: auto;
   scroll-snap-type: x proximity;
-  padding-bottom: var(--space-1);
+  padding-bottom: var(--space-2);
+  mask-image: linear-gradient(90deg, black 0, black calc(100% - 28px), transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, black 0, black calc(100% - 28px), transparent 100%);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-border) 80%, transparent) transparent;
+}
+
+.quick-capture-tray__avatar-row::-webkit-scrollbar {
+  height: 6px;
+}
+
+.quick-capture-tray__avatar-row::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-border) 80%, transparent);
+  border-radius: 3px;
 }
 
 .quick-capture-tray__avatar-row > * {
   scroll-snap-align: start;
   flex-shrink: 0;
+}
+
+.quick-capture-tray__roster-hint {
+  margin: 0 0 calc(-1 * var(--space-1)) 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs, 0.75rem);
 }
 
 /* Chip row — wrapping flex */

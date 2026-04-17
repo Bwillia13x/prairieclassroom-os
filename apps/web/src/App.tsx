@@ -46,10 +46,6 @@ import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, Tomor
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 
-function isActiveTab(value: string | null): value is ActiveTab {
-  return value !== null && value in TAB_META;
-}
-
 function describeClassroom(classroom: ClassroomProfile) {
   return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
 }
@@ -97,18 +93,18 @@ export default function App() {
   const authPromptResolverRef = useRef<((code: string | null) => void) | null>(null);
   const classroomsRef = useRef<ClassroomProfile[]>(state.classrooms);
   const classroomCodesRef = useRef(state.classroomAccessCodes);
+  const classroomRolesRef = useRef(state.classroomRoles);
   const classroomMenuRef = useRef<HTMLDivElement>(null);
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
   const groupsRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
-  const [mountedTabs, setMountedTabs] = useState<Set<ActiveTab>>(() => {
-    const initial = new Set<ActiveTab>([state.activeTab]);
-    const urlTab = new URLSearchParams(window.location.search).get("tab");
-    if (urlTab && urlTab in TAB_META) initial.add(urlTab as ActiveTab);
-    return initial;
-  });
+  // state.activeTab already reflects the URL ?tab= via createInitialState,
+  // so mounting just the active tab covers deep links without an extra parse.
+  const [mountedTabs, setMountedTabs] = useState<Set<ActiveTab>>(
+    () => new Set<ActiveTab>([state.activeTab]),
+  );
 
   useEffect(() => {
     classroomsRef.current = state.classrooms;
@@ -117,6 +113,10 @@ export default function App() {
   useEffect(() => {
     classroomCodesRef.current = state.classroomAccessCodes;
   }, [state.classroomAccessCodes]);
+
+  useEffect(() => {
+    classroomRolesRef.current = state.classroomRoles;
+  }, [state.classroomRoles]);
 
   const showSuccess = useCallback((msg: string) => {
     const id = `toast-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
@@ -180,6 +180,15 @@ export default function App() {
   );
 
   const setActiveTab = useCallback((tab: ActiveTab) => {
+    // Mount the target tab in the same React batch as the active-tab change,
+    // so the panel renders on the next frame instead of after a second render.
+    // Without this, lazy-mounted panels flash blank for one frame on first visit.
+    setMountedTabs((prev) => {
+      if (prev.has(tab)) return prev;
+      const next = new Set(prev);
+      next.add(tab);
+      return next;
+    });
     dispatch({ type: "SET_ACTIVE_TAB", tab });
   }, []);
 
@@ -237,14 +246,6 @@ export default function App() {
   }, [showSuccess, state.authPrompt]);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const requestedTab = params.get("tab");
-    if (isActiveTab(requestedTab)) {
-      dispatch({ type: "SET_ACTIVE_TAB", tab: requestedTab });
-    }
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
 
     listClassrooms()
@@ -279,10 +280,14 @@ export default function App() {
     };
   }, [setActiveClassroom]);
 
-  useEffect(() => {
+  // Configure the API client synchronously during the layout phase so that
+  // any child useEffect (e.g. TodayPanel's snapshot fetch) sees a fully
+  // wired client on first mount. Closures read from refs to avoid the
+  // cleanup/setup race that would otherwise occur on every code change.
+  useLayoutEffect(() => {
     configureApiClient({
-      getClassroomCode: (classroomId) => state.classroomAccessCodes[classroomId],
-      getClassroomRole: (classroomId) => state.classroomRoles[classroomId] ?? "teacher",
+      getClassroomCode: (classroomId) => classroomCodesRef.current[classroomId],
+      getClassroomRole: (classroomId) => classroomRolesRef.current[classroomId] ?? "teacher",
       requestClassroomCode,
     });
 
@@ -293,11 +298,14 @@ export default function App() {
         requestClassroomCode: undefined,
       });
     };
-  }, [requestClassroomCode, state.classroomAccessCodes, state.classroomRoles]);
+  }, [requestClassroomCode]);
 
+  // Flush queued telemetry once on mount. Online recovery is handled by the
+  // separate 'online' listener below; we intentionally do NOT re-flush on every
+  // classroomAccessCodes change because that causes burst writes on first auth.
   useEffect(() => {
     void flushQueuedClientArtifacts();
-  }, [flushQueuedClientArtifacts, state.classroomAccessCodes]);
+  }, [flushQueuedClientArtifacts]);
 
   useEffect(() => {
     function handleOnline() {
@@ -378,16 +386,6 @@ export default function App() {
     window.history.replaceState({}, "", nextUrl);
   }, [state.activeClassroom, state.activeTab, state.classrooms]);
 
-  // Lazily mount panels on first activation
-  useEffect(() => {
-    setMountedTabs((prev) => {
-      if (prev.has(state.activeTab)) return prev;
-      const next = new Set(prev);
-      next.add(state.activeTab);
-      return next;
-    });
-  }, [state.activeTab]);
-
   // Save scroll position before tab switch and restore on return
   const prevTabRef = useRef(state.activeTab);
   useEffect(() => {
@@ -416,8 +414,14 @@ export default function App() {
       if (tag === "input" || tag === "textarea" || tag === "select") return;
       if ((el as HTMLElement)?.isContentEditable) return;
 
+      // "1"–"9" → tabs 1–9; "0" → tab 10. Tabs 11–12 have no shortcut.
+      if (e.key === "0" && TAB_ORDER.length >= 10) {
+        e.preventDefault();
+        setActiveTab(TAB_ORDER[9]);
+        return;
+      }
       const digit = Number.parseInt(e.key, 10);
-      if (digit >= 1 && digit <= TAB_ORDER.length) {
+      if (digit >= 1 && digit <= 9 && digit <= TAB_ORDER.length) {
         e.preventDefault();
         setActiveTab(TAB_ORDER[digit - 1]);
       }
@@ -488,6 +492,31 @@ export default function App() {
     }
   }, [activeTab]);
 
+  // Expose overflow state so CSS fades can signal "more tabs this way"
+  // on both ends of the secondary nav. Without this the rail silently
+  // clips — teachers have no way to know e.g. "Sub Packet" exists.
+  useEffect(() => {
+    const container = tabsRef.current;
+    if (!container) return;
+    const frame = container.parentElement;
+    if (!frame) return;
+    function update() {
+      if (!container) return;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const overflow = maxScroll > 1;
+      frame!.dataset.overflow = overflow ? "true" : "false";
+      frame!.dataset.scrolledStart = overflow && container.scrollLeft > 2 ? "true" : "false";
+      frame!.dataset.scrolledEnd = overflow && container.scrollLeft < maxScroll - 2 ? "true" : "false";
+    }
+    update();
+    container.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      container.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, [activeGroup, activeTab]);
+
   // WAI-ARIA arrow key navigation within the tablist
   function handleTabKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     const currentIdx = secondaryTabs.indexOf(activeTab);
@@ -526,16 +555,19 @@ export default function App() {
     state.classroomRoles[activeClassroom] ?? "teacher";
 
   // Prompt for role when a classroom is loaded but has no stored role
+  // Wait for the onboarding tour to finish before asking the user to pick
+  // their role — stacking both modals simultaneously feels like an ambush.
   useEffect(() => {
     if (
       activeClassroom &&
       profile &&
       !state.classroomRoles[activeClassroom] &&
-      !state.rolePrompt
+      !state.rolePrompt &&
+      !state.showOnboarding
     ) {
       dispatch({ type: "OPEN_ROLE_PROMPT", classroomId: activeClassroom });
     }
-  }, [activeClassroom, profile, state.classroomRoles, state.rolePrompt]);
+  }, [activeClassroom, profile, state.classroomRoles, state.rolePrompt, state.showOnboarding]);
 
   const ctxValue = useMemo(
     () => ({
@@ -714,6 +746,7 @@ export default function App() {
                   return (
                     <button
                       key={group}
+                      data-testid={`shell-nav-group-${group}`}
                       className={`shell-nav__group${activeGroup === group ? " shell-nav__group--active" : ""}`}
                       onClick={() => setActiveTab(getTabsForGroup(group)[0])}
                       type="button"
@@ -732,7 +765,14 @@ export default function App() {
                     {secondaryTabs.map((tab) => {
                       const count = getTabBadgeCount(tab, debtCounts);
                       const tabIndex1Based = TAB_ORDER.indexOf(tab) + 1;
-                      const shortcutKey = tabIndex1Based <= 9 ? String(tabIndex1Based) : "0";
+                      // Only tabs 1–10 have a keyboard shortcut ("1"–"9", "0").
+                      // Tabs 11+ render no kbd badge to avoid a visual lie.
+                      const shortcutKey =
+                        tabIndex1Based <= 9
+                          ? String(tabIndex1Based)
+                          : tabIndex1Based === 10
+                            ? "0"
+                            : null;
                       return (
                         <button
                           key={tab}
@@ -747,7 +787,9 @@ export default function App() {
                         >
                           <span>{TAB_META[tab].label}</span>
                           {count > 0 ? <span className="shell-nav__badge">{count}</span> : null}
-                          <kbd className="shell-nav__kbd" aria-hidden="true">{shortcutKey}</kbd>
+                          {shortcutKey ? (
+                            <kbd className="shell-nav__kbd" aria-hidden="true">{shortcutKey}</kbd>
+                          ) : null}
                         </button>
                       );
                     })}
@@ -813,12 +855,22 @@ export default function App() {
           <RolePromptDialog classroomId={state.rolePrompt.classroomId} />
         ) : null}
         <ClassroomAccessDialog
-          open={Boolean(authPrompt)}
+          open={Boolean(authPrompt) && !state.rolePrompt && !state.showOnboarding}
           classroomId={authPrompt?.classroomId ?? activeClassroom}
           message={authPrompt?.message ?? ""}
           initialValue={authPrompt ? state.classroomAccessCodes[authPrompt.classroomId] : ""}
           onClose={closeAuthPrompt}
           onSubmit={handleAuthSubmit}
+          onUseDemo={
+            authPrompt && authPrompt.classroomId !== DEMO_CLASSROOM_ID &&
+            state.classrooms.some((c) => c.classroom_id === DEMO_CLASSROOM_ID || c.is_demo)
+              ? () => {
+                  closeAuthPrompt();
+                  const demo = state.classrooms.find((c) => c.is_demo || c.classroom_id === DEMO_CLASSROOM_ID);
+                  if (demo) setActiveClassroom(demo.classroom_id);
+                }
+              : undefined
+          }
         />
       </div>
       </SessionProvider>

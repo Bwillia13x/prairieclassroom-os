@@ -166,7 +166,7 @@ describe("API client basics", () => {
 
     try {
       await listClassrooms();
-    } catch (err) {
+    } catch {
       // First call already consumed the mock; this block uses the assertion above.
     }
     // Re-mock for a clean assertion
@@ -342,7 +342,9 @@ describe("auth challenge flow", () => {
     expect(requestClassroomCode).toHaveBeenCalledWith({
       classroomId: "c1",
       status: 401,
-      message: "Authentication required",
+      // Teacher-friendly copy; raw server text ("Provide X-Classroom-Code header")
+      // is intentionally hidden from the UI dialog.
+      message: "This classroom is protected. Enter its access code to keep going.",
     });
     expect(result.student_count).toBe(5);
     // Retry should include the new code

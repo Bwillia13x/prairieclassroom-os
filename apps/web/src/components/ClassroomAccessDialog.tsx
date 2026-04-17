@@ -9,6 +9,12 @@ interface Props {
   initialValue?: string;
   onClose: () => void;
   onSubmit: (code: string) => void;
+  /**
+   * Optional "escape hatch" shown when a teacher first lands on a protected
+   * classroom they don't have a code for — lets them explore the seeded
+   * demo classroom instead of bouncing.
+   */
+  onUseDemo?: () => void;
 }
 
 export default function ClassroomAccessDialog({
@@ -18,6 +24,7 @@ export default function ClassroomAccessDialog({
   initialValue,
   onClose,
   onSubmit,
+  onUseDemo,
 }: Props) {
   const [value, setValue] = useState(initialValue ?? "");
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -87,11 +94,26 @@ export default function ClassroomAccessDialog({
             <button className="btn btn--tertiary" onClick={onClose} type="button">
               Not Now
             </button>
-            <button className="btn btn--primary" type="submit">
+            <button
+              className="btn btn--primary"
+              type="submit"
+              data-testid="classroom-access-save"
+            >
               Save & Continue
             </button>
           </div>
         </form>
+
+        {onUseDemo ? (
+          <button
+            type="button"
+            className="access-dialog__demo-link"
+            onClick={onUseDemo}
+            data-testid="classroom-access-use-demo"
+          >
+            Don't have a code? Explore the demo classroom instead.
+          </button>
+        ) : null}
       </div>
     </div>
   );

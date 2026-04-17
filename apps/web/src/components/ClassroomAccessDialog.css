@@ -64,6 +64,31 @@
   gap: var(--space-2);
 }
 
+.access-dialog__demo-link {
+  appearance: none;
+  display: block;
+  width: 100%;
+  margin-top: var(--space-4);
+  padding: var(--space-3) 0 0 0;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-border-subtle) 60%, transparent);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  text-align: center;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease-standard);
+}
+
+.access-dialog__demo-link:hover,
+.access-dialog__demo-link:focus-visible {
+  color: var(--color-text-primary);
+}
+
 @media (max-width: 600px) {
   .access-dialog__card {
     padding: var(--space-5);

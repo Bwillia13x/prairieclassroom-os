@@ -64,6 +64,12 @@ interface RequestOptions {
   classroomId?: string;
   classroomCode?: string;
   keepalive?: boolean;
+  /**
+   * When true, suppress the interactive auth prompt on 401/403.
+   * Used by fire-and-forget telemetry (session/feedback) where we don't
+   * want a background failure to hijack the UI with a modal.
+   */
+  silent?: boolean;
 }
 
 const apiClientConfig: ApiClientConfig = {};
@@ -117,6 +123,15 @@ function isAuthChallenge(status: number, payload: ApiErrorPayload) {
     && (payload.detail_code === "classroom_code_missing" || payload.detail_code === "classroom_code_invalid");
 }
 
+// Server errors speak in HTTP vocabulary ("Provide X-Classroom-Code header").
+// Teachers don't know what a header is — translate on the way to the dialog.
+function teacherFriendlyAuthMessage(payload: ApiErrorPayload): string {
+  if (payload.detail_code === "classroom_code_invalid") {
+    return "That access code didn't match. Check with your lead teacher, then try again.";
+  }
+  return "This classroom is protected. Enter its access code to keep going.";
+}
+
 async function requestJson<T>(path: string, options: RequestOptions = {}): Promise<T> {
   const classroomId = resolveClassroomId(options.classroomId, options.body);
   const headers = new Headers(options.headers);
@@ -146,11 +161,16 @@ async function requestJson<T>(path: string, options: RequestOptions = {}): Promi
 
   if (!res.ok) {
     const payload = await parseErrorPayload(res);
-    if (classroomId && isAuthChallenge(res.status, payload) && apiClientConfig.requestClassroomCode) {
+    if (
+      !options.silent
+      && classroomId
+      && isAuthChallenge(res.status, payload)
+      && apiClientConfig.requestClassroomCode
+    ) {
       const code = await apiClientConfig.requestClassroomCode({
         classroomId,
         status: res.status,
-        message: payload.error || "This classroom needs an access code before protected tools can run.",
+        message: teacherFriendlyAuthMessage(payload),
       });
       if (code) {
         return requestJson<T>(path, {
@@ -526,6 +546,7 @@ export function submitFeedbackApi(
     body: request,
     classroomId: request.classroom_id,
     signal,
+    silent: true,
   });
 }
 
@@ -540,6 +561,7 @@ export function submitSessionApi(
     classroomId: request.classroom_id,
     keepalive: options?.keepalive,
     signal,
+    silent: true,
   });
 }
 

@@ -424,17 +424,40 @@
   animation: tabs-slide-in var(--motion-base) var(--ease-out-expo);
 }
 
+/* Fade affordances — tell teachers "there are more tabs this way".
+   Both ends render conditionally based on scroll position so the rail
+   never silently clips content (e.g. "Sub Packet" at the right edge). */
+.shell-nav__tabs-frame::before,
 .shell-nav__tabs-frame::after {
   content: "";
   position: absolute;
   top: 0;
-  right: 0;
   bottom: 0;
   width: 3rem;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast, 140ms) var(--ease-standard, ease);
+}
+
+.shell-nav__tabs-frame::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--color-bg), transparent);
+  mask-image: linear-gradient(90deg, black 40%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, black 40%, transparent 100%);
+}
+
+.shell-nav__tabs-frame::after {
+  right: 0;
   background: linear-gradient(90deg, transparent, var(--color-bg));
   mask-image: linear-gradient(90deg, transparent 0%, black 60%);
   -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 60%);
+}
+
+.shell-nav__tabs-frame[data-scrolled-start="true"]::before {
+  opacity: 0.92;
+}
+
+.shell-nav__tabs-frame[data-scrolled-end="true"]::after {
   opacity: 0.92;
 }
 
