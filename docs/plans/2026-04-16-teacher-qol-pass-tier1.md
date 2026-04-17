@@ -196,7 +196,7 @@ Create `apps/web/src/components/ShortcutSheet.css`:
 .shortcut-sheet__backdrop {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--color-surface-0) 60%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 60%, transparent);
   backdrop-filter: blur(4px);
   display: grid;
   place-items: center;
@@ -205,18 +205,18 @@ Create `apps/web/src/components/ShortcutSheet.css`:
 }
 
 .shortcut-sheet__card {
-  background: var(--color-surface-1);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 28px 32px;
   min-width: 360px;
   max-width: 520px;
-  box-shadow: var(--shadow-overlay);
+  box-shadow: var(--shadow-lg);
 }
 
 .shortcut-sheet__title {
-  font-family: var(--font-display);
+  font-family: var(--font-serif);
   font-size: 20px;
   margin: 0 0 4px;
 }
@@ -250,14 +250,14 @@ Create `apps/web/src/components/ShortcutSheet.css`:
 }
 
 .shortcut-sheet__keys kbd {
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
   border-radius: 4px;
   padding: 2px 8px;
   font-family: var(--font-mono, ui-monospace, monospace);
   font-size: 12px;
-  color: var(--color-text-primary);
-  box-shadow: inset 0 -1px 0 var(--color-border-subtle);
+  color: var(--color-text);
+  box-shadow: inset 0 -1px 0 var(--color-border);
 }
 
 .shortcut-sheet__sep {
@@ -411,7 +411,7 @@ Add minimal styling in the same file's CSS (or inline with existing footer style
 ```css
 .app-footer__shortcuts-btn {
   background: transparent;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border);
   border-radius: 50%;
   width: 24px;
   height: 24px;
@@ -422,8 +422,8 @@ Add minimal styling in the same file's CSS (or inline with existing footer style
   cursor: pointer;
 }
 .app-footer__shortcuts-btn:hover {
-  background: var(--color-surface-2);
-  color: var(--color-text-primary);
+  background: var(--color-surface-elevated);
+  color: var(--color-text);
 }
 ```
 
@@ -746,22 +746,22 @@ Create `apps/web/src/components/TomorrowChip.css`:
   align-items: center;
   gap: 6px;
   padding: 4px 10px 4px 12px;
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
   border-radius: 999px;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   font-size: 13px;
   cursor: pointer;
   transition: background 120ms;
 }
 .tomorrow-chip__trigger:hover,
 .tomorrow-chip__trigger[aria-expanded="true"] {
-  background: var(--color-surface-3);
+  background: var(--color-surface-muted);
 }
 
 .tomorrow-chip__count {
   background: var(--color-accent);
-  color: var(--color-accent-contrast, #fff);
+  color: var(--color-text-on-accent, #fff);
   border-radius: 999px;
   padding: 0 7px;
   font-size: 11px;
@@ -776,10 +776,10 @@ Create `apps/web/src/components/TomorrowChip.css`:
   right: 0;
   min-width: 280px;
   max-width: 360px;
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  box-shadow: var(--shadow-overlay);
+  box-shadow: var(--shadow-lg);
   padding: 12px;
   z-index: 900;
 }
@@ -811,7 +811,7 @@ Create `apps/web/src/components/TomorrowChip.css`:
   border-radius: var(--radius-sm);
 }
 .tomorrow-chip__item:hover {
-  background: var(--color-surface-2);
+  background: var(--color-surface-elevated);
 }
 
 .tomorrow-chip__item-body {
@@ -831,7 +831,7 @@ Create `apps/web/src/components/TomorrowChip.css`:
 
 .tomorrow-chip__item-summary {
   font-size: 13px;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   line-height: 1.35;
   word-break: break-word;
 }
@@ -847,22 +847,22 @@ Create `apps/web/src/components/TomorrowChip.css`:
   flex-shrink: 0;
 }
 .tomorrow-chip__remove:hover {
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .tomorrow-chip__review {
   width: 100%;
   background: transparent;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-text-primary);
+  color: var(--color-text);
   font-size: 13px;
   padding: 6px 10px;
   cursor: pointer;
   text-align: center;
 }
 .tomorrow-chip__review:hover {
-  background: var(--color-surface-2);
+  background: var(--color-surface-elevated);
 }
 
 @media (max-width: 760px) {
@@ -1272,31 +1272,31 @@ Create `apps/web/src/components/DraftRestoreChip.css`:
   gap: 12px;
   padding: 8px 12px;
   margin: 0 0 12px;
-  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface-1));
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
   border: 1px solid color-mix(in srgb, var(--color-accent) 25%, transparent);
   border-radius: var(--radius-sm);
   font-size: 13px;
 }
 
-.draft-restore__text { color: var(--color-text-primary); }
+.draft-restore__text { color: var(--color-text); }
 
 .draft-restore__actions { display: flex; gap: 6px; flex-shrink: 0; }
 
 .draft-restore__btn {
   background: transparent;
-  border: 1px solid var(--color-border-subtle);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 4px 10px;
   font-size: 12px;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   cursor: pointer;
 }
-.draft-restore__btn:hover { background: var(--color-surface-2); }
+.draft-restore__btn:hover { background: var(--color-surface-elevated); }
 
 .draft-restore__btn--primary {
   background: var(--color-accent);
   border-color: var(--color-accent);
-  color: var(--color-accent-contrast, #fff);
+  color: var(--color-text-on-accent, #fff);
 }
 .draft-restore__btn--primary:hover {
   background: color-mix(in srgb, var(--color-accent) 85%, black);
@@ -1848,7 +1848,7 @@ Create `apps/web/src/components/CommandPalette.css`:
 .command-palette__backdrop {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--color-surface-0) 65%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 65%, transparent);
   backdrop-filter: blur(6px);
   display: flex;
   justify-content: center;
@@ -1858,10 +1858,10 @@ Create `apps/web/src/components/CommandPalette.css`:
 }
 
 .command-palette__card {
-  background: var(--color-surface-1);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-overlay);
+  box-shadow: var(--shadow-lg);
   width: min(580px, 92vw);
   max-height: 70vh;
   display: flex;
@@ -1871,12 +1871,12 @@ Create `apps/web/src/components/CommandPalette.css`:
 .command-palette__input {
   background: transparent;
   border: none;
-  border-bottom: 1px solid var(--color-border-subtle);
-  color: var(--color-text-primary);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
   font-size: 16px;
   padding: 16px 18px;
   outline: none;
-  font-family: var(--font-body);
+  font-family: var(--font-sans);
 }
 .command-palette__input::placeholder {
   color: var(--color-text-tertiary);
@@ -1897,11 +1897,11 @@ Create `apps/web/src/components/CommandPalette.css`:
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .command-palette__item--active {
-  background: var(--color-surface-2);
+  background: var(--color-surface-elevated);
 }
 
 .command-palette__kind {
@@ -2052,8 +2052,8 @@ Inline styles in the existing header CSS (search for `.app-header` or similar) â
 
 ```css
 .app-header__palette-btn {
-  background: var(--color-surface-2);
-  border: 1px solid var(--color-border-subtle);
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   padding: 3px 8px;
   font-size: 11px;
@@ -2062,8 +2062,8 @@ Inline styles in the existing header CSS (search for `.app-header` or similar) â
   cursor: pointer;
 }
 .app-header__palette-btn:hover {
-  background: var(--color-surface-3);
-  color: var(--color-text-primary);
+  background: var(--color-surface-muted);
+  color: var(--color-text);
 }
 ```
 
