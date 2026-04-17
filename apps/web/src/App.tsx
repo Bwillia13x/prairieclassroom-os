@@ -856,7 +856,7 @@ export default function App() {
           {renderPanel(activeTab, "usage-insights", mountedTabs, <UsageInsightsPanel />)}
         </main>
 
-        <AppFooter />
+        <AppFooter onOpenShortcuts={() => setShortcutSheetOpen(true)} />
 
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
 

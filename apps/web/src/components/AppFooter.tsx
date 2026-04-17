@@ -1,11 +1,15 @@
 import { TAB_ORDER, TAB_META } from "../appReducer";
 import "./AppFooter.css";
 
+interface Props {
+  onOpenShortcuts?: () => void;
+}
+
 /**
  * AppFooter — persistent footer with keyboard shortcut map and branding.
  * Displays the 1-0 keyboard shortcuts for all nav tabs and hackathon context.
  */
-export default function AppFooter() {
+export default function AppFooter({ onOpenShortcuts }: Props = {}) {
   return (
     <footer className="app-footer" role="contentinfo">
       <div className="app-footer__shortcuts" aria-label="Keyboard shortcuts">
@@ -27,6 +31,17 @@ export default function AppFooter() {
         <span className="app-footer__brand">PrairieClassroom OS</span>
         <span className="app-footer__sep" aria-hidden="true">·</span>
         <span className="app-footer__context">Built for the Gemma 4 Good Hackathon</span>
+        {onOpenShortcuts && (
+          <button
+            type="button"
+            className="app-footer__shortcuts-btn"
+            onClick={onOpenShortcuts}
+            aria-label="Keyboard shortcuts"
+            title="Keyboard shortcuts (press ?)"
+          >
+            ?
+          </button>
+        )}
       </div>
     </footer>
   );

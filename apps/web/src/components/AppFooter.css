@@ -114,6 +114,23 @@
   font-weight: var(--font-weight-normal);
 }
 
+.app-footer__shortcuts-btn {
+  background: transparent;
+  border: 1px solid var(--color-border-subtle);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: inline-grid;
+  place-items: center;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+.app-footer__shortcuts-btn:hover {
+  background: var(--color-surface-2);
+  color: var(--color-text-primary);
+}
+
 /* Hide shortcut list on mobile (no physical keyboard) */
 @media (max-width: 600px) {
   .app-footer__shortcuts {
