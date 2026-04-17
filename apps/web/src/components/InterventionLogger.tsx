@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
+import DraftRestoreChip from "./DraftRestoreChip";
 import type { InterventionPrefill } from "../types";
 import { Card, ActionButton } from "./shared";
 import "./InterventionLogger.css";
@@ -34,12 +35,18 @@ export default function InterventionLogger({
   const [teacherNote, setTeacherNote] = useState("");
   const [touched, setTouched] = useState(false);
 
-  const { clear: clearDraft } = useFormPersistence(
+  const {
+    clear: clearDraft,
+    restore: restoreDraft,
+    dismiss: dismissDraft,
+    hasPendingDraft,
+  } = useFormPersistence(
     `prairie-intervention-${selectedClassroom}`,
     { teacherNote },
     useCallback((saved: Partial<{ teacherNote: string }>) => {
       if (saved.teacherNote !== undefined) setTeacherNote(saved.teacherNote);
     }, []),
+    { autoRestore: false, minChars: 20, maxAgeMs: 12 * 60 * 60 * 1000 },
   );
 
   useEffect(() => {
@@ -75,6 +82,13 @@ export default function InterventionLogger({
           <p className="logger-description form-description">
             Record the students involved, what happened, and the action taken. The note is structured for classroom memory and follow-up review.
           </p>
+
+          <DraftRestoreChip
+            show={hasPendingDraft}
+            onRestore={restoreDraft}
+            onDismiss={dismissDraft}
+            label="Pick up your intervention note where you left off?"
+          />
 
           {prefill && (
             <div className="logger-context">

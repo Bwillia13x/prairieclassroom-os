@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
+import DraftRestoreChip from "./DraftRestoreChip";
 import type { FamilyMessagePrefill } from "../types";
 import "./MessageComposer.css";
 
@@ -62,12 +63,18 @@ export default function MessageComposer({
   const [context, setContext] = useState(prefill?.reason ?? "");
   const [prefillDismissed, setPrefillDismissed] = useState(false);
 
-  const { clear: clearDraft } = useFormPersistence(
+  const {
+    clear: clearDraft,
+    restore: restoreDraft,
+    dismiss: dismissDraft,
+    hasPendingDraft,
+  } = useFormPersistence(
     `prairie-message-${selectedClassroom}`,
     { context },
     useCallback((saved: Partial<{ context: string }>) => {
       if (saved.context !== undefined) setContext(saved.context);
     }, []),
+    { autoRestore: false, minChars: 20, maxAgeMs: 12 * 60 * 60 * 1000 },
   );
 
   useEffect(() => {
@@ -113,6 +120,13 @@ export default function MessageComposer({
       <p className="composer-description form-description">
         Select the student, choose the message type, and review the generated draft before anything leaves this workspace.
       </p>
+
+      <DraftRestoreChip
+        show={hasPendingDraft}
+        onRestore={restoreDraft}
+        onDismiss={dismissDraft}
+        label="You had an unsent message drafted. Resume it?"
+      />
 
       {prefill && !prefillDismissed && (
         <div className="prefill-banner">

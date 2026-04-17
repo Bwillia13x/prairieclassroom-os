@@ -4,6 +4,7 @@ import type { CurriculumEntry, CurriculumSelection, LessonArtifact } from "../ty
 import FileUploadZone from "./FileUploadZone";
 import WorksheetUpload from "./WorksheetUpload";
 import CurriculumPicker from "./CurriculumPicker";
+import DraftRestoreChip from "./DraftRestoreChip";
 import { Card, ActionButton } from "./shared";
 import "./ArtifactUpload.css";
 
@@ -36,7 +37,12 @@ export default function ArtifactUpload({
   const [sourceMode, setSourceMode] = useState<ArtifactSourceMode>("photo");
   const selectedClassroomProfile = classrooms.find((classroom) => classroom.classroom_id === selectedClassroom);
 
-  const { clear: clearDraft } = useFormPersistence(
+  const {
+    clear: clearDraft,
+    restore: restoreDraft,
+    dismiss: dismissDraft,
+    hasPendingDraft,
+  } = useFormPersistence(
     `prairie-artifact-${selectedClassroom}`,
     { title, subject, rawText, teacherGoal, curriculumSelection },
     useCallback((saved: Partial<{
@@ -52,6 +58,7 @@ export default function ArtifactUpload({
       if (saved.teacherGoal !== undefined) setTeacherGoal(saved.teacherGoal);
       if (saved.curriculumSelection !== undefined) setCurriculumSelection(saved.curriculumSelection);
     }, []),
+    { autoRestore: false, minChars: 20, maxAgeMs: 12 * 60 * 60 * 1000 },
   );
 
   function handleFileExtracted(text: string, filename: string) {
@@ -89,6 +96,13 @@ export default function ArtifactUpload({
       <p className="form-description">
         Choose the classroom first, then bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
       </p>
+
+      <DraftRestoreChip
+        show={hasPendingDraft}
+        onRestore={restoreDraft}
+        onDismiss={dismissDraft}
+        label="Resume the lesson artifact you were setting up?"
+      />
 
       <div className="field">
         <label htmlFor="classroom">Classroom</label>

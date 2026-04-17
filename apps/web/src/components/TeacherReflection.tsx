@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
+import DraftRestoreChip from "./DraftRestoreChip";
 import "./TeacherReflection.css";
 
 interface Props {
@@ -21,13 +22,19 @@ export default function TeacherReflection({
   const [teacherGoal, setTeacherGoal] = useState("");
   const [touched, setTouched] = useState(false);
 
-  const { clear: clearDraft } = useFormPersistence(
+  const {
+    clear: clearDraft,
+    restore: restoreDraft,
+    dismiss: dismissDraft,
+    hasPendingDraft,
+  } = useFormPersistence(
     `prairie-reflection-${selectedClassroom}`,
     { reflection, teacherGoal },
     useCallback((saved: Partial<{ reflection: string; teacherGoal: string }>) => {
       if (saved.reflection !== undefined) setReflection(saved.reflection);
       if (saved.teacherGoal !== undefined) setTeacherGoal(saved.teacherGoal);
     }, []),
+    { autoRestore: false, minChars: 20, maxAgeMs: 12 * 60 * 60 * 1000 },
   );
 
   function handleSubmit(e: React.FormEvent) {
@@ -43,6 +50,13 @@ export default function TeacherReflection({
       <p className="reflection-description form-description">
         Capture the day in a few sentences and the planner will turn it into tomorrow's priorities, watchpoints, and follow-through actions.
       </p>
+
+      <DraftRestoreChip
+        show={hasPendingDraft}
+        onRestore={restoreDraft}
+        onDismiss={dismissDraft}
+        label="Continue the reflection you started earlier?"
+      />
 
       <div className="field">
         <label htmlFor="plan-classroom">Classroom</label>
