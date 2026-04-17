@@ -417,6 +417,24 @@ export default function App() {
     }
   }, [state.activeTab]);
 
+  // Mirror gating state in refs so the keydown handler can read current values
+  // without forcing the effect to re-register (and without triggering React's
+  // "deps array changed size" HMR warning).
+  const paletteGatingRef = useRef({
+    authPrompt: state.authPrompt,
+    rolePrompt: state.rolePrompt,
+    showOnboarding: state.showOnboarding,
+    shortcutSheetOpen,
+  });
+  useEffect(() => {
+    paletteGatingRef.current = {
+      authPrompt: state.authPrompt,
+      rolePrompt: state.rolePrompt,
+      showOnboarding: state.showOnboarding,
+      shortcutSheetOpen,
+    };
+  }, [state.authPrompt, state.rolePrompt, state.showOnboarding, shortcutSheetOpen]);
+
   useEffect(() => {
     function handleKeydown(e: KeyboardEvent) {
       const el = document.activeElement;
@@ -426,7 +444,8 @@ export default function App() {
       // Cmd/Ctrl+K → command palette (works even when input is focused; gated against other modals)
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
         e.preventDefault();
-        if (state.authPrompt || state.rolePrompt || state.showOnboarding || shortcutSheetOpen) return;
+        const g = paletteGatingRef.current;
+        if (g.authPrompt || g.rolePrompt || g.showOnboarding || g.shortcutSheetOpen) return;
         setPaletteOpen(true);
         return;
       }
@@ -455,7 +474,7 @@ export default function App() {
 
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
-  }, [setActiveTab, state.authPrompt, state.rolePrompt, state.showOnboarding, shortcutSheetOpen]);
+  }, [setActiveTab]);
 
   function handleDismissOnboarding() {
     localStorage.setItem("prairie-onboarding-done", "true");
