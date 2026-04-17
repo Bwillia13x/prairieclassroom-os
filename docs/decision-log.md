@@ -13,6 +13,22 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-16 — Teacher Quality-of-Life Tier 1 sprint
+
+- **Decision:** Ship four additive UI conveniences on top of the existing 12-panel surface: (1) a `Cmd/Ctrl+K` command palette indexing panels, classrooms, and per-student actions, (2) a persistent `Tomorrow Plan` header chip with per-item remove popover, (3) a visible `Resume your draft?` affordance on four free-text panels via an extended `useFormPersistence` hook, (4) a `?`-key keyboard shortcut cheat-sheet with a footer trigger for mouse users.
+- **Why:** The app is production-hardened but teachers pay a per-session navigation tax (rebuilding context after interruption, hunting across panels, re-typing lost drafts). Each intervention targets a high-frequency friction point with no backend or schema change.
+- **Alternatives considered:** Adding a single global "home" dashboard with smart routing (heavier UX churn); per-panel next-step chips (Tier 2 — deferred); full voice-input pipeline for hallway use (Tier 3 — deferred). Tier 1 picks the smallest additive set with the clearest daily payback.
+- **Consequences:**
+  - New `prairieclassroom.palette.recents` localStorage namespace introduced (first use of the `prairieclassroom.` prefix — reserve it for future palette-owned keys).
+  - `useFormPersistence` now accepts a fourth-argument options object (`autoRestore`, `minChars`, `maxAgeMs`); default values preserve existing behavior. New return fields: `restore`, `dismiss`, `hasPendingDraft`. Stored shape gains a private `__ts` timestamp.
+  - New reducer action `REMOVE_TOMORROW_NOTE` complements the existing `APPEND_TOMORROW_NOTE` / `CLEAR_TOMORROW_NOTES` pair.
+  - New components under `apps/web/src/components/`: `CommandPalette`, `TomorrowChip`, `DraftRestoreChip`, `ShortcutSheet`. New hook: `usePaletteEntries`.
+  - Header gains a `⌘K` button and a `Tomorrow · N` chip; footer gains a `?` button.
+  - 24 new unit tests added across the four features; full suite passes at 1159 tests / 103 files.
+- **What would change this:** Real teacher usage data (session events already collected via `useSessionContext`) showing that either (a) the palette is rarely invoked — in which case shift investment to Tier 2 context-aware next-step chips, or (b) drafts are frequently discarded before threshold — in which case lower `minChars` or remove the threshold entirely.
+
+---
+
 ### 2026-04-14 — OutputActionBar shared component and dual-step family-message approval
 
 - **Decision:** Introduce `OutputActionBar` as a shared UI component (`apps/web/src/components/shared/OutputActionBar.tsx`) that renders a consistent row of output actions (Print, Copy, Download, Save to Tomorrow, Share with EA, Review approval) below the `FeedbackCollector` in every generation panel. Require family-message approval to go through a two-step `MessageApprovalDialog` rather than a single confirm button.
