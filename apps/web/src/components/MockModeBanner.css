@@ -1,0 +1,41 @@
+.mock-mode-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  background: color-mix(in srgb, var(--color-pending) 10%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-pending) 35%, var(--color-border));
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.mock-mode-banner__badge {
+  flex: 0 0 auto;
+  margin-top: 0.18rem;
+  font-size: 0.6rem;
+  line-height: 1;
+  color: var(--color-pending);
+}
+
+.mock-mode-banner__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.mock-mode-banner__title {
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.mock-mode-banner__detail {
+  margin: 0;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+  text-wrap: pretty;
+}

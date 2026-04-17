@@ -137,6 +137,21 @@ describe("TodayHero", () => {
     expect(screen.getByText("Prep ready")).toBeInTheDocument();
   });
 
+  it("renders the recommended-action rationale sentence so the teacher sees why this is the next move", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+    expect(
+      screen.getByText(/core planning is up to date/i),
+    ).toBeInTheDocument();
+  });
+
   it("omits the CTA row when recommendedAction is null", () => {
     render(
       <TodayHero

@@ -16,6 +16,7 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
+import MockModeBanner from "../components/MockModeBanner";
 import { FeedbackCollector, OutputActionBar, Sparkline as SharedSparkline, type OutputAction } from "../components/shared";
 import { ComplexityHeatmap } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
@@ -157,6 +158,10 @@ export default function ForecastPanel() {
                   label="Forecast generated"
                   generatedAt={parseRecordTimestamp(result.forecast.forecast_id)}
                   latencyMs={result.latency_ms || undefined}
+                />
+                <MockModeBanner
+                  modelId={result.model_id}
+                  panelHint="Block-by-block complexity ratings come from a static fixture in mock mode and do not adapt to your schedule or classroom history. Run with Ollama or hosted Gemini to see real forecasting."
                 />
                 <ForecastTimeline blocks={result.forecast.blocks} />
                 <ComplexityHeatmap blocks={result.forecast.blocks} />

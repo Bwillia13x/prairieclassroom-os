@@ -13,6 +13,8 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
+import MockModeBanner from "../components/MockModeBanner";
+import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
@@ -163,11 +165,16 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
             {result ? (
               <>
                 <ResultBanner label="Patterns analyzed" generatedAt={Date.now()} />
+                <MockModeBanner
+                  modelId={result.model_id}
+                  panelHint="Pattern themes are static fixture text in mock mode and do not analyze your real intervention history. Run with Ollama or hosted Gemini to see real pattern detection."
+                />
                 <PatternReportResult
                   result={result}
                   onInterventionClick={onInterventionClick}
                   onFollowupClick={onFollowupClick}
                 />
+                <RetrievalTraceCard trace={result.retrieval_trace} />
                 <OutputFeedback outputId={`patterns-${resultKey}`} outputType="support-patterns" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

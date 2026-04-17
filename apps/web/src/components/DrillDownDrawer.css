@@ -246,6 +246,20 @@
   color: var(--color-text-tertiary);
 }
 
+/* Items older than two weeks read with extra weight so the eye finds
+   them first. The left rule mirrors the language used elsewhere in the
+   workspace for "needs attention" without raising operational alarm. */
+.drill-down-debt-item--overdue {
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--color-warning);
+  background: color-mix(in srgb, var(--color-warning) 6%, transparent);
+}
+
+.drill-down-debt-item__age--overdue {
+  color: var(--color-text-warning);
+  font-weight: var(--font-weight-medium);
+}
+
 /* Trend table */
 .drill-down-trend-table {
   width: 100%;

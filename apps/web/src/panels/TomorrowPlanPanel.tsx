@@ -17,6 +17,8 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
+import MockModeBanner from "../components/MockModeBanner";
+import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
@@ -211,6 +213,10 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   modelId={displayResult.model_id || undefined}
                   latencyMs={displayResult.latency_ms || undefined}
                 />
+                <MockModeBanner
+                  modelId={displayResult.model_id}
+                  panelHint="Plan content does not adapt to your reflection or pull from classroom memory in mock mode. The structure is real; the retrieval is not. Run with Ollama or hosted Gemini to see real planning."
+                />
                 <PlanCoverageRadar
                   watchpoints={displayResult.plan.transition_watchpoints.length}
                   priorities={displayResult.plan.support_priorities.length}
@@ -226,6 +232,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   onFollowupClick={onFollowupClick}
                   onInterventionClick={onInterventionClick}
                 />
+                <RetrievalTraceCard trace={displayResult.retrieval_trace} />
                 <OutputFeedback outputId={displayResult.plan.plan_id} outputType="tomorrow-plan" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

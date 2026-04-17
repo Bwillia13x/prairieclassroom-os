@@ -35,14 +35,27 @@ interface Props {
   }) => void;
 }
 
+// Friendlier, less-judgmental category labels for the drawer title.
+// The schema key `stale_followup` reads as "you've been bad" to a teacher
+// already feeling behind; "open follow-ups" does the same operational work
+// without the emotional charge. Schema keys remain unchanged.
+const DEBT_CATEGORY_LABELS: Record<string, string> = {
+  stale_followup: "open follow-ups",
+  unaddressed_pattern: "unaddressed patterns",
+  unapproved_message: "unapproved messages",
+  approaching_review: "approaching review",
+};
+
 function computeTitle(context: DrillDownContext): string {
   switch (context.type) {
     case "forecast-block":
       return `${context.block.time_slot} — ${context.block.activity} · ${context.block.level} complexity`;
     case "student":
       return `${context.alias} — Student Detail`;
-    case "debt-category":
-      return `${context.items.length} ${context.category.replace(/_/g, " ")}`;
+    case "debt-category": {
+      const label = DEBT_CATEGORY_LABELS[context.category] ?? context.category.replace(/_/g, " ");
+      return `${context.items.length} ${label}`;
+    }
     case "trend":
       return `${context.label} — 14-day trend`;
     case "plan-coverage-section":

@@ -6,6 +6,7 @@ import { draftFamilyMessage, approveFamilyMessage, fetchMessageHistory, fetchCla
 import MessageComposer from "../components/MessageComposer";
 import MessageDraft from "../components/MessageDraft";
 import MessageApprovalDialog from "../components/MessageApprovalDialog";
+import MockModeBanner from "../components/MockModeBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ContextualHint from "../components/ContextualHint";
 import OutputFeedback from "../components/OutputFeedback";
@@ -238,6 +239,10 @@ export default function FamilyMessagePanel({ prefill }: Props) {
                   label="Message drafted"
                   generatedAt={parseRecordTimestamp(displayResult.draft.draft_id)}
                   latencyMs={displayResult.latency_ms || undefined}
+                />
+                <MockModeBanner
+                  modelId={displayResult.model_id}
+                  panelHint="Translation does not vary by target language in mock mode — every language returns the same fixture text. Run with Ollama or hosted Gemini to see real translation."
                 />
                 <MessageDraft draft={displayResult.draft} meta={displayResult} onApprove={handleApprove} />
                 <OutputFeedback outputId={displayResult.draft.draft_id} outputType="family-message" />

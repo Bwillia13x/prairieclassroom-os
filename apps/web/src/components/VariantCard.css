@@ -69,6 +69,25 @@
   margin-bottom: 0.2rem;
 }
 
+.variant-section__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.variant-reading-level {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-secondary);
+  background: var(--color-surface-muted);
+  border: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  white-space: nowrap;
+  cursor: help;
+}
+
 .variant-section p {
   font-size: var(--text-base);
   color: var(--color-text);

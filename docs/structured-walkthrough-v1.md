@@ -181,6 +181,20 @@ Each scenario was walked once. This is a first pass, not a deep study.
 4. **Retrieval trace on planning-tier panels.** Would turn "the plan cites my students' names, but is it actually reading my memory?" into a visible yes/no answer. This is the single biggest trust lever for first-time users.
 5. **Quick-capture micro-mode for Log Intervention.** One text field, backend-parsed. Collapses the 60-second window into 10 seconds.
 
+### Status of the top-five (as of 2026-04-17, pre-teacher-testing pass)
+
+- **#1 — Done.** `TodayHero` now renders the `recommendedAction.description` sentence between the status chip and the CTA, so the teacher sees the *why* alongside the *what*. Today panel only — Tomorrow Plan, EA Briefing, and Debt Register still show their own state without a single "start here" sentence; revisit after the first real teacher session.
+- **#2 — Already shipped.** `MessageComposer.LANGUAGES` covers English, French, Arabic, Ukrainian, Tagalog, Spanish, Mandarin (Chinese Simplified), and Punjabi. The walkthrough doc was stale on this point.
+- **#3 — Done.** New `MockModeBanner` component mounts inside the result canvas of nine generation panels (Family Message, Differentiate, Tomorrow Plan, EA Briefing, Forecast, Support Patterns, Survival Packet, Language Tools simplify + vocab, Intervention, EA Load) with panel-specific hints explaining what mock fixtures hide on that surface.
+- **#4 — Done 2026-04-17 (3 panels, extensible pattern).** New `RetrievalTrace` shared schema (`packages/shared/schemas/retrieval-trace.ts`); orchestrator helper (`services/orchestrator/retrieval-trace.ts`); collapsible `<RetrievalTraceCard>` component mounted on TomorrowPlanPanel, EABriefingPanel, and SupportPatternsPanel. Each shows N "records pulled from classroom memory" with source type, record id, age chip, and excerpt. The honesty-bounded copy reads: *"These are the records the system read into the prompt. The trace reports what was retrieved — not what the model actually used."* Verified end-to-end: `POST /api/tomorrow-plan` against the seeded demo classroom returns 9 citations (3 plans + 5 interventions + 1 pattern report). Pattern is ready to extend to the remaining 4 retrieval-backed routes (forecast, scaffold_decay, survival_packet, ea_load) by mirroring the same retrieval-then-citation flow.
+- **#5 — Already shipped (G-17 in `development-gaps.md`).** `QuickCaptureTray` chip-first 5-second flow is live; legacy `InterventionLogger` stays in a `<details>` expansion.
+
+### Other Scenario-level frictions addressed in this pass
+
+- **Scenario 2 — reading-level estimate per variant.** `VariantCard` now shows a `~Grade N` chip alongside the "Student Instructions" header, computed via Flesch-Kincaid in `apps/web/src/utils/readingLevel.ts`. The chip is hover-described as a heuristic estimate so a teacher reads it as a hint, not a measurement.
+- **Scenario 6 — days-ago chip on EA briefing pending follow-ups.** Already present in `EABriefing.tsx` (`<span className="ea-card-tag"> · {f.days_since} days ago</span>`). Walkthrough doc was stale on this point.
+- **Scenario 8 — "stale" → "open" framing + 14-day weight.** User-facing labels in `TodayPanel` and `DrillDownDrawer` now say "open follow-ups" while the schema key `stale_followup` is preserved across the system. `DebtCategoryView` rows older than 14 days render with a warning-tone left rule and a `Nw ago` label so a 13-day-old item doesn't visually blend with a 5-day-old one. "Dismiss with reason" affordance is *not* yet built — still listed in `docs/future-development.md`.
+
 ## What would make this document real pilot evidence instead
 
 This document is honest about what it isn't. To upgrade this to credible pilot evidence (and to meaningfully close `G-06` in `docs/development-gaps.md`), the following would need to happen:
@@ -199,8 +213,18 @@ Until those steps happen, this document is exactly what the file name implies �
 
 1. **Implement the top five changes** listed above. All are frontend-only. None require new prompt classes or new backend endpoints.
 2. **Schedule a second synthetic walkthrough** after those changes land, from a cold state, to verify the friction reduction is real and not cosmetic.
-3. **Prepare a teacher-facing walkthrough protocol** (a one-page cold-start script that a real teacher could follow without maintainer help) ready to use when the project moves into a real pilot conversation.
+3. **Prepare a teacher-facing walkthrough protocol** (a one-page cold-start script that a real teacher could follow without maintainer help) ready to use when the project moves into a real pilot conversation. — **Done 2026-04-17**, see [docs/pilot/cold-start-protocol.md](pilot/cold-start-protocol.md).
 4. **Treat this document as a living baseline** — revisit after every sprint and re-walk any scenario whose panel changed, so friction doesn't silently return.
+
+### Pilot-enablement scaffolding (added 2026-04-17)
+
+The 2026-04-17 pre-teacher-testing pass added everything a coordinator needs to run a real session without maintainer help:
+
+- `npm run pilot:reset` — purges the demo classroom memory and re-seeds it from `data/demo/seed.ts` so every session starts from known state. Writes a tombstone artifact under `output/pilot/`. Refuses to touch non-demo classroom ids unless explicitly forced with `--allow-non-demo --i-mean-it`.
+- `npm run pilot:start` — boots the Flask inference, Express orchestrator, and Vite web servers in parallel, health-polls each, and prints the URL the coordinator opens. Stops cleanly on Ctrl-C. Defaults to mock lane; `--inference ollama` is supported, hosted lanes are deliberately not.
+- `docs/pilot/cold-start-protocol.md` — 8-scenario teacher-facing script with deterministic steps (which tab to click, what to type) and "what to notice" prompts that surface the maintainer's structured-walkthrough friction items in teacher-readable language.
+- `docs/pilot/observation-template.md` — pre-filled with the protocol's scenarios in the workflow table and the actual prompt-class identifiers in the output-quality table. Adds an explicit "Did teacher notice mock-mode banner?" column.
+- `docs/pilot/participant-brief.md` — now references the protocol and the pilot-reset command in the data-boundaries section.
 
 ---
 

@@ -24,6 +24,9 @@ export default function DebtCategoryView({
     <>
       {items.map((item) => {
         const isStaleFollowup = item.category === "stale_followup";
+        // Items older than two weeks get a distinct visual weight so a
+        // 13-day-old follow-up doesn't visually blend with a 5-day-old one.
+        const isOverdue = item.age_days >= 14;
 
         function handleLogFollowUp() {
           const studentRef = item.student_refs[0] ?? "";
@@ -35,8 +38,15 @@ export default function DebtCategoryView({
           onNavigate("log-intervention");
         }
 
+        const ageLabel = item.age_days >= 14
+          ? `${Math.floor(item.age_days / 7)}w ago`
+          : `${item.age_days}d ago`;
+
         return (
-          <div key={item.source_record_id} className="drill-down-debt-item">
+          <div
+            key={item.source_record_id}
+            className={`drill-down-debt-item${isOverdue ? " drill-down-debt-item--overdue" : ""}`}
+          >
             <p className="drill-down-debt-item__description">
               {item.description}
             </p>
@@ -46,8 +56,10 @@ export default function DebtCategoryView({
                   {item.student_refs.join(", ")}
                 </span>
               )}
-              <span className="drill-down-debt-item__age">
-                {item.age_days}d ago
+              <span
+                className={`drill-down-debt-item__age${isOverdue ? " drill-down-debt-item__age--overdue" : ""}`}
+              >
+                {ageLabel}
               </span>
               {isStaleFollowup && (
                 <button

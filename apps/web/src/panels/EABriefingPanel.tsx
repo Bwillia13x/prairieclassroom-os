@@ -13,6 +13,8 @@ import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
+import MockModeBanner from "../components/MockModeBanner";
+import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
@@ -156,7 +158,12 @@ export default function EABriefingPanel() {
             {result ? (
               <>
                 <ResultBanner label="Briefing generated" generatedAt={Date.now()} />
+                <MockModeBanner
+                  modelId={result.model_id}
+                  panelHint="Briefing content does not pull from real intervention history in mock mode. The schedule and watch list shape are real; the retrieval is not."
+                />
                 <EABriefingResult result={result} />
+                <RetrievalTraceCard trace={result.retrieval_trace} />
                 <OutputFeedback outputId={`briefing-${resultKey}`} outputType="ea-briefing" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

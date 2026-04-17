@@ -16,6 +16,7 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import StreamingIndicator from "../components/StreamingIndicator";
 import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
 import ResultBanner from "../components/ResultBanner";
+import MockModeBanner from "../components/MockModeBanner";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
@@ -264,6 +265,10 @@ export default function LanguageToolsPanel() {
             {simplify.result && activeTool === "simplify" ? (
               <>
                 <ResultBanner label="Text simplified" generatedAt={Date.now()} />
+                <MockModeBanner
+                  modelId={simplify.result.model_id}
+                  panelHint="Simplified text is the same fixture in mock mode regardless of source. Run with Ollama or hosted Gemini to see real simplification."
+                />
                 <ReadabilityComparisonGauge
                   sourceText={simplify.result.simplified.source_text}
                   simplifiedText={simplify.result.simplified.simplified_text}
@@ -281,6 +286,10 @@ export default function LanguageToolsPanel() {
             {vocab.result && activeTool === "vocab" ? (
               <>
                 <ResultBanner label={`${vocab.result.card_set.cards.length} cards generated`} generatedAt={Date.now()} />
+                <MockModeBanner
+                  modelId={vocab.result.model_id}
+                  panelHint="Vocabulary cards are static fixture content in mock mode and do not vary by source text or target language. Run with Ollama or hosted Gemini to see real vocab generation."
+                />
                 <VocabCardGrid onSubmit={handleVocabCards} result={vocab.result} loading={vocab.loading} />
                 <OutputFeedback outputId={`vocab-${vocabKey}`} outputType="vocab-cards" />
                 <FeedbackCollector

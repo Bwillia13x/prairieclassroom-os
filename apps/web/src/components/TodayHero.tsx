@@ -50,6 +50,9 @@ export default function TodayHero({
             label={recommendedAction.label}
             tone={recommendedAction.tone}
           />
+          <p className="today-hero__cta-rationale">
+            {recommendedAction.description}
+          </p>
           <ActionButton
             variant="primary"
             size="lg"

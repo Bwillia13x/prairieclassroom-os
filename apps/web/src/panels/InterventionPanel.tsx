@@ -16,6 +16,7 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
+import MockModeBanner from "../components/MockModeBanner";
 import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
@@ -191,6 +192,10 @@ export default function InterventionPanel({ prefill }: Props) {
                   label="Intervention logged"
                   generatedAt={displayResult.record.created_at}
                   latencyMs={displayResult.latency_ms || undefined}
+                />
+                <MockModeBanner
+                  modelId={displayResult.model_id}
+                  panelHint="The structured record is real and persisted to memory, but tag and follow-up suggestions come from a static fixture in mock mode. Run with Ollama or hosted Gemini to see real classification."
                 />
                 <InterventionCard record={displayResult.record} meta={displayResult} />
                 <FeedbackCollector

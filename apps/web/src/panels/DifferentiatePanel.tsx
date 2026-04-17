@@ -17,6 +17,7 @@ import ErrorBanner from "../components/ErrorBanner";
 import OutputMetaRow from "../components/OutputMetaRow";
 import { buildModelMetaItems } from "../components/buildModelMetaItems";
 import ResultBanner from "../components/ResultBanner";
+import MockModeBanner from "../components/MockModeBanner";
 import { Card, FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
@@ -189,6 +190,10 @@ export default function DifferentiatePanel() {
                 <ResultBanner
                   label={`${result.variants.length} variants generated`}
                   generatedAt={Date.now()}
+                />
+                <MockModeBanner
+                  modelId={result.model_id}
+                  panelHint="Variants reuse the same fixture text in mock mode and do not adapt to the lesson artifact you uploaded. Run with Ollama or hosted Gemini to see real differentiation."
                 />
                 <Card variant="raised" tone="sage" className="differentiate-result-summary">
                   <Card.Body>

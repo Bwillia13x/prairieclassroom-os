@@ -1,4 +1,5 @@
 import type { DifferentiatedVariant } from "../types";
+import { estimateGradeLevel, describeGradeLevel } from "../utils/readingLevel";
 import "./VariantCard.css";
 
 const VARIANT_LABELS: Record<string, string> = {
@@ -15,6 +16,7 @@ interface Props {
 
 export default function VariantCard({ variant }: Props) {
   const label = VARIANT_LABELS[variant.variant_type] ?? variant.variant_type;
+  const gradeLevel = estimateGradeLevel(variant.student_facing_instructions);
 
   return (
     <article className="variant-card">
@@ -28,7 +30,17 @@ export default function VariantCard({ variant }: Props) {
       <h3 className="variant-title">{variant.title}</h3>
 
       <section className="variant-section">
-        <h4>Student Instructions</h4>
+        <header className="variant-section__header">
+          <h4>Student Instructions</h4>
+          {gradeLevel !== null ? (
+            <span
+              className="variant-reading-level"
+              title={`${describeGradeLevel(gradeLevel)} (Flesch-Kincaid estimate, heuristic)`}
+            >
+              ~Grade {gradeLevel}
+            </span>
+          ) : null}
+        </header>
         <p>{variant.student_facing_instructions}</p>
       </section>
 
