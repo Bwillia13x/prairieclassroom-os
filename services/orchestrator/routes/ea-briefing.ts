@@ -2,13 +2,26 @@ import { Router } from "express";
 import { getRoute, getModelId } from "../router.js";
 import { buildEABriefingPrompt, parseEABriefingResponse } from "../ea-briefing.js";
 import type { EABriefingInput } from "../ea-briefing.js";
-import { buildEABriefingContext } from "../../memory/retrieve.js";
+import {
+  buildEABriefingContext,
+  getRecentPlans,
+  getRecentInterventions,
+  getFollowUpPending,
+  getLatestPatternReport,
+} from "../../memory/retrieve.js";
 import { validateBody, EABriefingRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { EABriefing } from "../../../packages/shared/schemas/briefing.js";
 import { callInference } from "../inference-client.js";
 import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
+import {
+  buildRetrievalTrace,
+  planCitation,
+  interventionCitation,
+  patternReportCitation,
+} from "../retrieval-trace.js";
+import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
 
 export function createEABriefingRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -29,11 +42,31 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
       const briefingInput: EABriefingInput = { classroom_id, ea_name };
 
       let briefingCtx = "";
+      const citations: RetrievalCitation[] = [];
+      const seenInterventionIds = new Set<string>();
       try {
         briefingCtx = buildEABriefingContext(classroom_id);
+        // Mirror the records buildEABriefingContext pulls so the response trace
+        // matches what was actually injected into the prompt.
+        for (const plan of getRecentPlans(classroom_id, 1)) {
+          citations.push(planCitation(plan));
+        }
+        for (const record of getFollowUpPending(classroom_id).slice(0, 5)) {
+          if (seenInterventionIds.has(record.record_id)) continue;
+          seenInterventionIds.add(record.record_id);
+          citations.push(interventionCitation(record));
+        }
+        for (const record of getRecentInterventions(classroom_id, 5)) {
+          if (seenInterventionIds.has(record.record_id)) continue;
+          seenInterventionIds.add(record.record_id);
+          citations.push(interventionCitation(record));
+        }
+        const latestPattern = getLatestPatternReport(classroom_id);
+        if (latestPattern) citations.push(patternReportCitation(latestPattern));
       } catch (memErr) {
         console.warn("Memory retrieval failed (ea briefing):", memErr);
       }
+      const retrievalTrace = buildRetrievalTrace(citations);
 
       const prompt = buildEABriefingPrompt(classroom, briefingInput, briefingCtx);
 
@@ -67,6 +100,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
 
       res.json({
         briefing,
+        retrieval_trace: retrievalTrace,
         ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {

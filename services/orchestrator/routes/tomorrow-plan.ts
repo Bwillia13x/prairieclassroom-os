@@ -13,6 +13,13 @@ import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 import { maybeExposeThinkingSummary } from "../thinking-summary.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
+import {
+  buildRetrievalTrace,
+  planCitation,
+  interventionCitation,
+  patternReportCitation,
+} from "../retrieval-trace.js";
+import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
 
 export function createTomorrowPlanRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -34,11 +41,16 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       const route = getRoute("prepare_tomorrow_plan");
       const modelId = getModelId(route.model_tier);
 
+      // Retrieval trace — collect citations as we pull memory so the response
+      // payload can answer "did the system actually read my classroom memory?"
+      const citations: RetrievalCitation[] = [];
+
       // Retrieve recent plans for memory injection
       let memorySummary = "";
       try {
         const recentPlans = getRecentPlans(classroom_id, 3);
         memorySummary = summarizeRecentPlans(recentPlans);
+        for (const plan of recentPlans) citations.push(planCitation(plan));
       } catch (memErr) {
         console.warn("Memory retrieval failed (plans):", memErr);
       }
@@ -48,6 +60,7 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       try {
         const recentInterventions = getRecentInterventions(classroom_id, 5);
         interventionSummary = summarizeRecentInterventions(recentInterventions);
+        for (const record of recentInterventions) citations.push(interventionCitation(record));
       } catch (memErr) {
         console.warn("Memory retrieval failed (interventions):", memErr);
       }
@@ -60,10 +73,13 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
         if (latestPattern) {
           patternInsightsSummary = summarizePatternInsights(latestPattern);
           patternInformed = true;
+          citations.push(patternReportCitation(latestPattern));
         }
       } catch (memErr) {
         console.warn("Memory retrieval failed (patterns):", memErr);
       }
+
+      const retrievalTrace = buildRetrievalTrace(citations);
 
       // Build prompt
       const planInput: TomorrowPlanInput = {
@@ -106,6 +122,7 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
         plan,
         thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
         pattern_informed: patternInformed,
+        retrieval_trace: retrievalTrace,
         ...inferenceResponseMeta(inferenceData, modelId),
       });
 

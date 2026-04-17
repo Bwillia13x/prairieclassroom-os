@@ -3,7 +3,14 @@ import { getRoute, getModelId } from "../router.js";
 import { buildSupportPatternsPrompt, parseSupportPatternsResponse } from "../support-patterns.js";
 import type { SupportPatternsInput } from "../support-patterns.js";
 import { savePatternReport } from "../../memory/store.js";
-import { buildPatternContext, getLatestPatternReport } from "../../memory/retrieve.js";
+import {
+  buildPatternContext,
+  getLatestPatternReport,
+  getRecentInterventions,
+  getStudentInterventions,
+  getRecentPlans,
+  getFollowUpPending,
+} from "../../memory/retrieve.js";
 import { validateBody, SupportPatternsRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { SupportPatternReport } from "../../../packages/shared/schemas/pattern.js";
@@ -13,6 +20,12 @@ import { handleRouteError, sendClassroomNotFound, sendParseError, sendRouteError
 import { maybeExposeThinkingSummary } from "../thinking-summary.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 import { isValidClassroomId } from "../validate.js";
+import {
+  buildRetrievalTrace,
+  planCitation,
+  interventionCitation,
+} from "../retrieval-trace.js";
+import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
 
 export function createSupportPatternsRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -39,11 +52,32 @@ export function createSupportPatternsRouter(deps: RouteDeps): Router {
       };
 
       let patternCtx = "";
+      const citations: RetrievalCitation[] = [];
+      const seenInterventionIds = new Set<string>();
       try {
         patternCtx = buildPatternContext(classroom_id, student_filter, window);
+        // Mirror buildPatternContext's retrievals so the response trace matches
+        // what was actually injected into the prompt.
+        const interventions = student_filter
+          ? getStudentInterventions(classroom_id, student_filter, window)
+          : getRecentInterventions(classroom_id, window);
+        for (const record of interventions) {
+          if (seenInterventionIds.has(record.record_id)) continue;
+          seenInterventionIds.add(record.record_id);
+          citations.push(interventionCitation(record));
+        }
+        for (const plan of getRecentPlans(classroom_id, 5)) {
+          citations.push(planCitation(plan));
+        }
+        for (const record of getFollowUpPending(classroom_id)) {
+          if (seenInterventionIds.has(record.record_id)) continue;
+          seenInterventionIds.add(record.record_id);
+          citations.push(interventionCitation(record));
+        }
       } catch (memErr) {
         console.warn("Memory retrieval failed (patterns):", memErr);
       }
+      const retrievalTrace = buildRetrievalTrace(citations);
 
       const prompt = buildSupportPatternsPrompt(classroom, patternInput, patternCtx);
 
@@ -84,6 +118,7 @@ export function createSupportPatternsRouter(deps: RouteDeps): Router {
       res.json({
         report,
         thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
+        retrieval_trace: retrievalTrace,
         ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {

@@ -44,6 +44,9 @@ import type {
   CurriculumSelection,
   CurriculumSubjectCode,
   CurriculumGrade,
+  RetrievalTrace,
+  RetrievalCitation,
+  RetrievalSourceType,
 } from "@prairie/shared";
 
 // ── Domain model re-exports ─────────────────────────────────────────────────
@@ -89,6 +92,9 @@ export type {
   CurriculumSelection,
   CurriculumSubjectCode,
   CurriculumGrade,
+  RetrievalTrace,
+  RetrievalCitation,
+  RetrievalSourceType,
 };
 
 // ── Classroom profile (sanitized API view) ──────────────────────────────────
@@ -197,6 +203,7 @@ export interface TomorrowPlanResponse {
   plan: TomorrowPlan;
   thinking_summary: string | null;
   pattern_informed: boolean;
+  retrieval_trace?: RetrievalTrace;
   model_id: string;
   latency_ms: number;
   prompt_tokens?: number | null;
@@ -243,6 +250,7 @@ export interface VocabCardsResponse {
 export interface SupportPatternsResponse {
   report: SupportPatternReport;
   thinking_summary: string | null;
+  retrieval_trace?: RetrievalTrace;
   model_id: string;
   latency_ms: number;
   prompt_tokens?: number | null;
@@ -252,6 +260,7 @@ export interface SupportPatternsResponse {
 
 export interface EABriefingResponse {
   briefing: EABriefing;
+  retrieval_trace?: RetrievalTrace;
   model_id: string;
   latency_ms: number;
   prompt_tokens?: number | null;

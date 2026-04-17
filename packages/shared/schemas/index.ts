@@ -232,3 +232,15 @@ export type {
   SessionResponse,
   SessionSummary,
 } from "./session.js";
+
+export {
+  RetrievalSourceTypeSchema,
+  RetrievalCitationSchema,
+  RetrievalTraceSchema,
+  emptyRetrievalTrace,
+} from "./retrieval-trace.js";
+export type {
+  RetrievalSourceType,
+  RetrievalCitation,
+  RetrievalTrace,
+} from "./retrieval-trace.js";
