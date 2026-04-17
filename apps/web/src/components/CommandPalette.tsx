@@ -130,11 +130,26 @@ export default function CommandPalette({ open, onClose, entries }: Props) {
               >
                 <span className="command-palette__kind">{entry.kind}</span>
                 <span className="command-palette__label">{entry.label}</span>
-                {entry.group && <span className="command-palette__group">{entry.group}</span>}
+                <span className="command-palette__meta">
+                  {entry.group && <span className="command-palette__group">{entry.group}</span>}
+                  {entry.shortcut && (
+                    <kbd
+                      className="command-palette__shortcut"
+                      aria-label={`Keyboard shortcut ${entry.shortcut}`}
+                    >
+                      {entry.shortcut}
+                    </kbd>
+                  )}
+                </span>
               </li>
             ))
           )}
         </ul>
+        <footer className="command-palette__footer">
+          <span className="command-palette__hint">
+            Press <kbd>1</kbd>–<kbd>0</kbd> to jump to any panel · <kbd>?</kbd> for all shortcuts
+          </span>
+        </footer>
       </div>
     </div>
   );

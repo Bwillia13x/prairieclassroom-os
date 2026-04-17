@@ -152,3 +152,66 @@ describe("ClassroomRole literal shape", () => {
     expect(roles).toHaveLength(4);
   });
 });
+
+describe("appReducer — featuresSeen lifecycle", () => {
+  beforeEach(() => {
+    installLocalStorage();
+    localStorage.clear();
+  });
+
+  it("MARK_FEATURE_SEEN records a feature and persists to localStorage", () => {
+    const initial = baseState({ featuresSeen: {} });
+    const next = appReducer(initial, { type: "MARK_FEATURE_SEEN", feature: "differentiate" });
+    expect(next.featuresSeen.differentiate).toBe(true);
+    expect(JSON.parse(localStorage.getItem("prairie-features-seen") ?? "{}")).toEqual({
+      differentiate: true,
+    });
+  });
+
+  it("CLEAR_FEATURE_SEEN removes a single feature and updates storage", () => {
+    const initial = baseState({
+      featuresSeen: { differentiate: true, "family-message": true },
+    });
+    const next = appReducer(initial, {
+      type: "CLEAR_FEATURE_SEEN",
+      feature: "differentiate",
+    });
+    expect(next.featuresSeen).toEqual({ "family-message": true });
+    expect(JSON.parse(localStorage.getItem("prairie-features-seen") ?? "{}")).toEqual({
+      "family-message": true,
+    });
+  });
+
+  it("CLEAR_FEATURE_SEEN removes the storage key when the last feature is cleared", () => {
+    localStorage.setItem("prairie-features-seen", JSON.stringify({ differentiate: true }));
+    const initial = baseState({ featuresSeen: { differentiate: true } });
+    const next = appReducer(initial, {
+      type: "CLEAR_FEATURE_SEEN",
+      feature: "differentiate",
+    });
+    expect(next.featuresSeen).toEqual({});
+    expect(localStorage.getItem("prairie-features-seen")).toBeNull();
+  });
+
+  it("CLEAR_FEATURE_SEEN is a no-op when the feature is not present", () => {
+    const initial = baseState({ featuresSeen: { differentiate: true } });
+    const next = appReducer(initial, {
+      type: "CLEAR_FEATURE_SEEN",
+      feature: "never-seen",
+    });
+    expect(next).toBe(initial);
+  });
+
+  it("RESET_FEATURES_SEEN clears every feature and removes the storage key", () => {
+    localStorage.setItem(
+      "prairie-features-seen",
+      JSON.stringify({ differentiate: true, "ea-briefing": true }),
+    );
+    const initial = baseState({
+      featuresSeen: { differentiate: true, "ea-briefing": true },
+    });
+    const next = appReducer(initial, { type: "RESET_FEATURES_SEEN" });
+    expect(next.featuresSeen).toEqual({});
+    expect(localStorage.getItem("prairie-features-seen")).toBeNull();
+  });
+});

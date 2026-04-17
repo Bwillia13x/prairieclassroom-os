@@ -481,6 +481,29 @@ export default function App() {
     dispatch({ type: "SHOW_ONBOARDING", show: false });
   }
 
+  // Panels that render a ContextualHint. Used by Quick Help to restore the
+  // dismissed hint for the current panel instead of always replaying the full tour.
+  const PANELS_WITH_HINT: Set<ActiveTab> = new Set([
+    "differentiate",
+    "language-tools",
+    "tomorrow-plan",
+    "ea-briefing",
+    "family-message",
+    "log-intervention",
+    "support-patterns",
+    "survival-packet",
+  ]);
+
+  function handleQuickHelpClick() {
+    const tab = state.activeTab;
+    if (PANELS_WITH_HINT.has(tab) && state.featuresSeen[tab]) {
+      dispatch({ type: "CLEAR_FEATURE_SEEN", feature: tab });
+      showSuccess("Panel tip restored");
+      return;
+    }
+    dispatch({ type: "SHOW_ONBOARDING", show: true });
+  }
+
   function handleFollowupClick(prefill: FamilyMessagePrefill) {
     dispatch({ type: "SET_MESSAGE_PREFILL", prefill });
     setActiveTab("family-message");
@@ -808,9 +831,18 @@ export default function App() {
                 <ThemeToggle />
                 <button
                   className="btn btn--ghost app-help-btn"
-                  onClick={() => dispatch({ type: "SHOW_ONBOARDING", show: true })}
+                  onClick={handleQuickHelpClick}
                   type="button"
-                  aria-label="Show onboarding tour"
+                  aria-label={
+                    PANELS_WITH_HINT.has(state.activeTab) && state.featuresSeen[state.activeTab]
+                      ? "Restore panel tip for the current page"
+                      : "Open onboarding tour"
+                  }
+                  title={
+                    PANELS_WITH_HINT.has(state.activeTab) && state.featuresSeen[state.activeTab]
+                      ? "Restore tip for this panel"
+                      : "Replay onboarding tour"
+                  }
                 >
                   Quick Help
                 </button>

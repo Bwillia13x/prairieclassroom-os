@@ -5,8 +5,8 @@ import type { PaletteEntry } from "../../hooks/usePaletteEntries";
 
 function makeEntries(): PaletteEntry[] {
   return [
-    { kind: "panel", id: "p1", label: "Today", group: "today", keywords: "today", onSelect: vi.fn() },
-    { kind: "panel", id: "p2", label: "Family Message", group: "review", keywords: "family message review", onSelect: vi.fn() },
+    { kind: "panel", id: "p1", label: "Today", group: "today", keywords: "today", shortcut: "1", onSelect: vi.fn() },
+    { kind: "panel", id: "p2", label: "Family Message", group: "review", keywords: "family message review", shortcut: "0", onSelect: vi.fn() },
     { kind: "action", id: "a1", label: "Draft family message", keywords: "draft message family", onSelect: vi.fn() },
   ];
 }
@@ -85,5 +85,18 @@ describe("CommandPalette", () => {
     render(<CommandPalette open={true} onClose={() => {}} entries={makeEntries()} />);
     fireEvent.change(screen.getByRole("combobox"), { target: { value: "xyzzy" } });
     expect(screen.getByText(/no matches/i)).toBeInTheDocument();
+  });
+
+  it("renders a keyboard shortcut badge for panel entries that expose one", () => {
+    render(<CommandPalette open={true} onClose={() => {}} entries={makeEntries()} />);
+    expect(screen.getByLabelText("Keyboard shortcut 1")).toHaveTextContent("1");
+    expect(screen.getByLabelText("Keyboard shortcut 0")).toHaveTextContent("0");
+    // Action entries without a shortcut should not render a kbd badge.
+    expect(screen.queryByLabelText(/keyboard shortcut.*draft/i)).toBeNull();
+  });
+
+  it("renders a footer hint reinforcing keyboard navigation", () => {
+    render(<CommandPalette open={true} onClose={() => {}} entries={makeEntries()} />);
+    expect(screen.getByText(/jump to any panel/i)).toBeInTheDocument();
   });
 });

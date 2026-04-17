@@ -222,6 +222,8 @@ export type AppAction =
   | { type: "STREAM_TICK" }
   // Contextual onboarding
   | { type: "MARK_FEATURE_SEEN"; feature: string }
+  | { type: "CLEAR_FEATURE_SEEN"; feature: string }
+  | { type: "RESET_FEATURES_SEEN" }
   // Feedback
   | { type: "ADD_FEEDBACK"; feedback: OutputFeedback }
   | { type: "FLUSH_FEEDBACK" }
@@ -448,6 +450,24 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       const featuresSeen = { ...state.featuresSeen, [action.feature]: true };
       try { localStorage.setItem("prairie-features-seen", JSON.stringify(featuresSeen)); } catch { /* noop */ }
       return { ...state, featuresSeen };
+    }
+
+    case "CLEAR_FEATURE_SEEN": {
+      if (!state.featuresSeen[action.feature]) return state;
+      const { [action.feature]: _removed, ...rest } = state.featuresSeen;
+      try {
+        if (Object.keys(rest).length === 0) {
+          localStorage.removeItem("prairie-features-seen");
+        } else {
+          localStorage.setItem("prairie-features-seen", JSON.stringify(rest));
+        }
+      } catch { /* noop */ }
+      return { ...state, featuresSeen: rest };
+    }
+
+    case "RESET_FEATURES_SEEN": {
+      try { localStorage.removeItem("prairie-features-seen"); } catch { /* noop */ }
+      return { ...state, featuresSeen: {} };
     }
 
     // ─── Feedback ───

@@ -10,7 +10,17 @@ export interface PaletteEntry {
   label: string;
   group?: string;
   keywords: string;
+  /** Keyboard shortcut that navigates to this entry's target (panel entries only). */
+  shortcut?: string;
   onSelect: () => void;
+}
+
+function paletteShortcutForTab(tab: ActiveTab): string | null {
+  const idx = TAB_ORDER.indexOf(tab) + 1;
+  if (idx < 1) return null;
+  if (idx <= 9) return String(idx);
+  if (idx === 10) return "0";
+  return null;
 }
 
 interface DebtItem {
@@ -47,12 +57,14 @@ export function usePaletteEntries({
 
     for (const tab of TAB_ORDER) {
       const meta = TAB_META[tab];
+      const shortcut = paletteShortcutForTab(tab);
       entries.push({
         kind: "panel",
         id: `panel:${tab}`,
         label: meta.label,
         group: meta.group,
         keywords: [meta.label, meta.shortLabel, meta.group, tab].join(" ").toLowerCase(),
+        shortcut: shortcut ?? undefined,
         onSelect: () => onNavigate?.(tab),
       });
     }
