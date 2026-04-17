@@ -27,7 +27,6 @@ export default function ShortcutSheet({ open, onClose }: Props) {
     if (!open) return;
     function handleEscape(e: KeyboardEvent) {
       if (e.key === "Escape") {
-        e.stopImmediatePropagation();
         onClose();
       }
     }
