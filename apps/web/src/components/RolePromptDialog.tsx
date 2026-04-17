@@ -85,6 +85,7 @@ export default function RolePromptDialog({ classroomId }: Props) {
             type="button"
             className="btn btn--ghost role-prompt-dialog__skip"
             onClick={handleSkip}
+            data-testid="role-prompt-skip"
           >
             Skip (default to Teacher)
           </button>

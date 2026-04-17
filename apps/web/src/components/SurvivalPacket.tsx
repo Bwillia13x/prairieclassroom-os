@@ -90,7 +90,7 @@ export default function SurvivalPacket({ packet }: { packet: SurvivalPacketData 
             compact
           />
         </div>
-        <PrintButton label="Print Packet" />
+        <PrintButton label="Print Packet" data-testid="print-survival-packet" />
       </div>
 
       {/* Heads Up */}

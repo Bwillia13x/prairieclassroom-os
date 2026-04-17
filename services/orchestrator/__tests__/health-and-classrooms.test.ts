@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import express from "express";
 import type { Server } from "node:http";
-import { createServer } from "node:http";
 import { createHealthRouter } from "../routes/health.js";
 import { createClassroomsRouter } from "../routes/classrooms.js";
 import { closeAll } from "../../memory/db.js";

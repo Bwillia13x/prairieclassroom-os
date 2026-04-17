@@ -68,7 +68,7 @@ export default function ForecastForm({
       </div>
 
       <button type="submit" className="btn btn--primary" disabled={loading || classroomMissing}>
-        {loading ? "Generating Forecast..." : "Generate Forecast"}
+        {loading ? "Generating forecast…" : "Generate forecast"}
       </button>
     </form>
   );

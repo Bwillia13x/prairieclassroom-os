@@ -92,8 +92,13 @@ export default function TeacherReflection({
         />
       </div>
 
-      <button type="submit" className="btn btn--primary" disabled={loading}>
-        {loading ? "Generating Plan…" : "Generate Tomorrow Plan"}
+      <button
+        type="submit"
+        className="btn btn--primary"
+        disabled={loading}
+        data-testid="generate-tomorrow-plan-submit"
+      >
+        {loading ? "Generating plan…" : "Generate plan"}
       </button>
     </form>
   );

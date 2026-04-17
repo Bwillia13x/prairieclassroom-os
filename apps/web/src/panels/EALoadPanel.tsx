@@ -112,7 +112,7 @@ function EALoadForm({
       </label>
 
       <button type="submit" className="workspace-form__submit" disabled={loading || !selectedClassroom}>
-        {loading ? "Generating..." : "Balance EA load"}
+        {loading ? "Generating load profile…" : "Generate load profile"}
       </button>
 
       <p className="workspace-form__helper">

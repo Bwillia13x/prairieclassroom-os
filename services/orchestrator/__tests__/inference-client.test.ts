@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { callInference } from "../inference-client.js";
 import { getRequestContext } from "../request-context.js";
-import { RouteError } from "../errors.js";
 import type { RouteConfig } from "../types.js";
 import type { Request, Response } from "express";
 

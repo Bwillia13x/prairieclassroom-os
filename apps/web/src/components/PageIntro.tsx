@@ -33,13 +33,19 @@ export default function PageIntro({
   sectionIcon,
   breadcrumb,
 }: Props) {
+  const showBreadcrumbTab =
+    breadcrumb && breadcrumb.tab.trim().toLowerCase() !== eyebrow.trim().toLowerCase();
   return (
     <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}`}>
       {breadcrumb ? (
         <nav className="page-intro__breadcrumb" aria-label="You are here">
           <span className="page-intro__breadcrumb-group">{breadcrumb.group}</span>
-          <span className="page-intro__breadcrumb-sep" aria-hidden="true">›</span>
-          <span className="page-intro__breadcrumb-tab">{breadcrumb.tab}</span>
+          {showBreadcrumbTab ? (
+            <>
+              <span className="page-intro__breadcrumb-sep" aria-hidden="true">›</span>
+              <span className="page-intro__breadcrumb-tab">{breadcrumb.tab}</span>
+            </>
+          ) : null}
         </nav>
       ) : null}
       <div className="page-intro__eyebrow">

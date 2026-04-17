@@ -69,6 +69,7 @@ export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props)
           return (
             <button
               key={group}
+              data-testid={`mobile-nav-group-${group}`}
               className={`mobile-nav-group mobile-nav-group--${meta.sectionTone}${isActive ? " mobile-nav-group--active" : ""}`}
               onClick={() => handleGroupClick(group)}
               aria-label={meta.label}

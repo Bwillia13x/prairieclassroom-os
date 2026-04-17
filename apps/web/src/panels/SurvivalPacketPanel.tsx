@@ -146,8 +146,9 @@ export default function SurvivalPacketPanel() {
                 loading={loading}
                 disabled={!activeClassroom}
                 onClick={handleSubmit}
+                data-testid="generate-survival-packet-submit"
               >
-                Generate Survival Packet
+                Generate sub packet
               </ActionButton>
             </div>
           </>

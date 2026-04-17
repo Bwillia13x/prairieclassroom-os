@@ -90,7 +90,12 @@ export function PatternReportForm({
         </select>
       </div>
 
-      <button type="submit" className="btn btn--primary" disabled={loading}>
+      <button
+        type="submit"
+        className="btn btn--primary"
+        disabled={loading}
+        data-testid="detect-patterns-submit"
+      >
         {loading ? "Analyzing Patterns..." : "Detect Patterns"}
       </button>
     </form>
@@ -226,6 +231,7 @@ export function PatternReportResult({
                   type="button"
                   className="pattern-card-action-btn"
                   aria-label={`Share positive trend for ${trend.student_ref} with family`}
+                  data-testid="pattern-share-positive-trend"
                   onClick={() =>
                     onFollowupClick({
                       student_ref: trend.student_ref,

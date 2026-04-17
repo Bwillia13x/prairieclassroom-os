@@ -226,7 +226,7 @@ export default function ArtifactUpload({
         loading={loading}
         fullWidth
       >
-        {loading ? "Differentiating…" : "Differentiate"}
+        {loading ? "Generating variants…" : "Generate variants"}
       </ActionButton>
     </form>
     </Card.Body>

@@ -70,6 +70,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, onF
                   <button
                     className="plan-card-intervention-link"
                     type="button"
+                    data-testid="plan-card-log-intervention"
                     onClick={() =>
                       onInterventionClick({
                         student_ref: s.student_ref,

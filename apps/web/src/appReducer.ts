@@ -299,10 +299,21 @@ function loadTomorrowNotes(): TomorrowNote[] {
   }
 }
 
+function loadActiveTabFromUrl(): ActiveTab {
+  if (typeof window === "undefined") return "today";
+  try {
+    const requested = new URLSearchParams(window.location.search).get("tab");
+    if (requested && requested in TAB_META) return requested as ActiveTab;
+  } catch {
+    // window.location may be unavailable in some test environments
+  }
+  return "today";
+}
+
 export function createInitialState(): AppState {
   return {
     classrooms: [],
-    activeTab: "today",
+    activeTab: loadActiveTabFromUrl(),
     activeClassroom: "",
     messagePrefill: null,
     interventionPrefill: null,

@@ -1,7 +1,12 @@
 import { useState, useCallback } from "react";
-import { submitFeedbackApi, type SubmitFeedbackRequest } from "../api";
+import { ApiError, submitFeedbackApi, type SubmitFeedbackRequest } from "../api";
 
 const FEEDBACK_QUEUE_KEY = "prairie:feedback-queue";
+const FEEDBACK_QUEUE_MAX = 50;
+
+function isAuthFailure(err: unknown): boolean {
+  return err instanceof ApiError && (err.status === 401 || err.status === 403);
+}
 
 interface UseFeedbackResult {
   submit: (panelId: string, rating: number, comment?: string, generationId?: string, promptClass?: string) => void;
@@ -36,8 +41,9 @@ export function useFeedback(classroomId: string, sessionId: string): UseFeedback
       };
 
       submitFeedbackApi(request).catch((err) => {
-        // Network failure: queue to localStorage for later retry
         setError(err instanceof Error ? err.message : "Failed to submit feedback");
+        // 401/403 will never succeed without auth — drop, don't queue.
+        if (isAuthFailure(err)) return;
         queueFeedback(request);
       });
     },
@@ -54,9 +60,13 @@ export function useFeedback(classroomId: string, sessionId: string): UseFeedback
 function queueFeedback(request: SubmitFeedbackRequest): void {
   try {
     const existing = localStorage.getItem(FEEDBACK_QUEUE_KEY);
-    const queue: SubmitFeedbackRequest[] = existing ? JSON.parse(existing) : [];
+    const raw: SubmitFeedbackRequest[] = existing ? JSON.parse(existing) : [];
+    const queue = Array.isArray(raw) ? raw : [];
     queue.push(request);
-    localStorage.setItem(FEEDBACK_QUEUE_KEY, JSON.stringify(queue));
+    const trimmed = queue.length > FEEDBACK_QUEUE_MAX
+      ? queue.slice(queue.length - FEEDBACK_QUEUE_MAX)
+      : queue;
+    localStorage.setItem(FEEDBACK_QUEUE_KEY, JSON.stringify(trimmed));
   } catch {
     // localStorage may be unavailable; silently drop
   }
@@ -65,6 +75,8 @@ function queueFeedback(request: SubmitFeedbackRequest): void {
 /**
  * Flush any queued feedback submissions. Called on app init or network recovery.
  * Returns the number of items successfully flushed.
+ *
+ * Auth failures (401/403) drop the item — we never retry auth-blocked telemetry.
  */
 export async function flushFeedbackQueue(): Promise<number> {
   let queue: SubmitFeedbackRequest[];
@@ -84,7 +96,8 @@ export async function flushFeedbackQueue(): Promise<number> {
     try {
       await submitFeedbackApi(item);
       flushed++;
-    } catch {
+    } catch (err) {
+      if (isAuthFailure(err)) continue; // drop — won't retry
       remaining.push(item);
     }
   }

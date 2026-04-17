@@ -463,18 +463,20 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .page-intro__breadcrumb {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.5rem;
-  font-size: var(--text-xs);
+  gap: 0.45rem;
+  margin-bottom: calc(var(--space-1) * -1);
+  font-size: 0.68rem;
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.14em;
+  opacity: 0.78;
 }
 
 .page-intro__breadcrumb-group {
@@ -497,12 +499,12 @@
   align-items: center;
   gap: var(--space-2);
   width: fit-content;
-  min-height: 30px;
-  padding: 0.32rem 0.72rem;
+  min-height: 28px;
+  padding: 0.28rem 0.7rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-bg-muted);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -510,29 +512,29 @@
 }
 
 .page-intro__eyebrow-icon {
-  width: 0.95rem;
-  height: 0.95rem;
+  width: 0.92rem;
+  height: 0.92rem;
 }
 
 .page-intro__title {
+  margin-top: calc(var(--space-1) * -1);
   font-family: var(--font-serif);
-  font-size: clamp(1.55rem, 2.5vw, 2.15rem);
+  font-size: clamp(1.65rem, 2.4vw + 0.4rem, 2.35rem);
   font-weight: var(--font-weight-semibold);
-  line-height: 1.2;
-  letter-spacing: -0.025em;
+  line-height: 1.12;
+  letter-spacing: -0.022em;
   text-wrap: balance;
 }
 
 .page-intro__description {
-  max-width: 62ch;
-  margin-top: var(--space-1);
-  font-size: var(--text-sm);
-  line-height: 1.65;
+  max-width: 64ch;
+  font-size: var(--text-md);
+  line-height: 1.55;
   color: var(--color-text-secondary);
 }
 
 .page-intro .status-chip-row {
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 /* Tone variants — tinted surface with accent rail.

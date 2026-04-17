@@ -1,7 +1,12 @@
 import { useState, useCallback, useEffect, useRef } from "react";
-import { submitSessionApi, type SubmitSessionRequest } from "../api";
+import { ApiError, submitSessionApi, type SubmitSessionRequest } from "../api";
 
 const SESSION_QUEUE_KEY = "prairie:session-queue";
+const SESSION_QUEUE_MAX = 20;
+
+function isAuthFailure(err: unknown): boolean {
+  return err instanceof ApiError && (err.status === 401 || err.status === 403);
+}
 
 interface GenerationEvent {
   panel_id: string;
@@ -55,7 +60,9 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
     };
 
     // keepalive preserves classroom auth headers for protected classrooms.
-    submitSessionApi(request, undefined, { keepalive: true }).catch(() => {
+    submitSessionApi(request, undefined, { keepalive: true }).catch((err) => {
+      // 401/403 will never succeed without user-supplied auth — drop, don't queue.
+      if (isAuthFailure(err)) return;
       queueSession(request);
     });
   }, [sessionId]);
@@ -121,9 +128,19 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
 function queueSession(request: SubmitSessionRequest): void {
   try {
     const existing = localStorage.getItem(SESSION_QUEUE_KEY);
-    const queue: SubmitSessionRequest[] = existing ? JSON.parse(existing) : [];
-    queue.push(request);
-    localStorage.setItem(SESSION_QUEUE_KEY, JSON.stringify(queue));
+    const raw: SubmitSessionRequest[] = existing ? JSON.parse(existing) : [];
+    const queue = Array.isArray(raw) ? raw : [];
+
+    // De-dupe by session_id — keep only the latest payload per session.
+    const filtered = queue.filter((item) => item.session_id !== request.session_id);
+    filtered.push(request);
+
+    // Cap at SESSION_QUEUE_MAX, dropping the oldest entries.
+    const trimmed = filtered.length > SESSION_QUEUE_MAX
+      ? filtered.slice(filtered.length - SESSION_QUEUE_MAX)
+      : filtered;
+
+    localStorage.setItem(SESSION_QUEUE_KEY, JSON.stringify(trimmed));
   } catch {
     // localStorage may be unavailable; silently drop
   }
@@ -132,6 +149,9 @@ function queueSession(request: SubmitSessionRequest): void {
 /**
  * Flush any queued session submissions. Called on app init or network recovery.
  * Returns the number of items successfully flushed.
+ *
+ * Auth failures (401/403) drop the item permanently — telemetry is not worth
+ * a UI hijack and the request will never succeed without user interaction.
  */
 export async function flushSessionQueue(): Promise<number> {
   let queue: SubmitSessionRequest[];
@@ -151,7 +171,8 @@ export async function flushSessionQueue(): Promise<number> {
     try {
       await submitSessionApi(item);
       flushed++;
-    } catch {
+    } catch (err) {
+      if (isAuthFailure(err)) continue; // drop — won't retry
       remaining.push(item);
     }
   }

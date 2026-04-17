@@ -72,7 +72,7 @@ async function dismissRolePromptIfPresent(page) {
   // It intercepts pointer events, so we must dismiss it before clicking into
   // the shell. "Skip" defaults the role to Teacher, which is the smoke test's
   // expected role for all assertions.
-  const skipBtn = page.locator(".role-prompt-dialog__skip");
+  const skipBtn = page.getByTestId("role-prompt-skip");
   try {
     await skipBtn.waitFor({ state: "visible", timeout: 1_000 });
   } catch {
@@ -98,7 +98,7 @@ async function openTab(page, id) {
   await dismissRolePromptIfPresent(page);
   const groupLabel = TAB_GROUPS[id];
   if (groupLabel) {
-    await page.locator(".shell-nav__groups").getByRole("button", { name: groupLabel, exact: true }).click();
+    await page.getByTestId(`shell-nav-group-${groupLabel.toLowerCase()}`).click();
   }
   await page.click(`#tab-${id}`);
   await page.waitForSelector(`#panel-${id}:not([hidden])`);
@@ -115,7 +115,7 @@ async function expectPrimaryGroups(page) {
 
 async function openGroup(page, groupLabel, expectedTabId) {
   await dismissRolePromptIfPresent(page);
-  await page.locator(".shell-nav__groups").getByRole("button", { name: groupLabel, exact: true }).click();
+  await page.getByTestId(`shell-nav-group-${groupLabel.toLowerCase()}`).click();
   if (await page.locator(`#tab-${expectedTabId}`).count()) {
     await page.waitForSelector(`#tab-${expectedTabId}[aria-selected="true"]`);
   }
@@ -151,7 +151,7 @@ async function expectScrollableSubtabs(page) {
 
 async function submitAccessCode(page, code) {
   await page.fill("#classroom-access-code", code);
-  await page.getByRole("button", { name: "Save & Continue" }).click();
+  await page.getByTestId("classroom-access-save").click();
 }
 
 async function main() {
@@ -220,7 +220,7 @@ async function main() {
     await openTab(page, "tomorrow-plan");
     await page.fill("#reflection", "Brody needed help after lunch, and Amira needed language support before writing.");
     await page.fill("#plan-goal", "Keep transitions smooth and reduce language load in math writing.");
-    await page.getByRole("button", { name: "Generate Tomorrow Plan" }).click();
+    await page.getByTestId("generate-tomorrow-plan-submit").click();
     await page.waitForSelector(".plan-viewer", { timeout: HOSTED_GENERATION_TIMEOUT_MS });
 
     const familyCard = page.locator(".plan-section--family .plan-card--family").first();
@@ -238,7 +238,7 @@ async function main() {
     await openTab(page, "tomorrow-plan");
     const interventionCard = page.locator(".plan-section--priorities .plan-card--priority").first();
     const interventionStudent = (await interventionCard.locator(".plan-card-label").innerText()).trim();
-    await interventionCard.getByRole("button", { name: "Log Intervention" }).click();
+    await interventionCard.getByTestId("plan-card-log-intervention").click();
 
     await expectSelectValue(page, "#int-classroom", DEMO_CLASSROOM_ID, "Intervention classroom after plan handoff");
     const interventionCheckbox = page
@@ -253,7 +253,7 @@ async function main() {
 
     await openTab(page, "support-patterns");
     await expectSelectValue(page, "#pat-classroom", DEMO_CLASSROOM_ID, "Support Patterns classroom");
-    await page.getByRole("button", { name: "Detect Patterns" }).click();
+    await page.getByTestId("detect-patterns-submit").click();
     await page.waitForSelector(".pattern-header", { timeout: HOSTED_GENERATION_TIMEOUT_MS });
 
     const patternText = await page.locator("#panel-support-patterns:not([hidden]) .workspace-result").innerText();
@@ -261,7 +261,7 @@ async function main() {
 
     const trendCard = page.locator(".pattern-section--trends .pattern-card").first();
     const trendStudent = (await trendCard.locator(".pattern-card-label").innerText()).trim();
-    await trendCard.getByRole("button", { name: new RegExp(`Share positive trend for ${trendStudent} with family`) }).click();
+    await trendCard.getByTestId("pattern-share-positive-trend").click();
 
     await expectSelectValue(page, "#msg-classroom", DEMO_CLASSROOM_ID, "Family Message classroom after pattern handoff");
     await expectCheckedStudentInPanel(page, "family-message", trendStudent, "Family Message student after pattern handoff");
@@ -269,15 +269,15 @@ async function main() {
 
     await openTab(page, "survival-packet");
     await expectSelectValue(page, "#sp-classroom", DEMO_CLASSROOM_ID, "Survival Packet classroom");
-    await page.getByRole("button", { name: "Generate Survival Packet" }).click();
-    await page.getByRole("button", { name: "Print Packet" }).waitFor({ timeout: HOSTED_GENERATION_TIMEOUT_MS });
+    await page.getByTestId("generate-survival-packet-submit").click();
+    await page.getByTestId("print-survival-packet").waitFor({ timeout: HOSTED_GENERATION_TIMEOUT_MS });
 
     const packetText = await page.locator(".survival-packet").innerText();
     assert.match(packetText, /Substitute Survival Packet/);
     assert.match(packetText, /Heads Up/);
     assertNoAlphaAliases(packetText, "Survival Packet UI");
 
-    await page.getByRole("button", { name: "Print Packet" }).click();
+    await page.getByTestId("print-survival-packet").click();
     const printCalls = await page.evaluate(() => globalThis.__printCalls);
     assert.equal(printCalls, 1, "Print should be invoked exactly once during smoke test");
 
@@ -334,7 +334,7 @@ async function main() {
     await dismissRolePromptIfPresent(mobilePage);
     const navBox = await mobilePage.locator(".mobile-nav").boundingBox();
     assert.ok(navBox && navBox.y + navBox.height <= 852.5, "Mobile nav should stay pinned to the viewport bottom");
-    await mobilePage.locator(".mobile-nav-groups").getByRole("button", { name: "Ops", exact: true }).click();
+    await mobilePage.getByTestId("mobile-nav-group-ops").click();
     await mobilePage.waitForSelector("#panel-tomorrow-plan:not([hidden])");
     assert.equal(await mobilePage.locator(".mobile-nav-group--active").count(), 1, "Expected one active mobile nav group");
     await mobileContext.close();

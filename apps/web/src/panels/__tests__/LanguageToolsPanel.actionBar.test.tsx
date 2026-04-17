@@ -18,19 +18,25 @@ const MOCK_SIMPLIFIED = {
   schema_version: "1",
 };
 
-const MOCK_VOCAB = {
-  set_id: "vcs-1",
-  artifact_id: "art-1",
-  subject: "Science",
-  target_language: "French",
-  grade_band: "3-4",
-  cards: [{ term: "cell", definition: "Basic unit", target_translation: "cellule", example_sentence: "Cells are small.", visual_hint: "circle" }],
-  schema_version: "1",
+type MockVocab = {
+  set_id: string;
+  artifact_id: string;
+  subject: string;
+  target_language: string;
+  grade_band: string;
+  cards: Array<{
+    term: string;
+    definition: string;
+    target_translation: string;
+    example_sentence: string;
+    visual_hint: string;
+  }>;
+  schema_version: string;
 };
 
 // Controls per test — simplify active by default
 let mockSimplifyResult: typeof MOCK_SIMPLIFIED | null = MOCK_SIMPLIFIED;
-let mockVocabResult: typeof MOCK_VOCAB | null = null;
+let mockVocabResult: MockVocab | null = null;
 
 vi.mock("../../useAsyncAction", () => {
   let callCount = 0;

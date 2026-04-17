@@ -17,7 +17,7 @@ import {
   DebtRegisterRequestSchema,
   validateBody,
 } from "../validate.js";
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response } from "express";
 
 const VALID_ARTIFACT = {
   artifact_id: "art-001",

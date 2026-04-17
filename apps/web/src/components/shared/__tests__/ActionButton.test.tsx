@@ -162,4 +162,17 @@ describe("ActionButton", () => {
     expect(slot).toHaveAttribute("aria-hidden", "true");
     expect(screen.getByTestId("trail")).toBeInTheDocument();
   });
+
+  it("forwards data-testid to the underlying button element", () => {
+    // scripts/smoke-browser.mjs relies on this pass-through to click
+    // "Generate sub packet" via getByTestId. If the prop is dropped,
+    // the smoke test silently stops finding the button.
+    render(
+      <ActionButton data-testid="generate-survival-packet-submit" onClick={() => {}}>
+        Generate sub packet
+      </ActionButton>,
+    );
+    const btn = screen.getByTestId("generate-survival-packet-submit");
+    expect(btn.tagName).toBe("BUTTON");
+  });
 });

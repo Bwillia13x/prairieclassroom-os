@@ -26,6 +26,7 @@ interface ActionButtonProps {
   className?: string;
   "aria-label"?: string;
   "aria-describedby"?: string;
+  "data-testid"?: string;
 }
 
 function joinClassNames(...parts: Array<string | false | undefined>): string {
@@ -51,6 +52,7 @@ export default function ActionButton({
   className,
   "aria-label": ariaLabel,
   "aria-describedby": ariaDescribedBy,
+  "data-testid": dataTestId,
 }: ActionButtonProps) {
   const isDisabled = disabled || loading;
 
@@ -72,6 +74,7 @@ export default function ActionButton({
       aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
       onClick={onClick}
+      data-testid={dataTestId}
     >
       {loading && <span className="btn__spinner" aria-hidden="true" />}
       {leadingIcon && <span className="btn__leading-icon" aria-hidden="true">{leadingIcon}</span>}

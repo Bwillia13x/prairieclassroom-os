@@ -57,7 +57,7 @@ export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChang
         onClick={() => onSubmit(selectedClassroom, eaName || undefined)}
         disabled={loading}
       >
-        {loading ? "Generating…" : "Generate Briefing"}
+        {loading ? "Generating briefing…" : "Generate briefing"}
       </button>
     </div>
   );
