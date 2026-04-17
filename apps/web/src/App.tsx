@@ -772,6 +772,15 @@ export default function App() {
               <RoleContextPill />
 
               <div className="shell-bar__actions">
+                <button
+                  type="button"
+                  className="shell-bar__palette-btn"
+                  onClick={() => setPaletteOpen(true)}
+                  aria-label="Open command palette"
+                  title="Command palette (⌘K)"
+                >
+                  <span aria-hidden="true">⌘K</span>
+                </button>
                 <TomorrowChip
                   notes={state.tomorrowNotes}
                   onRemove={(id) => dispatch({ type: "REMOVE_TOMORROW_NOTE", id })}
