@@ -81,3 +81,32 @@ describe("appReducer tomorrowNotes", () => {
     expect(parsed[0].id).toBe("note-1");
   });
 });
+
+describe("appReducer REMOVE_TOMORROW_NOTE", () => {
+  beforeEach(() => { localStorage.clear(); });
+
+  it("removes a note by id", () => {
+    const state = createInitialState();
+    const stateWithNote = appReducer(state, { type: "APPEND_TOMORROW_NOTE", note: SAMPLE_NOTE });
+    const afterRemove = appReducer(stateWithNote, { type: "REMOVE_TOMORROW_NOTE", id: "note-1" });
+    expect(afterRemove.tomorrowNotes).toEqual([]);
+  });
+
+  it("is a no-op when id is not found", () => {
+    const state = createInitialState();
+    const stateWithNote = appReducer(state, { type: "APPEND_TOMORROW_NOTE", note: SAMPLE_NOTE });
+    const afterRemove = appReducer(stateWithNote, { type: "REMOVE_TOMORROW_NOTE", id: "does-not-exist" });
+    expect(afterRemove.tomorrowNotes).toEqual([SAMPLE_NOTE]);
+  });
+
+  it("persists remaining notes to localStorage", () => {
+    const note2 = { ...SAMPLE_NOTE, id: "note-2", summary: "another" };
+    const state = createInitialState();
+    const s1 = appReducer(state, { type: "APPEND_TOMORROW_NOTE", note: SAMPLE_NOTE });
+    const s2 = appReducer(s1, { type: "APPEND_TOMORROW_NOTE", note: note2 });
+    appReducer(s2, { type: "REMOVE_TOMORROW_NOTE", id: "note-1" });
+    const stored = JSON.parse(localStorage.getItem("prairie-tomorrow-notes") ?? "[]");
+    expect(stored).toHaveLength(1);
+    expect(stored[0].id).toBe("note-2");
+  });
+});

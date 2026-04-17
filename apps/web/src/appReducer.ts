@@ -232,6 +232,7 @@ export type AppAction =
   | { type: "OPEN_ROLE_PROMPT"; classroomId: string }
   | { type: "CLOSE_ROLE_PROMPT" }
   | { type: "APPEND_TOMORROW_NOTE"; note: TomorrowNote }
+  | { type: "REMOVE_TOMORROW_NOTE"; id: string }
   | { type: "CLEAR_TOMORROW_NOTES" };
 
 // ─── Initial State ───
@@ -503,6 +504,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case "APPEND_TOMORROW_NOTE": {
       const tomorrowNotes = [...state.tomorrowNotes, action.note];
+      try { localStorage.setItem("prairie-tomorrow-notes", JSON.stringify(tomorrowNotes)); } catch { /* noop */ }
+      return { ...state, tomorrowNotes };
+    }
+
+    case "REMOVE_TOMORROW_NOTE": {
+      const tomorrowNotes = state.tomorrowNotes.filter((n) => n.id !== action.id);
       try { localStorage.setItem("prairie-tomorrow-notes", JSON.stringify(tomorrowNotes)); } catch { /* noop */ }
       return { ...state, tomorrowNotes };
     }
