@@ -1,0 +1,128 @@
+import { useMemo } from "react";
+import { TAB_META, TAB_ORDER, type ActiveTab } from "../appReducer";
+import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "../types";
+
+export type PaletteEntryKind = "panel" | "classroom" | "action";
+
+export interface PaletteEntry {
+  kind: PaletteEntryKind;
+  id: string;
+  label: string;
+  group?: string;
+  keywords: string;
+  onSelect: () => void;
+}
+
+interface DebtItem {
+  category: string;
+  student_refs: string[];
+  age_days: number;
+}
+
+interface DebtRegister {
+  items: DebtItem[];
+}
+
+interface Input {
+  classrooms: ClassroomProfile[];
+  activeClassroom: string;
+  debtRegister: DebtRegister | null;
+  onNavigate?: (tab: ActiveTab) => void;
+  onSwitchClassroom?: (id: string) => void;
+  onMessagePrefill?: (prefill: FamilyMessagePrefill) => void;
+  onInterventionPrefill?: (prefill: InterventionPrefill) => void;
+}
+
+export function usePaletteEntries({
+  classrooms,
+  activeClassroom,
+  debtRegister,
+  onNavigate,
+  onSwitchClassroom,
+  onMessagePrefill,
+  onInterventionPrefill,
+}: Input): PaletteEntry[] {
+  return useMemo(() => {
+    const entries: PaletteEntry[] = [];
+
+    for (const tab of TAB_ORDER) {
+      const meta = TAB_META[tab];
+      entries.push({
+        kind: "panel",
+        id: `panel:${tab}`,
+        label: meta.label,
+        group: meta.group,
+        keywords: [meta.label, meta.shortLabel, meta.group, tab].join(" ").toLowerCase(),
+        onSelect: () => onNavigate?.(tab),
+      });
+    }
+
+    for (const c of classrooms) {
+      if (c.classroom_id === activeClassroom) continue;
+      const label = `Grade ${c.grade_band} — ${c.subject_focus.replace(/_/g, " ")}`;
+      entries.push({
+        kind: "classroom",
+        id: `classroom:${c.classroom_id}`,
+        label,
+        keywords: [label, c.classroom_id].join(" ").toLowerCase(),
+        onSelect: () => onSwitchClassroom?.(c.classroom_id),
+      });
+    }
+
+    const actions: Array<{ label: string; tab: ActiveTab; keywords: string }> = [
+      { label: "Draft family message", tab: "family-message", keywords: "message family parent send" },
+      { label: "Log intervention", tab: "log-intervention", keywords: "log intervention note behavior" },
+      { label: "Differentiate a lesson", tab: "differentiate", keywords: "differentiate variant adapt lesson" },
+      { label: "Forecast tomorrow's complexity", tab: "complexity-forecast", keywords: "forecast tomorrow complexity" },
+      { label: "Brief the EA", tab: "ea-briefing", keywords: "ea briefing assistant" },
+      { label: "Balance EA load", tab: "ea-load", keywords: "ea load balance schedule" },
+      { label: "Build a sub packet", tab: "survival-packet", keywords: "sub substitute packet survival" },
+      { label: "Simplify text for a student", tab: "language-tools", keywords: "simplify language vocab translate" },
+    ];
+    for (const a of actions) {
+      entries.push({
+        kind: "action",
+        id: `action:${a.tab}:${a.label}`,
+        label: a.label,
+        keywords: [a.label, a.keywords, TAB_META[a.tab].group].join(" ").toLowerCase(),
+        onSelect: () => onNavigate?.(a.tab),
+      });
+    }
+
+    if (debtRegister) {
+      const seen = new Set<string>();
+      for (const item of debtRegister.items) {
+        for (const ref of item.student_refs) {
+          if (!ref) continue;
+          const dedupeKey = `${item.category}:${ref}`;
+          if (seen.has(dedupeKey)) continue;
+          seen.add(dedupeKey);
+          if (item.category === "unapproved_message") {
+            entries.push({
+              kind: "action",
+              id: `action:message:${ref}`,
+              label: `Draft family message for ${ref}`,
+              keywords: `message family ${ref}`.toLowerCase(),
+              onSelect: () => {
+                onMessagePrefill?.({ student_ref: ref, reason: "", message_type: "routine_update" });
+              },
+            });
+          }
+          if (item.category === "stale_followup") {
+            entries.push({
+              kind: "action",
+              id: `action:log:${ref}`,
+              label: `Log follow-up for ${ref}`,
+              keywords: `log follow-up intervention ${ref}`.toLowerCase(),
+              onSelect: () => {
+                onInterventionPrefill?.({ student_ref: ref, suggested_action: "", reason: "follow-up from Today" });
+              },
+            });
+          }
+        }
+      }
+    }
+
+    return entries;
+  }, [classrooms, activeClassroom, debtRegister, onNavigate, onSwitchClassroom, onMessagePrefill, onInterventionPrefill]);
+}
