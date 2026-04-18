@@ -4,8 +4,8 @@
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  min-height: 44px;
-  padding: 0.65rem 1.25rem;
+  min-height: var(--control-h-md);
+  padding: var(--control-py-md) var(--control-px-md);
   border-radius: var(--radius-btn);
   border: 1px solid transparent;
   font-size: var(--text-sm);
@@ -197,7 +197,7 @@
   background: transparent;
   color: var(--color-text-accent);
   border-color: transparent;
-  padding: 0.35rem 0.2rem;
+  padding: var(--space-1) var(--space-1);
   min-height: auto;
   border-radius: var(--radius-sm);
   text-decoration: underline;
@@ -216,34 +216,34 @@
 }
 
 .btn--sm {
-  min-height: 36px;
-  padding: 0.5rem 0.9rem;
+  min-height: var(--control-h-sm);
+  padding: var(--control-py-sm) var(--control-px-sm);
   font-size: var(--text-xs);
   border-radius: var(--radius-btn-sm);
 }
 
 .btn--lg {
-  min-height: 52px;
-  padding: 0.9rem 1.5rem;
+  min-height: var(--control-h-lg);
+  padding: var(--control-py-lg) var(--control-px-lg);
   font-size: var(--text-base);
   border-radius: var(--radius-btn-lg);
 }
 
 .btn--icon-only {
-  min-height: 44px;
-  min-width: 44px;
+  min-height: var(--control-h-md);
+  min-width: var(--control-h-md);
   padding: 0;
   border-radius: var(--radius-pill);
 }
 
 .btn--icon-only.btn--sm {
-  min-height: 36px;
-  min-width: 36px;
+  min-height: var(--control-h-sm);
+  min-width: var(--control-h-sm);
 }
 
 .btn--icon-only.btn--lg {
-  min-height: 52px;
-  min-width: 52px;
+  min-height: var(--control-h-lg);
+  min-width: var(--control-h-lg);
 }
 
 .btn--full-width {
@@ -377,7 +377,7 @@
 .metric__label {
   margin: 0;
   order: -1;
-  font-size: 0.68rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
@@ -403,15 +403,15 @@
   margin: 0;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem; /* matches status-chip + output-meta-row__item icon-text gap */
+  gap: var(--space-1); /* matches status-chip + output-meta-row__item icon-text gap */
   width: fit-content;
-  min-height: 22px;
-  padding: 0.1rem 0.55rem;
+  min-height: var(--control-h-xs);
+  padding: var(--space-1) var(--control-px-xs);
   border-radius: var(--radius-pill);
   background: var(--color-bg-muted);
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   font-variant-numeric: tabular-nums;
   letter-spacing: 0;
@@ -504,8 +504,8 @@
 .field textarea,
 .field select {
   width: 100%;
-  min-height: 48px;
-  padding: 0.85rem 1rem;
+  min-height: var(--control-h-lg);
+  padding: var(--control-py-md) var(--control-px-sm);
   border: 1px solid color-mix(in srgb, var(--color-border-input) 55%, transparent);
   border-radius: var(--radius-md);
   background: var(--color-surface);
@@ -628,9 +628,9 @@
 .page-intro__breadcrumb {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.45rem;
+  gap: var(--space-2);
   margin-bottom: calc(var(--space-1) * -1);
-  font-size: 0.68rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -658,12 +658,12 @@
   align-items: center;
   gap: var(--space-2);
   width: fit-content;
-  min-height: 28px;
-  padding: 0.28rem 0.7rem;
+  min-height: var(--control-h-xs);
+  padding: var(--control-py-xs) var(--control-px-xs);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: var(--color-bg-muted);
-  font-size: 0.68rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
@@ -671,8 +671,8 @@
 }
 
 .page-intro__eyebrow-icon {
-  width: 0.92rem;
-  height: 0.92rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 .page-intro__title {
@@ -774,9 +774,9 @@
 .status-chip {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  min-height: 28px;
-  padding: 0.3rem 0.72rem;
+  gap: var(--space-1);
+  min-height: var(--control-h-xs);
+  padding: var(--control-py-xs) var(--control-px-xs);
   border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-surface-glass) 85%, transparent);
@@ -802,8 +802,8 @@
 .status-chip--forest { background: var(--color-bg-forest); border-color: var(--color-border-forest); color: var(--color-text-forest); }
 
 .status-chip svg {
-  width: 0.85rem;
-  height: 0.85rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
   flex-shrink: 0;
 }
 
@@ -818,7 +818,7 @@
 .output-meta-row__item {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-1);
   opacity: 0.88;
   letter-spacing: 0.01em;
 }
@@ -896,10 +896,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 56px;
-  height: 56px;
+  width: var(--icon-hero);
+  height: var(--icon-hero);
   padding: var(--space-2);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-accent) 8%, transparent);
   opacity: 0.9;
   animation: gentle-float 3.6s ease-in-out infinite;
@@ -980,7 +980,7 @@
 }
 
 .error-banner {
-  padding: 0.9rem 1rem;
+  padding: var(--space-2-5) var(--space-3);
   border: 1px solid var(--color-border-danger);
   border-radius: var(--radius-md);
   background: var(--color-bg-danger);
@@ -1005,7 +1005,8 @@
 }
 
 .error-banner__btn {
-  padding: 0.3rem 0.7rem;
+  min-height: var(--control-h-xs);
+  padding: var(--control-py-xs) var(--control-px-xs);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   border-radius: var(--radius-sm);
@@ -1036,7 +1037,7 @@
 }
 
 .error-boundary-icon {
-  font-size: 2.5rem;
+  font-size: var(--icon-display);
   color: var(--color-danger);
   line-height: 1;
 }
@@ -1071,8 +1072,8 @@
 }
 
 .branded-loading__mark {
-  width: 56px;
-  height: 34px;
+  width: var(--icon-hero);
+  height: calc(var(--icon-hero) * 0.6); /* brand mark aspect ratio — keeps 56×34 */
   color: var(--color-accent);
   animation: skeleton-pulse 1.8s ease-in-out infinite;
 }
@@ -1080,8 +1081,8 @@
 .prefill-banner {
   display: flex;
   align-items: flex-start;
-  gap: 0.5rem;
-  padding: 0.6rem 0.75rem;
+  gap: var(--space-2);
+  padding: var(--space-2-5);
   background: var(--color-bg-info);
   border: 1px solid var(--color-border-info);
   color: var(--color-text-info);
@@ -1135,11 +1136,10 @@
   background: var(--color-surface);
   border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: var(--radius-md);
-  padding: 1rem;
+  padding: var(--space-3);
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  box-shadow: var(--shadow-xs);
+  gap: var(--space-2);
   box-shadow: var(--shadow-xs);
 }
 
@@ -1178,8 +1178,8 @@
 .loading-indicator {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  padding: 0.85rem 1rem;
+  gap: var(--space-2);
+  padding: var(--space-2-5) var(--space-3);
   background: var(--color-bg-info);
   border: 1px solid var(--color-border-info);
   color: var(--color-text-info);
@@ -1188,8 +1188,8 @@
 
 .loading-indicator::before {
   content: "";
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-md);
+  height: var(--icon-md);
   border: 2px solid var(--color-border-info);
   border-top-color: var(--color-text-info);
   border-radius: 50%;
@@ -1267,8 +1267,8 @@
 
 .language-tool-toggle {
   display: flex;
-  gap: 0.35rem;
-  padding: 0.25rem;
+  gap: var(--space-1);
+  padding: var(--space-1);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-surface) 84%, transparent);
@@ -1277,8 +1277,8 @@
 
 .language-tool-toggle__btn {
   flex: 1;
-  min-height: 36px;
-  padding: 0.45rem 0.75rem;
+  min-height: var(--control-h-sm);
+  padding: var(--control-py-sm) var(--control-px-sm);
   border: 0;
   border-radius: var(--radius-pill);
   background: transparent;

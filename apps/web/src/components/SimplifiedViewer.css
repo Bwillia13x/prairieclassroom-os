@@ -37,7 +37,7 @@
   align-items: baseline;
   margin-bottom: 0.75rem;
 }
-.result-header h4 { margin: 0; font-size: 1rem; }
+.result-header h4 { margin: 0; font-size: var(--text-base); }
 
 .result-meta {
   color: var(--color-text-secondary);
@@ -47,7 +47,7 @@
 .simplified-text-block {
   background: var(--color-bg-info);
   border-left: 3px solid var(--color-accent);
-  padding: 0.75rem 1rem;
+  padding: var(--space-2-5) var(--space-3);
   border-radius: var(--radius);
   line-height: 1.6;
   margin-bottom: 1rem;
@@ -58,21 +58,21 @@
   margin-top: 1rem;
 }
 .vocab-section h5, .cues-section h5 {
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
   margin: 0 0 0.5rem 0;
 }
 
 .vocab-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: var(--space-1);
 }
 .vocab-chip {
   background: var(--color-bg-muted);
   border: 1px solid var(--color-border);
-  padding: 0.2rem 0.6rem;
-  border-radius: 12px;
-  font-size: 0.85rem;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-md);
+  font-size: var(--text-sm);
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
 }
@@ -80,7 +80,7 @@
 .cues-list {
   margin: 0;
   padding-left: 1.25rem;
-  font-size: 0.9rem;
+  font-size: var(--text-sm);
 }
 .cues-list li {
   margin-bottom: 0.3rem;

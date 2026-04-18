@@ -60,12 +60,12 @@
   width: fit-content;
   min-height: 28px;
   align-items: center;
-  padding: 0.26rem 0.68rem;
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border-sage);
   background: var(--color-bg-sage);
   color: var(--color-text-sage);
-  font-size: 0.68rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;

@@ -18,7 +18,7 @@
   position: relative;
   display: flex;
   gap: var(--space-2);
-  padding: 0.75rem var(--space-3) 0.55rem;
+  padding: var(--space-2-5) var(--space-3) var(--space-2);
   border-bottom: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   overflow-x: auto;
   scrollbar-width: none;
@@ -43,9 +43,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.3rem;
-  min-height: 40px;
-  padding: 0.3rem 0.75rem;
+  gap: var(--space-1);
+  min-height: var(--control-h-md);
+  padding: var(--control-py-xs) var(--control-px-xs);
   border: 0;
   border-radius: var(--radius-pill);
   color: var(--color-text-secondary);
@@ -69,13 +69,13 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1rem;
-  height: 1rem;
-  padding: 0 0.25rem;
-  border-radius: 999px;
+  min-width: var(--icon-md);
+  height: var(--icon-md);
+  padding: 0 var(--space-1);
+  border-radius: var(--radius-pill);
   background: var(--color-accent);
   color: var(--color-text-on-accent);
-  font-size: 0.6rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-bold);
 }
 
@@ -93,9 +93,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.2rem;
-  min-height: 52px;
-  padding: 0.5rem 0.35rem;
+  gap: var(--space-1);
+  min-height: var(--control-h-lg);
+  padding: var(--space-2) var(--space-1);
   border: 1px solid transparent;
   border-radius: var(--radius-md);
   background: transparent;
@@ -183,29 +183,29 @@
 
 .mobile-nav-badge {
   position: absolute;
-  top: 6px;
-  right: 8px;
+  top: var(--space-1);
+  right: var(--space-1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1rem;
-  height: 1rem;
-  padding: 0 0.2rem;
+  min-width: var(--icon-md);
+  height: var(--icon-md);
+  padding: 0 var(--space-1);
   background: var(--color-accent);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   color: var(--color-text-on-accent);
-  font-size: 0.6rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-bold);
   animation: success-pop 0.35s var(--ease-spring) both;
 }
 
 .mobile-nav-icon {
-  width: 18px;
-  height: 18px;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
 }
 
 .mobile-nav-group-label {
-  font-size: 0.65rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;

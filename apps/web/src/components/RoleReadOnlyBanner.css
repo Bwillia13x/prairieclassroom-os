@@ -32,13 +32,13 @@
 
 .role-readonly-banner__title {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   line-height: 1.4;
 }
 
 .role-readonly-banner__reason {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: var(--text-xs);
   line-height: 1.4;
   color: var(--color-text-secondary);
 }

@@ -21,7 +21,7 @@
 
 .pattern-informed-badge {
   display: inline-block;
-  padding: 0.2rem 0.5rem;
+  padding: var(--space-1) var(--space-2);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-accent);
@@ -36,9 +36,9 @@
   background: var(--color-bg-muted);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 0.75rem;
+  padding: var(--space-2-5);
   margin-bottom: var(--space-4);
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
 }
 
 .plan-thinking summary {
@@ -50,7 +50,7 @@
 .plan-thinking pre {
   margin-top: 0.5rem;
   white-space: pre-wrap;
-  font-size: 0.82rem;
+  font-size: var(--text-xs);
   color: var(--color-text);
   line-height: 1.6;
 }
@@ -77,7 +77,7 @@
 }
 
 .plan-icon {
-  font-size: 1rem;
+  font-size: var(--text-base);
 }
 
 /* Cards */
@@ -91,7 +91,7 @@
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  padding: 0.75rem 1rem;
+  padding: var(--space-2-5) var(--space-3);
   transition:
     border-color var(--motion-fast) var(--ease-standard),
     box-shadow var(--motion-fast) var(--ease-standard),
@@ -118,24 +118,24 @@
 }
 
 .plan-card-risk {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--color-text-warning);
   margin-bottom: var(--space-1);
 }
 
 .plan-card-reason {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--color-text-secondary);
   margin-bottom: var(--space-1);
 }
 
 .plan-card-action {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   color: var(--color-text);
 }
 
 .plan-card p {
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   line-height: 1.5;
 }
 
@@ -163,8 +163,8 @@
 }
 
 .plan-checklist li {
-  padding: 0.4rem 0.5rem;
-  font-size: 0.88rem;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-sm);
   border-bottom: 1px solid var(--color-border);
   line-height: 1.5;
 }
@@ -225,7 +225,7 @@
 .plan-card-intervention-link {
   display: inline-block;
   margin-top: var(--space-2);
-  padding: 0.45rem 0.75rem;
+  padding: var(--control-py-sm) var(--space-2-5);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-info);
@@ -233,7 +233,7 @@
   border: 1px solid var(--color-border-info);
   border-radius: var(--radius);
   cursor: pointer;
-  min-height: 36px;
+  min-height: var(--control-h-sm);
   transition:
     background var(--motion-fast) var(--ease-standard),
     border-color var(--motion-fast) var(--ease-standard);

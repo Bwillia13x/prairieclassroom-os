@@ -14,7 +14,7 @@
 
 .message-approval-dialog__title {
   margin: 0 0 var(--space-3) 0;
-  font-size: 1.25rem;
+  font-size: var(--text-lg);
 }
 
 .message-approval-dialog__meta {
@@ -35,7 +35,7 @@
 }
 
 .message-approval-dialog__preview h3 {
-  font-size: 1rem;
+  font-size: var(--text-base);
   margin: var(--space-3) 0 var(--space-2) 0;
 }
 

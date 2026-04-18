@@ -51,7 +51,7 @@
 }
 
 .health-bar--loading {
-  min-height: 48px;
+  min-height: var(--control-h-lg);
 }
 
 .health-bar__shimmer {

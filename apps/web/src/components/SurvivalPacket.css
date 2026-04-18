@@ -206,7 +206,7 @@
 /* Badges */
 .survival-packet-badge {
   display: inline-block;
-  padding: 0.1rem 0.5rem;
+  padding: var(--space-1) var(--space-2);
   border-radius: var(--radius);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);

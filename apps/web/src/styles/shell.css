@@ -40,7 +40,7 @@
   grid-template-columns: auto minmax(180px, 1fr) auto auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: 48px;
+  min-height: var(--control-h-lg);
 }
 
 .shell-brand {
@@ -81,10 +81,10 @@
 .shell-classroom-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.55rem;
+  gap: var(--space-2);
   width: 100%;
-  min-height: 40px;
-  padding: 0.3rem 0.55rem 0.3rem 0.35rem;
+  min-height: var(--control-h-md);
+  padding: var(--control-py-xs) var(--space-2) var(--control-py-xs) var(--space-1);
   border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-surface-elevated) 68%, transparent);
@@ -118,17 +118,17 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.7rem;
-  height: 1.7rem;
-  border-radius: 999px;
+  width: var(--control-h-xs);
+  height: var(--control-h-xs);
+  border-radius: var(--radius-pill);
   background: var(--color-bg-success);
   color: var(--color-text-success);
   flex-shrink: 0;
 }
 
 .shell-classroom-pill__lock svg {
-  width: 0.9rem;
-  height: 0.9rem;
+  width: var(--icon-sm);
+  height: var(--icon-sm);
 }
 
 .shell-classroom-pill__lock--locked {
@@ -260,8 +260,8 @@
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  min-height: 26px;
-  padding: 0.22rem 0.6rem;
+  min-height: var(--control-h-xs);
+  padding: var(--control-py-xs) var(--control-px-xs);
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border);
   background: var(--color-bg-muted);
@@ -280,8 +280,8 @@
 .shell-classroom-panel__details span {
   display: inline-flex;
   align-items: center;
-  min-height: 26px;
-  padding: 0.22rem 0.6rem;
+  min-height: var(--control-h-xs);
+  padding: var(--control-py-xs) var(--control-px-xs);
   border-radius: var(--radius-pill);
   background: var(--color-bg-muted);
   color: var(--color-text-secondary);
@@ -309,15 +309,15 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 38px;
-  min-width: 38px;
-  padding: 0 0.55rem;
+  min-height: var(--control-h-sm);
+  min-width: var(--control-h-sm);
+  padding: 0 var(--space-2);
   border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--color-surface-elevated) 55%, transparent);
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   white-space: nowrap;
   cursor: pointer;
@@ -342,18 +342,18 @@
 
 .theme-toggle,
 .app-help-btn {
-  min-width: 38px;
-  min-height: 38px;
+  min-width: var(--control-h-sm);
+  min-height: var(--control-h-sm);
 }
 
 .theme-toggle-label {
-  font-size: 0.72rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
 }
 
 .app-help-btn {
-  padding: 0 0.85rem;
-  font-size: 0.78rem;
+  padding: 0 var(--space-2-5);
+  font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   border-radius: var(--radius-pill);
   white-space: nowrap;
@@ -441,11 +441,11 @@
 .shell-nav__group {
   position: relative;
   z-index: 1;
-  min-height: 32px;
-  padding: 0.3rem 0.9rem;
+  min-height: var(--control-h-sm);
+  padding: var(--control-py-sm) var(--control-px-sm);
   border-radius: var(--radius-pill);
   color: var(--color-text-secondary);
-  font-size: 0.82rem;
+  font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: -0.005em;
 }
@@ -455,8 +455,8 @@
 }
 
 .shell-nav__group-icon {
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-md);
+  height: var(--icon-md);
   opacity: 0.78;
 }
 
@@ -562,11 +562,11 @@
 
 .shell-nav__tab {
   position: relative;
-  min-height: 32px;
-  padding: 0.3rem 0.8rem;
+  min-height: var(--control-h-sm);
+  padding: var(--control-py-sm) var(--control-px-sm);
   border-radius: var(--radius-pill);
   color: var(--color-text-tertiary);
-  font-size: 0.82rem;
+  font-size: var(--text-xs);
   font-weight: var(--font-weight-medium);
   letter-spacing: -0.005em;
 }

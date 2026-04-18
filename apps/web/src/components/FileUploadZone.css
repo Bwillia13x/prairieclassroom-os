@@ -33,8 +33,8 @@
 }
 
 .file-upload-icon {
-  width: 32px;
-  height: 32px;
+  width: var(--control-h-sm);
+  height: var(--control-h-sm);
   color: var(--color-accent);
 }
 

@@ -28,7 +28,7 @@
   margin-bottom: var(--space-3);
   color: var(--color-text-accent);
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -75,7 +75,7 @@
   background: transparent;
   color: var(--color-text-secondary);
   font-family: var(--font-sans);
-  font-size: 0.88rem;
+  font-size: var(--text-sm);
   line-height: 1.4;
   text-align: center;
   text-decoration: underline;

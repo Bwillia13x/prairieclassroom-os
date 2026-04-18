@@ -3,8 +3,8 @@
 .contextual-hint {
   display: flex;
   align-items: flex-start;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
+  gap: var(--space-2-5);
+  padding: var(--space-2-5) var(--space-3);
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--hint-bg, var(--color-bg-accent)) 16%, transparent), color-mix(in srgb, var(--hint-bg, var(--color-bg-accent)) 6%, transparent)),
     var(--color-surface-elevated);
@@ -25,7 +25,7 @@
 }
 
 .contextual-hint-icon {
-  font-size: 1.1rem;
+  font-size: var(--text-base);
   flex-shrink: 0;
   margin-top: 0.05rem;
 }
@@ -55,7 +55,7 @@
   box-shadow: none;
   border: 1px solid color-mix(in srgb, var(--hint-border, var(--color-border-accent)) 30%, transparent);
   border-radius: var(--radius-pill);
-  padding: 0.3rem 0.75rem;
+  padding: var(--space-1) var(--space-2-5);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-tertiary);
@@ -68,7 +68,7 @@
     color var(--motion-fast) var(--ease-standard),
     transform var(--motion-fast) var(--ease-standard);
   flex-shrink: 0;
-  min-height: 26px;
+  min-height: var(--control-h-xs);
 }
 
 .contextual-hint-dismiss:hover {

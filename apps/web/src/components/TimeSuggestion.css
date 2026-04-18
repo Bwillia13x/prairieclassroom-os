@@ -52,8 +52,8 @@
 }
 
 .time-suggestion-icon svg {
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
   stroke: currentColor;
   stroke-width: 1.8;
   stroke-linecap: round;
@@ -104,8 +104,8 @@
 }
 
 .time-suggestion-btn {
-  min-height: 34px;
-  padding: 0.45rem 0.85rem;
+  min-height: var(--control-h-sm);
+  padding: var(--control-py-sm) var(--space-2-5);
   border: 1px solid var(--color-border-accent);
   border-radius: var(--radius-pill);
   font-size: var(--text-xs);
@@ -123,9 +123,9 @@
 }
 
 .time-suggestion--compact .time-suggestion-btn {
-  min-height: 30px;
-  padding: 0.35rem 0.7rem;
-  font-size: 0.72rem;
+  min-height: var(--control-h-xs);
+  padding: var(--control-py-xs) var(--control-px-xs);
+  font-size: var(--text-2xs);
 }
 
 .time-suggestion-btn:hover {

@@ -50,7 +50,7 @@
   font-family: inherit;
   font-size: var(--text-sm, 0.875rem);
   color: var(--color-text);
-  min-height: 44px;
+  min-height: var(--control-h-md);
 }
 
 .output-action-bar__btn:focus-visible {
@@ -87,8 +87,8 @@
 }
 
 .output-action-bar__icon {
-  width: 1rem;
-  height: 1rem;
+  width: var(--icon-md);
+  height: var(--icon-md);
 }
 
 @media (prefers-reduced-motion: no-preference) {

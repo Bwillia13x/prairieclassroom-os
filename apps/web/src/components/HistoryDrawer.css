@@ -34,8 +34,8 @@
 }
 
 .history-drawer-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-lg);
+  height: var(--icon-lg);
 }
 
 .history-drawer {
@@ -104,8 +104,8 @@
 }
 
 .history-drawer-group-label {
-  padding: 0.5rem 0.75rem 0.25rem;
-  font-size: 0.65rem;
+  padding: var(--space-2) var(--space-2-5) var(--space-1);
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
