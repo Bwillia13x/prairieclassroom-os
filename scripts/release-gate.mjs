@@ -1112,6 +1112,9 @@ async function renderLatestGeminiSection() {
       "npm run release:gate:gemini",
     ];
 
+    const keySourceLine = `**Key source:** ${summary.gemini_api_key_env_var ? `\`${summary.gemini_api_key_env_var}\`` : "_not recorded_"}`;
+    const runGuardLine = `**Hosted run guard:** ${summary.gemini_run_guard_enabled ? "enabled" : "disabled"}`;
+
     if (summary.status === "passed") {
       return renderResultsSection({
         title: "Hosted Gemini API Baseline",
@@ -1123,6 +1126,8 @@ async function renderLatestGeminiSection() {
         results,
         commands,
         extraLines: [
+          keySourceLine,
+          runGuardLine,
           ...(suiteLabel
             ? [`**Eval suite:** ${suiteLabel}${selectedCaseCount && availableCaseCount ? ` (${selectedCaseCount}/${availableCaseCount} cases from the full corpus)` : ""}.`]
             : []),
@@ -1141,6 +1146,8 @@ async function renderLatestGeminiSection() {
       results,
       commands,
       extraLines: [
+        keySourceLine,
+        runGuardLine,
         ...(suiteLabel
           ? [`**Eval suite:** ${suiteLabel}${selectedCaseCount && availableCaseCount ? ` (${selectedCaseCount}/${availableCaseCount} cases from the full corpus)` : ""}.`]
           : []),

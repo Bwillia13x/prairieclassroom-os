@@ -2,9 +2,19 @@ import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const COMMANDS = [
+const MOCK_ONLY_COMMANDS = [
   "npm run host:preflight:ollama",
   "npm run release:gate",
+  "npm run release:gate:ollama",
+  "npm run eval:summary",
+  "npm run logs:summary",
+];
+
+const WITH_HOSTED_COMMANDS = [
+  "npm run host:preflight:ollama",
+  "npm run release:gate",
+  "npm run gemini:readycheck",
+  "npm run release:gate:gemini",
   "npm run release:gate:ollama",
   "npm run eval:summary",
   "npm run logs:summary",
@@ -132,6 +142,7 @@ export async function listReleaseGateRunSummaries(releaseGateDir) {
 export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries }) {
   const latestMockPass = runSummaries.find((run) => run.inference_mode === "mock" && run.status === "passed") ?? null;
   const latestOllamaPass = runSummaries.find((run) => run.inference_mode === "ollama" && run.status === "passed") ?? null;
+  const latestHostedPass = runSummaries.find((run) => run.inference_mode === "gemini" && run.status === "passed") ?? null;
   const hostGroups = new Map();
 
   for (const preflight of preflights) {
@@ -197,6 +208,49 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries }) 
 
   const mockArtifact = latestMockPass ? relativePath(rootDir, path.join(rootDir, latestMockPass.run_dir ?? "")) : null;
   const ollamaArtifact = latestOllamaPass ? relativePath(rootDir, path.join(rootDir, latestOllamaPass.run_dir ?? "")) : null;
+  const hostedArtifact = latestHostedPass ? relativePath(rootDir, path.join(rootDir, latestHostedPass.run_dir ?? "")) : null;
+
+  const verdictBullets = latestHostedPass
+    ? [
+        "- Hosted Gemma 4 proof: Passing on synthetic/demo data through the guarded Gemini lane.",
+        `- Zero-cost school-deployment proof: ${verdict}`,
+        "- Zero-cost enforcement: mock and Ollama remain the default no-spend lanes; hosted Gemini is explicit opt-in only.",
+      ]
+    : [
+        `- Live-model proof: ${verdict}`,
+        "- Zero-cost enforcement: mock and Ollama only; no paid fallback recorded",
+      ];
+  verdictBullets.push(`- Latest passed mock gate: ${mockArtifact ? `\`${mockArtifact}\`` : "_none recorded_"}`);
+  if (latestHostedPass) {
+    verdictBullets.push(`- Latest passed hosted Gemini gate: ${hostedArtifact ? `\`${hostedArtifact}\`` : "_none recorded_"}`);
+  }
+  verdictBullets.push(`- Latest passed Ollama gate: ${ollamaArtifact ? `\`${ollamaArtifact}\`` : "_none recorded_"}`);
+
+  const commandList = latestHostedPass ? WITH_HOSTED_COMMANDS : MOCK_ONLY_COMMANDS;
+
+  const hostedProofSection = latestHostedPass
+    ? [
+        "## Hosted Proof",
+        "",
+        tableOrNone(
+          ["Provider", "Models", "Scope", "Artifact"],
+          [[
+            "Gemini API",
+            [
+              latestHostedPass.gemini_model_ids?.live
+                ? `\`${latestHostedPass.gemini_model_ids.live}\``
+                : "_unknown_",
+              latestHostedPass.gemini_model_ids?.planning
+                ? `\`${latestHostedPass.gemini_model_ids.planning}\``
+                : "_unknown_",
+            ].join(", "),
+            "Synthetic/demo only",
+            hostedArtifact ? `\`${hostedArtifact}\`` : "_unknown_",
+          ].map(escapeCell)],
+        ),
+        "",
+      ]
+    : [];
 
   return [
     "# Live-Model Proof Status",
@@ -205,17 +259,15 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries }) 
     "",
     "## Verdict",
     "",
-    `- Live-model proof: ${verdict}`,
-    `- Zero-cost enforcement: mock and Ollama only; no paid fallback recorded`,
-    `- Latest passed mock gate: ${mockArtifact ? `\`${mockArtifact}\`` : "_none recorded_"}`,
-    `- Latest passed Ollama gate: ${ollamaArtifact ? `\`${ollamaArtifact}\`` : "_none recorded_"}`,
+    ...verdictBullets,
     "",
     "## Commands",
     "",
     "```bash",
-    ...COMMANDS,
+    ...commandList,
     "```",
     "",
+    ...hostedProofSection,
     "## Proven Hosts",
     "",
     tableOrNone(
