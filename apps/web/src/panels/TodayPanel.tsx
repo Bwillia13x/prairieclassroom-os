@@ -157,117 +157,121 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           </p>
         </header>
         <div className="today-grid motion-stagger">
-        {result ? (
-          <PendingActionsCard
-            items={[
-              {
-                key: "unapproved_message",
-                label: "unapproved messages",
-                count: result.debt_register.item_count_by_category.unapproved_message ?? 0,
-                targetTab: "family-message",
-                icon: <SectionIcon name="mail" className="shell-nav__group-icon" />,
-              },
-              {
-                key: "stale_followup",
-                label: "open follow-ups",
-                count: result.debt_register.item_count_by_category.stale_followup ?? 0,
-                targetTab: "log-intervention",
-                icon: <SectionIcon name="alert" className="shell-nav__group-icon" />,
-              },
-              {
-                key: "unaddressed_pattern",
-                label: "unaddressed patterns",
-                count: result.debt_register.item_count_by_category.unaddressed_pattern ?? 0,
-                targetTab: "support-patterns",
-                icon: <SectionIcon name="star" className="shell-nav__group-icon" />,
-              },
-              {
-                key: "approaching_review",
-                label: "approaching review",
-                count: result.debt_register.item_count_by_category.approaching_review ?? 0,
-                targetTab: "support-patterns",
-                icon: <SectionIcon name="clock" className="shell-nav__group-icon" />,
-              },
-            ]}
-            totalCount={totalActionCount}
-            studentsToCheckFirst={studentsToCheckFirst}
-            onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
-            onItemClick={(item) => {
-              if (item.key) {
-                const category = item.key;
-                const items = result.debt_register.items.filter((i) => i.category === category);
-                setDrillDown({ type: "debt-category", category, items });
+        <div className="today-grid__hero-row">
+          {result ? (
+            <PendingActionsCard
+              items={[
+                {
+                  key: "unapproved_message",
+                  label: "unapproved messages",
+                  count: result.debt_register.item_count_by_category.unapproved_message ?? 0,
+                  targetTab: "family-message",
+                  icon: <SectionIcon name="mail" className="shell-nav__group-icon" />,
+                },
+                {
+                  key: "stale_followup",
+                  label: "open follow-ups",
+                  count: result.debt_register.item_count_by_category.stale_followup ?? 0,
+                  targetTab: "log-intervention",
+                  icon: <SectionIcon name="alert" className="shell-nav__group-icon" />,
+                },
+                {
+                  key: "unaddressed_pattern",
+                  label: "unaddressed patterns",
+                  count: result.debt_register.item_count_by_category.unaddressed_pattern ?? 0,
+                  targetTab: "support-patterns",
+                  icon: <SectionIcon name="star" className="shell-nav__group-icon" />,
+                },
+                {
+                  key: "approaching_review",
+                  label: "approaching review",
+                  count: result.debt_register.item_count_by_category.approaching_review ?? 0,
+                  targetTab: "support-patterns",
+                  icon: <SectionIcon name="clock" className="shell-nav__group-icon" />,
+                },
+              ]}
+              totalCount={totalActionCount}
+              studentsToCheckFirst={studentsToCheckFirst}
+              onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
+              onItemClick={(item) => {
+                if (item.key) {
+                  const category = item.key;
+                  const items = result.debt_register.items.filter((i) => i.category === category);
+                  setDrillDown({ type: "debt-category", category, items });
+                }
+              }}
+            />
+          ) : (
+            <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
+          )}
+
+          {result ? (
+            <DayArc
+              forecast={result.latest_forecast}
+              students={studentSummaries.result ?? []}
+              debtItems={result.debt_register.items}
+              health={health.result ?? null}
+              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+              onBlockClick={(index) => {
+                const block = result.latest_forecast?.blocks[index];
+                if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+              }}
+            />
+          ) : (
+            <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
+          )}
+        </div>
+
+        {/* Visualization strip: 2×2 grid on wide viewports — paired for at-a-glance reading */}
+        <div className="today-grid__viz-row">
+          {result && result.debt_register.items.length > 0 && (
+            <ComplexityDebtGauge
+              debtItems={result.debt_register.items}
+              previousTotal={previousDebtTotal}
+              onSegmentClick={(payload) =>
+                setDrillDown({
+                  type: "trend",
+                  trendKey: payload.trendKey,
+                  data: health.result?.trends?.debt_total_14d ?? payload.data,
+                  label: payload.label,
+                })
               }
-            }}
-          />
-        ) : (
-          <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
-        )}
+            />
+          )}
 
-        {result ? (
-          <DayArc
-            forecast={result.latest_forecast}
-            students={studentSummaries.result ?? []}
-            debtItems={result.debt_register.items}
-            health={health.result ?? null}
-            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            onBlockClick={(index) => {
-              const block = result.latest_forecast?.blocks[index];
-              if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
-            }}
-          />
-        ) : (
-          <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
-        )}
+          {studentSummaries.result && studentSummaries.result.length > 0 ? (
+            <StudentPriorityMatrix
+              students={studentSummaries.result}
+              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+            />
+          ) : studentSummaries.loading ? (
+            <SectionSkeleton label="Loading student priority matrix" variant="matrix" lines={3} />
+          ) : null}
 
-        {/* Visualization strip: Debt Gauge + Priority Matrix + Recency Timeline */}
-        {result && result.debt_register.items.length > 0 && (
-          <ComplexityDebtGauge
-            debtItems={result.debt_register.items}
-            previousTotal={previousDebtTotal}
-            onSegmentClick={(payload) =>
-              setDrillDown({
-                type: "trend",
-                trendKey: payload.trendKey,
-                data: health.result?.trends?.debt_total_14d ?? payload.data,
-                label: payload.label,
-              })
-            }
-          />
-        )}
+          {studentSummaries.result && studentSummaries.result.length > 0 ? (
+            <InterventionRecencyTimeline
+              students={studentSummaries.result}
+              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+            />
+          ) : studentSummaries.loading ? (
+            <SectionSkeleton label="Loading intervention recency" variant="matrix" lines={3} />
+          ) : null}
 
-        {studentSummaries.result && studentSummaries.result.length > 0 ? (
-          <StudentPriorityMatrix
-            students={studentSummaries.result}
-            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-          />
-        ) : studentSummaries.loading ? (
-          <SectionSkeleton label="Loading student priority matrix" variant="matrix" lines={3} />
-        ) : null}
-
-        {studentSummaries.result && studentSummaries.result.length > 0 ? (
-          <InterventionRecencyTimeline
-            students={studentSummaries.result}
-            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-          />
-        ) : studentSummaries.loading ? (
-          <SectionSkeleton label="Loading intervention recency" variant="matrix" lines={3} />
-        ) : null}
-
-        {profile && profile.students.length > 0 && (
-          <ClassroomCompositionRings
-            students={profile.students}
-            onSegmentClick={(payload) =>
-              setDrillDown({
-                type: "student-tag-group",
-                groupKind: payload.groupKind,
-                tag: payload.tag,
-                label: payload.label,
-                students: payload.students,
-              })
-            }
-          />
-        )}
+          {profile && profile.students.length > 0 && (
+            <ClassroomCompositionRings
+              students={profile.students}
+              onSegmentClick={(payload) =>
+                setDrillDown({
+                  type: "student-tag-group",
+                  groupKind: payload.groupKind,
+                  tag: payload.tag,
+                  label: payload.label,
+                  students: payload.students,
+                })
+              }
+            />
+          )}
+        </div>
 
         {result && showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
 

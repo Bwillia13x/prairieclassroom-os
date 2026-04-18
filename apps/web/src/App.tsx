@@ -845,9 +845,8 @@ export default function App() {
                 ) : null}
               </div>
 
-              <RoleContextPill />
-
               <div className="shell-bar__actions">
+                <RoleContextPill />
                 <button
                   type="button"
                   className="shell-bar__palette-btn"

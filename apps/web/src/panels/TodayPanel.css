@@ -11,6 +11,46 @@
   gap: var(--space-5);
 }
 
+/* Hero row: PendingActions (narrow) + DayArc (wide) side-by-side on desktop.
+   Below 1100px they stack so each card keeps a readable measure. The 5fr/7fr
+   ratio gives the day-arc the visual weight it deserves while leaving the
+   action ledger enough room for the "open follow-ups ………… 24" row pattern. */
+.today-grid__hero-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.today-grid__hero-row > * {
+  min-width: 0;
+}
+
+@media (min-width: 1100px) {
+  .today-grid__hero-row {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: stretch;
+  }
+}
+
+/* Viz row: the four small visualization cards pair into 2×2 at desktop, 1×4
+   on mobile. auto-fit + minmax lets the grid degrade gracefully between the
+   two — at tablet widths we may see 1 or 2 cols depending on available room. */
+.today-grid__viz-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.today-grid__viz-row > * {
+  min-width: 0;
+}
+
+@media (min-width: 1100px) {
+  .today-grid__viz-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 /* Secondary content cards flow side-by-side on wide viewports */
 .today-grid--secondary {
   display: grid;
@@ -386,25 +426,41 @@
 .today-pulse {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
-  margin-top: var(--space-2);
+  gap: var(--space-4);
+  margin-top: var(--space-3);
 }
 
+/* Chapter-divider treatment: the Pulse section owns 6+ dashboard cards and
+   needs to register as a real section break, not a caption. Full-width rule
+   above, title chip + subtitle below, all in a single horizontal band so
+   the eye treats it as a divider rather than a sub-card. */
 .today-pulse__header {
   display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  padding-top: var(--space-4);
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  padding-top: var(--space-5);
   border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
 }
 
 .today-pulse__title {
   margin: 0;
-  font-size: var(--text-2xs);
+  font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
+  letter-spacing: -0.005em;
+  color: var(--color-text);
+}
+
+.today-pulse__title::before {
+  content: "";
+  display: inline-block;
+  width: 0.375rem;
+  height: 0.375rem;
+  margin-right: var(--space-2);
+  border-radius: 50%;
+  background: var(--color-text-sun);
+  vertical-align: middle;
+  translate: 0 -0.1em;
 }
 
 .today-pulse__subtitle {

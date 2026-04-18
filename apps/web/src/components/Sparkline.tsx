@@ -13,6 +13,7 @@ const TONE_COLORS: Record<SectionTone, string> = {
   sage: "var(--color-section-sage)",
   slate: "var(--color-section-slate)",
   forest: "var(--color-section-forest)",
+  muted: "var(--color-text-tertiary)",
 };
 
 function average(values: number[]): number {

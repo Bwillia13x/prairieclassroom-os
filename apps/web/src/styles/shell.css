@@ -18,7 +18,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
-  padding: 0.55rem 0.85rem 0.5rem;
+  padding: 0.5rem 0.85rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
   border-radius: var(--radius-lg);
   background: color-mix(in srgb, var(--color-surface-glass) 96%, transparent);
@@ -31,13 +31,13 @@
 
 /* ─── Row 1 — brand, classroom, actions ──────────────────────────── */
 
-/* 4 columns: brand · classroom (flex centered) · role · actions.
-   Prior single-row design used 3 cols and forced the RoleContextPill
-   onto an implicit second row, which made the header taller than
-   necessary. Widen the grid to give each a slot. */
+/* 3 columns: brand · classroom (flex centered) · actions (role+palette+tomorrow+theme+help).
+   The role pill now lives inside the actions cluster so brand has room to
+   breathe on wide viewports and the right-hand controls read as a single
+   group. Two-col fallback on narrow where classroom drops beneath brand. */
 .shell-bar {
   display: grid;
-  grid-template-columns: auto minmax(180px, 1fr) auto auto;
+  grid-template-columns: auto minmax(180px, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
   min-height: var(--control-h-lg);
@@ -289,9 +289,14 @@
   font-weight: var(--font-weight-medium);
 }
 
-/* Actions cluster — harmonized chip style */
+/* Actions cluster — harmonized chip style.
+   The role pill was promoted into this cluster so brand has room to breathe
+   on wide viewports. flex-wrap lets the 5-chip cluster (role + palette +
+   tomorrow + theme + help) drop to a second internal line when the bar is
+   narrower than the brand + classroom pill combined width. */
 .shell-bar__actions {
   display: inline-flex;
+  flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
   gap: 0.35rem;
@@ -368,9 +373,17 @@
   align-items: center;
   padding-top: 0.3rem;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 28%, transparent);
+  /* Lock the nav row at the tab-rail's natural height so switching between
+     a group with sub-tabs and a solo group does not jump the sticky header
+     up and down. control-h-sm covers the groups pill and tabs at the same
+     vertical pitch; the +0.44rem accounts for the 0.22rem padding on
+     both .shell-nav__groups and .shell-nav__tabs. */
+  min-height: calc(var(--control-h-sm) + 0.44rem);
 }
 
-/* When no sub-tabs, groups take the full width — left-aligned, calmer */
+/* When no sub-tabs, groups take the full width — left-aligned, calmer.
+   The min-height above keeps the nav row at the same pitch as the
+   multi-tab state so sticky-header height stays stable. */
 .shell-nav--solo {
   grid-template-columns: 1fr;
 }
@@ -739,11 +752,11 @@
     --shell-sticky-offset: 9rem;
   }
 
-  /* Explicit 2-row layout:
-     row 1  →  brand · role · actions
+  /* Explicit 2-row layout at tablet:
+     row 1  →  brand · (spacer) · actions-cluster (incl. role pill)
      row 2  →  classroom (full width)
-     Using explicit grid placement avoids the 3-row wrap that
-     auto-placement produced with 4 children in a 2-col grid. */
+     The role pill moved into .shell-bar__actions so row 1 keeps a clean
+     3-col shape without an implicit second wrap. */
   .shell-bar {
     grid-template-columns: auto 1fr auto;
     row-gap: var(--space-2);
@@ -752,12 +765,6 @@
   .shell-brand {
     grid-column: 1;
     grid-row: 1;
-  }
-
-  .role-pill-anchor {
-    grid-column: 2;
-    grid-row: 1;
-    justify-self: end;
   }
 
   .shell-bar__actions {
@@ -841,18 +848,17 @@
     flex: 0 0 auto;
   }
 
+  /* At phone widths the 5-chip actions cluster (role + palette + tomorrow +
+     theme + help) won't fit beside the brand, so drop it to its own
+     full-width wrapping row and let its internal flex-wrap handle overflow
+     gracefully rather than spilling past the header card edge. */
   .shell-bar__actions {
     grid-column: auto;
     grid-row: auto;
-    flex: 0 0 auto;
-    margin-left: auto;
-  }
-
-  .role-pill-anchor {
-    grid-column: auto;
-    grid-row: auto;
-    justify-self: auto;
-    flex: 0 0 auto;
+    flex: 1 1 100%;
+    width: 100%;
+    justify-content: flex-start;
+    margin-left: 0;
   }
 
   .shell-classroom-anchor {

@@ -33,7 +33,7 @@ export const TAB_ORDER: ActiveTab[] = [
 
 export type NavGroup = "today" | "prep" | "ops" | "review";
 
-export type SectionTone = "sun" | "sage" | "slate" | "forest";
+export type SectionTone = "sun" | "sage" | "slate" | "forest" | "muted";
 
 export interface NavGroupMeta {
   label: string;
