@@ -8,7 +8,6 @@ import VocabCardGrid from "../components/VocabCardGrid";
 import ContextualHint from "../components/ContextualHint";
 import ErrorBanner from "../components/ErrorBanner";
 import { ReadabilityComparisonGauge } from "../components/DataVisualizations";
-import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -274,7 +273,6 @@ export default function LanguageToolsPanel() {
                   simplifiedText={simplify.result.simplified.simplified_text}
                 />
                 <SimplifiedViewer onSubmit={handleSimplify} result={simplify.result} loading={simplify.loading} />
-                <OutputFeedback outputId={`simplify-${simplifyKey}`} outputType="simplify" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}
@@ -291,7 +289,6 @@ export default function LanguageToolsPanel() {
                   panelHint="Vocabulary cards are static fixture content in mock mode and do not vary by source text or target language. Run with Ollama or hosted Gemini to see real vocab generation."
                 />
                 <VocabCardGrid onSubmit={handleVocabCards} result={vocab.result} loading={vocab.loading} />
-                <OutputFeedback outputId={`vocab-${vocabKey}`} outputType="vocab-cards" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

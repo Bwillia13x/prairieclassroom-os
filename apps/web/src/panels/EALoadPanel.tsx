@@ -7,7 +7,6 @@ import { generateEALoadProfile } from "../api";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
-import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -311,7 +310,6 @@ export default function EALoadPanel() {
                 />
                 <EALoadViewer response={result} />
                 <RetrievalTraceCard trace={result.retrieval_trace} />
-                <OutputFeedback outputId={result.profile.load_id} outputType="ea-load" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

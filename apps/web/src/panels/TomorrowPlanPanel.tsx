@@ -9,7 +9,6 @@ import { PlanStreakCalendar, PlanCoverageRadar } from "../components/DataVisuali
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
 import ContextualHint from "../components/ContextualHint";
-import OutputFeedback from "../components/OutputFeedback";
 import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
@@ -244,7 +243,6 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   onInterventionClick={onInterventionClick}
                 />
                 <RetrievalTraceCard trace={displayResult.retrieval_trace} />
-                <OutputFeedback outputId={displayResult.plan.plan_id} outputType="tomorrow-plan" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

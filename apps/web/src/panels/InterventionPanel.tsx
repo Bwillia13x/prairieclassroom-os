@@ -37,7 +37,7 @@ interface Props {
  *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
@@ -95,9 +95,6 @@ export default function InterventionPanel({ prefill }: Props) {
     if (resp) {
       showSuccess("Intervention logged");
       session.recordGeneration("log-intervention", "log_intervention");
-      showUndo("Intervention logged — undo?", async () => {
-        console.log("Undo intervention", resp.record.record_id);
-      });
       history.refresh();
     }
   }
@@ -151,7 +148,7 @@ export default function InterventionPanel({ prefill }: Props) {
             <ContextualHint
               featureKey="log-intervention"
               title="Log Intervention"
-              description="Describe what happened and the system structures your note into classroom memory. You can undo within a few seconds if needed."
+              description="Describe what happened and the system structures your note into classroom memory for follow-up review and later pattern analysis."
               tone="slate"
             />
             <HistoryDrawer<InterventionRecord>

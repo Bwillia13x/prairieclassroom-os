@@ -7,7 +7,6 @@ import { EABriefingForm, EABriefingResult } from "../components/EABriefing";
 import ContextualHint from "../components/ContextualHint";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
-import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -164,7 +163,6 @@ export default function EABriefingPanel() {
                 />
                 <EABriefingResult result={result} />
                 <RetrievalTraceCard trace={result.retrieval_trace} />
-                <OutputFeedback outputId={`briefing-${resultKey}`} outputType="ea-briefing" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

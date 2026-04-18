@@ -9,7 +9,6 @@ import { VariantSummaryStrip } from "../components/DataVisualizations";
 import StreamingIndicator from "../components/StreamingIndicator";
 import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
 import ContextualHint from "../components/ContextualHint";
-import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import DifferentiateEmptyState from "../components/DifferentiateEmptyState";
@@ -213,7 +212,6 @@ export default function DifferentiatePanel() {
                 </Card>
                 <VariantSummaryStrip variants={result.variants} />
                 <VariantGrid artifactTitle={artifactTitle} variants={result.variants} />
-                <OutputFeedback outputId={`diff-${resultKey}`} outputType="differentiate" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

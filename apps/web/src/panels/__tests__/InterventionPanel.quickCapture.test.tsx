@@ -158,7 +158,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
   });
 
   it("QuickCaptureTray submit calls logIntervention via handleSubmit", async () => {
-    const { user } = renderPanel();
+    const { appContext, user } = renderPanel();
 
     // Wait for the tray to be mounted
     await screen.findByText("Quick capture");
@@ -186,5 +186,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     expect(payload.student_refs).toContain("Amira");
     expect(payload.teacher_note.length).toBeGreaterThan(0);
     expect(payload.classroom_id).toBe("demo-classroom");
+    expect(appContext.showSuccess).toHaveBeenCalledWith("Intervention logged");
+    expect(appContext.showUndo).not.toHaveBeenCalled();
   });
 });

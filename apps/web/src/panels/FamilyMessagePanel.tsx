@@ -9,7 +9,6 @@ import MessageApprovalDialog from "../components/MessageApprovalDialog";
 import MockModeBanner from "../components/MockModeBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import ContextualHint from "../components/ContextualHint";
-import OutputFeedback from "../components/OutputFeedback";
 import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
@@ -33,7 +32,7 @@ interface Props {
 }
 
 export default function FamilyMessagePanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
   const role = useRole();
   const { canApproveMessages } = role;
   const session = useSession();
@@ -42,6 +41,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   const history = useHistory(fetchMessageHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [approvalOverrides, setApprovalOverrides] = useState<Record<string, { editedText?: string }>>({});
   const { copy, status: copyStatus } = useCopyToClipboard();
   const feedback = useFeedback(activeClassroom, session.sessionId);
 
@@ -63,7 +63,18 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     [feedback.submit, result, historicalResult, session],
   );
 
-  const displayResult = result ?? historicalResult;
+  const rawDisplayResult = result ?? historicalResult;
+  const approvalOverride = rawDisplayResult ? approvalOverrides[rawDisplayResult.draft.draft_id] : undefined;
+  const displayResult = rawDisplayResult
+    ? {
+        ...rawDisplayResult,
+        draft: {
+          ...rawDisplayResult.draft,
+          teacher_approved: rawDisplayResult.draft.teacher_approved || approvalOverride !== undefined,
+          ...(approvalOverride?.editedText !== undefined ? { edited_text: approvalOverride.editedText } : {}),
+        },
+      }
+    : null;
 
   useEffect(() => {
     if (prefill) {
@@ -102,15 +113,19 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     setHistoricalResult({ draft, model_id: "", latency_ms: 0 });
   }
 
-  async function handleApprove(draftId: string, editedText?: string) {
+  async function persistApproval(draftId: string, editedText?: string) {
     if (!displayResult) return;
+    await approveFamilyMessage(displayResult.draft.classroom_id, draftId, editedText);
+    setApprovalOverrides((prev) => ({
+      ...prev,
+      [draftId]: editedText !== undefined ? { editedText } : {},
+    }));
+  }
+
+  async function handleApprove(draftId: string, editedText?: string) {
     try {
-      await approveFamilyMessage(displayResult.draft.classroom_id, draftId, editedText);
+      await persistApproval(draftId, editedText);
       showSuccess("Message approved");
-      showUndo("Message approved — undo?", async () => {
-        // Undo: re-draft or mark unapproved (best-effort)
-        console.log("Undo approve for", draftId);
-      });
     } catch (err) {
       console.warn("Approval persistence failed:", err);
     }
@@ -123,11 +138,11 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     // matches the clipboard. When the teacher approved verbatim, omit
     // edited_text — that keeps "approved as drafted" rows clean of noise.
     const editedDiffersFromDraft = editedText !== displayResult.draft.plain_language_text;
-    await copy(editedText);
-    await handleApprove(
+    await persistApproval(
       displayResult.draft.draft_id,
       editedDiffersFromDraft ? editedText : undefined,
     );
+    await copy(editedText);
     showSuccess("Message approved and copied");
     setDialogOpen(false);
   }
@@ -255,7 +270,6 @@ export default function FamilyMessagePanel({ prefill }: Props) {
                   panelHint="Translation does not vary by target language in mock mode — every language returns the same fixture text. Run with Ollama or hosted Gemini to see real translation."
                 />
                 <MessageDraft draft={displayResult.draft} meta={displayResult} onApprove={handleApprove} />
-                <OutputFeedback outputId={displayResult.draft.draft_id} outputType="family-message" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

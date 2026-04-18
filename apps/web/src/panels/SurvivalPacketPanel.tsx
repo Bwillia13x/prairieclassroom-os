@@ -8,7 +8,6 @@ import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
 import ContextualHint from "../components/ContextualHint";
-import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -184,7 +183,6 @@ export default function SurvivalPacketPanel() {
                 />
                 <SurvivalPacketView packet={result.packet} meta={result} />
                 <RetrievalTraceCard trace={result.retrieval_trace} />
-                <OutputFeedback outputId={`packet-${resultKey}`} outputType="survival-packet" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

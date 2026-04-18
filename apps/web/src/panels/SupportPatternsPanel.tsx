@@ -7,7 +7,6 @@ import { PatternReportForm, PatternReportResult } from "../components/PatternRep
 import ContextualHint from "../components/ContextualHint";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
-import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -186,7 +185,6 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
                   onFollowupClick={onFollowupClick}
                 />
                 <RetrievalTraceCard trace={result.retrieval_trace} />
-                <OutputFeedback outputId={`patterns-${resultKey}`} outputType="support-patterns" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

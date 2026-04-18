@@ -9,7 +9,6 @@ import ForecastTimeline from "../components/ForecastTimeline";
 import ForecastViewer from "../components/ForecastViewer";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
-import OutputFeedback from "../components/OutputFeedback";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -190,7 +189,6 @@ export default function ForecastPanel() {
                 )}
                 <ForecastViewer forecast={result.forecast} thinkingSummary={result.thinking_summary} meta={result} />
                 <RetrievalTraceCard trace={result.retrieval_trace} />
-                <OutputFeedback outputId={result.forecast.forecast_id} outputType="complexity-forecast" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

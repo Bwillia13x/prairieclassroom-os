@@ -35,7 +35,11 @@ export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel
       // Focus Cancel after open
       setTimeout(() => cancelBtnRef.current?.focus(), 0);
     } else if (!open && d.open) {
-      d.close();
+      if (typeof d.close === "function") {
+        d.close();
+      } else {
+        d.removeAttribute("open");
+      }
     }
   }, [open]);
 
