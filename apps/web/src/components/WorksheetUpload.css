@@ -18,7 +18,7 @@
 .worksheet-upload__dropzone:hover,
 .worksheet-upload__dropzone--dragover {
   border-color: var(--color-accent);
-  background-color: var(--color-surface-hover);
+  background-color: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface));
 }
 
 .worksheet-upload__preview {
@@ -29,8 +29,8 @@
 }
 
 .worksheet-upload__status {
-  font-size: var(--type-sm);
-  color: var(--color-text-muted);
+  font-size: var(--text-sm);
+  color: var(--color-text-tertiary);
 }
 
 .worksheet-upload__result {

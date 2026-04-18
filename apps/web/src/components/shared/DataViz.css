@@ -44,7 +44,7 @@
 }
 
 .dataviz-health-dot--healthy  { background: var(--ds-success); }
-.dataviz-health-dot--warning  { background: var(--ds-warning); box-shadow: 0 0 6px color-mix(in srgb, var(--ds-warning) 30%, transparent); }
+.dataviz-health-dot--warning  { background: var(--ds-warning); box-shadow: 0 0 6px color-mix(in srgb, var(--ds-warning) 12%, transparent); }
 .dataviz-health-dot--critical { background: var(--ds-danger); animation: pulse-ring 1.5s var(--ease-standard) infinite; }
 
 /* ---- ProgressBar ---- */

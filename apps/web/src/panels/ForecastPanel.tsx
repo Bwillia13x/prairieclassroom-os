@@ -17,9 +17,12 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
+import RetrievalTraceCard from "../components/RetrievalTraceCard";
+import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
 import { FeedbackCollector, OutputActionBar, Sparkline as SharedSparkline, type OutputAction } from "../components/shared";
 import { ComplexityHeatmap } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
+import { useRole } from "../hooks/useRole";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import { serializeForecastToPlainText } from "./outputActionBarHelpers";
@@ -34,6 +37,7 @@ export default function ForecastPanel() {
   });
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
+  const role = useRole();
 
   const actions = useMemo<OutputAction[]>(() => {
     if (!result) return [];
@@ -121,15 +125,23 @@ export default function ForecastPanel() {
         ]}
       />
 
+      <RoleReadOnlyBanner
+        role={role}
+        required="canGenerate"
+        whatIsBlocked="Generating a new forecast is reserved for the classroom's permanent teacher. Substitutes and reviewers can read the latest forecast."
+      />
+
       <WorkspaceLayout
         rail={(
-          <ForecastForm
-            classrooms={classrooms}
-            selectedClassroom={activeClassroom}
-            onClassroomChange={setActiveClassroom}
-            onSubmit={handleSubmit}
-            loading={loading}
-          />
+          role.canGenerate ? (
+            <ForecastForm
+              classrooms={classrooms}
+              selectedClassroom={activeClassroom}
+              onClassroomChange={setActiveClassroom}
+              onSubmit={handleSubmit}
+              loading={loading}
+            />
+          ) : null
         )}
         canvas={(
           <div className="workspace-result" aria-live="polite" aria-busy={loading && result === null}>
@@ -177,6 +189,7 @@ export default function ForecastPanel() {
                   </div>
                 )}
                 <ForecastViewer forecast={result.forecast} thinkingSummary={result.thinking_summary} meta={result} />
+                <RetrievalTraceCard trace={result.retrieval_trace} />
                 <OutputFeedback outputId={result.forecast.forecast_id} outputType="complexity-forecast" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

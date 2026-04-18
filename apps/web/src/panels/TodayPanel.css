@@ -137,7 +137,7 @@
 }
 
 .today-triage-row:hover .pending-action-icon {
-  background: color-mix(in srgb, var(--color-bg-warning) 70%, var(--color-accent) 30%);
+  background: color-mix(in srgb, var(--color-bg-warning) 72%, var(--color-surface) 28%);
   transform: scale(1.08);
 }
 
@@ -214,7 +214,7 @@
 }
 
 .today-triage-students__chip:hover {
-  background: color-mix(in srgb, var(--color-bg-warning) 62%, var(--color-surface) 38%);
+  background: color-mix(in srgb, var(--color-bg-warning) 45%, var(--color-surface) 55%);
   border-color: var(--color-accent);
   color: var(--color-text);
 }

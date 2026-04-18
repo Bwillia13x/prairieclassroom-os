@@ -1,38 +1,65 @@
-# Dark Mode Contract
+# Theme Contract
 
-**Status:** Canonical. Last updated 2026-04-17 (round 2 — material hierarchy).
+**Status:** Canonical. Last updated 2026-04-17 (round 7 — light/dark theme polish).
 **Scope:** `apps/web` — the teacher-facing PrairieClassroom UI.
 
 This document is the single source of truth for the light/dark color system. When you touch anything in `apps/web/src/styles/tokens.css`, `apps/web/src/tokens.css`, or any component CSS that defines color, read this first.
 
-## 1. Brand identity: three-layer material hierarchy on a desaturated Alberta-navy primary
+## 1. Brand identity: clean light mode with black-first dark mode
 
-**2026-04-17 repositioning.** The prior warm-cream + cognac identity was retired in favor of an institutional neutral canvas with an Alberta-navy primary accent. The classroom-ops product sits in front of Alberta K-6 teachers, principals, and Learning Services reviewers; its visual register must read as *trusted education software* (alberta.ca, PowerSchool, Edsby, LearnAlberta), not *editorial lifestyle brand*.
+**2026-04-17 repositioning.** The prior warm-cream + cognac identity was retired in favor of an institutional neutral canvas with a restrained navy affordance color. The classroom-ops product sits in front of Alberta K-6 teachers, principals, and Learning Services reviewers; its visual register must read as *trusted education software* (alberta.ca, PowerSchool, Edsby, LearnAlberta), not *editorial lifestyle brand*.
 
 **2026-04-17 round 2 — material hierarchy.** The first pass reached the right *register* but still felt blocky and cartoony because content cards floated directly on the page canvas with no mediating surface between them. Round 2 introduces a third layer: every page now renders on a `canvas → workspace → surface` stack, with tonal steps that create material depth. The navy accent was also desaturated for a more mature, "considered" feel. Full rationale and alternatives considered: `docs/decision-log.md` 2026-04-17 entries (both rounds).
+
+**2026-04-17 round 3 — black-first dark mode.** User feedback after the institutional repositioning was that dark mode still read too navy/blue-dominant. The fix is not a new theme and not a rollback to the prior warm palette: the existing dark theme is retuned in place so large surfaces are black/graphite while navy appears only as a sparse affordance color for active nav, primary CTAs, focus, links, selected rows/chips, and small status signals.
+
+**2026-04-17 round 7 — light/dark theme polish.** The theme system now also treats light mode as a clean institutional paper/neutral stack, not a gray-heavy canvas. Broad accent and semantic washes were reduced across shared primitives, empty states, contextual hints, feature panels, and visualizations. Legacy token names are aliased back to canonical roles so old call sites cannot fall through to bootstrap blues, warm browns, or missing-variable defaults.
 
 ### Material hierarchy
 
 | Layer | Token | Light | Dark | Selector |
 |---|---|---|---|---|
-| 0 — page canvas | `--color-bg` | `#e8ebf0` | `#070a0f` | `body` |
-| 1 — application workspace | `--color-workspace` | `#f4f6fa` | `#12161e` | `.app-main` |
-| 2 — content surface (cards) | `--color-surface` | `#ffffff` | `#1c212a` | `.card`, `.empty-state`, etc. |
-| 2a — elevated / modal surface | `--color-surface-elevated` | `#ffffff` | `#222832` | `.card--raised`, dialogs |
-| 2b — inset / muted surface | `--color-surface-muted` | `#eef1f5` | `#151a22` | nested panels, `.empty-state-steps` |
+| 0 — page canvas | `--color-bg` | `#eef1f5` | `#020305` | `body` |
+| 1 — application workspace | `--color-workspace` | `#f7f9fc` | `#08090c` | `.app-main` |
+| 2 — content surface (cards) | `--color-surface` | `#ffffff` | `#101114` | `.card`, `.empty-state`, etc. |
+| 2a — elevated / modal surface | `--color-surface-elevated` | `#ffffff` | `#17191e` | `.card--raised`, dialogs |
+| 2b — inset / muted surface | `--color-surface-muted` | `#f1f4f8` | `#0b0c10` | nested panels, `.empty-state-steps` |
 
-The tonal steps are ~10 RGB units per tier in light mode, producing depth that reads as *material* rather than *color banding*. Contributors **must not** put content cards directly on `--color-bg`; the workspace surface is the semantic home for app content. If a surface genuinely needs to sit on the canvas (full-bleed marketing, error walls, launch overlays) it should be styled explicitly with that intent documented in the component CSS.
+The tonal steps are intentionally subtle. In light mode, the stack remains institutional neutral. In dark mode, every large structural surface must resolve to black or graphite, not navy. Contributors **must not** put content cards directly on `--color-bg`; the workspace surface is the semantic home for app content. If a surface genuinely needs to sit on the canvas (full-bleed marketing, error walls, launch overlays) it should be styled explicitly with that intent documented in the component CSS.
+
+### Component color rules
+
+Large surfaces in either theme must use the neutral material stack: `--color-bg`, `--color-workspace`, `--color-surface`, `--color-surface-elevated`, or `--color-surface-muted`. Accent and semantic colors belong in low-area affordances: rails, borders, icons, dots, badges, chips, links, focus rings, selected controls, and primary CTAs.
+
+Component-level accent halos are capped at 10%. Status halos are capped at 12%. Full-card accent or semantic washes are allowed only for explicit selected/active states; routine cards, empty states, loading skeletons, contextual hints, and chart containers should stay neutral.
 
 ### Primary accent
 
 | Role | Light | Dark |
 |---|---|---|
-| `--color-accent` | `#1b4b80` (desaturated Alberta navy) | `#7aa7d9` (lifted desaturated navy) |
-| `--color-accent-hover` | `#143a65` | `#91b9e3` |
-| `--color-accent-soft` / `--color-bg-accent` | `#e7ecf4` | `#101827` |
+| `--color-accent` | `#1b4b80` (desaturated Alberta navy) | `#426990` (subdued navy control color) |
+| `--color-accent-hover` | `#143a65` | `#4a74a1` |
+| `--color-accent-soft` / `--color-bg-accent` | `#e7ecf4` | `#070d15` |
 | `--color-brand-highlight` | `#ae671a` (Prairie cognac, legacy brand) | `#d4a15c` (lifted cognac) |
 
-The accent was desaturated from the round-1 value (`#0f4c9e`) to reduce the "generic app blue" feel of the fully-saturated hue. Contributors: if you feel pressure to bring back cream surfaces, re-saturate the navy, or collapse the three-layer stack back to two, push back, or bring the case to `docs/decision-log.md` first.
+The dark accent is deliberately darker than the previous sky-blue `#7aa7d9`. It must read as a control state, not as an ambient brand wash. Contributors: if you feel pressure to make dark surfaces navy again, re-saturate the dark accent, bring back cream surfaces, or collapse the three-layer stack back to two, push back, or bring the case to `docs/decision-log.md` first.
+
+### Dark semantic backgrounds
+
+Semantic dark backgrounds are rebased to black with only a trace of hue:
+
+| Family | Dark bg |
+|---|---|
+| muted | `#0b0c10` |
+| info / analysis / slate | `#0b0d12` |
+| success | `#0a100d` |
+| warning / pending / sun | `#100d07` |
+| danger | `#120909` |
+| accent | `#070d15` |
+| provenance | `#091011` |
+| sage / forest | `#09100b` |
+
+The semantic hue should show up mostly through text, borders, dots, rails, and icons. Large dark panels should not become blue, green, amber, or red fields unless they are explicitly selected/active controls.
 
 ## 2. Switching mechanism
 
@@ -81,7 +108,7 @@ Run it whenever you change a color token. It is also expected to run as part of 
 ### When it fails
 
 1. Open `output/contrast-report.md` to see the exact ratio and target for the failing pair
-2. Lift the *lower-contrast* side (usually the foreground) by adjusting **lightness** within the same hue family (neutral-grey for canvas tokens, Alberta-navy for accent tokens, semantic hue for status families) — **never shift the hue** to fix contrast
+2. Lift the *lower-contrast* side (usually the foreground) by adjusting **lightness** within the same hue family (neutral graphite for canvas tokens, restrained navy for accent tokens, semantic hue for status families) — **never shift the hue** to fix contrast
 3. Re-run `npm run check:contrast` until clean
 4. Smoke-test visually in `npm run dev` — make sure the lifted value still feels like the institutional palette
 
@@ -118,9 +145,9 @@ This respects users who have disabled transparency at the OS level (typically fo
 
 The `body::before` film-grain texture is suppressed in dark mode regardless of `prefers-reduced-transparency`. On the neutral dark canvas, the grain reads as noise rather than texture and hurts legibility.
 
-### Body background (2026-04-17 round 2)
+### Body background (2026-04-17 round 3)
 
-The body is now a flat `background: var(--color-bg)` with no gradient. All visual framing is provided by the `.app-main` Layer-1 workspace, which sits on the canvas with `box-shadow: var(--shadow-lg)` and `border-radius: var(--radius-xl)`. The prior linear-gradient top-fade was retired because the three-layer stack provides better material separation than any single-surface gradient can.
+The body is now a flat `background: var(--color-bg)` with no gradient. All visual framing is provided by the `.app-main` Layer-1 workspace, which sits on the canvas with `box-shadow: var(--shadow-lg)` and `border-radius: var(--radius-xl)`. In dark mode, this means `body`, header chrome, `.app-main`, cards, modals, and empty states should read as black/graphite surfaces; navy belongs to controls and state only.
 
 ## 7. Derivation rules for new tokens
 
@@ -134,6 +161,8 @@ When adding a **new** semantic family (e.g., a new status color, a new section t
 4. **Derive `--color-text-<family>`** as the OKLCH-lifted base that hits **≥4.5:1** on `--color-bg-<family>`. Aim for **≥4.7:1** so the token has real headroom against display variation.
 5. **Register the new pair(s)** in `scripts/check-contrast.mjs` (see §4 "Adding a new pair to the check").
 6. **Run `npm run check:contrast`.** Do not ship without a clean report.
+
+For dark-mode tokens, keep broad backgrounds near black even when deriving a new semantic family. Do not use a saturated navy or blue-tinted background as the default dark surface; reserve color for low-area signals unless the component is explicitly an active/selected affordance.
 
 ### Existing tokens stay explicit for now
 
@@ -160,7 +189,7 @@ When you change anything that touches color:
 ## 9. Known trade-offs documented here
 
 - **Decorative borders read below 3:1.** Accepted for aesthetic reasons (see §5). Mitigated by routing all form affordances through `--color-border-input`.
-- **Near-black, not true AMOLED black.** The base bg `#0e1116` is a cool near-black, not pure `#000000`. This avoids OLED smearing artifacts while still reading as decisively dark.
+- **Near-black, not true AMOLED black.** The base bg `#020305` is a very dark graphite, not pure `#000000`. This avoids OLED smearing artifacts while still reading as decisively black-first.
 - **`::selection` uses `color-mix`.** Requires modern browsers; fallback is not provided because Prairie's target matrix already requires `light-dark()` support.
 - **Grain texture is suppressed in dark mode.** Non-configurable. If a future design wants grain in dark mode, design a new dark-tuned noise pattern rather than reusing the light one.
 

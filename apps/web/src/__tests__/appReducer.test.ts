@@ -1,6 +1,16 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, vi } from "vitest";
-import { appReducer, createInitialState, type AppState } from "../appReducer";
+import {
+  appReducer,
+  createInitialState,
+  getVisibleTabs,
+  getVisibleTabsForGroup,
+  getVisibleNavGroups,
+  isTabVisibleForRole,
+  TAB_META,
+  type ActiveTab,
+  type AppState,
+} from "../appReducer";
 import type { ClassroomRole } from "../appReducer";
 
 function installLocalStorage() {
@@ -150,6 +160,104 @@ describe("ClassroomRole literal shape", () => {
   it("exports the four supported role values", () => {
     const roles: ClassroomRole[] = ["teacher", "ea", "substitute", "reviewer"];
     expect(roles).toHaveLength(4);
+  });
+});
+
+describe("tab visibility helpers — per-role", () => {
+  it("TAB_META: every tab declares the roles that may see it", () => {
+    for (const [tab, meta] of Object.entries(TAB_META)) {
+      expect(meta.roles.length).toBeGreaterThan(0);
+      for (const role of meta.roles) {
+        expect(["teacher", "ea", "substitute", "reviewer"]).toContain(role);
+      }
+      expect(tab in TAB_META).toBe(true);
+    }
+  });
+
+  it("teacher sees every tab", () => {
+    const tabs = getVisibleTabs("teacher");
+    const allTabs: ActiveTab[] = [
+      "today", "differentiate", "tomorrow-plan", "family-message",
+      "log-intervention", "language-tools", "support-patterns",
+      "ea-briefing", "ea-load", "complexity-forecast",
+      "survival-packet", "usage-insights",
+    ];
+    for (const tab of allTabs) expect(tabs).toContain(tab);
+  });
+
+  it("ea sees today, ea-briefing, ea-load, log-intervention, usage-insights only", () => {
+    const tabs = getVisibleTabs("ea");
+    const expected: ActiveTab[] = [
+      "today", "ea-briefing", "ea-load", "log-intervention", "usage-insights",
+    ];
+    expect([...tabs].sort()).toEqual([...expected].sort());
+  });
+
+  it("substitute sees today, ea-briefing, complexity-forecast (read), log-intervention only", () => {
+    const tabs = getVisibleTabs("substitute");
+    const expected: ActiveTab[] = [
+      "today", "ea-briefing", "complexity-forecast", "log-intervention",
+    ];
+    expect([...tabs].sort()).toEqual([...expected].sort());
+  });
+
+  it("reviewer sees read-only history & aggregate surfaces only (tomorrow-plan, complexity-forecast, log-intervention, family-message, support-patterns, usage-insights)", () => {
+    const tabs = getVisibleTabs("reviewer");
+    const expected: ActiveTab[] = [
+      "tomorrow-plan",
+      "complexity-forecast",
+      "log-intervention",
+      "family-message",
+      "support-patterns",
+      "usage-insights",
+    ];
+    expect([...tabs].sort()).toEqual([...expected].sort());
+  });
+
+  it("substitute never sees the sub-packet tab — it exists to consume the packet, but the read surface is not built yet", () => {
+    const tabs = getVisibleTabs("substitute");
+    expect(tabs).not.toContain("survival-packet");
+  });
+
+  it("reviewer never sees today (reviewer works from history, not the live operational view)", () => {
+    const tabs = getVisibleTabs("reviewer");
+    expect(tabs).not.toContain("today");
+  });
+
+  it("ea never sees tomorrow-plan, differentiate, language-tools, family-message, support-patterns, survival-packet, complexity-forecast", () => {
+    const tabs = getVisibleTabs("ea");
+    expect(tabs).not.toContain("tomorrow-plan");
+    expect(tabs).not.toContain("differentiate");
+    expect(tabs).not.toContain("language-tools");
+    expect(tabs).not.toContain("family-message");
+    expect(tabs).not.toContain("support-patterns");
+    expect(tabs).not.toContain("survival-packet");
+    expect(tabs).not.toContain("complexity-forecast");
+  });
+
+  it("isTabVisibleForRole matches the TAB_META declaration", () => {
+    for (const [tab, meta] of Object.entries(TAB_META)) {
+      for (const role of ["teacher", "ea", "substitute", "reviewer"] as const) {
+        const expected = meta.roles.includes(role);
+        expect(isTabVisibleForRole(tab as ActiveTab, role)).toBe(expected);
+      }
+    }
+  });
+
+  it("getVisibleTabsForGroup returns only tabs the role may see in that group", () => {
+    expect(getVisibleTabsForGroup("prep", "reviewer")).toEqual([]);
+    expect(getVisibleTabsForGroup("prep", "teacher")).toEqual(["differentiate", "language-tools"]);
+    expect(getVisibleTabsForGroup("ops", "substitute")).toEqual([
+      "ea-briefing",
+      "complexity-forecast",
+      "log-intervention",
+    ]);
+  });
+
+  it("getVisibleNavGroups hides a group with zero visible tabs (reviewer has no Prep)", () => {
+    expect(getVisibleNavGroups("reviewer")).not.toContain("prep");
+    expect(getVisibleNavGroups("teacher")).toEqual(["today", "prep", "ops", "review"]);
+    expect(getVisibleNavGroups("ea")).toEqual(["today", "ops", "review"]);
   });
 });
 

@@ -59,20 +59,20 @@ mkdirSync(VIDEO_DIR, { recursive: true });
 // Wow beats (differentiate, family-message) preserved at full length; setup
 // beats and closes trimmed 1–3s each.
 const BEAT_HOLD_MS = {
-  todayHero: 11000,        // opening — let "10:00–10:45 is today's real test" land
-  todayDayArc: 9000,       // day-arc curve, complexity peak at 10:00
-  todayDebt: 10000,        // complexity debt ring (94 ▼30)
-  todayPriority: 5000,     // priority matrix sweep (trimmed)
-  differentiateEmpty: 4500,
-  differentiateFilling: 800,   // per-keystroke typing delay
-  differentiateGenerated: 18000, // WOW — keep full
-  familyMessageEmpty: 4500,
-  familyMessageGenerated: 18000, // WOW — keep full
-  eaBriefingGenerated: 12000,  // 27B planning tier output (trimmed)
-  eaLoadGenerated: 10000,      // cognitive load distribution bars (trimmed)
-  forecastGenerated: 11000,    // risk heatmap (trimmed)
-  closeLightTheme: 6000,       // warm light-theme handoff (trimmed)
-  closeMobile: 7000,           // final frame: mobile bottom-nav proof (trimmed)
+  todayHero: 9000,        // opening — let the current morning queue land
+  todayDayArc: 6000,      // day-arc / classroom pulse scan
+  todayDebt: 7000,        // complexity debt ring
+  todayPriority: 2500,    // priority matrix sweep
+  differentiateEmpty: 3000,
+  differentiateFilling: 600,   // per-keystroke typing delay
+  differentiateGenerated: 12000,
+  familyMessageEmpty: 3000,
+  familyMessageGenerated: 12000,
+  eaBriefingGenerated: 9000,
+  eaLoadGenerated: 7000,
+  forecastGenerated: 8000,
+  closeLightTheme: 5000,
+  closeMobile: 5000,
 };
 // ─────────────────────────────────────────────────────────────────────────
 
@@ -84,10 +84,13 @@ async function dismissDialog(page) {
   await page.evaluate(() => {
     const dlg = document.querySelector('[role="dialog"]');
     if (!dlg) return;
-    const skip = Array.from(dlg.querySelectorAll("button")).find((b) =>
+    const action = Array.from(dlg.querySelectorAll("button")).find((b) =>
+      b.textContent?.includes("Skip (default to Teacher)") ||
+      b.textContent?.includes("Confirm role") ||
+      b.textContent?.includes("Skip tour") ||
       b.textContent?.includes("Skip"),
     );
-    skip?.click();
+    action?.click();
   });
 }
 
@@ -165,6 +168,11 @@ async function main() {
   await page.addInitScript(() => {
     try {
       localStorage.setItem("prairie-theme", "dark");
+      localStorage.setItem("prairie-onboarding-done", "true");
+      localStorage.setItem(
+        "prairie-classroom-roles",
+        JSON.stringify({ "demo-okafor-grade34": "teacher" }),
+      );
     } catch {
       // localStorage may be unavailable before the page context is ready.
     }

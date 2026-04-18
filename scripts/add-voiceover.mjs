@@ -55,82 +55,69 @@ const NARRATIONS = [
     key: "N1-hero",
     mark: "todayHero",        // 2.674s · slot 12.52s
     text:
-      "A grade three-four teacher in Alberta walks into her classroom. " +
-      "Twenty-six students. Eight English learners. Ninety-four open " +
-      "threads. Seventy minutes until today's real test.",
+      "A grade three-four teacher opens the morning dashboard. Twenty-six " +
+      "students. Eight English learners. Thirty-five threads need attention. " +
+      "Hannah is first.",
   },
   {
     key: "N2-dayarc",
     mark: "todayDayArc",      // 15.192s
     text:
-      "PrairieClassroom OS draws the day as a shape. Each hill is a block. " +
-      "The tallest hill is that ten a m math block. And every student on " +
-      "it needs to be reached first.",
+      "The app turns the morning into decisions: which block is fragile, " +
+      "who needs a first touch, and what should move before the bell.",
   },
   {
     key: "N3-debt",
     mark: "todayDebt",        // 25.722s
     text:
-      "The app tracks classroom complexity the way an engineer tracks " +
-      "technical debt. Ninety-four items this morning, down thirty from " +
-      "yesterday. The teacher didn't magic them away. She handled them one " +
-      "at a time, with the copilot helping her see which ones actually " +
-      "mattered.",
+      "Complexity debt keeps follow-ups, review dates, recurring plans, " +
+      "and unaddressed patterns visible until the next classroom action is " +
+      "clear.",
   },
   {
     key: "N4-differentiate",
     mark: "differentiateNav", // 41.948s
     text:
-      "Here is what Gemma four does when it is the right model for the job. " +
-      "The teacher drops in the morning's reading passage, tells the copilot " +
-      "what she needs — a scaffolded version for Amira, who is still " +
-      "building English — and Gemma four B, running entirely on her laptop, " +
-      "generates four variants in under two seconds. A core version. An " +
-      "E S L supported version with sentence frames. A chunked step-by-step " +
-      "version. And a small-group variant the E A can run. No cloud call. " +
-      "No student data leaving the classroom.",
+      "Now the teacher opens Differentiate. She drops in the morning reading " +
+      "passage, adds the goal, and asks for a scaffold for Amira. The output " +
+      "keeps one instructional target, then gives the class several workable " +
+      "paths through it: a core version, an E S L supported version, a " +
+      "chunked version, and a small-group route an E A can run.",
   },
   {
     key: "N5-family",
     mark: "familyMessageNav", // 74.553s
     text:
       "When the teacher wants to send good news home, the copilot drafts " +
-      "the message in her voice, then translates it into the family's home " +
-      "language. Punjabi. Tagalog. Arabic. Ukrainian. Eight languages, all " +
-      "generated on device. But here is the rule the product will not break: " +
-      "nothing is ever sent automatically. Every word that leaves this " +
-      "classroom passes through the teacher first. The copilot drafts. The " +
-      "teacher decides. Agency stays where it belongs.",
+      "a message with the selected purpose, student, and family language in " +
+      "mind. But the product rule stays visible: nothing is ever sent " +
+      "automatically. Every word that leaves the classroom passes through " +
+      "the teacher first. The copilot drafts. The teacher decides.",
   },
   {
     key: "N6-ea",
     mark: "eaBriefingNav",    // 107.497s
     text:
-      "Two models work together. The four B runs live, differentiating " +
-      "content and drafting messages in seconds. The twenty-seven B handles " +
-      "the harder problem: who sits with which student, when. Here it has " +
-      "generated a timestamped daily briefing for the educational assistant " +
-      "— every block, every transition, every student to watch. And here it " +
-      "has distributed the cognitive load across the morning so no single " +
-      "E A is overwhelmed. This is dual-speed Gemma four.",
+      "The operations panels handle the harder coordination problem: who " +
+      "supports which student, and when. The E A briefing turns classroom " +
+      "memory into a timestamped route through the day. The load profile " +
+      "then checks whether that plan is realistic for the adults in the " +
+      "room, not just the students.",
   },
   {
     key: "N7-forecast",
     mark: "forecastNav",      // 140.293s
     text:
-      "The copilot also looks ahead. A five-day complexity forecast. Green " +
-      "means stable. Amber means watch. Red means this block is going to be " +
-      "a test, and the teacher should plan for it now, not on Thursday when " +
-      "it hits.",
+      "The forecast looks ahead. Green means stable, amber means watch, " +
+      "and red means plan now before it becomes an emergency.",
   },
   {
     key: "N8-close",
     mark: "closeLightThemeNav", // 156.544s · slot 16.78s
     text:
-      "PrairieClassroom OS runs on the laptop the teacher already owns. No " +
-      "cloud by default. No student data leaving the building. Classroom " +
-      "complexity is a coordination problem. Drop the coordination load, " +
-      "and teachers get their afternoons back.",
+      "The same workflows carry from desktop to mobile. PrairieClassroom OS " +
+      "treats classroom complexity as coordination work, and gives teachers " +
+      "more of their day back.",
   },
 ];
 // ─────────────────────────────────────────────────────────────────────────

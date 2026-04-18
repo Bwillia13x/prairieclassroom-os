@@ -22,6 +22,11 @@ import {
   patternReportCitation,
 } from "../retrieval-trace.js";
 import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
+import {
+  buildRosterScope,
+  filterRosterScoped,
+  isRosterScopedValue,
+} from "../../memory/roster-scope.js";
 
 export function createEABriefingRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -35,6 +40,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
         sendClassroomNotFound(res, classroom_id);
         return;
       }
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
 
       const route = getRoute("generate_ea_briefing");
       const modelId = getModelId(route.model_tier);
@@ -45,24 +51,24 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
       const citations: RetrievalCitation[] = [];
       const seenInterventionIds = new Set<string>();
       try {
-        briefingCtx = buildEABriefingContext(classroom_id);
+        briefingCtx = buildEABriefingContext(classroom_id, rosterScope);
         // Mirror the records buildEABriefingContext pulls so the response trace
         // matches what was actually injected into the prompt.
-        for (const plan of getRecentPlans(classroom_id, 1)) {
+        for (const plan of filterRosterScoped(getRecentPlans(classroom_id, 1), rosterScope)) {
           citations.push(planCitation(plan));
         }
-        for (const record of getFollowUpPending(classroom_id).slice(0, 5)) {
+        for (const record of filterRosterScoped(getFollowUpPending(classroom_id), rosterScope).slice(0, 5)) {
           if (seenInterventionIds.has(record.record_id)) continue;
           seenInterventionIds.add(record.record_id);
           citations.push(interventionCitation(record));
         }
-        for (const record of getRecentInterventions(classroom_id, 5)) {
+        for (const record of filterRosterScoped(getRecentInterventions(classroom_id, 5), rosterScope)) {
           if (seenInterventionIds.has(record.record_id)) continue;
           seenInterventionIds.add(record.record_id);
           citations.push(interventionCitation(record));
         }
         const latestPattern = getLatestPatternReport(classroom_id);
-        if (latestPattern) citations.push(patternReportCitation(latestPattern));
+        if (latestPattern && isRosterScopedValue(latestPattern, rosterScope)) citations.push(patternReportCitation(latestPattern));
       } catch (memErr) {
         console.warn("Memory retrieval failed (ea briefing):", memErr);
       }

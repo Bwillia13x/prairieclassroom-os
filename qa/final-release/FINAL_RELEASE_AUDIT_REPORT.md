@@ -1,17 +1,17 @@
 # PrairieClassroom OS Final Release Audit
 
-Audit timestamp: 2026-04-15T01:05:48Z
+Audit timestamp: 2026-04-17T23:03:30Z
 Audit mode: no-cost local mock lane, synthetic/demo data only
-Release-gate artifact: `output/release-gate/2026-04-15T01-02-59-972Z-6535`
-UI evidence artifact: `output/playwright/ui-evidence/2026-04-15T01-05-37-378Z`
+Release-gate artifact: `output/release-gate/2026-04-17T23-01-11-249Z-44643`
+UI evidence artifact: `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z`
 
 ## Executive Summary
 
 PrairieClassroom OS is release-ready for the local synthetic/mock demonstration lane. The full mock release gate passed, browser smoke passed, the screenshot evidence capture passed with no runtime console/page errors, and canonical inventory, proof claims, contrast, memory, and request-log checks are clean.
 
-This audit does not clear live-model privacy-first deployment on this host. The latest operator status still records the Ollama lane as blocked on host capability, and this host currently has only 8 GiB RAM and about 2.34 GiB available disk in the release-gate summary. Hosted Gemini was not rerun because the project cost guardrails require explicit hosted-model intent and the current request is fully covered by the no-cost lane.
+This audit does not clear live-model privacy-first deployment on this host. The latest operator status still records the Ollama lane as blocked on host capability, and this host currently has 8 GiB RAM with limited free disk headroom. Hosted Gemini was not rerun because the project cost guardrails require explicit hosted-model intent and the current request is fully covered by the no-cost lane.
 
-Release recommendation: ship for local mock/synthetic review and demos. Do not claim real classroom validation or full Ollama live-model readiness on this machine.
+Release recommendation: ship for local mock/synthetic review and the hosted Gemma 4 proof story. Do not claim real classroom validation or full Ollama live-model readiness on this machine. External publication steps remain: public repo, public deployment, and public YouTube link.
 
 ## Scorecard
 
@@ -30,6 +30,7 @@ Release recommendation: ship for local mock/synthetic review and demos. Do not c
 | Severity | Area | Finding | Resolution |
 |---|---|---|---|
 | P1 | Python validation | `npm run test:python` used ambient `python`, which resolved to Python 3.12.8 during the first audit run even though the repo expects Python 3.11.x. | Added `scripts/lib/python-bin.mjs` and `scripts/run-python-tests.mjs`; updated `package.json` and `scripts/release-gate.mjs` so Python tests and release gate share the same Python 3.11 resolver. Verified `npm run test:python` now uses `.venv311/bin/python` 3.11.14. |
+| P1 | Demo memory hygiene | The local demo SQLite file contained stale test records from the canonical classroom id, causing retrieval citations to leak an old learner alias into `smoke:api`. | Added roster-scoped memory filtering for retrieval contexts and citations, isolated Vitest memory writes under `output/manual-run`, reset/reseeded the demo memory, and reran the full mock release gate successfully. |
 
 ## Validation Results
 
@@ -38,15 +39,15 @@ Release recommendation: ship for local mock/synthetic review and demos. Do not c
 | Node runtime | Pass | Commands were run through `nvm use`, resolving Node `v25.8.2` as required by `.nvmrc`. |
 | `npm run typecheck` | Pass | `tsc --noEmit && tsc -b apps/web` completed cleanly. |
 | `npm run lint` | Pass with warnings | 0 errors, 77 warnings. Warnings are mostly test-only unused destructuring and explicit `any`. |
-| `npm run test` | Pass | 97 test files, 1123 tests passed. |
-| `npm run test:python` | Pass | 51 tests passed under Python 3.11.14 after runner fix. |
-| `npm run system:inventory:check` | Pass | panels=12, prompt_classes=13, api_endpoints=37, eval_cases=126. |
+| `npm run test` | Pass | 114 test files, 1,464 tests passed. |
+| `npm run test:python` | Pass | 67 tests passed under Python 3.11.14. |
+| `npm run system:inventory:check` | Pass | panels=12, prompt_classes=13, api_endpoints=37, eval_cases=127. |
 | `npm run check:contrast` | Pass | 80 light/dark color pairs evaluated; all meet WCAG AA. |
 | `npm run claims:check` | Pass | Claims check passed. |
 | `npm run proof:check` | Pass | Proof surfaces internally consistent. |
-| `npm run release:gate` | Pass | Mock gate passed at `output/release-gate/2026-04-15T01-02-59-972Z-6535`. |
-| `npm run ui:evidence` | Pass | Captured seven screenshots at `output/playwright/ui-evidence/2026-04-15T01-05-37-378Z`. |
-| `npm run logs:summary` | Pass | 537 records, 0 retryable responses, 0 injection-suspected responses. Latest non-200 responses were cache `304`s. |
+| `npm run release:gate` | Pass | Mock gate passed at `output/release-gate/2026-04-17T23-01-11-249Z-44643`. |
+| `npm run ui:evidence` | Pass | Captured seven screenshots at `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z`. |
+| `npm run logs:summary` | Pass | 9,244 records, 0 retryable responses, 0 injection-suspected responses. Latest non-200 responses were cache `304`s. |
 | `npm run ops:status` | Pass with known lane block | Mock passed, hosted Gemini has prior passing artifact, Ollama still blocked on this host, API lane unrecorded. |
 | `npm run memory:admin -- summary --classroom demo-okafor-grade34` | Pass | Demo classroom SQLite tables exist and contain current generated plan, message, intervention, pattern, forecast, packet, and session records. |
 
@@ -62,7 +63,7 @@ Captured screenshots:
 - `family-message-desktop.png`
 - `shell-mobile.png`
 
-Manifest: `output/playwright/ui-evidence/2026-04-15T01-05-37-378Z/manifest.json`
+Manifest: `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/manifest.json`
 
 The capture script fails on console errors or page errors; it completed successfully.
 
@@ -71,9 +72,9 @@ The capture script fails on console errors or page errors; it completed successf
 | Severity | Category | Location | Description | Recommendation |
 |---|---|---|---|---|
 | P0 | Release | None | No release-blocking issues found in the mock/synthetic lane. | None. |
-| P1 | Operations | Ollama live-model lane | `npm run ops:status` still reports latest Ollama gate failed and host preflight says Ollama unavailable. The current release-gate host summary shows 8 GiB RAM and about 2.34 GiB free disk, which is not viable for the full dual-speed local model lane. | Keep mock/synthetic demo claims separate from live-model claims. Use a larger host before running `npm run release:gate:ollama`. |
+| P1 | Operations | Ollama live-model lane | `npm run ops:status` still reports latest Ollama gate failed and host preflight says Ollama unavailable. The current release-gate host summary shows 8 GiB RAM and about 9.52 GiB free disk, which is not viable for the full dual-speed local model lane. | Keep mock/synthetic demo claims separate from live-model claims. Use a larger host before running `npm run release:gate:ollama`. |
 | P2 | Code quality | Test files | Lint passes but reports 77 warnings, mostly unused test destructuring and explicit `any`. | Convert these to clean ignored destructures or typed mocks when touching adjacent tests. Consider making warnings fail once the backlog is burned down. |
-| P2 | Host hygiene | Local disk and memory | Release-gate summary recorded about 0.08 GiB free memory and 2.34 GiB available disk at start. The no-cost mock gate still passed, but this is tight for artifact-heavy audit loops. | Free disk before larger evidence captures or hosted/live reruns. Avoid live-model work on this host. |
+| P2 | Host hygiene | Local disk and memory | Release-gate summary recorded about 0.46 GiB free memory and 9.52 GiB available disk at start. The no-cost mock gate still passed, but this is tight for artifact-heavy audit loops. | Free disk before larger evidence captures or hosted/live reruns. Avoid live-model work on this host. |
 | P3 | Product evidence | Human validation | Current proof is synthetic/demo. The docs intentionally do not claim teacher/EA validation. | Preserve that claim boundary until real pilot paperwork and rubric evidence exists. |
 
 ## Residual Risk
@@ -88,6 +89,10 @@ The capture script fails on console errors or page errors; it completed successf
 - Added `scripts/run-python-tests.mjs`.
 - Updated `package.json` so `npm run test:python` uses the resolver.
 - Updated `scripts/release-gate.mjs` to share the same resolver.
+- Added roster-scoped memory filtering for retrieval contexts and citations.
+- Added isolated Vitest memory setup to prevent test records from contaminating the canonical demo database.
+- Reset and reseeded `data/memory/demo-okafor-grade34.sqlite`.
+- Refreshed UI evidence screenshots and public-facing hackathon docs to match the generated inventory counts.
 - Refreshed generated proof docs through the passing mock gate:
   - `docs/eval-baseline.md`
   - `docs/live-model-proof-status.md`

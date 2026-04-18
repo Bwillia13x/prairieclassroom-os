@@ -106,10 +106,24 @@ app.use(inputSanitizer);
 app.use(globalLimiter);
 
 // ----- Auth middleware -----
+//
+// Role scope matrix (authoritative):
+// Each mount's middleware is the UNION of roles allowed on any route under
+// that prefix. Routes with narrower scopes add a route-level
+// `requireRoles(deps, [...])` gate (see individual route files + history.ts,
+// today.ts, debt-register.ts, feedback.ts, sessions.ts,
+// support-patterns.ts, forecast.ts). Mount-level checks only enforce role on
+// routes with `classroom_id` in the body because URL params aren't resolved
+// until the sub-router's route handler runs.
 
 const authMiddleware = createAuthMiddleware(loadClassroom);
 const teacherOnly = requireClassroomRole(["teacher"]);
 const teacherOrEa = requireClassroomRole(["teacher", "ea"]);
+const teacherEaOrSubstitute = requireClassroomRole(["teacher", "ea", "substitute"]);
+const teacherOrReviewer = requireClassroomRole(["teacher", "reviewer"]);
+const teacherSubstituteOrReviewer = requireClassroomRole(["teacher", "substitute", "reviewer"]);
+const teacherEaOrReviewer = requireClassroomRole(["teacher", "ea", "reviewer"]);
+const teacherEaSubstituteOrReviewer = requireClassroomRole(["teacher", "ea", "substitute", "reviewer"]);
 
 const deps: RouteDeps = {
   inferenceUrl: INFERENCE_URL,
@@ -131,20 +145,20 @@ try {
 app.use("/api/differentiate", authLimiter, authMiddleware, teacherOnly);
 app.use("/api/tomorrow-plan", authLimiter, authMiddleware, teacherOnly);
 app.use("/api/family-message", authLimiter, authMiddleware, teacherOnly);
-app.use("/api/intervention", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/intervention", authLimiter, authMiddleware, teacherEaOrSubstitute);
 app.use("/api/simplify", authLimiter, authMiddleware, teacherOnly);
 app.use("/api/vocab-cards", authLimiter, authMiddleware, teacherOnly);
-app.use("/api/support-patterns", authLimiter, authMiddleware, teacherOnly);
-app.use("/api/ea-briefing", authLimiter, authMiddleware, teacherOrEa);
-app.use("/api/complexity-forecast", authLimiter, authMiddleware, teacherOnly);
+app.use("/api/support-patterns", authLimiter, authMiddleware, teacherOrReviewer);
+app.use("/api/ea-briefing", authLimiter, authMiddleware, teacherEaOrSubstitute);
+app.use("/api/complexity-forecast", authLimiter, authMiddleware, teacherSubstituteOrReviewer);
 app.use("/api/ea-load", authLimiter, authMiddleware, teacherOrEa);
-app.use("/api/debt-register", authLimiter, authMiddleware, teacherOrEa);
-app.use("/api/today", authLimiter, authMiddleware, teacherOrEa);
+app.use("/api/debt-register", authLimiter, authMiddleware, teacherEaSubstituteOrReviewer);
+app.use("/api/today", authLimiter, authMiddleware, teacherEaOrSubstitute);
 app.use("/api/scaffold-decay", authLimiter, authMiddleware, teacherOnly);
 app.use("/api/survival-packet", authLimiter, authMiddleware, teacherOnly);
 app.use("/api/extract-worksheet", authLimiter, authMiddleware, teacherOnly);
-app.use("/api/feedback", authLimiter, authMiddleware, teacherOrEa);
-app.use("/api/sessions", authLimiter, authMiddleware, teacherOrEa);
+app.use("/api/feedback", authLimiter, authMiddleware, teacherEaOrReviewer);
+app.use("/api/sessions", authLimiter, authMiddleware, teacherEaSubstituteOrReviewer);
 
 // ----- Mount routes -----
 

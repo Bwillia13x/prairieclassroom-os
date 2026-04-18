@@ -21,8 +21,8 @@ The project also keeps a separate local/self-hosted Ollama path for the intended
 
 Project links:
 - Code: https://github.com/Bwillia13x/prairieclassroom-os
-- Live demo: [add deployed URL]
-- Kaggle writeup: [add writeup URL]
+- Live demo: [add public deployed URL after deployment]
+- Kaggle writeup: [add Kaggle writeup URL after submission]
 
 ## Kaggle Project Links Text
 

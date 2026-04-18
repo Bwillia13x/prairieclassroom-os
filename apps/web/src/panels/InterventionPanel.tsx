@@ -17,9 +17,11 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
+import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
 import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
+import { useRole } from "../hooks/useRole";
 import QuickCaptureTray from "../components/quickCapture/QuickCaptureTray";
 import type { InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
 
@@ -41,6 +43,7 @@ export default function InterventionPanel({ prefill }: Props) {
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const role = useRole();
 
   useEffect(() => {
     session.recordPanelVisit("log-intervention");
@@ -128,15 +131,23 @@ export default function InterventionPanel({ prefill }: Props) {
         ]}
       />
 
+      <RoleReadOnlyBanner
+        role={role}
+        required="canLogInterventions"
+        whatIsBlocked="Logging interventions is reserved for adults actively working with this classroom."
+      />
+
       <WorkspaceLayout
         rail={(
           <>
-            <QuickCaptureTray
-              classroomId={activeClassroom}
-              students={students}
-              loading={loading}
-              onSubmit={handleQuickSubmit}
-            />
+            {role.canLogInterventions ? (
+              <QuickCaptureTray
+                classroomId={activeClassroom}
+                students={students}
+                loading={loading}
+                onSubmit={handleQuickSubmit}
+              />
+            ) : null}
             <ContextualHint
               featureKey="log-intervention"
               title="Log Intervention"
@@ -159,18 +170,20 @@ export default function InterventionPanel({ prefill }: Props) {
                 <FollowUpSuccessRate records={history.items} />
               </>
             )}
-            <details ref={detailsRef} className="intervention-structured-details">
-              <summary>Structured details (optional)</summary>
-              <InterventionLogger
-                classrooms={classrooms}
-                students={students}
-                selectedClassroom={activeClassroom}
-                onClassroomChange={setActiveClassroom}
-                onSubmit={handleSubmit}
-                loading={loading}
-                prefill={prefill}
-              />
-            </details>
+            {role.canLogInterventions ? (
+              <details ref={detailsRef} className="intervention-structured-details">
+                <summary>Structured details (optional)</summary>
+                <InterventionLogger
+                  classrooms={classrooms}
+                  students={students}
+                  selectedClassroom={activeClassroom}
+                  onClassroomChange={setActiveClassroom}
+                  onSubmit={handleSubmit}
+                  loading={loading}
+                  prefill={prefill}
+                />
+              </details>
+            ) : null}
           </>
         )}
         canvas={(

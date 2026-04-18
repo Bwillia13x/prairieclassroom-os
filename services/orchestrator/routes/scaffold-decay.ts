@@ -5,7 +5,7 @@ import type { ScaffoldDecayInput } from "../scaffold-decay.js";
 import { saveScaffoldReview } from "../../memory/store.js";
 import { buildScaffoldDecayContext, getLatestScaffoldReview, getStudentInterventions } from "../../memory/retrieve.js";
 import { validateBody, ScaffoldDecayRequestSchema } from "../validate.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { ScaffoldDecayReport } from "../../../packages/shared/schemas/scaffold-decay.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 import { callInference } from "../inference-client.js";
@@ -13,9 +13,16 @@ import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError, sendRouteError } from "../errors.js";
 import { maybeExposeThinkingSummary } from "../thinking-summary.js";
 import { isValidClassroomId } from "../validate.js";
+import { buildRetrievalTrace, interventionCitation } from "../retrieval-trace.js";
+import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
+import { buildRosterScope } from "../../memory/roster-scope.js";
 
 export function createScaffoldDecayRouter(deps: RouteDeps): Router {
   const router = Router();
+  // Scaffold decay surfaces student-level withdrawal patterns — teacher-only
+  // at both generate and read. Mount-level enforces teacher for POST; the GET
+  // needs its own gate because URL params only resolve at the route handler.
+  const teacherOnly = requireRoles(deps, ["teacher"]);
 
   router.post("/", validateBody(ScaffoldDecayRequestSchema), async (req, res) => {
     try {
@@ -25,6 +32,16 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
         sendClassroomNotFound(res, classroom_id);
+        return;
+      }
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
+      if (!rosterScope.allowedAliases.has(student_ref)) {
+        sendRouteError(res, 400, {
+          error: "student_ref is not in this classroom roster",
+          category: "validation",
+          retryable: false,
+          detail_code: "student_ref_not_in_roster",
+        });
         return;
       }
 
@@ -50,11 +67,20 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
       };
 
       let decayCtx = "";
+      const citations: RetrievalCitation[] = [];
+      // Window size matches buildScaffoldDecayContext's default (20) so the
+      // citations mirror exactly what gets injected into the prompt, even when
+      // the route-level threshold check above used a different (smaller) limit.
+      const contextWindow = time_window ?? 20;
       try {
-        decayCtx = buildScaffoldDecayContext(classroom_id, student_ref, time_window);
+        decayCtx = buildScaffoldDecayContext(classroom_id, student_ref, contextWindow);
+        for (const record of getStudentInterventions(classroom_id, student_ref, contextWindow)) {
+          citations.push(interventionCitation(record));
+        }
       } catch (memErr) {
         console.warn("Memory retrieval failed (scaffold decay):", memErr);
       }
+      const retrievalTrace = buildRetrievalTrace(citations);
 
       const prompt = buildScaffoldDecayPrompt(classroom, decayInput, decayCtx);
 
@@ -91,6 +117,7 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
       res.json({
         report,
         thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
+        retrieval_trace: retrievalTrace,
         ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {
@@ -101,7 +128,7 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
 
   // ----- Latest Scaffold Review Retrieval -----
 
-  router.get("/latest/:classroomId/:studentRef", deps.authMiddleware, (req, res) => {
+  router.get("/latest/:classroomId/:studentRef", deps.authMiddleware, teacherOnly, (req, res) => {
     try {
       const rawId = req.params.classroomId as string;
       if (!isValidClassroomId(rawId)) {
@@ -110,6 +137,16 @@ export function createScaffoldDecayRouter(deps: RouteDeps): Router {
       }
       const classroomId = rawId as ClassroomId;
       const studentRef = req.params.studentRef as string;
+      const classroom = deps.loadClassroom(classroomId);
+      if (!classroom) {
+        sendClassroomNotFound(res, classroomId);
+        return;
+      }
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
+      if (!rosterScope.allowedAliases.has(studentRef)) {
+        sendRouteError(res, 400, { error: "student_ref is not in this classroom roster", category: "validation", retryable: false, detail_code: "student_ref_not_in_roster" });
+        return;
+      }
       const review = getLatestScaffoldReview(classroomId, studentRef);
       if (!review) {
         res.json({ review: null });

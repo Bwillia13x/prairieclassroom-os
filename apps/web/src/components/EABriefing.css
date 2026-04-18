@@ -50,8 +50,9 @@
 .ea-briefing-disclaimer {
   font-size: 0.8rem;
   color: var(--color-text-warning);
-  background: color-mix(in srgb, var(--color-bg-warning) 55%, transparent);
+  background: color-mix(in srgb, var(--color-bg-warning) 36%, var(--color-surface));
   border: 1px solid color-mix(in srgb, var(--color-border-warning) 40%, transparent);
+  border-left: 3px solid var(--color-warning);
   border-radius: var(--radius-sm);
   padding: 0.55rem 0.85rem;
   margin-bottom: var(--space-4);

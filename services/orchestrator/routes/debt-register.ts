@@ -1,14 +1,18 @@
 import { Router } from "express";
 import { buildDebtRegister } from "../../memory/retrieve.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 import { isValidClassroomId } from "../validate.js";
 import { handleRouteError, sendClassroomNotFound, sendRouteError } from "../errors.js";
+import { buildRosterScope } from "../../memory/roster-scope.js";
 
 export function createDebtRegisterRouter(deps: RouteDeps): Router {
   const router = Router();
+  // Debt register is a coordination surface: teacher owns it, EA coordinates,
+  // substitute covers the day, reviewer audits. Read-only for all four.
+  const teacherEaSubstituteOrReviewer = requireRoles(deps, ["teacher", "ea", "substitute", "reviewer"]);
 
-  router.get("/:classroomId", deps.authMiddleware, (req, res) => {
+  router.get("/:classroomId", deps.authMiddleware, teacherEaSubstituteOrReviewer, (req, res) => {
     try {
       const rawId = req.params.classroomId as string;
       if (!isValidClassroomId(rawId)) {
@@ -38,7 +42,8 @@ export function createDebtRegisterRouter(deps: RouteDeps): Router {
         review_min_records: parsePositiveInt(req.query.review_min_records),
       };
 
-      const register = buildDebtRegister(classroomId, classroom, thresholds);
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
+      const register = buildDebtRegister(classroomId, classroom, thresholds, rosterScope);
       res.json({ register });
     } catch (err) {
       console.error("Debt register error:", err);

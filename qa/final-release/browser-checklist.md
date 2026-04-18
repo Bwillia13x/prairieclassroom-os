@@ -1,6 +1,6 @@
 # Browser Verification Checklist
 
-Artifact: `output/playwright/ui-evidence/2026-04-15T01-05-37-378Z`
+Artifact: `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z`
 
 | Area | Result | Evidence |
 |---|---|---|
@@ -13,4 +13,4 @@ Artifact: `output/playwright/ui-evidence/2026-04-15T01-05-37-378Z`
 | Mobile shell route | Pass | `shell-mobile.png` captured after mobile nav selector appeared. |
 | Runtime console errors | Pass | `npm run ui:evidence` completed; script fails on console errors. |
 | Page errors | Pass | `npm run ui:evidence` completed; script fails on page errors. |
-| Release browser smoke | Pass | `output/release-gate/2026-04-15T01-02-59-972Z-6535/90-smoke-browser.log`. |
+| Release browser smoke | Pass | `output/release-gate/2026-04-17T23-01-11-249Z-44643/90-smoke-browser.log`. |

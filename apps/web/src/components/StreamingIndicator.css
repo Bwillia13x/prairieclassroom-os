@@ -81,7 +81,8 @@
 
 /* Thinking text */
 .streaming-thinking {
-  background: var(--color-bg-accent);
+  background: color-mix(in srgb, var(--color-bg-accent) 28%, var(--color-surface-muted));
+  border-left: 3px solid var(--color-accent);
   border-radius: calc(var(--radius) - 2px);
   padding: 0.6rem 0.75rem;
   margin-bottom: var(--space-3);

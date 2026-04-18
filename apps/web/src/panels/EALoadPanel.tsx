@@ -15,6 +15,7 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
+import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import { FeedbackCollector } from "../components/shared";
 import { EALoadStackedBars } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
@@ -309,6 +310,7 @@ export default function EALoadPanel() {
                   panelHint="Block load assignments and rebalancing suggestions are static fixture in mock mode. Run with Ollama or hosted Gemini to see real load balancing."
                 />
                 <EALoadViewer response={result} />
+                <RetrievalTraceCard trace={result.retrieval_trace} />
                 <OutputFeedback outputId={result.profile.load_id} outputType="ea-load" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

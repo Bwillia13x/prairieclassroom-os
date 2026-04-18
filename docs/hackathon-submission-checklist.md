@@ -4,12 +4,12 @@ Repo-side checklist for preparing PrairieClassroom OS for the Gemma 4 Good Hacka
 
 ## Current status
 
-Checked against the repo on 2026-04-09.
+Checked against the repo on 2026-04-17.
 
-- Mock structural gate: passing
+- Mock structural gate: passing at `output/release-gate/2026-04-17T23-01-11-249Z-44643`
 - Hosted Gemma 4 proof lane: passing on synthetic/demo data
 - Ollama proof on this machine: not proven
-- Kaggle writeup draft: aligned to the hosted proof lane
+- Kaggle writeup draft: aligned to the hosted proof lane and current code inventory
 - Public-video script: aligned to the hosted proof lane
 
 ## Completed safely in repo
@@ -20,16 +20,22 @@ Checked against the repo on 2026-04-09.
   - hosted Gemma 4 is the submission proof lane
   - Ollama is the intended privacy-first deployment path
 - Kept the current proof references anchored to checked-in artifacts.
+- Added roster-scoped memory filtering and reset the demo SQLite memory so stale local test records cannot leak into retrieval citations.
+- Refreshed UI evidence screenshots on 2026-04-17.
 
 ## Existing media candidates
 
 Use the current UI evidence bundle for cover-image and gallery selection:
 
-- `output/playwright/ui-evidence/2026-04-09T02-29-56-407Z/today-desktop.png`
-- `output/playwright/ui-evidence/2026-04-09T02-29-56-407Z/differentiate-desktop.png`
-- `output/playwright/ui-evidence/2026-04-09T02-29-56-407Z/tomorrow-plan-desktop.png`
-- `output/playwright/ui-evidence/2026-04-09T02-29-56-407Z/family-message-desktop.png`
-- `output/playwright/ui-evidence/2026-04-09T02-29-56-407Z/shell-mobile.png`
+- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/today-desktop.png`
+- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/differentiate-desktop.png`
+- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/tomorrow-plan-desktop.png`
+- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/family-message-desktop.png`
+- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/shell-mobile.png`
+
+Current local video candidate:
+
+- `qa/demo-script/videos/walkthrough-2026-04-17T19-58-44-014-voiceover.mp4` (137.16 seconds, 1440x900, H.264/AAC)
 
 ## External actions still required
 
@@ -68,6 +74,8 @@ Run these from the repo root before publishing the final links:
 ```bash
 npm run claims:check
 npm run proof:check
+npm run system:inventory:check
+npm run check:contrast
 npm run release:gate
 ```
 

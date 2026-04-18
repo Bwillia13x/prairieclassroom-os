@@ -51,7 +51,7 @@
 }
 
 .output-feedback-btn--selected {
-  background: var(--color-bg-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
   border-color: var(--color-accent);
 }
 

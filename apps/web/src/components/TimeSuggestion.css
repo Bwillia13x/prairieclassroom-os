@@ -8,8 +8,8 @@
   border-left: 4px solid var(--color-accent);
   border-radius: var(--radius-md);
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 42%, transparent), color-mix(in srgb, var(--color-surface-elevated) 8%, transparent)),
-    var(--color-bg-accent);
+    linear-gradient(180deg, color-mix(in srgb, var(--color-bg-accent) 18%, transparent), color-mix(in srgb, var(--color-bg-accent) 4%, transparent)),
+    var(--color-surface-elevated);
   box-shadow: var(--shadow-sm);
   transition:
     transform var(--motion-fast) var(--ease-standard),
@@ -24,8 +24,8 @@
   margin-bottom: 0;
   border-left-width: 2px;
   background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 28%, transparent), color-mix(in srgb, var(--color-surface-elevated) 6%, transparent)),
-    var(--color-bg-accent);
+    linear-gradient(180deg, color-mix(in srgb, var(--color-bg-accent) 14%, transparent), color-mix(in srgb, var(--color-bg-accent) 3%, transparent)),
+    var(--color-surface-elevated);
 }
 
 .time-suggestion:hover {
@@ -43,7 +43,7 @@
   border-radius: 999px;
   background: color-mix(in srgb, var(--color-surface-elevated) 72%, transparent);
   color: var(--color-accent);
-  box-shadow: inset 0 0 0 1px light-dark(rgba(201, 125, 46, 0.14), rgba(212, 161, 92, 0.22));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-accent) 48%, transparent);
 }
 
 .time-suggestion--compact .time-suggestion-icon {
@@ -140,7 +140,7 @@
   background: var(--color-accent);
   color: var(--color-text-on-accent);
   border-color: var(--color-accent);
-  box-shadow: 0 8px 16px light-dark(rgba(184, 131, 49, 0.2), rgba(0, 0, 0, 0.32));
+  box-shadow: var(--shadow-sm);
 }
 
 .time-suggestion-btn--primary:hover {

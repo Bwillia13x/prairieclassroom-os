@@ -46,7 +46,7 @@
 .onboarding-dot--active {
   background: var(--color-accent);
   transform: scale(1.35);
-  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 .onboarding-dot--done {

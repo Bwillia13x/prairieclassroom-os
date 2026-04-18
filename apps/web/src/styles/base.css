@@ -82,17 +82,12 @@ input:focus,
 select:focus,
 textarea:focus {
   border-color: color-mix(in srgb, var(--color-accent) 65%, transparent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 12%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 10%, transparent);
   outline: none;
 }
 
 select {
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%237d6e4c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.65rem center;
-  background-size: 12px 8px;
-  padding-right: 2rem;
+  color-scheme: inherit;
 }
 
 textarea {
@@ -124,14 +119,14 @@ a {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--color-text-muted) 22%, transparent);
+  background: color-mix(in srgb, var(--color-text-tertiary) 22%, transparent);
   border-radius: 999px;
   border: 2px solid transparent;
   background-clip: content-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: color-mix(in srgb, var(--color-text-muted) 40%, transparent);
+  background: color-mix(in srgb, var(--color-text-tertiary) 40%, transparent);
   background-clip: content-box;
 }
 
@@ -213,9 +208,9 @@ a {
   100% { background: transparent; }
 }
 
-/* Grain texture overlay — subtle analog warmth.
-   Suppressed in dark mode: the warm-brown dark palette plus the same
-   grain pattern compounds visible noise and hurts legibility. */
+/* Grain texture overlay — light mode only.
+   Dark mode is black-first graphite; decorative noise lowers legibility
+   and conflicts with the material hierarchy. */
 body::before {
   content: "";
   position: fixed;
@@ -229,12 +224,12 @@ body::before {
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) body::before {
-    opacity: 0.015;
+    display: none;
   }
 }
 
 :root[data-theme="dark"] body::before {
-  opacity: 0.015;
+  display: none;
 }
 
 @media (prefers-reduced-transparency: reduce) {

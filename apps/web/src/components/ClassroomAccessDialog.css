@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--space-4);
-  background: rgba(19, 14, 9, 0.62);
+  background: color-mix(in srgb, black 58%, transparent);
   backdrop-filter: blur(10px);
 }
 
@@ -86,7 +86,7 @@
 
 .access-dialog__demo-link:hover,
 .access-dialog__demo-link:focus-visible {
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 @media (max-width: 600px) {

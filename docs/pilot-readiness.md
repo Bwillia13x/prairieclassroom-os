@@ -25,14 +25,13 @@ This document separates demo proof from real classroom readiness. PrairieClassro
 
 Do not enter `local-pilot-real-data` until all of these are true:
 
-- Initial API role scopes are verified for teacher and EA workflows, and any substitute/reviewer access uses dedicated bounded views rather than raw classroom-memory endpoints.
 - Each classroom has an explicit data-retention setting.
 - Operators can run and verify the classroom memory lifecycle commands for export, anonymize, purge, backup, and restore.
 - Anonymized exports receive manual free-text review before they are shared outside the pilot boundary.
 - Pilot participants have written expectations for what the system can and cannot do.
-- Safety review artifacts exist for family messages, support patterns, forecasts, survival packets, and scaffold-decay outputs.
+- Safety review artifacts exist for family messages, support patterns, forecasts, survival packets, and scaffold-decay outputs — see `docs/pilot/safety-artifact-review-template.md` and the 5 completed reviews under `docs/pilot/safety-artifacts/`. Each review's §8 "Approval" section states whether the real-data pilot gate is open for that prompt class.
 - A human validation evidence plan is active, with teacher and EA rubrics.
-- Incident response steps exist for accidental sensitive-data exposure, incorrect output, or unauthorized access.
+- Incident response steps exist for accidental sensitive-data exposure, incorrect output, or unauthorized access — see `docs/pilot/incident-drills/` for the 5 drill scripts and the `drill-NN` outcomes in the README's history section. Each of drills 1-5 must have been rehearsed at least once against the demo classroom before real-data sessions begin.
 - Hosted lanes are technically and operationally blocked from real classroom data.
 
 ## Pilot Evidence Artifacts
@@ -44,6 +43,8 @@ Create these artifacts before making any product claims from a pilot:
 - `docs/pilot/session-log-template.md` — de-identified task, inputs used, output reviewed, teacher action, and friction.
 - `docs/pilot/claims-ledger.md` — claims supported by evidence, claims not yet supported, and source artifact links.
 - `docs/pilot/incident-log.md` — any safety, privacy, access, or output-quality concern.
+- `docs/pilot/safety-artifact-review-template.md` + `docs/pilot/safety-artifacts/` — per-prompt-class safety reviews (family-message, support-patterns, complexity-forecast, survival-packet, scaffold-decay). Each review's approval line is pilot-gating.
+- `docs/pilot/incident-drills/` — 5 rehearsable drill scripts (wrong-adult exposure, hosted-lane real data, diagnostic language, unapproved family message, memory corruption). Rehearse each against the demo classroom before real data.
 
 ### Synthetic walkthrough baseline
 

@@ -28,7 +28,10 @@ export default defineConfig({
       ["apps/web/src/panels/__tests__/**", "jsdom"],
       ["apps/web/src/hooks/__tests__/**", "jsdom"],
     ],
-    setupFiles: ["apps/web/src/components/shared/__tests__/setup.ts"],
+    setupFiles: [
+      "vitest.setup.ts",
+      "apps/web/src/components/shared/__tests__/setup.ts",
+    ],
   },
   resolve: {
     alias: {

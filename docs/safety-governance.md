@@ -80,13 +80,13 @@ The `useRole()` hook (`apps/web/src/hooks/useRole.ts`) exposes these capabilitie
 
 ### Scope notes
 
-- Teacher owner scope currently covers generation, schedule writes, raw classroom history, classroom health, and student summaries.
-- EA collaborator scope currently covers Today, EA briefing, debt register, feedback, and session-summary routes. Family message approval is gated client-side via `canApproveMessages`.
-- Substitute view should see only teacher-approved survival-packet content for a bounded date; this dedicated view is not implemented yet.
-- Reviewer/read-only roles should inspect de-identified summaries only; this dedicated view is not implemented yet.
-- No role receives unrestricted raw intervention history by default.
+- Teacher owner scope covers generation, schedule writes, raw classroom history, classroom health, student summaries, and every operational view.
+- EA collaborator scope covers Today, EA briefing, EA load balancing, intervention logging, the debt register, feedback, and session telemetry. Family message approval and all planning-tier generation remain teacher-only; the EA role is gated client-side via `canApproveMessages` and `canGenerate` returning `false`.
+- **Substitute bounded view (shipped 2026-04-17).** Covering teacher for a single day. Read-only access to the today snapshot, EA-briefing generation, latest forecast, debt register, classroom profile, and schedule. Write access to `log_intervention` and session telemetry only. No access to `tomorrow_plan`, family message generation or approval, support-patterns generation, scaffold-decay, survival-packet generation, classroom health, or raw history archives. Server enforcement lives in `services/orchestrator/server.ts` mount-level middleware and per-route `requireRoles` gates; scope matrix is locked by `services/orchestrator/__tests__/auth.test.ts`.
+- **Reviewer bounded view (shipped 2026-04-17).** Inclusive-ed lead, principal, or auditor. Fully read-only — no generation, no writes, no approvals on any route. Read access to latest plan / message / intervention / pattern history, latest forecast, latest pattern report, debt register, classroom profile, and aggregated feedback / session summaries for audit purposes. Operational surfaces (today, differentiate, language tools, EA briefing, EA load, survival packet) are intentionally hidden. Server enforcement lives alongside substitute in the same scope matrix.
+- No role receives unrestricted raw intervention history by default — teacher and reviewer are the only roles permitted to read `/api/classrooms/:id/interventions`.
 - This is not a district identity system, SSO integration, or authenticated audit log. Those remain future requirements for multi-user or school-managed deployment.
-- Client-side gating is a UX affordance, not a security boundary. Server-side enforcement of `X-Classroom-Role` is required before real-data pilot.
+- Client-side gating (tab visibility, disabled buttons, `RoleReadOnlyBanner`, teacher-downgrade confirmation) is a UX affordance, not a security boundary. The server's scope matrix is the authoritative layer; the UI keeps roles out of views they cannot use so clicks don't fail silently.
 
 ## Data lifecycle expectations
 
@@ -99,7 +99,23 @@ Real classroom use requires explicit controls for:
 - backup and restore of per-classroom SQLite memory through `npm run memory:admin -- backup|restore`
 - operator-visible record of hosted/model lane used for each generated artifact
 
-Access audit evidence is now captured in the orchestrator request log: every protected request records `classroom_id`, `classroom_role`, `demo_bypass`, and an `auth_outcome` in the stable vocabulary `allowed | demo_bypass | classroom_code_missing | classroom_code_invalid | classroom_role_invalid | classroom_role_forbidden | none`. Operators query and export this via `npm run audit:log -- --classroom <id> --from <YYYY-MM-DD> [--outcome denied] [--artifact]`, which emits a point-in-time audit snapshot to `output/access-audit/`. Dedicated substitute/reviewer views remain required before those roles may access real classroom data.
+Access audit evidence is now captured in the orchestrator request log: every protected request records `classroom_id`, `classroom_role`, `demo_bypass`, and an `auth_outcome` in the stable vocabulary `allowed | demo_bypass | classroom_code_missing | classroom_code_invalid | classroom_role_invalid | classroom_role_forbidden | none`. Operators query and export this via `npm run audit:log -- --classroom <id> --from <YYYY-MM-DD> [--outcome denied] [--artifact]`, which emits a point-in-time audit snapshot to `output/access-audit/`. Substitute and reviewer roles ship with dedicated bounded views (see the scope notes above), so real-data pilots that cover a substitute day or an inclusive-ed review no longer require the teacher role to be shared.
+
+## Safety artifact reviews
+
+Every generation-producing prompt class with pilot-critical safety stakes has a completed review in `docs/pilot/safety-artifacts/`, written against the reusable template in `docs/pilot/safety-artifact-review-template.md`. The five reviews as of 2026-04-17 are:
+
+- **`draft_family_message`** — approval gate, alias-only, language coverage pending hosted refresh. Real-data gate: approved-with-followups (English) / blocked (non-English).
+- **`detect_support_patterns`** — observational framing, pattern-report persistence, retrieval-trace correctness. Real-data gate: approved-with-followups (teacher) / blocked (reviewer-role read until disclaimer banner).
+- **`forecast_complexity`** — "classroom conditions, not student behavior," substitute-role read access, retrieval trace. Real-data gate: approved-with-followups (teacher) / blocked (substitute until stale-timestamp UX).
+- **`generate_survival_packet`** — `sub_ready` pre-auth, deferred family comms, alias-only. Real-data gate: blocked until two gating follow-ups close.
+- **`detect_scaffold_decay`** — observational-only framing, minimum-records threshold, withdrawal-plan-requires-regression-protocol. Real-data gate: approved-with-followups (teacher) / blocked (reviewer).
+
+Each review's §8 Approval line is authoritative. A reviewed commit plus pilot-coordinator countersign is the gate for real-data use; contract or prompt changes re-open the review.
+
+## Incident response drills
+
+Five rehearsable drill scripts in `docs/pilot/incident-drills/` cover the S1/S2 incident categories the project anticipates: wrong-adult exposure, hosted-lane real data, diagnostic-language output, unapproved family message, and memory corruption or cross-classroom restore. Each drill has a scripted rehearsal path against the demo classroom plus a runbook for a real event, with "what good looks like" / "what bad looks like" criteria. Drill history is tracked in `docs/pilot/incident-drills/README.md`; at least one rehearsal of each drill is expected before the first real-data pilot session.
 
 ## Incident response triggers
 

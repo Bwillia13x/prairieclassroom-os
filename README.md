@@ -302,7 +302,7 @@ Flask Inference :3200
 
 ## Evaluation
 
-99 checked-in eval cases across schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. 595 unit tests cover 15 Zod schemas, 12 prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+127 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 1,464 TypeScript tests and 67 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
 ```bash
 # Run evals (requires orchestrator + inference running)

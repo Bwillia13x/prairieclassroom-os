@@ -6,11 +6,12 @@ import {
   createInitialState,
   getGroupForTab,
   getTabBadgeCount,
-  getTabsForGroup,
+  getVisibleNavGroups,
+  getVisibleTabsForGroup,
+  getVisibleTabs,
+  isTabVisibleForRole,
   NAV_GROUP_META,
-  NAV_GROUP_ORDER,
   TAB_META,
-  TAB_ORDER,
   type ActiveTab,
   type AuthPromptState,
   type ClassroomRole,
@@ -101,6 +102,10 @@ export default function App() {
   const classroomRolesRef = useRef(state.classroomRoles);
   const classroomMenuRef = useRef<HTMLDivElement>(null);
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
+  // Ref mirrors visibleTabs so the global keydown handler doesn't need to
+  // re-register whenever the role changes (and so the `1…9/0` shortcuts
+  // always index into the current role's visible tab list).
+  const visibleTabsRef = useRef<ActiveTab[]>([]);
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
   const [shortcutSheetOpen, setShortcutSheetOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
@@ -460,16 +465,19 @@ export default function App() {
 
       if (isEditable) return;
 
-      // "1"–"9" → tabs 1–9; "0" → tab 10. Tabs 11–12 have no shortcut.
-      if (e.key === "0" && TAB_ORDER.length >= 10) {
+      // "1"–"9" → first 9 visible tabs for the active role; "0" → 10th visible.
+      // Number-key shortcuts track the visible tab list so they never point at
+      // a tab the role can't enter.
+      const visible = visibleTabsRef.current;
+      if (e.key === "0" && visible.length >= 10) {
         e.preventDefault();
-        setActiveTab(TAB_ORDER[9]);
+        setActiveTab(visible[9]);
         return;
       }
       const digit = Number.parseInt(e.key, 10);
-      if (digit >= 1 && digit <= 9 && digit <= TAB_ORDER.length) {
+      if (digit >= 1 && digit <= 9 && digit <= visible.length) {
         e.preventDefault();
-        setActiveTab(TAB_ORDER[digit - 1]);
+        setActiveTab(visible[digit - 1]);
       }
     }
 
@@ -538,15 +546,42 @@ export default function App() {
   });
 
   const { activeClassroom, activeTab, authPrompt, debtCounts, initError } = state;
-  const activeGroup = getGroupForTab(activeTab);
   const profile = state.classrooms.find((entry) => entry.classroom_id === activeClassroom);
   const students = profile?.students ?? [];
-  const secondaryTabs = getTabsForGroup(activeGroup);
+  // Role-filtered nav. `activeRole` is computed below; these helpers are
+  // recomputed each render but the role changes rarely, so the cost is a
+  // small array scan per render — cheaper than threading it through
+  // everywhere as memoized state.
+  const roleForNav: ClassroomRole =
+    state.classroomRoles[activeClassroom] ?? "teacher";
+  const visibleTabs = useMemo(() => getVisibleTabs(roleForNav), [roleForNav]);
+  const visibleNavGroups = useMemo(() => getVisibleNavGroups(roleForNav), [roleForNav]);
+  const activeGroup = isTabVisibleForRole(activeTab, roleForNav)
+    ? getGroupForTab(activeTab)
+    : visibleNavGroups[0] ?? "today";
+  const secondaryTabs = useMemo(
+    () => getVisibleTabsForGroup(activeGroup, roleForNav),
+    [activeGroup, roleForNav],
+  );
   const showSecondaryTabs = secondaryTabs.length > 1;
   const accessSaved = Boolean(activeClassroom && state.classroomAccessCodes[activeClassroom]);
   const activeGroupMeta = NAV_GROUP_META[activeGroup];
   const activeClassroomLabel = profile ? describeClassroom(profile) : "Choose classroom";
   const activeClassroomMeta = profile?.subject_focus.replace(/_/g, " ") ?? "";
+
+  useEffect(() => {
+    visibleTabsRef.current = visibleTabs;
+  }, [visibleTabs]);
+
+  // If the active tab is not visible for the current role (e.g. the user
+  // just downgraded from teacher to reviewer while sitting on a tab the
+  // reviewer can't enter), route to the first visible tab. Avoids the awkward
+  // state where the role changed but the hidden tab still renders.
+  useEffect(() => {
+    if (!isTabVisibleForRole(activeTab, roleForNav) && visibleTabs.length > 0) {
+      setActiveTab(visibleTabs[0]);
+    }
+  }, [activeTab, roleForNav, visibleTabs, setActiveTab]);
 
   // Sliding indicator: measure active group button position
   useLayoutEffect(() => {
@@ -846,16 +881,18 @@ export default function App() {
                   aria-hidden="true"
                   style={{ left: indicatorStyle.left, width: indicatorStyle.width }}
                 />
-                {NAV_GROUP_ORDER.map((group) => {
+                {visibleNavGroups.map((group) => {
                   const meta = NAV_GROUP_META[group];
+                  const firstVisible = getVisibleTabsForGroup(group, roleForNav)[0];
                   return (
                     <button
                       key={group}
                       data-testid={`shell-nav-group-${group}`}
                       className={`shell-nav__group${activeGroup === group ? " shell-nav__group--active" : ""}`}
-                      onClick={() => setActiveTab(getTabsForGroup(group)[0])}
+                      onClick={() => firstVisible && setActiveTab(firstVisible)}
                       type="button"
                       aria-pressed={activeGroup === group}
+                      disabled={!firstVisible}
                     >
                       <SectionIcon name={meta.icon} className="shell-nav__group-icon" />
                       <span>{meta.label}</span>
@@ -869,7 +906,7 @@ export default function App() {
                   <div className="shell-nav__tabs" role="tablist" aria-label={`${activeGroupMeta.label} tools`} ref={tabsRef} onKeyDown={handleTabKeyDown}>
                     {secondaryTabs.map((tab) => {
                       const count = getTabBadgeCount(tab, debtCounts);
-                      const tabIndex1Based = TAB_ORDER.indexOf(tab) + 1;
+                      const tabIndex1Based = visibleTabs.indexOf(tab) + 1;
                       // Only tabs 1–10 have a keyboard shortcut ("1"–"9", "0").
                       // Tabs 11+ render no kbd badge to avoid a visual lie.
                       const shortcutKey =

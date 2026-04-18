@@ -123,7 +123,7 @@
 
 @keyframes pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 40%, transparent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 10%, transparent);
   }
   80%, 100% {
     box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-accent) 0%, transparent);

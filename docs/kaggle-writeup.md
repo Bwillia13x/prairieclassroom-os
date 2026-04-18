@@ -14,18 +14,9 @@ That is where PrairieClassroom OS is focused. Instead of acting like a generic t
 
 PrairieClassroom OS is a classroom operations copilot for teachers and educational assistants. It is explicitly not a replacement for teacher judgment.
 
-The current product is organized around eight workflows:
+The current product spans 12 primary panels: Today, Differentiate, Language Tools, Tomorrow Plan, EA Briefing, EA Load, Forecast, Log Intervention, Sub Packet, Family Message, Support Patterns, and Usage Insights. Under that interface sit 13 model-routed prompt classes covering differentiation, worksheet extraction, tomorrow planning, family communication, intervention logging, language supports, pattern detection, EA briefing, complexity forecasting, scaffold-decay review, survival packets, and EA load balancing.
 
-1. **Differentiate** one source artifact into learner-specific variants
-2. **Tomorrow Plan** grounded in recent classroom context
-3. **Family Message** drafts that always require teacher approval
-4. **Intervention Log** turning free-text notes into structured records
-5. **Simplify Text** for grade-level and EAL supports
-6. **Vocab Cards** tied to lesson content in multiple languages
-7. **Support Patterns** across recent classroom records
-8. **EA Briefing** for the next school-day handoff
-
-The system’s signature is the closed loop between those workflows. Interventions become structured memory. Pattern detection uses that memory. Tomorrow planning uses the latest patterns and prior plans. The EA briefing uses the same records to create a concise morning handoff. The result is not one more isolated AI tool. It is a classroom operating layer that compounds in usefulness as context accumulates.
+The system’s signature is the closed loop between those workflows. Interventions become structured memory. Pattern detection uses that memory. Tomorrow planning uses the latest patterns and prior plans. Forecasting, EA load balancing, and substitute packets use the same records to make the next school day more coordinated. The result is not one more isolated AI tool. It is a classroom operating layer that compounds in usefulness as context accumulates.
 
 ## 3. Why Gemma 4 is central
 
@@ -41,9 +32,9 @@ Gemma 4 matters here for three specific reasons.
 
 **First, multimodal worksheet handling.** Teachers can submit a worksheet image directly to the Differentiate workflow. Gemma 4 vision extracts the content without requiring manual retyping, which makes the workflow usable at classroom speed.
 
-**Second, dual-tier routing.** PrairieClassroom OS routes fast transformation tasks to a live tier and deeper synthesis tasks to a planning tier. Differentiation, simplification, vocab support, intervention structuring, and EA briefing stay on the faster path. Tomorrow planning and pattern detection route to the larger planning model where cross-record reasoning matters.
+**Second, dual-tier routing.** PrairieClassroom OS routes fast transformation tasks to a live tier and deeper synthesis tasks to a planning tier. Differentiation, simplification, vocab support, intervention structuring, EA briefing, and worksheet extraction stay on the faster path. Tomorrow planning, pattern detection, complexity forecasting, scaffold-decay review, substitute survival packets, and EA load balancing route to the larger planning model where cross-record reasoning matters.
 
-**Third, selective thinking mode.** Thinking is enabled only where it creates value: tomorrow planning and support-pattern detection. This keeps the rest of the product fast and operational rather than over-reasoned.
+**Third, selective thinking mode.** Thinking is enabled only where it creates value: the planning-tier workflows that synthesize across multiple classroom records. This keeps the live-tier classroom tools fast and operational rather than over-reasoned.
 
 For the hackathon submission, the artifact-backed proof lane is **hosted Gemma 4 through the Gemini API** on synthetic/demo classroom data:
 
@@ -70,11 +61,11 @@ The family-message workflow adds a product-level boundary on top of that prompt 
 
 ## 5. What is proven today
 
-The checked-in repo contains 90 evaluation cases covering schema reliability, safety boundaries, retrieval usage, planning usefulness, latency expectations, and content quality.
+The checked-in repo contains 127 evaluation case files covering schema reliability, safety boundaries, retrieval usage, planning usefulness, latency expectations, prompt-injection resistance, persistence round-trips, and content quality.
 
 The repo currently proves three different things:
 
-- **Mock structural gate:** the current branch passes typecheck, lint, Python tests, TypeScript tests, harness smoke, API smoke, and browser smoke with no paid services
+- **Mock structural gate:** the current branch passes typecheck, lint, 67 Python tests, 1,464 TypeScript tests, harness smoke, API smoke, and browser smoke with no paid services
 - **Hosted Gemma 4 proof lane:** the hosted Gemini proof suite passed `10/10`, and the full hosted release gate completed successfully on synthetic/demo data
 - **Local-first deployment lane:** a separate Ollama path exists in the repo for privacy-first deployment, but the artifact-backed submission proof described here is the hosted lane
 
@@ -84,7 +75,8 @@ The current proof sources are:
 
 - `docs/eval-baseline.md` for provider-specific status
 - `docs/hackathon-proof-brief.md` for the concise judge-facing proof summary
-- `output/release-gate/2026-04-09T14-26-54-338Z-54148` for the latest passing hosted gate artifact
+- `output/release-gate/2026-04-17T23-01-11-249Z-44643` for the latest passing no-cost mock gate artifact
+- `output/release-gate/2026-04-09T14-26-54-338Z-54148` for the latest passing hosted Gemma 4 gate artifact
 
 The normal hosted refresh order is `npm run proof:check`, `npm run gemini:readycheck`, `npm run release:gate:gemini`, `npm run eval:summary`, and `npm run logs:summary`.
 
@@ -102,13 +94,13 @@ PrairieClassroom OS is therefore not just a Gemma 4 app. It is a Gemma-4-native 
 
 | Metric | Value |
 |--------|-------|
-| User-facing workflows | 8 |
-| Prompt classes | 12 |
+| Primary panels | 12 |
+| Model-routed prompt classes | 13 |
 | Model tiers | 2 |
 | Submission proof models | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` |
 | Privacy-first deployment target | `gemma4:4b`, `gemma4:27b` |
-| API endpoints | 13 |
-| SQLite tables per classroom | 5 |
-| Checked-in eval cases | 90 |
+| API endpoints | 37 |
+| SQLite tables per classroom | 10 |
+| Checked-in eval case files | 127 |
 | Languages in vocab workflow | 10 |
-| Primary user roles | teacher, educational assistant |
+| Primary user roles | teacher, educational assistant, substitute, reviewer |

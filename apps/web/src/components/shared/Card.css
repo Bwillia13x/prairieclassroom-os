@@ -56,48 +56,48 @@
 }
 
 .card--tone-sun {
-  background: var(--color-bg-sun);
+  background: color-mix(in srgb, var(--color-bg-sun) 32%, var(--color-surface));
   border-color: var(--color-border-sun);
   color: var(--color-text-sun);
 }
 
 .card--tone-sage {
-  background: var(--color-bg-sage);
+  background: color-mix(in srgb, var(--color-bg-sage) 32%, var(--color-surface));
   border-color: var(--color-border-sage);
   color: var(--color-text-sage);
 }
 
 .card--tone-slate {
-  background: var(--color-bg-slate);
+  background: color-mix(in srgb, var(--color-bg-slate) 32%, var(--color-surface));
   border-color: var(--color-border-slate);
   color: var(--color-text-slate);
 }
 
 .card--tone-forest {
-  background: var(--color-bg-forest);
+  background: color-mix(in srgb, var(--color-bg-forest) 32%, var(--color-surface));
   border-color: var(--color-border-forest);
   color: var(--color-text-forest);
 }
 
 .card--tone-priority {
-  background: color-mix(in srgb, var(--color-section-priority) 10%, var(--color-surface));
+  background: color-mix(in srgb, var(--color-section-priority) 6%, var(--color-surface));
   border-color: color-mix(in srgb, var(--color-section-priority) 40%, var(--color-border));
 }
 
 .card--tone-watchpoint {
-  background: var(--color-bg-warning);
+  background: color-mix(in srgb, var(--color-bg-warning) 32%, var(--color-surface));
   border-color: var(--color-border-warning);
   color: var(--color-text-warning);
 }
 
 .card--tone-analysis {
-  background: var(--color-bg-analysis);
+  background: color-mix(in srgb, var(--color-bg-analysis) 32%, var(--color-surface));
   border-color: var(--color-border-analysis);
   color: var(--color-text-analysis);
 }
 
 .card--tone-provenance {
-  background: var(--color-bg-provenance);
+  background: color-mix(in srgb, var(--color-bg-provenance) 32%, var(--color-surface));
   border-color: var(--color-border-provenance);
   color: var(--color-text-provenance);
 }

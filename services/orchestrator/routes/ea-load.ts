@@ -2,7 +2,12 @@ import { Router } from "express";
 import { getRoute, getModelId } from "../router.js";
 import { buildEALoadPrompt, parseEALoadResponse } from "../ea-load.js";
 import type { EALoadInput } from "../ea-load.js";
-import { buildForecastContext } from "../../memory/retrieve.js";
+import {
+  buildForecastContext,
+  getRecentInterventions,
+  getFollowUpPending,
+  getLatestPatternReport,
+} from "../../memory/retrieve.js";
 import { validateBody, EALoadRequestSchema } from "../validate.js";
 import type { RouteDeps } from "../route-deps.js";
 import type { EALoadProfile } from "../../../packages/shared/schemas/ea-load.js";
@@ -11,6 +16,17 @@ import { callInference } from "../inference-client.js";
 import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 import { maybeExposeThinkingSummary } from "../thinking-summary.js";
+import {
+  buildRetrievalTrace,
+  interventionCitation,
+  patternReportCitation,
+} from "../retrieval-trace.js";
+import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
+import {
+  buildRosterScope,
+  filterRosterScoped,
+  isRosterScopedValue,
+} from "../../memory/roster-scope.js";
 
 export function createEALoadRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -25,6 +41,7 @@ export function createEALoadRouter(deps: RouteDeps): Router {
         sendClassroomNotFound(res, classroom_id);
         return;
       }
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
 
       const route = getRoute("balance_ea_load");
       const modelId = getModelId(route.model_tier);
@@ -39,11 +56,27 @@ export function createEALoadRouter(deps: RouteDeps): Router {
       // frequency + recent pattern data EA load analysis needs, without
       // duplicating retrieval logic.
       let loadCtx = "";
+      const citations: RetrievalCitation[] = [];
+      const seenInterventionIds = new Set<string>();
       try {
-        loadCtx = buildForecastContext(classroom_id);
+        loadCtx = buildForecastContext(classroom_id, rosterScope);
+        // Mirror buildForecastContext's citable retrievals.
+        for (const record of filterRosterScoped(getRecentInterventions(classroom_id, 5), rosterScope)) {
+          if (seenInterventionIds.has(record.record_id)) continue;
+          seenInterventionIds.add(record.record_id);
+          citations.push(interventionCitation(record));
+        }
+        for (const record of filterRosterScoped(getFollowUpPending(classroom_id), rosterScope).slice(0, 5)) {
+          if (seenInterventionIds.has(record.record_id)) continue;
+          seenInterventionIds.add(record.record_id);
+          citations.push(interventionCitation(record));
+        }
+        const latestPattern = getLatestPatternReport(classroom_id);
+        if (latestPattern && isRosterScopedValue(latestPattern, rosterScope)) citations.push(patternReportCitation(latestPattern));
       } catch (memErr) {
         console.warn("Memory retrieval failed (ea_load context):", memErr);
       }
+      const retrievalTrace = buildRetrievalTrace(citations);
 
       const prompt = buildEALoadPrompt(classroom, loadInput, loadCtx || undefined);
 
@@ -83,6 +116,7 @@ export function createEALoadRouter(deps: RouteDeps): Router {
       res.json({
         profile,
         thinking_summary: maybeExposeThinkingSummary(inferenceData.thinking_text),
+        retrieval_trace: retrievalTrace,
         ...inferenceResponseMeta(inferenceData, modelId),
       });
     } catch (err) {

@@ -76,7 +76,7 @@
 
 .curriculum-picker__chip--active {
   border-color: var(--color-border-accent);
-  background: var(--color-bg-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
 }
 
 .curriculum-picker__detail {
@@ -115,8 +115,8 @@
 }
 
 .curriculum-picker__status-badge--optional {
-  background: var(--color-bg-accent);
-  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-bg-accent) 55%, var(--color-surface));
+  color: var(--color-text-accent);
 }
 
 .curriculum-picker__status-badge--planned {

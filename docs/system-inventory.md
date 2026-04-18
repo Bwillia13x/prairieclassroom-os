@@ -92,21 +92,21 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 | POST | `/api/tomorrow-plan` | `services/orchestrator/routes/tomorrow-plan.ts` | classroom-code | teacher |
 | POST | `/api/family-message` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |
 | POST | `/api/family-message/approve` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |
-| POST | `/api/intervention` | `services/orchestrator/routes/intervention.ts` | classroom-code | teacher |
+| POST | `/api/intervention` | `services/orchestrator/routes/intervention.ts` | classroom-code | teacher, ea, substitute |
 | POST | `/api/simplify` | `services/orchestrator/routes/language-tools.ts` | classroom-code | teacher |
 | POST | `/api/vocab-cards` | `services/orchestrator/routes/language-tools.ts` | classroom-code | teacher |
 | POST | `/api/support-patterns` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher |
-| GET | `/api/support-patterns/latest/:classroomId` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher |
-| POST | `/api/ea-briefing` | `services/orchestrator/routes/ea-briefing.ts` | classroom-code | teacher, ea |
+| GET | `/api/support-patterns/latest/:classroomId` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher, reviewer |
+| POST | `/api/ea-briefing` | `services/orchestrator/routes/ea-briefing.ts` | classroom-code | teacher, ea, substitute |
 | POST | `/api/complexity-forecast` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |
-| GET | `/api/complexity-forecast/latest/:classroomId` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |
+| GET | `/api/complexity-forecast/latest/:classroomId` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher, substitute, reviewer |
 | POST | `/api/ea-load` | `services/orchestrator/routes/ea-load.ts` | classroom-code | teacher, ea |
-| GET | `/api/debt-register/:classroomId` | `services/orchestrator/routes/debt-register.ts` | classroom-code | teacher, ea |
-| GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea |
-| GET | `/api/classrooms/:id/plans` | `services/orchestrator/routes/history.ts` | classroom-code | teacher |
-| GET | `/api/classrooms/:id/messages` | `services/orchestrator/routes/history.ts` | classroom-code | teacher |
-| GET | `/api/classrooms/:id/interventions` | `services/orchestrator/routes/history.ts` | classroom-code | teacher |
-| GET | `/api/classrooms/:id/patterns` | `services/orchestrator/routes/history.ts` | classroom-code | teacher |
+| GET | `/api/debt-register/:classroomId` | `services/orchestrator/routes/debt-register.ts` | classroom-code | teacher, ea, substitute, reviewer |
+| GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea, substitute |
+| GET | `/api/classrooms/:id/plans` | `services/orchestrator/routes/history.ts` | classroom-code | teacher, reviewer |
+| GET | `/api/classrooms/:id/messages` | `services/orchestrator/routes/history.ts` | classroom-code | teacher, reviewer |
+| GET | `/api/classrooms/:id/interventions` | `services/orchestrator/routes/history.ts` | classroom-code | teacher, reviewer |
+| GET | `/api/classrooms/:id/patterns` | `services/orchestrator/routes/history.ts` | classroom-code | teacher, reviewer |
 | GET | `/api/classrooms/:id/health` | `services/orchestrator/routes/classroom-health.ts` | classroom-code | teacher |
 | GET | `/api/classrooms/:id/student-summary` | `services/orchestrator/routes/student-summary.ts` | classroom-code | teacher |
 | POST | `/api/scaffold-decay` | `services/orchestrator/routes/scaffold-decay.ts` | classroom-code | teacher |
@@ -114,13 +114,13 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 | POST | `/api/survival-packet` | `services/orchestrator/routes/survival-packet.ts` | classroom-code | teacher |
 | POST | `/api/extract-worksheet` | `services/orchestrator/routes/extract-worksheet.ts` | classroom-code | teacher |
 | POST | `/api/feedback` | `services/orchestrator/routes/feedback.ts` | classroom-code | teacher, ea |
-| GET | `/api/feedback/summary/:classroomId` | `services/orchestrator/routes/feedback.ts` | classroom-code | teacher, ea |
-| POST | `/api/sessions` | `services/orchestrator/routes/sessions.ts` | classroom-code | teacher, ea |
-| GET | `/api/sessions/summary/:classroomId` | `services/orchestrator/routes/sessions.ts` | classroom-code | teacher, ea |
+| GET | `/api/feedback/summary/:classroomId` | `services/orchestrator/routes/feedback.ts` | classroom-code | teacher, ea, reviewer |
+| POST | `/api/sessions` | `services/orchestrator/routes/sessions.ts` | classroom-code | teacher, ea, substitute |
+| GET | `/api/sessions/summary/:classroomId` | `services/orchestrator/routes/sessions.ts` | classroom-code | teacher, ea, reviewer |
 
 ## Eval Corpus
 
-- Eval case files: 126
+- Eval case files: 127
 
 ## Canonical Docs
 

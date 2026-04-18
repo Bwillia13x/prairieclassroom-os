@@ -15,6 +15,7 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
+import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import { ActionButton, FeedbackCollector, FormSection, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
@@ -182,6 +183,7 @@ export default function SurvivalPacketPanel() {
                   panelHint="Survival packet content is static fixture text in mock mode and does not adapt to your classroom's specific routines. Run with Ollama or hosted Gemini to see real synthesis."
                 />
                 <SurvivalPacketView packet={result.packet} meta={result} />
+                <RetrievalTraceCard trace={result.retrieval_trace} />
                 <OutputFeedback outputId={`packet-${resultKey}`} outputType="survival-packet" />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}

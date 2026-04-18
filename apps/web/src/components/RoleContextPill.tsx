@@ -18,9 +18,20 @@ const ROLE_HINT: Record<ClassroomRole, string> = {
   reviewer: "Read-only access; no write actions",
 };
 
+/**
+ * Downgrading from the teacher role loses meaningful capabilities (generation,
+ * approvals, schedule edits, owner surfaces). Require an explicit confirm so
+ * the user doesn't land on a narrowed view by accident. Upgrading to teacher
+ * or switching between non-teacher roles is a silent, one-click change.
+ */
+function needsConfirmation(from: ClassroomRole, to: ClassroomRole): boolean {
+  return from === "teacher" && to !== "teacher";
+}
+
 export default function RoleContextPill() {
   const { activeClassroom, activeRole, setClassroomRole } = useApp();
   const [open, setOpen] = useState(false);
+  const [pendingRole, setPendingRole] = useState<ClassroomRole | null>(null);
   const anchorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,10 +52,24 @@ export default function RoleContextPill() {
     };
   }, [open]);
 
-  function handleSelect(role: ClassroomRole) {
+  function applyRole(role: ClassroomRole) {
     if (!activeClassroom) return;
     setClassroomRole(activeClassroom, role);
     setOpen(false);
+    setPendingRole(null);
+  }
+
+  function handleSelect(role: ClassroomRole) {
+    if (!activeClassroom) return;
+    if (role === activeRole) {
+      setOpen(false);
+      return;
+    }
+    if (needsConfirmation(activeRole, role)) {
+      setPendingRole(role);
+      return;
+    }
+    applyRole(role);
   }
 
   return (
@@ -95,6 +120,45 @@ export default function RoleContextPill() {
               </button>
             );
           })}
+        </div>
+      ) : null}
+
+      {pendingRole ? (
+        <div
+          role="alertdialog"
+          aria-label="Confirm role downgrade"
+          aria-modal="true"
+          className="role-pill__confirm"
+        >
+          <p className="role-pill__confirm-title">
+            Switch from <strong>Teacher</strong> to <strong>{ROLE_LABEL[pendingRole]}</strong>?
+          </p>
+          <p className="role-pill__confirm-body">
+            {pendingRole === "reviewer"
+              ? "You will lose write access: no generation, no approvals, no intervention logging, no schedule edits."
+              : pendingRole === "substitute"
+              ? "You will lose access to planning, family messaging, support patterns, and survival-packet generation. You can still log interventions and view today."
+              : "You will lose generation and approval access. You can still log interventions and view today."}
+            {" Switch back anytime from this pill."}
+          </p>
+          <div className="role-pill__confirm-actions">
+            <button
+              type="button"
+              className="btn btn--ghost"
+              onClick={() => setPendingRole(null)}
+              data-testid="role-pill-cancel-downgrade"
+            >
+              Stay as Teacher
+            </button>
+            <button
+              type="button"
+              className="btn btn--primary"
+              onClick={() => applyRole(pendingRole)}
+              data-testid="role-pill-confirm-downgrade"
+            >
+              Switch to {ROLE_LABEL[pendingRole]}
+            </button>
+          </div>
         </div>
       ) : null}
     </div>

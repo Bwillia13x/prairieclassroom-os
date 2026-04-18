@@ -54,8 +54,9 @@
   font-size: var(--text-base);
   color: var(--color-text-accent);
   padding: 0.45rem 0.7rem;
-  background: color-mix(in srgb, var(--color-bg-accent) 55%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-border-accent) 40%, transparent);
+  background: color-mix(in srgb, var(--color-bg-accent) 28%, var(--color-surface));
+  border: 1px solid color-mix(in srgb, var(--color-border-accent) 38%, transparent);
+  border-left: 3px solid var(--color-accent);
   border-radius: var(--radius-sm);
   display: inline-block;
 }

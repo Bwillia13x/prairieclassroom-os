@@ -4,7 +4,7 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 
 ## Current State
 
-- **Mock gate:** green
+- **Mock gate:** green at `output/release-gate/2026-04-17T23-01-11-249Z-44643`
 - **Hosted Gemini proof lane:** passing
 - **Ollama privacy-first lane:** blocked on host capability on the current machine
 - **Paid Vertex lane:** intentionally not run in the zero-cost sprint
@@ -19,8 +19,10 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 ## Artifact Trail
 
 - **Provider truth source:** `docs/eval-baseline.md`
+- **Latest passing mock gate:** `output/release-gate/2026-04-17T23-01-11-249Z-44643`
+- **Latest mock gate summary:** `output/release-gate/2026-04-17T23-01-11-249Z-44643/summary.json`
 - **Latest passing hosted gate:** `output/release-gate/2026-04-09T14-26-54-338Z-54148`
-- **Release summary:** `output/release-gate/2026-04-09T14-26-54-338Z-54148/summary.json`
+- **Hosted release summary:** `output/release-gate/2026-04-09T14-26-54-338Z-54148/summary.json`
 - **Hosted eval artifacts:** `output/evals/2026-04-09-gemini`
 
 ## Privacy Boundary

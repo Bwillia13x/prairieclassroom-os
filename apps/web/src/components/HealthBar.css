@@ -38,7 +38,7 @@
 .health-bar__dot--filled {
   background: var(--color-accent);
   border-color: var(--color-accent);
-  box-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 30%, transparent);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 .health-bar__planning-label {

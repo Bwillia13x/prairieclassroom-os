@@ -80,14 +80,59 @@ describe("RoleContextPill", () => {
     expect(screen.getByRole("menuitemradio", { name: /reviewer/i })).toBeInTheDocument();
   });
 
-  it("calls setClassroomRole with the chosen role and closes the menu", async () => {
+  it("switches silently between non-teacher roles (no downgrade confirmation)", async () => {
+    const user = userEvent.setup();
+    const setClassroomRole = vi.fn();
+    renderWith("ea", setClassroomRole);
+    await user.click(screen.getByRole("button", { name: /current role: ea/i }));
+    await user.click(screen.getByRole("menuitemradio", { name: /substitute/i }));
+    expect(setClassroomRole).toHaveBeenCalledWith("demo-classroom", "substitute");
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  });
+
+  it("upgrading to teacher from any role applies immediately (no confirmation)", async () => {
+    const user = userEvent.setup();
+    const setClassroomRole = vi.fn();
+    renderWith("reviewer", setClassroomRole);
+    await user.click(screen.getByRole("button", { name: /current role: reviewer/i }));
+    await user.click(screen.getByRole("menuitemradio", { name: /teacher/i }));
+    expect(setClassroomRole).toHaveBeenCalledWith("demo-classroom", "teacher");
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  });
+
+  it("downgrading from teacher opens a confirmation alertdialog before applying", async () => {
     const user = userEvent.setup();
     const setClassroomRole = vi.fn();
     renderWith("teacher", setClassroomRole);
     await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
     await user.click(screen.getByRole("menuitemradio", { name: /substitute/i }));
+    // No commit yet — the alertdialog asks for confirmation.
+    expect(setClassroomRole).not.toHaveBeenCalled();
+    const dialog = screen.getByRole("alertdialog", { name: /confirm role downgrade/i });
+    expect(dialog).toBeInTheDocument();
+    expect(dialog).toHaveTextContent(/substitute/i);
+  });
+
+  it("cancel from the confirmation dialog keeps the user as teacher", async () => {
+    const user = userEvent.setup();
+    const setClassroomRole = vi.fn();
+    renderWith("teacher", setClassroomRole);
+    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("menuitemradio", { name: /reviewer/i }));
+    await user.click(screen.getByTestId("role-pill-cancel-downgrade"));
+    expect(setClassroomRole).not.toHaveBeenCalled();
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
+  });
+
+  it("confirm from the downgrade dialog commits the role change", async () => {
+    const user = userEvent.setup();
+    const setClassroomRole = vi.fn();
+    renderWith("teacher", setClassroomRole);
+    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("menuitemradio", { name: /substitute/i }));
+    await user.click(screen.getByTestId("role-pill-confirm-downgrade"));
     expect(setClassroomRole).toHaveBeenCalledWith("demo-classroom", "substitute");
-    expect(screen.queryByRole("menu", { name: /classroom role/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
   });
 
   it("closes the menu on Escape", async () => {

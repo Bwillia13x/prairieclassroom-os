@@ -15,8 +15,10 @@ import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
+import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useRole } from "../hooks/useRole";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { serializeSupportPatternsToPlainText } from "./outputActionBarHelpers";
 import type { SupportPatternsResponse, FamilyMessagePrefill, InterventionPrefill } from "../types";
@@ -33,6 +35,7 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
+  const role = useRole();
 
   const actions = useMemo<OutputAction[]>(() => {
     if (!result) return [];
@@ -124,6 +127,12 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
         ]}
       />
 
+      <RoleReadOnlyBanner
+        role={role}
+        required="canGenerate"
+        whatIsBlocked="Running pattern analysis is reserved for the classroom's permanent teacher."
+      />
+
       <WorkspaceLayout
         rail={(
           <>
@@ -133,14 +142,16 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
               description="Analyze your own intervention records to surface recurring themes, follow-up gaps, and positive trends. This reflects your documentation — not a diagnosis."
               tone="forest"
             />
-            <PatternReportForm
-              classrooms={classrooms}
-              students={students}
-              selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
-              onSubmit={handleSubmit}
-              loading={loading}
-            />
+            {role.canGenerate ? (
+              <PatternReportForm
+                classrooms={classrooms}
+                students={students}
+                selectedClassroom={activeClassroom}
+                onClassroomChange={setActiveClassroom}
+                onSubmit={handleSubmit}
+                loading={loading}
+              />
+            ) : null}
           </>
         )}
         canvas={(

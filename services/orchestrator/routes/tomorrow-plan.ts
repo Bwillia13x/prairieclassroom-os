@@ -20,6 +20,11 @@ import {
   patternReportCitation,
 } from "../retrieval-trace.js";
 import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
+import {
+  buildRosterScope,
+  filterRosterScoped,
+  isRosterScopedValue,
+} from "../../memory/roster-scope.js";
 
 export function createTomorrowPlanRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -36,6 +41,7 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
         sendClassroomNotFound(res, classroom_id);
         return;
       }
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
 
       // Get route config (planning tier, thinking enabled)
       const route = getRoute("prepare_tomorrow_plan");
@@ -48,7 +54,7 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       // Retrieve recent plans for memory injection
       let memorySummary = "";
       try {
-        const recentPlans = getRecentPlans(classroom_id, 3);
+        const recentPlans = filterRosterScoped(getRecentPlans(classroom_id, 3), rosterScope);
         memorySummary = summarizeRecentPlans(recentPlans);
         for (const plan of recentPlans) citations.push(planCitation(plan));
       } catch (memErr) {
@@ -58,7 +64,7 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       // Retrieve recent interventions for memory injection
       let interventionSummary = "";
       try {
-        const recentInterventions = getRecentInterventions(classroom_id, 5);
+        const recentInterventions = filterRosterScoped(getRecentInterventions(classroom_id, 5), rosterScope);
         interventionSummary = summarizeRecentInterventions(recentInterventions);
         for (const record of recentInterventions) citations.push(interventionCitation(record));
       } catch (memErr) {
@@ -70,7 +76,7 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       let patternInformed = false;
       try {
         const latestPattern = getLatestPatternReport(classroom_id);
-        if (latestPattern) {
+        if (latestPattern && isRosterScopedValue(latestPattern, rosterScope)) {
           patternInsightsSummary = summarizePatternInsights(latestPattern);
           patternInformed = true;
           citations.push(patternReportCitation(latestPattern));

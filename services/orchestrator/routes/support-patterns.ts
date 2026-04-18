@@ -12,7 +12,7 @@ import {
   getFollowUpPending,
 } from "../../memory/retrieve.js";
 import { validateBody, SupportPatternsRequestSchema } from "../validate.js";
-import type { RouteDeps } from "../route-deps.js";
+import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { SupportPatternReport } from "../../../packages/shared/schemas/pattern.js";
 import { callInference } from "../inference-client.js";
 import { inferenceResponseMeta } from "../response-meta.js";
@@ -26,11 +26,20 @@ import {
   interventionCitation,
 } from "../retrieval-trace.js";
 import type { RetrievalCitation } from "../../../packages/shared/schemas/retrieval-trace.js";
+import {
+  buildRosterScope,
+  filterRosterScoped,
+  isRosterScopedValue,
+} from "../../memory/roster-scope.js";
 
 export function createSupportPatternsRouter(deps: RouteDeps): Router {
   const router = Router();
+  // Narrow scopes per route. The mount-level middleware allows the union
+  // [teacher, reviewer]; the POST generation path excludes reviewer here.
+  const teacherOnly = requireRoles(deps, ["teacher"]);
+  const teacherOrReviewer = requireRoles(deps, ["teacher", "reviewer"]);
 
-  router.post("/", validateBody(SupportPatternsRequestSchema), async (req, res) => {
+  router.post("/", teacherOnly, validateBody(SupportPatternsRequestSchema), async (req, res) => {
     try {
       const { classroom_id: rawClassroomId, student_filter, time_window } = req.body;
       const classroom_id = rawClassroomId as ClassroomId;
@@ -40,11 +49,21 @@ export function createSupportPatternsRouter(deps: RouteDeps): Router {
         sendClassroomNotFound(res, classroom_id);
         return;
       }
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
 
       const route = getRoute("detect_support_patterns");
       const modelId = getModelId(route.model_tier);
 
       const window = time_window ?? 10;
+      if (student_filter && !rosterScope.allowedAliases.has(student_filter)) {
+        sendRouteError(res, 400, {
+          error: "student_filter is not in this classroom roster",
+          category: "validation",
+          retryable: false,
+          detail_code: "student_filter_not_in_roster",
+        });
+        return;
+      }
       const patternInput: SupportPatternsInput = {
         classroom_id,
         student_filter,
@@ -55,21 +74,24 @@ export function createSupportPatternsRouter(deps: RouteDeps): Router {
       const citations: RetrievalCitation[] = [];
       const seenInterventionIds = new Set<string>();
       try {
-        patternCtx = buildPatternContext(classroom_id, student_filter, window);
+        patternCtx = buildPatternContext(classroom_id, student_filter, window, rosterScope);
         // Mirror buildPatternContext's retrievals so the response trace matches
         // what was actually injected into the prompt.
-        const interventions = student_filter
-          ? getStudentInterventions(classroom_id, student_filter, window)
-          : getRecentInterventions(classroom_id, window);
+        const interventions = filterRosterScoped(
+          student_filter
+            ? getStudentInterventions(classroom_id, student_filter, window)
+            : getRecentInterventions(classroom_id, window),
+          rosterScope,
+        );
         for (const record of interventions) {
           if (seenInterventionIds.has(record.record_id)) continue;
           seenInterventionIds.add(record.record_id);
           citations.push(interventionCitation(record));
         }
-        for (const plan of getRecentPlans(classroom_id, 5)) {
+        for (const plan of filterRosterScoped(getRecentPlans(classroom_id, 5), rosterScope)) {
           citations.push(planCitation(plan));
         }
-        for (const record of getFollowUpPending(classroom_id)) {
+        for (const record of filterRosterScoped(getFollowUpPending(classroom_id), rosterScope)) {
           if (seenInterventionIds.has(record.record_id)) continue;
           seenInterventionIds.add(record.record_id);
           citations.push(interventionCitation(record));
@@ -129,7 +151,7 @@ export function createSupportPatternsRouter(deps: RouteDeps): Router {
 
   // ----- Latest Pattern Report Retrieval -----
 
-  router.get("/latest/:classroomId", deps.authMiddleware, (req, res) => {
+  router.get("/latest/:classroomId", deps.authMiddleware, teacherOrReviewer, (req, res) => {
     try {
       const rawId = req.params.classroomId as string;
       if (!isValidClassroomId(rawId)) {
@@ -137,8 +159,14 @@ export function createSupportPatternsRouter(deps: RouteDeps): Router {
         return;
       }
       const classroomId = rawId as ClassroomId;
+      const classroom = deps.loadClassroom(classroomId);
+      if (!classroom) {
+        sendClassroomNotFound(res, classroomId);
+        return;
+      }
+      const rosterScope = buildRosterScope(classroom, deps.loadClassrooms());
       const report = getLatestPatternReport(classroomId);
-      if (!report) {
+      if (!report || !isRosterScopedValue(report, rosterScope)) {
         res.json({ report: null });
         return;
       }

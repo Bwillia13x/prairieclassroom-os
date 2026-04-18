@@ -187,12 +187,14 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 - A timeline of tomorrow's blocks with LOW / MEDIUM / HIGH complexity ratings.
 - Contributing factors per block.
 - A forecast viewer below the timeline with deeper detail.
+- A "Sources" disclosure (collapsed by default) below the forecast that says something like *"N records pulled from classroom memory."* Click it to expand. You should see the recent interventions, pending follow-ups, and the latest pattern report the forecast actually read.
 
 **What to notice:**
 
 - Is the rating vocabulary (LOW / MED / HIGH) granular enough? If most blocks are MED, can you still prioritize?
 - The contributing factors are text. Would chips ("EA gap", "transition", "new content") be easier to scan?
 - Is there a way to tell whether tomorrow is high-complexity *for your classroom* vs. high-complexity *in general*?
+- When you expand the Sources section: do the records the forecast pulled in match what you'd expect a complexity forecast to read from? If a record you think should have influenced tomorrow's forecast is missing, that's worth flagging.
 
 ---
 

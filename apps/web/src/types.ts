@@ -37,6 +37,7 @@ import type {
   ClassroomHealth,
   StudentSummary,
   SurvivalPacket,
+  ScaffoldDecayReport,
   EALoadProfile,
   EALoadBlock,
   EALoadLevel,
@@ -85,6 +86,7 @@ export type {
   ClassroomHealth,
   StudentSummary,
   SurvivalPacket,
+  ScaffoldDecayReport,
   EALoadProfile,
   EALoadBlock,
   EALoadLevel,
@@ -271,6 +273,7 @@ export interface EABriefingResponse {
 export interface ComplexityForecastResponse {
   forecast: ComplexityForecast;
   thinking_summary: string | null;
+  retrieval_trace?: RetrievalTrace;
   model_id: string;
   latency_ms: number;
   prompt_tokens?: number | null;
@@ -281,6 +284,7 @@ export interface ComplexityForecastResponse {
 export interface EALoadResponse {
   profile: EALoadProfile;
   thinking_summary: string | null;
+  retrieval_trace?: RetrievalTrace;
   model_id: string;
   latency_ms: number;
   prompt_tokens?: number | null;
@@ -290,9 +294,24 @@ export interface EALoadResponse {
 
 export interface SurvivalPacketResponse {
   packet: SurvivalPacket;
+  retrieval_trace?: RetrievalTrace;
   model_id: string;
   latency_ms: number;
   thinking_summary?: string;
+  prompt_tokens?: number | null;
+  output_tokens?: number | null;
+  total_tokens?: number | null;
+}
+
+export interface ScaffoldDecayResponse {
+  report: ScaffoldDecayReport | null;
+  insufficient_records?: boolean;
+  record_count?: number;
+  message?: string;
+  thinking_summary?: string | null;
+  retrieval_trace?: RetrievalTrace;
+  model_id?: string;
+  latency_ms?: number;
   prompt_tokens?: number | null;
   output_tokens?: number | null;
   total_tokens?: number | null;

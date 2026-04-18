@@ -107,7 +107,7 @@
 
 .viz-bubble-group:hover .viz-bubble {
   opacity: 1;
-  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 40%, transparent));
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--color-accent) 10%, transparent));
 }
 
 .viz-bubble-label {
@@ -727,7 +727,7 @@
 
 .viz-debt-trend__label {
   font-size: var(--text-xs);
-  color: var(--color-text-muted, color-mix(in srgb, currentColor 60%, transparent));
+  color: var(--color-text-muted);
 }
 
 /* ── 14. Complexity Trend Calendar ── */
@@ -762,7 +762,7 @@
   gap: var(--space-3);
   margin-top: var(--space-2);
   font-size: var(--text-xs);
-  color: var(--color-text-muted, color-mix(in srgb, currentColor 60%, transparent));
+  color: var(--color-text-muted);
 }
 
 .viz-complexity-cal__legend-item {
@@ -799,7 +799,7 @@
   gap: var(--space-3);
   margin-top: var(--space-2);
   font-size: var(--text-xs);
-  color: var(--color-text-muted, color-mix(in srgb, currentColor 60%, transparent));
+  color: var(--color-text-muted);
 }
 
 .viz-int-timeline__legend-item {
@@ -843,7 +843,7 @@
 
 .viz-followup-rate__label {
   font-size: var(--text-xs);
-  color: var(--color-text-muted, color-mix(in srgb, currentColor 60%, transparent));
+  color: var(--color-text-muted);
 }
 
 .viz-followup-rate__count {
@@ -970,7 +970,7 @@
 
 .viz-priority-matrix .viz-bubble-group:focus-visible .viz-bubble {
   filter: drop-shadow(0 0 0 2px var(--color-accent))
-    drop-shadow(0 0 6px color-mix(in srgb, var(--color-accent) 55%, transparent));
+    drop-shadow(0 0 6px color-mix(in srgb, var(--color-accent) 10%, transparent));
   opacity: 1;
 }
 

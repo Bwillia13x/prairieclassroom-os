@@ -2,12 +2,13 @@
   color-scheme: light dark;
 
   /* ------------------------------------------------------------
-     Institutional Prairie palette — 2026-04-17 repositioning.
-     Neutral canvas + Alberta-institutional navy primary.
-     Prairie cognac is retained as a brand-highlight accent only
-     (see --color-brand-highlight / --color-accent-soft dark side).
-     Full rationale: docs/decision-log.md 2026-04-17 entry and
-     docs/dark-mode-contract.md §1 (rewritten).
+     Institutional Prairie palette — 2026-04-17 repositioning,
+     with a 2026-04-17 black-first dark-mode retune.
+     Light mode remains neutral + Alberta-institutional navy.
+     Dark mode is near-black graphite with sparse navy affordances.
+     Prairie cognac is retained as a brand-highlight accent only.
+     Full rationale: docs/decision-log.md 2026-04-17 entries and
+     docs/dark-mode-contract.md §1.
      ------------------------------------------------------------ */
 
   /* ------------------------------------------------------------
@@ -21,28 +22,28 @@
                                     elevated, rounded; holds content)
        Layer 2 — --color-surface   (individual cards on the workspace)
 
-     Each layer is lighter than the one below in light mode, and
-     cooler-lifted in dark mode. Tonal steps are ~10 RGB units —
-     subtle enough to read as material, not as color stripes.
+     Each layer is lighter than the one below in light mode. In
+     dark mode, the stack stays black-first: graphite tonal steps
+     create depth while navy is reserved for controls and state.
      ------------------------------------------------------------ */
-  --color-bg: light-dark(#e8ebf0, #070a0f);
-  --color-workspace: light-dark(#f4f6fa, #12161e);
-  --color-surface: light-dark(#ffffff, #1c212a);
-  --color-surface-elevated: light-dark(#ffffff, #222832);
-  --color-surface-muted: light-dark(#eef1f5, #151a22);
-  --color-surface-glass: light-dark(rgba(255, 255, 255, 0.78), rgba(28, 33, 42, 0.78));
-  --color-border: light-dark(#dde2ea, #2e343e);
-  --color-border-strong: light-dark(#b4bcc8, #4a525f);
-  --color-border-input: light-dark(#6b7280, #aab4c2);
-  --color-text: light-dark(#111827, #e7ecf3);
-  --color-text-secondary: light-dark(#47505c, #b5bdca);
-  --color-text-tertiary: light-dark(#56606d, #8b95a4);
+  --color-bg: light-dark(#eef1f5, #020305);
+  --color-workspace: light-dark(#f7f9fc, #08090c);
+  --color-surface: light-dark(#ffffff, #101114);
+  --color-surface-elevated: light-dark(#ffffff, #17191e);
+  --color-surface-muted: light-dark(#f1f4f8, #0b0c10);
+  --color-surface-glass: light-dark(rgba(255, 255, 255, 0.78), rgba(16, 17, 20, 0.86));
+  --color-border: light-dark(#d7dde7, #252932);
+  --color-border-strong: light-dark(#a8b2c0, #3b4048);
+  --color-border-input: light-dark(#6b7280, #777f8c);
+  --color-text: light-dark(#111827, #f2f5f8);
+  --color-text-secondary: light-dark(#47505c, #b9c0ca);
+  --color-text-tertiary: light-dark(#56606d, #9098a4);
 
-  /* Primary accent — Alberta institutional navy, slightly desaturated
-     for a mature "considered" feel rather than "default app blue". */
-  --color-accent: light-dark(#1b4b80, #7aa7d9);
-  --color-accent-hover: light-dark(#143a65, #91b9e3);
-  --color-accent-soft: light-dark(#e7ecf4, #101827);
+  /* Primary accent — navy affordance color only in dark mode.
+     Structural dark surfaces stay black/graphite. */
+  --color-accent: light-dark(#1b4b80, #426990);
+  --color-accent-hover: light-dark(#143a65, #4a74a1);
+  --color-accent-soft: light-dark(#e7ecf4, #070d15);
 
   /* Prairie cognac retained for brand-highlight role only (logos,
      limited editorial emphasis). Not used as a primary UI accent. */
@@ -56,90 +57,109 @@
   --color-provenance: light-dark(#3f6a6d, #8fbec0);
   --color-pending: light-dark(#a66a00, #e7b35c);
 
-  /* Semantic tinted backgrounds — restrained, near-neutral with
-     a hint of semantic hue. No cream tones. */
-  --color-bg-muted: light-dark(#f1f3f6, #12161d);
-  --color-bg-info: light-dark(#eef1f6, #141820);
-  --color-bg-success: light-dark(#e9f3ec, #0f1814);
-  --color-bg-warning: light-dark(#faf0dc, #1a1610);
-  --color-bg-danger: light-dark(#f7e8e5, #1a100f);
-  --color-bg-accent: light-dark(#e7ecf4, #101827);
-  --color-bg-analysis: light-dark(#ecf0f7, #131722);
-  --color-bg-provenance: light-dark(#e8f0f1, #0f1819);
-  --color-bg-pending: light-dark(#faf0dc, #1a1610);
-  --color-bg-sun: light-dark(#faf0dc, #1a1610);
-  --color-bg-sage: light-dark(#e9f2ea, #101612);
-  --color-bg-slate: light-dark(#eaeef5, #0f141b);
-  --color-bg-forest: light-dark(#e6f0e9, #0f1613);
+  /* Semantic tinted backgrounds — dark mode is black-first. Hue appears
+     as low-area text, borders, icons, and small state fills instead of
+     broad blue or color-washed panels. */
+  --color-bg-muted: light-dark(#f1f3f6, #0b0c10);
+  --color-bg-info: light-dark(#eef1f6, #0b0d12);
+  --color-bg-success: light-dark(#e9f3ec, #0a100d);
+  --color-bg-warning: light-dark(#faf0dc, #100d07);
+  --color-bg-danger: light-dark(#f7e8e5, #120909);
+  --color-bg-accent: light-dark(#e7ecf4, #070d15);
+  --color-bg-analysis: light-dark(#ecf0f7, #0b0d12);
+  --color-bg-provenance: light-dark(#e8f0f1, #091011);
+  --color-bg-pending: light-dark(#faf0dc, #100d07);
+  --color-bg-sun: light-dark(#faf0dc, #100d07);
+  --color-bg-sage: light-dark(#e9f2ea, #09100b);
+  --color-bg-slate: light-dark(#eaeef5, #0b0d12);
+  --color-bg-forest: light-dark(#e6f0e9, #09100b);
 
   /* Semantic borders */
-  --color-border-info: light-dark(#c4cddb, #3a4250);
-  --color-border-success: light-dark(#b3d4be, #2f4f3a);
-  --color-border-warning: light-dark(#d9b878, #5f4820);
-  --color-border-danger: light-dark(#d5a79f, #6a3730);
-  --color-border-accent: light-dark(#b4c3dc, #2a3a52);
-  --color-border-analysis: light-dark(#bcc6d9, #3a4258);
-  --color-border-provenance: light-dark(#b4c4c6, #334a4c);
-  --color-border-pending: light-dark(#d9b878, #5f4820);
-  --color-border-sun: light-dark(#d9b878, #5f4820);
-  --color-border-sage: light-dark(#b8cbbb, #324838);
-  --color-border-slate: light-dark(#bbc4d3, #343c4c);
-  --color-border-forest: light-dark(#b0c6b7, #2f4536);
+  --color-border-info: light-dark(#c4cddb, #303642);
+  --color-border-success: light-dark(#b3d4be, #2c4334);
+  --color-border-warning: light-dark(#d9b878, #564018);
+  --color-border-danger: light-dark(#d5a79f, #5e2c28);
+  --color-border-accent: light-dark(#b4c3dc, #253b57);
+  --color-border-analysis: light-dark(#bcc6d9, #303642);
+  --color-border-provenance: light-dark(#b4c4c6, #2c4547);
+  --color-border-pending: light-dark(#d9b878, #564018);
+  --color-border-sun: light-dark(#d9b878, #564018);
+  --color-border-sage: light-dark(#b8cbbb, #2d4233);
+  --color-border-slate: light-dark(#bbc4d3, #303642);
+  --color-border-forest: light-dark(#b0c6b7, #2d4233);
 
   /* Semantic text — tuned for WCAG AA on matching tinted bg */
-  --color-text-info: light-dark(#34445c, #c4d0e3);
-  --color-text-success: light-dark(#18583a, #b8d9c5);
-  --color-text-warning: light-dark(#7a4e02, #e7c488);
-  --color-text-danger: light-dark(#7a241d, #f0b4ad);
-  --color-text-accent: light-dark(#143a65, #a5c2e3);
-  --color-text-analysis: light-dark(#3a4663, #c4cfe5);
-  --color-text-provenance: light-dark(#2d4f51, #b0d1d3);
-  --color-text-pending: light-dark(#7a4e02, #e7c488);
-  --color-text-sun: light-dark(#7a4e02, #e7c488);
-  --color-text-sage: light-dark(#2a5038, #b4d1be);
-  --color-text-slate: light-dark(#364760, #c0cce0);
-  --color-text-forest: light-dark(#265238, #b4d0bc);
+  --color-text-info: light-dark(#34445c, #c2cad7);
+  --color-text-success: light-dark(#18583a, #b4d6c1);
+  --color-text-warning: light-dark(#7a4e02, #e2bf7f);
+  --color-text-danger: light-dark(#7a241d, #efaaa3);
+  --color-text-accent: light-dark(#143a65, #b8cbe2);
+  --color-text-analysis: light-dark(#3a4663, #c3cad9);
+  --color-text-provenance: light-dark(#2d4f51, #afd0d2);
+  --color-text-pending: light-dark(#7a4e02, #e2bf7f);
+  --color-text-sun: light-dark(#7a4e02, #e2bf7f);
+  --color-text-sage: light-dark(#2a5038, #b3d0bc);
+  --color-text-slate: light-dark(#364760, #c2cad7);
+  --color-text-forest: light-dark(#265238, #b3d0bc);
 
-  /* Section border colors — aligned with navy primary */
-  --color-section-watchpoint: light-dark(#a66a00, #e7b35c);
-  --color-section-priority: light-dark(#1b4b80, #7aa7d9);
-  --color-section-ea: light-dark(#4a5c80, #9fb2d6);
+  /* Section border colors — low-area signals on the black-first stack. */
+  --color-section-watchpoint: light-dark(#a66a00, #e2bf7f);
+  --color-section-priority: light-dark(#1b4b80, #426990);
+  --color-section-ea: light-dark(#4a5c80, #8f98a8);
   --color-section-family: light-dark(#1f7a44, #6cc38f);
-  --color-section-theme: light-dark(#4a5c80, #9fb2d6);
-  --color-section-gap: light-dark(#a62f26, #ef8a81);
+  --color-section-theme: light-dark(#4a5c80, #8f98a8);
+  --color-section-gap: light-dark(#a62f26, #efaaa3);
   --color-section-trend: light-dark(#1f7a44, #6cc38f);
-  --color-section-focus: light-dark(#1b4b80, #7aa7d9);
+  --color-section-focus: light-dark(#1b4b80, #426990);
+
+  /* Compatibility aliases — legacy component names mapped to the
+     canonical theme roles so old call sites cannot fall back to
+     hardcoded bootstrap/warm colors. New code should use canonical
+     tokens above. */
+  --color-text-primary: var(--color-text);
+  --color-text-muted: var(--color-text-tertiary);
+  --color-surface-secondary: var(--color-surface-muted);
+  --color-border-subtle: var(--color-border);
+  --color-alert: var(--color-danger);
+  --color-sun: var(--color-section-watchpoint);
+  --color-sage: var(--color-section-family);
+  --color-slate: var(--color-section-ea);
+  --color-forest: var(--color-section-trend);
+  --color-section-sun: var(--color-section-watchpoint);
+  --color-section-sage: var(--color-section-family);
+  --color-section-slate: var(--color-section-ea);
+  --color-section-forest: var(--color-section-trend);
 
   /* Variant type badge colors */
-  --color-variant-core: light-dark(#3f5a7a, #9fb2d6);
+  --color-variant-core: light-dark(#3f5a7a, #8f98a8);
   --color-variant-eal: light-dark(#5a4a7a, #b0a0d6);
-  --color-variant-chunked: light-dark(#8a5a14, #daa040);
+  --color-variant-chunked: light-dark(#8a5a14, #d0a25a);
   --color-variant-ea-group: light-dark(#2a5a3a, #7fc090);
-  --color-variant-extension: light-dark(#8a3630, #d07a70);
+  --color-variant-extension: light-dark(#8a3630, #c97b73);
 
   /* Forecast colors — green / amber / red, institutional conservative */
   --color-forecast-low: light-dark(#1f7a44, #6cc38f);
-  --color-forecast-low-bg: light-dark(#e9f3ec, #0f1814);
-  --color-forecast-low-text: light-dark(#18583a, #b8d9c5);
+  --color-forecast-low-bg: light-dark(#e9f3ec, #0a100d);
+  --color-forecast-low-text: light-dark(#18583a, #b4d6c1);
   --color-forecast-medium: light-dark(#a66a00, #e7b35c);
-  --color-forecast-medium-bg: light-dark(#faf0dc, #1a1610);
-  --color-forecast-medium-text: light-dark(#7a4e02, #e7c488);
+  --color-forecast-medium-bg: light-dark(#faf0dc, #100d07);
+  --color-forecast-medium-text: light-dark(#7a4e02, #e2bf7f);
   --color-forecast-high: light-dark(#a62f26, #ef8a81);
-  --color-forecast-high-bg: light-dark(#f7e8e5, #1a100f);
-  --color-forecast-high-text: light-dark(#7a241d, #f0b4ad);
+  --color-forecast-high-bg: light-dark(#f7e8e5, #120909);
+  --color-forecast-high-text: light-dark(#7a241d, #efaaa3);
 
   --color-approve: light-dark(#1f7a44, #6cc38f);
   --color-approve-hover: light-dark(#18583a, #8fd3ab);
-  --color-text-on-accent: light-dark(#ffffff, #0e1116);
+  --color-text-on-accent: light-dark(#ffffff, #f8fbff);
 
   /* Role identity chip colors */
   --color-role-teacher: light-dark(#1f7a44, #6cc38f);
-  --color-role-ea: light-dark(#4a5c80, #9fb2d6);
+  --color-role-ea: light-dark(#4a5c80, #8f98a8);
   --color-role-sub: light-dark(#a66a00, #e7b35c);
   --color-role-reviewer: light-dark(#3f6a6d, #8fbec0);
 
-  /* Elevation — cooler, institutional shadow stack.
-     Neutral-grey ambient occlusion. Three-layer model preserved:
+  /* Elevation — neutral institutional shadow stack.
+     Black-alpha ambient occlusion. Three-layer model preserved:
      contact shadow (tight), penumbra (mid), ambient (diffuse). */
   --_shadow-xs-a: light-dark(rgba(17, 24, 39, 0.025), rgba(0, 0, 0, 0.06));
   --_shadow-sm-a: light-dark(rgba(17, 24, 39, 0.03), rgba(0, 0, 0, 0.07));
@@ -260,13 +280,14 @@
 
   --motion-micro: 100ms;
   --motion-hover: 180ms;
+  --duration-fast: var(--motion-fast);
 
   --shadow-press: 0 0.5px 1px var(--_shadow-sm-a);
 
-  /* Focus ring — Alberta navy on both modes */
+  /* Focus ring — navy affordance on both modes */
   --focus-ring-outline: 3px solid color-mix(in srgb, var(--color-accent) 72%, white);
   --focus-ring-offset: 2px;
-  --focus-ring-halo: 0 0 0 4px color-mix(in srgb, var(--color-accent) 14%, transparent);
+  --focus-ring-halo: 0 0 0 4px color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 :root[data-theme="light"] {
@@ -284,13 +305,13 @@
 
 @media (prefers-contrast: more) {
   :root {
-    --color-text-secondary: light-dark(#384050, #d0d8e6);
-    --color-text-tertiary: light-dark(#424c5c, #b8c2d2);
-    --color-border: light-dark(#a8b0bc, #5a6270);
-    --color-border-strong: light-dark(#525a68, #c0c8d4);
-    --color-border-input: light-dark(#4a5260, #d0d8e6);
-    --color-accent: light-dark(#123a68, #9bc0ec);
-    --color-accent-hover: light-dark(#0a2a4e, #b4d0f0);
+    --color-text-secondary: light-dark(#384050, #d3d8df);
+    --color-text-tertiary: light-dark(#424c5c, #bcc4ce);
+    --color-border: light-dark(#a8b0bc, #4d535e);
+    --color-border-strong: light-dark(#525a68, #c8ced6);
+    --color-border-input: light-dark(#4a5260, #d0d6de);
+    --color-accent: light-dark(#123a68, #4a74a1);
+    --color-accent-hover: light-dark(#0a2a4e, #547fac);
   }
 }
 

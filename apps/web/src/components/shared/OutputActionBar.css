@@ -75,14 +75,14 @@
 
 .output-action-bar__btn--primary {
   background: var(--color-accent);
-  color: var(--color-surface);
+  color: var(--color-text-on-accent);
   border-color: var(--color-accent);
 }
 
 .output-action-bar__btn--approve {
-  background: color-mix(in srgb, var(--color-accent) 20%, transparent);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-accent) 44%, transparent);
+  color: var(--color-text-accent);
   font-weight: 600;
 }
 

@@ -39,7 +39,7 @@
 .forecast-timeline-segment:hover {
   filter: brightness(0.94);
   transform: scaleY(1.08);
-  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 12%, transparent);
+  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 10%, transparent);
 }
 
 .forecast-timeline-segment--low {

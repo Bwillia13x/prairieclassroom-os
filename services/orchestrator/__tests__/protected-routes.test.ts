@@ -165,7 +165,9 @@ describe("protected classroom routes", () => {
       detail_code: "classroom_role_forbidden",
       details: {
         role: "ea",
-        allowed_roles: ["teacher"],
+        // History surfaces are read-accessible to reviewer under the Phase B
+        // bounded-view scope matrix; EA remains blocked.
+        allowed_roles: ["teacher", "reviewer"],
       },
     });
   });

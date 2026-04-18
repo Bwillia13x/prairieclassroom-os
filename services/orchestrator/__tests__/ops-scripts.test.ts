@@ -434,7 +434,7 @@ describe("system inventory helpers", () => {
       expect.objectContaining({ method: "GET", path: "/api/curriculum/entries/:entryId", role_scope: null }),
       expect.objectContaining({ method: "POST", path: "/api/family-message/approve" }),
       expect.objectContaining({ method: "GET", path: "/api/classrooms/:id/student-summary", role_scope: ["teacher"] }),
-      expect.objectContaining({ method: "GET", path: "/api/today/:classroomId", role_scope: ["teacher", "ea"] }),
+      expect.objectContaining({ method: "GET", path: "/api/today/:classroomId", role_scope: ["teacher", "ea", "substitute"] }),
     ]));
     expect(inventory.evals.case_count).toBeGreaterThanOrEqual(90);
   });
@@ -511,7 +511,7 @@ describe("system inventory helpers", () => {
     expect(markdown).toContain("- Exact endpoints: 37");
     expect(markdown).toContain("| GET | `/api/curriculum/subjects` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |");
     expect(markdown).toContain("| POST | `/api/family-message/approve` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |");
-    expect(markdown).toContain("| GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea |");
+    expect(markdown).toContain("| GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea, substitute |");
   });
 });
 

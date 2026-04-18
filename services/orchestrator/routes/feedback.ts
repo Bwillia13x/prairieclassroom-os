@@ -12,6 +12,7 @@ export function createFeedbackRouter(deps: RouteDeps): Router {
   const router = Router();
   const authMiddleware = deps.authMiddleware;
   const teacherOrEa = requireRoles(deps, ["teacher", "ea"]);
+  const teacherEaOrReviewer = requireRoles(deps, ["teacher", "ea", "reviewer"]);
 
   // POST / — submit teacher feedback on generated panel content
   router.post("/", authMiddleware, teacherOrEa, validateBody(FeedbackRequestSchema), (req, res) => {
@@ -49,7 +50,7 @@ export function createFeedbackRouter(deps: RouteDeps): Router {
   });
 
   // GET /summary/:classroomId — aggregated feedback summary
-  router.get("/summary/:classroomId", authMiddleware, teacherOrEa, (req, res) => {
+  router.get("/summary/:classroomId", authMiddleware, teacherEaOrReviewer, (req, res) => {
     try {
       const rawId = req.params.classroomId as string;
 

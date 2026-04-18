@@ -4,8 +4,9 @@
   gap: var(--space-2);
   padding: var(--space-3) var(--space-4);
   margin-top: var(--space-3);
-  background: color-mix(in srgb, var(--color-provenance) 8%, var(--color-surface));
+  background: var(--color-surface);
   border: 1px solid color-mix(in srgb, var(--color-provenance) 30%, var(--color-border));
+  border-left: 3px solid var(--color-provenance);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-xs);
 }
@@ -109,22 +110,22 @@
   letter-spacing: 0.02em;
   text-transform: uppercase;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-provenance) 15%, var(--color-surface-elevated));
+  background: color-mix(in srgb, var(--color-bg-provenance) 48%, var(--color-surface-elevated));
   color: var(--color-text-provenance);
   white-space: nowrap;
 }
 
 .retrieval-trace__type--plan {
-  background: color-mix(in srgb, var(--color-provenance) 22%, var(--color-surface-elevated));
+  background: color-mix(in srgb, var(--color-bg-provenance) 62%, var(--color-surface-elevated));
 }
 
 .retrieval-trace__type--intervention {
-  background: color-mix(in srgb, var(--color-warning) 18%, var(--color-surface-elevated));
+  background: color-mix(in srgb, var(--color-bg-warning) 60%, var(--color-surface-elevated));
   color: var(--color-text-warning);
 }
 
 .retrieval-trace__type--pattern_report {
-  background: color-mix(in srgb, var(--color-text-analysis) 18%, var(--color-surface-elevated));
+  background: color-mix(in srgb, var(--color-bg-analysis) 60%, var(--color-surface-elevated));
   color: var(--color-text-analysis);
 }
 

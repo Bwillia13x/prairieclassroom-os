@@ -1401,7 +1401,7 @@ interface ComplexityTrendProps {
 const COMPLEXITY_LEVEL_COLORS: Record<number, string> = {
   0: "var(--color-success)",
   1: "var(--color-warning)",
-  2: "var(--color-pending, #e67e22)",
+  2: "var(--color-pending)",
   3: "var(--color-danger)",
 };
 
@@ -1656,9 +1656,9 @@ export function ScheduleLoadStrip({ blocks }: ScheduleLoadStripProps) {
 
   function tone(count: number): string {
     const ratio = count / max;
-    if (ratio >= 0.75) return "var(--color-alert, #e74c3c)";
-    if (ratio >= 0.5) return "var(--color-sun, #f0ad4e)";
-    return "var(--color-sage, #5cb85c)";
+    if (ratio >= 0.75) return "var(--color-danger)";
+    if (ratio >= 0.5) return "var(--color-section-watchpoint)";
+    return "var(--color-section-family)";
   }
 
   return (
@@ -1698,11 +1698,11 @@ interface VariantSummaryStripProps {
 }
 
 const VARIANT_TONE: Record<string, string> = {
-  core: "var(--color-slate, #6c757d)",
-  eal_supported: "var(--color-accent, #0d6efd)",
-  chunked: "var(--color-sage, #5cb85c)",
-  ea_small_group: "var(--color-sun, #f0ad4e)",
-  extension: "var(--color-analysis, #8b5cf6)",
+  core: "var(--color-slate)",
+  eal_supported: "var(--color-accent)",
+  chunked: "var(--color-sage)",
+  ea_small_group: "var(--color-sun)",
+  extension: "var(--color-analysis)",
 };
 
 function prettyVariantType(vt: string): string {
@@ -1724,7 +1724,7 @@ export function VariantSummaryStrip({ variants, onSegmentClick }: VariantSummary
                 className="viz-variant-strip__bar"
                 style={{
                   width: `${Math.max(10, (v.estimated_minutes / maxMin) * 100)}%`,
-                  backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate, #6c757d)",
+                  backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate)",
                 }}
               />
             </div>
@@ -1795,9 +1795,9 @@ export function StudentThemeHeatmap({ themes }: StudentThemeHeatmapProps) {
 
   function fill(val: number): string {
     const ratio = val / maxVal;
-    if (ratio === 0) return "var(--color-surface-secondary, #f1f3f5)";
-    const alpha = 0.2 + ratio * 0.8;
-    return `rgba(var(--color-alert-rgb, 231, 76, 60), ${alpha.toFixed(2)})`;
+    if (ratio === 0) return "var(--color-surface-secondary)";
+    const dangerMix = Math.round(18 + ratio * 42);
+    return `color-mix(in srgb, var(--color-danger) ${dangerMix}%, var(--color-surface-secondary))`;
   }
 
   return (
@@ -1811,7 +1811,7 @@ export function StudentThemeHeatmap({ themes }: StudentThemeHeatmapProps) {
             y={headerH - 6}
             textAnchor="end"
             fontSize="9"
-            fill="var(--color-text-secondary, #6c757d)"
+            fill="var(--color-text-secondary)"
             transform={`rotate(-45, ${labelW + ci * cellW + cellW / 2}, ${headerH - 6})`}
           >
             {t.theme.length > 12 ? `${t.theme.slice(0, 12)}…` : t.theme}
@@ -1826,7 +1826,7 @@ export function StudentThemeHeatmap({ themes }: StudentThemeHeatmapProps) {
               y={headerH + ri * cellH + cellH / 2 + 4}
               textAnchor="end"
               fontSize="10"
-              fill="var(--color-text-primary, #212529)"
+              fill="var(--color-text)"
             >
               {stu.length > 10 ? `${stu.slice(0, 10)}…` : stu}
             </text>
@@ -1914,7 +1914,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
             key={r}
             points={Array.from({ length: n }, (_, i) => polarXY(i, r).join(",")).join(" ")}
             fill="none"
-            stroke="var(--color-border, #dee2e6)"
+            stroke="var(--color-border)"
             strokeWidth="0.5"
             opacity="0.5"
           />
@@ -1923,11 +1923,11 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
         {/* Axis lines */}
         {PLAN_RADAR_AXES.map((_, i) => {
           const [x, y] = polarXY(i, 1);
-          return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--color-border, #dee2e6)" strokeWidth="0.5" opacity="0.4" />;
+          return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--color-border)" strokeWidth="0.5" opacity="0.4" />;
         })}
 
         {/* Data shape */}
-        <path d={shapePath} fill="var(--color-accent, #0d6efd)" fillOpacity="0.18" stroke="var(--color-accent, #0d6efd)" strokeWidth="1.5" />
+        <path d={shapePath} fill="var(--color-accent)" fillOpacity="0.18" stroke="var(--color-accent)" strokeWidth="1.5" />
 
         {/* Axis labels */}
         {PLAN_RADAR_AXES.map((axis, i) => {
@@ -1940,7 +1940,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
               textAnchor="middle"
               dominantBaseline="central"
               fontSize="8"
-              fill="var(--color-text-secondary, #6c757d)"
+              fill="var(--color-text-secondary)"
               fontWeight="600"
             >
               {axis.label}
@@ -1950,7 +1950,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
 
         {/* Value dots */}
         {shapePoints.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="3" fill="var(--color-accent, #0d6efd)" />
+          <circle key={i} cx={x} cy={y} r="3" fill="var(--color-accent)" />
         ))}
 
         {/* Axis hit targets — only rendered when onSegmentClick is provided */}
@@ -2005,11 +2005,11 @@ interface WorkflowFlowStripProps {
 
 function flowColor(index: number): string {
   const palette = [
-    "var(--color-accent, #0d6efd)",
-    "var(--color-sage, #5cb85c)",
-    "var(--color-sun, #f0ad4e)",
-    "var(--color-analysis, #8b5cf6)",
-    "var(--color-alert, #e74c3c)",
+    "var(--color-accent)",
+    "var(--color-sage)",
+    "var(--color-sun)",
+    "var(--color-analysis)",
+    "var(--color-alert)",
   ];
   return palette[index % palette.length];
 }

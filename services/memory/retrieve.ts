@@ -11,6 +11,11 @@ import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
 import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
 import { safeParseJson } from "./json-utils.js";
+import {
+  filterRosterScoped,
+  isRosterScopedValue,
+  type RosterScope,
+} from "./roster-scope.js";
 
 export function getRecentPlans(classroomId: ClassroomId, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
@@ -141,16 +146,18 @@ export function buildPatternContext(
   classroomId: ClassroomId,
   studentRef?: string,
   windowSize = 10,
+  rosterScope?: RosterScope,
 ): string {
   const lines: string[] = [];
 
   const interventions = studentRef
     ? getStudentInterventions(classroomId, studentRef, windowSize)
     : getRecentInterventions(classroomId, windowSize);
+  const scopedInterventions = filterRosterScoped(interventions, rosterScope);
 
-  if (interventions.length > 0) {
+  if (scopedInterventions.length > 0) {
     lines.push("INTERVENTION RECORDS:");
-    for (const rec of interventions) {
+    for (const rec of scopedInterventions) {
       const students = rec.student_refs.join(", ");
       const followUp = rec.follow_up_needed ? " [FOLLOW-UP NEEDED]" : "";
       lines.push(
@@ -161,7 +168,7 @@ export function buildPatternContext(
     }
   }
 
-  const plans = getRecentPlans(classroomId, 5);
+  const plans = filterRosterScoped(getRecentPlans(classroomId, 5), rosterScope);
   if (plans.length > 0) {
     lines.push("");
     lines.push("RECENT PLAN SUPPORT PRIORITIES:");
@@ -176,7 +183,7 @@ export function buildPatternContext(
     }
   }
 
-  const pending = getFollowUpPending(classroomId);
+  const pending = filterRosterScoped(getFollowUpPending(classroomId), rosterScope);
   if (pending.length > 0) {
     lines.push("");
     lines.push("PENDING FOLLOW-UPS (follow_up_needed = true):");
@@ -240,11 +247,11 @@ export function getRecentPatternReports(classroomId: ClassroomId, limit = 5): Su
   return rows.map((r) => safeParseJson<SupportPatternReport>(r.report_json, "pattern-report")).filter((rpt): rpt is SupportPatternReport => rpt !== null);
 }
 
-export function buildEABriefingContext(classroomId: ClassroomId): string {
+export function buildEABriefingContext(classroomId: ClassroomId, rosterScope?: RosterScope): string {
   const lines: string[] = [];
 
   // Pull EA actions from the most recent plan
-  const plans = getRecentPlans(classroomId, 1);
+  const plans = filterRosterScoped(getRecentPlans(classroomId, 1), rosterScope);
   if (plans.length > 0) {
     const plan = plans[0];
     lines.push("TODAY'S PLAN — EA ACTIONS:");
@@ -271,7 +278,7 @@ export function buildEABriefingContext(classroomId: ClassroomId): string {
   }
 
   // Pull recent interventions, prioritizing follow-up-needed
-  const pending = getFollowUpPending(classroomId);
+  const pending = filterRosterScoped(getFollowUpPending(classroomId), rosterScope);
   if (pending.length > 0) {
     lines.push("");
     lines.push("PENDING FOLLOW-UPS (from recent interventions):");
@@ -282,7 +289,7 @@ export function buildEABriefingContext(classroomId: ClassroomId): string {
     }
   }
 
-  const recent = getRecentInterventions(classroomId, 5);
+  const recent = filterRosterScoped(getRecentInterventions(classroomId, 5), rosterScope);
   if (recent.length > 0) {
     lines.push("");
     lines.push("RECENT INTERVENTIONS:");
@@ -296,7 +303,7 @@ export function buildEABriefingContext(classroomId: ClassroomId): string {
 
   // Pull pattern insights if available
   const report = getLatestPatternReport(classroomId);
-  if (report) {
+  if (report && isRosterScopedValue(report, rosterScope)) {
     const highFocus = report.suggested_focus.filter((f) => f.priority === "high");
     if (highFocus.length > 0) {
       lines.push("");
@@ -335,6 +342,7 @@ export function getLatestForecast(
 export function getInterventionsByTimeBlock(
   classroomId: ClassroomId,
   limit = 30,
+  rosterScope?: RosterScope,
 ): Map<string, number> {
   const db = getDb(classroomId);
   const rows = db.prepare(`
@@ -348,6 +356,7 @@ export function getInterventionsByTimeBlock(
   for (const row of rows) {
     const record = safeParseJson<InterventionRecord>(row.record_json, "time-block-intervention");
     if (!record) continue;
+    if (!isRosterScopedValue(record, rosterScope)) continue;
     // Extract time reference from observation or action if present
     const text = `${record.observation} ${record.action_taken}`;
     // Match common time patterns: "after lunch", "morning", "recess", "math block", etc.
@@ -364,11 +373,11 @@ export function getInterventionsByTimeBlock(
   return blockCounts;
 }
 
-export function buildForecastContext(classroomId: ClassroomId): string {
+export function buildForecastContext(classroomId: ClassroomId, rosterScope?: RosterScope): string {
   const lines: string[] = [];
 
   // Intervention frequency by time-of-day patterns
-  const blockCounts = getInterventionsByTimeBlock(classroomId, 30);
+  const blockCounts = getInterventionsByTimeBlock(classroomId, 30, rosterScope);
   if (blockCounts.size > 0) {
     lines.push("INTERVENTION FREQUENCY BY TIME/CONTEXT (last 30 records):");
     const sorted = [...blockCounts.entries()].sort((a, b) => b[1] - a[1]);
@@ -378,7 +387,7 @@ export function buildForecastContext(classroomId: ClassroomId): string {
   }
 
   // Recent interventions for context
-  const recent = getRecentInterventions(classroomId, 5);
+  const recent = filterRosterScoped(getRecentInterventions(classroomId, 5), rosterScope);
   if (recent.length > 0) {
     lines.push("");
     lines.push("MOST RECENT INTERVENTIONS:");
@@ -391,7 +400,7 @@ export function buildForecastContext(classroomId: ClassroomId): string {
 
   // Latest pattern report highlights
   const pattern = getLatestPatternReport(classroomId);
-  if (pattern) {
+  if (pattern && isRosterScopedValue(pattern, rosterScope)) {
     const highFocus = pattern.suggested_focus.filter((f) => f.priority === "high");
     if (highFocus.length > 0) {
       lines.push("");
@@ -410,7 +419,7 @@ export function buildForecastContext(classroomId: ClassroomId): string {
   }
 
   // Pending follow-ups
-  const pending = getFollowUpPending(classroomId);
+  const pending = filterRosterScoped(getFollowUpPending(classroomId), rosterScope);
   if (pending.length > 0) {
     lines.push("");
     lines.push("PENDING FOLLOW-UPS:");
@@ -730,6 +739,7 @@ export function buildDebtRegister(
   classroomId: ClassroomId,
   classroom: ClassroomProfile,
   thresholds?: Partial<DebtThresholds>,
+  rosterScope?: RosterScope,
 ): ComplexityDebtRegister {
   const config: DebtThresholds = {
     stale_followup_days: thresholds?.stale_followup_days ?? 5,
@@ -739,13 +749,13 @@ export function buildDebtRegister(
     review_min_records: thresholds?.review_min_records ?? 2,
   };
 
-  const allItems: DebtItem[] = [
+  const allItems = filterRosterScoped<DebtItem>([
     ...getStaleFollowUps(classroomId, config.stale_followup_days),
     ...getUnapprovedMessages(classroomId, config.unapproved_message_days),
     ...getUnaddressedPatternInsights(classroomId),
     ...getRecurringPlanItems(classroomId, config.recurring_plan_min),
     ...getStudentsApproachingReview(classroomId, classroom, config.review_min_records, config.review_window_days),
-  ];
+  ], rosterScope);
 
   allItems.sort((a, b) => b.age_days - a.age_days);
 
@@ -853,6 +863,7 @@ export function getLatestSurvivalPacket(
 export function buildSurvivalContext(
   classroomId: ClassroomId,
   classroom: ClassroomProfile,
+  rosterScope?: RosterScope,
 ): string {
   const lines: string[] = [];
 
@@ -918,7 +929,7 @@ export function buildSurvivalContext(
   }
 
   // 5. MOST RECENT TEACHER PLAN
-  const plans = getRecentPlans(classroomId, 1);
+  const plans = filterRosterScoped(getRecentPlans(classroomId, 1), rosterScope);
   if (plans.length > 0) {
     const plan = plans[0];
     lines.push("");
@@ -951,7 +962,7 @@ export function buildSurvivalContext(
   }
 
   // 6. RECENT INTERVENTIONS
-  const interventions = getRecentInterventions(classroomId, 10);
+  const interventions = filterRosterScoped(getRecentInterventions(classroomId, 10), rosterScope);
   if (interventions.length > 0) {
     lines.push("");
     lines.push("RECENT INTERVENTIONS:");
@@ -965,7 +976,7 @@ export function buildSurvivalContext(
 
   // 7. PATTERN INSIGHTS
   const report = getLatestPatternReport(classroomId);
-  if (report) {
+  if (report && isRosterScopedValue(report, rosterScope)) {
     const hasThemes = report.recurring_themes.length > 0;
     const hasTrends = report.positive_trends.length > 0;
     if (hasThemes || hasTrends) {
@@ -987,7 +998,8 @@ export function buildSurvivalContext(
   }
 
   // 8. FAMILY MESSAGE STATUS
-  const familyMessages = getRecentFamilyMessages(classroomId, 10);
+  const familyMessages = getRecentFamilyMessages(classroomId, 10)
+    .filter(({ draft }) => isRosterScopedValue(draft, rosterScope));
   if (familyMessages.length > 0) {
     lines.push("");
     lines.push("FAMILY MESSAGE STATUS:");
@@ -1000,7 +1012,7 @@ export function buildSurvivalContext(
 
   // 9. COMPLEXITY FORECAST
   const forecast = getLatestForecast(classroomId);
-  if (forecast) {
+  if (forecast && isRosterScopedValue(forecast, rosterScope)) {
     lines.push("");
     lines.push("COMPLEXITY FORECAST:");
     for (const block of forecast.blocks) {

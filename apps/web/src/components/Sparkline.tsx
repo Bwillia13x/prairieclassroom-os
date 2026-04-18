@@ -9,10 +9,10 @@ interface Props {
 }
 
 const TONE_COLORS: Record<SectionTone, string> = {
-  sun: "var(--color-section-sun, #d4a843)",
-  sage: "var(--color-section-sage, #7a9a6e)",
-  slate: "var(--color-section-slate, #8b8fa3)",
-  forest: "var(--color-section-forest, #4a7c59)",
+  sun: "var(--color-section-sun)",
+  sage: "var(--color-section-sage)",
+  slate: "var(--color-section-slate)",
+  forest: "var(--color-section-forest)",
 };
 
 function average(values: number[]): number {

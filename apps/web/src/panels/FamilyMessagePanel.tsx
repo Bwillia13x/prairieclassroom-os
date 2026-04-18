@@ -17,6 +17,7 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
+import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
 import { FeedbackCollector, OutputActionBar } from "../components/shared";
 import type { OutputAction } from "../components/shared";
 import { MessageApprovalFunnel } from "../components/DataVisualizations";
@@ -33,7 +34,8 @@ interface Props {
 
 export default function FamilyMessagePanel({ prefill }: Props) {
   const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showUndo } = useApp();
-  const { canApproveMessages } = useRole();
+  const role = useRole();
+  const { canApproveMessages } = role;
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<FamilyMessageResponse>();
   const healthAction = useAsyncAction<ClassroomHealth>();
@@ -178,6 +180,12 @@ export default function FamilyMessagePanel({ prefill }: Props) {
         ]}
       />
 
+      <RoleReadOnlyBanner
+        role={role}
+        required="canGenerate"
+        whatIsBlocked="Drafting and approving family messages is reserved for the classroom's permanent teacher."
+      />
+
       <WorkspaceLayout
         rail={(
           <>
@@ -203,15 +211,17 @@ export default function FamilyMessagePanel({ prefill }: Props) {
               onSelect={handleHistorySelect}
               label="Message History"
             />
-            <MessageComposer
-              classrooms={classrooms}
-              students={students}
-              selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
-              onSubmit={handleSubmit}
-              loading={loading}
-              prefill={prefill}
-            />
+            {role.canGenerate ? (
+              <MessageComposer
+                classrooms={classrooms}
+                students={students}
+                selectedClassroom={activeClassroom}
+                onClassroomChange={setActiveClassroom}
+                onSubmit={handleSubmit}
+                loading={loading}
+                prefill={prefill}
+              />
+            ) : null}
           </>
         )}
         canvas={(

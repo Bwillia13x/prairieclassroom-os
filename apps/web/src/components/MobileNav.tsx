@@ -2,13 +2,16 @@ import { useEffect, useState } from "react";
 import {
   getGroupForTab,
   getTabBadgeCount,
-  getTabsForGroup,
+  getVisibleNavGroups,
+  getVisibleTabsForGroup,
+  isTabVisibleForRole,
   NAV_GROUP_META,
-  NAV_GROUP_ORDER,
   TAB_META,
   type ActiveTab,
+  type ClassroomRole,
   type NavGroup,
 } from "../appReducer";
+import { useApp } from "../AppContext";
 import SectionIcon from "./SectionIcon";
 import "./MobileNav.css";
 
@@ -19,21 +22,35 @@ interface Props {
 }
 
 export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props) {
-  const [expandedGroup, setExpandedGroup] = useState<NavGroup>(getGroupForTab(activeTab));
+  const { activeRole } = useApp();
+  const role: ClassroomRole = activeRole;
+  const visibleGroups = getVisibleNavGroups(role);
+  const initialGroup = isTabVisibleForRole(activeTab, role)
+    ? getGroupForTab(activeTab)
+    : visibleGroups[0] ?? "today";
+  const [expandedGroup, setExpandedGroup] = useState<NavGroup>(initialGroup);
 
   useEffect(() => {
-    setExpandedGroup(getGroupForTab(activeTab));
-  }, [activeTab]);
+    // `role` is the stable identity here; `visibleGroups` is recomputed from
+    // `role` each render but never changes unless `role` does, so it's safe
+    // to depend on `role` only.
+    setExpandedGroup(
+      isTabVisibleForRole(activeTab, role)
+        ? getGroupForTab(activeTab)
+        : getVisibleNavGroups(role)[0] ?? "today",
+    );
+  }, [activeTab, role]);
 
   function handleGroupClick(group: NavGroup) {
+    const tabs = getVisibleTabsForGroup(group, role);
+    if (tabs.length === 0) return;
     setExpandedGroup(group);
-    const tabs = getTabsForGroup(group);
     if (!tabs.includes(activeTab)) {
       onTabChange(tabs[0]);
     }
   }
 
-  const visibleTabs = getTabsForGroup(expandedGroup);
+  const visibleTabs = getVisibleTabsForGroup(expandedGroup, role);
   const showSubtabs = visibleTabs.length > 1;
 
   return (
@@ -58,10 +75,10 @@ export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props)
       ) : null}
 
       <div className="mobile-nav-groups">
-        {NAV_GROUP_ORDER.map((group) => {
+        {visibleGroups.map((group) => {
           const meta = NAV_GROUP_META[group];
           const isActive = expandedGroup === group;
-          const groupBadge = getTabsForGroup(group).reduce(
+          const groupBadge = getVisibleTabsForGroup(group, role).reduce(
             (total, tab) => total + getTabBadgeCount(tab, debtCounts ?? {}),
             0,
           );

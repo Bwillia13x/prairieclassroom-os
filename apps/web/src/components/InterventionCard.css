@@ -57,13 +57,13 @@
 }
 
 .followup-badge--yes {
-  background: color-mix(in srgb, var(--color-bg-warning) 70%, transparent);
+  background: color-mix(in srgb, var(--color-bg-warning) 44%, var(--color-surface-elevated));
   color: var(--color-text-warning);
   border: 1px solid color-mix(in srgb, var(--color-border-warning) 50%, transparent);
 }
 
 .followup-badge--no {
-  background: color-mix(in srgb, var(--color-bg-success) 70%, transparent);
+  background: color-mix(in srgb, var(--color-bg-success) 44%, var(--color-surface-elevated));
   color: var(--color-text-success);
   border: 1px solid color-mix(in srgb, var(--color-border-success) 50%, transparent);
 }
@@ -71,8 +71,9 @@
 .intervention-saved {
   margin-top: 1rem;
   padding: 0.55rem 0.85rem;
-  background: color-mix(in srgb, var(--color-bg-success) 60%, transparent);
+  background: color-mix(in srgb, var(--color-bg-success) 40%, var(--color-surface));
   border: 1px solid color-mix(in srgb, var(--color-border-success) 45%, transparent);
+  border-left: 3px solid var(--color-success);
   border-radius: var(--radius-sm);
   font-size: var(--text-sm);
   color: var(--color-text-success);

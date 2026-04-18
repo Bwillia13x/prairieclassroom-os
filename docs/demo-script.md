@@ -142,7 +142,7 @@ You should see the UI with the classroom selector pre-populated to `demo-okafor-
   - **Farid** -- EAL L3 (Arabic, verbal > written)
 
 ### What to narrate
-> "This is Mrs. Okafor's Grade 3/4 split in Lethbridge. Twenty-four students total, with three EAL learners in different stages. Brody has sensory needs. The EA, Ms. Fehr, is here mornings only. And the system has two weeks of classroom memory."
+> "This is Mrs. Okafor's Grade 3/4 split in Lethbridge. Twenty-six students total, with three EAL learners in different stages. Brody has sensory needs. The EA, Ms. Fehr, is here mornings only. And the system has two weeks of classroom memory."
 
 ### What to point out
 - **Real-world complexity:** mixed grades, EAL diversity, accessibility needs, shared staffing.

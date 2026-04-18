@@ -1,6 +1,6 @@
 /* QuickCaptureTray — layout + component styles
    Token substitutions vs. plan spec:
-   - --color-text-muted     → --color-text-secondary (--color-text-muted does not exist)
+   - legacy muted text aliases are now provided by the theme token layer
    - --font-size-sm/md/xs   → --text-sm/md/xs with literal fallbacks (--font-size-* do not exist)
    - --color-surface-raised → --color-surface-elevated (--color-surface-raised does not exist)
    - --color-border-muted   → --color-border (--color-border-muted does not exist)
@@ -151,13 +151,13 @@
 }
 
 .student-avatar--selected {
-  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
   border-color: var(--color-accent);
 }
 
 .student-avatar--selected .student-avatar__initial {
   background: var(--color-accent);
-  color: var(--color-surface);
+  color: var(--color-text-on-accent);
 }
 
 .student-avatar:focus-visible {
@@ -197,9 +197,9 @@
 }
 
 .intervention-chip--selected {
-  background: color-mix(in srgb, var(--color-accent) 15%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
   border-color: var(--color-accent);
-  color: var(--color-accent);
+  color: var(--color-text-accent);
 }
 
 .intervention-chip:focus-visible {

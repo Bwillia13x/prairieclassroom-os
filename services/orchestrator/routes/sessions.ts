@@ -10,10 +10,14 @@ import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
 export function createSessionsRouter(deps: RouteDeps): Router {
   const router = Router();
   const authMiddleware = deps.authMiddleware;
-  const teacherOrEa = requireRoles(deps, ["teacher", "ea"]);
+  // Sessions: substitutes can write (they're actively using panels during their
+  // coverage day) but can't read the aggregated summary; reviewers are the
+  // opposite — they inspect the summary but don't submit sessions.
+  const teacherEaOrSubstitute = requireRoles(deps, ["teacher", "ea", "substitute"]);
+  const teacherEaOrReviewer = requireRoles(deps, ["teacher", "ea", "reviewer"]);
 
   // POST / — record a session summary (flushed on visibilitychange or classroom switch)
-  router.post("/", authMiddleware, teacherOrEa, validateBody(SessionRequestSchema), (req, res) => {
+  router.post("/", authMiddleware, teacherEaOrSubstitute, validateBody(SessionRequestSchema), (req, res) => {
     try {
       const body = req.body;
       const rawId = body.classroom_id as string;
@@ -48,7 +52,7 @@ export function createSessionsRouter(deps: RouteDeps): Router {
   });
 
   // GET /summary/:classroomId — aggregated session usage summary
-  router.get("/summary/:classroomId", authMiddleware, teacherOrEa, (req, res) => {
+  router.get("/summary/:classroomId", authMiddleware, teacherEaOrReviewer, (req, res) => {
     try {
       const rawId = req.params.classroomId as string;
 

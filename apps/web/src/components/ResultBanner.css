@@ -49,7 +49,7 @@
   min-height: 22px;
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-bg-success) 60%, white 40%);
+  background: color-mix(in srgb, var(--color-bg-success) 55%, var(--color-surface-elevated));
   border: 1px solid var(--color-border-success);
   font-size: 0.65rem;
   font-family: var(--font-mono);

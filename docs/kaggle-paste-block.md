@@ -14,7 +14,7 @@ A Gemma-4-native operating layer for high-complexity inclusive classrooms
 
 The hardest part of teaching an inclusive classroom is usually not writing the lesson. It is coordinating everything around it.
 
-PrairieClassroom OS is built for that coordination problem. It is a classroom operations copilot for teachers and educational assistants, not a tutor and not a replacement for teacher judgment. The system is organized around eight workflows: differentiation, tomorrow planning, family-message drafting with approval gates, intervention logging, text simplification, multilingual vocab cards, support-pattern detection, and EA briefings.
+PrairieClassroom OS is built for that coordination problem. It is a classroom operations copilot for teachers and educational assistants, not a tutor and not a replacement for teacher judgment. The system spans 12 primary panels and 13 model-routed workflows: differentiation, worksheet extraction, tomorrow planning, family-message drafting with approval gates, intervention logging, language supports, support-pattern detection, EA briefings, complexity forecasting, scaffold-decay review, substitute packets, and EA load balancing.
 
 The product thesis is simple: classroom complexity is a coordination problem. A useful AI system in this setting needs memory, retrieval, safety boundaries, and role-specific workflows, not just text generation.
 
@@ -48,7 +48,7 @@ Safety is built into the product design. PrairieClassroom OS uses observational 
 
 The checked-in repo currently proves three things:
 
-- the structural gate passes on the current branch
+- the no-cost structural gate passes on the current branch
 - the hosted Gemma 4 proof suite passed `10/10`
 - the full hosted release gate completed successfully on synthetic/demo data
 
@@ -57,8 +57,8 @@ The system is therefore not just a demo concept. It is a working Gemma-4-native 
 ## Project Links To Attach
 
 - Public code repository: `https://github.com/Bwillia13x/prairieclassroom-os`
-- Public live demo: add deployed URL
-- Public video: add YouTube URL
+- Public live demo: add public deployed URL after deployment
+- Public video: add public YouTube URL after upload
 
 ## Media Gallery Suggestions
 

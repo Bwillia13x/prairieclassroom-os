@@ -54,8 +54,8 @@
 }
 
 .vocab-card-head {
-  background: color-mix(in srgb, var(--color-bg-accent) 50%, transparent);
-  border-bottom: 1px solid color-mix(in srgb, var(--color-border-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--color-bg-accent) 22%, var(--color-surface-elevated));
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border-accent) 38%, transparent);
   padding: 0.85rem 1rem 0.7rem;
 }
 

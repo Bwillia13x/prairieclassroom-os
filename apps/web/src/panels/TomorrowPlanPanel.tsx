@@ -19,8 +19,10 @@ import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
+import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { useRole } from "../hooks/useRole";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import {
   serializePlanToPlainText,
@@ -60,6 +62,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   });
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
+  const role = useRole();
 
   useEffect(() => {
     session.recordPanelVisit("tomorrow-plan");
@@ -156,6 +159,12 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
         ]}
       />
 
+      <RoleReadOnlyBanner
+        role={role}
+        required="canGenerate"
+        whatIsBlocked="Generating a new Tomorrow Plan is reserved for the classroom's permanent teacher."
+      />
+
       <WorkspaceLayout
         rail={(
           <>
@@ -176,13 +185,15 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
               label="Plan History"
             />
             {history.items.length > 0 && <PlanStreakCalendar plans14d={plans14d} />}
-            <TeacherReflection
-              classrooms={classrooms}
-              selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
-              onSubmit={handleSubmit}
-              loading={loading}
-            />
+            {role.canGenerate ? (
+              <TeacherReflection
+                classrooms={classrooms}
+                selectedClassroom={activeClassroom}
+                onClassroomChange={setActiveClassroom}
+                onSubmit={handleSubmit}
+                loading={loading}
+              />
+            ) : null}
           </>
         )}
         canvas={(

@@ -50,19 +50,105 @@ export const NAV_GROUP_META: Record<NavGroup, NavGroupMeta> = {
   review: { label: "Review", icon: "check", sectionTone: "forest" },
 };
 
-export const TAB_META: Record<ActiveTab, { label: string; shortLabel: string; group: NavGroup }> = {
-  today: { label: "Today", shortLabel: "Today", group: "today" },
-  differentiate: { label: "Differentiate", shortLabel: "Differentiate", group: "prep" },
-  "language-tools": { label: "Language Tools", shortLabel: "Language", group: "prep" },
-  "tomorrow-plan": { label: "Tomorrow Plan", shortLabel: "Plan", group: "ops" },
-  "ea-briefing": { label: "EA Briefing", shortLabel: "EA Brief", group: "ops" },
-  "ea-load": { label: "EA Load", shortLabel: "EA Load", group: "ops" },
-  "complexity-forecast": { label: "Forecast", shortLabel: "Forecast", group: "ops" },
-  "log-intervention": { label: "Log Intervention", shortLabel: "Log", group: "ops" },
-  "survival-packet": { label: "Sub Packet", shortLabel: "Sub Packet", group: "ops" },
-  "family-message": { label: "Family Message", shortLabel: "Message", group: "review" },
-  "support-patterns": { label: "Support Patterns", shortLabel: "Patterns", group: "review" },
-  "usage-insights": { label: "Usage Insights", shortLabel: "Insights", group: "review" },
+/**
+ * Per-tab role visibility.
+ *
+ * A tab is rendered in the nav iff the active role has at least one
+ * meaningful action available on that panel. When a role lands on a tab it
+ * can see, individual controls (generate, approve, log) are further gated
+ * by `roleCapabilities()` (see `apps/web/src/hooks/useRole.ts`).
+ *
+ * Keep aligned with `SCOPE_MATRIX` in
+ * `services/orchestrator/__tests__/auth.test.ts` — this is the UI side of
+ * the same contract.
+ */
+export interface TabMeta {
+  label: string;
+  shortLabel: string;
+  group: NavGroup;
+  /** Roles that should see this tab in the nav. */
+  roles: readonly ClassroomRole[];
+}
+
+export const TAB_META: Record<ActiveTab, TabMeta> = {
+  today: {
+    label: "Today",
+    shortLabel: "Today",
+    group: "today",
+    roles: ["teacher", "ea", "substitute"],
+  },
+  differentiate: {
+    label: "Differentiate",
+    shortLabel: "Differentiate",
+    group: "prep",
+    roles: ["teacher"],
+  },
+  "language-tools": {
+    label: "Language Tools",
+    shortLabel: "Language",
+    group: "prep",
+    roles: ["teacher"],
+  },
+  "tomorrow-plan": {
+    label: "Tomorrow Plan",
+    shortLabel: "Plan",
+    group: "ops",
+    // Reviewer can read plan history (canViewPlanning) but not generate.
+    roles: ["teacher", "reviewer"],
+  },
+  "ea-briefing": {
+    label: "EA Briefing",
+    shortLabel: "EA Brief",
+    group: "ops",
+    roles: ["teacher", "ea", "substitute"],
+  },
+  "ea-load": {
+    label: "EA Load",
+    shortLabel: "EA Load",
+    group: "ops",
+    roles: ["teacher", "ea"],
+  },
+  "complexity-forecast": {
+    label: "Forecast",
+    shortLabel: "Forecast",
+    group: "ops",
+    // Reviewer and substitute read latest; only teacher regenerates.
+    roles: ["teacher", "substitute", "reviewer"],
+  },
+  "log-intervention": {
+    label: "Log Intervention",
+    shortLabel: "Log",
+    group: "ops",
+    // Reviewer reads intervention history; teacher/EA/substitute write.
+    roles: ["teacher", "ea", "substitute", "reviewer"],
+  },
+  "survival-packet": {
+    label: "Sub Packet",
+    shortLabel: "Sub Packet",
+    group: "ops",
+    // Only the teacher generates the sub packet. Substitutes conceptually
+    // consume it, but the read surface isn't built yet; hide until then.
+    roles: ["teacher"],
+  },
+  "family-message": {
+    label: "Family Message",
+    shortLabel: "Message",
+    group: "review",
+    // Reviewer reads message history; only teacher drafts / approves.
+    roles: ["teacher", "reviewer"],
+  },
+  "support-patterns": {
+    label: "Support Patterns",
+    shortLabel: "Patterns",
+    group: "review",
+    roles: ["teacher", "reviewer"],
+  },
+  "usage-insights": {
+    label: "Usage Insights",
+    shortLabel: "Insights",
+    group: "review",
+    roles: ["teacher", "ea", "reviewer"],
+  },
 };
 
 export function getGroupForTab(tab: ActiveTab): NavGroup {
@@ -71,6 +157,35 @@ export function getGroupForTab(tab: ActiveTab): NavGroup {
 
 export function getTabsForGroup(group: NavGroup): ActiveTab[] {
   return TAB_ORDER.filter((tab) => TAB_META[tab].group === group);
+}
+
+/**
+ * Tabs a given role may see in the nav. If a role ends up with an empty
+ * list (shouldn't happen for any defined role), the `today` tab is
+ * returned so the nav is never completely blank.
+ */
+export function getVisibleTabs(role: ClassroomRole): ActiveTab[] {
+  const visible = TAB_ORDER.filter((tab) => TAB_META[tab].roles.includes(role));
+  return visible.length > 0 ? visible : ["today"];
+}
+
+export function getVisibleTabsForGroup(group: NavGroup, role: ClassroomRole): ActiveTab[] {
+  return getTabsForGroup(group).filter((tab) => TAB_META[tab].roles.includes(role));
+}
+
+export function isTabVisibleForRole(tab: ActiveTab, role: ClassroomRole): boolean {
+  return TAB_META[tab].roles.includes(role);
+}
+
+/**
+ * Nav groups that have at least one visible tab for the role. Used by the
+ * primary nav so an empty group (e.g. Prep for reviewer) doesn't render a
+ * clickable button that lands on nothing.
+ */
+export function getVisibleNavGroups(role: ClassroomRole): NavGroup[] {
+  return NAV_GROUP_ORDER.filter(
+    (group) => getVisibleTabsForGroup(group, role).length > 0,
+  );
 }
 
 export function getTabBadgeCount(tab: ActiveTab, debtCounts: Record<string, number>): number {
