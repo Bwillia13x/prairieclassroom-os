@@ -339,7 +339,10 @@ Safety: Observational language only. No diagnosis or capability inference. "Your
 
 ---
 
-## Contract K — generate_survival_packet (v0.1.0)
+## Generate Survival Packet — `generate_survival_packet` (v0.1.0)
+
+<!-- Note: this contract was originally lettered "K" in superpowers/plans/2026-04-04-substitute-survival-packet.md. The scaffold-decay contract later took the "K" slot in the sequential A-O lettered subsections above, so this canonical contract is named explicitly to avoid the collision. -->
+
 
 ### Purpose
 One-click generation of a structured substitute teacher briefing that synthesizes the classroom's entire memory into a printable handoff document.

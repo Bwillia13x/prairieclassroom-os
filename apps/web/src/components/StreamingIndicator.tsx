@@ -1,4 +1,5 @@
 import { useApp } from "../AppContext";
+import SectionIcon, { type SectionIconName } from "./SectionIcon";
 import "./StreamingIndicator.css";
 
 /**
@@ -32,14 +33,17 @@ export default function StreamingIndicator({ label, onCancel }: Props) {
     streaming.phase === "structuring" ? "Structuring your plan…" :
     streaming.phase === "complete" ? "Complete" : "";
 
-  const phaseIcon =
-    streaming.phase === "thinking" ? "🧠" :
-    streaming.phase === "structuring" ? "📋" : "✓";
+  // SVG over emoji: district Windows/Chromebooks render emoji inconsistently.
+  const phaseIconName: SectionIconName =
+    streaming.phase === "thinking" ? "star" :
+    streaming.phase === "structuring" ? "grid" : "check";
 
   return (
     <div className="streaming-indicator" role="status" aria-label={label ?? phaseLabel} aria-busy={streaming.active}>
       <div className="streaming-header">
-        <span className="streaming-phase-icon" aria-hidden="true">{phaseIcon}</span>
+        <span className="streaming-phase-icon" aria-hidden="true">
+          <SectionIcon name={phaseIconName} />
+        </span>
         <span className="streaming-phase-label">{phaseLabel}</span>
         {streaming.active && (
           <span className="streaming-elapsed" aria-label={`Elapsed: ${formatElapsed(elapsed)}`}>
@@ -82,7 +86,9 @@ export default function StreamingIndicator({ label, onCancel }: Props) {
         <div className="streaming-sections motion-stagger">
           {streaming.partialSections.map((section, i) => (
             <div key={i} className="streaming-section-chip">
-              <span className="streaming-section-check" aria-hidden="true">✓</span>
+              <span className="streaming-section-check" aria-hidden="true">
+                <SectionIcon name="check" />
+              </span>
               {section}
             </div>
           ))}

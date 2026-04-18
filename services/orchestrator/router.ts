@@ -64,7 +64,9 @@ const ROUTING_TABLE: Record<PromptClass, RouteConfig> = {
     model_tier: "planning",
     thinking_enabled: true,
     retrieval_required: true,
-    tool_call_capable: false,
+    // Tools let the planner drill into a specific student's history
+    // mid-thought rather than relying only on the pre-built context.
+    tool_call_capable: true,
     output_schema_version: "0.1.0",
   },
   generate_ea_briefing: {
@@ -129,8 +131,22 @@ export function getRoute(promptClass: PromptClass): RouteConfig {
 }
 
 /**
- * Get the Gemma model identifier for a given tier.
- * These are provisional — will be updated when actual model access is confirmed.
+ * Get the canonical Gemma model identifier for a given tier.
+ *
+ * These slugs are the public, documentation-facing Gemma 4 identifiers
+ * used in docs/architecture.md and docs/prompt-contracts.md. The actual
+ * model IDs sent to each inference provider may differ and are owned by
+ * the Python backends:
+ *
+ * - `services/inference/harness.py::GemmaHarness.MODEL_MAP` — Ollama/Vertex lanes,
+ *   match these canonical slugs (`gemma-4-4b-it` / `gemma-4-27b-it`).
+ * - `services/inference/harness.py::GeminiAPIBackend.DEFAULT_MODEL_MAP` —
+ *   hosted Gemini API lane, uses API-specific slugs
+ *   (`gemma-4-26b-a4b-it` / `gemma-4-31b-it`). The discrepancy is
+ *   intentional: the Gemini API exposes Gemma under different public
+ *   identifiers than Vertex. Override via `PRAIRIE_GEMINI_MODEL_ID_LIVE`
+ *   and `PRAIRIE_GEMINI_MODEL_ID_PLANNING` when the AI Studio catalog
+ *   publishes new slugs.
  */
 export function getModelId(tier: ModelTier): string {
   switch (tier) {

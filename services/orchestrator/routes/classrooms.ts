@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { handleRouteError, sendClassroomNotFound, sendRouteError } from "../errors.js";
 import { validateBody, ScheduleUpdateRequestSchema, isValidClassroomId } from "../validate.js";
 import { requireRoles, type RouteDeps } from "../route-deps.js";
+import { isDemoClassroom } from "../auth.js";
 
 export function createClassroomsRouter(deps: RouteDeps): Router {
   const router = Router();
@@ -20,7 +21,7 @@ export function createClassroomsRouter(deps: RouteDeps): Router {
           subject_focus: c.subject_focus,
           classroom_notes: c.classroom_notes,
           requires_access_code: Boolean(c.access_code),
-          is_demo: c.classroom_id === "demo-okafor-grade34",
+          is_demo: isDemoClassroom(c),
           students: (c.students ?? []).map((s) => ({ alias: s.alias, family_language: s.family_language, eal_flag: s.eal_flag, support_tags: s.support_tags })),
         })),
       );

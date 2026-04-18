@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { getRoute, getModelId } from "../router.js";
 import { buildInterventionPrompt, parseInterventionResponse } from "../intervention.js";
+import { InterventionRecordSchema } from "../../../packages/shared/schemas/intervention.js";
+import { validateParsedResponse } from "../validate-parsed-response.js";
 import type { InterventionInput } from "../intervention.js";
 import { saveIntervention } from "../../memory/store.js";
 import { validateBody, InterventionRequestSchema } from "../validate.js";
@@ -50,7 +52,12 @@ export function createInterventionRouter(deps: RouteDeps): Router {
 
       let record: InterventionRecord;
       try {
-        record = parseInterventionResponse(inferenceData.text, classroom_id, intInput);
+        const coerced = parseInterventionResponse(inferenceData.text, classroom_id, intInput);
+        record = validateParsedResponse(
+          InterventionRecordSchema,
+          coerced,
+          { promptClass: "log_intervention", rawText: inferenceData.text },
+        );
       } catch (parseErr) {
         sendParseError(res, "Failed to parse model output as intervention record", inferenceData.text, parseErr);
         return;

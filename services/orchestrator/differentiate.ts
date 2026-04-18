@@ -8,6 +8,7 @@
 
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { LessonArtifact, DifferentiatedVariant, VariantType } from "../../packages/shared/schemas/artifact.js";
+import { VariantTypeSchema } from "../../packages/shared/schemas/artifact.js";
 import { renderPromptInput, withPromptSafetyNotice } from "./prompt-safety.js";
 
 export const VARIANT_TYPES: VariantType[] = [
@@ -100,17 +101,32 @@ export function parseVariantsResponse(
     throw new Error("Expected JSON array of variants");
   }
 
-  return parsed.map((v: Record<string, unknown>, i: number) => ({
-    variant_id: `${artifactId}-v${i}`,
-    artifact_id: artifactId,
-    variant_type: (v.variant_type as VariantType) ?? VARIANT_TYPES[i],
-    title: String(v.title ?? `Variant ${i + 1}`),
-    student_facing_instructions: String(v.student_facing_instructions ?? ""),
-    teacher_notes: String(v.teacher_notes ?? ""),
-    required_materials: Array.isArray(v.required_materials)
-      ? v.required_materials.map(String)
-      : [],
-    estimated_minutes: Number(v.estimated_minutes) || 20,
-    schema_version: "0.1.0",
-  }));
+  return parsed.map((v: Record<string, unknown>, i: number) => {
+    // Validate variant_type against the enum. If the model returned an
+    // unknown or missing value, fall back to the positional default for
+    // the slot — never silently cast whatever string came back.
+    const variantTypeResult = VariantTypeSchema.safeParse(v.variant_type);
+    const variantType: VariantType = variantTypeResult.success
+      ? variantTypeResult.data
+      : VARIANT_TYPES[i] ?? "core";
+
+    const estMinutesRaw = Number(v.estimated_minutes);
+    const estimatedMinutes = Number.isFinite(estMinutesRaw) && estMinutesRaw > 0
+      ? Math.min(Math.round(estMinutesRaw), 480)
+      : 20;
+
+    return {
+      variant_id: `${artifactId}-v${i}`,
+      artifact_id: artifactId,
+      variant_type: variantType,
+      title: String(v.title ?? `Variant ${i + 1}`),
+      student_facing_instructions: String(v.student_facing_instructions ?? ""),
+      teacher_notes: String(v.teacher_notes ?? ""),
+      required_materials: Array.isArray(v.required_materials)
+        ? v.required_materials.map(String)
+        : [],
+      estimated_minutes: estimatedMinutes,
+      schema_version: "0.1.0",
+    };
+  });
 }

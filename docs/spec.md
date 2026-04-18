@@ -55,7 +55,7 @@ The implemented system now exceeds the original MVP loop. The current operating 
 
 - 12 teacher-facing panels across Today, Prep, Ops, and Review groups.
 - 13 model-routed prompt classes plus deterministic retrieval surfaces.
-- 33 Express endpoints tracked in generated `docs/api-surface.md`.
+- 37 Express endpoints tracked in generated `docs/api-surface.md`.
 - Per-classroom SQLite memory for plans, variants, family messages, interventions, pattern reports, forecasts, scaffold reviews, survival packets, feedback, and sessions.
 - No-cost mock validation, privacy-first Ollama support, hosted synthetic/demo Gemini proof, and explicitly gated paid Vertex support.
 - Generated inventory checks in `docs/system-inventory.md` and `docs/api-surface.md` to keep public surface claims aligned with code.

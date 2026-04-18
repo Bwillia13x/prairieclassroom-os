@@ -354,11 +354,22 @@ export type AppAction =
 
 // ─── Initial State ───
 
+// Warn on a corrupted localStorage value so operators can diagnose
+// "I'm suddenly being asked for my classroom code" reports from the console.
+function warnOnLocalStorageParse(key: string, err: unknown): void {
+  if (err instanceof SyntaxError) {
+    console.warn(`[appReducer] localStorage "${key}" was corrupted; resetting.`, err);
+  } else {
+    console.warn(`[appReducer] localStorage "${key}" read failed.`, err);
+  }
+}
+
 function loadFeaturesSeen(): Record<string, boolean> {
   try {
     const raw = localStorage.getItem("prairie-features-seen");
     return raw ? JSON.parse(raw) : {};
-  } catch {
+  } catch (err) {
+    warnOnLocalStorageParse("prairie-features-seen", err);
     return {};
   }
 }
@@ -367,7 +378,8 @@ function loadFeedbackQueue(): OutputFeedback[] {
   try {
     const raw = localStorage.getItem("prairie-feedback-queue");
     return raw ? JSON.parse(raw) : [];
-  } catch {
+  } catch (err) {
+    warnOnLocalStorageParse("prairie-feedback-queue", err);
     return [];
   }
 }
@@ -376,7 +388,8 @@ function loadClassroomAccessCodes(): Record<string, string> {
   try {
     const raw = localStorage.getItem("prairie-classroom-access-codes");
     return raw ? JSON.parse(raw) : {};
-  } catch {
+  } catch (err) {
+    warnOnLocalStorageParse("prairie-classroom-access-codes", err);
     return {};
   }
 }
@@ -403,7 +416,8 @@ function loadClassroomRoles(): Record<string, ClassroomRole> {
       );
     }
     return result;
-  } catch {
+  } catch (err) {
+    warnOnLocalStorageParse("prairie-classroom-roles", err);
     return {};
   }
 }
@@ -412,7 +426,8 @@ function loadTomorrowNotes(): TomorrowNote[] {
   try {
     const raw = localStorage.getItem("prairie-tomorrow-notes");
     return raw ? JSON.parse(raw) : [];
-  } catch {
+  } catch (err) {
+    warnOnLocalStorageParse("prairie-tomorrow-notes", err);
     return [];
   }
 }

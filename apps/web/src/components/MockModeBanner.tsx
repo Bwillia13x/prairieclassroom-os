@@ -28,13 +28,13 @@ interface Props {
 export default function MockModeBanner({ modelId, panelHint }: Props) {
   if (modelId !== "mock") return null;
   return (
-    <aside className="mock-mode-banner" role="status" aria-label="Mock mode notice">
+    <aside className="mock-mode-banner" role="status" aria-label="Demo content notice">
       <span className="mock-mode-banner__badge" aria-hidden="true">●</span>
       <div className="mock-mode-banner__body">
-        <p className="mock-mode-banner__title">Mock fixture output</p>
+        <p className="mock-mode-banner__title">Demo content</p>
         <p className="mock-mode-banner__detail">
           {panelHint ??
-            "This output came from a static fixture, not a live model. Run with Ollama or hosted Gemini to see real generation."}
+            "You're viewing sample output so the screens work offline. Connect a Gemma 4 model to see the assistant generate against your own classroom."}
         </p>
       </div>
     </aside>

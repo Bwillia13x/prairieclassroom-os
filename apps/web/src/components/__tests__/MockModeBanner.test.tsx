@@ -15,8 +15,8 @@ describe("MockModeBanner", () => {
 
   it("surfaces a warning when the inference response was produced by the mock backend", () => {
     render(<MockModeBanner modelId="mock" />);
-    expect(screen.getByRole("status", { name: /mock mode notice/i })).toBeInTheDocument();
-    expect(screen.getByText(/mock fixture output/i)).toBeInTheDocument();
+    expect(screen.getByRole("status", { name: /demo content notice/i })).toBeInTheDocument();
+    expect(screen.getByText(/demo content/i)).toBeInTheDocument();
   });
 
   it("uses a panel-specific hint when provided so each surface explains what mock mode hides", () => {

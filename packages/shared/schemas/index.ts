@@ -14,8 +14,12 @@ export {
   planId,
   draftId,
   recordId,
-  unsafeCastClassroomId,
 } from "./branded.js";
+// `unsafeCastClassroomId` is deliberately NOT re-exported from this barrel.
+// It exists as a compile-time escape hatch for tests and the inference
+// client (where the ID already came through `isValidClassroomId`). New
+// code should import it directly from ./branded so the escape hatch is
+// visible in review rather than hidden inside an `@prairie/shared` import.
 
 export {
   ClassroomProfileSchema,
@@ -87,7 +91,10 @@ export {
   SimplifiedOutputSchema,
   VocabCardSchema,
   VocabCardSetSchema,
+  SupportedLanguageSchema,
+  SUPPORTED_LANGUAGE_CODES,
 } from "./language.js";
+export type { SupportedLanguage } from "./language.js";
 export type {
   SimplifiedOutput,
   VocabCard,

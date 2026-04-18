@@ -32,7 +32,7 @@ interface Props {
 }
 
 export default function FamilyMessagePanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showError } = useApp();
   const role = useRole();
   const { canApproveMessages } = role;
   const session = useSession();
@@ -128,6 +128,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
       showSuccess("Message approved");
     } catch (err) {
       console.warn("Approval persistence failed:", err);
+      showError("Could not save approval. The audit trail was not updated — try again.");
     }
   }
 
@@ -138,10 +139,16 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     // matches the clipboard. When the teacher approved verbatim, omit
     // edited_text — that keeps "approved as drafted" rows clean of noise.
     const editedDiffersFromDraft = editedText !== displayResult.draft.plain_language_text;
-    await persistApproval(
-      displayResult.draft.draft_id,
-      editedDiffersFromDraft ? editedText : undefined,
-    );
+    try {
+      await persistApproval(
+        displayResult.draft.draft_id,
+        editedDiffersFromDraft ? editedText : undefined,
+      );
+    } catch (err) {
+      console.warn("Approval persistence failed:", err);
+      showError("Could not save approval. The audit trail was not updated — try again.");
+      return;
+    }
     await copy(editedText);
     showSuccess("Message approved and copied");
     setDialogOpen(false);

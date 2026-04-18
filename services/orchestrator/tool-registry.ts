@@ -6,6 +6,12 @@ import { getStudentInterventions } from "../memory/retrieve.js";
 export interface ToolExecutionContext {
   promptClass: PromptClass;
   classroomId?: ClassroomId;
+  /**
+   * Roster aliases for the active classroom. When present, the
+   * query_intervention_history tool rejects unknown aliases so the model
+   * cannot silently confirm a hallucinated student.
+   */
+  knownAliases?: readonly string[];
 }
 
 export interface RegisteredTool {
@@ -130,6 +136,21 @@ function interventionHistoryTool(): RegisteredTool {
         };
       }
 
+      if (context.knownAliases && context.knownAliases.length > 0) {
+        const normalizedInput = studentRef.toLowerCase();
+        const matchesRoster = context.knownAliases.some(
+          (alias) => alias.toLowerCase() === normalizedInput,
+        );
+        if (!matchesRoster) {
+          return {
+            ok: false,
+            error: "unknown_student_ref",
+            message: `No student with alias "${studentRef}" exists in this classroom. Use one of the known aliases instead.`,
+            known_aliases: [...context.knownAliases],
+          };
+        }
+      }
+
       const days = asPositiveInt(args.days, 14, 60);
       const limit = asPositiveInt(args.limit, 5, 10);
       const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
@@ -176,15 +197,16 @@ function curriculumLookupTool(): RegisteredTool {
 
 export function getToolsForPromptClass(
   promptClass: PromptClass,
-  context: ToolExecutionContext,
+  _context: ToolExecutionContext,
 ): RegisteredTool[] {
   switch (promptClass) {
     case "differentiate_material":
       return [curriculumLookupTool()];
     case "prepare_tomorrow_plan":
+    case "detect_support_patterns":
       return [interventionHistoryTool()];
     default:
-      return context.promptClass === promptClass ? [] : [];
+      return [];
   }
 }
 

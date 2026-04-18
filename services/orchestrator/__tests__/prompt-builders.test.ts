@@ -186,6 +186,39 @@ describe("differentiate", () => {
     it("throws when response is an object instead of array", () => {
       expect(() => parseVariantsResponse('{"variants": []}', "art-001")).toThrow("Expected JSON array");
     });
+
+    it("rejects invalid variant_type and falls back to the positional default", () => {
+      // Safety check: the model can return an out-of-enum variant_type like
+      // "honours". The parser must never silently cast it — fall back to the
+      // canonical positional default (slot 0 = "core").
+      const withInvalidType = JSON.stringify([
+        { variant_type: "honours", title: "A" },
+        { variant_type: "eal_supported", title: "B" },
+        { variant_type: "chunked", title: "C" },
+        { variant_type: "ea_small_group", title: "D" },
+        { variant_type: "extension", title: "E" },
+      ]);
+      const result = parseVariantsResponse(withInvalidType, "art-001");
+      expect(result[0].variant_type).toBe("core");
+      expect(result[1].variant_type).toBe("eal_supported");
+      expect(result[4].variant_type).toBe("extension");
+    });
+
+    it("bounds estimated_minutes to a sane range", () => {
+      const withBadMinutes = JSON.stringify([
+        { variant_type: "core", estimated_minutes: -5 },
+        { variant_type: "eal_supported", estimated_minutes: 99999 },
+        { variant_type: "chunked", estimated_minutes: "abc" },
+        { variant_type: "ea_small_group", estimated_minutes: 30 },
+        { variant_type: "extension", estimated_minutes: 0 },
+      ]);
+      const result = parseVariantsResponse(withBadMinutes, "art-001");
+      expect(result[0].estimated_minutes).toBe(20);
+      expect(result[1].estimated_minutes).toBe(480);
+      expect(result[2].estimated_minutes).toBe(20);
+      expect(result[3].estimated_minutes).toBe(30);
+      expect(result[4].estimated_minutes).toBe(20);
+    });
   });
 });
 
@@ -1144,10 +1177,15 @@ describe("extract-worksheet", () => {
       expect(prompt.system).toContain("PrairieClassroom OS");
     });
 
-    // extract-worksheet does NOT use withPromptSafetyNotice (it is a hardcoded system prompt)
-    // so we verify the safety rules are still embedded in the prompt text
     it("includes safety rules in system prompt", () => {
       expect(prompt.system).toContain("Do not infer or diagnose");
+    });
+
+    it("includes prompt-injection safety notice (scanned worksheets are the highest injection surface)", () => {
+      // The `withPromptSafetyNotice` helper appends a boundary declaration
+      // so a student-written "ignore previous instructions" in the scanned
+      // worksheet image cannot override the extraction instructions.
+      expect(prompt.system).toMatch(/safety|injection|untrusted|boundary|trusted instructions/i);
     });
 
     it("has static user prompt requesting extraction", () => {

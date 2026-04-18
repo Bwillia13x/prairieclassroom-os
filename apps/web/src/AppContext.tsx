@@ -26,6 +26,8 @@ export interface AppContextValue {
   setClassroomRole: (classroomId: string, role: ClassroomRole) => void;
   authPrompt: AuthPromptState | null;
   showSuccess: (msg: string) => void;
+  /** Show an error toast. Use when an awaited call failed and the teacher needs to know. */
+  showError: (msg: string) => void;
   /** Dispatch for the central state reducer */
   dispatch: Dispatch<AppAction>;
   /** Streaming state for planning-tier progressive disclosure */

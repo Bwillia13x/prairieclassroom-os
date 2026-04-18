@@ -91,6 +91,34 @@ describe("createAuthMiddleware", () => {
     expect(next).toHaveBeenCalled();
   });
 
+  it("bypasses auth for any classroom that sets is_demo: true (not just the legacy ID)", () => {
+    // Second demo classroom, not using the legacy ID. Should still bypass
+    // via the first-class is_demo field on the profile.
+    const classrooms: Record<string, ClassroomProfile> = {
+      "pilot-demo-grade1": {
+        classroom_id: "pilot-demo-grade1",
+        is_demo: true,
+        grade_band: "1",
+        subject_focus: "general",
+        classroom_notes: [],
+        routines: {},
+        students: [],
+        access_code: "would-normally-require-this",
+      },
+    };
+    const loadWithDemoFlag = (id: string) => classrooms[id];
+    const mw = createAuthMiddleware(loadWithDemoFlag);
+
+    const req = mockReq({ body: { classroom_id: "pilot-demo-grade1" } });
+    const res = mockRes();
+    mw(req as Request, res as unknown as Response, next);
+    expect(next).toHaveBeenCalled();
+    expect(res.locals.classroomAuth).toMatchObject({
+      classroomId: "pilot-demo-grade1",
+      demoBypass: true,
+    });
+  });
+
   it("calls next() when classroom is not found (let route 404)", () => {
     const req = mockReq({ body: { classroom_id: "nonexistent" } });
     const res = mockRes();

@@ -6,13 +6,13 @@ import { z } from "zod";
 import { ScheduleBlockInputSchema, UpcomingEventSchema } from "./forecast.js";
 
 export const StudentSupportSummarySchema = z.object({
-  student_id: z.string(),
-  alias: z.string(),
+  student_id: z.string().min(1).max(80),
+  alias: z.string().min(1).max(60),
   eal_flag: z.boolean(),
-  support_tags: z.array(z.string()),
-  known_successful_scaffolds: z.array(z.string()),
-  communication_notes: z.array(z.string()).optional(),
-  family_language: z.string().optional(),
+  support_tags: z.array(z.string().max(80)).max(40),
+  known_successful_scaffolds: z.array(z.string().max(120)).max(40),
+  communication_notes: z.array(z.string().max(500)).max(50).optional(),
+  family_language: z.string().min(2).max(40).optional(),
 });
 
 export type StudentSupportSummary = z.infer<typeof StudentSupportSummarySchema>;
@@ -51,19 +51,25 @@ export const RetentionPolicySchema = z
 
 export type RetentionPolicy = z.infer<typeof RetentionPolicySchema>;
 
-export const ClassroomProfileSchema = z.object({
-  classroom_id: z.string(),
-  grade_band: z.string(),
-  subject_focus: z.string(),
-  classroom_notes: z.array(z.string()),
-  routines: z.record(z.string(), z.string()),
-  support_constraints: z.array(z.string()).optional(),
-  students: z.array(StudentSupportSummarySchema),
-  access_code: z.string().optional(),
-  sub_ready: z.boolean().optional(),
-  schedule: z.array(ScheduleBlockInputSchema).optional(),
-  upcoming_events: z.array(UpcomingEventSchema).optional(),
-  retention_policy: RetentionPolicySchema.optional(),
-});
+export const ClassroomProfileSchema = z
+  .object({
+    classroom_id: z.string().min(1).max(100),
+    grade_band: z.string().min(1).max(20),
+    subject_focus: z.string().min(1).max(80),
+    classroom_notes: z.array(z.string().max(500)).max(100),
+    routines: z.record(z.string().max(60), z.string().max(200)),
+    support_constraints: z.array(z.string().max(200)).max(30).optional(),
+    students: z.array(StudentSupportSummarySchema).max(80),
+    access_code: z.string().min(4).max(120).optional(),
+    sub_ready: z.boolean().optional(),
+    schedule: z.array(ScheduleBlockInputSchema).max(20).optional(),
+    upcoming_events: z.array(UpcomingEventSchema).max(50).optional(),
+    retention_policy: RetentionPolicySchema.optional(),
+    // First-class replacement for hardcoded-ID demo detection; see
+    // auth.ts::isDemoClassroom.
+    is_demo: z.boolean().optional(),
+  })
+  // Reject unknown keys so fixture/schema drift fails loudly at load time.
+  .strict();
 
 export type ClassroomProfile = z.infer<typeof ClassroomProfileSchema>;

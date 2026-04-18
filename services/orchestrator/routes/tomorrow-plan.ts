@@ -2,6 +2,8 @@ import { Router } from "express";
 import { z } from "zod";
 import { getRoute, getModelId } from "../router.js";
 import { buildTomorrowPlanPrompt, parseTomorrowPlanResponse } from "../tomorrow-plan.js";
+import { TomorrowPlanSchema } from "../../../packages/shared/schemas/plan.js";
+import { validateParsedResponse } from "../validate-parsed-response.js";
 import type { TomorrowPlanInput } from "../tomorrow-plan.js";
 import { savePlan } from "../../memory/store.js";
 import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, getLatestPatternReport, summarizePatternInsights } from "../../memory/retrieve.js";
@@ -118,7 +120,12 @@ export function createTomorrowPlanRouter(deps: RouteDeps): Router {
       let plan: TomorrowPlan;
       try {
         const artifactIds = (artifacts ?? []).map((a) => a.artifact_id);
-        plan = parseTomorrowPlanResponse(inferenceData.text, classroom_id, artifactIds);
+        const coerced = parseTomorrowPlanResponse(inferenceData.text, classroom_id, artifactIds);
+        plan = validateParsedResponse(
+          TomorrowPlanSchema,
+          coerced,
+          { promptClass: "prepare_tomorrow_plan", rawText: inferenceData.text },
+        );
       } catch (parseErr) {
         sendParseError(res, "Failed to parse model output as tomorrow plan", inferenceData.text, parseErr);
         return;

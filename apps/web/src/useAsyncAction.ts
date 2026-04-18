@@ -27,7 +27,12 @@ function isTransientError(err: unknown): boolean {
 function friendlyErrorMessage(err: unknown): string {
   if (err instanceof ApiError) {
     if (err.status === 401 || err.status === 403) return "Access denied — check your classroom code.";
-    if (err.status === 429) return "Too many requests — wait a moment and try again.";
+    if (err.status === 429) {
+      if (err.detailCode === "daily_budget_exceeded" || err.category === "cost_budget") {
+        return "Daily AI spend limit reached. No more hosted Gemma calls until midnight UTC. Switch to mock or Ollama mode to keep working.";
+      }
+      return "Too many requests — wait a moment and try again.";
+    }
     if (err.status === 413) return "The content you submitted is too large. Try a shorter input.";
     if (err.status === 404) return "That resource could not be found. It may have been removed.";
     if (err.status >= 500) return "The server encountered an error. Please try again in a few moments.";

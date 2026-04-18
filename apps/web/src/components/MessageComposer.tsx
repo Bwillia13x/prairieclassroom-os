@@ -134,7 +134,7 @@ export default function MessageComposer({
             Pre-filled from plan: <strong>{prefill.student_ref}</strong> — {prefill.message_type?.replace(/_/g, " ")}
           </span>
           <button className="prefill-banner-dismiss" onClick={() => setPrefillDismissed(true)} aria-label="Dismiss" type="button">
-            &times;
+            <span aria-hidden="true">&times;</span>
           </button>
         </div>
       )}

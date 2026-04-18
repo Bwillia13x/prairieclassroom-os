@@ -5,19 +5,19 @@
 import { z } from "zod";
 
 export const RecurringThemeSchema = z.object({
-  theme: z.string(),
-  student_refs: z.array(z.string()),
-  evidence_count: z.number(),
-  example_observations: z.array(z.string()),
+  theme: z.string().min(1).max(300),
+  student_refs: z.array(z.string().max(60)).max(80),
+  evidence_count: z.number().int().nonnegative().max(10_000),
+  example_observations: z.array(z.string().max(1000)).max(20),
 });
 
 export type RecurringTheme = z.infer<typeof RecurringThemeSchema>;
 
 export const FollowUpGapSchema = z.object({
-  original_record_id: z.string(),
-  student_refs: z.array(z.string()),
-  observation: z.string(),
-  days_since: z.number(),
+  original_record_id: z.string().min(1).max(120),
+  student_refs: z.array(z.string().max(60)).max(80),
+  observation: z.string().max(2000),
+  days_since: z.number().int().nonnegative().max(3650),
 });
 
 export type FollowUpGap = z.infer<typeof FollowUpGapSchema>;
@@ -43,7 +43,7 @@ export const SupportPatternReportSchema = z.object({
   report_id: z.string(),
   classroom_id: z.string(),
   student_filter: z.string().nullable(),
-  time_window: z.number(),
+  time_window: z.number().int().positive().max(3650),
   recurring_themes: z.array(RecurringThemeSchema),
   follow_up_gaps: z.array(FollowUpGapSchema),
   positive_trends: z.array(PositiveTrendSchema),

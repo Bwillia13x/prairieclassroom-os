@@ -84,7 +84,7 @@ The Python inference service forwards tool definitions to Gemini API, Ollama, an
 
 Per-classroom SQLite databases (`services/memory/`) with WAL mode for concurrency safety.
 
-**Eight tables per classroom:**
+**Ten tables per classroom** (migration 002 added `feedback` and `sessions`):
 
 | Table | Key fields | Purpose |
 |---|---|---|
@@ -96,6 +96,8 @@ Per-classroom SQLite databases (`services/memory/`) with WAL mode for concurrenc
 | `complexity_forecasts` | forecast_id, forecast_date, forecast_json | Complexity forecasts |
 | `scaffold_reviews` | report_id, student_ref, report_json | Scaffold decay reviews |
 | `survival_packets` | packet_id, generated_for_date, packet_json | Supply teacher packets |
+| `feedback` | feedback_id, rating, panel, generation_id | Teacher feedback on generations (F14 harvest input) |
+| `sessions` | session_id, panels_visited, generations_count | Per-session usage telemetry |
 
 All tables indexed on `(classroom_id, created_at)`. Student-specific tables add `student_ref` to the index.
 

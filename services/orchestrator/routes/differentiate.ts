@@ -1,6 +1,9 @@
 import { Router } from "express";
 import { getRoute, getModelId } from "../router.js";
+import { z } from "zod";
 import { buildDifferentiationPrompt, parseVariantsResponse } from "../differentiate.js";
+import { DifferentiatedVariantSchema } from "../../../packages/shared/schemas/artifact.js";
+import { validateParsedResponse } from "../validate-parsed-response.js";
 import {
   formatCurriculumSelectionForPrompt,
   resolveCurriculumSelection,
@@ -68,7 +71,12 @@ export function createDifferentiateRouter(deps: RouteDeps): Router {
       // Parse variants from model output — retry once on parse failure
       let variants: DifferentiatedVariant[];
       try {
-        variants = parseVariantsResponse(inferenceData.text, artifact.artifact_id);
+        const coerced = parseVariantsResponse(inferenceData.text, artifact.artifact_id);
+        variants = validateParsedResponse(
+          z.array(DifferentiatedVariantSchema),
+          coerced,
+          { promptClass: "differentiate_material", rawText: inferenceData.text },
+        );
       } catch (parseErr) {
         sendParseError(res, "Failed to parse model output as variants", inferenceData.text, parseErr);
         return;

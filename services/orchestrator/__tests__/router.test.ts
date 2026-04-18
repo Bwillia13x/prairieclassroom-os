@@ -117,6 +117,7 @@ describe("tool_call_capable", () => {
   const TOOL_CAPABLE_CLASSES: PromptClass[] = [
     "differentiate_material",
     "prepare_tomorrow_plan",
+    "detect_support_patterns",
   ];
 
   it.each(TOOL_CAPABLE_CLASSES)(

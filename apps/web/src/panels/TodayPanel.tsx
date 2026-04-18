@@ -121,7 +121,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         sectionTone="sun"
         sectionIcon="sun"
         breadcrumb={{ group: "Today", tab: "Command Center" }}
-        description={`Start with the active queue, carry forward what still matters, and move directly into the next classroom action for Grade ${profile.grade_band}.`}
+        description={`Your action queue, student snapshot, and recommended next move for Grade ${profile.grade_band} today.`}
         badges={[
           { label: `${profile.students.length} students`, tone: "sun" },
           { label: "Morning triage first", tone: "pending" },
@@ -157,22 +157,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           </p>
         </header>
         <div className="today-grid motion-stagger">
-        {result ? (
-          <DayArc
-            forecast={result.latest_forecast}
-            students={studentSummaries.result ?? []}
-            debtItems={result.debt_register.items}
-            health={health.result ?? null}
-            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            onBlockClick={(index) => {
-              const block = result.latest_forecast?.blocks[index];
-              if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
-            }}
-          />
-        ) : (
-          <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
-        )}
-
         {result ? (
           <PendingActionsCard
             items={[
@@ -218,6 +202,22 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           />
         ) : (
           <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
+        )}
+
+        {result ? (
+          <DayArc
+            forecast={result.latest_forecast}
+            students={studentSummaries.result ?? []}
+            debtItems={result.debt_register.items}
+            health={health.result ?? null}
+            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+            onBlockClick={(index) => {
+              const block = result.latest_forecast?.blocks[index];
+              if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+            }}
+          />
+        ) : (
+          <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
         )}
 
         {/* Visualization strip: Debt Gauge + Priority Matrix + Recency Timeline */}

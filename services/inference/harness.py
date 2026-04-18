@@ -1662,7 +1662,16 @@ def extract_json(raw: str) -> str:
 
 
 class GeminiAPIBackend:
-    """Calls hosted Gemma 4 models through the Gemini API."""
+    """Calls hosted Gemma 4 models through the Gemini API.
+
+    Model ID note: the Gemini API publishes Gemma under different public
+    identifiers than Vertex / Ollama. The canonical Gemma slugs in
+    services/orchestrator/router.ts::getModelId are ``gemma-4-4b-it``
+    (live) and ``gemma-4-27b-it`` (planning); on the Gemini API lane we
+    instead talk to ``gemma-4-26b-a4b-it`` and ``gemma-4-31b-it``. The
+    overrides below let operators reconcile via env vars when AI Studio
+    rotates the slug.
+    """
 
     DEFAULT_MODEL_MAP = {
         ModelTier.LIVE: "gemma-4-26b-a4b-it",

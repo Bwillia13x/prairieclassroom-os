@@ -4,6 +4,31 @@
  */
 import { z } from "zod";
 
+/**
+ * Canonical 2-letter codes for supported target languages. Response schemas
+ * stay `z.string()` because historical fixtures use label-style strings
+ * ("Spanish", "English"); prefer this enum for new request validation.
+ */
+export const SUPPORTED_LANGUAGE_CODES = [
+  "en",
+  "fr",
+  "ar",
+  "uk",
+  "tl",
+  "es",
+  "zh",
+  "pa",
+  "ur",
+  "so",
+  "vi",
+  "he",
+  "fa",
+  "ps",
+] as const;
+
+export const SupportedLanguageSchema = z.enum(SUPPORTED_LANGUAGE_CODES);
+export type SupportedLanguage = z.infer<typeof SupportedLanguageSchema>;
+
 export const SimplifiedOutputSchema = z.object({
   simplified_id: z.string(),
   source_text: z.string(),

@@ -89,6 +89,7 @@ function makeCtx(): AppContextValue {
     setClassroomRole: vi.fn(),
     authPrompt: null,
     showSuccess: vi.fn(),
+    showError: vi.fn(),
     dispatch: vi.fn(),
     streaming: { active: false, phase: "idle", thinkingText: "", partialSections: [], progress: 0, elapsedSeconds: 0 },
     toasts: [],

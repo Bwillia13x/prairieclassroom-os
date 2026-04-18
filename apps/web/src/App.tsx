@@ -135,6 +135,11 @@ export default function App() {
     dispatch({ type: "PUSH_TOAST", toast: { id, type: "success", message: msg, duration: 4500 } });
   }, []);
 
+  const showError = useCallback((msg: string) => {
+    const id = `error-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    dispatch({ type: "PUSH_TOAST", toast: { id, type: "error", message: msg, duration: 7000 } });
+  }, []);
+
   const showUndo = useCallback((label: string, rollback: () => Promise<void>) => {
     const id = `undo-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     dispatch({
@@ -710,6 +715,7 @@ export default function App() {
       setClassroomRole,
       authPrompt,
       showSuccess,
+      showError,
       dispatch,
       streaming: state.streaming,
       toasts: state.toasts,
@@ -733,6 +739,7 @@ export default function App() {
       setActiveClassroom,
       setActiveTab,
       setClassroomRole,
+      showError,
       showSuccess,
       showUndo,
       state.classroomAccessCodes,

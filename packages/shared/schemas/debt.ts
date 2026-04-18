@@ -16,11 +16,11 @@ export type DebtCategory = z.infer<typeof DebtCategorySchema>;
 
 export const DebtItemSchema = z.object({
   category: DebtCategorySchema,
-  student_refs: z.array(z.string()),
-  description: z.string(),
-  source_record_id: z.string(),
-  age_days: z.number(),
-  suggested_action: z.string(),
+  student_refs: z.array(z.string().max(60)).max(80),
+  description: z.string().min(1).max(1000),
+  source_record_id: z.string().min(1).max(120),
+  age_days: z.number().int().nonnegative().max(3650),
+  suggested_action: z.string().max(500),
 });
 
 export type DebtItem = z.infer<typeof DebtItemSchema>;
@@ -39,7 +39,7 @@ export const ComplexityDebtRegisterSchema = z.object({
   register_id: z.string(),
   classroom_id: z.string(),
   items: z.array(DebtItemSchema),
-  item_count_by_category: z.record(z.string(), z.number()),
+  item_count_by_category: z.partialRecord(DebtCategorySchema, z.number().int().nonnegative().max(10_000)),
   generated_at: z.string(),
   schema_version: z.string(),
 });

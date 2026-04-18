@@ -17,9 +17,9 @@ import cors from "cors";
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { assertMemoryBackendReady, checkpointAll } from "../memory/db.js";
-import { createAuthMiddleware, requireClassroomRole } from "./auth.js";
+import { createAuthMiddleware, isDemoClassroom, requireClassroomRole } from "./auth.js";
 import { isValidClassroomId } from "./validate.js";
-import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
+import { ClassroomProfileSchema, type ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import type { RouteDeps } from "./route-deps.js";
 
 // ----- Middleware -----
@@ -74,9 +74,35 @@ const DATA_DIR = process.env.PRAIRIE_DATA_DIR
 
 // ----- Data loading -----
 
+/**
+ * Load classroom profiles from JSON on disk. Each profile is validated against
+ * `ClassroomProfileSchema`. Invalid profiles are logged and skipped rather than
+ * silently typed — this prevents malformed roster data from flowing into the
+ * inference client, where a missing `students[]` would previously disable the
+ * `query_intervention_history` roster check (P0 hallucination risk).
+ */
 function loadClassrooms(): ClassroomProfile[] {
   const files = readdirSync(DATA_DIR).filter((f) => f.startsWith("classroom_") && f.endsWith(".json"));
-  return files.map((f) => JSON.parse(readFileSync(join(DATA_DIR, f), "utf-8")));
+  const profiles: ClassroomProfile[] = [];
+  for (const file of files) {
+    let raw: unknown;
+    try {
+      raw = JSON.parse(readFileSync(join(DATA_DIR, file), "utf-8"));
+    } catch (err) {
+      console.error(`[classroom-load] ${file}: invalid JSON — skipping`, err);
+      continue;
+    }
+    const parsed = ClassroomProfileSchema.safeParse(raw);
+    if (!parsed.success) {
+      console.error(
+        `[classroom-load] ${file}: failed schema validation — skipping.`,
+        parsed.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
+      );
+      continue;
+    }
+    profiles.push(parsed.data);
+  }
+  return profiles;
 }
 
 function loadClassroom(id: string): ClassroomProfile | undefined {
@@ -198,7 +224,7 @@ app.listen(PORT, () => {
 
   // Check for demo classroom
   const classrooms = loadClassrooms();
-  const demo = classrooms.find((c) => c.classroom_id === "demo-okafor-grade34");
+  const demo = classrooms.find((c) => isDemoClassroom(c));
   if (demo) {
     console.log(`Demo classroom available: ${demo.classroom_id} (${demo.grade_band}, ${demo.students.length} students)`);
     console.log(`  → Visit http://localhost:5173/?demo=true for demo mode`);

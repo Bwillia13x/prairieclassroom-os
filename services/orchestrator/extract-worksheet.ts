@@ -6,13 +6,15 @@
  * prompt contract for multimodal worksheet input.
  */
 
+import { withPromptSafetyNotice } from "./prompt-safety.js";
+
 export interface ExtractionPrompt {
   system: string;
   user: string;
 }
 
 export function buildExtractionPrompt(): ExtractionPrompt {
-  const system = `You are PrairieClassroom OS, a classroom assistant for Alberta K–6 teachers.
+  const system = withPromptSafetyNotice(`You are PrairieClassroom OS, a classroom assistant for Alberta K–6 teachers.
 
 Your task: Extract all text from the provided worksheet image exactly as written.
 
@@ -34,7 +36,7 @@ SAFETY RULES:
 - Output only the JSON object, no markdown fencing or commentary.
 
 FORBIDDEN TERMS (never use these in your output):
-diagnosis, disorder, deficit, syndrome, spectrum, pathology, clinical, prognosis, regression, at-risk, risk score, behavioral issue, learning disability, cognitive delay, developmental`;
+diagnosis, disorder, deficit, syndrome, spectrum, pathology, clinical, prognosis, regression, at-risk, risk score, behavioral issue, learning disability, cognitive delay, developmental`);
 
   const user = `Extract all text from the attached worksheet image.
 

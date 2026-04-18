@@ -5,6 +5,11 @@ import {
   resolveCurriculumSelection,
 } from "../curriculum-registry.js";
 import { buildSimplifyPrompt, parseSimplifyResponse } from "../simplify.js";
+import {
+  SimplifiedOutputSchema,
+  VocabCardSetSchema,
+} from "../../../packages/shared/schemas/language.js";
+import { validateParsedResponse } from "../validate-parsed-response.js";
 import type { SimplifyInput } from "../simplify.js";
 import { buildVocabCardsPrompt, parseVocabCardsResponse } from "../vocab-cards.js";
 import type { VocabCardsInput } from "../vocab-cards.js";
@@ -39,7 +44,12 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
 
       let simplified;
       try {
-        simplified = parseSimplifyResponse(inferenceData.text, simplifyInput);
+        const coerced = parseSimplifyResponse(inferenceData.text, simplifyInput);
+        simplified = validateParsedResponse(
+          SimplifiedOutputSchema,
+          coerced,
+          { promptClass: "simplify_for_student", rawText: inferenceData.text },
+        );
       } catch (parseErr) {
         sendParseError(res, "Failed to parse model output as simplified text", inferenceData.text, parseErr);
         return;
@@ -97,7 +107,12 @@ export function createLanguageToolsRouter(deps: RouteDeps): Router {
 
       let cardSet;
       try {
-        cardSet = parseVocabCardsResponse(inferenceData.text, vocabInput);
+        const coerced = parseVocabCardsResponse(inferenceData.text, vocabInput);
+        cardSet = validateParsedResponse(
+          VocabCardSetSchema,
+          coerced,
+          { promptClass: "generate_vocab_cards", rawText: inferenceData.text },
+        );
       } catch (parseErr) {
         sendParseError(res, "Failed to parse model output as vocab cards", inferenceData.text, parseErr);
         return;

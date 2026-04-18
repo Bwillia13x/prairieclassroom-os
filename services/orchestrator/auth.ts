@@ -9,7 +9,16 @@ import type { Request, Response, NextFunction } from "express";
 import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.js";
 import { sendRouteError } from "./errors.js";
 
-const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+// Legacy identifier retained for backward compatibility: classrooms that
+// pre-date the schema's `is_demo` field rely on this string to opt into
+// auth bypass and the "Demo lane" badge. New demo classrooms should set
+// `is_demo: true` in the profile instead.
+const LEGACY_DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+
+export function isDemoClassroom(profile: { classroom_id: string; is_demo?: boolean } | undefined | null): boolean {
+  if (!profile) return false;
+  return profile.is_demo === true || profile.classroom_id === LEGACY_DEMO_CLASSROOM_ID;
+}
 export const CLASSROOM_ROLES = ["teacher", "ea", "substitute", "reviewer"] as const;
 export type ClassroomRole = typeof CLASSROOM_ROLES[number];
 
@@ -63,14 +72,18 @@ export function createAuthMiddleware(
     const role = parseClassroomRole(req, res);
     if (!role) return;
 
-    // Demo classroom bypasses auth
-    if (classroomId === DEMO_CLASSROOM_ID) {
+    const classroom = loadClassroom(classroomId);
+
+    // Demo classroom bypasses auth. Prefer the explicit `is_demo` field on
+    // the profile; fall back to the legacy ID match for classrooms that
+    // pre-date the schema field. If the classroom doesn't resolve, still
+    // honor the legacy ID so early-boot / fixture-missing paths still work.
+    if (isDemoClassroom(classroom ?? { classroom_id: classroomId })) {
       setClassroomAuthContext(res, { classroomId, role, demoBypass: true });
       next();
       return;
     }
 
-    const classroom = loadClassroom(classroomId);
     if (!classroom) {
       // Let the route handler return 404
       next();

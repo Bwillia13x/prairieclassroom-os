@@ -28,6 +28,7 @@ function makeContext(dispatch = vi.fn()): AppContextValue {
     setClassroomRole: vi.fn(),
     authPrompt: null,
     showSuccess: vi.fn(),
+    showError: vi.fn(),
     dispatch,
     streaming,
     toasts: [],

@@ -264,7 +264,7 @@ Teacher / EA Browser (Vite + React)
         │
         ▼  REST JSON
 Express Orchestrator :3100
-  ├─ Prompt builders (12 contracts + retrieval-backed routes)
+  ├─ Prompt builders (13 contracts + retrieval-backed routes + route-scoped tool calling)
   ├─ Zod request validation
   ├─ Classroom-code auth
   ├─ Retrieval injection (SQL)
@@ -291,6 +291,7 @@ Flask Inference :3200
 | Complexity forecast | planning | **on** | yes | yes |
 | Substitute survival packet | planning | **on** | yes | yes |
 | Scaffold decay review | planning | **on** | yes | yes |
+| EA load balancing | planning | **on** | yes | no |
 | Worksheet extraction | live | off | no | no |
 
 ## Safety
@@ -316,7 +317,7 @@ For public claims, `npm run claims:check` blocks unsupported statements like inv
 
 - [Product spec](docs/spec.md) — MVP scope and user stories
 - [Architecture](docs/architecture.md) — 6-layer system design
-- [Prompt contracts](docs/prompt-contracts.md) — all 12 versioned contracts
+- [Prompt contracts](docs/prompt-contracts.md) — all 13 versioned contracts
 - [System inventory](docs/system-inventory.md) — generated panel, routing, endpoint, and eval inventory
 - [API surface](docs/api-surface.md) — generated exact Express endpoint table
 - [Safety governance](docs/safety-governance.md) — hard boundaries and framing rules

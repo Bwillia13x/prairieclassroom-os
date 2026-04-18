@@ -4,6 +4,18 @@ import OutputMetaRow from "./OutputMetaRow";
 import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
 import "./MessageDraft.css";
 
+// Languages PrairieClassroom generates family messages in that read
+// right-to-left. When the draft is in one of these, annotate the rendered
+// paragraph with dir="rtl" so Arabic/Urdu/Hebrew text renders correctly
+// instead of as left-to-right chunks. Bilingual eval coverage includes
+// Arabic (ar) under `msg-lang-*`.
+const RTL_LANGUAGES: ReadonlySet<string> = new Set(["ar", "he", "ur", "fa", "ps"]);
+
+function isRtlLanguage(code: string | undefined): boolean {
+  if (!code) return false;
+  return RTL_LANGUAGES.has(code.toLowerCase().slice(0, 2));
+}
+
 interface Props {
   draft: FamilyMessageDraft;
   meta?: ModelMetaInput;
@@ -43,7 +55,13 @@ export default function MessageDraft({ draft, meta }: Props) {
             the persisted edited_text is the source of truth for what was
             sent to the family. Show that here (with a small "edited" tag),
             falling back to the AI draft when no edits exist. */}
-        <p className="draft-text">{draft.edited_text ?? draft.plain_language_text}</p>
+        <p
+          className="draft-text"
+          dir={isRtlLanguage(draft.target_language) ? "rtl" : undefined}
+          lang={draft.target_language || undefined}
+        >
+          {draft.edited_text ?? draft.plain_language_text}
+        </p>
         {draft.edited_text && draft.edited_text !== draft.plain_language_text && (
           <p className="draft-edited-tag" aria-label="This message was edited by the teacher before sending">
             Edited by teacher

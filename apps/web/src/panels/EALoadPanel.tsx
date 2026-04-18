@@ -84,7 +84,7 @@ function EALoadForm({
           </option>
           {classrooms.map((c) => (
             <option key={c.classroom_id} value={c.classroom_id}>
-              {c.classroom_id}
+              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
             </option>
           ))}
         </select>

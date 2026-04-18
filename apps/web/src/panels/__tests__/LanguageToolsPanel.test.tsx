@@ -67,6 +67,7 @@ function makeContext(streamingOverride?: Partial<StreamingState>): AppContextVal
     setClassroomRole: vi.fn(),
     authPrompt: null,
     showSuccess: vi.fn(),
+    showError: vi.fn(),
     dispatch: vi.fn(),
     streaming,
     toasts: [],

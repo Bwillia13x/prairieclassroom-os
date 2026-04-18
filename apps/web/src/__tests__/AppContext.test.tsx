@@ -18,6 +18,7 @@ function makeContext(overrides: Partial<AppContextValue> = {}): AppContextValue 
     setClassroomRole: vi.fn(),
     authPrompt: null,
     showSuccess: vi.fn(),
+    showError: vi.fn(),
     dispatch: vi.fn(),
     streaming: {
       active: false,

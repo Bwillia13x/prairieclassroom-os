@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { getRoute, getModelId } from "../router.js";
 import { buildFamilyMessagePrompt, parseFamilyMessageResponse } from "../family-message.js";
+import { FamilyMessageDraftSchema } from "../../../packages/shared/schemas/message.js";
+import { validateParsedResponse } from "../validate-parsed-response.js";
 import type { FamilyMessageInput } from "../family-message.js";
 import { saveFamilyMessage, approveFamilyMessage } from "../../memory/store.js";
 import { validateBody, FamilyMessageRequestSchema, ApproveMessageRequestSchema } from "../validate.js";
@@ -53,7 +55,12 @@ export function createFamilyMessageRouter(deps: RouteDeps): Router {
 
       let draft: FamilyMessageDraft;
       try {
-        draft = parseFamilyMessageResponse(inferenceData.text, classroom_id, msgInput);
+        const coerced = parseFamilyMessageResponse(inferenceData.text, classroom_id, msgInput);
+        draft = validateParsedResponse(
+          FamilyMessageDraftSchema,
+          coerced,
+          { promptClass: "draft_family_message", rawText: inferenceData.text },
+        );
       } catch (parseErr) {
         sendParseError(res, "Failed to parse model output as family message", inferenceData.text, parseErr);
         return;

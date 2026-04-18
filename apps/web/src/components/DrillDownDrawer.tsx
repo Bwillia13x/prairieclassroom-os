@@ -143,7 +143,7 @@ export default function DrillDownDrawer({
             aria-label="Close drawer"
             onClick={handleClose}
           >
-            ✕
+            <span aria-hidden="true">✕</span>
           </button>
         </div>
 

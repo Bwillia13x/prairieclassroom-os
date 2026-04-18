@@ -5,11 +5,11 @@
 import { z } from "zod";
 
 export const ScaffoldUsageTrendSchema = z.object({
-  scaffold_name: z.string(),
-  early_window_count: z.number(),
-  early_window_total: z.number(),
-  recent_window_count: z.number(),
-  recent_window_total: z.number(),
+  scaffold_name: z.string().min(1).max(200),
+  early_window_count: z.number().int().nonnegative().max(10_000),
+  early_window_total: z.number().int().nonnegative().max(10_000),
+  recent_window_count: z.number().int().nonnegative().max(10_000),
+  recent_window_total: z.number().int().nonnegative().max(10_000),
   trend: z.enum(["decaying", "stable", "increasing"]),
 });
 
@@ -23,10 +23,10 @@ export const PositiveSignalSchema = z.object({
 export type PositiveSignal = z.infer<typeof PositiveSignalSchema>;
 
 export const WithdrawalPhaseSchema = z.object({
-  phase_number: z.number(),
-  description: z.string(),
-  duration_weeks: z.number(),
-  success_criteria: z.string(),
+  phase_number: z.number().int().positive().max(20),
+  description: z.string().min(1).max(1500),
+  duration_weeks: z.number().positive().max(52),
+  success_criteria: z.string().max(1500),
 });
 
 export type WithdrawalPhase = z.infer<typeof WithdrawalPhaseSchema>;

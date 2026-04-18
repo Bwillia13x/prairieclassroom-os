@@ -13,6 +13,7 @@ import {
 import {
   executeToolCalls,
   getToolsForPromptClass,
+  normalizeToolCall,
   toolDefinitions,
   type RegisteredTool,
 } from "./tool-registry.js";
@@ -270,6 +271,11 @@ async function performGenerationCall(options: {
           || (response.status === 502 && isRetryableErrorBody(rawBody));
         if (retryable && attempt < MAX_RETRIES) {
           attempt += 1;
+          // Back off between retries so a transient upstream failure
+          // (connection reset, 503, brief rate limit) has time to clear.
+          // With MAX_RETRIES=2 the waits are 500ms then 1000ms.
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          await new Promise((resolve) => setTimeout(resolve, backoffMs));
           continue;
         }
 
@@ -327,6 +333,8 @@ async function performGenerationCall(options: {
       const retryable = isAbortError(error) || isTransportError(error);
       if (retryable && attempt < MAX_RETRIES) {
         attempt += 1;
+        const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+        await new Promise((resolve) => setTimeout(resolve, backoffMs));
         continue;
       }
 
@@ -363,9 +371,12 @@ export async function callInference(options: InferenceOptions): Promise<Inferenc
     ...(typeof evalBehavior === "string" && evalBehavior ? { __test_behavior: evalBehavior } : {}),
   };
   const classroomId = getRequestClassroomId(options.req);
+  const classroomProfile = classroomId ? options.deps.loadClassroom(classroomId) : undefined;
+  const knownAliases = classroomProfile?.students?.map((student) => student.alias) ?? undefined;
   const toolContext = {
     promptClass: options.route.prompt_class,
     classroomId: classroomId ? unsafeCastClassroomId(classroomId) : undefined,
+    knownAliases,
   };
   const registeredTools: RegisteredTool[] = options.route.tool_call_capable
     ? getToolsForPromptClass(options.route.prompt_class, toolContext)
@@ -410,13 +421,22 @@ export async function callInference(options: InferenceOptions): Promise<Inferenc
     const rawToolCalls = Array.isArray(parsed.tool_calls) ? parsed.tool_calls : [];
     if (rawToolCalls.length > 0) {
       if (registeredTools.length === 0 || toolTurn >= MAX_TOOL_TURNS) {
+        // Redact tool args — may contain student aliases from the roster.
+        const redactedSummaries = rawToolCalls.map((raw) => {
+          const call = normalizeToolCall(raw);
+          return {
+            tool_name: call?.name ?? "unknown",
+            arg_count: call ? Object.keys(call.arguments).length : 0,
+          };
+        });
         throw new RouteError(502, {
           error: "Inference service returned unresolved tool calls",
           category: "inference",
           retryable: false,
           detail_code: "tool_call_unresolved",
         }, {
-          tool_calls: rawToolCalls,
+          tool_call_count: rawToolCalls.length,
+          tool_calls_summary: redactedSummaries,
         });
       }
 

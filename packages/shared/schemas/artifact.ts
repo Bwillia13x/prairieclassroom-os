@@ -35,15 +35,16 @@ export type VariantType = z.infer<typeof VariantTypeSchema>;
  * Maps to data-contracts.md DifferentiatedVariant entity.
  */
 export const DifferentiatedVariantSchema = z.object({
-  variant_id: z.string(),
-  artifact_id: z.string(),
+  variant_id: z.string().min(1).max(120),
+  artifact_id: z.string().min(1).max(120),
   variant_type: VariantTypeSchema,
-  title: z.string(),
-  student_facing_instructions: z.string(),
-  teacher_notes: z.string(),
-  required_materials: z.array(z.string()),
-  estimated_minutes: z.number(),
-  schema_version: z.string(),
+  title: z.string().min(1).max(200),
+  student_facing_instructions: z.string().max(4000),
+  teacher_notes: z.string().max(4000),
+  required_materials: z.array(z.string().max(200)).max(20),
+  // Lesson slots in K-6 rarely exceed 60 min; 480 ≈ full school day upper bound.
+  estimated_minutes: z.number().int().positive().max(480),
+  schema_version: z.string().max(20),
 });
 
 export type DifferentiatedVariant = z.infer<typeof DifferentiatedVariantSchema>;
