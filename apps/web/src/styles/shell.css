@@ -1,4 +1,6 @@
 .app-shell {
+  /* Height of the sticky header card (~120px inner). Consumers add
+     space-3 for breathing room, reaching the full 136px reach. */
   --shell-sticky-offset: 7.5rem;
   max-width: var(--app-max-width);
   margin: 0 auto;
@@ -15,133 +17,100 @@
 .app-header__inner {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 0.65rem var(--space-5) 0.55rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  border-radius: var(--radius-xl);
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--color-surface-elevated) 90%, var(--color-surface) 10%),
-      color-mix(in srgb, var(--color-surface) 92%, var(--color-bg) 8%)
-    );
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(32px) saturate(1.4);
-  -webkit-backdrop-filter: blur(32px) saturate(1.4);
+  gap: 0.4rem;
+  padding: 0.55rem 0.85rem 0.5rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-surface-glass) 96%, transparent);
+  box-shadow:
+    var(--shadow-sm),
+    var(--inner-stroke);
+  backdrop-filter: blur(28px) saturate(1.35);
+  -webkit-backdrop-filter: blur(28px) saturate(1.35);
 }
 
+/* ─── Row 1 — brand, classroom, actions ──────────────────────────── */
+
+/* 4 columns: brand · classroom (flex centered) · role · actions.
+   Prior single-row design used 3 cols and forced the RoleContextPill
+   onto an implicit second row, which made the header taller than
+   necessary. Widen the grid to give each a slot. */
 .shell-bar {
   display: grid;
-  grid-template-columns: auto minmax(280px, 1fr) auto;
+  grid-template-columns: auto minmax(180px, 1fr) auto auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: 60px;
+  min-height: 48px;
 }
 
 .shell-brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 0.55rem;
   min-width: 0;
   color: var(--color-text);
-}
-
-.app-mark {
-  width: 38px;
-  height: 23px;
-  flex-shrink: 0;
-  color: var(--color-accent);
-  opacity: 0.85;
 }
 
 .app-logo {
   display: block;
   width: auto;
-  height: clamp(2.4rem, 4.6vw, 3.2rem);
-  max-width: min(260px, 42vw);
+  height: clamp(1.9rem, 3.2vw, 2.4rem);
+  max-width: min(220px, 38vw);
   object-fit: contain;
   flex-shrink: 0;
-  /* Ensure transparent PNG composites cleanly over backdrop-filter header */
   image-rendering: auto;
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   transition: filter var(--motion-fast, 0.15s) ease;
 }
 
-/* Dark-mode logo filter retired 2026-04-17 alongside the SVG BrandMark.
-   The SVG uses --color-text / --color-accent directly, so it adapts to
-   both themes via the token system without a filter. */
-
 @media (max-width: 720px) {
   .app-logo {
-    height: 2.2rem;
-    max-width: 56vw;
+    height: 1.9rem;
+    max-width: 54vw;
   }
 }
 
-.shell-brand__wordmark {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
-  min-width: 0;
-}
-
-.app-wordmark {
-  display: inline-flex;
-  align-items: center;
-  min-width: 0;
-  font-family: var(--font-sans);
-  font-size: clamp(1.6rem, 2.8vw, 2rem);
-  font-weight: var(--font-weight-bold);
-  letter-spacing: -0.045em;
-  line-height: 1;
-  white-space: nowrap;
-}
-
-/* .app-title-os / .app-title-os:hover rules retired 2026-04-17 —
-   the "OS" monospace pill was dead CSS (no JSX consumer) and its
-   developer-tool visual idiom conflicted with the institutional
-   repositioning. See docs/decision-log.md. */
-
+/* Classroom pill — centered in row 1, slimmer than before */
 .shell-classroom-anchor {
   position: relative;
-  width: min(100%, 440px);
+  width: min(100%, 380px);
   justify-self: center;
 }
 
 .shell-classroom-pill {
   display: inline-flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.55rem;
   width: 100%;
-  min-height: 50px;
-  padding: 0.5rem 0.85rem 0.5rem 0.6rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  min-height: 40px;
+  padding: 0.3rem 0.55rem 0.3rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-surface-elevated) 72%, var(--color-surface) 28%);
+  background: color-mix(in srgb, var(--color-surface-elevated) 68%, transparent);
   color: var(--color-text);
-  box-shadow: var(--shadow-xs);
   will-change: transform;
   transition:
     border-color var(--motion-fast) var(--ease-standard),
-    box-shadow var(--motion-base) var(--ease-spring),
     background-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-base) var(--ease-spring),
     transform var(--motion-base) var(--ease-spring);
 }
 
 .shell-classroom-pill:hover:not(:disabled) {
-  border-color: color-mix(in srgb, var(--color-border-accent) 60%, transparent);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
+  background: var(--color-surface-elevated);
+  transform: translateY(-0.5px);
 }
 
 .shell-classroom-pill:disabled {
-  opacity: 0.65;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .shell-classroom-pill--open {
   border-color: color-mix(in srgb, var(--color-border-accent) 65%, transparent);
+  background: var(--color-surface-elevated);
   box-shadow: var(--shadow-sm);
 }
 
@@ -149,8 +118,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.7rem;
+  height: 1.7rem;
   border-radius: 999px;
   background: var(--color-bg-success);
   color: var(--color-text-success);
@@ -158,8 +127,8 @@
 }
 
 .shell-classroom-pill__lock svg {
-  width: 0.98rem;
-  height: 0.98rem;
+  width: 0.9rem;
+  height: 0.9rem;
 }
 
 .shell-classroom-pill__lock--locked {
@@ -173,15 +142,14 @@
   min-width: 0;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.15rem;
+  gap: 0;
 }
 
+/* The "Active classroom" eyebrow is redundant in a trimmed header —
+   the classroom label is the self-evident caption. We hide rather than
+   remove the markup to preserve downstream DOM expectations. */
 .shell-classroom-pill__eyebrow {
-  font-size: 0.67rem;
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: var(--tracking-eyebrow);
-  text-transform: uppercase;
-  color: var(--color-text-secondary);
+  display: none;
 }
 
 .shell-classroom-pill__label {
@@ -190,34 +158,57 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   font-size: var(--text-sm);
-  font-weight: var(--font-weight-bold);
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
+  letter-spacing: -0.005em;
 }
 
 .shell-classroom-pill__caret {
-  font-size: 1rem;
-  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  color: var(--color-text-tertiary);
   flex-shrink: 0;
+  transition: transform var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
 }
 
+.shell-classroom-pill:hover .shell-classroom-pill__caret {
+  color: var(--color-text-secondary);
+}
+
+.shell-classroom-pill--open .shell-classroom-pill__caret {
+  transform: rotate(180deg);
+  color: var(--color-text-secondary);
+}
+
+/* Classroom switcher panel */
 .shell-classroom-panel {
   position: absolute;
-  top: calc(100% + 0.75rem);
+  top: calc(100% + 0.55rem);
   left: 50%;
-  width: min(92vw, 440px);
+  width: min(92vw, 420px);
   transform: translateX(-50%);
-  padding: var(--space-5);
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  border-radius: var(--radius-xl);
-  background:
-    linear-gradient(
-      180deg,
-      color-mix(in srgb, var(--color-surface-elevated) 92%, var(--color-surface) 8%),
-      var(--color-surface)
-    );
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--color-surface-elevated) 96%, transparent);
   backdrop-filter: blur(28px) saturate(1.3);
   -webkit-backdrop-filter: blur(28px) saturate(1.3);
   box-shadow: var(--shadow-lg);
+  animation: shell-panel-fade-in var(--motion-base) var(--ease-out-expo);
+}
+
+@keyframes shell-panel-fade-in {
+  from { opacity: 0; transform: translate(-50%, -4px); }
+  to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* Mobile variant: panel spans the viewport (no -50% centering), so the
+   enter animation must skip the horizontal translate or it would flash
+   off-left for a frame. Declared globally, not nested inside @media, so
+   the keyframe registration stays unambiguous. */
+@keyframes shell-panel-fade-in-fullwidth {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .shell-classroom-field {
@@ -239,11 +230,11 @@
 }
 
 .shell-classroom-panel__eyebrow {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: var(--font-weight-semibold);
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
 }
 
 .shell-classroom-panel__chips {
@@ -262,20 +253,21 @@
   font-size: var(--text-lg);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
+  letter-spacing: -0.015em;
 }
 
 .shell-classroom-panel__id {
   display: inline-flex;
   align-items: center;
   width: fit-content;
-  min-height: 30px;
-  padding: 0.32rem 0.72rem;
+  min-height: 26px;
+  padding: 0.22rem 0.6rem;
   border-radius: var(--radius-pill);
   border: 1px solid var(--color-border);
   background: var(--color-bg-muted);
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: var(--text-xs);
+  font-size: 0.72rem;
   font-weight: var(--font-weight-semibold);
 }
 
@@ -288,83 +280,145 @@
 .shell-classroom-panel__details span {
   display: inline-flex;
   align-items: center;
-  min-height: 28px;
-  padding: 0.25rem 0.65rem;
+  min-height: 26px;
+  padding: 0.22rem 0.6rem;
   border-radius: var(--radius-pill);
   background: var(--color-bg-muted);
   color: var(--color-text-secondary);
   font-size: var(--text-xs);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
 }
 
+/* Actions cluster — harmonized chip style */
 .shell-bar__actions {
   display: inline-flex;
   justify-content: flex-end;
-  gap: var(--space-2);
+  align-items: center;
+  gap: 0.35rem;
   justify-self: end;
+}
+
+/* Keep action buttons at their natural width — without this, flex-shrink
+   lets narrow containers squeeze a button below its content and wrap
+   labels ("Quick Help" → two lines). Parent .shell-bar wraps instead. */
+.shell-bar__actions > * {
+  flex-shrink: 0;
 }
 
 .shell-bar__palette-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 44px;
-  min-width: 44px;
-  background: var(--color-surface-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-sm);
-  padding: 0 var(--space-2);
-  font-size: var(--text-xs);
-  font-family: var(--font-mono);
+  min-height: 38px;
+  min-width: 38px;
+  padding: 0 0.55rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-surface-elevated) 55%, transparent);
   color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
   cursor: pointer;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-spring);
 }
+
 .shell-bar__palette-btn:hover {
-  background: var(--color-surface-muted);
+  border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
+  background: var(--color-surface-elevated);
   color: var(--color-text);
+  transform: translateY(-0.5px);
+}
+
+.shell-bar__palette-btn:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .theme-toggle,
 .app-help-btn {
-  min-width: 44px;
+  min-width: 38px;
+  min-height: 38px;
 }
 
 .theme-toggle-label {
-  font-size: var(--text-xs);
+  font-size: 0.72rem;
+  font-weight: var(--font-weight-semibold);
 }
+
+.app-help-btn {
+  padding: 0 0.85rem;
+  font-size: 0.78rem;
+  font-weight: var(--font-weight-semibold);
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+}
+
+/* ─── Row 2 — section nav + contextual tab rail ──────────────────── */
 
 .shell-nav {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--space-4);
+  gap: 0.6rem;
   align-items: center;
+  padding-top: 0.3rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 28%, transparent);
+}
+
+/* When no sub-tabs, groups take the full width — left-aligned, calmer */
+.shell-nav--solo {
+  grid-template-columns: 1fr;
 }
 
 .shell-nav__groups {
   position: relative;
   display: inline-flex;
-  gap: 0.25rem;
-  padding: 0.3rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  gap: 0.15rem;
+  padding: 0.22rem;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
-  box-shadow: var(--shadow-xs);
+  background: color-mix(in srgb, var(--color-surface) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 32%, transparent);
+  justify-self: start;
 }
 
+/* Sliding indicator — soft ambient, tinted per active section ─────── */
 .shell-nav__group-indicator {
   position: absolute;
-  top: 0.3rem;
-  bottom: 0.3rem;
+  top: 0.22rem;
+  bottom: 0.22rem;
   border-radius: var(--radius-pill);
-  background: var(--color-accent);
-  box-shadow:
-    var(--shadow-xs),
-    inset 0 1px 0 color-mix(in srgb, white 8%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
+  box-shadow: var(--shadow-xs);
   pointer-events: none;
   z-index: 0;
   transition:
     left var(--motion-base) var(--ease-spring),
-    width var(--motion-base) var(--ease-spring);
+    width var(--motion-base) var(--ease-spring),
+    background-color var(--motion-base) var(--ease-standard),
+    border-color var(--motion-base) var(--ease-standard);
+}
+
+.shell-nav[data-active-section="today"] .shell-nav__group-indicator {
+  background: color-mix(in srgb, var(--color-bg-sun) 92%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-sun) 80%, transparent);
+}
+.shell-nav[data-active-section="prep"] .shell-nav__group-indicator {
+  background: color-mix(in srgb, var(--color-bg-sage) 92%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-sage) 80%, transparent);
+}
+.shell-nav[data-active-section="ops"] .shell-nav__group-indicator {
+  background: color-mix(in srgb, var(--color-bg-slate) 92%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-slate) 80%, transparent);
+}
+.shell-nav[data-active-section="review"] .shell-nav__group-indicator {
+  background: color-mix(in srgb, var(--color-bg-forest) 92%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-forest) 80%, transparent);
 }
 
 .shell-nav__group,
@@ -372,56 +426,70 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.45rem;
+  gap: 0.4rem;
   border: 0;
   background: transparent;
   cursor: pointer;
   will-change: transform;
   transition:
-    background-color var(--motion-fast) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard),
     transform var(--motion-fast) var(--ease-spring),
+    background-color var(--motion-fast) var(--ease-standard),
     box-shadow var(--motion-fast) var(--ease-spring);
 }
 
 .shell-nav__group {
   position: relative;
   z-index: 1;
-  min-height: 40px;
-  padding: 0.6rem 1rem;
+  min-height: 32px;
+  padding: 0.3rem 0.9rem;
   border-radius: var(--radius-pill);
   color: var(--color-text-secondary);
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.005em;
+  font-size: 0.82rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.005em;
 }
 
-.shell-nav__group:hover {
+.shell-nav__group:hover:not(.shell-nav__group--active) {
   color: var(--color-text);
-  transform: translateY(-1px);
 }
 
 .shell-nav__group-icon {
-  width: 1.15rem;
-  height: 1.15rem;
+  width: 1rem;
+  height: 1rem;
+  opacity: 0.78;
 }
 
 .shell-nav__group--active {
-  color: var(--color-text-on-accent);
+  color: var(--color-text);
 }
 
-.shell-nav__group--active:hover {
-  transform: none;
-  color: var(--color-text-on-accent);
+.shell-nav__group--active .shell-nav__group-icon {
+  opacity: 1;
+}
+
+/* Active group text + icon adopt section tone — cohesion with the
+   sliding indicator, without repeating the accent color everywhere */
+.shell-nav[data-active-section="today"] .shell-nav__group--active,
+.shell-nav[data-active-section="today"] .shell-nav__group--active .shell-nav__group-icon {
+  color: var(--color-text-sun);
+}
+.shell-nav[data-active-section="prep"] .shell-nav__group--active,
+.shell-nav[data-active-section="prep"] .shell-nav__group--active .shell-nav__group-icon {
+  color: var(--color-text-sage);
+}
+.shell-nav[data-active-section="ops"] .shell-nav__group--active,
+.shell-nav[data-active-section="ops"] .shell-nav__group--active .shell-nav__group-icon {
+  color: var(--color-text-slate);
+}
+.shell-nav[data-active-section="review"] .shell-nav__group--active,
+.shell-nav[data-active-section="review"] .shell-nav__group--active .shell-nav__group-icon {
+  color: var(--color-text-forest);
 }
 
 .shell-nav__group:focus-visible {
   outline: var(--focus-ring-outline);
   outline-offset: var(--focus-ring-offset);
-}
-
-.shell-nav__group--active:focus-visible {
-  outline-color: color-mix(in srgb, white 80%, var(--color-accent));
 }
 
 .shell-nav__group:active:not(.shell-nav__group--active) {
@@ -435,52 +503,57 @@
   animation: tabs-slide-in var(--motion-base) var(--ease-out-expo);
 }
 
-/* Right-edge fade shows at rest so teachers discover hidden tabs; left
-   edge only appears once scrolled, signalling "you can scroll back". */
 .shell-nav__tabs-frame::before,
 .shell-nav__tabs-frame::after {
   content: "";
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 3rem;
+  width: 2.25rem;
   pointer-events: none;
   opacity: 0;
-  transition: opacity var(--duration-fast, 140ms) var(--ease-standard, ease);
+  z-index: 2;
+  transition: opacity var(--motion-fast) var(--ease-standard);
 }
 
+/* The fade rides inside the glass header, not on the page canvas —
+   so the bleed color must match the header surface or the fade
+   creates a visible seam where scrolled tabs fade into page bg. */
 .shell-nav__tabs-frame::before {
   left: 0;
-  background: linear-gradient(90deg, var(--color-bg), transparent);
-  mask-image: linear-gradient(90deg, black 40%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, black 40%, transparent 100%);
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-elevated),
+    color-mix(in srgb, var(--color-surface-elevated) 0%, transparent)
+  );
 }
 
 .shell-nav__tabs-frame::after {
   right: 0;
-  background: linear-gradient(90deg, transparent, var(--color-bg));
-  mask-image: linear-gradient(90deg, transparent 0%, black 60%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 60%);
-  opacity: 0.45;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-surface-elevated) 0%, transparent),
+    var(--color-surface-elevated)
+  );
+  opacity: 0.5;
 }
 
 .shell-nav__tabs-frame[data-scrolled-start="true"]::before {
-  opacity: 0.92;
+  opacity: 0.9;
 }
 
 .shell-nav__tabs-frame[data-scrolled-end="true"]::after {
-  opacity: 0.92;
+  opacity: 0.9;
 }
 
 .shell-nav__tabs {
   display: flex;
-  gap: var(--space-4);
-  margin-left: 1rem;
+  gap: 0.15rem;
   overflow-x: auto;
   white-space: nowrap;
   scrollbar-width: none;
-  padding: 0.2rem 3rem 0.2rem 0;
-  scroll-padding-inline-end: 3rem;
+  padding: 0.22rem 2.25rem 0.22rem 0.35rem;
+  scroll-padding-inline-end: 2.25rem;
 }
 
 .shell-nav__tabs::-webkit-scrollbar {
@@ -489,21 +562,22 @@
 
 .shell-nav__tab {
   position: relative;
-  min-height: 44px;
-  padding: 0.65rem 0;
+  min-height: 32px;
+  padding: 0.3rem 0.8rem;
+  border-radius: var(--radius-pill);
   color: var(--color-text-tertiary);
-  font-size: var(--text-sm);
+  font-size: 0.82rem;
   font-weight: var(--font-weight-medium);
-  letter-spacing: 0.005em;
+  letter-spacing: -0.005em;
 }
 
-.shell-nav__tab:hover {
+.shell-nav__tab:hover:not(.shell-nav__tab--active) {
   color: var(--color-text);
-  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--color-surface-muted) 65%, transparent);
 }
 
 .shell-nav__tab:active {
-  transform: translateY(0.5px) scale(0.97);
+  transform: scale(0.97);
   transition-duration: 80ms;
 }
 
@@ -512,75 +586,80 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+/* Single clean active state — a soft filled pill, no underline stack */
 .shell-nav__tab--active {
   color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
+  font-weight: var(--font-weight-semibold);
 }
 
-.shell-nav__tab--active::before {
-  content: "";
-  position: absolute;
-  inset: 4px -10px;
-  border-radius: var(--radius-sm);
-  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
-  z-index: -1;
+/* Active tab inherits the active section tone — so the selected
+   tab visually "belongs" to its group */
+.shell-nav[data-active-section="today"] .shell-nav__tab--active {
+  background: color-mix(in srgb, var(--color-bg-sun) 90%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-sun) 80%, transparent);
+  color: var(--color-text-sun);
+}
+.shell-nav[data-active-section="prep"] .shell-nav__tab--active {
+  background: color-mix(in srgb, var(--color-bg-sage) 90%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-sage) 80%, transparent);
+  color: var(--color-text-sage);
+}
+.shell-nav[data-active-section="ops"] .shell-nav__tab--active {
+  background: color-mix(in srgb, var(--color-bg-slate) 90%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-slate) 80%, transparent);
+  color: var(--color-text-slate);
+}
+.shell-nav[data-active-section="review"] .shell-nav__tab--active {
+  background: color-mix(in srgb, var(--color-bg-forest) 90%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-forest) 80%, transparent);
+  color: var(--color-text-forest);
 }
 
+/* Neutralize the legacy ::before tint and ::after underline used by
+   the old double-emphasis active state. One pill, one message. */
+.shell-nav__tab--active::before,
 .shell-nav__tab--active::after {
-  content: "";
-  position: absolute;
-  left: 15%;
-  right: 15%;
-  bottom: -0.1rem;
-  height: 2px;
-  border-radius: 999px;
-  background: var(--color-accent);
-  box-shadow: 0 1px 6px color-mix(in srgb, var(--color-accent) 10%, transparent);
-  animation: scale-in 0.25s var(--ease-spring) both;
-  transform-origin: center;
+  content: none;
 }
 
 .shell-nav__badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.3rem;
-  height: 1.3rem;
-  padding: 0.1rem 0.38rem;
-  margin-left: 0.35rem;
+  min-width: 1.15rem;
+  height: 1.15rem;
+  padding: 0.06rem 0.32rem;
+  margin-left: 0.15rem;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 24%, transparent);
   color: var(--color-text);
-  box-shadow: inset 0 1px 2px color-mix(in srgb, white 12%, transparent);
-  backdrop-filter: blur(16px);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: var(--font-weight-bold);
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 .shell-nav__badge + .shell-nav__badge {
-  margin-left: 0.25rem;
+  margin-left: 0.2rem;
 }
 
 .shell-nav__kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.15rem;
-  height: 1.15rem;
-  padding: 0 0.25rem;
-  margin-left: 0.25rem;
-  border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent);
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding: 0 0.22rem;
+  margin-left: 0.2rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
   border-radius: 4px;
   background: color-mix(in srgb, var(--color-surface-elevated) 55%, transparent);
-  box-shadow:
-    inset 0 1px 2px color-mix(in srgb, white 10%, transparent),
-    0 1px 1px color-mix(in srgb, black 5%, transparent);
-  backdrop-filter: blur(12px);
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: var(--font-weight-semibold);
   line-height: 1;
   opacity: 0;
@@ -599,9 +678,7 @@
 }
 
 /* Layer 1 — the application workspace surface.
-   See docs/dark-mode-contract.md §1 ("material hierarchy").
-   Cards inside this container sit on a real surface, rather than
-   floating directly on the page canvas. */
+   See docs/dark-mode-contract.md §1 ("material hierarchy"). */
 .app-main {
   position: relative;
   display: flex;
@@ -615,8 +692,6 @@
   box-shadow: var(--shadow-lg);
 }
 
-/* Subtle catchlight on the top edge of the workspace — tells the eye
-   "this is a real surface with a light source above it". */
 .app-main::before {
   content: "";
   position: absolute;
@@ -659,27 +734,51 @@
   }
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1100px) {
   .app-shell {
-    --shell-sticky-offset: 9.25rem;
+    --shell-sticky-offset: 9rem;
   }
 
+  /* Explicit 2-row layout:
+     row 1  →  brand · role · actions
+     row 2  →  classroom (full width)
+     Using explicit grid placement avoids the 3-row wrap that
+     auto-placement produced with 4 children in a 2-col grid. */
   .shell-bar {
-    grid-template-columns: auto auto;
+    grid-template-columns: auto 1fr auto;
+    row-gap: var(--space-2);
+  }
+
+  .shell-brand {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .role-pill-anchor {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+
+  .shell-bar__actions {
+    grid-column: 3;
+    grid-row: 1;
+    justify-self: end;
   }
 
   .shell-classroom-anchor {
     grid-column: 1 / -1;
-    order: 3;
+    grid-row: 2;
     width: 100%;
-  }
-
-  .shell-bar__actions {
-    justify-self: end;
+    justify-self: stretch;
   }
 
   .shell-nav {
     grid-template-columns: 1fr;
+  }
+
+  .shell-nav__groups {
+    justify-self: start;
   }
 }
 
@@ -707,14 +806,7 @@
     left: 0;
     transform: none;
     width: 100%;
-  }
-
-  .shell-bar__actions {
-    width: 100%;
-  }
-
-  .shell-bar__actions > * {
-    flex: 1 1 0;
+    animation-name: shell-panel-fade-in-fullwidth;
   }
 }
 
@@ -728,44 +820,57 @@
   }
 
   .app-header__inner {
-    padding: 0.75rem;
+    padding: 0.55rem 0.6rem;
     border-radius: var(--radius-md);
   }
 
+  /* Reset to flex-wrap at phone widths — grid with fixed column counts
+     fights content reflow when role pill + actions can't both fit on
+     the brand row at 375px viewports. */
   .shell-bar {
-    grid-template-columns: minmax(0, 1fr) auto;
-    min-height: 48px;
-    gap: var(--space-1);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
   }
 
-  .app-wordmark {
-    font-size: 1.35rem;
+  .shell-brand {
+    grid-column: auto;
+    grid-row: auto;
+    flex: 0 0 auto;
   }
 
-  .app-mark {
-    width: 30px;
-    height: 19px;
+  .shell-bar__actions {
+    grid-column: auto;
+    grid-row: auto;
+    flex: 0 0 auto;
+    margin-left: auto;
+  }
+
+  .role-pill-anchor {
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: auto;
+    flex: 0 0 auto;
+  }
+
+  .shell-classroom-anchor {
+    grid-column: auto;
+    grid-row: auto;
+    justify-self: auto;
+    order: 1;
+    flex: 1 1 100%;
+    width: 100%;
   }
 
   .shell-classroom-pill {
-    min-height: 56px;
-    padding: 0.65rem 0.8rem;
-  }
-
-  .shell-classroom-pill__eyebrow {
-    font-size: 0.62rem;
+    min-height: 44px;
+    padding: 0.5rem 0.6rem;
   }
 
   .shell-classroom-pill__label {
     font-size: var(--text-xs);
-  }
-
-  .shell-bar__actions {
-    width: auto;
-  }
-
-  .shell-bar__actions > * {
-    flex: 0 0 auto;
   }
 
   .theme-toggle .theme-toggle-label {
@@ -773,7 +878,14 @@
   }
 
   .app-help-btn {
-    padding-inline: 0.8rem;
+    padding-inline: 0.7rem;
+  }
+
+  /* primitives.css applies width:100% to .btn--ghost at <600 for
+     mobile-first full-width CTAs. In the header actions cluster we
+     want chip-sized buttons, so opt out locally. */
+  .shell-bar__actions .btn--ghost {
+    width: auto;
   }
 
   .shell-nav {
@@ -786,7 +898,8 @@
     transition: none;
   }
 
-  .shell-nav__tabs-frame {
+  .shell-nav__tabs-frame,
+  .shell-classroom-panel {
     animation-duration: 0ms;
   }
 
@@ -796,7 +909,8 @@
 
   .shell-nav__group,
   .shell-nav__tab,
-  .shell-classroom-pill {
+  .shell-classroom-pill,
+  .shell-bar__palette-btn {
     transition-duration: 0ms;
   }
 }

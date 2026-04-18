@@ -883,7 +883,11 @@ export default function App() {
               </div>
             </div>
 
-            <nav className="shell-nav" aria-label="PrairieGem OS navigation">
+            <nav
+              className={`shell-nav${showSecondaryTabs ? "" : " shell-nav--solo"}`}
+              aria-label="PrairieGem OS navigation"
+              data-active-section={activeGroup}
+            >
               <div className="shell-nav__groups" role="toolbar" aria-label="Primary navigation groups" ref={groupsRef}>
                 <div
                   className="shell-nav__group-indicator"
