@@ -96,11 +96,13 @@ export default function InterventionPanel({ prefill }: Props) {
       showSuccess("Intervention logged");
       session.recordGeneration("log-intervention", "log_intervention");
       history.refresh();
+      return true;
     }
+    return false;
   }
 
   function handleQuickSubmit(request: InterventionRequest) {
-    void handleSubmit(
+    return handleSubmit(
       request.classroom_id,
       request.student_refs,
       request.teacher_note,

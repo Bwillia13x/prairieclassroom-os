@@ -214,6 +214,32 @@ describe("callInference", () => {
     expect(getRequestContext(res).retry_count).toBe(1);
   });
 
+  it("retries transient hosted provider internal errors wrapped as 502s", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        error: "{\"error\":\"500 INTERNAL. {'error': {'code': 500, 'message': 'Internal error encountered.', 'status': 'INTERNAL'}}\"}",
+      }), { status: 502 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        text: "{\"ok\":true}",
+        model_id: "gemma-4-31b-it",
+        latency_ms: 23,
+      }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const res = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res,
+      route: planningRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(getRequestContext(res).retry_count).toBe(1);
+  });
+
   it("forwards thinking=true on planning routes by default", async () => {
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
       text: "{\"plan\":[]}",
@@ -383,15 +409,11 @@ describe("callInference", () => {
     const firstBody = JSON.parse(fetchMock.mock.calls[0][1].body as string);
     const secondBody = JSON.parse(fetchMock.mock.calls[1][1].body as string);
     expect(firstBody.tools[0].name).toBe("lookup_curriculum_outcome");
-    expect(secondBody.tools[0].name).toBe("lookup_curriculum_outcome");
-    expect(secondBody.prompt).not.toContain("TOOL RESULTS:");
-    expect(secondBody.tool_interactions[0]).toMatchObject({
-      tool_call_id: "call_curriculum_1",
-      tool_name: "lookup_curriculum_outcome",
-      arguments: { grade: "3", subject: "math", keyword: "multiplication" },
-      executed: true,
-    });
-    expect(JSON.stringify(secondBody.tool_interactions[0].result)).toContain("ab-math-3");
+    expect(secondBody.tools).toBeUndefined();
+    expect(secondBody.tool_interactions).toBeUndefined();
+    expect(secondBody.prompt).toContain("TOOL RESULTS:");
+    expect(secondBody.prompt).toContain("lookup_curriculum_outcome");
+    expect(secondBody.prompt).toContain("ab-math-3");
     expect(result.text).toBe("{\"ok\":true}");
     expect(result.tool_calls[0]).toMatchObject({
       tool_call_id: "call_curriculum_1",

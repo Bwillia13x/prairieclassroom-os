@@ -1,9 +1,11 @@
 export function parseCaseIdList(raw: string): string[] {
   return [...new Set(
     raw
-      .split(/[\n,]/)
+      .split(/\r?\n/)
+      .map((line) => line.replace(/#.*$/, ""))
+      .flatMap((line) => line.split(","))
       .map((entry) => entry.trim())
-      .filter((entry) => entry && !entry.startsWith("#")),
+      .filter(Boolean),
   )];
 }
 

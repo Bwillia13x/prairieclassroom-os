@@ -66,7 +66,7 @@ The checked-in repo contains 127 evaluation case files covering schema reliabili
 The repo currently proves three different things:
 
 - **Mock structural gate:** the current branch passes typecheck, lint, 67 Python tests, 1,464 TypeScript tests, harness smoke, API smoke, and browser smoke with no paid services
-- **Hosted Gemma 4 proof lane:** the hosted Gemini proof suite passed `10/10`, and the full hosted release gate completed successfully on synthetic/demo data
+- **Hosted Gemma 4 proof lane:** the hosted Gemini proof suite passed `12/12`, and the full hosted release gate completed successfully on synthetic/demo data
 - **Local-first deployment lane:** a separate Ollama path exists in the repo for privacy-first deployment, but the artifact-backed submission proof described here is the hosted lane
 
 That separation is part of the product discipline. The submission should claim what is proven, not what is merely intended.
@@ -75,8 +75,8 @@ The current proof sources are:
 
 - `docs/eval-baseline.md` for provider-specific status
 - `docs/hackathon-proof-brief.md` for the concise judge-facing proof summary
-- `output/release-gate/2026-04-17T23-01-11-249Z-44643` for the latest passing no-cost mock gate artifact
-- `output/release-gate/2026-04-09T14-26-54-338Z-54148` for the latest passing hosted Gemma 4 gate artifact
+- `output/release-gate/2026-04-18T12-24-07-826Z-37333` for the latest passing no-cost mock gate artifact
+- `output/release-gate/2026-04-18T16-04-28-504Z-87799` for the latest passing hosted Gemma 4 gate artifact
 
 The normal hosted refresh order is `npm run proof:check`, `npm run gemini:readycheck`, `npm run release:gate:gemini`, `npm run eval:summary`, and `npm run logs:summary`.
 

@@ -4,9 +4,9 @@ Repo-side checklist for preparing PrairieClassroom OS for the Gemma 4 Good Hacka
 
 ## Current status
 
-Checked against the repo on 2026-04-17.
+Checked against the repo on 2026-04-18.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-17T23-01-11-249Z-44643`
+- Mock structural gate: passing at `output/release-gate/2026-04-18T12-24-07-826Z-37333`
 - Hosted Gemma 4 proof lane: passing on synthetic/demo data
 - Ollama proof on this machine: not proven
 - Kaggle writeup draft: aligned to the hosted proof lane and current code inventory

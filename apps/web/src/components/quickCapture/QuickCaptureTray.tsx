@@ -11,7 +11,7 @@ interface QuickCaptureTrayProps {
   classroomId: string;
   students: { alias: string }[];
   loading: boolean;
-  onSubmit: (request: InterventionRequest) => void;
+  onSubmit: (request: InterventionRequest) => boolean | void | Promise<boolean | void>;
 }
 
 /**
@@ -104,13 +104,16 @@ export default function QuickCaptureTray({
     }
   }
 
-  function handleSubmit() {
-    onSubmit({
+  async function handleSubmit() {
+    const didPersist = await Promise.resolve().then(() => onSubmit({
       classroom_id: classroomId,
       student_refs: selectedAliases,
       teacher_note: note.trim(),
       context: selectedChip ? `Quick-capture: ${selectedChip}` : undefined,
-    });
+    })).catch(() => false);
+
+    if (didPersist === false) return;
+
     // Reset all state
     setSelectedAliases([]);
     setSelectedChip(null);

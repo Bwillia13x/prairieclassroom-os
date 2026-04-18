@@ -12,6 +12,7 @@ const SessionCtx = createContext<SessionContextValue | null>(null);
 
 interface SessionProviderProps {
   classroomId: string;
+  enabled?: boolean;
   children: ReactNode;
 }
 
@@ -20,8 +21,8 @@ interface SessionProviderProps {
  * Panels and components should use useSession() to get the live sessionId
  * and workflow-tracking callbacks.
  */
-export function SessionProvider({ classroomId, children }: SessionProviderProps) {
-  const value = useSessionContext(classroomId);
+export function SessionProvider({ classroomId, enabled = true, children }: SessionProviderProps) {
+  const value = useSessionContext(classroomId, enabled);
   return <SessionCtx.Provider value={value}>{children}</SessionCtx.Provider>;
 }
 

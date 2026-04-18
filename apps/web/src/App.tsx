@@ -17,6 +17,7 @@ import {
   type ClassroomRole,
 } from "./appReducer";
 import { configureApiClient, fetchTodaySnapshot, listClassrooms } from "./api";
+import { getClassroomLoadErrorMessage } from "./appErrors";
 import ErrorBoundary from "./components/ErrorBoundary";
 import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
@@ -96,6 +97,8 @@ function renderPanel(
 
 export default function App() {
   const [state, dispatch] = useReducer(appReducer, undefined, createInitialState);
+  const activeRole: ClassroomRole =
+    state.classroomRoles[state.activeClassroom] ?? "teacher";
   const authPromptResolverRef = useRef<((code: string | null) => void) | null>(null);
   const classroomsRef = useRef<ClassroomProfile[]>(state.classrooms);
   const classroomCodesRef = useRef(state.classroomAccessCodes);
@@ -290,9 +293,12 @@ export default function App() {
           setActiveClassroom(nextClassroomId, data);
         }
       })
-      .catch(() => {
+      .catch((err) => {
         if (!cancelled) {
-          dispatch({ type: "SET_INIT_ERROR", error: "Failed to load classrooms. Is the API server running?" });
+          dispatch({
+            type: "SET_INIT_ERROR",
+            error: getClassroomLoadErrorMessage(err),
+          });
         }
       });
 
@@ -338,7 +344,7 @@ export default function App() {
   }, [flushQueuedClientArtifacts]);
 
   useEffect(() => {
-    if (!state.activeClassroom) return;
+    if (!state.activeClassroom || activeRole === "reviewer") return;
     const controller = new AbortController();
     fetchTodaySnapshot(state.activeClassroom, controller.signal)
       .then((snapshot) => dispatch({ type: "SET_DEBT_COUNTS", counts: snapshot.debt_register.item_count_by_category }))
@@ -359,7 +365,7 @@ export default function App() {
         });
       });
     return () => controller.abort();
-  }, [state.activeClassroom]);
+  }, [state.activeClassroom, activeRole]);
 
   useEffect(() => {
     setClassroomMenuOpen(false);
@@ -557,8 +563,7 @@ export default function App() {
   // recomputed each render but the role changes rarely, so the cost is a
   // small array scan per render — cheaper than threading it through
   // everywhere as memoized state.
-  const roleForNav: ClassroomRole =
-    state.classroomRoles[activeClassroom] ?? "teacher";
+  const roleForNav: ClassroomRole = activeRole;
   const visibleTabs = useMemo(() => getVisibleTabs(roleForNav), [roleForNav]);
   const visibleNavGroups = useMemo(() => getVisibleNavGroups(roleForNav), [roleForNav]);
   const activeGroup = isTabVisibleForRole(activeTab, roleForNav)
@@ -682,9 +687,6 @@ export default function App() {
     [],
   );
 
-  const activeRole: ClassroomRole =
-    state.classroomRoles[activeClassroom] ?? "teacher";
-
   // Prompt for role when a classroom is loaded but has no stored role
   // Wait for the onboarding tour to finish before asking the user to pick
   // their role — stacking both modals simultaneously feels like an ambush.
@@ -756,7 +758,7 @@ export default function App() {
 
   return (
     <AppContext.Provider value={ctxValue}>
-      <SessionProvider classroomId={activeClassroom}>
+      <SessionProvider classroomId={activeClassroom} enabled={activeRole !== "reviewer"}>
       <div className="app-shell">
         <a href="#main-content" className="skip-link">
           Skip to main content

@@ -5,10 +5,10 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-04-18T08:52:17.441Z
+**Run date:** 2026-04-18T17:17:13.383Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
-**Raw artifacts:** `output/release-gate/2026-04-18T08-51-05-367Z-69873`
+**Raw artifacts:** `output/release-gate/2026-04-18T17-15-51-000Z-39723`
 
 ### Commands
 
@@ -43,13 +43,15 @@ npm run release:gate:ollama
 
 ## Hosted Gemini API Baseline
 
-**Status:** Passing baseline — 10/10 evals passed and the full hosted release gate completed.
-**Run date:** 2026-04-09T14:36:34.497Z
+**Status:** Passing baseline — 12/12 evals passed and the full hosted release gate completed.
+**Run date:** 2026-04-18T16:17:22.585Z
 **Backend:** `gemini`
-**Eval suite:** Hosted Gemini proof suite (10/90 cases from the full corpus).
+**Key source:** `PRAIRIE_GEMINI_API_KEY`
+**Hosted run guard:** enabled
+**Eval suite:** Hosted Gemini proof suite (12/127 cases from the full corpus).
 **Usage scope:** Synthetic/demo evaluation only.
 **Model identifiers observed:** `gemma-4-26b-a4b-it`, `gemma-4-31b-it`
-**Raw artifacts:** `output/release-gate/2026-04-09T14-26-54-338Z-54148`
+**Raw artifacts:** `output/release-gate/2026-04-18T16-04-28-504Z-87799`
 
 ### Commands
 
@@ -65,10 +67,11 @@ npm run release:gate:gemini
 |-------|-------|--------|
 | complexity_debt_register | 1 | 1/1 |
 | draft_family_message | 2 | 2/2 |
+| extract_worksheet | 1 | 1/1 |
 | forecast_complexity | 1 | 1/1 |
 | generate_ea_briefing | 1 | 1/1 |
 | generate_survival_packet | 1 | 1/1 |
-| POST /api/differentiate | 2 | 2/2 |
+| POST /api/differentiate | 3 | 3/3 |
 | prepare_tomorrow_plan | 2 | 2/2 |
 
 ### Failure Ledger

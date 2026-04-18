@@ -50,9 +50,9 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   }, [session]);
 
   useEffect(() => {
-    if (!activeClassroom) return;
+    if (!activeClassroom || !canApproveMessages) return;
     healthAction.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
-  }, [activeClassroom, healthAction.execute]);
+  }, [activeClassroom, canApproveMessages, healthAction.execute]);
 
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {
@@ -179,9 +179,11 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     },
     {
       key: "copy",
-      label: "Copy",
+      label: displayResult.draft.teacher_approved ? "Copy" : "Approve to copy",
       icon: "pencil",
       variant: "ghost",
+      disabled: !displayResult.draft.teacher_approved,
+      disabledReason: "Approve the message before copying it into a family communication channel.",
       onClick: () => void copy(displayResult.draft.plain_language_text),
     },
   ] : [];

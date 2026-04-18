@@ -12,9 +12,9 @@ This document is the operator source of truth for the hosted Gemma 4 hackathon l
 ## Current Proof Status
 
 - Hosted Gemini proof lane: passing
-- Hosted Gemini eval suite: passed (`10/10` curated cases)
+- Hosted Gemini eval suite: passed (`12/12` curated cases)
 - Full `release:gate:gemini`: passed
-- Latest passing gate artifact: `output/release-gate/2026-04-09T14-26-54-338Z-54148`
+- Latest passing gate artifact: `output/release-gate/2026-04-18T16-04-28-504Z-87799`
 - Hosted reruns remain opt-in and synthetic/demo-only
 
 ## Hosted Models

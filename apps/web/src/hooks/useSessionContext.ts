@@ -36,7 +36,7 @@ function generateSessionId(): string {
  * or classroom switch.
  * Falls back to localStorage queue on network failure.
  */
-export function useSessionContext(classroomId: string): UseSessionContextResult {
+export function useSessionContext(classroomId: string, enabled = true): UseSessionContextResult {
   const [sessionId, setSessionId] = useState(() => generateSessionId());
   const startedAtRef = useRef(new Date().toISOString());
   const panelsRef = useRef<string[]>([]);
@@ -46,6 +46,7 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
 
   // Flush session data to the server (or localStorage fallback)
   const flush = useCallback(() => {
+    if (!enabled) return;
     const targetClassroomId = prevClassroomRef.current;
     if (!targetClassroomId || panelsRef.current.length === 0) return;
 
@@ -65,7 +66,7 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
       if (isAuthFailure(err)) return;
       queueSession(request);
     });
-  }, [sessionId]);
+  }, [enabled, sessionId]);
 
   // Reset on classroom change
   useEffect(() => {
@@ -99,24 +100,27 @@ export function useSessionContext(classroomId: string): UseSessionContextResult 
   }, [flush]);
 
   const recordPanelVisit = useCallback((panelId: string) => {
+    if (!enabled) return;
     const panels = panelsRef.current;
     // Only add if different from the last visited panel (dedupe consecutive)
     if (panels[panels.length - 1] !== panelId) {
       panels.push(panelId);
     }
-  }, []);
+  }, [enabled]);
 
   const recordGeneration = useCallback((panelId: string, promptClass: string) => {
+    if (!enabled) return;
     generationsRef.current.push({
       panel_id: panelId,
       prompt_class: promptClass,
       timestamp: new Date().toISOString(),
     });
-  }, []);
+  }, [enabled]);
 
   const recordFeedback = useCallback(() => {
+    if (!enabled) return;
     feedbackCountRef.current++;
-  }, []);
+  }, [enabled]);
 
   return { sessionId, recordPanelVisit, recordGeneration, recordFeedback };
 }

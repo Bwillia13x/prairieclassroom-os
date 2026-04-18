@@ -128,7 +128,11 @@ def test_build_config_forwards_function_declarations() -> None:
     config = backend._build_config(req)
 
     assert config["tools"] == [{
-        "function_declarations": [TOOL_DEF],
+        "function_declarations": [{
+            "name": TOOL_DEF["name"],
+            "description": TOOL_DEF["description"],
+            "parameters_json_schema": TOOL_DEF["parameters"],
+        }],
     }]
 
 

@@ -4,7 +4,7 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 
 ## Current State
 
-- **Mock gate:** green at `output/release-gate/2026-04-17T23-01-11-249Z-44643`
+- **Mock gate:** green at `output/release-gate/2026-04-18T12-24-07-826Z-37333`
 - **Hosted Gemini proof lane:** passing
 - **Ollama privacy-first lane:** blocked on host capability on the current machine
 - **Paid Vertex lane:** intentionally not run in the zero-cost sprint
@@ -12,18 +12,18 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 ## Hosted Gemini Proof
 
 - **Models used:** `gemma-4-26b-a4b-it` (live), `gemma-4-31b-it` (planning)
-- **Curated hosted eval suite:** `10/10` passed
+- **Curated hosted eval suite:** `12/12` passed
 - **Full hosted release gate:** passed
 - **What this proves:** real hosted Gemma 4 execution on synthetic/demo classroom data for the curated proof suite, API smoke, and browser smoke
 
 ## Artifact Trail
 
 - **Provider truth source:** `docs/eval-baseline.md`
-- **Latest passing mock gate:** `output/release-gate/2026-04-17T23-01-11-249Z-44643`
-- **Latest mock gate summary:** `output/release-gate/2026-04-17T23-01-11-249Z-44643/summary.json`
-- **Latest passing hosted gate:** `output/release-gate/2026-04-09T14-26-54-338Z-54148`
-- **Hosted release summary:** `output/release-gate/2026-04-09T14-26-54-338Z-54148/summary.json`
-- **Hosted eval artifacts:** `output/evals/2026-04-09-gemini`
+- **Latest passing mock gate:** `output/release-gate/2026-04-18T12-24-07-826Z-37333`
+- **Latest mock gate summary:** `output/release-gate/2026-04-18T12-24-07-826Z-37333/summary.json`
+- **Latest passing hosted gate:** `output/release-gate/2026-04-18T16-04-28-504Z-87799`
+- **Hosted release summary:** `output/release-gate/2026-04-18T16-04-28-504Z-87799/summary.json`
+- **Hosted eval artifacts:** `output/evals/2026-04-18-gemini`
 
 ## Privacy Boundary
 

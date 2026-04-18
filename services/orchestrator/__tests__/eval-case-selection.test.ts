@@ -15,6 +15,15 @@ describe("parseCaseIdList", () => {
       "msg-001-alpha-schema",
     ]);
   });
+
+  it("ignores comma-bearing prose comments in suite files", () => {
+    expect(parseCaseIdList(`
+      # extract_worksheet is the only multimodal route. Without this case the hosted
+      # lane never proves that image-input through Gemini's inline_data path actually
+      # works end-to-end, even though extract_worksheet ships in production.
+      extract-001-schema
+    `)).toEqual(["extract-001-schema"]);
+  });
 });
 
 describe("selectEvalCases", () => {

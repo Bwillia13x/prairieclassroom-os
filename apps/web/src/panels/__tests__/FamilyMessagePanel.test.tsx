@@ -146,6 +146,8 @@ describe("FamilyMessagePanel", () => {
       </AppContext.Provider>,
     );
 
+    expect(screen.getByRole("button", { name: "Approve to copy" })).toBeDisabled();
+
     await user.click(screen.getByRole("button", { name: "Review approval" }));
 
     const textarea = await screen.findByLabelText(/Family message text/i);
@@ -166,6 +168,7 @@ describe("FamilyMessagePanel", () => {
     expect(appContext.showSuccess).toHaveBeenCalledWith("Message approved and copied");
     expect(appContext.showUndo).not.toHaveBeenCalled();
     expect(await screen.findByRole("button", { name: "Approved" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Copy" })).toBeEnabled();
     expect(screen.getByText("Edited by teacher")).toBeInTheDocument();
   });
 });

@@ -142,14 +142,25 @@ def gemini_function_declarations(tools: list[dict[str, Any]] | None) -> list[dic
         if isinstance(tool.get("description"), str):
             declaration["description"] = tool["description"]
         if parameters:
-            declaration["parameters"] = parameters
+            declaration["parameters_json_schema"] = parameters
         declarations.append(declaration)
     return declarations
 
 
 def openai_chat_tools(tools: list[dict[str, Any]] | None) -> list[dict[str, Any]]:
     """Convert Prairie tool definitions to OpenAI-compatible chat tools."""
-    declarations = gemini_function_declarations(tools)
+    declarations: list[dict[str, Any]] = []
+    for tool in tools or []:
+        name = tool.get("name")
+        parameters = _coerce_json_object(tool.get("parameters"))
+        if not isinstance(name, str) or not name:
+            continue
+        declaration: dict[str, Any] = {"name": name}
+        if isinstance(tool.get("description"), str):
+            declaration["description"] = tool["description"]
+        if parameters:
+            declaration["parameters"] = parameters
+        declarations.append(declaration)
     return [
         {
             "type": "function",
@@ -2296,31 +2307,53 @@ def run_smoke_tests(harness: GemmaHarness) -> bool:
             return False, f"{category}: {message}"
         return True, None
 
+    def is_transient_failure(detail: str | None) -> bool:
+        if not detail:
+            return False
+        normalized = detail.lower()
+        return any(token in normalized for token in [
+            "500 internal",
+            "internal error encountered",
+            "temporarily unavailable",
+            "read timed out",
+            "connection reset",
+            "429",
+            "503",
+        ])
+
+    def smoke_generate(request: GenerationRequest) -> tuple[GenerationResponse, bool, str | None]:
+        max_attempts = 3 if harness.mode in {InferenceMode.API, InferenceMode.GEMINI} else 1
+        for attempt in range(max_attempts):
+            resp = harness.generate(request)
+            ok, detail = inspect_response(resp)
+            if ok or not is_transient_failure(detail) or attempt == max_attempts - 1:
+                return resp, ok, detail
+            print(f"  retrying transient provider failure ({attempt + 1}/{max_attempts - 1})...")
+            time.sleep(min(0.5 * (attempt + 1), 2.0))
+        return resp, ok, detail
+
     # Test 1: Text prompt
     print(f"\n[1/{total}] Text prompt...")
-    resp = harness.generate(GenerationRequest(prompt="Differentiate this reading passage for mixed levels."))
-    ok, detail = inspect_response(resp)
+    resp, ok, detail = smoke_generate(GenerationRequest(prompt="Differentiate this reading passage for mixed levels."))
     print(f"  {'PASS' if ok else 'FAIL'} — {detail or f'got {len(resp.text)} chars'}")
     passed += ok
 
     # Test 2: Image + text prompt
     print(f"[2/{total}] Image + text prompt...")
-    resp = harness.generate(GenerationRequest(
+    resp, ok, detail = smoke_generate(GenerationRequest(
         prompt="Describe this worksheet and suggest how to adapt it.",
         images=["placeholder.png"],
     ))
-    ok, detail = inspect_response(resp)
     print(f"  {'PASS' if ok else 'FAIL'} — {detail or f'got {len(resp.text)} chars'}")
     passed += ok
 
     # Test 3: Thinking mode
     print(f"[3/{total}] Thinking mode...")
-    resp = harness.generate(GenerationRequest(
+    resp, text_ok, detail = smoke_generate(GenerationRequest(
         prompt="Plan tomorrow's support priorities for a class with 3 EAL students and 2 needing transition support.",
         thinking=True,
         model_tier=ModelTier.PLANNING,
     ))
-    text_ok, detail = inspect_response(resp)
     ok = resp.thinking_text is not None or text_ok
     if ok:
         print(f"  PASS — thinking={'yes' if resp.thinking_text else 'no'}")

@@ -125,6 +125,8 @@ function isRetryableErrorBody(text: string): boolean {
     "connection aborted",
     "connection reset",
     "read timed out",
+    "internal error encountered",
+    "500 internal",
     "temporarily unavailable",
   ].some((token) => normalized.includes(token));
 }
@@ -254,13 +256,16 @@ async function performGenerationCall(options: {
         headers: { "Content-Type": "application/json" },
         body: requestBodyForGeneration({
           route: options.route,
-          prompt: options.prompt,
+          prompt: options.toolInteractions && options.toolInteractions.length > 0
+            ? appendToolResultsToPrompt(options.prompt, options.toolInteractions)
+            : options.prompt,
           images: options.images,
           thinkingEnabled: options.thinkingEnabled,
           maxTokens: options.maxTokens,
           mockContext: options.mockContext,
-          tools: options.tools,
-          toolInteractions: options.toolInteractions,
+          tools: options.toolInteractions && options.toolInteractions.length > 0
+            ? undefined
+            : options.tools,
         }),
         signal: timeout.signal,
       });

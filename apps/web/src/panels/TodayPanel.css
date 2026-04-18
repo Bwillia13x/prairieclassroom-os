@@ -14,14 +14,18 @@
 /* Secondary content cards flow side-by-side on wide viewports */
 .today-grid--secondary {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
 }
 
 @media (min-width: 860px) {
   .today-grid--secondary {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.today-grid--secondary > * {
+  min-width: 0;
 }
 
 .today-forecast-header {

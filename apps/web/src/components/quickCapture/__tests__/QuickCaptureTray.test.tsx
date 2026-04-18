@@ -97,6 +97,17 @@ describe("QuickCaptureTray", () => {
     expect(textarea.value).toBe("");
   });
 
+  it("keeps the quick note when persistence fails", async () => {
+    const user = userEvent.setup();
+    render(<QuickCaptureTray classroomId="c1" students={STUDENTS} loading={false} onSubmit={vi.fn().mockResolvedValue(false)} />);
+    await user.click(screen.getByRole("button", { name: "Select Ari" }));
+    await user.click(screen.getByRole("button", { name: "Redirect" }));
+    await user.click(screen.getByRole("button", { name: /log intervention|submit/i }));
+    expect(screen.getByRole("button", { name: "Unselect Ari" })).toHaveAttribute("aria-pressed", "true");
+    const textarea = screen.getByRole("textbox") as HTMLTextAreaElement;
+    expect(textarea.value).toContain("Ari");
+  });
+
   it("mic button is absent when speech is unsupported", () => {
     render(<QuickCaptureTray classroomId="c1" students={STUDENTS} loading={false} onSubmit={vi.fn()} />);
     expect(screen.queryByRole("button", { name: /dictation/i })).not.toBeInTheDocument();

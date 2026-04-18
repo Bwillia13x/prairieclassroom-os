@@ -112,6 +112,25 @@ describe("useSessionContext", () => {
     expect(result.current.sessionId).toBeTruthy();
   });
 
+  it("does not record or flush when session tracking is disabled", () => {
+    const spy = vi.spyOn(api, "submitSessionApi").mockResolvedValue({ id: "sess-1" });
+
+    const { result } = renderHook(() => useSessionContext("demo", false));
+
+    act(() => {
+      result.current.recordPanelVisit("family-message");
+      result.current.recordGeneration("family-message", "draft_family_message");
+      result.current.recordFeedback();
+    });
+
+    Object.defineProperty(document, "visibilityState", { configurable: true, get: () => "hidden" });
+    act(() => {
+      document.dispatchEvent(new Event("visibilitychange"));
+    });
+
+    expect(spy).not.toHaveBeenCalled();
+  });
+
   it("resets session state when classroomId changes", () => {
     const spy = vi.spyOn(api, "submitSessionApi").mockResolvedValue({ id: "sess-1" });
 
