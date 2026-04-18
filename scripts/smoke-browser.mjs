@@ -350,9 +350,13 @@ async function main() {
       colorBg: getComputedStyle(globalThis.document.documentElement).getPropertyValue("--color-bg").trim(),
     }));
     assert.equal(themeState.theme, "dark", "Theme toggle should reach dark mode");
+    // Dark canvas retuned to #020305 in the 2026-04-17 round-6 black-first
+    // dark-mode pass (see docs/decision-log.md). The previous round-2 value
+    // #070a0f shipped between 2026-04-12 and 2026-04-17 but is no longer
+    // correct; the smoke assertion drifted and is now aligned.
     assert.ok(
-      themeState.colorBg === "#070a0f" || themeState.colorBg.includes("#070a0f"),
-      "Dark theme should apply the near-black Prairie background token",
+      themeState.colorBg === "#020305" || themeState.colorBg.includes("#020305"),
+      `Dark theme should apply the near-black Prairie background token; got "${themeState.colorBg}"`,
     );
 
     if (pageErrors.length > 0) {

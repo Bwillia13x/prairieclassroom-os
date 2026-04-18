@@ -12,7 +12,20 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  font-feature-settings: "kern" 1, "liga" 1;
+  font-feature-settings: var(--font-feature-base);
+  font-optical-sizing: auto;
+}
+
+/* Display headings pick up the Instrument Sans display face + tightened
+   tracking. h1/h2/h3 were already heading elements; this gives them a
+   visible typographic personality without requiring per-component edits. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-display);
+  letter-spacing: var(--tracking-display);
+  font-optical-sizing: auto;
 }
 
 body {
@@ -36,12 +49,8 @@ h6 {
   line-height: var(--leading-tight);
   text-wrap: balance;
 }
-
-h1,
-h2,
-h3 {
-  letter-spacing: -0.025em;
-}
+/* Former h1/h2/h3 letter-spacing: -0.025em rule consolidated into the
+   display-family block above (tracking now lives on --tracking-display). */
 
 p,
 ul,
@@ -141,7 +150,8 @@ a {
 .forecast-meta {
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-feature-settings: var(--font-feature-numeric);
   letter-spacing: -0.01em;
 }
 
@@ -206,6 +216,25 @@ a {
 @keyframes prefill-highlight {
   0% { background: var(--color-bg-info); }
   100% { background: transparent; }
+}
+
+/* data-change highlight (Tier 3).
+   Attach the .pulse-on-change modifier to any surface whose underlying data
+   updated; the animation runs once, drawing the eye without locking it. */
+@keyframes data-change-pulse {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 28%, transparent); }
+  40%  { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 14%, transparent); }
+  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent); }
+}
+
+.pulse-on-change {
+  animation: data-change-pulse 520ms var(--ease-out-expo) 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse-on-change {
+    animation: none;
+  }
 }
 
 /* Grain texture overlay — light mode only.

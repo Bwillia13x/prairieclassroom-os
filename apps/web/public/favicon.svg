@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="PrairieClassroom">
+  <!-- Institutional prairie-horizon monogram — three stacked strokes.
+       Colors are baked in (not CSS-var driven) because favicons cannot
+       inherit document styles. Navy #1b4b80 and cognac highlight #ae671a
+       match the light-mode --color-accent and --color-brand-highlight. -->
+  <g fill="none" stroke-linecap="round" stroke-width="2.6">
+    <path d="M5 10 Q16 6 27 10" stroke="#1b4b80" opacity="0.95" />
+    <path d="M5 17 Q16 13 27 17" stroke="#1b4b80" opacity="0.6" />
+    <path d="M5 24 Q16 20 27 24" stroke="#ae671a" opacity="0.85" />
+  </g>
+</svg>

@@ -6,7 +6,7 @@ _This document is generated from zero-cost host-preflight and release-gate artif
 
 - Live-model proof: Blocked pending a viable zero-cost Ollama host.
 - Zero-cost enforcement: mock and Ollama only; no paid fallback recorded
-- Latest passed mock gate: `output/release-gate/2026-04-17T23-01-11-249Z-44643`
+- Latest passed mock gate: `output/release-gate/2026-04-18T02-03-35-383Z-97653`
 - Latest passed Ollama gate: _none recorded_
 
 ## Commands

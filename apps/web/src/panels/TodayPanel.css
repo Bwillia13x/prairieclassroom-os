@@ -87,7 +87,16 @@
 .today-triage-list {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  /* Compact-tier density (Tier 2): rows butt against each other with a
+     shared hairline rule rather than floating as discrete cards. This is
+     the institutional "ledger row" pattern and reduces visual noise on
+     stacks of 3-6 triage items. */
+  gap: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
 }
 
 .today-triage-row {
@@ -95,29 +104,36 @@
   align-items: center;
   gap: var(--space-3);
   width: 100%;
-  padding: var(--space-3);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 54%, transparent), color-mix(in srgb, var(--color-surface-elevated) 8%, transparent)),
-    var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm), var(--inner-stroke);
+  padding: var(--space-3) var(--space-4);
+  /* Compact row — no per-row border or radius; the parent list provides
+     the outer frame. Hairline rule separates rows; hover fills the row
+     with an accent-soft wash to signal hit area without decoration. */
+  background: transparent;
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  border-radius: 0;
+  box-shadow: none;
   cursor: pointer;
   text-align: left;
   transition:
-    transform var(--motion-fast) var(--ease-standard),
-    box-shadow var(--motion-fast) var(--ease-standard),
-    border-color var(--motion-fast) var(--ease-standard),
-    background-color var(--motion-fast) var(--ease-standard);
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
+.today-triage-row:first-child {
+  border-top: 0;
 }
 
 .today-triage-row:hover {
-  border-color: var(--color-border-accent);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 68%, transparent), color-mix(in srgb, var(--color-surface-elevated) 18%, transparent)),
-    var(--color-surface);
+  background: color-mix(in srgb, var(--color-accent) 5%, var(--color-surface));
+  transform: none;
+  box-shadow: none;
+}
+
+.today-triage-row:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface));
 }
 
 .pending-action-icon {
@@ -171,10 +187,16 @@
 }
 
 .today-triage-row__count {
-  min-width: 2.2rem;
+  min-width: 2.8rem;
   text-align: right;
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-bold);
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  font-optical-sizing: auto;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display-tight);
   color: var(--color-text-warning);
 }
 

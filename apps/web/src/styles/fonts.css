@@ -1,0 +1,65 @@
+/* ============================================================
+   Self-hosted font faces — 2026-04-17 round 8 follow-up.
+   ============================================================
+   All three families ship with the app rather than being fetched
+   from Google Fonts at runtime. This removes a network dependency,
+   eliminates first-paint FOIT latency, and aligns with the zero-cost
+   / offline-first posture documented in docs/zero-cost-operations.md.
+
+   Source: Fontsource (MIT / OFL licensed). Files live in
+   apps/web/public/fonts/ and are served at /fonts/*.woff2. Vite's
+   production build copies them verbatim to dist/fonts/.
+
+   font-display: swap — show fallback immediately, swap in the real
+   face when it arrives. For same-origin woff2 under HTTP/2, the swap
+   is typically invisible on local runs; under cold-cache network
+   conditions it keeps TTI clean.
+   ============================================================ */
+
+/* Inter Variable — body, UI, data. Covers 100..900 weight axis. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-variable.woff2") format("woff2");
+}
+
+/* Instrument Sans — display. Four static weights. */
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-sans-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/instrument-sans-500.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/instrument-sans-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Instrument Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/instrument-sans-700.woff2") format("woff2");
+}
+
+/* JetBrains Mono Variable — numeric metadata, kbd indicators. */
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 800;
+  font-display: swap;
+  src: url("/fonts/jetbrains-mono-variable.woff2") format("woff2");
+}

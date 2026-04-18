@@ -303,6 +303,165 @@
   padding: var(--panel-padding);
 }
 
+/* ------------------------------------------------------------
+   Density + atmosphere variants — Tier 1 "hierarchy of voice" pass.
+
+   Default .surface-panel is the comfortable middle tier. Hero-tier
+   panels pick up a subtle gradient wash and stronger shadow to read
+   as the primary object on the workspace. Compact-tier panels are
+   terminal (list rows, dense tables) and drop padding + shadow so
+   stacks of them read as a ruled surface rather than card soup.
+   ------------------------------------------------------------ */
+
+.surface-panel--atmospheric {
+  position: relative;
+  background:
+    radial-gradient(
+      ellipse at 8% -4%,
+      color-mix(in srgb, var(--color-accent) 8%, transparent),
+      transparent 52%
+    ),
+    radial-gradient(
+      ellipse at 100% 108%,
+      color-mix(in srgb, var(--color-analysis) 6%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 92%, transparent),
+      color-mix(in srgb, var(--color-surface-elevated) 40%, transparent)
+    ),
+    var(--color-surface);
+  box-shadow: var(--shadow-md), var(--inner-stroke);
+  overflow: hidden;
+}
+
+.surface-panel--atmospheric > * {
+  position: relative;
+  z-index: 1;
+}
+
+.surface-panel--compact {
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ------------------------------------------------------------
+   .metric — numeric-figure primitive.
+
+   Use for any "big number" in the UI: pending-action counts, streak
+   days, forecast scores, approval cadence. Combines the display face
+   for the figure with a lowercase-track eyebrow label, and an
+   optional delta chip for trend direction.
+
+     <dl class="metric metric--lg">
+       <dt class="metric__label">Unapproved messages</dt>
+       <dd class="metric__value">24</dd>
+       <dd class="metric__delta metric__delta--up">+3 since Monday</dd>
+     </dl>
+
+   The figure uses font-variant-numeric: tabular-nums so adjacent
+   metrics in a row align at the decimal; slashed-zero is enabled to
+   distinguish 0 from O at display sizes.
+   ------------------------------------------------------------ */
+
+.metric {
+  display: inline-flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin: 0;
+  min-width: 0;
+}
+
+.metric__label {
+  margin: 0;
+  order: -1;
+  font-size: 0.68rem;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  line-height: 1.2;
+}
+
+.metric__value {
+  margin: 0;
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-numeric), "ss01" 1;
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-weight: var(--font-weight-semibold);
+  font-optical-sizing: auto;
+  font-size: var(--text-display-sm);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display-tight);
+  color: var(--color-text);
+  word-break: keep-all;
+}
+
+.metric__delta {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem; /* matches status-chip + output-meta-row__item icon-text gap */
+  width: fit-content;
+  min-height: 22px;
+  padding: 0.1rem 0.55rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.metric__delta--up {
+  background: var(--color-bg-success);
+  border: 1px solid var(--color-border-success);
+  color: var(--color-text-success);
+}
+
+.metric__delta--down {
+  background: var(--color-bg-danger);
+  border: 1px solid var(--color-border-danger);
+  color: var(--color-text-danger);
+}
+
+.metric__delta--flat {
+  background: var(--color-bg-muted);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+.metric--sm .metric__value { font-size: var(--text-xl); }
+.metric--md .metric__value { font-size: var(--text-display-sm); }
+.metric--lg .metric__value { font-size: var(--text-display-md); }
+.metric--hero .metric__value {
+  font-size: var(--text-display-lg);
+  font-weight: var(--font-weight-semibold);
+}
+
+.metric--accent .metric__value { color: var(--color-text-accent); }
+.metric--warning .metric__value { color: var(--color-text-warning); }
+.metric--danger .metric__value { color: var(--color-text-danger); }
+.metric--success .metric__value { color: var(--color-text-success); }
+
+/* Metric row — lays metrics out with vertical hairline separators,
+   the institutional "dashboard strip" pattern. */
+.metric-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: flex-start;
+}
+
+.metric-row > .metric + .metric {
+  padding-left: var(--space-5);
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+}
+
 .form-panel {
   background: var(--color-surface-elevated);
   border: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
@@ -475,7 +634,7 @@
   font-weight: var(--font-weight-medium);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   opacity: 0.78;
 }
 
@@ -506,7 +665,7 @@
   background: var(--color-bg-muted);
   font-size: 0.68rem;
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
@@ -518,11 +677,13 @@
 
 .page-intro__title {
   margin-top: calc(var(--space-1) * -1);
-  font-family: var(--font-serif);
-  font-size: clamp(1.65rem, 2.4vw + 0.4rem, 2.35rem);
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-display);
+  font-size: var(--text-display-md);
   font-weight: var(--font-weight-semibold);
-  line-height: 1.12;
-  letter-spacing: -0.022em;
+  font-optical-sizing: auto;
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
   text-wrap: balance;
 }
 

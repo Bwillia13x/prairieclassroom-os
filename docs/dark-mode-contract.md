@@ -193,15 +193,65 @@ When you change anything that touches color:
 - **`::selection` uses `color-mix`.** Requires modern browsers; fallback is not provided because Prairie's target matrix already requires `light-dark()` support.
 - **Grain texture is suppressed in dark mode.** Non-configurable. If a future design wants grain in dark mode, design a new dark-tuned noise pattern rather than reusing the light one.
 
-## 10. Related files
+## 10. Typography contract (2026-04-17 round 8)
 
-- `apps/web/src/styles/tokens.css` — canonical palette + `@media` preference blocks
+The theme contract extends to typography. Three font families are declared in
+`apps/web/src/styles/tokens.css`, loaded from `apps/web/src/styles/fonts.css`,
+served from `apps/web/public/fonts/`, and only the Inter body face is preloaded
+by `apps/web/index.html`:
+
+| Role | Token | Font | Used for |
+|---|---|---|---|
+| Body / UI | `--font-sans` | Inter Variable (opsz 14..32) | Paragraphs, form controls, buttons, nav, body copy |
+| Display | `--font-display` | Instrument Sans | Hero ledes, page-intro titles, h1/h2/h3, `.metric__value`, `.viz-title` |
+| Monospace | `--font-mono` | JetBrains Mono | `.num`, `.plan-meta`, keyboard indicators, tabular metadata |
+
+### Rules
+
+1. **Body stays Inter.** Paragraphs, buttons, nav, status chip label copy,
+   form placeholders, and help text all use `--font-sans`. Do not apply the
+   display face to long-form reading copy.
+2. **Display goes on genuine hero moments.** `--font-display` is correct for
+   h1/h2/h3 (auto via `base.css`), page-intro titles, hero ledes, numeric
+   figures (`.metric__value`, `.viz-gauge-number`, `.today-triage-row__count`),
+   and viz titles. Do not spray it across every label for "premium feel" —
+   that defeats the hierarchy-of-voice thesis.
+3. **`--font-serif` is a compatibility alias.** It resolves to `--font-display`
+   so legacy call sites auto-upgrade. Do not reintroduce a real serif here
+   without a new decision-log entry; the round-1 rationale ("no editorial
+   display serifs for institutional register") still holds.
+4. **Numeric features are opt-in.** `--font-feature-numeric` (`tnum`, `zero`,
+   `ss01`) is applied on `.num`, `.metric__value`, `.metric__delta`, and
+   `.today-triage-row__count` — anywhere numbers need to align across rows.
+   Body text keeps default figures so reading copy uses old-style numerals
+   where Inter provides them.
+5. **Both themes share the typography contract.** Font choices do not vary
+   by light/dark mode. Colors vary (see §1–4); fonts don't.
+
+### Dark-mode specifics for typography
+
+- `font-smoothing: antialiased` (declared on `html`) reads correctly on both
+  the light paper canvas and the graphite dark canvas. Do not switch to
+  `subpixel-antialiased` for either mode.
+- At display sizes on the black-first dark canvas, `--color-text` (#f2f5f8)
+  at weight 600 can read slightly too bright. Mitigation: reduce weight to
+  500 at `--text-display-lg` and above, *not* reduce color opacity (which
+  would silently breach the contrast gate).
+
+## 11. Related files
+
+- `apps/web/src/styles/tokens.css` — canonical palette, typography tokens, `@media` preference blocks
 - `apps/web/src/tokens.css` — `--ds-*` alias layer for the shared component library
-- `apps/web/src/styles/base.css` — selection color, form-input chrome, grain texture
+- `apps/web/src/styles/base.css` — global font-feature-settings, h1/h2/h3 display cascade, selection color, form chrome, grain texture, data-change pulse keyframe
+- `apps/web/src/styles/primitives.css` — `.metric` primitive, `.surface-panel--atmospheric/--compact`, `.page-intro__title` display cascade
 - `apps/web/src/styles/shell.css` — app shell elevation and nav chrome
+- `apps/web/src/styles/fonts.css` — self-hosted `@font-face` declarations for Inter, Instrument Sans, and JetBrains Mono
+- `apps/web/public/fonts/` — checked-in woff2 font files copied to `dist/fonts/`
+- `apps/web/src/components/NumberTicker.tsx` — spring-tweened numeric transitions
 - `apps/web/src/components/ThemeToggle.tsx` — three-state toggle component
+- `apps/web/index.html` — favicon link and same-origin Inter preload
 - `scripts/check-contrast.mjs` — contrast verification script
 - `output/contrast-report.md` — last generated contrast report (git-ignored)
 - `docs/dark-mode-upgrade-2026-04-12.md` — the dark-mode side of the 2026-04-12 sprint
 - `docs/superpowers/specs/2026-04-12-light-palette-editorial-letterpress-design.md` — the light-mode side of the 2026-04-12 sprint, where §7 derivation rules were introduced
-- `docs/decision-log.md` — record of brand-level and architectural decisions
+- `docs/decision-log.md` — record of brand-level and architectural decisions (round 8 is the typography elevation)

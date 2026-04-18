@@ -223,12 +223,33 @@
   --radius-btn-sm: 6px;
   --radius-btn-lg: 10px;
 
-  /* Typography — single humanist sans family across the product.
-     Fraunces display serif retired 2026-04-17; --font-serif now
-     aliases the sans stack so legacy consumers inherit the shift. */
-  --font-sans: "Inter", "Public Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-serif: var(--font-sans);
-  --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+  /* ------------------------------------------------------------
+     Typography — 2026-04-17 repositioning, Tier-1 display refinement.
+
+     Two sans families by design:
+       --font-sans    Inter Variable — body, UI, data. Self-hosted from
+                      apps/web/public/fonts and preloaded in index.html.
+       --font-display Instrument Sans — display scale, hero/page titles,
+                      metric figures. Still a humanist sans (no editorial
+                      serif return), but distinct enough from Inter to
+                      carry hierarchy of voice. Decision-log 2026-04-17.
+
+     --font-serif is retained as a compatibility alias so the 18+ files
+     that still reference it (TodayStory, DayArc, PageIntro titles, etc.)
+     automatically inherit the display upgrade without per-file edits.
+     Do not introduce a real serif here without a new decision entry.
+     ------------------------------------------------------------ */
+  --font-sans: "Inter", "Inter Variable", "Public Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-display: "Instrument Sans", "Inter", "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: var(--font-display);
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
+
+  /* OpenType feature sets. Applied globally in base.css for kern+liga;
+     display and numeric variants are opt-in via .metric and display
+     selectors so body text keeps default figures for reading. */
+  --font-feature-base: "kern" 1, "liga" 1, "calt" 1;
+  --font-feature-display: "kern" 1, "liga" 1, "ss01" 1, "cv11" 1;
+  --font-feature-numeric: "tnum" 1, "zero" 1, "ss01" 1;
 
   --text-xs: 0.75rem;
   --text-sm: 0.875rem;
@@ -239,10 +260,24 @@
   --text-2xl: 1.75rem;
   --text-3xl: 2.25rem;
 
+  /* Display scale — used only on hero/page titles and metric figures.
+     Intentionally larger than the UI scale so the typographic moment
+     reads, but still conservative enough to stay institutional. */
+  --text-display-sm: clamp(1.6rem, 1.4vw + 1rem, 2rem);
+  --text-display-md: clamp(2rem, 2.2vw + 1rem, 2.75rem);
+  --text-display-lg: clamp(2.5rem, 3vw + 1rem, 3.75rem);
+
   --leading-tight: 1.2;
   --leading-snug: 1.35;
   --leading-base: 1.55;
   --leading-loose: 1.72;
+  --leading-display: 1.02;
+
+  /* Tracking — negative on display sizes to pull large glyphs together;
+     neutral on body. Values tuned for Instrument Sans optical behavior. */
+  --tracking-display: -0.032em;
+  --tracking-display-tight: -0.04em;
+  --tracking-eyebrow: 0.14em;
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;

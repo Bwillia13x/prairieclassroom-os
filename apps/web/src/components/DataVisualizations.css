@@ -14,6 +14,8 @@
 
 .viz-title {
   margin: 0;
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-display);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
@@ -36,6 +38,8 @@
   font-size: 8px;
   fill: var(--color-text-tertiary);
   font-family: inherit;
+  font-feature-settings: var(--font-feature-numeric);
+  letter-spacing: 0.04em;
 }
 
 .viz-tone-badge {
@@ -67,10 +71,16 @@
 }
 
 .viz-gauge-number {
-  font-size: 22px;
-  font-weight: var(--font-weight-bold, 700);
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-numeric), "ss01" 1;
+  font-optical-sizing: auto;
+  letter-spacing: var(--tracking-display);
+  /* SVG text uses user-space units tied to the viewBox; keep 28px (not rem)
+     so the gauge glyph scales with the enclosing SVG rather than the root
+     font-size. See DayArc.css:155 for the same convention. */
+  font-size: 28px;
+  font-weight: var(--font-weight-semibold);
   fill: var(--color-text);
-  font-family: inherit;
 }
 
 .viz-gauge-label {
@@ -148,10 +158,14 @@
 }
 
 .viz-debt-gauge__cat-count {
-  font-size: var(--text-sm);
-  font-weight: var(--font-weight-bold);
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
   color: var(--color-text);
-  min-width: 1.4rem;
+  min-width: 1.8rem;
   text-align: right;
 }
 

@@ -107,7 +107,7 @@
   padding: 0.5rem 0.75rem 0.25rem;
   font-size: 0.65rem;
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }

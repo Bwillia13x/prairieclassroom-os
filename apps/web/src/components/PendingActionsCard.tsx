@@ -1,5 +1,6 @@
 import type { ActiveTab } from "../appReducer";
 import StatusChip from "./StatusChip";
+import NumberTicker from "./NumberTicker";
 import { Card } from "./shared";
 
 import type { ReactNode } from "react";
@@ -61,7 +62,11 @@ export default function PendingActionsCard({
               >
                 <span className="pending-action-icon" aria-hidden="true">{item.icon}</span>
                 <span className="today-triage-row__label">{item.label}</span>
-                <span className="today-triage-row__count">{item.count}</span>
+                <NumberTicker
+                  value={item.count}
+                  className="today-triage-row__count"
+                  ariaLabel={`${item.count} ${item.label}`}
+                />
               </button>
             ))}
           </div>

@@ -1,4 +1,5 @@
 import StatusChip from "./StatusChip";
+import NumberTicker from "./NumberTicker";
 import { PlanStreakCalendar, DebtTrendSparkline, ComplexityTrendCalendar } from "./DataVisualizations";
 import type { ClassroomHealth } from "../types";
 import "./HealthBar.css";
@@ -68,10 +69,13 @@ export default function HealthBar({ health, loading, pendingActionCount = 0, onT
       aria-label="Classroom health summary"
     >
       {streak > 0 && (
-        <StatusChip
-          tone="success"
-          label={`${streak}-day streak — no stale follow-ups`}
-        />
+        <StatusChip tone="success">
+          {/* NumberTicker's default aria-label is the formatted value ("5"),
+              which concatenates naturally with the surrounding text to read
+              "5-day streak — no stale follow-ups". Passing an explicit
+              ariaLabel here would duplicate and garble the announcement. */}
+          <NumberTicker value={streak} />-day streak — no stale follow-ups
+        </StatusChip>
       )}
 
       <span className="health-bar__planning">
@@ -83,7 +87,7 @@ export default function HealthBar({ health, loading, pendingActionCount = 0, onT
           />
         ))}
         <span className="health-bar__planning-label">
-          {`${plannedCount} of 7 planned`}
+          <NumberTicker value={plannedCount} /> of 7 planned
         </span>
       </span>
 

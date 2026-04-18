@@ -179,7 +179,7 @@
 .shell-classroom-pill__eyebrow {
   font-size: 0.67rem;
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
@@ -241,7 +241,7 @@
 .shell-classroom-panel__eyebrow {
   font-size: 0.7rem;
   font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-secondary);
 }
