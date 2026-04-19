@@ -114,7 +114,7 @@
   box-shadow: var(--shadow-sm);
 }
 
-.shell-classroom-pill__lock {
+.shell-classroom-pill__switcher {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -126,14 +126,9 @@
   flex-shrink: 0;
 }
 
-.shell-classroom-pill__lock svg {
+.shell-classroom-pill__switcher svg {
   width: var(--icon-sm);
   height: var(--icon-sm);
-}
-
-.shell-classroom-pill__lock--locked {
-  background: var(--color-bg-pending);
-  color: var(--color-text-pending);
 }
 
 .shell-classroom-pill__copy {

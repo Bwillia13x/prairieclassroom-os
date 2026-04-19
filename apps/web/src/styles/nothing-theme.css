@@ -1258,8 +1258,14 @@
 }
 
 .shell-classroom-pill__caret,
-.shell-classroom-pill__lock {
+.shell-classroom-pill__switcher {
   color: var(--color-text-tertiary);
+}
+
+.shell-classroom-pill__switcher-icon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.75;
 }
 
 /* Right-side action buttons */
@@ -1774,7 +1780,7 @@
   color: var(--color-text-danger) !important;
 }
 
-.shell-classroom-pill__lock,
+.shell-classroom-pill__switcher,
 .role-pill__chip,
 .role-pill__option-chip,
 .mobile-nav-badge,

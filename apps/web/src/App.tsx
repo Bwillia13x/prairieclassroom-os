@@ -58,25 +58,6 @@ function describeClassroom(classroom: ClassroomProfile) {
   return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
 }
 
-function LockIcon({ locked }: { locked: boolean }) {
-  return (
-    <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      {locked ? (
-        <>
-          <path d="M5.5 8V5.9a3.5 3.5 0 117 0V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <rect x="4" y="8" width="10" height="7.5" rx="2" stroke="currentColor" strokeWidth="1.5" />
-        </>
-      ) : (
-        <>
-          <path d="M11.5 8V5.9a3.5 3.5 0 00-6.27-2.14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M6.2 10.1L4.8 8.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <rect x="4" y="8" width="10" height="7.5" rx="2" stroke="currentColor" strokeWidth="1.5" />
-        </>
-      )}
-    </svg>
-  );
-}
-
 function renderPanel(
   activeTab: ActiveTab,
   targetTab: ActiveTab,
@@ -785,8 +766,8 @@ export default function App() {
                   aria-controls="shell-classroom-panel"
                   disabled={!profile}
                 >
-                  <span className={`shell-classroom-pill__lock${profile?.requires_access_code ? " shell-classroom-pill__lock--locked" : ""}`}>
-                    <LockIcon locked={Boolean(profile?.requires_access_code)} />
+                  <span className="shell-classroom-pill__switcher" aria-hidden="true">
+                    <SectionIcon name="grid" className="shell-classroom-pill__switcher-icon" />
                   </span>
                   <span className="shell-classroom-pill__copy">
                     <span className="shell-classroom-pill__eyebrow">Active classroom</span>
