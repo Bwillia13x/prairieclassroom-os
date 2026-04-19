@@ -254,8 +254,8 @@
   --icon-md: 1rem;       /* 16px */
   --icon-lg: 1.25rem;    /* 20px */
   --icon-xl: 1.5rem;     /* 24px */
-  --icon-display: 2.5rem; /* 40px — empty-state, error boundary */
-  --icon-hero: 3.5rem;   /* 56px — empty-state-icon, branded loading mark */
+  --icon-display: 2.5rem; /* 40px — error boundary, branded display marks */
+  --icon-hero: 3.5rem;   /* 56px — branded loading mark */
 
   /* Radius — conservative institutional scale.
      Slightly tightened vs editorial-display previous scale. */
