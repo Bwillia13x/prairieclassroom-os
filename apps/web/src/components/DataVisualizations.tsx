@@ -18,6 +18,7 @@ import type {
   RecurringTheme,
   InterventionRecord,
 } from "../types";
+import SourceTag from "./SourceTag";
 import "./DataVisualizations.css";
 
 /* ================================================================
@@ -158,7 +159,7 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
     <div className={`viz-priority-matrix${mounted ? " viz-priority-matrix--mounted" : ""}`}>
       <div className="viz-header viz-priority-matrix__header">
         <div>
-          <h4 className="viz-title">Student Priority View</h4>
+          <h4 className="viz-title">Student Priority View <SourceTag kind="record" /></h4>
           <span className="viz-priority-matrix__summary">
             {totalPlotted} plotted · {attentionCount} priority {attentionCount === 1 ? "student" : "students"} · dot size follows pattern count
           </span>
@@ -527,7 +528,7 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
         : {})}
     >
       <div className="viz-header">
-        <h4 className="viz-title">Complexity Debt</h4>
+        <h4 className="viz-title">Complexity Debt <SourceTag kind="record" /></h4>
         <div className="viz-debt-gauge__badges">
           {delta !== null && (
             <span
@@ -1063,7 +1064,7 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
     <div className={`viz-composition${mounted ? " viz-composition--mounted" : ""}`}>
       <div className="viz-header viz-composition__header">
         <div>
-          <h4 className="viz-title">Classroom Profile</h4>
+          <h4 className="viz-title">Classroom Profile <SourceTag kind="record" /></h4>
           <span className="viz-composition__summary">
             {students.length} students · {ealTotal} EAL · {langCount} languages
           </span>
@@ -1284,7 +1285,7 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
     <div className={`viz-recency${mounted ? " viz-recency--mounted" : ""}`} role="group" aria-label={ariaLabel}>
       <div className="viz-header viz-recency__header">
         <div>
-          <h4 className="viz-title">Intervention Recency</h4>
+          <h4 className="viz-title">Intervention Recency <SourceTag kind="record" /></h4>
           <span className="viz-recency__summary">
             {rows.length} longest gaps · {beyondTargetCount} beyond {maxDays}d target
           </span>

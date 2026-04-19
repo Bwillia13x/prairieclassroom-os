@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import type { FamilyMessagePrefill, TomorrowPlan } from "../types";
 import { ActionButton } from "./shared";
+import SourceTag from "./SourceTag";
 import { getCompleted, toggle } from "../utils/prepChecklistStore";
 
 interface Props {
@@ -48,7 +49,11 @@ export default function PlanRecap({
     <div className="plan-recap">
       <div className="plan-recap-header-row">
         <div>
-          <h3 className="plan-recap-heading">Carry Forward</h3>
+          {/* Audit #34: plan priorities and prep checklist items are
+              AI-derived, so the section carries an explicit AI tag. */}
+          <h3 className="plan-recap-heading">
+            Carry Forward <SourceTag kind="ai" />
+          </h3>
           <p className="plan-recap-subtitle">
             Keep the priorities that still matter before opening a fresh planning pass.
           </p>

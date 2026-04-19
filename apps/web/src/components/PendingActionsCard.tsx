@@ -1,6 +1,7 @@
 import type { ActiveTab } from "../appReducer";
 import StatusChip from "./StatusChip";
 import NumberTicker from "./NumberTicker";
+import SourceTag from "./SourceTag";
 import { Card } from "./shared";
 
 import type { ReactNode } from "react";
@@ -64,6 +65,9 @@ export default function PendingActionsCard({
                 label={formatActionCount(totalCount)}
                 tone={totalCount > 0 ? "warning" : "success"}
               />
+              {/* Audit #34: the pulse queue is record-derived (debt
+                  register + intervention logs), not AI output. */}
+              <SourceTag kind="record" />
             </div>
             {typeof previousTotal === "number" ? (
               <p

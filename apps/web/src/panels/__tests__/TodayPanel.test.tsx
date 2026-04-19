@@ -512,4 +512,29 @@ describe("TodayPanel", () => {
     );
     expect(wrappers.length).toBeGreaterThan(0);
   });
+
+  it("labels AI-derived sections with a source-tag-ai caption (audit #34)", async () => {
+    renderTodayPanel(makeSnapshot());
+    // TodayHero freshness strip carries an AI tag.
+    const hero = await screen.findByTestId("today-hero");
+    expect(within(hero).getByTestId("source-tag-ai")).toBeInTheDocument();
+    // Risk Windows (forecast) also carries an AI tag.
+    const footer = await screen.findByTestId("risk-windows-footer");
+    const riskCard = footer.closest(".risk-windows");
+    expect(riskCard).not.toBeNull();
+    expect(
+      within(riskCard as HTMLElement).getByTestId("source-tag-ai"),
+    ).toBeInTheDocument();
+  });
+
+  it("labels record-derived sections with a source-tag-record caption (audit #34)", async () => {
+    renderTodayPanel(makeSnapshot());
+    // Classroom Pulse (PendingActionsCard) is record-derived.
+    const pulseHeading = await screen.findByText(/Needs Attention Now/i);
+    const pulseCard = pulseHeading.closest(".today-triage-card");
+    expect(pulseCard).not.toBeNull();
+    expect(
+      within(pulseCard as HTMLElement).getByTestId("source-tag-record"),
+    ).toBeInTheDocument();
+  });
 });

@@ -1,5 +1,6 @@
 import StatusChip from "./StatusChip";
 import NumberTicker from "./NumberTicker";
+import SourceTag from "./SourceTag";
 import { PlanStreakCalendar, DebtTrendSparkline, ComplexityTrendCalendar } from "./DataVisualizations";
 import type { ClassroomHealth } from "../types";
 import "./HealthBar.css";
@@ -135,6 +136,9 @@ export default function HealthBar({ health, loading, pendingActionCount = 0, onT
           onSegmentClick={onTrendClick}
         />
       )}
+      {/* Audit #34: health telemetry is derived from logged plans and
+          debt items — record-derived, not AI output. */}
+      <SourceTag kind="record" />
     </div>
   );
 }

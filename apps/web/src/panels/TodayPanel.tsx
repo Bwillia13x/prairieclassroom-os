@@ -23,6 +23,7 @@ import DayArc from "../components/DayArc";
 import TodayHero from "../components/TodayHero";
 import TodayAnchorRail, { type Anchor } from "../components/TodayAnchorRail";
 import PageFreshness from "../components/PageFreshness";
+import SourceTag from "../components/SourceTag";
 import type {
   ComplexityBlock,
   ComplexityForecast,
@@ -445,7 +446,10 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
         data-testid="risk-windows-body"
       >
         <div className="risk-windows__readout" aria-label={`${model.highCount} high risk windows`}>
-          <p className="risk-windows__eyebrow">Risk Windows</p>
+          {/* Audit #34: complexity forecasts are AI-generated. */}
+          <p className="risk-windows__eyebrow">
+            Risk Windows <SourceTag kind="ai" />
+          </p>
           <div className="risk-windows__metric">
             <span className="risk-windows__metric-number">{model.highCount}</span>
             <span className="risk-windows__metric-unit">{model.highCount === 1 ? "high block" : "high blocks"}</span>
