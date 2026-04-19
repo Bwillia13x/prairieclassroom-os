@@ -162,6 +162,29 @@ is self-contained and bounded — pick any one independently.
   this session because `npm run gemini:readycheck` reported a missing Gemini API
   key and disabled hosted-run guard.
 
+## Shipped 2026-04-18 — F3 bundle (real SSE streaming)
+
+- **F3.0 closed for planning-call SSE:** The Python inference service now
+  exposes `/generate/stream`. Gemini uses
+  `client.models.generate_content_stream(...)`; Ollama sends `stream: true`
+  to `/api/chat` and iterates NDJSON; mock/local/Vertex-compatible modes fall
+  back to a full-response stream so the API contract is stable across modes.
+- **Orchestrator streaming proxy landed:** Planning-route stream variants now
+  exist for Tomorrow Plan, Complexity Forecast, EA Load, Survival Packet, and
+  Support Patterns. The browser first makes an authenticated `POST /stream`
+  request, receives a short-lived opaque stream id, then attaches to `GET
+  /stream/:streamId/events` with native `EventSource`. Classroom access codes
+  stay in headers on the POST path and are not placed in URLs. The orchestrator
+  forwards provider chunks/thinking updates over SSE, assembles the final JSON
+  server-side, and persists only the final validated object.
+- **Web reducer path is real now:** `useStreamingRequest` no longer emits
+  canned thinking messages. Real SSE chunks drive `STREAM_PROGRESS`; provider
+  thinking/tool notices drive `STREAM_THINKING_CHUNK`; final parsed payloads
+  still end through the existing `STREAM_COMPLETE` reducer surface.
+- **Validation:** Focused Vitest coverage exercises the inference SSE parser,
+  tool-turn streaming, the web EventSource adapter, and the streaming hook.
+  Python backend tests cover Gemini and Ollama stream assembly.
+
 ## Still deferred — Followups, by priority
 
 ### F2.2 — Hosted Gemma tool-calling proof (P0 cleanup)
@@ -180,26 +203,26 @@ Gemma validation:
 Do not run the hosted proof until `npm run cost:status` confirms budget
 headroom.
 
-### F3 — Real SSE streaming (P1 from audit)
+### F3.x — Remaining streaming hardening
 
-`apps/web/src/hooks/useEmulatedStreaming.ts` and `useStreamingRequest.ts`
-fake progress with timed canned messages. Planning-tier calls block 30–100s
-behind a single `/generate` POST.
+The F3.0 slice intentionally covered the long synchronous planning-call wait
+surfaces that use `useStreamingRequest`: Tomorrow Plan, Complexity Forecast,
+EA Load, Survival Packet, and Support Patterns. Remaining bounded work:
 
-Plan:
-
-1. Add `/generate/stream` SSE endpoint to `services/inference/server.py`.
-2. GeminiAPIBackend: switch to `client.models.generate_content_stream(...)`;
-   yield each chunk as an SSE event.
-3. OllamaBackend: flip `stream: True`; iterate the NDJSON response.
-4. Orchestrator: add a streaming proxy route that forwards SSE chunks; persist
-   only the final assembled JSON to memory.
-5. Web: replace the timer-driven `STREAM_THINKING_CHUNK` dispatch with a real
-   `EventSource` consumer. The reducer surface (`STREAM_TICK`,
-   `STREAM_PROGRESS`, `STREAM_THINKING_CHUNK`, `STREAM_COMPLETE`) is already
-   shaped for it — drop-in upgrade.
-
-Budget ~3 days; touches every panel that uses `useEmulatedStreaming`.
+1. **F3.1 — Scaffold decay streaming route/UI.** Add the same `/stream` +
+   `/stream/:streamId/events` pattern for `detect_scaffold_decay` if/when that
+   route gets a first-class long-wait UI surface.
+2. **F3.2 — Non-planning emulation cleanup.** `useEmulatedStreaming` still
+   powers shorter live-tier panels such as Differentiate and Language Tools.
+   Replace only if the product wants every generation to expose provider
+   chunks, not just the long planning tier.
+3. **F3.3 — Hosted/local live proof.** Run the browser flow against real
+   Gemini and Ollama streaming hosts after credentials/model availability are
+   confirmed and budget checks pass. Unit tests prove protocol assembly; they
+   do not prove provider-specific hosted latency or disconnect behavior.
+4. **F3.4 — Provider cancellation proof.** EventSource close now aborts the
+   orchestrator fetch; add live proof that upstream Gemini/Ollama work stops
+   promptly on client disconnect before claiming end-to-end cancellation.
 
 ### F5 — 3-tier model selection (P2 from audit)
 

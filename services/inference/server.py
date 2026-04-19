@@ -10,13 +10,15 @@ Endpoints:
 
 Usage:
   python server.py --mode mock --port 3200
+  python server.py --mode mock --host 0.0.0.0 --port 3200
 """
 
 from __future__ import annotations
 
 import json
+import os
 import time
-from flask import Flask, request, jsonify
+from flask import Flask, Response, request, jsonify, stream_with_context
 from harness import GemmaHarness, InferenceMode, GenerationRequest, ModelTier, require_gemini_run_guard
 
 app = Flask(__name__)
@@ -111,13 +113,107 @@ def generate():
     })
 
 
-def create_app(mode: str = "mock", model_id: str | None = None, port: int = 3200) -> None:
+def _sse_event(event: str, data: dict) -> str:
+    return f"event: {event}\ndata: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+def _response_payload(resp, total_ms: float) -> dict:
+    return {
+        "text": resp.text,
+        "tool_calls": resp.tool_calls,
+        "thinking_text": resp.thinking_text,
+        "model_id": resp.model_id,
+        "latency_ms": resp.latency_ms or total_ms,
+        "prompt_tokens": resp.prompt_tokens,
+        "output_tokens": resp.output_tokens,
+        "total_tokens": resp.total_tokens,
+    }
+
+
+@app.route("/generate/stream", methods=["POST"])
+def generate_stream():
+    if harness is None:
+        return jsonify({"error": "Harness not initialized"}), 503
+
+    body = request.get_json(force=True)
+    if not body or "prompt" not in body:
+        return jsonify({"error": "Missing 'prompt' in request body"}), 400
+
+    test_behavior_resp = _apply_eval_behavior(body)
+    if test_behavior_resp is not None:
+        return test_behavior_resp
+
+    tier_str = body.get("model_tier", "live")
+    try:
+        tier = ModelTier(tier_str)
+    except ValueError:
+        return jsonify({"error": f"Invalid model_tier: {tier_str}"}), 400
+
+    gen_req = GenerationRequest(
+        prompt=body["prompt"],
+        images=body.get("images", []),
+        thinking=body.get("thinking", False),
+        tools=body.get("tools"),
+        tool_interactions=body.get("tool_interactions"),
+        model_tier=tier,
+        max_tokens=body.get("max_tokens", 2048),
+        prompt_class=body.get("prompt_class"),
+        mock_context=body.get("mock_context"),
+    )
+
+    @stream_with_context
+    def event_stream():
+        start = time.perf_counter()
+        yield _sse_event("ready", {"mode": harness.mode.value})
+        try:
+            for event in harness.generate_stream(gen_req):
+                if event.type == "chunk" and event.text:
+                    yield _sse_event("chunk", {"text": event.text})
+                    continue
+                if event.type == "thinking" and event.text:
+                    yield _sse_event("thinking", {"text": event.text})
+                    continue
+                if event.type != "complete" or event.response is None:
+                    continue
+
+                total_ms = (time.perf_counter() - start) * 1000
+                resp = event.response
+                if not resp.text or not resp.text.strip():
+                    yield _sse_event("error", {
+                        "error": "Empty model response — possible safety filter or refusal",
+                        "latency_ms": resp.latency_ms or total_ms,
+                    })
+                    return
+                if resp.text.startswith('{"error"'):
+                    yield _sse_event("error", {
+                        "error": resp.text,
+                        "latency_ms": resp.latency_ms or total_ms,
+                    })
+                    return
+
+                yield _sse_event("complete", _response_payload(resp, total_ms))
+                return
+        except Exception as e:
+            total_ms = (time.perf_counter() - start) * 1000
+            yield _sse_event("error", {"error": str(e), "latency_ms": total_ms})
+
+    return Response(
+        event_stream(),
+        mimetype="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+        },
+    )
+
+
+def create_app(mode: str = "mock", model_id: str | None = None, port: int = 3200, host: str = "127.0.0.1") -> None:
     global harness
     if mode == InferenceMode.GEMINI.value:
         require_gemini_run_guard()
     harness = GemmaHarness(mode=InferenceMode(mode), model_id=model_id)
-    print(f"Inference server starting — mode={mode}, port={port}")
-    app.run(host="127.0.0.1", port=port, debug=False)
+    print(f"Inference server starting — mode={mode}, host={host}, port={port}")
+    app.run(host=host, port=port, debug=False)
 
 
 if __name__ == "__main__":
@@ -125,6 +221,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Inference HTTP server")
     parser.add_argument("--mode", choices=["mock", "api", "local", "ollama", "gemini"], default="mock")
     parser.add_argument("--model-id", type=str, default=None)
-    parser.add_argument("--port", type=int, default=3200)
+    parser.add_argument("--host", type=str, default=os.environ.get("PRAIRIE_INFERENCE_HOST", "127.0.0.1"))
+    parser.add_argument("--port", type=int, default=int(os.environ.get("PRAIRIE_INFERENCE_PORT", "3200")))
     args = parser.parse_args()
-    create_app(mode=args.mode, model_id=args.model_id, port=args.port)
+    create_app(mode=args.mode, model_id=args.model_id, port=args.port, host=args.host)

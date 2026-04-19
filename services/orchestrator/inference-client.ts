@@ -34,6 +34,7 @@ interface InferenceOptions {
   deps: RouteDeps;
   req: Request;
   res: Response;
+  abortSignal?: AbortSignal;
   route: RouteConfig;
   prompt: {
     system: string;
@@ -55,6 +56,12 @@ export interface InferenceResult {
   output_tokens: number | null;
   total_tokens: number | null;
 }
+
+export type InferenceStreamEvent =
+  | { type: "chunk"; text: string }
+  | { type: "thinking"; text: string };
+
+export type InferenceStreamEmitter = (event: InferenceStreamEvent) => void | Promise<void>;
 
 const MAX_RETRIES = 2;
 const MAX_TOOL_TURNS = 1;
@@ -234,6 +241,7 @@ async function performGenerationCall(options: {
   maxTokens: number;
   mockContext: Record<string, unknown>;
   timeoutMs: number;
+  abortSignal?: AbortSignal;
   tools?: ToolDefinition[];
   toolInteractions?: ToolCallRecord[];
 }): Promise<GenerationCallResult> {
@@ -249,7 +257,7 @@ async function performGenerationCall(options: {
   let attempt = 0;
 
   while (attempt <= MAX_RETRIES) {
-    const timeout = withTimeout(undefined, options.timeoutMs);
+    const timeout = withTimeout(options.abortSignal, options.timeoutMs);
     try {
       const response = await fetch(`${options.deps.inferenceUrl}/generate`, {
         method: "POST",
@@ -364,6 +372,244 @@ async function performGenerationCall(options: {
   });
 }
 
+interface SseMessage {
+  event: string;
+  data: string;
+}
+
+function parseSseJson(data: string): Record<string, unknown> {
+  try {
+    const parsed = JSON.parse(data);
+    return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : {};
+  } catch {
+    return {};
+  }
+}
+
+async function readInferenceSse(
+  response: globalThis.Response,
+  emit: InferenceStreamEmitter,
+  onAnyEvent: () => void,
+): Promise<GenerateResponse> {
+  if (!response.body) {
+    throw new RouteError(502, {
+      error: "Inference service stream response had no body",
+      category: "inference",
+      retryable: true,
+      detail_code: "inference_stream_missing_body",
+    });
+  }
+
+  const decoder = new TextDecoder();
+  const reader = response.body.getReader();
+  let buffer = "";
+  let currentEvent = "message";
+  let dataLines: string[] = [];
+  let complete: GenerateResponse | null = null;
+
+  async function dispatchMessage(message: SseMessage): Promise<void> {
+    onAnyEvent();
+    if (message.event === "ready") return;
+
+    const payload = parseSseJson(message.data);
+    if (message.event === "chunk" || message.event === "thinking") {
+      const text = typeof payload.text === "string" ? payload.text : "";
+      if (text) await emit({ type: message.event, text });
+      return;
+    }
+
+    if (message.event === "complete") {
+      complete = payload as unknown as GenerateResponse;
+      return;
+    }
+
+    if (message.event === "error") {
+      const errorText = typeof payload.error === "string" ? payload.error : "Inference stream failed";
+      throw new RouteError(502, {
+        error: `Inference service error: ${errorText}`,
+        category: "inference",
+        retryable: false,
+        detail_code: "inference_stream_error",
+      });
+    }
+  }
+
+  async function flushMessage(): Promise<void> {
+    if (dataLines.length === 0) {
+      currentEvent = "message";
+      return;
+    }
+    const message = { event: currentEvent, data: dataLines.join("\n") };
+    currentEvent = "message";
+    dataLines = [];
+    await dispatchMessage(message);
+  }
+
+  while (true) {
+    const read = await reader.read();
+    if (read.done) break;
+    buffer += decoder.decode(read.value, { stream: true });
+
+    let newlineIndex = buffer.indexOf("\n");
+    while (newlineIndex >= 0) {
+      const rawLine = buffer.slice(0, newlineIndex);
+      buffer = buffer.slice(newlineIndex + 1);
+      const line = rawLine.endsWith("\r") ? rawLine.slice(0, -1) : rawLine;
+
+      if (line === "") {
+        await flushMessage();
+      } else if (line.startsWith("event:")) {
+        currentEvent = line.slice("event:".length).trim() || "message";
+      } else if (line.startsWith("data:")) {
+        dataLines.push(line.slice("data:".length).trimStart());
+      }
+
+      newlineIndex = buffer.indexOf("\n");
+    }
+  }
+
+  if (buffer.trim() || dataLines.length > 0) {
+    if (buffer.trim()) dataLines.push(buffer.trim());
+    await flushMessage();
+  }
+
+  if (!complete) {
+    throw new RouteError(502, {
+      error: "Inference stream closed before completion",
+      category: "inference",
+      retryable: true,
+      detail_code: "inference_stream_incomplete",
+    });
+  }
+
+  return complete;
+}
+
+async function performGenerationStreamCall(options: {
+  deps: RouteDeps;
+  route: RouteConfig;
+  prompt: string;
+  images?: string[];
+  thinkingEnabled: boolean;
+  maxTokens: number;
+  mockContext: Record<string, unknown>;
+  timeoutMs: number;
+  abortSignal?: AbortSignal;
+  tools?: ToolDefinition[];
+  toolInteractions?: ToolCallRecord[];
+  emit: InferenceStreamEmitter;
+}): Promise<GenerationCallResult> {
+  if (isBudgetExceeded()) {
+    throw new RouteError(429, {
+      error: `Daily Gemma spend cap reached: $${getTodaySpendUsd().toFixed(4)} of $${getBudgetUsd().toFixed(2)}. Raise PRAIRIE_DAILY_BUDGET_USD or wait until UTC midnight.`,
+      category: "cost_budget",
+      retryable: false,
+      detail_code: "daily_budget_exceeded",
+    });
+  }
+
+  let attempt = 0;
+
+  while (attempt <= MAX_RETRIES) {
+    let receivedStreamEvent = false;
+    const timeout = withTimeout(options.abortSignal, options.timeoutMs);
+    try {
+      const response = await fetch(`${options.deps.inferenceUrl}/generate/stream`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "text/event-stream" },
+        body: requestBodyForGeneration({
+          route: options.route,
+          prompt: options.toolInteractions && options.toolInteractions.length > 0
+            ? appendToolResultsToPrompt(options.prompt, options.toolInteractions)
+            : options.prompt,
+          images: options.images,
+          thinkingEnabled: options.thinkingEnabled,
+          maxTokens: options.maxTokens,
+          mockContext: options.mockContext,
+          tools: options.toolInteractions && options.toolInteractions.length > 0
+            ? undefined
+            : options.tools,
+        }),
+        signal: timeout.signal,
+      });
+
+      if (!response.ok) {
+        const rawBody = await response.text();
+        const retryable = isRetryableStatus(response.status)
+          || (response.status === 502 && isRetryableErrorBody(rawBody));
+        if (retryable && attempt < MAX_RETRIES) {
+          attempt += 1;
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          await new Promise((resolve) => setTimeout(resolve, backoffMs));
+          continue;
+        }
+        throw new RouteError(502, {
+          error: `Inference service error: ${rawBody}`,
+          category: "inference",
+          retryable,
+          detail_code: retryable ? "inference_service_retryable" : "inference_service_error",
+        });
+      }
+
+      const parsed = await readInferenceSse(response, options.emit, () => {
+        receivedStreamEvent = true;
+      });
+
+      if (typeof parsed.text !== "string") {
+        throw new RouteError(502, {
+          error: "Inference service response missing text",
+          category: "inference",
+          retryable: false,
+          detail_code: "inference_response_missing_text",
+        });
+      }
+
+      const promptTokens = typeof parsed.prompt_tokens === "number" ? parsed.prompt_tokens : null;
+      const outputTokens = typeof parsed.output_tokens === "number" ? parsed.output_tokens : null;
+      const totalTokens =
+        typeof parsed.total_tokens === "number"
+          ? parsed.total_tokens
+          : promptTokens !== null && outputTokens !== null
+            ? promptTokens + outputTokens
+            : null;
+
+      recordCallSpend(parsed.model_id ?? null, promptTokens, outputTokens);
+
+      return { parsed, retryCount: attempt, promptTokens, outputTokens, totalTokens };
+    } catch (error) {
+      if (error instanceof RouteError) {
+        throw error;
+      }
+
+      const retryable = isAbortError(error) || isTransportError(error);
+      if (retryable && !receivedStreamEvent && attempt < MAX_RETRIES) {
+        attempt += 1;
+        const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+        await new Promise((resolve) => setTimeout(resolve, backoffMs));
+        continue;
+      }
+
+      throw new RouteError(502, {
+        error: isAbortError(error)
+          ? "Inference service timed out"
+          : "Inference service stream unavailable",
+        category: "inference",
+        retryable,
+        detail_code: isAbortError(error) ? "inference_timeout" : "inference_transport_error",
+      });
+    } finally {
+      timeout.dispose();
+    }
+  }
+
+  throw new RouteError(502, {
+    error: "Inference service stream unavailable",
+    category: "inference",
+    retryable: true,
+    detail_code: "inference_transport_error",
+  });
+}
+
 export async function callInference(options: InferenceOptions): Promise<InferenceResult> {
   const timeoutMs = readEvalTimeoutOverride(options.req) ?? resolveTimeoutForRoute(options.route);
   const fastMode = readFastModeOverride(options.req);
@@ -412,6 +658,7 @@ export async function callInference(options: InferenceOptions): Promise<Inferenc
       maxTokens: options.maxTokens,
       mockContext,
       timeoutMs,
+      abortSignal: options.abortSignal,
       tools: definitions,
       toolInteractions: toolTurn > 0 ? executedToolCalls : undefined,
     });
@@ -447,6 +694,136 @@ export async function callInference(options: InferenceOptions): Promise<Inferenc
 
       const records = await executeToolCalls(rawToolCalls, registeredTools, toolContext);
       executedToolCalls.push(...records);
+      continue;
+    }
+
+    const promptTokens = sumNullable(promptTokenCounts);
+    const outputTokens = sumNullable(outputTokenCounts);
+    const totalTokens = sumNullable(totalTokenCounts)
+      ?? (promptTokens !== null && outputTokens !== null ? promptTokens + outputTokens : null);
+
+    setRequestContext(options.res, {
+      retry_count: totalRetryCount,
+      latency_ms: totalLatencyMs || (typeof parsed.latency_ms === "number" ? parsed.latency_ms : undefined),
+      response_repaired: looksResponseRepaired(parsed.text),
+      prompt_tokens: promptTokens,
+      output_tokens: outputTokens,
+      total_tokens: totalTokens,
+      model_id: parsed.model_id ?? undefined,
+      debug_prompt_body: executedToolCalls.length > 0
+        ? appendToolResultsToPrompt(basePrompt, executedToolCalls)
+        : basePrompt,
+      debug_response_body: parsed.text,
+    });
+
+    return {
+      text: parsed.text,
+      thinking_text: parsed.thinking_text ?? null,
+      model_id: parsed.model_id ?? "unknown",
+      latency_ms: totalLatencyMs || parsed.latency_ms || 0,
+      tool_calls: executedToolCalls,
+      prompt_tokens: promptTokens,
+      output_tokens: outputTokens,
+      total_tokens: totalTokens,
+    };
+  }
+
+  throw new RouteError(502, {
+    error: "Inference service returned unresolved tool calls",
+    category: "inference",
+    retryable: false,
+    detail_code: "tool_call_unresolved",
+  });
+}
+
+export async function callInferenceStream(
+  options: InferenceOptions,
+  emit: InferenceStreamEmitter,
+): Promise<InferenceResult> {
+  const timeoutMs = readEvalTimeoutOverride(options.req) ?? resolveTimeoutForRoute(options.route);
+  const fastMode = readFastModeOverride(options.req);
+  const thinkingEnabled = options.route.thinking_enabled && !fastMode;
+  const basePrompt = `${options.prompt.system}\n\n${options.prompt.user}`;
+  const safetyAnalysis = detectPromptInjectionInUnknown(options.safetyScanSource ?? options.req.body);
+  const evalBehavior = options.req.headers["x-prairie-eval-behavior"];
+  const mockContext = {
+    ...(options.mockContext ?? {}),
+    ...(typeof evalBehavior === "string" && evalBehavior ? { __test_behavior: evalBehavior } : {}),
+  };
+  const classroomId = getRequestClassroomId(options.req);
+  const classroomProfile = classroomId ? options.deps.loadClassroom(classroomId) : undefined;
+  const knownAliases = classroomProfile?.students?.map((student) => student.alias) ?? undefined;
+  const toolContext = {
+    promptClass: options.route.prompt_class,
+    classroomId: classroomId ? unsafeCastClassroomId(classroomId) : undefined,
+    knownAliases,
+  };
+  const registeredTools: RegisteredTool[] = options.route.tool_call_capable
+    ? getToolsForPromptClass(options.route.prompt_class, toolContext)
+    : [];
+  const definitions = toolDefinitions(registeredTools);
+
+  setRequestContext(options.res, {
+    prompt_class: options.route.prompt_class,
+    model_tier: options.route.model_tier,
+    timeout_ms: timeoutMs,
+    promptSafety: safetyAnalysis,
+  });
+
+  let totalRetryCount = 0;
+  let totalLatencyMs = 0;
+  const promptTokenCounts: Array<number | null> = [];
+  const outputTokenCounts: Array<number | null> = [];
+  const totalTokenCounts: Array<number | null> = [];
+  const executedToolCalls: ToolCallRecord[] = [];
+
+  for (let toolTurn = 0; toolTurn <= MAX_TOOL_TURNS; toolTurn += 1) {
+    const generation = await performGenerationStreamCall({
+      deps: options.deps,
+      route: options.route,
+      prompt: basePrompt,
+      images: options.images,
+      thinkingEnabled,
+      maxTokens: options.maxTokens,
+      mockContext,
+      timeoutMs,
+      abortSignal: options.abortSignal,
+      tools: definitions,
+      toolInteractions: toolTurn > 0 ? executedToolCalls : undefined,
+      emit,
+    });
+
+    const { parsed } = generation;
+    totalRetryCount += generation.retryCount;
+    totalLatencyMs += typeof parsed.latency_ms === "number" ? parsed.latency_ms : 0;
+    promptTokenCounts.push(generation.promptTokens);
+    outputTokenCounts.push(generation.outputTokens);
+    totalTokenCounts.push(generation.totalTokens);
+
+    const rawToolCalls = Array.isArray(parsed.tool_calls) ? parsed.tool_calls : [];
+    if (rawToolCalls.length > 0) {
+      if (registeredTools.length === 0 || toolTurn >= MAX_TOOL_TURNS) {
+        const redactedSummaries = rawToolCalls.map((raw) => {
+          const call = normalizeToolCall(raw);
+          return {
+            tool_name: call?.name ?? "unknown",
+            arg_count: call ? Object.keys(call.arguments).length : 0,
+          };
+        });
+        throw new RouteError(502, {
+          error: "Inference service returned unresolved tool calls",
+          category: "inference",
+          retryable: false,
+          detail_code: "tool_call_unresolved",
+        }, {
+          tool_call_count: rawToolCalls.length,
+          tool_calls_summary: redactedSummaries,
+        });
+      }
+
+      const records = await executeToolCalls(rawToolCalls, registeredTools, toolContext);
+      executedToolCalls.push(...records);
+      await emit({ type: "thinking", text: "\nConsulted local classroom tools; finalizing structured output." });
       continue;
     }
 

@@ -42,7 +42,7 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 | `log_intervention` | live | no | no | no |
 | `simplify_for_student` | live | no | no | no |
 | `generate_vocab_cards` | live | no | no | no |
-| `detect_support_patterns` | planning | yes | yes | no |
+| `detect_support_patterns` | planning | yes | yes | yes |
 | `generate_ea_briefing` | live | no | yes | no |
 | `forecast_complexity` | planning | yes | yes | no |
 | `detect_scaffold_decay` | planning | yes | yes | no |
@@ -53,7 +53,7 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 ## API Mounts
 
 - Mounted Express route bases: 21
-- Exact endpoints: 37
+- Exact endpoints: 47
 - `/api/differentiate`
 - `/api/tomorrow-plan`
 - `/api/family-message`
@@ -90,17 +90,25 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 | GET | `/api/curriculum/entries/:entryId` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |
 | POST | `/api/differentiate` | `services/orchestrator/routes/differentiate.ts` | classroom-code | teacher |
 | POST | `/api/tomorrow-plan` | `services/orchestrator/routes/tomorrow-plan.ts` | classroom-code | teacher |
+| POST | `/api/tomorrow-plan/stream` | `services/orchestrator/routes/tomorrow-plan.ts` | classroom-code | teacher |
+| GET | `/api/tomorrow-plan/stream/:streamId/events` | `services/orchestrator/routes/tomorrow-plan.ts` | classroom-code | teacher |
 | POST | `/api/family-message` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |
 | POST | `/api/family-message/approve` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |
 | POST | `/api/intervention` | `services/orchestrator/routes/intervention.ts` | classroom-code | teacher, ea, substitute |
 | POST | `/api/simplify` | `services/orchestrator/routes/language-tools.ts` | classroom-code | teacher |
 | POST | `/api/vocab-cards` | `services/orchestrator/routes/language-tools.ts` | classroom-code | teacher |
 | POST | `/api/support-patterns` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher |
+| POST | `/api/support-patterns/stream` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher |
+| GET | `/api/support-patterns/stream/:streamId/events` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher |
 | GET | `/api/support-patterns/latest/:classroomId` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher, reviewer |
 | POST | `/api/ea-briefing` | `services/orchestrator/routes/ea-briefing.ts` | classroom-code | teacher, ea, substitute |
 | POST | `/api/complexity-forecast` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |
+| POST | `/api/complexity-forecast/stream` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |
+| GET | `/api/complexity-forecast/stream/:streamId/events` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |
 | GET | `/api/complexity-forecast/latest/:classroomId` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher, substitute, reviewer |
 | POST | `/api/ea-load` | `services/orchestrator/routes/ea-load.ts` | classroom-code | teacher, ea |
+| POST | `/api/ea-load/stream` | `services/orchestrator/routes/ea-load.ts` | classroom-code | teacher, ea |
+| GET | `/api/ea-load/stream/:streamId/events` | `services/orchestrator/routes/ea-load.ts` | classroom-code | teacher, ea |
 | GET | `/api/debt-register/:classroomId` | `services/orchestrator/routes/debt-register.ts` | classroom-code | teacher, ea, substitute, reviewer |
 | GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea, substitute |
 | GET | `/api/classrooms/:id/plans` | `services/orchestrator/routes/history.ts` | classroom-code | teacher, reviewer |
@@ -112,6 +120,8 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 | POST | `/api/scaffold-decay` | `services/orchestrator/routes/scaffold-decay.ts` | classroom-code | teacher |
 | GET | `/api/scaffold-decay/latest/:classroomId/:studentRef` | `services/orchestrator/routes/scaffold-decay.ts` | classroom-code | teacher |
 | POST | `/api/survival-packet` | `services/orchestrator/routes/survival-packet.ts` | classroom-code | teacher |
+| POST | `/api/survival-packet/stream` | `services/orchestrator/routes/survival-packet.ts` | classroom-code | teacher |
+| GET | `/api/survival-packet/stream/:streamId/events` | `services/orchestrator/routes/survival-packet.ts` | classroom-code | teacher |
 | POST | `/api/extract-worksheet` | `services/orchestrator/routes/extract-worksheet.ts` | classroom-code | teacher |
 | POST | `/api/feedback` | `services/orchestrator/routes/feedback.ts` | classroom-code | teacher, ea |
 | GET | `/api/feedback/summary/:classroomId` | `services/orchestrator/routes/feedback.ts` | classroom-code | teacher, ea, reviewer |

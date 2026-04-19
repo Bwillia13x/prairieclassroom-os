@@ -11,7 +11,7 @@
  * prefers-reduced-motion through DayArc.css.
  */
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import type { KeyboardEvent } from "react";
 import type {
   ComplexityForecast,
@@ -34,10 +34,10 @@ interface Props {
 }
 
 const VIEW_W = 900;
-const VIEW_H = 260;
-const PAD_X = 40;
-const PAD_TOP = 56;
-const PAD_BOTTOM = 82;
+const VIEW_H = 340;
+const PAD_X = 54;
+const PAD_TOP = 72;
+const PAD_BOTTOM = 118;
 const RIDGE_MAX_H = VIEW_H - PAD_TOP - PAD_BOTTOM;
 const BASELINE_Y = PAD_TOP + RIDGE_MAX_H;
 
@@ -94,6 +94,7 @@ export default function DayArc({
   onBlockClick,
   now,
 }: Props) {
+  const svgId = useId().replace(/:/g, "");
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -160,8 +161,8 @@ export default function DayArc({
 
     const maxUrgency = Math.max(1, ...scored.map((x) => x.urgency));
     const innerW = VIEW_W - PAD_X * 2;
-    const laneTop = BASELINE_Y + 16;
-    const laneBottom = VIEW_H - 30;
+    const laneTop = BASELINE_Y + 52;
+    const laneBottom = VIEW_H - 32;
 
     return scored.map((entry, i) => {
       const { student, urgency } = entry;
@@ -197,7 +198,7 @@ export default function DayArc({
     for (const item of debtItems) {
       byCategory.set(item.category, (byCategory.get(item.category) ?? 0) + 1);
     }
-    const moteSpacing = 46;
+    const moteSpacing = 42;
     const maxMotes = Math.max(
       1,
       Math.floor((VIEW_W - PAD_X * 2) / moteSpacing / 2),
@@ -209,9 +210,9 @@ export default function DayArc({
     return entries.map(([category, count], i) => ({
       category,
       count,
-      x: rightEdge - i * moteSpacing,
-      y: 22 + (i % 2) * 14,
-      radius: 10 + Math.min(count, 5) * 1.6,
+      x: rightEdge - 20 - i * moteSpacing,
+      y: PAD_TOP - 42 + (i % 2) * 14,
+      radius: 9 + Math.min(count, 5) * 1.45,
     }));
   }, [debtItems]);
 
@@ -238,10 +239,14 @@ export default function DayArc({
 
   const ridgePathD = buildRidgePath(ridge);
   const ridgeStrokeD = buildRidgeStrokePath(ridge);
+  const showActivityLabels = ridge.length <= 5;
 
   const peak = ridge.reduce((best, p) =>
     LEVEL_NUMERIC[p.level] > LEVEL_NUMERIC[best.level] ? p : best,
   );
+  const peakLabelX = clamp(peak.x, PAD_X + 84, VIEW_W - PAD_X - 84);
+  const peakLevelLabel = formatLevel(peak.level);
+  const peakActivityLabel = formatActivityLabel(peak.block.activity, 18);
 
   const watchingCount = constellation.length;
   const threadsCount = debtItems.length;
@@ -254,13 +259,15 @@ export default function DayArc({
     threadsCount,
   );
 
+  const ridgeFillId = `day-arc-ridge-fill-${svgId}`;
+
   return (
     <section
       className={`day-arc${mounted ? " day-arc--mounted" : ""}`}
       aria-labelledby="day-arc-title"
     >
       <header className="day-arc__header">
-        <div>
+        <div className="day-arc__heading">
           <h2 id="day-arc-title" className="day-arc__title">Today's Shape</h2>
           <p className="day-arc__subtitle">
             <span>{forecast.blocks.length} blocks</span>
@@ -274,313 +281,372 @@ export default function DayArc({
             </span>
           </p>
         </div>
+        <div
+          className={`day-arc__peak-badge day-arc__peak-badge--${peak.level}`}
+          aria-label={`Peak block: ${peak.block.activity}, ${peak.block.time_slot}, ${peakLevelLabel} complexity.`}
+        >
+          <span>Peak</span>
+          <strong>{blockStartLabel(peak.block.time_slot)}</strong>
+          <em>{peakActivityLabel}</em>
+        </div>
       </header>
 
-      <svg
-        className="day-arc__svg"
-        viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-        role="img"
-        aria-label={ariaLabel}
-        preserveAspectRatio="xMidYMid meet"
-      >
-        <defs>
-          <linearGradient id="day-arc-horizon" x1="0" y1="0" x2="1" y2="0">
-            <stop
-              offset="0%"
-              stopColor="var(--color-bg-sun)"
-              stopOpacity="0.55"
-            />
-            <stop
-              offset="45%"
-              stopColor="var(--color-bg-muted)"
-              stopOpacity="0.15"
-            />
-            <stop
-              offset="100%"
-              stopColor="var(--color-bg-analysis)"
-              stopOpacity="0.4"
-            />
-          </linearGradient>
-          <linearGradient id="day-arc-ridge-fill" x1="0" y1="0" x2="0" y2="1">
-            <stop
-              offset="0%"
-              stopColor="var(--color-forecast-high)"
-              stopOpacity="0.58"
-            />
-            <stop
-              offset="55%"
-              stopColor="var(--color-forecast-medium)"
-              stopOpacity="0.34"
-            />
-            <stop
-              offset="100%"
-              stopColor="var(--color-forecast-low)"
-              stopOpacity="0.1"
-            />
-          </linearGradient>
-          <radialGradient id="day-arc-mote-fill" cx="0.5" cy="0.5" r="0.5">
-            <stop
-              offset="0%"
-              stopColor="var(--color-pending)"
-              stopOpacity="0.72"
-            />
-            <stop
-              offset="100%"
-              stopColor="var(--color-pending)"
-              stopOpacity="0.12"
-            />
-          </radialGradient>
-        </defs>
+      <div className="day-arc__canvas">
+        <svg
+          className="day-arc__svg"
+          viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
+          role="img"
+          aria-label={ariaLabel}
+          preserveAspectRatio="xMidYMid meet"
+        >
+          {/* Gradients removed per Nothing-design: chrome is flat, the
+              ridge reads as a solid semi-opaque shape filled with the
+              text color at low opacity. The ridge's STROKE carries the
+              narrative — the fill is just the band of presence. */}
+          <defs>
+            <linearGradient id={ridgeFillId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="var(--color-text)" stopOpacity="0.16" />
+              <stop offset="100%" stopColor="var(--color-text)" stopOpacity="0.02" />
+            </linearGradient>
+          </defs>
 
-        <rect
-          x="0"
-          y="0"
-          width={VIEW_W}
-          height={VIEW_H}
-          fill="url(#day-arc-horizon)"
-        />
+          {/* Horizon: solid surface-muted, no gradient. */}
+          <rect
+            x="0"
+            y="0"
+            width={VIEW_W}
+            height={VIEW_H}
+            fill="var(--color-surface-muted)"
+          />
 
-        <line
-          x1={PAD_X}
-          y1={BASELINE_Y}
-          x2={VIEW_W - PAD_X}
-          y2={BASELINE_Y}
-          stroke="var(--color-border)"
-          strokeWidth="1"
-          strokeDasharray="2,5"
-          opacity="0.55"
-        />
+          <g className="day-arc__bands" aria-hidden="true">
+            {(["high", "medium", "low"] as const).map((level, i) => {
+              const bandH = RIDGE_MAX_H / 3;
+              const y = PAD_TOP + i * bandH;
+              return (
+                <g key={level}>
+                  <rect
+                    className={`day-arc__band day-arc__band--${level}`}
+                    x={PAD_X}
+                    y={y}
+                    width={VIEW_W - PAD_X * 2}
+                    height={bandH}
+                  />
+                  <text
+                    x={PAD_X - 18}
+                    y={y + bandH / 2 + 3}
+                    textAnchor="end"
+                    className="day-arc__band-label"
+                  >
+                    {formatLevel(level)}
+                  </text>
+                </g>
+              );
+            })}
+          </g>
 
-        <path
-          className="day-arc__ridge-fill"
-          d={ridgePathD}
-          fill="url(#day-arc-ridge-fill)"
-          pathLength={1}
-        />
-        <path
-          className="day-arc__ridge-stroke"
-          d={ridgeStrokeD}
-          fill="none"
-          stroke="var(--color-accent)"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          pathLength={1}
-        />
-
-        {ridge.map((p, i) => {
-          const delta = deltas[i] ?? 0;
-          const whisker =
-            delta === 0
-              ? null
-              : delta > 0
-                ? `M ${p.x} ${p.y - 8} L ${p.x - 3} ${p.y - 13} M ${p.x} ${p.y - 8} L ${p.x + 3} ${p.y - 13}`
-                : `M ${p.x} ${p.y + 8} L ${p.x - 3} ${p.y + 13} M ${p.x} ${p.y + 8} L ${p.x + 3} ${p.y + 13}`;
-          const whiskerTone =
-            delta > 0 ? "var(--color-danger)" : "var(--color-success)";
-          return (
-            <g
-              key={`block-${i}`}
-              className="day-arc__block-group"
-              style={{ animationDelay: `${360 + i * 70}ms` }}
-            >
-              <circle
-                cx={p.x}
-                cy={p.y}
-                r="4.5"
-                fill={`var(--color-forecast-${p.level})`}
-                stroke="var(--color-surface-elevated)"
-                strokeWidth="2"
+          <g className="day-arc__block-guides" aria-hidden="true">
+            {ridge.map((p) => (
+              <line
+                key={`guide-${p.index}`}
+                x1={p.x}
+                y1={PAD_TOP}
+                x2={p.x}
+                y2={VIEW_H - 34}
               />
-              {whisker && (
-                <path
-                  d={whisker}
-                  stroke={whiskerTone}
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  fill="none"
-                  opacity="0.9"
-                />
-              )}
-              <text
-                x={p.x}
-                y={BASELINE_Y + 16}
-                textAnchor="middle"
-                className="day-arc__block-label"
-              >
-                {blockStartLabel(p.block.time_slot)}
-              </text>
-            </g>
-          );
-        })}
+            ))}
+          </g>
 
-        {onBlockClick &&
-          ridge.map((p, i) => {
-            const hitLeft =
-              i === 0 ? PAD_X : (ridge[i - 1].x + p.x) / 2;
-            const hitRight =
-              i === ridge.length - 1
-                ? VIEW_W - PAD_X
-                : (p.x + ridge[i + 1].x) / 2;
-            const hitW = Math.max(20, hitRight - hitLeft);
+          <line
+            className="day-arc__baseline"
+            x1={PAD_X}
+            y1={BASELINE_Y}
+            x2={VIEW_W - PAD_X}
+            y2={BASELINE_Y}
+          />
+
+          <path
+            className="day-arc__ridge-fill"
+            d={ridgePathD}
+            fill={`url(#${ridgeFillId})`}
+            pathLength={1}
+          />
+          <path
+            className="day-arc__ridge-stroke"
+            d={ridgeStrokeD}
+            fill="none"
+            stroke="var(--color-accent)"
+            strokeWidth="2.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            pathLength={1}
+          />
+
+          <g className={`day-arc__peak day-arc__peak--${peak.level}`} aria-hidden="true">
+            <line
+              x1={peak.x}
+              y1={PAD_TOP - 12}
+              x2={peak.x}
+              y2={peak.y - 10}
+            />
+            <rect
+              x={peakLabelX - 68}
+              y="15"
+              width="136"
+              height="38"
+              rx="8"
+            />
+            <text
+              x={peakLabelX}
+              y="30"
+              textAnchor="middle"
+              className="day-arc__peak-label"
+            >
+              Peak: {peakActivityLabel}
+            </text>
+            <text
+              x={peakLabelX}
+              y="44"
+              textAnchor="middle"
+              className="day-arc__peak-meta"
+            >
+              {peak.block.time_slot} · {peakLevelLabel}
+            </text>
+          </g>
+
+          {ridge.map((p, i) => {
+            const labelX = clamp(p.x, PAD_X + 58, VIEW_W - PAD_X - 58);
+            const delta = deltas[i] ?? 0;
+            const whisker =
+              delta === 0
+                ? null
+                : delta > 0
+                  ? `M ${p.x} ${p.y - 9} L ${p.x - 4} ${p.y - 15} M ${p.x} ${p.y - 9} L ${p.x + 4} ${p.y - 15}`
+                  : `M ${p.x} ${p.y + 9} L ${p.x - 4} ${p.y + 15} M ${p.x} ${p.y + 9} L ${p.x + 4} ${p.y + 15}`;
+            const whiskerTone =
+              delta > 0 ? "var(--color-danger)" : "var(--color-success)";
             return (
               <g
-                key={`hit-${i}`}
-                className="day-arc__block-hit"
-                tabIndex={0}
-                role="button"
-                aria-label={`${p.block.time_slot} ${p.block.activity}: ${p.block.level} complexity. Open detail.`}
-                onClick={() => onBlockClick(i)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onBlockClick(i);
-                  }
-                }}
+                key={`block-${i}`}
+                className="day-arc__block-group"
+                style={{ animationDelay: `${360 + i * 70}ms` }}
               >
-                <rect
-                  x={hitLeft}
-                  y={PAD_TOP - 6}
-                  width={hitW}
-                  height={RIDGE_MAX_H + 22}
-                  fill="transparent"
+                <circle
+                  cx={p.x}
+                  cy={p.y}
+                  r="6.2"
+                  fill={`var(--color-forecast-${p.level})`}
+                  stroke="var(--color-surface-muted)"
+                  strokeWidth="2.4"
                 />
+                {whisker && (
+                  <path
+                    d={whisker}
+                    stroke={whiskerTone}
+                    strokeWidth="1.8"
+                    strokeLinecap="round"
+                    fill="none"
+                    opacity="0.95"
+                  />
+                )}
+                {showActivityLabels && (
+                  <text
+                    x={labelX}
+                    y={BASELINE_Y + 24}
+                    textAnchor="middle"
+                    className="day-arc__activity-label"
+                  >
+                    {formatActivityLabel(p.block.activity, 16)}
+                  </text>
+                )}
+                <text
+                  x={labelX}
+                  y={BASELINE_Y + (showActivityLabels ? 42 : 28)}
+                  textAnchor="middle"
+                  className="day-arc__block-label"
+                >
+                  {blockStartLabel(p.block.time_slot)}
+                </text>
               </g>
             );
           })}
 
-        {nowX !== null && (
-          <g className="day-arc__now" aria-hidden="true">
-            <line
-              className="day-arc__now-line"
-              x1={nowX}
-              y1={PAD_TOP - 10}
-              x2={nowX}
-              y2={BASELINE_Y + 4}
-              stroke="var(--color-accent)"
-              strokeWidth="1.5"
-              strokeDasharray="3,4"
-            />
-            <circle
-              className="day-arc__now-dot"
-              cx={nowX}
-              cy={PAD_TOP - 10}
-              r="3.2"
-              fill="var(--color-accent)"
-            />
-            <text
-              x={nowX}
-              y={PAD_TOP - 16}
-              textAnchor="middle"
-              className="day-arc__now-label"
-            >
-              now
-            </text>
-          </g>
-        )}
+          {onBlockClick &&
+            ridge.map((p, i) => {
+              const hitLeft =
+                i === 0 ? PAD_X : (ridge[i - 1].x + p.x) / 2;
+              const hitRight =
+                i === ridge.length - 1
+                  ? VIEW_W - PAD_X
+                  : (p.x + ridge[i + 1].x) / 2;
+              const hitW = Math.max(20, hitRight - hitLeft);
+              return (
+                <g
+                  key={`hit-${i}`}
+                  className="day-arc__block-hit"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`${p.block.time_slot} ${p.block.activity}: ${p.block.level} complexity. Open detail.`}
+                  onClick={() => onBlockClick(i)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onBlockClick(i);
+                    }
+                  }}
+                >
+                  <rect
+                    x={hitLeft}
+                    y={PAD_TOP - 8}
+                    width={hitW}
+                    height={RIDGE_MAX_H + 54}
+                    fill="transparent"
+                  />
+                </g>
+              );
+            })}
 
-        {constellation.map((s, i) => {
-          const clickable = Boolean(onStudentClick);
-          const label = `${s.alias}: ${s.pending} pending ${s.pending === 1 ? "action" : "actions"}${s.reason ? `, ${s.reason}` : ""}. Open detail.`;
-          const interactiveProps = clickable
-            ? {
-                tabIndex: 0,
-                role: "button" as const,
-                "aria-label": label,
-                onClick: () => onStudentClick!(s.alias),
-                onKeyDown: (e: KeyboardEvent<SVGGElement>) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onStudentClick!(s.alias);
-                  }
-                },
-              }
-            : {};
-          return (
-            <g
-              key={s.alias}
-              className={`day-arc__star day-arc__star--${s.tone}${clickable ? " day-arc__star--clickable" : ""}`}
-              style={{ animationDelay: `${560 + i * 70}ms` }}
-              {...interactiveProps}
-            >
+          {nowX !== null && (
+            <g className="day-arc__now" aria-hidden="true">
               <line
-                x1={s.x}
-                y1={BASELINE_Y + 2}
-                x2={s.x}
-                y2={s.y - s.radius}
-                stroke={`var(--color-${s.tone})`}
-                strokeOpacity="0.32"
-                strokeWidth="1"
-                strokeDasharray="1.5,2.5"
+                className="day-arc__now-line"
+                x1={nowX}
+                y1={PAD_TOP - 18}
+                x2={nowX}
+                y2={BASELINE_Y + 44}
+                stroke="var(--color-accent)"
+                strokeWidth="1.7"
+                strokeDasharray="3,5"
               />
               <circle
-                className="day-arc__star-halo"
-                cx={s.x}
-                cy={s.y}
-                r={s.radius + 4}
-                fill="none"
-                stroke={`var(--color-${s.tone})`}
-                strokeOpacity="0.22"
-                strokeWidth="1"
-              />
-              <circle
-                cx={s.x}
-                cy={s.y}
-                r={s.radius}
-                fill={`var(--color-${s.tone})`}
-                fillOpacity="0.9"
-                stroke="var(--color-surface-elevated)"
-                strokeWidth="1.5"
+                className="day-arc__now-dot"
+                cx={nowX}
+                cy={PAD_TOP - 18}
+                r="4"
+                fill="var(--color-accent)"
               />
               <text
-                x={s.x}
-                y={s.y + s.radius + 12}
+                x={nowX}
+                y={PAD_TOP - 26}
                 textAnchor="middle"
-                className="day-arc__star-label"
+                className="day-arc__now-label"
               >
-                {s.alias}
+                now
               </text>
-              {clickable && (
+            </g>
+          )}
+
+          {constellation.map((s, i) => {
+            const clickable = Boolean(onStudentClick);
+            const label = `${s.alias}: ${s.pending} pending ${s.pending === 1 ? "action" : "actions"}${s.reason ? `, ${s.reason}` : ""}. Open detail.`;
+            const interactiveProps = clickable
+              ? {
+                  tabIndex: 0,
+                  role: "button" as const,
+                  "aria-label": label,
+                  onClick: () => onStudentClick!(s.alias),
+                  onKeyDown: (e: KeyboardEvent<SVGGElement>) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onStudentClick!(s.alias);
+                    }
+                  },
+                }
+              : {};
+            return (
+              <g
+                key={s.alias}
+                className={`day-arc__star day-arc__star--${s.tone}${clickable ? " day-arc__star--clickable" : ""}`}
+                style={{ animationDelay: `${560 + i * 70}ms` }}
+                {...interactiveProps}
+              >
+                <line
+                  x1={s.x}
+                  y1={BASELINE_Y + 46}
+                  x2={s.x}
+                  y2={s.y - s.radius}
+                  stroke={`var(--color-${s.tone})`}
+                  strokeOpacity="0.3"
+                  strokeWidth="1.1"
+                  strokeDasharray="1.5,3"
+                />
                 <circle
-                  className="day-arc__star-hit"
+                  className="day-arc__star-halo"
                   cx={s.x}
                   cy={s.y}
-                  r={Math.max(14, s.radius + 6)}
-                  fill="transparent"
+                  r={s.radius + 5}
+                  fill="none"
+                  stroke={`var(--color-${s.tone})`}
+                  strokeOpacity="0.24"
+                  strokeWidth="1.2"
                 />
-              )}
-            </g>
-          );
-        })}
+                <circle
+                  cx={s.x}
+                  cy={s.y}
+                  r={s.radius}
+                  fill={`var(--color-${s.tone})`}
+                  fillOpacity="0.94"
+                  stroke="var(--color-surface-muted)"
+                  strokeWidth="1.8"
+                />
+                <text
+                  x={s.x}
+                  y={s.y + s.radius + 13}
+                  textAnchor="middle"
+                  className="day-arc__star-label"
+                >
+                  {s.alias}
+                </text>
+                {clickable && (
+                  <circle
+                    className="day-arc__star-hit"
+                    cx={s.x}
+                    cy={s.y}
+                    r={Math.max(16, s.radius + 7)}
+                    fill="transparent"
+                  />
+                )}
+              </g>
+            );
+          })}
 
-        {motes.map((m, i) => (
-          <g
-            key={m.category}
-            className="day-arc__mote"
-            style={{ animationDelay: `${720 + i * 90}ms` }}
-            aria-hidden="true"
-          >
-            <circle
-              cx={m.x}
-              cy={m.y}
-              r={m.radius}
-              fill="url(#day-arc-mote-fill)"
-              stroke="var(--color-pending)"
-              strokeOpacity="0.55"
-              strokeWidth="1"
-            />
-            <text
-              x={m.x}
-              y={m.y}
-              textAnchor="middle"
-              dominantBaseline="central"
-              className="day-arc__mote-count"
+          {motes.map((m, i) => (
+            <g
+              key={m.category}
+              className="day-arc__mote"
+              style={{ animationDelay: `${720 + i * 90}ms` }}
+              aria-hidden="true"
             >
-              {m.count}
-            </text>
-          </g>
-        ))}
-      </svg>
+              <circle
+                cx={m.x}
+                cy={m.y}
+                r={m.radius}
+                fill="var(--color-surface)"
+                stroke="var(--color-text)"
+                strokeOpacity="0.7"
+                strokeWidth="1"
+              />
+              <text
+                x={m.x}
+                y={m.y}
+                textAnchor="middle"
+                dominantBaseline="central"
+                className="day-arc__mote-count"
+              >
+                {m.count}
+              </text>
+            </g>
+          ))}
+        </svg>
+      </div>
+
+      <div className="day-arc__legend" aria-hidden="true">
+        <span><i className="day-arc__legend-swatch day-arc__legend-swatch--low" />Low</span>
+        <span><i className="day-arc__legend-swatch day-arc__legend-swatch--medium" />Medium</span>
+        <span><i className="day-arc__legend-swatch day-arc__legend-swatch--high" />High</span>
+        <span><i className="day-arc__legend-dot" />Student attention</span>
+        <span><i className="day-arc__legend-thread" />Open threads</span>
+      </div>
     </section>
   );
 }
@@ -620,6 +686,25 @@ function blockStartLabel(timeSlot: string): string {
   const start = timeSlot.split("-")[0]?.trim();
   if (!start) return timeSlot;
   return start.replace(/^0/, "").replace(/:00$/, "");
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.min(max, Math.max(min, value));
+}
+
+function formatLevel(level: "low" | "medium" | "high"): string {
+  return level[0].toUpperCase() + level.slice(1);
+}
+
+function truncateSvgLabel(label: string, maxLength: number): string {
+  const trimmed = label.trim();
+  if (trimmed.length <= maxLength) return trimmed;
+  return `${trimmed.slice(0, Math.max(0, maxLength - 3)).trimEnd()}...`;
+}
+
+function formatActivityLabel(activity: string, maxLength: number): string {
+  const cleaned = activity.replace(/\s*\([^)]*\)\s*/g, " ").replace(/\s+/g, " ").trim();
+  return truncateSvgLabel(cleaned || activity, maxLength);
 }
 
 function buildAriaLabel(

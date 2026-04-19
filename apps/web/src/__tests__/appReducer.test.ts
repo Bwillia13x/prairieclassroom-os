@@ -7,6 +7,7 @@ import {
   getVisibleTabsForGroup,
   getVisibleNavGroups,
   isTabVisibleForRole,
+  shouldSuppressFirstRunModalsFromUrl,
   TAB_META,
   type ActiveTab,
   type AppState,
@@ -35,6 +36,10 @@ function baseState(overrides: Partial<AppState> = {}): AppState {
     ...createInitialState(),
     ...overrides,
   };
+}
+
+function setUrl(pathAndSearch: string) {
+  window.history.replaceState({}, "", pathAndSearch);
 }
 
 describe("appReducer — SET_CLASSROOM_ROLE", () => {
@@ -93,6 +98,7 @@ describe("createInitialState — classroomRoles hydration", () => {
   beforeEach(() => {
     installLocalStorage();
     localStorage.clear();
+    setUrl("/");
   });
 
   it("defaults classroomRoles to {} when no stored value is present", () => {
@@ -134,10 +140,43 @@ describe("createInitialState — classroomRoles hydration", () => {
   });
 });
 
+describe("createInitialState — judge/demo first-run modals", () => {
+  beforeEach(() => {
+    installLocalStorage();
+    localStorage.clear();
+    setUrl("/");
+  });
+
+  it("shows onboarding for a normal first visit", () => {
+    const state = createInitialState();
+    expect(state.showOnboarding).toBe(true);
+    expect(shouldSuppressFirstRunModalsFromUrl()).toBe(false);
+  });
+
+  it("suppresses onboarding when the demo query flag is present", () => {
+    setUrl("/?demo=true&tab=today&classroom=demo-okafor-grade34");
+    const state = createInitialState();
+    expect(state.showOnboarding).toBe(false);
+    expect(shouldSuppressFirstRunModalsFromUrl()).toBe(true);
+  });
+
+  it("also supports explicit presentation and judge query flags", () => {
+    setUrl("/?presentation=true");
+    expect(shouldSuppressFirstRunModalsFromUrl()).toBe(true);
+
+    setUrl("/?judge=1");
+    expect(shouldSuppressFirstRunModalsFromUrl()).toBe(true);
+
+    setUrl("/?demo=on");
+    expect(shouldSuppressFirstRunModalsFromUrl()).toBe(true);
+  });
+});
+
 describe("appReducer — role prompt", () => {
   beforeEach(() => {
     installLocalStorage();
     localStorage.clear();
+    setUrl("/");
   });
 
   it("OPEN_ROLE_PROMPT sets the prompt classroom id", () => {

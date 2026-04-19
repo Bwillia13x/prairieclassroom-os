@@ -6,11 +6,12 @@ Repo-side checklist for preparing PrairieClassroom OS for the Gemma 4 Good Hacka
 
 Checked against the repo on 2026-04-18.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-18T12-24-07-826Z-37333`
+- Mock structural gate: passing at `output/release-gate/2026-04-18T21-39-00-631Z-96778`
 - Hosted Gemma 4 proof lane: passing on synthetic/demo data
 - Ollama proof on this machine: not proven
 - Kaggle writeup draft: aligned to the hosted proof lane and current code inventory
 - Public-video script: aligned to the hosted proof lane
+- Judge/demo URL: `?demo=true` now skips first-run onboarding and role-selection modals for the demo classroom
 
 ## Completed safely in repo
 
@@ -21,29 +22,33 @@ Checked against the repo on 2026-04-18.
   - Ollama is the intended privacy-first deployment path
 - Kept the current proof references anchored to checked-in artifacts.
 - Added roster-scoped memory filtering and reset the demo SQLite memory so stale local test records cannot leak into retrieval citations.
-- Refreshed UI evidence screenshots on 2026-04-17.
+- Refreshed UI evidence screenshots on 2026-04-18.
+- Added a judge-safe `?demo=true` first-run path that skips onboarding and role-selection modals for the demo classroom.
+- Split the Vite production bundle into React, panel, and visualization chunks so the current web build no longer emits the large-entry-chunk warning.
+- Added [public demo operations](./public-demo-operations.md) with the deployment shape and judge-safe smoke checklist.
 
 ## Existing media candidates
 
 Use the current UI evidence bundle for cover-image and gallery selection:
 
-- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/today-desktop.png`
-- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/differentiate-desktop.png`
-- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/tomorrow-plan-desktop.png`
-- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/family-message-desktop.png`
-- `output/playwright/ui-evidence/2026-04-17T23-03-07-559Z/shell-mobile.png`
+- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/today-desktop.png`
+- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/differentiate-desktop.png`
+- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/tomorrow-plan-desktop.png`
+- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/family-message-desktop.png`
+- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/shell-mobile.png`
 
 Current local video candidate:
 
-- `qa/demo-script/videos/walkthrough-2026-04-17T19-58-44-014-voiceover.mp4` (137.16 seconds, 1440x900, H.264/AAC)
+- `qa/demo-script/videos/walkthrough-kaggle-final.mp4` (173.88 seconds, under the 3-minute limit)
+- Backup short cut: `qa/demo-script/videos/walkthrough-teaser-90s.mp4` (94.88 seconds)
 
 ## External actions still required
 
 These are required for an actual competition submission but cannot be completed safely from inside the repo alone.
 
 1. Make the GitHub repository public and verify public access without login.
-2. Publish a public live demo URL and verify it loads without auth or paywall.
-3. Record and publish a public YouTube video that is 3 minutes or less.
+2. Publish a public live demo URL and verify it loads without auth or paywall; use [public demo operations](./public-demo-operations.md) for the smoke checklist.
+3. Publish a public YouTube video that is 3 minutes or less.
 4. Attach the public repo URL, live demo URL, and YouTube URL to the Kaggle writeup.
 5. Add a cover image and supporting screenshots to the media gallery.
 6. Confirm the final Kaggle writeup is submitted, not left as a draft.

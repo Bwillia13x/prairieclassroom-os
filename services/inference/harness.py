@@ -118,6 +118,14 @@ class GenerationResponse:
     total_tokens: int | None = None
 
 
+@dataclass
+class GenerationStreamEvent:
+    """Incremental generation event plus the final assembled response."""
+    type: str
+    text: str | None = None
+    response: GenerationResponse | None = None
+
+
 def _coerce_json_object(value: Any) -> dict[str, Any]:
     if isinstance(value, dict):
         return value
@@ -1502,6 +1510,14 @@ class MockBackend:
             )
         return GenerationResponse(text=MOCK_RESPONSES["text"], model_id="mock")
 
+    def generate_stream(self, request: GenerationRequest):
+        response = self.generate(request)
+        if response.thinking_text:
+            yield GenerationStreamEvent(type="thinking", text=response.thinking_text)
+        if response.text:
+            yield GenerationStreamEvent(type="chunk", text=response.text)
+        yield GenerationStreamEvent(type="complete", response=response)
+
 
 # ---------------------------------------------------------------------------
 # Local backend — loads via HuggingFace transformers (requires GPU)
@@ -1879,6 +1895,53 @@ class GeminiAPIBackend:
 
         return json.dumps(normalized), None
 
+    @staticmethod
+    def _extract_generation_fragment(payload: Any, fallback_text: str | None = None) -> tuple[str, str | None]:
+        """Extract only real text/thinking fragments from a streaming chunk.
+
+        Unlike _extract_generation(), this intentionally does not serialize the
+        normalized payload when no text is present. Streaming APIs often include
+        metadata-only chunks, and treating those as output corrupts the final
+        JSON assembly.
+        """
+        normalized = GeminiAPIBackend._normalize_response(payload)
+
+        if isinstance(normalized, dict):
+            candidates = normalized.get("candidates")
+            if isinstance(candidates, list) and candidates:
+                text_parts: list[str] = []
+                thought_parts: list[str] = []
+                for candidate in candidates:
+                    if not isinstance(candidate, dict):
+                        continue
+                    content = candidate.get("content", {})
+                    parts = content.get("parts", []) if isinstance(content, dict) else []
+                    if not isinstance(parts, list):
+                        continue
+                    for part in parts:
+                        if not isinstance(part, dict):
+                            continue
+                        text = part.get("text")
+                        if not isinstance(text, str) or not text:
+                            continue
+                        if part.get("thought") or part.get("thought_signature"):
+                            thought_parts.append(text)
+                        else:
+                            text_parts.append(text)
+                if text_parts or thought_parts:
+                    return "".join(text_parts), "".join(thought_parts) or None
+
+            if isinstance(normalized.get("text"), str) and normalized["text"]:
+                return normalized["text"], None
+
+        if isinstance(normalized, str) and normalized:
+            return normalized, None
+
+        if fallback_text:
+            return fallback_text, None
+
+        return "", None
+
     def generate(self, request: GenerationRequest) -> GenerationResponse:
         model = self._model_for_tier(request.model_tier)
         client = self._client_for_tier(request.model_tier)
@@ -1916,6 +1979,81 @@ class GeminiAPIBackend:
             prompt_tokens=prompt_tokens,
             output_tokens=output_tokens,
             total_tokens=total_tokens,
+        )
+
+    def generate_stream(self, request: GenerationRequest):
+        model = self._model_for_tier(request.model_tier)
+        client = self._client_for_tier(request.model_tier)
+        contents = self._build_contents(request)
+        config = self._build_config(request)
+
+        start = time.perf_counter()
+        text_parts: list[str] = []
+        thinking_parts: list[str] = []
+        tool_calls: list[dict[str, Any]] = []
+        prompt_tokens: int | None = None
+        output_tokens: int | None = None
+        total_tokens: int | None = None
+
+        try:
+            stream = client.models.generate_content_stream(
+                model=model,
+                contents=contents,
+                config=config,
+            )
+            for chunk in stream:
+                fallback_text = getattr(chunk, "text", None)
+                chunk_text, chunk_thinking = self._extract_generation_fragment(chunk, fallback_text=fallback_text)
+                normalized = self._normalize_response(chunk)
+                for call in extract_tool_calls(normalized):
+                    marker = json.dumps(call, sort_keys=True)
+                    if marker not in {json.dumps(existing, sort_keys=True) for existing in tool_calls}:
+                        tool_calls.append(call)
+
+                usage = self._extract_usage(chunk)
+                prompt_tokens = usage[0] if usage[0] is not None else prompt_tokens
+                output_tokens = usage[1] if usage[1] is not None else output_tokens
+                total_tokens = usage[2] if usage[2] is not None else total_tokens
+
+                if chunk_thinking:
+                    thinking_parts.append(chunk_thinking)
+                    yield GenerationStreamEvent(type="thinking", text=chunk_thinking)
+                if chunk_text:
+                    text_parts.append(chunk_text)
+                    yield GenerationStreamEvent(type="chunk", text=chunk_text)
+        except Exception as exc:
+            latency_ms = (time.perf_counter() - start) * 1000
+            yield GenerationStreamEvent(
+                type="complete",
+                response=GenerationResponse(
+                    text=json.dumps({"error": str(exc)}),
+                    model_id=model,
+                    latency_ms=latency_ms,
+                ),
+            )
+            return
+
+        latency_ms = (time.perf_counter() - start) * 1000
+        output_text = "".join(text_parts)
+        if not output_text.strip() and tool_calls:
+            output_text = json.dumps({"tool_calls": tool_calls})
+        output_text = extract_json(output_text)
+        thinking_text = "".join(thinking_parts).strip() or None
+        if total_tokens is None and prompt_tokens is not None and output_tokens is not None:
+            total_tokens = prompt_tokens + output_tokens
+
+        yield GenerationStreamEvent(
+            type="complete",
+            response=GenerationResponse(
+                text=output_text,
+                tool_calls=tool_calls,
+                thinking_text=thinking_text,
+                model_id=model,
+                latency_ms=latency_ms,
+                prompt_tokens=prompt_tokens,
+                output_tokens=output_tokens,
+                total_tokens=total_tokens,
+            ),
         )
 
     @staticmethod
@@ -2257,6 +2395,19 @@ class GemmaHarness:
 
     def generate(self, request: GenerationRequest) -> GenerationResponse:
         return self.backend.generate(request)
+
+    def generate_stream(self, request: GenerationRequest):
+        streamer = getattr(self.backend, "generate_stream", None)
+        if callable(streamer):
+            yield from streamer(request)
+            return
+
+        response = self.generate(request)
+        if response.thinking_text:
+            yield GenerationStreamEvent(type="thinking", text=response.thinking_text)
+        if response.text:
+            yield GenerationStreamEvent(type="chunk", text=response.text)
+        yield GenerationStreamEvent(type="complete", response=response)
 
 
 # ---------------------------------------------------------------------------

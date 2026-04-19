@@ -80,6 +80,16 @@ interface RequestOptions {
   timeoutMs?: number;
 }
 
+export interface StreamingEventHandlers {
+  onChunk?: (text: string) => void;
+  onThinking?: (text: string) => void;
+}
+
+interface StreamStartResponse {
+  stream_id: string;
+  stream_url: string;
+}
+
 /**
  * Default client abort timeout — see RequestOptions.timeoutMs. Set 5 seconds
  * longer than the server's longest planning-tier Gemini budget so the client
@@ -208,6 +218,99 @@ async function requestVoid(path: string, options: RequestOptions = {}): Promise<
   await requestJson<unknown>(path, options);
 }
 
+function resolveEventSourceUrl(streamUrl: string): string {
+  if (/^https?:\/\//i.test(streamUrl)) return streamUrl;
+  const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost";
+  const base = /^https?:\/\//i.test(API_BASE)
+    ? API_BASE
+    : `${origin}${API_BASE}`;
+  const normalizedStreamUrl = streamUrl.startsWith("/api/")
+    ? streamUrl.slice("/api".length)
+    : streamUrl;
+  return `${base}${normalizedStreamUrl}`;
+}
+
+function parseMessageData(event: MessageEvent): Record<string, unknown> {
+  try {
+    const parsed = JSON.parse(event.data);
+    return parsed && typeof parsed === "object" ? parsed as Record<string, unknown> : {};
+  } catch {
+    return {};
+  }
+}
+
+async function streamRequestJson<T>(
+  path: string,
+  options: RequestOptions,
+  handlers?: StreamingEventHandlers,
+): Promise<T> {
+  const start = await requestJson<StreamStartResponse>(`${path}/stream`, {
+    ...options,
+  });
+
+  if (typeof EventSource === "undefined") {
+    throw new ApiError(500, {
+      error: "This browser does not support streaming updates.",
+      category: "inference",
+      retryable: false,
+      detail_code: "eventsource_unavailable",
+    });
+  }
+
+  return new Promise<T>((resolve, reject) => {
+    const eventSource = new EventSource(resolveEventSourceUrl(start.stream_url));
+    let settled = false;
+
+    const finish = (fn: () => void) => {
+      if (settled) return;
+      settled = true;
+      eventSource.close();
+      options.signal?.removeEventListener("abort", onAbort);
+      fn();
+    };
+
+    const onAbort = () => {
+      finish(() => reject(new DOMException("Request aborted", "AbortError")));
+    };
+
+    if (options.signal?.aborted) {
+      onAbort();
+      return;
+    }
+    options.signal?.addEventListener("abort", onAbort, { once: true });
+
+    eventSource.addEventListener("chunk", (event) => {
+      const payload = parseMessageData(event as MessageEvent);
+      if (typeof payload.text === "string") handlers?.onChunk?.(payload.text);
+    });
+
+    eventSource.addEventListener("thinking", (event) => {
+      const payload = parseMessageData(event as MessageEvent);
+      if (typeof payload.text === "string") handlers?.onThinking?.(payload.text);
+    });
+
+    eventSource.addEventListener("complete", (event) => {
+      const payload = parseMessageData(event as MessageEvent);
+      finish(() => resolve(payload as T));
+    });
+
+    eventSource.addEventListener("stream_error", (event) => {
+      const payload = parseMessageData(event as MessageEvent);
+      const status = typeof payload.status === "number" ? payload.status : 500;
+      finish(() => reject(new ApiError(status, payload as ApiErrorPayload)));
+    });
+
+    eventSource.onerror = () => {
+      finish(() => reject(new ApiError(502, {
+        error: "Streaming connection lost before the request completed.",
+        category: "inference",
+        retryable: true,
+        detail_code: "stream_connection_lost",
+      })));
+    };
+  });
+}
+
 export function listClassrooms(): Promise<ClassroomProfile[]> {
   return requestJson<ClassroomProfile[]>("/classrooms");
 }
@@ -252,7 +355,15 @@ export function differentiate(
 export function generateTomorrowPlan(
   request: TomorrowPlanRequest,
   signal?: AbortSignal,
+  stream?: StreamingEventHandlers,
 ): Promise<TomorrowPlanResponse> {
+  if (stream) {
+    return streamRequestJson<TomorrowPlanResponse>("/tomorrow-plan", {
+      method: "POST",
+      body: request,
+      signal,
+    }, stream);
+  }
   return requestJson<TomorrowPlanResponse>("/tomorrow-plan", {
     method: "POST",
     body: request,
@@ -326,7 +437,15 @@ export function generateVocabCards(
 export function detectSupportPatterns(
   request: SupportPatternsRequest,
   signal?: AbortSignal,
+  stream?: StreamingEventHandlers,
 ): Promise<SupportPatternsResponse> {
+  if (stream) {
+    return streamRequestJson<SupportPatternsResponse>("/support-patterns", {
+      method: "POST",
+      body: request,
+      signal,
+    }, stream);
+  }
   return requestJson<SupportPatternsResponse>("/support-patterns", {
     method: "POST",
     body: request,
@@ -348,7 +467,15 @@ export function generateEABriefing(
 export function generateComplexityForecast(
   request: ComplexityForecastRequest,
   signal?: AbortSignal,
+  stream?: StreamingEventHandlers,
 ): Promise<ComplexityForecastResponse> {
+  if (stream) {
+    return streamRequestJson<ComplexityForecastResponse>("/complexity-forecast", {
+      method: "POST",
+      body: request,
+      signal,
+    }, stream);
+  }
   return requestJson<ComplexityForecastResponse>("/complexity-forecast", {
     method: "POST",
     body: request,
@@ -359,7 +486,15 @@ export function generateComplexityForecast(
 export function generateEALoadProfile(
   request: EALoadRequest,
   signal?: AbortSignal,
+  stream?: StreamingEventHandlers,
 ): Promise<EALoadResponse> {
+  if (stream) {
+    return streamRequestJson<EALoadResponse>("/ea-load", {
+      method: "POST",
+      body: request,
+      signal,
+    }, stream);
+  }
   return requestJson<EALoadResponse>("/ea-load", {
     method: "POST",
     body: request,
@@ -373,7 +508,21 @@ export function generateSurvivalPacket(
   teacherNotes?: string,
   classroomCode?: string,
   signal?: AbortSignal,
+  stream?: StreamingEventHandlers,
 ): Promise<SurvivalPacketResponse> {
+  if (stream) {
+    return streamRequestJson<SurvivalPacketResponse>("/survival-packet", {
+      method: "POST",
+      classroomId,
+      classroomCode,
+      signal,
+      body: {
+        classroom_id: classroomId,
+        target_date: targetDate,
+        teacher_notes: teacherNotes || undefined,
+      },
+    }, stream);
+  }
   return requestJson<SurvivalPacketResponse>("/survival-packet", {
     method: "POST",
     classroomId,

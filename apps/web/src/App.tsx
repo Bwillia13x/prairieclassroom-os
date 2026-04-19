@@ -11,6 +11,7 @@ import {
   getVisibleTabs,
   isTabVisibleForRole,
   NAV_GROUP_META,
+  shouldSuppressFirstRunModalsFromUrl,
   TAB_META,
   type ActiveTab,
   type AuthPromptState,
@@ -578,6 +579,7 @@ export default function App() {
   const activeGroupMeta = NAV_GROUP_META[activeGroup];
   const activeClassroomLabel = profile ? describeClassroom(profile) : "Choose classroom";
   const activeClassroomMeta = profile?.subject_focus.replace(/_/g, " ") ?? "";
+  const suppressFirstRunModals = shouldSuppressFirstRunModalsFromUrl();
 
   useEffect(() => {
     visibleTabsRef.current = visibleTabs;
@@ -694,13 +696,14 @@ export default function App() {
     if (
       activeClassroom &&
       profile &&
+      !(suppressFirstRunModals && profile.is_demo) &&
       !state.classroomRoles[activeClassroom] &&
       !state.rolePrompt &&
       !state.showOnboarding
     ) {
       dispatch({ type: "OPEN_ROLE_PROMPT", classroomId: activeClassroom });
     }
-  }, [activeClassroom, profile, state.classroomRoles, state.rolePrompt, state.showOnboarding]);
+  }, [activeClassroom, profile, state.classroomRoles, state.rolePrompt, state.showOnboarding, suppressFirstRunModals]);
 
   const ctxValue = useMemo(
     () => ({

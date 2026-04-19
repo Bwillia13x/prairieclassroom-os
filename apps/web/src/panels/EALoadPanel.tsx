@@ -232,7 +232,7 @@ export default function EALoadPanel() {
   if (classrooms.length === 0) return null;
 
   async function handleSubmit(classroomId: string, targetDate: string, teacherNotes?: string) {
-    const resp = await streamer.execute(() =>
+    const resp = await streamer.execute((stream) =>
       execute((signal) =>
         generateEALoadProfile(
           {
@@ -241,6 +241,7 @@ export default function EALoadPanel() {
             teacher_notes: teacherNotes,
           },
           signal,
+          stream,
         ),
       ),
     );

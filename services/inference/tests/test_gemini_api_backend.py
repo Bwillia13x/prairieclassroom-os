@@ -365,3 +365,33 @@ def test_generate_populates_token_counts() -> None:
     assert resp.prompt_tokens == 10
     assert resp.output_tokens == 5
     assert resp.total_tokens == 15
+
+
+def test_generate_stream_emits_chunks_and_complete_response() -> None:
+    chunks = [
+        SimpleNamespace(text='{"answer": '),
+        SimpleNamespace(
+            text='"ok"}',
+            usage_metadata=SimpleNamespace(
+                prompt_token_count=10,
+                candidates_token_count=5,
+                total_token_count=15,
+            ),
+        ),
+    ]
+    client = MagicMock()
+    client.models.generate_content_stream.return_value = chunks
+
+    backend = GeminiAPIBackend(api_key="demo-key", client=client)
+    events = list(backend.generate_stream(GenerationRequest(prompt="Hello", model_tier=ModelTier.LIVE)))
+
+    assert [event.type for event in events] == ["chunk", "chunk", "complete"]
+    assert events[0].text == '{"answer": '
+    assert events[1].text == '"ok"}'
+    complete = events[-1].response
+    assert complete is not None
+    assert complete.text == '{"answer": "ok"}'
+    assert complete.model_id == "gemma-4-26b-a4b-it"
+    assert complete.prompt_tokens == 10
+    assert complete.output_tokens == 5
+    assert complete.total_tokens == 15

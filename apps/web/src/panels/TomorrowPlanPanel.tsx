@@ -122,13 +122,13 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
 
   async function handleSubmit(classroomId: string, reflection: string, teacherGoal?: string) {
     setHistoricalResult(null);
-    const resp = await streamer.execute(() =>
+    const resp = await streamer.execute((stream) =>
       execute((signal) =>
         generateTomorrowPlan({
           classroom_id: classroomId,
           teacher_reflection: reflection,
           teacher_goal: teacherGoal,
-        }, signal)
+        }, signal, stream)
       )
     );
     if (resp) {

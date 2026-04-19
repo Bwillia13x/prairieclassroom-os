@@ -1,6 +1,6 @@
 # PrairieClassroom OS — Architecture
 
-*Updated 2026-04-10 — reflects the implemented system, not the original aspirational sketch.*
+*Updated 2026-04-18 — reflects the implemented system, not the original aspirational sketch.*
 
 ## System thesis
 
@@ -33,8 +33,9 @@ Express API (`services/orchestrator/`) responsible for:
 - **Input sanitization** — middleware strips injection patterns and trims text
 - **Retrieval injection** — pulls recent plans, interventions, patterns, and forecasts from classroom memory and injects them into prompt context
 - **Curriculum context injection** — injects a bounded Alberta curriculum summary into differentiate and vocabulary prompts when the teacher selects one
-- **Inference dispatch** — calls the Python inference service via HTTP with structured request/response
+- **Inference dispatch** — calls the Python inference service via HTTP with structured request/response, or proxies provider chunks over SSE for long planning-tier calls
 - **Tool-call orchestration** — when a route is tool-capable, attaches route-scoped tool definitions, executes approved local JS tools after a model tool-call response, and sends a provider-native follow-up generation with the tool results
+- **Streaming job handoff** — authenticated planning requests can create short-lived opaque stream jobs; the browser attaches with `EventSource` without putting classroom codes in URLs
 - **Output parsing** — parses model JSON responses with fallback error handling (422 on parse failure, 502 on inference failure)
 - **Memory persistence** — stores generated plans, variants, messages, interventions, forecasts, patterns, scaffold reviews, and survival packets to per-classroom SQLite
 
@@ -144,12 +145,13 @@ Enforces product boundaries at multiple levels:
 2. Request hits the orchestrator API with Zod-validated body and classroom-code auth.
 3. Orchestrator loads the classroom profile and routes to the correct prompt class.
 4. For retrieval-backed classes, relevant memory (plans, interventions, patterns) is injected into the prompt context.
-5. Prompt is dispatched to the inference service with the correct model tier and thinking flag.
+5. Prompt is dispatched to the inference service with the correct model tier and thinking flag. Long planning-tier UI calls use the streaming route variant; shorter routes keep the synchronous JSON path.
 6. If the route has registered tools and the model emits tool calls, the orchestrator executes those local tools and sends one provider-native follow-up generation containing the tool results.
-7. Inference service generates structured JSON output (mock, Ollama, Gemini, or Vertex backend).
-8. Orchestrator parses the response, validates structure, and persists to classroom memory.
-9. Structured result is returned to the UI for teacher review.
-10. For family messages, teacher explicitly approves before any external action.
+7. Inference service generates structured JSON output (mock, Ollama, Gemini, or Vertex backend). Gemini and Ollama can stream generation fragments through `/generate/stream`; other modes fall back to a full-response stream.
+8. Orchestrator forwards provider chunks and thinking updates to the browser over SSE, assembles the final model text server-side, then parses and validates the complete JSON response.
+9. Only the final validated result is persisted to classroom memory.
+10. Structured result is returned to the UI for teacher review.
+11. For family messages, teacher explicitly approves before any external action.
 
 ## Inference backends
 
@@ -162,6 +164,11 @@ The Python inference harness (`services/inference/harness.py`) supports five mod
 | `gemini` | Hackathon demo proof (synthetic data only) | API credits | Passing |
 | `api` | Paid Vertex AI endpoints | Compute + traffic | Gated behind PRAIRIE_ALLOW_PAID_SERVICES |
 | `local` | Direct transformers loading | GPU required | Available, not primary path |
+
+The inference service exposes both `/generate` and `/generate/stream`. The
+streaming endpoint emits SSE `chunk`, `thinking`, `complete`, and `error`
+events. The orchestrator translates that backend stream into client-facing SSE
+events for planning-tier panels and persists only the final parsed JSON output.
 
 ## What to keep modular
 

@@ -93,13 +93,13 @@ export default function ForecastPanel() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const forecastDate = tomorrow.toISOString().split("T")[0];
 
-    const resp = await streamer.execute(() =>
+    const resp = await streamer.execute((stream) =>
       execute((signal) =>
         generateComplexityForecast({
           classroom_id: classroomId,
           forecast_date: forecastDate,
           teacher_notes: teacherNotes || undefined,
-        }, signal)
+        }, signal, stream)
       )
     );
     if (resp) {

@@ -9,8 +9,8 @@ import "./tokens.css";
 import "./styles/base.css";
 import "./styles/primitives.css";
 import "./styles/shell.css";
-import "./styles/nothing-theme.css";
 import "./motion.css";
+import "./styles/nothing-theme.css";
 import "./print.css";
 
 /* Global handlers for errors that escape React's boundary */

@@ -11,8 +11,10 @@ import {
   SupportPatternRadar,
   FollowUpSuccessRate,
   InterventionTimeline,
+  StudentPriorityMatrix,
+  InterventionRecencyTimeline,
 } from "../DataVisualizations";
-import type { DebtItem, InterventionRecord, RecurringTheme } from "../../types";
+import type { DebtItem, InterventionRecord, RecurringTheme, StudentSummary } from "../../types";
 
 // ----------------------------------------------------------------
 // Shared synthetic data
@@ -40,6 +42,117 @@ const DEBT_ITEMS: DebtItem[] = [
 const TREND_DATA = [2, 3, 4, 5, 6, 7, 8];
 
 const CAL_DATA = [0, 1, 2, 3, 0, 1, 2, 3, 0, 1, 2, 3, 0, 1];
+
+const PRIORITY_STUDENTS: StudentSummary[] = [
+  {
+    alias: "Amira",
+    pending_action_count: 3,
+    last_intervention_days: 9,
+    active_pattern_count: 2,
+    pending_message_count: 1,
+    latest_priority_reason: "Open follow-up",
+  },
+  {
+    alias: "Brody",
+    pending_action_count: 0,
+    last_intervention_days: 20,
+    active_pattern_count: 1,
+    pending_message_count: 0,
+    latest_priority_reason: null,
+  },
+  {
+    alias: "Daniyal",
+    pending_action_count: 1,
+    last_intervention_days: 15,
+    active_pattern_count: 0,
+    pending_message_count: 1,
+    latest_priority_reason: "Check family note",
+  },
+];
+
+const RECENCY_STUDENTS: StudentSummary[] = [
+  {
+    alias: "Amira",
+    pending_action_count: 1,
+    last_intervention_days: 5,
+    active_pattern_count: 0,
+    pending_message_count: 0,
+    latest_priority_reason: null,
+  },
+  {
+    alias: "Brody",
+    pending_action_count: 0,
+    last_intervention_days: 32,
+    active_pattern_count: 1,
+    pending_message_count: 0,
+    latest_priority_reason: null,
+  },
+  {
+    alias: "Chantal",
+    pending_action_count: 0,
+    last_intervention_days: 12,
+    active_pattern_count: 0,
+    pending_message_count: 0,
+    latest_priority_reason: null,
+  },
+];
+
+// ----------------------------------------------------------------
+// Block 0 — StudentPriorityMatrix drill-down
+// ----------------------------------------------------------------
+
+describe("StudentPriorityMatrix — onStudentClick", () => {
+  it("fires onStudentClick when a check-first row is clicked", () => {
+    const spy = vi.fn();
+    render(<StudentPriorityMatrix students={PRIORITY_STUDENTS} onStudentClick={spy} />);
+    fireEvent.click(screen.getByTestId("viz-priority-row-Amira"));
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith("Amira");
+  });
+
+  it("fires onStudentClick on Enter from a plotted student dot", () => {
+    const spy = vi.fn();
+    render(<StudentPriorityMatrix students={PRIORITY_STUDENTS} onStudentClick={spy} />);
+    fireEvent.keyDown(screen.getByTestId("viz-priority-student-Amira"), { key: "Enter" });
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith("Amira");
+  });
+
+  it("keeps plotted student dots non-interactive without a click handler", () => {
+    render(<StudentPriorityMatrix students={PRIORITY_STUDENTS} />);
+    const point = screen.getByTestId("viz-priority-student-Amira");
+    expect(point).not.toHaveAttribute("role");
+    expect(point).not.toHaveAttribute("tabindex");
+  });
+});
+
+// ----------------------------------------------------------------
+// Block 0b — InterventionRecencyTimeline drill-down
+// ----------------------------------------------------------------
+
+describe("InterventionRecencyTimeline — onStudentClick", () => {
+  it("fires onStudentClick when a recency row is clicked", () => {
+    const spy = vi.fn();
+    render(<InterventionRecencyTimeline students={RECENCY_STUDENTS} onStudentClick={spy} />);
+    fireEvent.click(screen.getByTestId("viz-recency-row-Brody"));
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith("Brody");
+  });
+
+  it("keeps recency rows non-interactive without a click handler", () => {
+    render(<InterventionRecencyTimeline students={RECENCY_STUDENTS} />);
+    const row = screen.getByTestId("viz-recency-row-Brody");
+    expect(row.tagName.toLowerCase()).toBe("div");
+  });
+
+  it("describes target status in the accessible row label", () => {
+    render(<InterventionRecencyTimeline students={RECENCY_STUDENTS} onStudentClick={vi.fn()} />);
+    expect(screen.getByTestId("viz-recency-row-Brody")).toHaveAttribute(
+      "aria-label",
+      expect.stringContaining("Beyond target"),
+    );
+  });
+});
 
 // ----------------------------------------------------------------
 // Block 1 — ComplexityDebtGauge click fires
@@ -419,6 +532,12 @@ const COMPOSITION_STUDENTS = [
   { alias: "Farah", eal_flag: true, support_tags: ["eal_level_2"], family_language: "Arabic" },
 ];
 
+const COMPOSITION_CODED_LANG_STUDENTS = [
+  { alias: "Amira", eal_flag: true, support_tags: ["eal_level_1"], family_language: "ar" },
+  { alias: "Farid", eal_flag: true, support_tags: ["eal_level_2"], family_language: "ar" },
+  { alias: "Dara", eal_flag: false, support_tags: [], family_language: "en" },
+];
+
 describe("ClassroomCompositionRings — onSegmentClick", () => {
   it("fires onSegmentClick with correct payload when eal_level_2 segment is clicked", () => {
     const spy = vi.fn();
@@ -444,6 +563,28 @@ describe("ClassroomCompositionRings — onSegmentClick", () => {
     expect(payload.groupKind).toBe("family_language");
     expect(payload.tag).toBe("Arabic");
     expect(payload.students).toHaveLength(3);
+  });
+
+  it("fires onSegmentClick from an EAL profile row", () => {
+    const spy = vi.fn();
+    render(<ClassroomCompositionRings students={COMPOSITION_STUDENTS} onSegmentClick={spy} />);
+    fireEvent.click(screen.getByTestId("viz-composition-row-eal-eal_level_2"));
+    expect(spy).toHaveBeenCalledTimes(1);
+    const payload = spy.mock.calls[0][0];
+    expect(payload.groupKind).toBe("eal");
+    expect(payload.tag).toBe("eal_level_2");
+    expect(payload.students).toHaveLength(3);
+  });
+
+  it("maps coded family languages to readable row drill-down payloads", () => {
+    const spy = vi.fn();
+    render(<ClassroomCompositionRings students={COMPOSITION_CODED_LANG_STUDENTS} onSegmentClick={spy} />);
+    fireEvent.click(screen.getByTestId("viz-composition-row-family_language-Arabic"));
+    expect(spy).toHaveBeenCalledTimes(1);
+    const payload = spy.mock.calls[0][0];
+    expect(payload.groupKind).toBe("family_language");
+    expect(payload.tag).toBe("Arabic");
+    expect(payload.students.map((s: { alias: string }) => s.alias).sort()).toEqual(["Amira", "Farid"]);
   });
 
   it("eal segment has a non-empty aria-label containing the tag label", () => {

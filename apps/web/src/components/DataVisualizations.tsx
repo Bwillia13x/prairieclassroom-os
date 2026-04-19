@@ -7,7 +7,7 @@
  */
 
 import { useEffect, useMemo, useState } from "react";
-import type { KeyboardEvent, ReactElement } from "react";
+import type { CSSProperties, KeyboardEvent, ReactElement } from "react";
 import type {
   StudentSummary,
   ComplexityBlock,
@@ -34,8 +34,8 @@ interface PriorityMatrixProps {
 }
 
 const MATRIX_W = 360;
-const MATRIX_H = 240;
-const MATRIX_PAD = { top: 16, right: 16, bottom: 32, left: 40 };
+const MATRIX_H = 230;
+const MATRIX_PAD = { top: 22, right: 18, bottom: 34, left: 38 };
 
 export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatrixProps) {
   const [mounted, setMounted] = useState(false);
@@ -48,20 +48,32 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
   const data = useMemo(() => {
     return students
       .filter((s) => s.pending_action_count > 0 || s.last_intervention_days !== null)
-      .map((s) => ({
-        alias: s.alias,
-        x: s.last_intervention_days ?? 0,
-        y: s.pending_action_count,
-        r: Math.max(4, Math.min(14, 4 + (s.active_pattern_count ?? 0) * 3)),
-        hasAttention: s.pending_action_count > 0,
-        reason: s.latest_priority_reason,
-      }));
+      .map((s) => {
+        const days = s.last_intervention_days ?? 0;
+        const urgency =
+          s.pending_action_count * 4 +
+          s.active_pattern_count * 1.8 +
+          s.pending_message_count * 1.4 +
+          Math.min(days / 45, 4);
+        return {
+          alias: s.alias,
+          x: days,
+          y: urgency,
+          pending: s.pending_action_count,
+          patterns: s.active_pattern_count,
+          messages: s.pending_message_count,
+          r: Math.max(4, Math.min(13, 4.5 + (s.active_pattern_count ?? 0) * 2.4 + Math.min(s.pending_action_count, 3))),
+          hasAttention: s.pending_action_count > 0,
+          reason: s.latest_priority_reason,
+        };
+      })
+      .sort((a, b) => b.y - a.y || b.x - a.x);
   }, [students]);
 
   if (data.length === 0) return null;
 
   const maxX = Math.max(7, ...data.map((d) => d.x));
-  const maxY = Math.max(3, ...data.map((d) => d.y));
+  const maxY = Math.max(6, ...data.map((d) => d.y));
   const innerW = MATRIX_W - MATRIX_PAD.left - MATRIX_PAD.right;
   const innerH = MATRIX_H - MATRIX_PAD.top - MATRIX_PAD.bottom;
 
@@ -69,10 +81,31 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
   function scaleY(v: number) { return MATRIX_PAD.top + innerH - (v / maxY) * innerH; }
 
   const attentionCount = data.filter((d) => d.hasAttention).length;
+  const topPriority = data[0];
   const mostStale = data.reduce((worst, d) => (d.x > worst.x ? d : worst), data[0]);
+  const topStudents = data.slice(0, 5);
+  const offsetPatterns: Array<[number, number]> = [
+    [0, 0],
+    [6, -5],
+    [-6, 5],
+    [8, 4],
+    [-8, -4],
+    [0, 8],
+  ];
+  const plottedData = data.map((d, i) => {
+    const sameBefore = data.slice(0, i).filter((p) => p.x === d.x && Math.abs(p.y - d.y) < 0.2).length;
+    const offsetPattern = offsetPatterns[sameBefore % offsetPatterns.length];
+    const [offsetX, offsetY] = offsetPattern;
+    return {
+      ...d,
+      rank: i + 1,
+      plotX: Math.max(MATRIX_PAD.left + 8, Math.min(MATRIX_PAD.left + innerW - 8, scaleX(d.x) + offsetX)),
+      plotY: Math.max(MATRIX_PAD.top + 8, Math.min(MATRIX_PAD.top + innerH - 8, scaleY(d.y) + offsetY)),
+    };
+  });
   const ariaLabel =
     `Priority matrix: ${data.length} ${data.length === 1 ? "student" : "students"} with recent activity to plot, ` +
-    `${attentionCount} needing attention. Most stale: ${mostStale.alias} at ${mostStale.x} days.`;
+    `${attentionCount} needing attention. Check first: ${topPriority.alias}. Most stale: ${mostStale.alias} at ${mostStale.x} days.`;
 
   function handleBubbleKey(
     e: KeyboardEvent<SVGGElement>,
@@ -87,97 +120,160 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
 
   return (
     <div className={`viz-priority-matrix${mounted ? " viz-priority-matrix--mounted" : ""}`}>
-      <div className="viz-header">
-        <h4 className="viz-title">Student Priority View</h4>
-        <span className="viz-subtitle">
-          Showing {data.length} with recent activity · Size = pattern count · Position = urgency
-        </span>
+      <div className="viz-header viz-priority-matrix__header">
+        <div>
+          <h4 className="viz-title">Student Priority View</h4>
+          <span className="viz-priority-matrix__summary">
+            {data.length} plotted · {attentionCount} with open actions · dot size follows pattern count
+          </span>
+        </div>
+        <div className="viz-priority-matrix__stats" aria-hidden="true">
+          <span>{topPriority.alias} first</span>
+          <span>{mostStale.x}d longest gap</span>
+        </div>
       </div>
-      <svg
-        width="100%"
-        viewBox={`0 0 ${MATRIX_W} ${MATRIX_H}`}
-        className="viz-svg"
-        role="img"
-        aria-label={ariaLabel}
-      >
-        {/* Quadrant backgrounds */}
-        <rect
-          x={scaleX(maxX / 2)} y={MATRIX_PAD.top}
-          width={innerW / 2} height={innerH / 2}
-          fill="var(--color-danger)" opacity={0.06} rx={4}
-        />
-        {/* Grid lines */}
-        {[0.25, 0.5, 0.75].map((pct) => (
-          <line key={`gx-${pct}`}
-            x1={scaleX(maxX * pct)} y1={MATRIX_PAD.top}
-            x2={scaleX(maxX * pct)} y2={MATRIX_PAD.top + innerH}
-            stroke="var(--color-border)" strokeWidth={0.5} strokeDasharray="3,3"
-          />
-        ))}
-        {[0.25, 0.5, 0.75].map((pct) => (
-          <line key={`gy-${pct}`}
-            x1={MATRIX_PAD.left} y1={scaleY(maxY * pct)}
-            x2={MATRIX_PAD.left + innerW} y2={scaleY(maxY * pct)}
-            stroke="var(--color-border)" strokeWidth={0.5} strokeDasharray="3,3"
-          />
-        ))}
-        {/* Axes */}
-        <line
-          x1={MATRIX_PAD.left} y1={MATRIX_PAD.top + innerH}
-          x2={MATRIX_PAD.left + innerW} y2={MATRIX_PAD.top + innerH}
-          stroke="var(--color-text-tertiary)" strokeWidth={1}
-        />
-        <line
-          x1={MATRIX_PAD.left} y1={MATRIX_PAD.top}
-          x2={MATRIX_PAD.left} y2={MATRIX_PAD.top + innerH}
-          stroke="var(--color-text-tertiary)" strokeWidth={1}
-        />
-        {/* Axis labels */}
-        <text
-          x={MATRIX_PAD.left + innerW / 2} y={MATRIX_H - 4}
-          textAnchor="middle" className="viz-axis-label"
-        >
-          Days since intervention →
-        </text>
-        <text
-          x={10} y={MATRIX_PAD.top + innerH / 2}
-          textAnchor="middle" className="viz-axis-label"
-          transform={`rotate(-90, 10, ${MATRIX_PAD.top + innerH / 2})`}
-        >
-          Pending actions ↑
-        </text>
-        {/* Student bubbles */}
-        {data.map((d, i) => {
-          const clickable = Boolean(onStudentClick);
-          return (
-            <g
-              key={d.alias}
-              className="viz-bubble-group"
-              role={clickable ? "button" : undefined}
-              tabIndex={clickable ? 0 : undefined}
-              aria-label={clickable ? `${d.alias}: ${d.y} pending ${d.y === 1 ? "action" : "actions"}, ${d.x} days since intervention. Open detail.` : undefined}
-              onClick={clickable ? () => onStudentClick!(d.alias) : undefined}
-              onKeyDown={clickable ? (e) => handleBubbleKey(e, d.alias) : undefined}
-              style={{
-                cursor: clickable ? "pointer" : "default",
-                animationDelay: `${i * 40}ms`,
-              }}
+      <div className="viz-priority-matrix__body">
+        <div className="viz-priority-matrix__map">
+          <svg
+            width="100%"
+            viewBox={`0 0 ${MATRIX_W} ${MATRIX_H}`}
+            className="viz-svg"
+            role="img"
+            aria-label={ariaLabel}
+          >
+            <rect
+              x={MATRIX_PAD.left}
+              y={MATRIX_PAD.top}
+              width={innerW}
+              height={innerH}
+              className="viz-priority-matrix__plot-bg"
+              rx={6}
+            />
+            <rect
+              x={scaleX(maxX * 0.55)}
+              y={MATRIX_PAD.top}
+              width={MATRIX_PAD.left + innerW - scaleX(maxX * 0.55)}
+              height={innerH * 0.48}
+              className="viz-priority-matrix__watch-zone"
+              rx={6}
+            />
+            <text
+              x={scaleX(maxX * 0.74)}
+              y={MATRIX_PAD.top + 14}
+              textAnchor="middle"
+              className="viz-priority-matrix__zone-label"
             >
-              <circle
-                cx={scaleX(d.x)} cy={scaleY(d.y)} r={d.r}
-                className={`viz-bubble ${d.hasAttention ? "viz-bubble--attention" : "viz-bubble--calm"}`}
+              check first
+            </text>
+            {[0.25, 0.5, 0.75].map((pct) => (
+              <line key={`gx-${pct}`}
+                x1={scaleX(maxX * pct)} y1={MATRIX_PAD.top}
+                x2={scaleX(maxX * pct)} y2={MATRIX_PAD.top + innerH}
+                className="viz-priority-matrix__grid-line"
               />
-              <text
-                x={scaleX(d.x)} y={scaleY(d.y) - d.r - 3}
-                textAnchor="middle"
-                className="viz-bubble-label"
+            ))}
+            {[0.25, 0.5, 0.75].map((pct) => (
+              <line key={`gy-${pct}`}
+                x1={MATRIX_PAD.left} y1={scaleY(maxY * pct)}
+                x2={MATRIX_PAD.left + innerW} y2={scaleY(maxY * pct)}
+                className="viz-priority-matrix__grid-line"
+              />
+            ))}
+            <line
+              x1={MATRIX_PAD.left} y1={MATRIX_PAD.top + innerH}
+              x2={MATRIX_PAD.left + innerW} y2={MATRIX_PAD.top + innerH}
+              className="viz-priority-matrix__axis"
+            />
+            <line
+              x1={MATRIX_PAD.left} y1={MATRIX_PAD.top}
+              x2={MATRIX_PAD.left} y2={MATRIX_PAD.top + innerH}
+              className="viz-priority-matrix__axis"
+            />
+            <text
+              x={MATRIX_PAD.left + innerW / 2} y={MATRIX_H - 6}
+              textAnchor="middle" className="viz-axis-label"
+            >
+              Days since intervention
+            </text>
+            <text
+              x={11} y={MATRIX_PAD.top + innerH / 2}
+              textAnchor="middle" className="viz-axis-label"
+              transform={`rotate(-90, 11, ${MATRIX_PAD.top + innerH / 2})`}
+            >
+              Priority pressure
+            </text>
+            {plottedData.map((d, i) => {
+              const clickable = Boolean(onStudentClick);
+              const isTop = d.rank <= 3;
+              return (
+                <g
+                  key={d.alias}
+                  className={`viz-bubble-group${isTop ? " viz-bubble-group--top" : ""}`}
+                  role={clickable ? "button" : undefined}
+                  tabIndex={clickable ? 0 : undefined}
+                  aria-label={clickable ? `${d.alias}: ${d.pending} pending ${d.pending === 1 ? "action" : "actions"}, ${d.patterns} active ${d.patterns === 1 ? "pattern" : "patterns"}, ${d.x} days since intervention. Open detail.` : undefined}
+                  data-testid={`viz-priority-student-${d.alias}`}
+                  onClick={clickable ? () => onStudentClick!(d.alias) : undefined}
+                  onKeyDown={clickable ? (e) => handleBubbleKey(e, d.alias) : undefined}
+                  style={{
+                    cursor: clickable ? "pointer" : "default",
+                    animationDelay: `${i * 34}ms`,
+                  }}
+                >
+                  <circle
+                    cx={d.plotX} cy={d.plotY} r={d.r + 5}
+                    className="viz-bubble-halo"
+                  />
+                  <circle
+                    cx={d.plotX} cy={d.plotY} r={d.r}
+                    className={`viz-bubble ${d.hasAttention ? "viz-bubble--attention" : "viz-bubble--calm"}`}
+                  />
+                  {isTop && (
+                    <text
+                      x={Math.max(54, Math.min(MATRIX_W - 54, d.plotX))}
+                      y={Math.max(MATRIX_PAD.top + 11, d.plotY - d.r - 7)}
+                      textAnchor="middle"
+                      className="viz-bubble-label"
+                    >
+                      {d.alias}
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+        <div className="viz-priority-matrix__watchlist" aria-label="Students to check first">
+          <span className="viz-priority-matrix__watchlist-label">Check first</span>
+          {topStudents.map((student, index) => {
+            const content = (
+              <>
+                <span className="viz-priority-matrix__rank">{index + 1}</span>
+                <span className="viz-priority-matrix__student">
+                  <strong>{student.alias}</strong>
+                  <em>{student.reason || `${student.pending} pending · ${student.x}d gap`}</em>
+                </span>
+                <span className="viz-priority-matrix__student-score">{Math.round(student.y)}</span>
+              </>
+            );
+            return onStudentClick ? (
+              <button
+                key={student.alias}
+                type="button"
+                className="viz-priority-matrix__watch-row"
+                data-testid={`viz-priority-row-${student.alias}`}
+                onClick={() => onStudentClick(student.alias)}
               >
-                {d.alias}
-              </text>
-            </g>
-          );
-        })}
-      </svg>
+                {content}
+              </button>
+            ) : (
+              <div key={student.alias} className="viz-priority-matrix__watch-row">
+                {content}
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }
@@ -186,9 +282,8 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
 /* ================================================================
    2. COMPLEXITY DEBT GAUGE
    ================================================================
-   Radial gauge showing total operational debt.
-   Green (0–3) → Amber (4–7) → Red (8+).
-   Answers: "Am I falling behind?"
+   Operational debt triage card showing total load, severity, delta,
+   and category mix. Answers: "Am I falling behind?"
    ================================================================ */
 
 interface DebtGaugeProps {
@@ -206,31 +301,7 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
   }, []);
 
   const total = debtItems.length;
-  const maxDebt = 12;
-  const clamped = Math.min(total, maxDebt);
-  const pct = clamped / maxDebt;
-
   const tone = total <= 3 ? "success" : total <= 7 ? "warning" : "danger";
-
-  const cx = 80;
-  const cy = 80;
-  const r = 60;
-  const startAngle = -210;
-  const endAngle = 30;
-  const totalArc = endAngle - startAngle; // 240 degrees
-  const needleAngle = startAngle + pct * totalArc;
-
-  function polarToCart(angle: number, radius: number) {
-    const rad = (angle * Math.PI) / 180;
-    return { x: cx + radius * Math.cos(rad), y: cy + radius * Math.sin(rad) };
-  }
-
-  function arcPath(startA: number, endA: number, radius: number) {
-    const s = polarToCart(startA, radius);
-    const e = polarToCart(endA, radius);
-    const largeArc = endA - startA > 180 ? 1 : 0;
-    return `M ${s.x} ${s.y} A ${radius} ${radius} 0 ${largeArc} 1 ${e.x} ${e.y}`;
-  }
 
   const categories = useMemo(() => {
     const map: Record<string, number> = {};
@@ -240,8 +311,10 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
     return Object.entries(map).sort((a, b) => b[1] - a[1]);
   }, [debtItems]);
 
+  const maxCategoryCount = Math.max(1, ...categories.map(([, count]) => count));
   const toneLabel = tone === "success" ? "Manageable" : tone === "warning" ? "Accumulating" : "Critical";
-  const topCategory = categories[0]?.[0]?.replace(/_/g, " ") ?? null;
+  const topCategory = categories[0] ? formatDebtCategory(categories[0][0]) : null;
+  const topCategoryCount = categories[0]?.[1] ?? 0;
 
   const delta =
     typeof previousTotal === "number" && previousTotal !== total
@@ -296,55 +369,42 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
         </div>
       </div>
       <div className="viz-debt-gauge__body">
-        <svg width="160" height="110" viewBox="0 0 160 110" className="viz-svg" role="img"
-          aria-label={ariaLabel}>
-          {/* Track */}
-          <path d={arcPath(startAngle, endAngle, r)} fill="none"
-            stroke="var(--color-border)" strokeWidth={10} strokeLinecap="round" />
-          {/* Green zone */}
-          <path d={arcPath(startAngle, startAngle + totalArc * 0.25, r)} fill="none"
-            stroke="var(--color-success)" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
-          {/* Amber zone */}
-          <path d={arcPath(startAngle + totalArc * 0.25, startAngle + totalArc * 0.58, r)} fill="none"
-            stroke="var(--color-warning)" strokeWidth={10} opacity={0.3} />
-          {/* Red zone */}
-          <path d={arcPath(startAngle + totalArc * 0.58, endAngle, r)} fill="none"
-            stroke="var(--color-danger)" strokeWidth={10} strokeLinecap="round" opacity={0.3} />
-          {/* Filled arc — animates from 0 to needleAngle on mount */}
-          {total > 0 && (
-            <path
-              className="viz-debt-gauge__fill"
-              d={arcPath(startAngle, needleAngle, r)}
-              fill="none"
-              stroke={`var(--color-${tone})`}
-              strokeWidth={10}
-              strokeLinecap="round"
-              pathLength={1}
-            />
-          )}
-          {/* Needle dot */}
-          {(() => {
-            const p = polarToCart(needleAngle, r);
-            return (
-              <circle
-                className="viz-debt-gauge__needle"
-                cx={p.x}
-                cy={p.y}
-                r={5}
-                fill={`var(--color-${tone})`}
-              />
-            );
-          })()}
-          {/* Center text */}
-          <text x={cx} y={cy - 6} textAnchor="middle" className="viz-gauge-number">{total}</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" className="viz-gauge-label">items</text>
-        </svg>
+        <div className={`viz-debt-gauge__summary viz-debt-gauge__summary--${tone}`}>
+          <div className="viz-debt-gauge__total">
+            <span className="viz-debt-gauge__total-number">{total}</span>
+            <span className="viz-debt-gauge__total-label">{total === 1 ? "open item" : "open items"}</span>
+          </div>
+          <div className="viz-debt-gauge__signal">
+            <span>Largest source</span>
+            <strong>{topCategory ?? "No open source"}</strong>
+            {topCategory ? <em>{topCategoryCount} {topCategoryCount === 1 ? "item" : "items"}</em> : null}
+          </div>
+          <div className="viz-debt-gauge__threshold" aria-hidden="true">
+            <span className={`viz-debt-gauge__threshold-zone${tone === "success" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>0-3</span>
+            <span className={`viz-debt-gauge__threshold-zone${tone === "warning" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>4-7</span>
+            <span className={`viz-debt-gauge__threshold-zone${tone === "danger" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>8+</span>
+          </div>
+        </div>
         {categories.length > 0 && (
           <div className="viz-debt-gauge__breakdown">
-            {categories.map(([cat, count]) => (
-              <div key={cat} className="viz-debt-gauge__cat">
-                <span className="viz-debt-gauge__cat-count">{count}</span>
-                <span className="viz-debt-gauge__cat-label">{cat.replace(/_/g, " ")}</span>
+            {categories.map(([cat, count], index) => (
+              <div
+                key={cat}
+                className={`viz-debt-gauge__cat viz-debt-gauge__cat--${debtCategoryTone(cat)}`}
+                style={{ animationDelay: `${120 + index * 55}ms` }}
+              >
+                <div className="viz-debt-gauge__cat-main">
+                  <span className="viz-debt-gauge__cat-label">{formatDebtCategory(cat)}</span>
+                  <span className="viz-debt-gauge__cat-count">{count}</span>
+                </div>
+                <div className="viz-debt-gauge__bar" aria-hidden="true">
+                  <span
+                    className="viz-debt-gauge__bar-fill"
+                    style={{
+                      "--debt-bar-width": `${Math.max(8, (count / maxCategoryCount) * 100)}%`,
+                    } as CSSProperties}
+                  />
+                </div>
               </div>
             ))}
           </div>
@@ -352,6 +412,24 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
       </div>
     </div>
   );
+}
+
+function formatDebtCategory(category: string): string {
+  const labels: Record<string, string> = {
+    approaching_review: "Approaching review",
+    stale_followup: "Stale follow-up",
+    recurring_plan_item: "Recurring plan item",
+    unaddressed_pattern: "Unaddressed pattern",
+    unapproved_message: "Unapproved message",
+  };
+  return labels[category] ?? category.replace(/_/g, " ");
+}
+
+function debtCategoryTone(category: string): "danger" | "warning" | "analysis" | "success" {
+  if (category === "approaching_review" || category === "stale_followup") return "danger";
+  if (category === "recurring_plan_item" || category === "unapproved_message") return "warning";
+  if (category === "unaddressed_pattern") return "analysis";
+  return "success";
 }
 
 
@@ -378,6 +456,17 @@ interface CompositionRingsProps {
     label: string;
     students: CompositionRingsStudent[];
   }) => void;
+}
+
+type CompositionGroupKind = "eal" | "support_cluster" | "family_language";
+
+interface CompositionGroupItem {
+  groupKind: CompositionGroupKind;
+  tag: string;
+  label: string;
+  value: number;
+  color: string;
+  students: CompositionRingsStudent[];
 }
 
 interface DonutSegment {
@@ -487,6 +576,11 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
   const cx = 90;
   const cy = 90;
 
+  function familyLanguageLabel(student: CompositionRingsStudent): string {
+    const rawLanguage = student.family_language ?? "en";
+    return LANG_LABELS[rawLanguage] ?? rawLanguage;
+  }
+
   function makeClickable(
     groupKind: "eal" | "support_cluster" | "family_language",
     tag: string,
@@ -515,16 +609,6 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
     { tag: "eal_level_3", label: "EAL Level 3", color: "var(--color-success)" },
   ];
 
-  const ealSegments: DonutSegment[] = [
-    ...EAL_TAGS.map(({ tag, label, color }) => ({
-      label,
-      value: stats.ealLevels[tag] ?? 0,
-      color,
-      clickable: makeClickable("eal", tag, label, stats.ealLevels[tag] ?? 0, (s) => (s.support_tags ?? []).includes(tag)),
-    })),
-    { label: "Non-EAL", value: students.length - Object.values(stats.ealLevels).reduce((a, b) => a + b, 0), color: "var(--color-border)" },
-  ].filter((s) => s.value > 0);
-
   const clusterOrder = ["transition", "sensory", "academic", "extension", "social", "executive", "other"];
   const clusterColors: Record<string, string> = {
     transition: "var(--color-warning)",
@@ -536,31 +620,96 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
     other: "var(--color-section-slate)",
   };
 
+  const ealGroups: CompositionGroupItem[] = EAL_TAGS
+    .map(({ tag, label, color }) => ({
+      groupKind: "eal" as const,
+      tag,
+      label,
+      value: stats.ealLevels[tag] ?? 0,
+      color,
+      students: students.filter((s) => (s.support_tags ?? []).includes(tag)),
+    }))
+    .filter((s) => s.value > 0);
+
+  const ealTotal = ealGroups.reduce((sum, group) => sum + group.value, 0);
+  const nonEalCount = Math.max(0, students.length - ealTotal);
+
+  const ealSegments: DonutSegment[] = [
+    ...ealGroups.map((group) => ({
+      label: group.label,
+      value: group.value,
+      color: group.color,
+      clickable: makeClickable(group.groupKind, group.tag, group.label, group.value, (s) => (s.support_tags ?? []).includes(group.tag)),
+    })),
+    { label: "No EAL tag", value: nonEalCount, color: "var(--color-border)" },
+  ].filter((s) => s.value > 0);
+
+  function formatClusterLabel(cluster: string): string {
+    const labels: Record<string, string> = {
+      transition: "Transition",
+      sensory: "Sensory",
+      academic: "Academic",
+      extension: "Extension",
+      social: "Social",
+      executive: "Executive function",
+      other: "Other",
+    };
+    return labels[cluster] ?? cluster;
+  }
+
+  const supportGroups: CompositionGroupItem[] = clusterOrder
+    .filter((c) => (stats.tagClusters[c] ?? 0) > 0)
+    .map((c) => ({
+      groupKind: "support_cluster" as const,
+      tag: c,
+      label: formatClusterLabel(c),
+      value: stats.tagClusters[c],
+      color: clusterColors[c] ?? "var(--color-border)",
+      students: students.filter((s) => (s.support_tags ?? []).some((t) => tagToCluster(t) === c)),
+    }));
+
   const tagSegments: DonutSegment[] = clusterOrder
     .filter((c) => (stats.tagClusters[c] ?? 0) > 0)
     .map((c) => ({
-      label: c,
+      label: formatClusterLabel(c),
       value: stats.tagClusters[c],
       color: clusterColors[c] ?? "var(--color-border)",
-      clickable: makeClickable("support_cluster", c, c, stats.tagClusters[c], (s) => (s.support_tags ?? []).some((t) => tagToCluster(t) === c)),
+      clickable: makeClickable("support_cluster", c, formatClusterLabel(c), stats.tagClusters[c], (s) => (s.support_tags ?? []).some((t) => tagToCluster(t) === c)),
     }));
 
-  const langSegments: DonutSegment[] = Object.entries(stats.languages)
+  const languageGroups: CompositionGroupItem[] = Object.entries(stats.languages)
     .sort((a, b) => b[1] - a[1])
     .map(([code, count]) => {
       const langLabel = LANG_LABELS[code] ?? code;
-      // For family_language groupKind, tag is the actual language name (not code) to match filtering
       const langName = LANG_LABELS[code] ?? code;
       return {
+        groupKind: "family_language" as const,
+        tag: langName,
         label: langLabel,
         value: count,
         color: LANG_COLORS[code] ?? "var(--color-section-slate)",
-        clickable: makeClickable("family_language", langName, langLabel, count, (s) => (s.family_language ?? "English") === langName),
+        students: students.filter((s) => familyLanguageLabel(s) === langName),
       };
     });
 
-  const ealTotal = Object.values(stats.ealLevels).reduce((a, b) => a + b, 0);
+  const langSegments: DonutSegment[] = languageGroups.map((group) => ({
+    label: group.label,
+    value: group.value,
+    color: group.color,
+    clickable: makeClickable(group.groupKind, group.tag, group.label, group.value, (s) => familyLanguageLabel(s) === group.tag),
+  }));
+
   const langCount = Object.keys(stats.languages).length;
+  const namedSupportGroups = supportGroups
+    .filter((group) => group.tag !== "other")
+    .sort((a, b) => b.value - a.value);
+  const supportDisplayGroups = [
+    ...namedSupportGroups,
+    ...supportGroups.filter((group) => group.tag === "other"),
+  ];
+  const topNeed = supportDisplayGroups[0];
+  const homeLanguageGroups = languageGroups.filter((group) => group.label !== "English");
+  const languageDisplayGroups = homeLanguageGroups.length > 0 ? homeLanguageGroups.slice(0, 6) : languageGroups.slice(0, 1);
 
   const topLang = langSegments[0];
   const ariaLabel =
@@ -569,59 +718,121 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
     (topLang && topLang.label !== "English" ? ` (${topLang.label} most common)` : "") +
     `, ${tagSegments.length} support clusters.`;
 
+  function handleGroupKeyDown(e: KeyboardEvent<HTMLElement>, group: CompositionGroupItem) {
+    if (!onSegmentClick) return;
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      onSegmentClick({
+        groupKind: group.groupKind,
+        tag: group.tag,
+        label: group.label,
+        students: group.students,
+      });
+    }
+  }
+
+  function renderProfileGroup(title: string, groups: CompositionGroupItem[]) {
+    if (groups.length === 0) return null;
+    const maxValue = Math.max(1, ...groups.map((group) => group.value));
+    return (
+      <div className="viz-composition__group">
+        <span className="viz-composition__group-title">{title}</span>
+        <div className="viz-composition__group-list">
+          {groups.map((group, index) => {
+            const rowContent = (
+              <>
+                <span className="viz-composition__dot" style={{ background: group.color }} />
+                <span className="viz-composition__row-label">{group.label}</span>
+                <span className="viz-composition__row-bar" aria-hidden="true">
+                  <span
+                    style={{
+                      "--composition-row-pct": `${Math.max(0.08, group.value / maxValue)}`,
+                      "--composition-row-delay": `${index * 55}ms`,
+                      background: group.color,
+                    } as CSSProperties}
+                  />
+                </span>
+                <strong>{group.value}</strong>
+              </>
+            );
+            return onSegmentClick ? (
+              <button
+                key={`${group.groupKind}-${group.tag}`}
+                type="button"
+                className="viz-composition__row"
+                data-testid={`viz-composition-row-${group.groupKind}-${group.tag}`}
+                aria-label={`${group.label}: ${group.value} ${group.value === 1 ? "student" : "students"}. Open group.`}
+                onClick={() => onSegmentClick({
+                  groupKind: group.groupKind,
+                  tag: group.tag,
+                  label: group.label,
+                  students: group.students,
+                })}
+                onKeyDown={(e) => handleGroupKeyDown(e, group)}
+                style={{ "--composition-row-delay": `${index * 55}ms` } as CSSProperties}
+              >
+                {rowContent}
+              </button>
+            ) : (
+              <div
+                key={`${group.groupKind}-${group.tag}`}
+                className="viz-composition__row"
+                data-testid={`viz-composition-row-${group.groupKind}-${group.tag}`}
+                aria-label={`${group.label}: ${group.value} ${group.value === 1 ? "student" : "students"}.`}
+                style={{ "--composition-row-delay": `${index * 55}ms` } as CSSProperties}
+              >
+                {rowContent}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className={`viz-composition${mounted ? " viz-composition--mounted" : ""}`}>
-      <div className="viz-header">
-        <h4 className="viz-title">Classroom Profile</h4>
-        <span className="viz-subtitle">{students.length} students · {ealTotal} EAL · {langCount} languages</span>
+      <div className="viz-header viz-composition__header">
+        <div>
+          <h4 className="viz-title">Classroom Profile</h4>
+          <span className="viz-composition__summary">
+            {students.length} students · {ealTotal} EAL · {langCount} languages
+          </span>
+        </div>
+        <div className="viz-composition__stats" aria-hidden="true">
+          <span>{supportGroups.length} need groups</span>
+          {topNeed ? <span>{topNeed.label} leads</span> : null}
+        </div>
       </div>
       <div className="viz-composition__body">
-        <svg width="180" height="180" viewBox="0 0 180 180" className="viz-svg" role="img"
-          aria-label={ariaLabel}>
-          <g className="viz-composition__ring viz-composition__ring--outer">
-            {/* Outer ring: EAL levels */}
-            {drawDonutRing(cx, cy, 78, 14, ealSegments)}
-          </g>
-          <g className="viz-composition__ring viz-composition__ring--middle">
-            {/* Middle ring: support tag clusters */}
-            {drawDonutRing(cx, cy, 58, 12, tagSegments)}
-          </g>
-          <g className="viz-composition__ring viz-composition__ring--inner">
-            {/* Inner ring: languages */}
-            {drawDonutRing(cx, cy, 40, 10, langSegments)}
-          </g>
-          {/* Center count */}
-          <text x={cx} y={cy - 4} textAnchor="middle" className="viz-gauge-number">{students.length}</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" className="viz-gauge-label">students</text>
-        </svg>
-        <div className="viz-composition__legends">
-          <div className="viz-legend-group">
-            <span className="viz-legend-title">EAL</span>
-            {ealSegments.filter((s) => s.label !== "Non-EAL").map((s) => (
-              <span key={s.label} className="viz-legend-item">
-                <span className="viz-legend-dot" style={{ background: s.color }} />
-                {s.label.replace("EAL ", "L")}: {s.value}
-              </span>
-            ))}
+        <div className="viz-composition__visual">
+          <svg width="190" height="190" viewBox="0 0 180 180" className="viz-svg" role="img"
+            aria-label={ariaLabel}>
+            <circle className="viz-composition__track" cx={cx} cy={cy} r={78} />
+            <circle className="viz-composition__track" cx={cx} cy={cy} r={58} />
+            <circle className="viz-composition__track" cx={cx} cy={cy} r={40} />
+            <g className="viz-composition__ring viz-composition__ring--outer">
+              {drawDonutRing(cx, cy, 78, 14, ealSegments)}
+            </g>
+            <g className="viz-composition__ring viz-composition__ring--middle">
+              {drawDonutRing(cx, cy, 58, 12, tagSegments)}
+            </g>
+            <g className="viz-composition__ring viz-composition__ring--inner">
+              {drawDonutRing(cx, cy, 40, 10, langSegments)}
+            </g>
+            <text x={cx} y={cy - 4} textAnchor="middle" className="viz-composition__center-number">{students.length}</text>
+            <text x={cx} y={cy + 11} textAnchor="middle" className="viz-composition__center-label">students</text>
+          </svg>
+          <div className="viz-composition__metrics" aria-hidden="true">
+            <span><strong>{ealTotal}</strong><em>EAL</em></span>
+            <span><strong>{supportGroups.length}</strong><em>needs</em></span>
+            <span><strong>{langCount}</strong><em>languages</em></span>
           </div>
-          <div className="viz-legend-group">
-            <span className="viz-legend-title">Needs</span>
-            {tagSegments.slice(0, 4).map((s) => (
-              <span key={s.label} className="viz-legend-item">
-                <span className="viz-legend-dot" style={{ background: s.color }} />
-                {s.label}: {s.value}
-              </span>
-            ))}
-          </div>
-          <div className="viz-legend-group">
-            <span className="viz-legend-title">Languages</span>
-            {langSegments.filter((s) => s.label !== "English").map((s) => (
-              <span key={s.label} className="viz-legend-item">
-                <span className="viz-legend-dot" style={{ background: s.color }} />
-                {s.label}: {s.value}
-              </span>
-            ))}
-          </div>
+        </div>
+        <div className="viz-composition__profile">
+          {renderProfileGroup("EAL", ealGroups)}
+          {renderProfileGroup("Needs", supportDisplayGroups.slice(0, 4))}
+          {renderProfileGroup("Languages", languageDisplayGroups)}
         </div>
       </div>
     </div>
@@ -740,49 +951,88 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
 
   if (sorted.length === 0) return null;
 
-  const staleCount = sorted.filter(
-    (s) => (s.last_intervention_days ?? 0) > 7,
-  ).length;
+  const rows = sorted.map((student, index) => {
+    const days = student.last_intervention_days ?? 0;
+    const tone = days > maxDays ? "danger" : days > 7 ? "warning" : "success";
+    const status = days > maxDays ? "Beyond target" : days > 7 ? "Watch" : "Recent";
+    return { ...student, days, index, tone, status };
+  });
+  const longestGap = rows[0];
+  const scaleMax = Math.max(maxDays, longestGap.days);
+  const beyondTargetCount = rows.filter((s) => s.days > maxDays).length;
+  const watchCount = rows.filter((s) => s.days > 7 && s.days <= maxDays).length;
+  const leadOverage = Math.max(0, longestGap.days - maxDays);
   const ariaLabel =
-    `Intervention recency: top ${sorted.length} ${sorted.length === 1 ? "student" : "students"} by longest gap since last intervention` +
-    (staleCount > 0
-      ? `, ${staleCount} over a week without a check-in.`
-      : ", all within a week.");
+    `Intervention recency: top ${rows.length} ${rows.length === 1 ? "student" : "students"} by longest gap since last intervention. ` +
+    `${beyondTargetCount} beyond the ${maxDays} day target, ${watchCount} in watch range. Longest gap: ${longestGap.alias} at ${longestGap.days} days.`;
 
   return (
-    <div className="viz-recency" role="group" aria-label={ariaLabel}>
-      <div className="viz-header">
-        <h4 className="viz-title">Intervention Recency</h4>
-        <span className="viz-subtitle">Top {sorted.length} by longest gap · Days since last check-in</span>
+    <div className={`viz-recency${mounted ? " viz-recency--mounted" : ""}`} role="group" aria-label={ariaLabel}>
+      <div className="viz-header viz-recency__header">
+        <div>
+          <h4 className="viz-title">Intervention Recency</h4>
+          <span className="viz-recency__summary">
+            {rows.length} longest gaps · {beyondTargetCount} beyond {maxDays}d target
+          </span>
+        </div>
+        <div className="viz-recency__legend" aria-hidden="true">
+          <span className="viz-recency__legend-dot viz-recency__legend-dot--danger" /> Beyond target
+          <span className="viz-recency__legend-dot viz-recency__legend-dot--warning" /> Watch
+        </div>
       </div>
-      <div className="viz-recency__list">
-        {sorted.map((s, i) => {
-          const days = s.last_intervention_days ?? 0;
-          const pct = Math.min(1, days / maxDays);
-          const displayPct = mounted ? pct : 0;
-          const tone = days <= 3 ? "success" : days <= 7 ? "warning" : "danger";
-          return (
-            <button
-              key={s.alias}
-              className="viz-recency__row"
-              type="button"
-              onClick={onStudentClick ? () => onStudentClick(s.alias) : undefined}
-              aria-label={`${s.alias}: ${days} days since intervention`}
-            >
-              <span className="viz-recency__name">{s.alias}</span>
-              <span className="viz-recency__bar-track">
-                <span
-                  className={`viz-recency__bar viz-recency__bar--${tone}`}
-                  style={{
-                    width: `${displayPct * 100}%`,
-                    transitionDelay: `${i * 45}ms`,
-                  }}
-                />
-              </span>
-              <span className={`viz-recency__days viz-recency__days--${tone}`}>{days}d</span>
-            </button>
-          );
-        })}
+      <div className="viz-recency__body">
+        <div className={`viz-recency__lead viz-recency__lead--${longestGap.tone}`}>
+          <span className="viz-recency__lead-label">Longest gap</span>
+          <strong>{longestGap.days}d</strong>
+          <span className="viz-recency__lead-student">{longestGap.alias}</span>
+          <em>{leadOverage > 0 ? `${leadOverage}d beyond target` : "Inside target"}</em>
+        </div>
+        <div className="viz-recency__list">
+          {rows.map((s) => {
+            const rawPct = scaleMax > 0 ? s.days / scaleMax : 0;
+            const visualPct = s.days === 0 ? 0 : Math.max(0.08, Math.min(1, Math.sqrt(rawPct)));
+            const content = (
+              <>
+                <span className="viz-recency__rank">{s.index + 1}</span>
+                <span className="viz-recency__name">{s.alias}</span>
+                <span className="viz-recency__bar-track" aria-hidden="true">
+                  <span
+                    className={`viz-recency__bar viz-recency__bar--${s.tone}`}
+                    style={{
+                      "--recency-pct": visualPct,
+                      "--recency-row-delay": `${s.index * 45}ms`,
+                    } as CSSProperties}
+                  />
+                </span>
+                <span className={`viz-recency__days viz-recency__days--${s.tone}`}>{s.days}d</span>
+                <span className={`viz-recency__status viz-recency__status--${s.tone}`}>{s.status}</span>
+              </>
+            );
+            return onStudentClick ? (
+              <button
+                key={s.alias}
+                className={`viz-recency__row viz-recency__row--${s.tone}`}
+                type="button"
+                onClick={() => onStudentClick(s.alias)}
+                aria-label={`${s.alias}: ${s.days} days since intervention. ${s.status}. Open detail.`}
+                data-testid={`viz-recency-row-${s.alias}`}
+                style={{ "--recency-row-delay": `${s.index * 45}ms` } as CSSProperties}
+              >
+                {content}
+              </button>
+            ) : (
+              <div
+                key={s.alias}
+                className={`viz-recency__row viz-recency__row--${s.tone}`}
+                aria-label={`${s.alias}: ${s.days} days since intervention. ${s.status}.`}
+                data-testid={`viz-recency-row-${s.alias}`}
+                style={{ "--recency-row-delay": `${s.index * 45}ms` } as CSSProperties}
+              >
+                {content}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

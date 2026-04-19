@@ -20,6 +20,7 @@
   /* The canvas runs wide on desktop; internal components hold their
      own measure. Let the page breathe. */
   max-width: min(100%, 1240px);
+  gap: var(--space-4);
 }
 
 /* -----------------------------------------------------------------
@@ -28,7 +29,7 @@
 .today-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-5);
 }
 
 .today-grid__hero-row {
@@ -163,11 +164,11 @@
 
 .today-triage-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: baseline;
-  column-gap: var(--space-4);
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: var(--space-3);
   width: 100%;
-  padding: var(--space-4) 0;
+  padding: var(--space-3) 0;
   background: transparent;
   border: 0;
   border-top: 1px solid var(--color-border);
@@ -228,7 +229,6 @@
 .today-triage-row__label {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: 600;
@@ -247,11 +247,12 @@
 
 .today-triage-row__count {
   justify-self: end;
+  align-self: center;
   text-align: right;
   font-family: var(--font-mono);
   font-feature-settings: var(--font-feature-numeric);
   font-variant-numeric: tabular-nums slashed-zero;
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 500;
   font-optical-sizing: auto;
   line-height: 0.95;
@@ -736,8 +737,8 @@
 .today-pulse {
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  margin-top: var(--space-8);
+  gap: var(--space-5);
+  margin-top: var(--space-4);
 }
 
 .today-pulse__header {
@@ -746,8 +747,8 @@
   align-items: baseline;
   column-gap: var(--space-6);
   row-gap: var(--space-2);
-  padding-top: var(--space-7);
-  padding-bottom: var(--space-4);
+  padding-top: var(--space-5);
+  padding-bottom: var(--space-3);
   border-top: 0;
   /* Hairline is drawn via ::before so we can keep the band tall
      and still anchor the rule to the top edge without affecting
@@ -1068,6 +1069,10 @@
 .today-panel .card__body    { padding: var(--space-5); }
 .today-panel .card__header  { padding: var(--space-5) var(--space-5) 0; }
 .today-panel .card__footer  { padding: 0 var(--space-5) var(--space-5); }
+
+.today-panel .card.card--accent::before {
+  content: none;
+}
 
 /* ---------- Triage card: mono-caps header + flat chrome ---------- */
 

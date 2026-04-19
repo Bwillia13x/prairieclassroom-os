@@ -1,11 +1,12 @@
 .forecast-timeline {
   display: flex;
-  gap: 3px;
-  border-radius: var(--radius-md);
+  gap: 2px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-border) 45%, transparent);
   overflow: hidden;
   margin-bottom: var(--space-4);
-  box-shadow: var(--shadow-xs);
-  box-shadow: var(--shadow-xs);
+  box-shadow: none;
 }
 
 .forecast-timeline-segment {
@@ -16,49 +17,54 @@
   justify-content: center;
   border: none;
   cursor: pointer;
-  will-change: transform;
   transition:
-    filter var(--motion-letterpress) var(--ease-letterpress),
-    box-shadow var(--motion-base) var(--ease-spring),
-    transform var(--motion-base) var(--ease-spring);
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    filter var(--motion-fast) var(--ease-standard);
   padding: var(--space-1) var(--space-2);
 }
 
 .forecast-timeline-segment:first-child {
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
 }
 
 .forecast-timeline-segment:last-child {
-  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
 }
 
 .forecast-timeline-segment:only-child {
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .forecast-timeline-segment:hover {
-  filter: brightness(0.94);
-  transform: scaleY(1.08);
-  box-shadow: 0 2px 12px color-mix(in srgb, var(--color-accent) 10%, transparent);
+  filter: brightness(1.06);
+}
+
+.forecast-timeline-segment:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-text) 75%, transparent);
+  outline-offset: -3px;
 }
 
 .forecast-timeline-segment--low {
-  background: var(--color-forecast-low-bg);
+  background: color-mix(in srgb, var(--color-forecast-low) 18%, var(--color-surface) 82%);
   color: var(--color-forecast-low-text);
 }
 
 .forecast-timeline-segment--medium {
-  background: var(--color-forecast-medium-bg);
+  background: color-mix(in srgb, var(--color-forecast-medium) 20%, var(--color-surface) 80%);
   color: var(--color-forecast-medium-text);
 }
 
 .forecast-timeline-segment--high {
-  background: var(--color-forecast-high-bg);
+  background: color-mix(in srgb, var(--color-forecast-high) 24%, var(--color-surface) 76%);
   color: var(--color-forecast-high-text);
 }
 
 .forecast-timeline-time {
+  font-family: var(--font-mono);
   font-size: var(--text-xs);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums slashed-zero;
+  letter-spacing: 0;
   white-space: nowrap;
 }

@@ -87,9 +87,9 @@ export default function SurvivalPacketPanel() {
     tomorrow.setDate(tomorrow.getDate() + 1);
     const targetDate = tomorrow.toISOString().split("T")[0];
 
-    const resp = await streamer.execute(() =>
+    const resp = await streamer.execute((stream) =>
       execute((signal) =>
-        generateSurvivalPacket(activeClassroom, targetDate, undefined, undefined, signal)
+        generateSurvivalPacket(activeClassroom, targetDate, undefined, undefined, signal, stream)
       )
     );
     if (resp) {

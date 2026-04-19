@@ -443,6 +443,17 @@ function loadActiveTabFromUrl(): ActiveTab {
   return "today";
 }
 
+export function shouldSuppressFirstRunModalsFromUrl(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const truthy = (value: string | null) => ["1", "true", "yes", "on"].includes((value ?? "").toLowerCase());
+    return truthy(params.get("demo")) || truthy(params.get("presentation")) || truthy(params.get("judge"));
+  } catch {
+    return false;
+  }
+}
+
 export function createInitialState(): AppState {
   return {
     classrooms: [],
@@ -452,7 +463,7 @@ export function createInitialState(): AppState {
     interventionPrefill: null,
     initError: null,
     debtCounts: {},
-    showOnboarding: !localStorage.getItem("prairie-onboarding-done"),
+    showOnboarding: !shouldSuppressFirstRunModalsFromUrl() && !localStorage.getItem("prairie-onboarding-done"),
     toasts: [],
     streaming: {
       active: false,

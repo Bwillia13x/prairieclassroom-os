@@ -1,14 +1,16 @@
+/* HealthBar — the telemetry strip at the foot of the home page.
+   Nothing-design: flat surface, hairline border, no shadow, no gradient.
+   Dots are technical 7px ticks on a 1px track; filled dots invert to
+   text color rather than the accent so the strip reads monochrome. */
 .health-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-3);
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 32%, transparent) 0%, var(--color-surface) 100%);
-  box-shadow: var(--shadow-sm), var(--inner-stroke);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
 }
 
 .health-bar--empty {
@@ -23,31 +25,30 @@
 
 .health-bar__dot {
   display: inline-block;
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   border-radius: 999px;
-  background: var(--color-bg-muted);
-  border: 1px solid var(--color-border);
+  background: transparent;
+  border: 1px solid var(--color-border-strong);
   transition:
     background var(--motion-base) var(--ease-spring),
-    border-color var(--motion-base) var(--ease-spring),
-    transform var(--motion-base) var(--ease-spring),
-    box-shadow var(--motion-base) var(--ease-spring);
+    border-color var(--motion-base) var(--ease-spring);
 }
 
 .health-bar__dot--filled {
-  background: var(--color-accent);
-  border-color: var(--color-accent);
-  box-shadow: 0 0 6px color-mix(in srgb, var(--color-accent) 10%, transparent);
+  background: var(--color-text);
+  border-color: var(--color-text);
 }
 
 .health-bar__planning-label {
-  font-size: var(--text-xs);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-secondary);
+  color: var(--color-text-tertiary);
   font-variant-numeric: tabular-nums slashed-zero;
-  font-feature-settings: var(--font-feature-numeric);
-  letter-spacing: 0.01em;
+  font-feature-settings: "tnum" 1, "zero" 1;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
 }
 
 .health-bar--loading {

@@ -7,6 +7,7 @@ import { PatternReportForm, PatternReportResult } from "../components/PatternRep
 import ContextualHint from "../components/ContextualHint";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
+import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -19,6 +20,7 @@ import { FeedbackCollector, OutputActionBar, type OutputAction } from "../compon
 import { useFeedback } from "../hooks/useFeedback";
 import { useRole } from "../hooks/useRole";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
+import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import { serializeSupportPatternsToPlainText } from "./outputActionBarHelpers";
 import type { SupportPatternsResponse, FamilyMessagePrefill, InterventionPrefill } from "../types";
 
@@ -28,9 +30,12 @@ interface Props {
 }
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, appendTomorrowNote } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, reset } = useAsyncAction<SupportPatternsResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<SupportPatternsResponse>();
+  const streamer = useStreamingRequest({
+    sectionLabels: ["Themes", "Follow-up gaps", "Suggested focus"],
+  });
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
@@ -96,12 +101,14 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
   if (classrooms.length === 0) return null;
 
   async function handleSubmit(classroomId: string, studentFilter?: string, timeWindow?: number) {
-    const resp = await execute((signal) =>
-      detectSupportPatterns({
-        classroom_id: classroomId,
-        student_filter: studentFilter,
-        time_window: timeWindow,
-      }, signal)
+    const resp = await streamer.execute((stream) =>
+      execute((signal) =>
+        detectSupportPatterns({
+          classroom_id: classroomId,
+          student_filter: studentFilter,
+          time_window: timeWindow,
+        }, signal, stream)
+      )
     );
     if (resp) {
       showSuccess("Patterns analyzed");
@@ -157,7 +164,9 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
           <div className="workspace-result" aria-live="polite" aria-busy={loading && result === null}>
             {error && result === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
             {loading && result === null ? (
-              <SkeletonLoader variant="stack" message="Analyzing support patterns across records..." label="Detecting support patterns" />
+              streaming.phase !== "idle"
+                ? <StreamingIndicator onCancel={cancel} />
+                : <SkeletonLoader variant="stack" message="Analyzing support patterns across records..." label="Detecting support patterns" />
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard

@@ -1595,3 +1595,530 @@
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
+
+/* ================================================================
+   Final Nothing-system hardening pass
+   ================================================================
+   This section is intentionally late in the cascade. Individual panel
+   modules still carry pre-system chrome, so these selectors normalize
+   the full app back to flat instrument panels: no glass, no shadows,
+   no gradients in UI chrome, square mechanical controls, bracketed
+   status, and static segmented loading states.
+   ================================================================ */
+
+:root {
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-press: none;
+  --inner-stroke: none;
+  --radius-md: var(--radius-sm);
+  --radius-lg: var(--radius-sm);
+  --radius-xl: var(--radius-sm);
+  --radius-pill: var(--radius-sm);
+  --radius-btn-lg: var(--radius-sm);
+  --ease-emphasis: var(--ease-letterpress);
+  --ease-spring: var(--ease-letterpress);
+  --ease-spring-heavy: var(--ease-letterpress);
+  --ease-out-expo: var(--ease-letterpress);
+  --ease-in-out-circ: var(--ease-letterpress);
+}
+
+.app-shell *,
+.toast-queue *,
+.command-palette *,
+.shortcut-sheet *,
+.access-dialog *,
+.role-prompt-dialog *,
+.onboarding-card *,
+.drilldown-drawer * {
+  letter-spacing: 0 !important;
+}
+
+.app-header__inner,
+.app-main,
+.shell-classroom-panel,
+.role-pill__menu,
+.role-pill__confirm,
+.command-palette,
+.shortcut-sheet,
+.access-dialog,
+.role-prompt-dialog,
+.onboarding-card,
+.drilldown-drawer,
+.toast-item,
+.mobile-nav,
+.workspace-page .form-panel,
+.workspace-page .teacher-reflection,
+.workspace-page .forecast-form,
+.workspace-page .ea-briefing-form,
+.workspace-page .message-composer,
+.workspace-page .message-draft,
+.workspace-page .plan-viewer,
+.workspace-page .forecast-viewer,
+.workspace-page .intervention-card,
+.workspace-page .variant-card,
+.workspace-page .survival-packet,
+.workspace-page .pattern-report,
+.workspace-page .student-roster,
+.workspace-page .artifact-upload,
+.workspace-page .empty-state,
+.workspace-page .skeleton-card,
+.workspace-page .section-skeleton,
+.workspace-page .data-card,
+.workspace-page [class*="viz-"][class*="-card"],
+.workspace-page [class*="__card"],
+.workspace-page [class*="-panel"] {
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.app-header__inner {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 2px !important;
+}
+
+.app-main {
+  background: var(--color-workspace) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+}
+
+.shell-classroom-panel,
+.role-pill__menu,
+.role-pill__confirm,
+.command-palette,
+.shortcut-sheet,
+.access-dialog,
+.role-prompt-dialog,
+.onboarding-card,
+.drilldown-drawer {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border-strong) !important;
+  border-radius: 2px !important;
+}
+
+.shortcut-sheet-backdrop,
+.command-palette-backdrop,
+.access-dialog-backdrop,
+.role-prompt-backdrop,
+.onboarding-backdrop,
+.drilldown-drawer__backdrop,
+.drilldown-drawer-backdrop,
+[class*="backdrop"] {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.btn,
+.btn--primary,
+.btn--approve,
+.btn--ghost,
+.btn--soft,
+.btn--danger,
+.btn--tertiary,
+.shell-bar__palette-btn,
+.theme-toggle,
+.app-help-btn,
+.role-pill,
+.shell-classroom-pill,
+.mobile-nav-group,
+.mobile-nav-subtab,
+.toast-undo-btn,
+.toast-dismiss-btn {
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+  filter: none !important;
+  font-family: var(--font-mono) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+}
+
+.btn--primary,
+.btn--approve,
+.shell-bar__actions > button:hover:not(:disabled),
+.shell-bar__palette-btn:hover:not(:disabled),
+.app-help-btn:hover:not(:disabled),
+.mobile-nav-subtab--active {
+  background: var(--color-text) !important;
+  border-color: var(--color-text) !important;
+  color: var(--color-bg) !important;
+}
+
+.btn--ghost,
+.btn--soft,
+.btn--tertiary,
+.shell-bar__palette-btn,
+.theme-toggle,
+.app-help-btn,
+.role-pill,
+.shell-classroom-pill,
+.mobile-nav-group,
+.mobile-nav-subtab {
+  background: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  color: var(--color-text) !important;
+}
+
+.btn--danger,
+.toast-item--error,
+.workspace-page .error-banner {
+  background: transparent !important;
+  border-color: var(--color-text-danger) !important;
+  color: var(--color-text-danger) !important;
+}
+
+.shell-classroom-pill__lock,
+.role-pill__chip,
+.role-pill__option-chip,
+.mobile-nav-badge,
+.mobile-nav-subtab-badge,
+.toast-dismiss-btn {
+  background: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 2px !important;
+  color: var(--color-text-tertiary) !important;
+}
+
+.shell-nav,
+.shell-nav--solo {
+  background: transparent !important;
+  border-top: 1px solid var(--color-border) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+.shell-nav__groups,
+.shell-nav__tabs {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+}
+
+.shell-nav__group-indicator {
+  display: none !important;
+}
+
+.shell-nav__group,
+.shell-nav__tab,
+.shell-nav__tab.shell-nav__tab--active {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: var(--color-text-tertiary) !important;
+  transform: none !important;
+}
+
+.shell-nav__group--active,
+.shell-nav__tab.shell-nav__tab--active {
+  color: var(--color-text) !important;
+  border-bottom: 2px solid var(--color-text) !important;
+}
+
+.status-chip,
+.status-chip.status-chip--accent,
+.status-chip.status-chip--muted,
+.status-chip.status-chip--pending,
+.status-chip.status-chip--success,
+.status-chip.status-chip--warning,
+.status-chip.status-chip--danger,
+.status-chip.status-chip--analysis,
+.status-chip.status-chip--provenance,
+.status-chip.status-chip--critical,
+.status-chip.status-chip--sun,
+.status-chip.status-chip--sage,
+.status-chip.status-chip--slate,
+.status-chip.status-chip--forest,
+.status-chip.status-chip--info {
+  background: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  color: var(--color-text) !important;
+  font-family: var(--font-mono) !important;
+  font-size: var(--text-2xs) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+}
+
+.status-chip--success { border-left: 2px solid var(--color-text-success) !important; }
+.status-chip--warning,
+.status-chip--pending { border-left: 2px solid var(--color-text-warning) !important; }
+.status-chip--danger,
+.status-chip--critical { border-left: 2px solid var(--color-text-danger) !important; }
+.status-chip--analysis,
+.status-chip--provenance { border-left: 2px solid var(--color-text-analysis) !important; }
+
+input,
+select,
+textarea,
+.input,
+.select,
+.textarea,
+.form-control,
+.artifact-source-switcher,
+.artifact-source-switcher__tab,
+.language-tool-toggle,
+.language-tool-toggle__btn,
+.quick-capture-tray,
+.history-drawer,
+.output-action-bar {
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-radius: 2px !important;
+}
+
+input,
+select,
+textarea {
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+.artifact-source-switcher__tab--active,
+.language-tool-toggle__btn--active,
+.artifact-source-switcher [role="tab"][aria-selected="true"] {
+  background: var(--color-text) !important;
+  border-color: var(--color-text) !important;
+  color: var(--color-bg) !important;
+  box-shadow: none !important;
+}
+
+.mobile-nav {
+  background: var(--color-surface) !important;
+  border-top: 1px solid var(--color-border) !important;
+}
+
+.mobile-nav-subtabs,
+.mobile-nav-groups {
+  background: transparent !important;
+}
+
+.mobile-nav-subtabs::after {
+  content: none !important;
+}
+
+.mobile-nav-group--active,
+.mobile-nav-group--sun.mobile-nav-group--active,
+.mobile-nav-group--sage.mobile-nav-group--active,
+.mobile-nav-group--slate.mobile-nav-group--active,
+.mobile-nav-group--forest.mobile-nav-group--active {
+  background: transparent !important;
+  border-color: var(--color-text) !important;
+  color: var(--color-text) !important;
+}
+
+.mobile-nav-group--sun .mobile-nav-icon,
+.mobile-nav-group--sage .mobile-nav-icon,
+.mobile-nav-group--slate .mobile-nav-icon,
+.mobile-nav-group--forest .mobile-nav-icon,
+.shell-nav__group-icon {
+  color: currentColor !important;
+}
+
+.mobile-nav-group:active,
+.mobile-nav-subtab:active {
+  transform: none !important;
+}
+
+.toast-queue {
+  top: var(--space-3) !important;
+  right: var(--space-3) !important;
+  gap: var(--space-2) !important;
+  max-width: min(420px, calc(100vw - var(--space-6))) !important;
+}
+
+.toast-item {
+  align-items: center !important;
+  gap: var(--space-2) !important;
+  padding: var(--space-2) var(--space-3) !important;
+  background: var(--color-surface) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 2px !important;
+  color: var(--color-text) !important;
+  animation: none !important;
+  font-family: var(--font-mono) !important;
+  font-size: var(--text-xs) !important;
+  text-transform: uppercase !important;
+}
+
+.toast-item--success { border-left: 2px solid var(--color-text-success) !important; }
+.toast-item--error { border-left: 2px solid var(--color-text-danger) !important; }
+.toast-item--info { border-left: 2px solid var(--color-text-analysis) !important; }
+.toast-item--undo { border-left: 2px solid var(--color-text-warning) !important; }
+
+.toast-icon {
+  width: auto !important;
+  min-width: 4ch !important;
+  color: var(--color-text-tertiary) !important;
+}
+
+.toast-message {
+  line-height: 1.35 !important;
+}
+
+.toast-undo-btn,
+.toast-dismiss-btn {
+  min-height: 28px !important;
+  height: 28px !important;
+  width: auto !important;
+  padding: 0 var(--space-2) !important;
+  background: transparent !important;
+}
+
+.toast-countdown-bar {
+  background: repeating-linear-gradient(
+    90deg,
+    currentColor 0 8px,
+    transparent 8px 12px
+  ) !important;
+  opacity: 0.5 !important;
+}
+
+.section-skeleton,
+.skeleton-card,
+.status-card__skeleton {
+  background: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 2px !important;
+}
+
+.section-skeleton::before,
+.skeleton-card::before,
+.status-card__skeleton::before {
+  content: "[LOADING]" !important;
+  display: block !important;
+  color: var(--color-text-tertiary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: var(--text-2xs) !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+}
+
+.section-skeleton__line,
+.skeleton-line,
+.skeleton-heading,
+.status-card__skeleton-line,
+.loading-indicator::before {
+  border-radius: 0 !important;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-border-strong) 0 8px,
+    transparent 8px 12px
+  ) !important;
+  animation: none !important;
+}
+
+.loading-indicator,
+.streaming-indicator {
+  background: transparent !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 2px !important;
+  animation: none !important;
+}
+
+.streaming-progress-track {
+  border-radius: 0 !important;
+  background: var(--color-border) !important;
+}
+
+.streaming-progress-bar {
+  border-radius: 0 !important;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-text) 0 10px,
+    transparent 10px 14px
+  ) !important;
+  animation: none !important;
+}
+
+.streaming-phase-icon,
+.streaming-dot,
+.branded-loading__mark,
+.today-story__glyph,
+.mobile-nav-badge {
+  animation: none !important;
+  box-shadow: none !important;
+}
+
+.streaming-dot {
+  border-radius: 0 !important;
+  background: var(--color-text) !important;
+}
+
+.today-story,
+.page-intro,
+.page-intro.page-intro--sun,
+.page-intro.page-intro--sage,
+.page-intro.page-intro--slate,
+.page-intro.page-intro--forest,
+.page-intro.page-intro--muted,
+.workspace-page .card,
+.workspace-page [class*="card"],
+.workspace-page [class*="panel"],
+.workspace-page [class*="viewer"],
+.workspace-page [class*="report"],
+.workspace-page [class*="composer"],
+.workspace-page [class*="logger"],
+.workspace-page [class*="form"],
+.workspace-page [class*="tray"] {
+  border-radius: 2px !important;
+  box-shadow: none !important;
+  background-image: none !important;
+}
+
+.page-intro,
+.page-intro.page-intro--sun,
+.page-intro.page-intro--sage,
+.page-intro.page-intro--slate,
+.page-intro.page-intro--forest,
+.page-intro.page-intro--muted {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.page-intro::before,
+.page-intro--sun::before,
+.page-intro--sage::before,
+.page-intro--slate::before,
+.page-intro--forest::before,
+.page-intro--muted::before {
+  content: none !important;
+}
+
+.viz-workflow-strip__step {
+  border-radius: 2px !important;
+}
+
+.shell-nav__tabs-frame,
+.app-main > div,
+[role="tabpanel"],
+.page-transition,
+.animate-in,
+.workspace-page *,
+.day-arc * {
+  animation: none !important;
+  animation-name: none !important;
+}
+
+@media (max-width: 600px) {
+  .toast-queue {
+    bottom: calc(8rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  .app-main {
+    border-radius: 2px !important;
+  }
+}

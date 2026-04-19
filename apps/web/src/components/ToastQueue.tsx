@@ -3,9 +3,9 @@ import { useApp } from "../AppContext";
 import "./ToastQueue.css";
 
 /**
- * ToastQueue — renders a stacked, animated toast queue.
- * Supports: success, info, error, and undo toasts.
- * Auto-dismisses based on toast.duration. Undo toasts show a countdown bar.
+ * ToastQueue — renders short-lived system status.
+ * Supports: success, info, error, and undo status lines.
+ * Auto-dismisses based on toast.duration. Undo items show a countdown bar.
  */
 export default function ToastQueue() {
   const { toasts, dismissToast } = useApp();
@@ -55,20 +55,20 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
     onDismiss(toast.id);
   }
 
-  const icon = toast.type === "success" ? "✓" :
-               toast.type === "error" ? "✗" :
-               toast.type === "undo" ? "↩" : "ℹ";
+  const statusLabel = toast.type === "success" ? "[OK]" :
+                      toast.type === "error" ? "[ERR]" :
+                      toast.type === "undo" ? "[UNDO]" : "[INFO]";
 
   return (
     <div
       className={`toast-item toast-item--${toast.type}`}
       role={toast.type === "error" ? "alert" : "status"}
     >
-      <span className="toast-icon" aria-hidden="true">{icon}</span>
+      <span className="toast-icon" aria-hidden="true">{statusLabel}</span>
       <span className="toast-message">{toast.message}</span>
       {toast.type === "undo" && toast.undoAction && (
         <button className="toast-undo-btn" onClick={handleUndo} type="button">
-          Undo
+          [UNDO]
         </button>
       )}
       <button
@@ -77,7 +77,7 @@ function ToastItem({ toast, onDismiss }: ToastItemProps) {
         type="button"
         aria-label="Dismiss"
       >
-        ×
+        [X]
       </button>
       {toast.duration > 0 && (
         <div className="toast-countdown-track">

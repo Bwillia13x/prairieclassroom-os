@@ -12,7 +12,6 @@ import PageIntro from "../components/PageIntro";
 import EmptyStateCard from "../components/EmptyStateCard";
 import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
-import StatusChip from "../components/StatusChip";
 import SectionIcon from "../components/SectionIcon";
 import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
@@ -22,7 +21,16 @@ import { Card, ActionButton } from "../components/shared";
 import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
 import TodayHero from "../components/TodayHero";
-import type { TodaySnapshot, ClassroomHealth, StudentSummary, DrillDownContext, InterventionPrefill, FamilyMessagePrefill } from "../types";
+import type {
+  ComplexityBlock,
+  ComplexityForecast,
+  TodaySnapshot,
+  ClassroomHealth,
+  StudentSummary,
+  DrillDownContext,
+  InterventionPrefill,
+  FamilyMessagePrefill,
+} from "../types";
 import "./TodayPanel.css";
 
 interface Props {
@@ -299,32 +307,15 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             ) : null}
 
             {result.latest_forecast ? (
-              <Card variant="raised" className="today-forecast-section">
-                <Card.Body>
-                <div className="today-forecast-header">
-                  <div>
-                    <h3>Risk Windows</h3>
-                    <p className="today-forecast-summary">
-                      {getForecastSummary(result.latest_forecast.overall_summary)}
-                    </p>
-                  </div>
-                  <div className="today-forecast-header-right">
-                    <StatusChip label={result.latest_forecast.highest_risk_block || "Forecast ready"} tone="analysis" />
-                    <ActionButton size="sm" variant="secondary" onClick={() => onTabChange("complexity-forecast")}>
-                      Open Forecast
-                    </ActionButton>
-                  </div>
-                </div>
-                <ForecastTimeline
-                  blocks={result.latest_forecast.blocks}
-                  onBlockClick={(index) => {
-                    const block = result.latest_forecast!.blocks[index];
-                    if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
-                  }}
-                />
-              </Card.Body>
-            </Card>
-          ) : null}
+              <RiskWindowsPanel
+                forecast={result.latest_forecast}
+                onOpenForecast={() => onTabChange("complexity-forecast")}
+                onBlockClick={(index) => {
+                  const block = result.latest_forecast!.blocks[index];
+                  if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+                }}
+              />
+            ) : null}
           </div>
         ) : null}
 
@@ -356,6 +347,88 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         onMessagePrefill={onMessagePrefill}
       />
     </section>
+  );
+}
+
+interface RiskWindowsPanelProps {
+  forecast: ComplexityForecast;
+  onOpenForecast: () => void;
+  onBlockClick: (index: number) => void;
+}
+
+function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindowsPanelProps) {
+  const model = getRiskWindowModel(forecast);
+
+  return (
+    <Card variant="flat" className="today-forecast-section risk-windows">
+      <Card.Body className="risk-windows__body">
+        <div className="risk-windows__readout" aria-label={`${model.highCount} high risk windows`}>
+          <p className="risk-windows__eyebrow">Risk Windows</p>
+          <div className="risk-windows__metric">
+            <span className="risk-windows__metric-number">{model.highCount}</span>
+            <span className="risk-windows__metric-unit">{model.highCount === 1 ? "high block" : "high blocks"}</span>
+          </div>
+          <p className="risk-windows__signal">{model.signal}</p>
+        </div>
+
+        <div className="risk-windows__content">
+          <div className="risk-windows__topline">
+            <div className="risk-windows__peak-group">
+              <p className="risk-windows__label">Peak block</p>
+              {model.peakBlock ? (
+                <button
+                  type="button"
+                  className={`risk-windows__peak risk-windows__peak--${model.peakBlock.level}`}
+                  onClick={() => onBlockClick(model.peakIndex)}
+                  aria-label={`Open peak window details for ${model.peakBlock.activity} at ${model.peakBlock.time_slot}`}
+                >
+                  <span className="risk-windows__peak-time">{model.peakBlock.time_slot}</span>
+                  <span className="risk-windows__peak-level">{model.peakBlock.level}</span>
+                </button>
+              ) : (
+                <p className="risk-windows__empty">Forecast ready</p>
+              )}
+            </div>
+            <ActionButton
+              size="sm"
+              variant="secondary"
+              onClick={onOpenForecast}
+              className="risk-windows__open"
+            >
+              Open Forecast
+            </ActionButton>
+          </div>
+
+          <p className="today-forecast-summary">{getForecastSummary(forecast.overall_summary)}</p>
+
+          <ForecastTimeline
+            blocks={forecast.blocks}
+            onBlockClick={onBlockClick}
+          />
+
+          {model.watchBlocks.length > 0 ? (
+            <div className="risk-windows__ledger" aria-label="Risk window watch list">
+              {model.watchBlocks.map(({ block, index }) => (
+                <button
+                  type="button"
+                  key={`${block.time_slot}-${block.activity}-${index}`}
+                  className={`risk-windows__row risk-windows__row--${block.level}`}
+                  onClick={() => onBlockClick(index)}
+                  aria-label={`Open details for ${block.activity} at ${block.time_slot}`}
+                >
+                  <span className="risk-windows__row-time">{block.time_slot}</span>
+                  <span className="risk-windows__row-main">
+                    <span className="risk-windows__row-activity">{block.activity}</span>
+                    <span className="risk-windows__row-factor">{block.contributing_factors[0] ?? block.suggested_mitigation}</span>
+                  </span>
+                  <span className="risk-windows__row-level">{block.level}</span>
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </Card.Body>
+    </Card>
   );
 }
 
@@ -430,6 +503,60 @@ function getRecommendedAction(snapshot: TodaySnapshot) {
     "Prep ready",
     "success",
   );
+}
+
+interface RiskWindowModel {
+  highCount: number;
+  peakBlock: ComplexityBlock | null;
+  peakIndex: number;
+  signal: string;
+  watchBlocks: Array<{ block: ComplexityBlock; index: number }>;
+}
+
+const FORECAST_LEVEL_RANK: Record<ComplexityBlock["level"], number> = {
+  low: 0,
+  medium: 1,
+  high: 2,
+};
+
+function getRiskWindowModel(forecast: ComplexityForecast): RiskWindowModel {
+  const blocks = forecast.blocks;
+  const highCount = blocks.reduce((count, block) => count + (block.level === "high" ? 1 : 0), 0);
+  const declaredPeakIndex = blocks.findIndex((block) => block.time_slot === forecast.highest_risk_block);
+  const highestRank = blocks.reduce(
+    (rank, block) => Math.max(rank, FORECAST_LEVEL_RANK[block.level]),
+    -1,
+  );
+  const fallbackPeakIndex = blocks.findIndex((block) => FORECAST_LEVEL_RANK[block.level] === highestRank);
+  const peakIndex = declaredPeakIndex >= 0 ? declaredPeakIndex : fallbackPeakIndex;
+  const peakBlock = peakIndex >= 0 ? blocks[peakIndex] : null;
+  const watchBlocks = blocks
+    .map((block, index) => ({ block, index }))
+    .filter(({ block }) => block.level !== "low");
+
+  return {
+    highCount,
+    peakBlock,
+    peakIndex,
+    signal: getRiskWindowSignal(highCount, peakBlock),
+    watchBlocks,
+  };
+}
+
+function getRiskWindowSignal(highCount: number, peakBlock: ComplexityBlock | null): string {
+  if (!peakBlock) {
+    return "No block data yet. Open the forecast before planning coverage.";
+  }
+  if (highCount > 1) {
+    return `Stage supports before ${peakBlock.time_slot}. Keep recovery time visible.`;
+  }
+  if (highCount === 1) {
+    return `Protect ${peakBlock.time_slot}. Prep the first move before transition.`;
+  }
+  if (peakBlock.level === "medium") {
+    return `Watch ${peakBlock.time_slot}. Keep the mitigation close.`;
+  }
+  return "No high window logged. Keep the day shape steady.";
 }
 
 function getForecastSummary(summary: string): string {

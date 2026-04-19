@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 type Theme = "system" | "light" | "dark";
 
 const STORAGE_KEY = "prairie-theme";
-const ICONS: Record<Theme, string> = { light: "☀", dark: "☽", system: "◐" };
+const ICONS: Record<Theme, string> = { light: "L", dark: "D", system: "A" };
 const LABELS: Record<Theme, string> = { light: "Light", dark: "Dark", system: "Auto" };
 const CYCLE: Theme[] = ["system", "light", "dark"];
 

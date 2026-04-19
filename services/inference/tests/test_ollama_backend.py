@@ -43,6 +43,14 @@ def _mock_response(
     return mock_resp
 
 
+def _mock_stream_response(lines: list[dict]) -> MagicMock:
+    mock_resp = MagicMock()
+    mock_resp.status_code = 200
+    mock_resp.text = ""
+    mock_resp.iter_lines.return_value = [json.dumps(line) for line in lines]
+    return mock_resp
+
+
 class TestUsageExtraction:
     def test_extract_usage_reads_ollama_token_fields(self) -> None:
         prompt_t, output_t, total_t = OllamaBackend._extract_usage(
@@ -184,6 +192,28 @@ class TestTextGeneration:
         req = GenerationRequest(prompt="Count to 1", model_tier=ModelTier.LIVE)
         resp = backend.generate(req)
         assert "gemma4:4b" in resp.model_id
+
+    @patch("ollama_backend.requests.post")
+    def test_generate_stream_emits_chunks_and_complete_response(self, mock_post: MagicMock) -> None:
+        mock_post.return_value = _mock_stream_response([
+            {"message": {"content": "{\"answer\":"}},
+            {"message": {"content": "\"ok\"}"}, "prompt_eval_count": 11, "eval_count": 7},
+        ])
+        backend = OllamaBackend(live_model="gemma4:4b")
+        events = list(backend.generate_stream(GenerationRequest(prompt="Hello", model_tier=ModelTier.LIVE)))
+
+        sent_payload = mock_post.call_args.kwargs["json"]
+        assert sent_payload["stream"] is True
+        assert [event.type for event in events] == ["chunk", "chunk", "complete"]
+        assert events[0].text == "{\"answer\":"
+        assert events[1].text == "\"ok\"}"
+        complete = events[-1].response
+        assert complete is not None
+        assert complete.text == '{"answer":"ok"}'
+        assert complete.model_id == "gemma4:4b"
+        assert complete.prompt_tokens == 11
+        assert complete.output_tokens == 7
+        assert complete.total_tokens == 18
 
 
 class TestPlanningTier:

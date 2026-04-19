@@ -7,6 +7,7 @@ import {
   listCurriculumSubjects,
   differentiate,
   fetchTodaySnapshot,
+  generateTomorrowPlan,
   generateSurvivalPacket,
   approveFamilyMessage,
 } from "../api";
@@ -42,6 +43,7 @@ function textResponse(status: number, text: string): Response {
 // ---------------------------------------------------------------------------
 
 const originalFetch = globalThis.fetch;
+const originalEventSource = globalThis.EventSource;
 
 beforeEach(() => {
   mockFetch.mockReset();
@@ -56,6 +58,7 @@ beforeEach(() => {
 
 afterEach(() => {
   globalThis.fetch = originalFetch;
+  globalThis.EventSource = originalEventSource;
 });
 
 // ===========================================================================
@@ -76,6 +79,66 @@ describe("API client basics", () => {
     const [url, init] = mockFetch.mock.calls[0];
     expect(url).toContain("/classrooms");
     expect(init.method).toBe("GET");
+  });
+
+  it("opens an EventSource stream when stream handlers are provided", async () => {
+    class FakeEventSource {
+      static active: FakeEventSource | null = null;
+      readonly listeners = new Map<string, Array<(event: MessageEvent) => void>>();
+      closed = false;
+
+      constructor(readonly url: string) {
+        FakeEventSource.active = this;
+      }
+
+      addEventListener(type: string, listener: (event: MessageEvent) => void) {
+        this.listeners.set(type, [...(this.listeners.get(type) ?? []), listener]);
+      }
+
+      close() {
+        this.closed = true;
+      }
+
+      emit(type: string, payload: unknown) {
+        for (const listener of this.listeners.get(type) ?? []) {
+          listener({ data: JSON.stringify(payload) } as MessageEvent);
+        }
+      }
+    }
+    globalThis.EventSource = FakeEventSource as unknown as typeof EventSource;
+    mockFetch.mockResolvedValueOnce(jsonResponse(202, {
+      stream_id: "stream-1",
+      stream_url: "/api/tomorrow-plan/stream/stream-1/events",
+    }));
+
+    const onChunk = vi.fn();
+    const onThinking = vi.fn();
+    const promise = generateTomorrowPlan({
+      classroom_id: "demo-okafor-grade34",
+      teacher_reflection: "Good day",
+    }, undefined, { onChunk, onThinking });
+
+    await Promise.resolve();
+    await Promise.resolve();
+    await new Promise((resolve) => setImmediate(resolve));
+    const source = FakeEventSource.active;
+    if (!source) {
+      throw new Error("Expected EventSource to be opened");
+    }
+    expect(source.url).toContain("/api/tomorrow-plan/stream/stream-1/events");
+
+    source.emit("thinking", { text: "Reviewing memory" });
+    source.emit("chunk", { text: "{\"plan\":" });
+    source.emit("complete", {
+      plan: { plan_id: "p1" },
+      model_id: "mock",
+      latency_ms: 3,
+    });
+
+    await expect(promise).resolves.toMatchObject({ model_id: "mock" });
+    expect(onThinking).toHaveBeenCalledWith("Reviewing memory");
+    expect(onChunk).toHaveBeenCalledWith("{\"plan\":");
+    expect(source.closed).toBe(true);
   });
 
   it("fetches curriculum subjects from the public curriculum endpoint", async () => {

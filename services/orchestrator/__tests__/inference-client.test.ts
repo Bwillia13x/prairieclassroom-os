@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mkdtempSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { callInference } from "../inference-client.js";
+import { callInference, callInferenceStream } from "../inference-client.js";
 import { getRequestContext } from "../request-context.js";
 import {
   getTodaySpendUsd,
@@ -443,6 +443,113 @@ describe("callInference", () => {
     });
 
     expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+});
+
+describe("callInferenceStream", () => {
+  beforeEach(() => {
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  function streamResponse(events: string): globalThis.Response {
+    return new Response(events, {
+      status: 200,
+      headers: { "Content-Type": "text/event-stream" },
+    });
+  }
+
+  it("consumes inference SSE events and returns the final response metadata", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(streamResponse([
+      "event: ready",
+      "data: {\"mode\":\"mock\"}",
+      "",
+      "event: thinking",
+      "data: {\"text\":\"Reviewing memory\"}",
+      "",
+      "event: chunk",
+      "data: {\"text\":\"{\\\"ok\\\":\"}",
+      "",
+      "event: chunk",
+      "data: {\"text\":\"true}\"}",
+      "",
+      "event: complete",
+      "data: {\"text\":\"{\\\"ok\\\":true}\",\"model_id\":\"mock-stream\",\"latency_ms\":31,\"prompt_tokens\":4,\"output_tokens\":6,\"total_tokens\":10}",
+      "",
+    ].join("\n")));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const emit = vi.fn();
+    const res = mockRes();
+    const result = await callInferenceStream({
+      deps,
+      req: mockReq(),
+      res,
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+    }, emit);
+
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3200/generate/stream", expect.objectContaining({
+      method: "POST",
+      headers: expect.objectContaining({ "Accept": "text/event-stream" }),
+    }));
+    expect(emit).toHaveBeenCalledWith({ type: "thinking", text: "Reviewing memory" });
+    expect(emit).toHaveBeenCalledWith({ type: "chunk", text: "{\"ok\":" });
+    expect(result).toMatchObject({
+      text: "{\"ok\":true}",
+      model_id: "mock-stream",
+      latency_ms: 31,
+      prompt_tokens: 4,
+      output_tokens: 6,
+      total_tokens: 10,
+    });
+    expect(getRequestContext(res).model_id).toBe("mock-stream");
+  });
+
+  it("runs a streaming tool turn and then streams the final follow-up generation", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(streamResponse([
+        "event: complete",
+        "data: {\"text\":\"{\\\"tool_calls\\\":[]}\",\"model_id\":\"mock\",\"latency_ms\":5,\"tool_calls\":[{\"id\":\"call_curriculum_1\",\"name\":\"lookup_curriculum_outcome\",\"arguments\":{\"grade\":\"3\",\"subject\":\"math\",\"keyword\":\"multiplication\"}}]}",
+        "",
+      ].join("\n")))
+      .mockResolvedValueOnce(streamResponse([
+        "event: chunk",
+        "data: {\"text\":\"{\\\"ok\\\":true}\"}",
+        "",
+        "event: complete",
+        "data: {\"text\":\"{\\\"ok\\\":true}\",\"model_id\":\"mock\",\"latency_ms\":7}",
+        "",
+      ].join("\n")));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const emit = vi.fn();
+    const result = await callInferenceStream({
+      deps,
+      req: mockReq({ body: { classroom_id: "demo-okafor-grade34" } }),
+      res: mockRes(),
+      route: differentiateRoute,
+      prompt: { system: "sys", user: "CLASSROOM CONTEXT:\nGrade 3" },
+      maxTokens: 128,
+    }, emit);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    const firstBody = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    const secondBody = JSON.parse(fetchMock.mock.calls[1][1].body as string);
+    expect(firstBody.tools[0].name).toBe("lookup_curriculum_outcome");
+    expect(secondBody.tools).toBeUndefined();
+    expect(secondBody.prompt).toContain("TOOL RESULTS:");
+    expect(emit).toHaveBeenCalledWith({
+      type: "thinking",
+      text: "\nConsulted local classroom tools; finalizing structured output.",
+    });
+    expect(result.text).toBe("{\"ok\":true}");
+    expect(result.tool_calls[0]).toMatchObject({
+      tool_call_id: "call_curriculum_1",
+      tool_name: "lookup_curriculum_outcome",
+      executed: true,
+    });
   });
 });
 
