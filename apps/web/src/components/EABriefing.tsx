@@ -1,48 +1,32 @@
 import { useState } from "react";
-import type { ClassroomProfile, EABriefingResponse } from "../types";
+import type { EABriefingResponse } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
 import { buildModelMetaItems } from "./buildModelMetaItems";
 import { FollowUpDecayIndicators, ScheduleLoadStrip } from "./DataVisualizations";
+import { FormCard } from "./shared";
 import "./EABriefing.css";
 
 /* ── Form ─────────────────────────────────────────────────────────── */
 
 interface FormProps {
-  classrooms: ClassroomProfile[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, eaName?: string) => void;
   loading: boolean;
 }
 
-export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChange, onSubmit, loading }: FormProps) {
+export function EABriefingForm({ selectedClassroom, onSubmit, loading }: FormProps) {
   const [eaName, setEaName] = useState("");
 
   return (
-    <div className="ea-briefing-form form-panel">
-      <h2>Generate EA Daily Briefing</h2>
+    <FormCard className="ea-briefing-form">
+      <h2>Generate EA daily briefing</h2>
       <p className="ea-briefing-description form-description">
         Build a coordination brief for the educational assistant from the current classroom plan, intervention history, and watch-list context.
       </p>
 
       <div className="field">
-        <label htmlFor="ea-classroom">Classroom</label>
-        <select
-          id="ea-classroom"
-          value={selectedClassroom}
-          onChange={(e) => onClassroomChange(e.target.value)}
-        >
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="field">
-        <label htmlFor="ea-name">EA Name <span className="field-optional">(optional)</span></label>
+        <label htmlFor="ea-name" className="form-label">EA name <span className="field-optional">(optional)</span></label>
         <input
           id="ea-name"
           type="text"
@@ -60,7 +44,7 @@ export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChang
       >
         {loading ? "Generating briefing…" : "Generate briefing"}
       </button>
-    </div>
+    </FormCard>
   );
 }
 
@@ -184,18 +168,16 @@ export function EABriefingResult({ result }: ResultProps) {
 /* ── Legacy default (composes both) ────────────────────────────────── */
 
 interface Props {
-  classrooms: ClassroomProfile[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, eaName?: string) => void;
   loading: boolean;
   result: EABriefingResponse | null;
 }
 
-export default function EABriefing({ classrooms, selectedClassroom, onClassroomChange, onSubmit, loading, result }: Props) {
+export default function EABriefing({ selectedClassroom, onSubmit, loading, result }: Props) {
   return (
     <div className={`ea-briefing${result ? " ea-briefing--split" : ""}`}>
-      <EABriefingForm classrooms={classrooms} selectedClassroom={selectedClassroom} onClassroomChange={onClassroomChange} onSubmit={onSubmit} loading={loading} />
+      <EABriefingForm selectedClassroom={selectedClassroom} onSubmit={onSubmit} loading={loading} />
       {result && <EABriefingResult result={result} />}
     </div>
   );

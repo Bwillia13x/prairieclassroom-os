@@ -14,11 +14,11 @@ import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
-import { FeedbackCollector } from "../components/shared";
+import { FeedbackCollector, FormCard } from "../components/shared";
 import { EALoadStackedBars } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
-import type { ClassroomProfile, EALoadBlock, EALoadLevel, EALoadResponse } from "../types";
+import type { EALoadBlock, EALoadLevel, EALoadResponse } from "../types";
 
 // Tomorrow, formatted for the date input (YYYY-MM-DD).
 function defaultTargetDate(): string {
@@ -45,17 +45,13 @@ function loadLabel(level: EALoadLevel): string {
 }
 
 interface EALoadFormProps {
-  classrooms: ClassroomProfile[];
   selectedClassroom: string | null;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, targetDate: string, teacherNotes?: string) => Promise<void>;
   loading: boolean;
 }
 
 function EALoadForm({
-  classrooms,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
 }: EALoadFormProps) {
@@ -69,57 +65,42 @@ function EALoadForm({
   };
 
   return (
-    <form className="workspace-form" onSubmit={handleSubmit} aria-label="EA load profile form">
-      <label className="workspace-form__field">
-        <span className="workspace-form__label">Classroom</span>
-        <select
-          value={selectedClassroom ?? ""}
-          onChange={(event) => onClassroomChange(event.target.value)}
-          disabled={loading}
-          required
-        >
-          <option value="" disabled>
-            Select a classroom
-          </option>
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </label>
+    <FormCard className="ea-load-form" as="section">
+      <form onSubmit={handleSubmit} aria-label="EA load profile form">
+        <div className="field">
+          <label htmlFor="ea-load-target-date" className="form-label">Target date</label>
+          <input
+            id="ea-load-target-date"
+            type="date"
+            value={targetDate}
+            onChange={(event) => setTargetDate(event.target.value)}
+            disabled={loading}
+            required
+          />
+        </div>
 
-      <label className="workspace-form__field">
-        <span className="workspace-form__label">Target date</span>
-        <input
-          type="date"
-          value={targetDate}
-          onChange={(event) => setTargetDate(event.target.value)}
-          disabled={loading}
-          required
-        />
-      </label>
+        <div className="field">
+          <label htmlFor="ea-load-notes" className="form-label">Teacher notes (optional)</label>
+          <textarea
+            id="ea-load-notes"
+            value={teacherNotes}
+            onChange={(event) => setTeacherNotes(event.target.value)}
+            disabled={loading}
+            rows={4}
+            placeholder="Anything known about tomorrow that affects EA coverage — shortened window, coverage swap, unusual routine..."
+          />
+        </div>
 
-      <label className="workspace-form__field">
-        <span className="workspace-form__label">Teacher notes (optional)</span>
-        <textarea
-          value={teacherNotes}
-          onChange={(event) => setTeacherNotes(event.target.value)}
-          disabled={loading}
-          rows={4}
-          placeholder="Anything known about tomorrow that affects EA coverage — shortened window, coverage swap, unusual routine..."
-        />
-      </label>
+        <button type="submit" className="btn btn--primary" disabled={loading || !selectedClassroom}>
+          {loading ? "Generating load profile…" : "Generate load profile"}
+        </button>
 
-      <button type="submit" className="workspace-form__submit" disabled={loading || !selectedClassroom}>
-        {loading ? "Generating load profile…" : "Generate load profile"}
-      </button>
-
-      <p className="workspace-form__helper">
-        Uses the planning tier (thinking on). Suggestions are operational only — the teacher and EA decide
-        what moves.
-      </p>
-    </form>
+        <p className="workspace-form__helper">
+          Uses the planning tier (thinking on). Suggestions are operational only — the teacher and EA decide
+          what moves.
+        </p>
+      </form>
+    </FormCard>
   );
 }
 
@@ -208,7 +189,7 @@ function EALoadViewer({ response }: EALoadViewerProps) {
 }
 
 export default function EALoadPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, profile, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<EALoadResponse>();
   const streamer = useStreamingRequest({
@@ -269,9 +250,7 @@ export default function EALoadPanel() {
       <WorkspaceLayout
         rail={(
           <EALoadForm
-            classrooms={classrooms}
             selectedClassroom={activeClassroom}
-            onClassroomChange={setActiveClassroom}
             onSubmit={handleSubmit}
             loading={loading}
           />

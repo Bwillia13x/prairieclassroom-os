@@ -29,7 +29,7 @@ interface Props {
 }
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, profile, students, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SupportPatternsResponse>();
   const streamer = useStreamingRequest({
@@ -149,10 +149,8 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
             />
             {role.canGenerate ? (
               <PatternReportForm
-                classrooms={classrooms}
                 students={students}
                 selectedClassroom={activeClassroom}
-                onClassroomChange={setActiveClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
               />

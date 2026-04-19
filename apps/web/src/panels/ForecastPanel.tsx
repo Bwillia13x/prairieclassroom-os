@@ -27,7 +27,7 @@ import { serializeForecastToPlainText } from "./outputActionBarHelpers";
 import type { ComplexityForecastResponse } from "../types";
 
 export default function ForecastPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, profile, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>();
   const streamer = useStreamingRequest({
@@ -133,9 +133,7 @@ export default function ForecastPanel() {
         rail={(
           role.canGenerate ? (
             <ForecastForm
-              classrooms={classrooms}
               selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
               onSubmit={handleSubmit}
               loading={loading}
             />

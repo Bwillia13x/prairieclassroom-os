@@ -8,6 +8,7 @@ import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
 import { buildModelMetaItems } from "./buildModelMetaItems";
 import { SupportPatternRadar, FollowUpDecayIndicators, ScaffoldEffectivenessChart, StudentThemeHeatmap } from "./DataVisualizations";
+import { FormCard } from "./shared";
 import "./PatternReport.css";
 
 /* ------------------------------------------------------------------ */
@@ -15,19 +16,15 @@ import "./PatternReport.css";
 /* ------------------------------------------------------------------ */
 
 interface FormProps {
-  classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
   students: { alias: string }[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, studentFilter?: string, timeWindow?: number) => void;
   loading: boolean;
 }
 
 export function PatternReportForm({
-  classrooms,
   students,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
 }: FormProps) {
@@ -40,66 +37,53 @@ export function PatternReportForm({
   }
 
   return (
-    <form className="pattern-form form-panel" onSubmit={handleSubmit}>
-      <h2>Review Support Patterns</h2>
-      <p className="pattern-form-description form-description">
-        Review patterns across your intervention records and support plans.
-        This reflects your own documentation — not a diagnosis.
-      </p>
+    <FormCard className="pattern-form">
+      <form onSubmit={handleSubmit}>
+        <h2>Review support patterns</h2>
+        <p className="pattern-form-description form-description">
+          Review patterns across your intervention records and support plans.
+          This reflects your own documentation — not a diagnosis.
+        </p>
 
-      <div className="field">
-        <label htmlFor="pat-classroom">Classroom</label>
-        <select
-          id="pat-classroom"
-          value={selectedClassroom}
-          onChange={(e) => onClassroomChange(e.target.value)}
+        <div className="field">
+          <label htmlFor="pat-student" className="form-label">Filter by student (optional)</label>
+          <select
+            id="pat-student"
+            value={studentFilter}
+            onChange={(e) => setStudentFilter(e.target.value)}
+          >
+            <option value="">All students</option>
+            {students.map((s) => (
+              <option key={s.alias} value={s.alias}>
+                {s.alias}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="field">
+          <label htmlFor="pat-window" className="form-label">Time window</label>
+          <select
+            id="pat-window"
+            value={timeWindow}
+            onChange={(e) => setTimeWindow(Number(e.target.value))}
+          >
+            <option value={5}>Last 5 records</option>
+            <option value={10}>Last 10 records</option>
+            <option value={20}>Last 20 records</option>
+          </select>
+        </div>
+
+        <button
+          type="submit"
+          className="btn btn--primary"
+          disabled={loading}
+          data-testid="detect-patterns-submit"
         >
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="field">
-        <label htmlFor="pat-student">Filter by student (optional)</label>
-        <select
-          id="pat-student"
-          value={studentFilter}
-          onChange={(e) => setStudentFilter(e.target.value)}
-        >
-          <option value="">All students</option>
-          {students.map((s) => (
-            <option key={s.alias} value={s.alias}>
-              {s.alias}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="field">
-        <label htmlFor="pat-window">Time window</label>
-        <select
-          id="pat-window"
-          value={timeWindow}
-          onChange={(e) => setTimeWindow(Number(e.target.value))}
-        >
-          <option value={5}>Last 5 records</option>
-          <option value={10}>Last 10 records</option>
-          <option value={20}>Last 20 records</option>
-        </select>
-      </div>
-
-      <button
-        type="submit"
-        className="btn btn--primary"
-        disabled={loading}
-        data-testid="detect-patterns-submit"
-      >
-        {loading ? "Analyzing Patterns..." : "Detect Patterns"}
-      </button>
-    </form>
+          {loading ? "Analyzing patterns..." : "Detect patterns"}
+        </button>
+      </form>
+    </FormCard>
   );
 }
 
@@ -303,10 +287,8 @@ export function PatternReportResult({
 /* ------------------------------------------------------------------ */
 
 interface Props {
-  classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
   students: { alias: string }[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, studentFilter?: string, timeWindow?: number) => void;
   loading: boolean;
   result: SupportPatternsResponse | null;
@@ -315,10 +297,8 @@ interface Props {
 }
 
 export default function PatternReport({
-  classrooms,
   students,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
   result,
@@ -328,10 +308,8 @@ export default function PatternReport({
   return (
     <div className={`pattern-report${result ? " pattern-report--split" : ""}`}>
       <PatternReportForm
-        classrooms={classrooms}
         students={students}
         selectedClassroom={selectedClassroom}
-        onClassroomChange={onClassroomChange}
         onSubmit={onSubmit}
         loading={loading}
       />

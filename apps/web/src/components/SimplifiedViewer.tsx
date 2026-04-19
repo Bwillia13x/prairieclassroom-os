@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { SimplifyResponse } from "../types";
 import PrintButton from "./PrintButton";
+import { FormCard } from "./shared";
 import "./SimplifiedViewer.css";
 
 interface Props {
@@ -23,50 +24,52 @@ export default function SimplifiedViewer({ onSubmit, result, loading, defaultGra
 
   return (
     <div className="simplified-viewer">
-      <form className="simplified-form" onSubmit={handleSubmit}>
-        <h3>Simplify for Student</h3>
-        <p className="form-hint">
-          Paste any classroom text — instructions, a passage, or an assignment — and get an EAL-friendly simplified version.
-        </p>
-
-        <div className="field">
-          <label htmlFor="simplify-source">Source text</label>
-          <textarea
-            id="simplify-source"
-            rows={6}
-            value={sourceText}
-            onChange={(e) => setSourceText(e.target.value)}
-            placeholder="Paste the text you want to simplify…"
-          />
-        </div>
-
-        <div className="form-row">
-          <div className="field">
-            <label htmlFor="simplify-grade">Grade</label>
-            <select id="simplify-grade" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
-              <option>Grade 1</option>
-              <option>Grade 2</option>
-              <option>Grade 3</option>
-              <option>Grade 4</option>
-              <option>Grade 5</option>
-              <option>Grade 6</option>
-            </select>
-          </div>
+      <FormCard className="simplified-form">
+        <form onSubmit={handleSubmit}>
+          <h3>Simplify for student</h3>
+          <p className="form-hint">
+            Paste any classroom text — instructions, a passage, or an assignment — and get an EAL-friendly simplified version.
+          </p>
 
           <div className="field">
-            <label htmlFor="simplify-eal">EAL level</label>
-            <select id="simplify-eal" value={ealLevel} onChange={(e) => setEalLevel(e.target.value as "beginner" | "intermediate" | "advanced")}>
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
-              <option value="advanced">Advanced</option>
-            </select>
+            <label htmlFor="simplify-source" className="form-label">Source text</label>
+            <textarea
+              id="simplify-source"
+              rows={6}
+              value={sourceText}
+              onChange={(e) => setSourceText(e.target.value)}
+              placeholder="Paste the text you want to simplify…"
+            />
           </div>
-        </div>
 
-        <button className="btn btn--primary" type="submit" disabled={loading || !sourceText.trim()}>
-          {loading ? "Simplifying…" : "Simplify"}
-        </button>
-      </form>
+          <div className="form-row">
+            <div className="field">
+              <label htmlFor="simplify-grade" className="form-label">Grade</label>
+              <select id="simplify-grade" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
+                <option>Grade 1</option>
+                <option>Grade 2</option>
+                <option>Grade 3</option>
+                <option>Grade 4</option>
+                <option>Grade 5</option>
+                <option>Grade 6</option>
+              </select>
+            </div>
+
+            <div className="field">
+              <label htmlFor="simplify-eal" className="form-label">EAL level</label>
+              <select id="simplify-eal" value={ealLevel} onChange={(e) => setEalLevel(e.target.value as "beginner" | "intermediate" | "advanced")}>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
+            </div>
+          </div>
+
+          <button className="btn btn--primary" type="submit" disabled={loading || !sourceText.trim()}>
+            {loading ? "Simplifying…" : "Simplify"}
+          </button>
+        </form>
+      </FormCard>
 
       {result && (
         <div className="simplified-result">

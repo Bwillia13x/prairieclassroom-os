@@ -34,7 +34,6 @@ export default function DifferentiatePanel() {
   const {
     classrooms,
     activeClassroom,
-    setActiveClassroom,
     profile,
     showSuccess,
     streaming,
@@ -194,7 +193,6 @@ export default function DifferentiatePanel() {
             <ArtifactUpload
               classrooms={classrooms}
               selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
               onSubmit={handleDifferentiate}
               loading={loading}
               formRef={intakeRef}

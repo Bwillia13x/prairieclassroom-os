@@ -13,7 +13,6 @@ type ArtifactSourceMode = "photo" | "file" | "paste";
 interface Props {
   classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (artifact: LessonArtifact, classroomId: string, curriculumSelection: CurriculumSelection | null) => void;
   loading: boolean;
   formRef?: Ref<HTMLFormElement>;
@@ -22,7 +21,6 @@ interface Props {
 export default function ArtifactUpload({
   classrooms,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
   formRef,
@@ -94,7 +92,7 @@ export default function ArtifactUpload({
     <form className="artifact-upload__form" onSubmit={handleSubmit} ref={formRef}>
       <h2>Prepare Lesson Artifact</h2>
       <p className="form-description">
-        Choose the classroom first, then bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
+        Bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
       </p>
       <p className="artifact-upload__legend">
         <span aria-hidden="true">*</span> Required
@@ -106,21 +104,6 @@ export default function ArtifactUpload({
         onDismiss={dismissDraft}
         label="Resume the lesson artifact you were setting up?"
       />
-
-      <div className="field">
-        <label htmlFor="classroom" className="form-label">Classroom</label>
-        <select
-          id="classroom"
-          value={selectedClassroom}
-          onChange={(e) => onClassroomChange(e.target.value)}
-        >
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </div>
 
       <div className={`field${touched.title && !title.trim() ? " field--error" : ""}`}>
         <label htmlFor="title" className="form-label">

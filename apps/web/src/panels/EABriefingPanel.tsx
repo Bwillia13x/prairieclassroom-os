@@ -21,7 +21,7 @@ import { serializeEABriefingToPlainText, serializeEABriefingToMarkdown } from ".
 import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, appendTomorrowNote } = useApp();
+  const { classrooms, activeClassroom, profile, showSuccess, appendTomorrowNote } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<EABriefingResponse>();
   const [resultKey, setResultKey] = useState(0);
@@ -127,9 +127,7 @@ export default function EABriefingPanel() {
               tone="slate"
             />
             <EABriefingForm
-              classrooms={classrooms}
               selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
               onSubmit={handleSubmit}
               loading={loading}
             />

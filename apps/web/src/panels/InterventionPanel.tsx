@@ -36,7 +36,7 @@ interface Props {
  *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
+  const { classrooms, activeClassroom, profile, students, showSuccess } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
@@ -172,10 +172,8 @@ export default function InterventionPanel({ prefill }: Props) {
               <details ref={detailsRef} className="intervention-structured-details">
                 <summary>Structured details (optional)</summary>
                 <InterventionLogger
-                  classrooms={classrooms}
                   students={students}
                   selectedClassroom={activeClassroom}
-                  onClassroomChange={setActiveClassroom}
                   onSubmit={handleSubmit}
                   loading={loading}
                   prefill={prefill}

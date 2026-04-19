@@ -31,7 +31,7 @@ interface Props {
 }
 
 export default function FamilyMessagePanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showError } = useApp();
+  const { classrooms, activeClassroom, profile, students, showSuccess, showError } = useApp();
   const role = useRole();
   const { canApproveMessages } = role;
   const session = useSession();
@@ -236,10 +236,8 @@ export default function FamilyMessagePanel({ prefill }: Props) {
             />
             {role.canGenerate ? (
               <MessageComposer
-                classrooms={classrooms}
                 students={students}
                 selectedClassroom={activeClassroom}
-                onClassroomChange={setActiveClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
                 prefill={prefill}

@@ -54,6 +54,21 @@ async function expectSelectValue(page, selector, expected, label) {
   assert.equal(actual, expected, `${label} expected ${expected}, got ${actual}`);
 }
 
+/**
+ * Verify the chrome's classroom pill shows the expected classroom id.
+ * The Workstream F2 lift removed the per-form Classroom select from
+ * 7 panels (Differentiate, Family Message, Log Intervention, Support
+ * Patterns, EA Briefing, EA Load, Forecast); the canonical classroom
+ * affordance is now `.shell-classroom-pill` in the chrome. Open the
+ * panel to read the unambiguous `.shell-classroom-panel__id`.
+ */
+async function expectActiveClassroom(page, expected, label) {
+  await openClassroomPanel(page);
+  const actual = (await page.locator(".shell-classroom-panel__id").innerText()).trim();
+  await page.keyboard.press("Escape");
+  assert.equal(actual, expected, `${label} expected ${expected}, got ${actual}`);
+}
+
 async function expectCheckedStudentInPanel(page, panelId, student, label) {
   const checkbox = page
     .locator(`#panel-${panelId}:not([hidden]) .student-checkbox`)
@@ -203,19 +218,19 @@ async function main() {
 
     await page.goto(`${WEB_BASE}/?demo=true&tab=family-message&classroom=${DEMO_CLASSROOM_ID}`, { waitUntil: "networkidle" });
     await page.waitForSelector("#panel-family-message:not([hidden])");
-    await expectSelectValue(page, "#msg-classroom", DEMO_CLASSROOM_ID, "Family Message deep link classroom");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message deep link classroom");
     await page.reload({ waitUntil: "networkidle" });
     await page.waitForSelector("#panel-family-message:not([hidden])");
-    await expectSelectValue(page, "#msg-classroom", DEMO_CLASSROOM_ID, "Family Message classroom after refresh");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom after refresh");
 
     await openTab(page, "differentiate");
-    await expectSelectValue(page, "#classroom", DEMO_CLASSROOM_ID, "Differentiate classroom");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Differentiate classroom");
 
     await openTab(page, "tomorrow-plan");
     await expectSelectValue(page, "#plan-classroom", DEMO_CLASSROOM_ID, "Tomorrow Plan classroom");
 
     await openTab(page, "family-message");
-    await expectSelectValue(page, "#msg-classroom", DEMO_CLASSROOM_ID, "Family Message classroom");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom");
 
     await openTab(page, "tomorrow-plan");
     await page.fill("#reflection", "Brody needed help after lunch, and Amira needed language support before writing.");
@@ -230,7 +245,7 @@ async function main() {
     assert.ok(familyPrefill.student, "Expected a family follow-up student in tomorrow plan");
     await familyCard.click();
 
-    await expectSelectValue(page, "#msg-classroom", DEMO_CLASSROOM_ID, "Family Message classroom after plan handoff");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom after plan handoff");
     await expectCheckedStudentInPanel(page, "family-message", familyPrefill.student, "Family Message student after plan handoff");
     await expectSelectValue(page, "#msg-type", familyPrefill.type, "Family Message type after plan handoff");
     assert.match(await page.locator(".prefill-banner-text").innerText(), new RegExp(familyPrefill.student));
@@ -240,7 +255,7 @@ async function main() {
     const interventionStudent = (await interventionCard.locator(".plan-card-label").innerText()).trim();
     await interventionCard.getByTestId("plan-card-log-intervention").click();
 
-    await expectSelectValue(page, "#int-classroom", DEMO_CLASSROOM_ID, "Intervention classroom after plan handoff");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Intervention classroom after plan handoff");
     const interventionCheckbox = page
       .locator('#panel-log-intervention:not([hidden]) .student-checkbox')
       .filter({ hasText: interventionStudent })
@@ -252,7 +267,7 @@ async function main() {
     assert.equal(await interventionCheckbox.isChecked(), true, `${interventionStudent} should be pre-checked in intervention logger`);
 
     await openTab(page, "support-patterns");
-    await expectSelectValue(page, "#pat-classroom", DEMO_CLASSROOM_ID, "Support Patterns classroom");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Support Patterns classroom");
     await page.getByTestId("detect-patterns-submit").click();
     await page.waitForSelector(".pattern-header", { timeout: HOSTED_GENERATION_TIMEOUT_MS });
 
@@ -263,7 +278,7 @@ async function main() {
     const trendStudent = (await trendCard.locator(".pattern-card-label").innerText()).trim();
     await trendCard.getByTestId("pattern-share-positive-trend").click();
 
-    await expectSelectValue(page, "#msg-classroom", DEMO_CLASSROOM_ID, "Family Message classroom after pattern handoff");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom after pattern handoff");
     await expectCheckedStudentInPanel(page, "family-message", trendStudent, "Family Message student after pattern handoff");
     await expectSelectValue(page, "#msg-type", "praise", "Family Message type after pattern handoff");
 

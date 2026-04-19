@@ -12,7 +12,6 @@ describe("ArtifactUpload required-field legend", () => {
       <ArtifactUpload
         classrooms={CLASSROOMS}
         selectedClassroom="demo"
-        onClassroomChange={() => {}}
         onSubmit={() => {}}
         loading={false}
       />,
@@ -25,7 +24,6 @@ describe("ArtifactUpload required-field legend", () => {
       <ArtifactUpload
         classrooms={CLASSROOMS}
         selectedClassroom="demo"
-        onClassroomChange={() => {}}
         onSubmit={() => {}}
         loading={false}
       />,
@@ -43,7 +41,6 @@ describe("ArtifactUpload Alberta Curriculum advanced toggle", () => {
       <ArtifactUpload
         classrooms={CLASSROOMS}
         selectedClassroom="demo"
-        onClassroomChange={() => {}}
         onSubmit={() => {}}
         loading={false}
       />,
@@ -57,7 +54,6 @@ describe("ArtifactUpload Alberta Curriculum advanced toggle", () => {
       <ArtifactUpload
         classrooms={CLASSROOMS}
         selectedClassroom="demo"
-        onClassroomChange={() => {}}
         onSubmit={() => {}}
         loading={false}
       />,
@@ -77,7 +73,6 @@ describe("ArtifactUpload source-mode descriptions", () => {
       <ArtifactUpload
         classrooms={CLASSROOMS}
         selectedClassroom="demo"
-        onClassroomChange={() => {}}
         onSubmit={() => {}}
         loading={false}
       />,
