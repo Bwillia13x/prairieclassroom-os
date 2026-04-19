@@ -101,4 +101,11 @@ describe("App shell — classroom pill trigger", () => {
     expect(btn.textContent).toMatch(/jump to/i);
     expect(btn.textContent).toMatch(/⌘K/);
   });
+
+  it("renders the help button as an icon-only `?` control with contextual aria-label", async () => {
+    await renderShellWithDemo();
+    const btn = screen.getByRole("button", { name: /open onboarding tour|restore panel tip/i });
+    expect(btn.classList.contains("app-help-btn")).toBe(true);
+    expect(btn.textContent?.trim()).toBe("?");
+  });
 });

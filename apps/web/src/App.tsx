@@ -848,7 +848,7 @@ export default function App() {
                 />
                 <ThemeToggle />
                 <button
-                  className="btn btn--ghost app-help-btn"
+                  className="btn btn--ghost app-help-btn app-help-btn--icon"
                   onClick={handleQuickHelpClick}
                   type="button"
                   aria-label={
@@ -862,7 +862,7 @@ export default function App() {
                       : "Replay onboarding tour"
                   }
                 >
-                  Quick Help
+                  <span aria-hidden="true">?</span>
                 </button>
               </div>
             </div>
