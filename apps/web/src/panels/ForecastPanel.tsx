@@ -142,9 +142,26 @@ export default function ForecastPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                variant="minimal"
-                cue="No forecast yet."
-                hint="Run the forecast once the classroom and any day-specific notes are ready."
+                variant="sample"
+                label="Sample forecast block"
+                sampleNode={(
+                  <div className="forecast-block forecast-block--high" aria-hidden="true">
+                    <div className="forecast-block-header">
+                      <span className="forecast-block-time">10:15–11:00</span>
+                      <span className="forecast-block-level forecast-block-level--high">
+                        {"\u26C8"} High
+                      </span>
+                    </div>
+                    <div className="forecast-block-activity">Math — long division block</div>
+                    <ul className="forecast-block-factors">
+                      <li>EA out for the block</li>
+                      <li>Two students returning from a transition</li>
+                    </ul>
+                    <p className="forecast-block-mitigation">
+                      Front-load the worked example, hold a brain-break before independent practice.
+                    </p>
+                  </div>
+                )}
               />
             ) : null}
             {result ? (

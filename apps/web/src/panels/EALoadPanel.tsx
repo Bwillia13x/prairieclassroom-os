@@ -264,9 +264,29 @@ export default function EALoadPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                variant="minimal"
-                cue="No EA load profile yet."
-                hint="Run the load balancer once tomorrow's schedule and EA coverage are ready."
+                variant="sample"
+                label="Sample EA load block"
+                sampleNode={(
+                  <article className="ea-load-block ea-load-block--rose" aria-hidden="true">
+                    <header className="ea-load-block__header">
+                      <span className="ea-load-block__time">10:15–11:00</span>
+                      <span className="ea-load-block__badge ea-load-block__badge--rose">
+                        HIGH
+                      </span>
+                    </header>
+                    <h3 className="ea-load-block__activity">Math — long division block</h3>
+                    <p className="ea-load-block__supported">
+                      <strong>Supporting:</strong> Student A, Student C
+                    </p>
+                    <ul className="ea-load-block__factors">
+                      <li>Two regulation check-ins likely</li>
+                      <li>Manipulatives setup overlaps with transition</li>
+                    </ul>
+                    <p className="ea-load-block__suggestion">
+                      <strong>Consider:</strong> shift the worked example earlier so the EA can pre-stage materials.
+                    </p>
+                  </article>
+                )}
               />
             ) : null}
             {result ? (

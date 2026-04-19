@@ -143,9 +143,8 @@ export default function SurvivalPacketPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                variant="minimal"
-                cue="No packet yet."
-                hint="Generate a full survival packet for tomorrow's substitute from the form on the left."
+                variant="preview"
+                label="Survival packet preview"
               />
             ) : null}
             {result ? (

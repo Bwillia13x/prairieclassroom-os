@@ -134,9 +134,8 @@ export default function EABriefingPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                variant="minimal"
-                cue="No briefing yet."
-                hint="Generate today's EA coordination document from the form on the left."
+                variant="preview"
+                label="EA briefing preview"
               />
             ) : null}
             {result ? (

@@ -195,9 +195,8 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
             ) : null}
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard
-                variant="minimal"
-                cue="No plan yet."
-                hint="Capture today's reflection on the left; tomorrow's priorities, prep actions, and follow-through land here."
+                variant="preview"
+                label="Tomorrow plan preview"
               />
             ) : null}
             {displayResult ? (

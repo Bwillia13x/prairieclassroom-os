@@ -247,8 +247,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard
                 variant="minimal"
-                cue="No draft yet."
-                hint="Select students and a message type on the left; the draft lands here for your review before any send."
+                cue="Pick students to draft a message."
               />
             ) : null}
             {displayResult ? (

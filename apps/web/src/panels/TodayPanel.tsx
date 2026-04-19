@@ -388,8 +388,8 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         {result && !result.latest_plan && !result.latest_forecast && result.debt_register.items.length === 0 ? (
           <EmptyStateCard
             variant="minimal"
-            cue="Fresh start — no classroom debt or prior planning signal yet."
-            hint="Build a Tomorrow Plan or log an intervention to give the command center something to track."
+            cue="Fresh start — no debt or planning signal yet."
+            hint="Build a Tomorrow Plan or log an intervention to seed the command center."
           />
         ) : null}
       </div>
