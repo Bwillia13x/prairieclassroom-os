@@ -29,7 +29,7 @@ interface Props {
 }
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, profile, students, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SupportPatternsResponse>();
   const streamer = useStreamingRequest({
@@ -122,14 +122,7 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
         eyebrow="Review Workspace"
         title="Review Classroom Support Patterns"
         sectionTone="forest"
-        sectionIcon="check"
-        breadcrumb={{ group: "Review", tab: "Support Patterns" }}
         description="Scan recurring themes, follow-up gaps, positive trends, and suggested focus areas across recent records without losing the evidence behind them."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Pattern review", tone: "sun" },
-          { label: "Evidence-led analysis", tone: "provenance" },
-          { label: "Teacher review", tone: "forest" },
-        ]}
       />
 
       <RoleReadOnlyBanner

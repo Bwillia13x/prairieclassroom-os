@@ -27,7 +27,7 @@ import { serializeForecastToPlainText } from "./outputActionBarHelpers";
 import type { ComplexityForecastResponse } from "../types";
 
 export default function ForecastPanel() {
-  const { classrooms, activeClassroom, profile, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>();
   const streamer = useStreamingRequest({
@@ -113,14 +113,7 @@ export default function ForecastPanel() {
         eyebrow="Operations Workspace"
         title="Forecast Tomorrow's Complexity"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Forecast" }}
         description="Preview where the day will spike, which blocks need proactive mitigation, and what classroom conditions will shape the day before students arrive."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Forecast suite", tone: "sun" },
-          { label: "Block-by-block outlook", tone: "analysis" },
-          { label: "Retrieval-backed inputs", tone: "slate" },
-        ]}
       />
 
       <RoleReadOnlyBanner

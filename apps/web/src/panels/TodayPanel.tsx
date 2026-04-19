@@ -160,10 +160,8 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         eyebrow="Command Center"
         title="Today"
         sectionTone="sun"
-        sectionIcon="sun"
-        breadcrumb={{ group: "Today", tab: "Command Center" }}
         description={`Your action queue, student snapshot, and recommended next move for Grade ${profile.grade_band} today.`}
-        badges={[
+        dynamicContext={[
           { label: `${profile.students.length} students`, tone: "sun" },
         ]}
       />

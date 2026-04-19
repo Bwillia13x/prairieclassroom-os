@@ -21,7 +21,7 @@ import { serializeEABriefingToPlainText, serializeEABriefingToMarkdown } from ".
 import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
-  const { classrooms, activeClassroom, profile, showSuccess, appendTomorrowNote } = useApp();
+  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<EABriefingResponse>();
   const [resultKey, setResultKey] = useState(0);
@@ -107,14 +107,7 @@ export default function EABriefingPanel() {
         eyebrow="Operations Workspace"
         title="Build the EA Briefing"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "EA Briefing" }}
         description="Generate one briefing that packages schedule blocks, student watch items, pending follow-ups, and the teacher's notes into a shared coordination artifact."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "EA coordination", tone: "sun" },
-          { label: "Coordination document", tone: "analysis" },
-          { label: "Print-ready", tone: "slate" },
-        ]}
       />
 
       <WorkspaceLayout

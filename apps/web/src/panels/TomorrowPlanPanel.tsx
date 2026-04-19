@@ -37,7 +37,7 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
@@ -147,14 +147,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
         eyebrow="Operations Workspace"
         title="Plan Tomorrow's Support"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Tomorrow Plan" }}
         description="Capture the signal from today and convert it into watchpoints, student priorities, EA actions, prep items, and family follow-ups before the next school day starts."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Planning suite", tone: "sun" },
-          { label: "Reasoned planning", tone: "analysis" },
-          { label: "Pattern-aware", tone: "slate" },
-        ]}
       />
 
       <RoleReadOnlyBanner

@@ -23,7 +23,7 @@ import { serializeSurvivalPacketToMarkdown } from "./outputActionBarHelpers";
 import type { SurvivalPacketResponse } from "../types";
 
 export default function SurvivalPacketPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SurvivalPacketResponse>();
   const streamer = useStreamingRequest({
@@ -104,14 +104,7 @@ export default function SurvivalPacketPanel() {
         eyebrow="Operations Workspace"
         title="Prepare the Substitute Packet"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Sub Packet" }}
         description="Create a print-ready packet that packages routines, student supports, family communication constraints, and the simplified day plan for substitute coverage."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Sub coverage", tone: "sun" },
-          { label: "Print-ready packet", tone: "slate" },
-          { label: "Protected classroom aware", tone: "pending" },
-        ]}
       />
 
       <WorkspaceLayout

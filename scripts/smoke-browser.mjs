@@ -60,11 +60,13 @@ async function expectSelectValue(page, selector, expected, label) {
  * 7 panels (Differentiate, Family Message, Log Intervention, Support
  * Patterns, EA Briefing, EA Load, Forecast); the canonical classroom
  * affordance is now `.shell-classroom-pill` in the chrome. Open the
- * panel to read the unambiguous `.shell-classroom-panel__id`.
+ * panel to read the unambiguous `[data-testid="shell-classroom-active-id"]`
+ * (per CLAUDE.md feedback memory: prefer testid over class-derived selectors
+ * for smoke-browser durability).
  */
 async function expectActiveClassroom(page, expected, label) {
   await openClassroomPanel(page);
-  const actual = (await page.locator(".shell-classroom-panel__id").innerText()).trim();
+  const actual = (await page.locator('[data-testid="shell-classroom-active-id"]').innerText()).trim();
   await page.keyboard.press("Escape");
   assert.equal(actual, expected, `${label} expected ${expected}, got ${actual}`);
 }
@@ -207,7 +209,7 @@ async function main() {
 
     await page.waitForSelector("#shell-classroom-trigger");
     await openClassroomPanel(page);
-    assert.equal((await page.locator(".shell-classroom-panel__id").innerText()).trim(), DEMO_CLASSROOM_ID);
+    assert.equal((await page.locator('[data-testid="shell-classroom-active-id"]').innerText()).trim(), DEMO_CLASSROOM_ID);
     await page.keyboard.press("Escape");
     await expectPrimaryGroups(page);
     await openGroup(page, "Today", "today");
@@ -325,7 +327,7 @@ async function main() {
 
     await page.reload({ waitUntil: "networkidle" });
     await openClassroomPanel(page);
-    assert.equal((await page.locator(".shell-classroom-panel__id").innerText()).trim(), PROTECTED_CLASSROOM_ID);
+    assert.equal((await page.locator('[data-testid="shell-classroom-active-id"]').innerText()).trim(), PROTECTED_CLASSROOM_ID);
     await page.waitForTimeout(300);
     assert.equal(await page.locator("#classroom-access-title").count(), 0, "Saved classroom code should survive refresh without prompting");
     assert.match(await page.locator(".shell-classroom-panel__details").innerText(), /saved in this browser/i);

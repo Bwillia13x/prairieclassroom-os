@@ -189,7 +189,7 @@ function EALoadViewer({ response }: EALoadViewerProps) {
 }
 
 export default function EALoadPanel() {
-  const { classrooms, activeClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<EALoadResponse>();
   const streamer = useStreamingRequest({
@@ -237,14 +237,7 @@ export default function EALoadPanel() {
         eyebrow="Operations Workspace"
         title="Balance EA Cognitive Load"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "EA Load" }}
         description="Surface the per-block EA load for tomorrow and flag sequences of sustained high demand without a recovery window. Operational framing only — suggestions never score EA competence."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "EA load suite", tone: "sun" },
-          { label: "Block-by-block load", tone: "analysis" },
-          { label: "Retrieval-backed", tone: "slate" },
-        ]}
       />
 
       <WorkspaceLayout

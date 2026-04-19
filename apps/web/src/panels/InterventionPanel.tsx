@@ -36,7 +36,7 @@ interface Props {
  *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, profile, students, showSuccess } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
@@ -119,14 +119,7 @@ export default function InterventionPanel({ prefill }: Props) {
         eyebrow="Operations Workspace"
         title="Log Intervention Notes"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Log Intervention" }}
         description="Log what happened while the moment is still fresh. The result canvas formats the note for classroom memory, follow-up review, and later pattern analysis."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Intervention log", tone: "sun" },
-          { label: "Saved to memory", tone: "provenance" },
-          { label: "Follow-up status", tone: "slate" },
-        ]}
       />
 
       <RoleReadOnlyBanner
