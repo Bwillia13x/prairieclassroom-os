@@ -4,7 +4,6 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEABriefing } from "../api";
 import { EABriefingForm, EABriefingResult } from "../components/EABriefing";
-import ContextualHint from "../components/ContextualHint";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import PageIntro from "../components/PageIntro";
@@ -115,17 +114,20 @@ export default function EABriefingPanel() {
           { label: "Coordination document", tone: "analysis" },
           { label: "Print-ready", tone: "slate" },
         ]}
+        infoContent={{
+          title: "EA Briefing",
+          body: (
+            <p>
+              Build a coordination document for the educational assistant that combines
+              the day plan, student watch items, and pending follow-ups.
+            </p>
+          ),
+        }}
       />
 
       <WorkspaceLayout
         rail={(
           <>
-            <ContextualHint
-              featureKey="ea-briefing"
-              title="EA Briefing"
-              description="Build a coordination document for the educational assistant that combines the day plan, student watch items, and pending follow-ups."
-              tone="slate"
-            />
             <EABriefingForm
               classrooms={classrooms}
               selectedClassroom={activeClassroom}

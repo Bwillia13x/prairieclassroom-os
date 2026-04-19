@@ -173,10 +173,13 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     await user.click(praiseChip);
 
     // 3. Submit — target the QuickCaptureTray button (type="button", not type="submit")
+    //    The new PageIntro ⓘ info trigger also has aria-label "About Log Intervention",
+    //    so filter to buttons inside the quick-capture-tray. 2026-04-19 OPS audit.
     const submitButtons = screen.getAllByRole("button", { name: /Log intervention/i });
-    // The QuickCaptureTray button is type="button"; the InterventionLogger one is type="submit".
     const trayButton = submitButtons.find(
-      (btn) => btn.getAttribute("type") === "button",
+      (btn) =>
+        btn.getAttribute("type") === "button" &&
+        btn.closest(".quick-capture-tray") !== null,
     );
     if (!trayButton) throw new Error("QuickCaptureTray submit button not found");
     await user.click(trayButton);

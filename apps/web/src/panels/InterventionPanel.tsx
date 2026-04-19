@@ -7,7 +7,6 @@ import { logIntervention, fetchInterventionHistory } from "../api";
 import InterventionLogger from "../components/InterventionLogger";
 import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
-import ContextualHint from "../components/ContextualHint";
 import HistoryDrawer from "../components/HistoryDrawer";
 import { InterventionTimeline, FollowUpSuccessRate } from "../components/DataVisualizations";
 import PageIntro from "../components/PageIntro";
@@ -127,6 +126,15 @@ export default function InterventionPanel({ prefill }: Props) {
           { label: "Saved to memory", tone: "provenance" },
           { label: "Follow-up status", tone: "slate" },
         ]}
+        infoContent={{
+          title: "Log Intervention",
+          body: (
+            <p>
+              Describe what happened and the system structures your note into classroom
+              memory for follow-up review and later pattern analysis.
+            </p>
+          ),
+        }}
       />
 
       <RoleReadOnlyBanner
@@ -146,12 +154,6 @@ export default function InterventionPanel({ prefill }: Props) {
                 onSubmit={handleQuickSubmit}
               />
             ) : null}
-            <ContextualHint
-              featureKey="log-intervention"
-              title="Log Intervention"
-              description="Describe what happened and the system structures your note into classroom memory for follow-up review and later pattern analysis."
-              tone="slate"
-            />
             <HistoryDrawer<InterventionRecord>
               items={history.items}
               loading={history.loading}

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { SectionTone } from "../appReducer";
 import type { SectionIconName } from "./SectionIcon";
 import SectionIcon from "./SectionIcon";
+import PageIntroInfoButton from "./PageIntroInfoButton";
 
 interface Badge {
   label: string;
@@ -29,6 +30,12 @@ interface Props {
   sectionTone?: SectionTone;
   sectionIcon?: SectionIconName;
   breadcrumb?: Breadcrumb;
+  /**
+   * Optional per-panel info popover. Rendered as a compact ⓘ affordance
+   * next to the title. Used for OPS panels that shed their
+   * ContextualHint in the 2026-04-19 GOT-IT consolidation.
+   */
+  infoContent?: { title: string; body: ReactNode };
 }
 
 export default function PageIntro({
@@ -39,6 +46,7 @@ export default function PageIntro({
   sectionTone,
   sectionIcon,
   breadcrumb,
+  infoContent,
 }: Props) {
   const showBreadcrumbTab =
     breadcrumb &&
@@ -62,7 +70,12 @@ export default function PageIntro({
           <span>{eyebrow}</span>
         </div>
       ) : null}
-      <h2 className="page-intro__title">{title}</h2>
+      <h2 className="page-intro__title">
+        <span className="page-intro__title-text">{title}</span>
+        {infoContent ? (
+          <PageIntroInfoButton title={infoContent.title} body={infoContent.body} />
+        ) : null}
+      </h2>
       <div className="page-intro__description copy-measure">{description}</div>
       {badges.length > 0 && (
         <div className="status-chip-row">

@@ -1,0 +1,76 @@
+/* PageIntroInfoButton — compact ⓘ affordance in the PageIntro header.
+   Popover opens below the trigger, aligned to the left edge. */
+
+.page-intro-info {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: var(--space-2);
+}
+
+.page-intro-info__trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-surface-muted) 65%, transparent);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+
+.page-intro-info__trigger:hover,
+.page-intro-info__trigger[aria-expanded="true"] {
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface-elevated) 85%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+}
+
+.page-intro-info__trigger:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.page-intro-info__pop {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  left: 0;
+  z-index: 14;
+  width: min(22rem, 80vw);
+  padding: var(--space-3);
+  background: var(--color-surface-elevated);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md), var(--inner-stroke);
+  animation: fade-up var(--motion-fast) var(--ease-out-expo) both;
+}
+
+.page-intro-info__title {
+  margin: 0 0 var(--space-1) 0;
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.page-intro-info__body {
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+  color: var(--color-text-secondary);
+}
+
+.page-intro-info__body p {
+  margin: 0 0 var(--space-2) 0;
+}
+
+.page-intro-info__body p:last-child {
+  margin-bottom: 0;
+}

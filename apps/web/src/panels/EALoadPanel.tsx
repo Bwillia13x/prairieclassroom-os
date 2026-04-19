@@ -264,6 +264,16 @@ export default function EALoadPanel() {
           { label: "Block-by-block load", tone: "analysis" },
           { label: "Retrieval-backed", tone: "slate" },
         ]}
+        infoContent={{
+          title: "EA Load Balance",
+          body: (
+            <p>
+              Pick the target day and classroom, and the model surfaces per-block EA
+              load with recovery windows. Suggestions never score EA competence — they
+              only flag operational sequences that need rebalancing.
+            </p>
+          ),
+        }}
       />
 
       <WorkspaceLayout

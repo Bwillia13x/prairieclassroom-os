@@ -7,7 +7,6 @@ import SurvivalPacketView from "../components/SurvivalPacket";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
-import ContextualHint from "../components/ContextualHint";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -112,17 +111,20 @@ export default function SurvivalPacketPanel() {
           { label: "Print-ready packet", tone: "slate" },
           { label: "Protected classroom aware", tone: "pending" },
         ]}
+        infoContent={{
+          title: "Substitute Packet",
+          body: (
+            <p>
+              Generate a print-ready document for substitute coverage. Includes routines,
+              student supports, and a simplified day plan.
+            </p>
+          ),
+        }}
       />
 
       <WorkspaceLayout
         rail={(
           <>
-            <ContextualHint
-              featureKey="survival-packet"
-              title="Substitute Packet"
-              description="Generate a print-ready document for substitute coverage. Includes routines, student supports, and a simplified day plan."
-              tone="slate"
-            />
             <div className="form-panel">
               <h2>Substitute Survival Packet</h2>
               <p className="form-description">

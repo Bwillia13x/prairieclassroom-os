@@ -8,7 +8,6 @@ import PlanViewer from "../components/PlanViewer";
 import { PlanStreakCalendar, PlanCoverageRadar } from "../components/DataVisualizations";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
-import ContextualHint from "../components/ContextualHint";
 import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
@@ -155,6 +154,15 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
           { label: "Reasoned planning", tone: "analysis" },
           { label: "Pattern-aware", tone: "slate" },
         ]}
+        infoContent={{
+          title: "Tomorrow Plan",
+          body: (
+            <p>
+              Reflect on today's wins and challenges. The planning model uses deep
+              reasoning to generate a structured support plan — this may take a few moments.
+            </p>
+          ),
+        }}
       />
 
       <RoleReadOnlyBanner
@@ -166,12 +174,6 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
       <WorkspaceLayout
         rail={(
           <>
-            <ContextualHint
-              featureKey="tomorrow-plan"
-              title="Tomorrow Plan"
-              description="Reflect on today's wins and challenges. The planning model uses deep reasoning to generate a structured support plan — this may take a few moments."
-              tone="slate"
-            />
             <HistoryDrawer<TomorrowPlan>
               items={history.items}
               loading={history.loading}

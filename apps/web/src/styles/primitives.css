@@ -687,6 +687,18 @@
   text-wrap: balance;
 }
 
+.page-intro__title-text {
+  display: inline;
+}
+
+/* The ⓘ info affordance sits inline with the final word of the title, so
+   the popover anchors to a stable position regardless of title wrap. */
+.page-intro__title .page-intro-info {
+  display: inline-flex;
+  vertical-align: middle;
+  margin-left: var(--space-2);
+}
+
 .page-intro__description {
   max-width: 64ch;
   font-size: var(--text-md);

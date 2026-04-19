@@ -50,6 +50,7 @@ import PrepSectionIntro from "./components/PrepSectionIntro";
 import { usePaletteEntries } from "./hooks/usePaletteEntries";
 import TomorrowChip from "./components/TomorrowChip";
 import TabOverflowMenu from "./components/TabOverflowMenu";
+import OpsSectionHint from "./components/OpsSectionHint";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
@@ -326,6 +327,33 @@ export default function App() {
   useEffect(() => {
     void flushQueuedClientArtifacts();
   }, [flushQueuedClientArtifacts]);
+
+  // One-time GOT-IT migration (2026-04-19 OPS audit): teachers who already
+  // dismissed any of the six legacy per-panel hints should not be re-onboarded
+  // by the new section-level `ops-section` hint. Runs exactly once per mount.
+  // The effect reads `state.featuresSeen` via a ref-less closure and dispatches
+  // only when the migration target is absent, so React strict-mode double-mount
+  // still results in at most one localStorage write beyond the initial load.
+  useEffect(() => {
+    const LEGACY_OPS_KEYS = [
+      "tomorrow-plan",
+      "ea-briefing",
+      "ea-load",
+      "complexity-forecast",
+      "log-intervention",
+      "survival-packet",
+    ];
+    if (state.featuresSeen["ops-section"]) return;
+    const alreadyDismissedLegacy = LEGACY_OPS_KEYS.some((key) => state.featuresSeen[key]);
+    if (alreadyDismissedLegacy) {
+      dispatch({ type: "MARK_FEATURE_SEEN", feature: "ops-section" });
+    }
+    // Intentionally only runs once on mount — featuresSeen mutating later
+    // (e.g. teacher dismisses a remaining legacy hint) should NOT re-trigger
+    // the migration; the ops-section flag is either set on mount or when the
+    // new section hint itself is dismissed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     function handleOnline() {
@@ -1119,6 +1147,7 @@ export default function App() {
 
           {renderPanel(activeTab, "today", mountedTabs, <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
           {activeGroup === "prep" ? <PrepSectionIntro /> : null}
+          {activeGroup === "ops" ? <OpsSectionHint /> : null}
           {renderPanel(activeTab, "differentiate", mountedTabs, <DifferentiatePanel />)}
           {renderPanel(
             activeTab,
