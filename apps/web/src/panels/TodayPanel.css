@@ -734,6 +734,38 @@
 
 .plan-recap-priority-btn:hover { color: var(--color-text); text-decoration: underline; }
 
+/* Audit #24: persistent prep-checklist controls. Real checkboxes with
+   a strike-through affordance on completion. */
+.plan-recap-list--checklist {
+  list-style: none;
+  padding-left: 0;
+}
+
+.plan-recap-checkbox {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  cursor: pointer;
+  padding: var(--space-1) 0;
+}
+.plan-recap-checkbox input[type="checkbox"] {
+  margin-top: 3px;
+  accent-color: var(--color-accent);
+}
+.plan-recap-item--done span {
+  color: var(--color-text-tertiary);
+  text-decoration: line-through;
+}
+
+/* Audit #26: family follow-up inline CTA. */
+.plan-recap-followup-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
 .today-forecast-section:not(.risk-windows) .forecast-timeline {
   margin-top: var(--space-3);
 }

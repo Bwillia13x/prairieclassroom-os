@@ -312,8 +312,17 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             {result.latest_plan ? (
               <PlanRecap
                 plan={result.latest_plan}
+                classroomId={activeClassroom}
                 onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
                 onOpenPlan={() => onTabChange("tomorrow-plan")}
+                onMessagePrefill={
+                  onMessagePrefill
+                    ? (prefill) => {
+                        onMessagePrefill(prefill);
+                        onTabChange("family-message");
+                      }
+                    : undefined
+                }
               />
             ) : null}
 
