@@ -38,23 +38,19 @@
   border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
 }
 
-.role-pill__chip[data-role="teacher"],
-.role-pill__option-chip[data-role="teacher"] {
+.role-pill__chip[data-role="teacher"] {
   background: var(--color-role-teacher);
 }
 
-.role-pill__chip[data-role="ea"],
-.role-pill__option-chip[data-role="ea"] {
+.role-pill__chip[data-role="ea"] {
   background: var(--color-role-ea);
 }
 
-.role-pill__chip[data-role="substitute"],
-.role-pill__option-chip[data-role="substitute"] {
+.role-pill__chip[data-role="substitute"] {
   background: var(--color-role-sub);
 }
 
-.role-pill__chip[data-role="reviewer"],
-.role-pill__option-chip[data-role="reviewer"] {
+.role-pill__chip[data-role="reviewer"] {
   background: var(--color-role-reviewer);
 }
 
@@ -137,12 +133,35 @@
   background: var(--color-surface);
 }
 
-.role-pill__option-chip {
-  width: var(--icon-sm);
-  height: var(--icon-sm);
+.role-pill__option-radio {
+  width: 14px;
+  height: 14px;
   margin-top: var(--space-1);
-  border-radius: 999px;
-  border: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  opacity: 0.55;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.role-pill__option-radio--on {
+  opacity: 1;
+}
+
+.role-pill__option-radio--on::after {
+  content: "";
+  position: absolute;
+  inset: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.role-pill__option-active-tag {
+  margin-left: 8px;
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  opacity: 0.55;
 }
 
 .role-pill__option-copy {
