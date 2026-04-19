@@ -158,6 +158,7 @@ Schema version: 0.1.0
 Input:
 - classroom_id
 - ea_name (optional — for personalization)
+- coordination_notes (optional — free-text coordination context supplied by the teacher; rendered as an injected block in the prompt only when present, so absence-path fixtures remain byte-stable)
 
 Output:
 - schedule_blocks[] (time_slot, student_refs, task_description, materials_needed)

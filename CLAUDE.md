@@ -96,7 +96,7 @@ Exact endpoint inventory is generated in `docs/api-surface.md`; do not maintain 
 - Language Tools
 - Tomorrow Plan
 - EA Briefing
-- EA Load
+- EA Load Balance
 - Forecast
 - Log Intervention
 - Sub Packet
