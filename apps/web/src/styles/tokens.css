@@ -336,8 +336,11 @@
   /* Layout */
   --app-max-width: 1360px;
   --content-max-width: 940px;
-  --rail-width: 380px;
-  --rail-width-compact: 340px;
+  /* Workspace rail widths now live inline as clamps in primitives.css
+     under the `data-split-state` contract (audit workstream D). The
+     prior --rail-width / --rail-width-compact tokens were retired with
+     that contract — do not reintroduce them without updating the layout
+     comment block in primitives.css. */
   --panel-padding: var(--space-6);
   --panel-gap: var(--space-6);
 
