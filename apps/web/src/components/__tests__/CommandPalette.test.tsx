@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import CommandPalette from "../CommandPalette";
+import CommandPalette, { buildPaletteRows } from "../CommandPalette";
 import type { PaletteEntry } from "../../hooks/usePaletteEntries";
 
 function makeEntries(): PaletteEntry[] {
@@ -116,5 +116,27 @@ describe("CommandPalette", () => {
     headers.forEach((h) => {
       expect(h.getAttribute("role")).toBe("presentation");
     });
+  });
+});
+
+describe("buildPaletteRows", () => {
+  it("emits a header before each kind transition and tags entries with their filtered index", () => {
+    const entries: PaletteEntry[] = [
+      { id: "a", kind: "panel", label: "Today", keywords: "today", onSelect: vi.fn() },
+      { id: "b", kind: "panel", label: "Differentiate", keywords: "diff", onSelect: vi.fn() },
+      { id: "c", kind: "classroom", label: "Demo", keywords: "demo", onSelect: vi.fn() },
+    ];
+    const rows = buildPaletteRows(entries);
+    expect(rows.map((r) => (r.type === "header" ? `H:${r.label}` : `E:${r.entry.id}@${r.index}`))).toEqual([
+      "H:PANELS",
+      "E:a@0",
+      "E:b@1",
+      "H:CLASSROOMS",
+      "E:c@2",
+    ]);
+  });
+
+  it("returns an empty array for empty input", () => {
+    expect(buildPaletteRows([])).toEqual([]);
   });
 });

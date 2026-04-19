@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import type { PaletteEntry } from "../hooks/usePaletteEntries";
 import "./CommandPalette.css";
@@ -14,6 +14,23 @@ const KIND_HEADER: Record<PaletteEntry["kind"], string> = {
   classroom: "CLASSROOMS",
   action: "ACTIONS",
 };
+
+type RenderableRow =
+  | { type: "header"; key: string; label: string }
+  | { type: "entry"; entry: PaletteEntry; index: number };
+
+export function buildPaletteRows(entries: PaletteEntry[]): RenderableRow[] {
+  const rows: RenderableRow[] = [];
+  let lastKind: PaletteEntry["kind"] | null = null;
+  entries.forEach((entry, index) => {
+    if (entry.kind !== lastKind) {
+      rows.push({ type: "header", key: `hdr-${entry.kind}`, label: KIND_HEADER[entry.kind] });
+      lastKind = entry.kind;
+    }
+    rows.push({ type: "entry", entry, index });
+  });
+  return rows;
+}
 
 const RECENTS_KEY = "prairieclassroom.palette.recents";
 const MAX_RECENTS = 5;
@@ -120,20 +137,20 @@ export default function CommandPalette({ open, onClose, entries }: Props) {
           {filtered.length === 0 ? (
             <li className="command-palette__empty">No matches</li>
           ) : (
-            filtered.slice(0, 40).reduce<ReactElement[]>((acc, entry, i, arr) => {
-              const prevKind = i === 0 ? null : arr[i - 1].kind;
-              if (entry.kind !== prevKind) {
-                acc.push(
+            buildPaletteRows(filtered.slice(0, 40)).map((row) => {
+              if (row.type === "header") {
+                return (
                   <li
-                    key={`hdr-${entry.kind}`}
+                    key={row.key}
                     className="command-palette__group-header"
                     role="presentation"
                   >
-                    {KIND_HEADER[entry.kind]}
-                  </li>,
+                    {row.label}
+                  </li>
                 );
               }
-              acc.push(
+              const { entry, index: i } = row;
+              return (
                 <li
                   key={entry.id}
                   id={`cp-opt-${entry.id}`}
@@ -160,10 +177,9 @@ export default function CommandPalette({ open, onClose, entries }: Props) {
                       </kbd>
                     )}
                   </span>
-                </li>,
+                </li>
               );
-              return acc;
-            }, [])
+            })
           )}
         </ul>
         <footer className="command-palette__footer">
