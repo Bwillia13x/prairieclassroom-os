@@ -1241,6 +1241,43 @@ button.viz-recency__row:focus-visible {
 }
 
 .viz-recency__days--success { color: var(--color-text-tertiary); }
+
+/* Audit #18: dot-and-number render for BEYOND TARGET rows. The bar
+   axis can't compare 11d vs 387d honestly, so beyond-target rows use
+   a magnitude-agnostic form: a single red dot + bold mono number. */
+.viz-recency__stale-number {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-feature-settings: "tnum" 1, "zero" 1;
+  font-variant-numeric: tabular-nums slashed-zero;
+  color: var(--color-text-danger);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+}
+
+.viz-recency__stale-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--color-danger);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.viz-recency__stale-days {
+  letter-spacing: -0.02em;
+}
+
+/* Audit #19: baseline caption under the hero figure. */
+.viz-recency__hero-baseline {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
 .viz-recency__days--warning { color: var(--color-text-warning); }
 .viz-recency__days--danger { color: var(--color-text-danger); }
 

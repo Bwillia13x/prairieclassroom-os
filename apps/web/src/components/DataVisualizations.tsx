@@ -1186,33 +1186,64 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
           <span className="viz-recency__lead-label">Longest gap</span>
           <strong>{longestGap.days}d</strong>
           <span className="viz-recency__lead-student">{longestGap.alias}</span>
-          <em>{leadOverage > 0 ? `${leadOverage}d beyond target` : "Inside target"}</em>
+          {/* Audit #19: anchor the hero callout to the target baseline
+              so "376D BEYOND TARGET" isn't just an orphan figure. */}
+          <p
+            className="viz-recency__hero-baseline"
+            data-testid="recency-hero-baseline"
+          >
+            {leadOverage > 0
+              ? `${leadOverage}d past the ${maxDays}-day target`
+              : `Inside the ${maxDays}-day target`}
+          </p>
         </div>
         <div className="viz-recency__list">
           {rows.map((s) => {
-            const rawPct = scaleMax > 0 ? s.days / scaleMax : 0;
-            const visualPct = s.days === 0 ? 0 : Math.max(0.08, Math.min(1, Math.sqrt(rawPct)));
+            // Audit #18: split render per magnitude tier. When a gap is
+            // beyond the 14-day target, a proportional bar collapses to
+            // a dot-and-number so 11d and 387d don't share a stretched
+            // axis. Watch-tier rows keep the bar for in-range comparison.
+            const beyond = s.days > maxDays;
+            const rawPct = scaleMax > 0 && !beyond ? s.days / maxDays : 0;
+            const visualPct = beyond
+              ? 0
+              : s.days === 0
+                ? 0
+                : Math.max(0.08, Math.min(1, Math.sqrt(rawPct)));
             const content = (
               <>
                 <span className="viz-recency__rank">{s.index + 1}</span>
                 <span className="viz-recency__name">{s.alias}</span>
-                <span className="viz-recency__bar-track" aria-hidden="true">
+                {beyond ? (
                   <span
-                    className={`viz-recency__bar viz-recency__bar--${s.tone}`}
-                    style={{
-                      "--recency-pct": visualPct,
-                      "--recency-row-delay": `${s.index * 45}ms`,
-                    } as CSSProperties}
-                  />
-                </span>
-                <span className={`viz-recency__days viz-recency__days--${s.tone}`}>{s.days}d</span>
+                    className="viz-recency__stale-number"
+                    aria-label={`${s.days} days since last intervention, beyond target`}
+                  >
+                    <span className="viz-recency__stale-dot" aria-hidden="true" />
+                    <span className="viz-recency__stale-days">{s.days}d</span>
+                  </span>
+                ) : (
+                  <span className="viz-recency__bar-track" aria-hidden="true">
+                    <span
+                      className={`viz-recency__bar viz-recency__bar--${s.tone}`}
+                      style={{
+                        "--recency-pct": visualPct,
+                        "--recency-row-delay": `${s.index * 45}ms`,
+                      } as CSSProperties}
+                    />
+                  </span>
+                )}
+                {beyond ? null : (
+                  <span className={`viz-recency__days viz-recency__days--${s.tone}`}>{s.days}d</span>
+                )}
                 <span className={`viz-recency__status viz-recency__status--${s.tone}`}>{s.status}</span>
               </>
             );
+            const rowClass = `viz-recency__row viz-recency__row--${s.tone} viz-recency__row--${beyond ? "beyond" : "watch"}`;
             return onStudentClick ? (
               <button
                 key={s.alias}
-                className={`viz-recency__row viz-recency__row--${s.tone}`}
+                className={rowClass}
                 type="button"
                 onClick={() => onStudentClick(s.alias)}
                 aria-label={`${s.alias}: ${s.days} days since intervention. ${s.status}. Open detail.`}
@@ -1224,7 +1255,7 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
             ) : (
               <div
                 key={s.alias}
-                className={`viz-recency__row viz-recency__row--${s.tone}`}
+                className={rowClass}
                 aria-label={`${s.alias}: ${s.days} days since intervention. ${s.status}.`}
                 data-testid={`viz-recency-row-${s.alias}`}
                 style={{ "--recency-row-delay": `${s.index * 45}ms` } as CSSProperties}
