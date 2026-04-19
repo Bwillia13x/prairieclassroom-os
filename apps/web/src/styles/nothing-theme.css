@@ -1357,7 +1357,7 @@
   border-radius: 0;
   box-shadow: none;
   padding: var(--space-3) var(--space-4);
-  font-family: var(--font-mono, "Space Mono", monospace);
+  font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 500;
   letter-spacing: 0.06em;
@@ -1405,7 +1405,7 @@
   min-width: 16px;
   height: 16px;
   padding: 0 4px;
-  font-family: var(--font-mono, "Space Mono", monospace);
+  font-family: var(--font-mono);
   font-size: 10px;
   line-height: 16px;
   text-align: center;
@@ -1416,8 +1416,8 @@
 }
 
 .shell-nav__badge--alert {
-  background: var(--color-alert, var(--color-danger, #d71921));
-  color: #fff;
+  background: var(--color-alert);
+  color: var(--color-text-on-danger);
   border: 1px solid transparent;
 }
 
@@ -1447,7 +1447,7 @@
   border-radius: 0;
   box-shadow: none;
   padding: var(--space-2) var(--space-3);
-  font-family: var(--font-mono, "Space Mono", monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 400;
   letter-spacing: 0.1em;
@@ -2178,12 +2178,12 @@ textarea {
   gap: 8px;
 }
 .shell-bar__palette-btn-label {
-  font-family: var(--font-sans, "DM Sans", sans-serif);
+  font-family: var(--font-sans);
   font-size: 13px;
   letter-spacing: 0.02em;
 }
 .shell-bar__palette-btn-kbd {
-  font-family: var(--font-mono, "Space Mono", monospace);
+  font-family: var(--font-mono);
   font-size: 11px;
   padding: 2px 6px;
   border: 1px solid currentColor;
@@ -2194,7 +2194,7 @@ textarea {
   width: 32px;
   height: 32px;
   padding: 0;
-  font-family: var(--font-mono, "Space Mono", monospace);
+  font-family: var(--font-mono);
   font-size: 14px;
   display: inline-flex;
   align-items: center;

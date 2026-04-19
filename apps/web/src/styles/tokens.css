@@ -151,6 +151,9 @@
   --color-approve: light-dark(#1f7a44, #6cc38f);
   --color-approve-hover: light-dark(#18583a, #8fd3ab);
   --color-text-on-accent: light-dark(#ffffff, #f8fbff);
+  /* Text on a saturated danger/alert background. White-on-red is the
+     canonical contrast pairing across both themes. */
+  --color-text-on-danger: light-dark(#ffffff, #ffffff);
 
   /* Role identity chip colors */
   --color-role-teacher: light-dark(#1f7a44, #6cc38f);
