@@ -79,14 +79,14 @@ export function attachStreamJob(req: Request, res: Response, streamId: string): 
     });
   }
 
-  Object.assign(req, {
-    body: job.body,
-    query: job.query,
-    headers: {
-      ...req.headers,
-      ...job.headers,
-    },
+  req.body = job.body;
+  Object.defineProperty(req, "query", {
+    value: job.query,
+    configurable: true,
+    enumerable: true,
+    writable: true,
   });
+  Object.assign(req.headers, job.headers);
   if (job.classroomAuth) {
     res.locals.classroomAuth = job.classroomAuth;
   }

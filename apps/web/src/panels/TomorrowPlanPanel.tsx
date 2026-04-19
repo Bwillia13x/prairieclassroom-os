@@ -173,6 +173,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
       />
 
       <WorkspaceLayout
+        splitState={displayResult ? "output" : "input"}
         rail={(
           <>
             {/* 2026-04-19 OPS audit phase 3: PlanStreakCalendar stays in the

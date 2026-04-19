@@ -457,6 +457,23 @@
   gap: var(--space-6);
 }
 
+/* Today owns a sticky section rail on desktop. This late-layer override
+   intentionally beats the shared `.workspace-page` rhythm above without
+   changing other panels. */
+.workspace-page.today-panel--with-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 961px) {
+  .workspace-page.today-panel--with-rail {
+    grid-template-columns: var(--today-rail-width, 180px) minmax(0, 1fr);
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+}
+
 /* ---------- Viz internal polish (applies everywhere) ---------- */
 
 .workspace-page .viz-composition,
@@ -1011,20 +1028,30 @@
 
 /* OutputActionBar (the row of buttons above/below generated output:
    Copy, Download, Regenerate, etc.). Convert buttons to mono flat. */
-.workspace-page .output-action-bar,
-.workspace-page [class*="output-action-bar"] {
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--color-border);
+.workspace-page .output-action-bar {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-text-analysis);
   box-shadow: none;
+  color: var(--color-text);
+  isolation: isolate;
 }
 
-.workspace-page .output-action-bar button,
-.workspace-page [class*="output-action-bar"] button {
+.workspace-page .output-action-bar--bottom {
+  margin-top: var(--space-3);
+}
+
+.workspace-page .output-action-bar--top {
+  background: var(--color-workspace);
+  z-index: var(--z-sticky, 10);
+}
+
+.workspace-page .output-action-bar button {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0;
+  line-height: 1;
   text-transform: uppercase;
   background: transparent;
   color: var(--color-text);
@@ -1032,6 +1059,7 @@
   border-radius: 2px;
   box-shadow: none;
   padding: 6px 10px;
+  white-space: nowrap;
 }
 
 /* Student avatar chips (A/B/C initials) — flat, squared, mono */
@@ -1511,19 +1539,34 @@
   box-shadow: none;
 }
 
-.mock-mode-banner,
-[class*="mock-mode-banner"] {
-  background: transparent;
+.mock-mode-banner {
+  background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-left: 2px solid var(--color-text-warning);
   border-radius: 2px;
   box-shadow: none;
-  padding: var(--space-2) var(--space-4);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+  text-transform: none;
   color: var(--color-text);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.mock-mode-banner__title {
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+  line-height: 1.35;
+  text-transform: none;
+}
+
+.mock-mode-banner__detail {
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+  line-height: 1.5;
+  text-transform: none;
 }
 
 /* Student roster + student cards */

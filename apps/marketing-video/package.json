@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "studio": "remotion studio src/index.ts",
-    "still": "remotion still src/index.ts PrairieClassroomMarketing --frame=420 --output=../../qa/demo-script/videos/remotion-marketing-preview.png --timeout=120000",
-    "render": "remotion render src/index.ts PrairieClassroomMarketing ../../qa/demo-script/videos/remotion-marketing-demo.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=120000"
+    "still": "remotion still src/index.ts PrairieClassroomMarketing --frame=960 --output=../../qa/demo-script/videos/remotion-marketing-overview-preview.png --timeout=120000",
+    "render": "remotion render src/index.ts PrairieClassroomMarketing ../../qa/demo-script/videos/remotion-marketing-overview.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000",
+    "still:nothing": "remotion still src/index.ts PrairieClassroomNothingLaunch --frame=990 --output=../../qa/demo-script/videos/remotion-nothing-launch-preview.png --timeout=120000",
+    "render:nothing": "remotion render src/index.ts PrairieClassroomNothingLaunch ../../qa/demo-script/videos/remotion-nothing-launch.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.448",

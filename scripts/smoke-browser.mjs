@@ -30,6 +30,19 @@ const TAB_GROUPS = {
   "family-message": "Review",
   "support-patterns": "Review",
 };
+const TAB_LABELS = {
+  today: "Today",
+  differentiate: "Differentiate",
+  "language-tools": "Language Tools",
+  "tomorrow-plan": "Tomorrow Plan",
+  "ea-briefing": "EA Briefing",
+  "ea-load": "EA Load Balance",
+  "complexity-forecast": "Forecast",
+  "log-intervention": "Log Intervention",
+  "survival-packet": "Sub Packet",
+  "family-message": "Family Message",
+  "support-patterns": "Support Patterns",
+};
 
 function assertNoAlphaAliases(text, label) {
   const match = text.match(/\b(Ari|Mika|Jae)\b/);
@@ -117,15 +130,24 @@ async function openTab(page, id) {
   if (groupLabel) {
     await page.getByTestId(`shell-nav-group-${groupLabel.toLowerCase()}`).click();
   }
-  await page.click(`#tab-${id}`);
+  const directTab = page.locator(`#tab-${id}`);
+  if (await directTab.count()) {
+    await directTab.click();
+  } else {
+    await page.getByTestId("shell-nav-tabs-overflow-trigger").click();
+    await page
+      .locator(".shell-nav__tabs-overflow-item")
+      .filter({ hasText: TAB_LABELS[id] ?? id })
+      .click();
+  }
   await page.waitForSelector(`#panel-${id}:not([hidden])`);
 }
 
 async function expectPrimaryGroups(page) {
   const labels = await page.locator(".shell-nav__group").allInnerTexts();
   assert.deepEqual(
-    labels.map((label) => label.trim()),
-    ["Today", "Prep", "Ops", "Review"],
+    labels.map((label) => label.trim().toLowerCase()),
+    ["today", "prep", "ops", "review"],
     "Desktop primary nav groups should match the new shell IA",
   );
 }
@@ -214,7 +236,7 @@ async function main() {
     await expectPrimaryGroups(page);
     await openGroup(page, "Today", "today");
     await openGroup(page, "Prep", "differentiate");
-    await openGroup(page, "Ops", "tomorrow-plan");
+    await openGroup(page, "Ops", "log-intervention");
     await openGroup(page, "Review", "family-message");
     await expectStickyShell(page);
 
@@ -356,7 +378,7 @@ async function main() {
     const navBox = await mobilePage.locator(".mobile-nav").boundingBox();
     assert.ok(navBox && navBox.y + navBox.height <= 852.5, "Mobile nav should stay pinned to the viewport bottom");
     await mobilePage.getByTestId("mobile-nav-group-ops").click();
-    await mobilePage.waitForSelector("#panel-tomorrow-plan:not([hidden])");
+    await mobilePage.waitForSelector("#panel-log-intervention:not([hidden])");
     assert.equal(await mobilePage.locator(".mobile-nav-group--active").count(), 1, "Expected one active mobile nav group");
     await mobileContext.close();
 

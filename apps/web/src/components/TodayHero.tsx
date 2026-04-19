@@ -12,6 +12,7 @@ import type {
   TodaySnapshot,
   ClassroomHealth,
   StudentSummary,
+  ComplexityBlock,
 } from "../types";
 import TodayStory from "./TodayStory";
 import StatusChip from "./StatusChip";
@@ -32,7 +33,12 @@ interface Props {
   health: ClassroomHealth | null;
   students: StudentSummary[];
   recommendedAction: TodayHeroAction | null;
+  openItemCount?: number;
+  checkFirstStudents?: string[];
+  studentReasons?: Record<string, string>;
+  peakBlock?: ComplexityBlock | null;
   onCtaClick: () => void;
+  onStudentClick?: (studentRef: string) => void;
 }
 
 export default function TodayHero({
@@ -40,8 +46,18 @@ export default function TodayHero({
   health,
   students,
   recommendedAction,
+  openItemCount,
+  checkFirstStudents = [],
+  studentReasons,
+  peakBlock,
   onCtaClick,
+  onStudentClick,
 }: Props) {
+  const showMorningBrief =
+    typeof openItemCount === "number" ||
+    checkFirstStudents.length > 0 ||
+    Boolean(peakBlock);
+
   return (
     <section
       className="today-hero"
@@ -55,6 +71,51 @@ export default function TodayHero({
           <span className="today-hero__directive-arrow" aria-hidden="true">→</span>
           Morning triage first
         </p>
+
+        {showMorningBrief ? (
+          <div
+            className="today-hero__brief"
+            aria-label="Morning brief"
+            data-testid="today-hero-brief"
+          >
+            {typeof openItemCount === "number" ? (
+              <div className="today-hero__brief-item">
+                <span className="today-hero__brief-label">Open items</span>
+                <strong className="today-hero__brief-value">
+                  {formatOpenItemCount(openItemCount)}
+                </strong>
+              </div>
+            ) : null}
+
+            {peakBlock ? (
+              <div className="today-hero__brief-item">
+                <span className="today-hero__brief-label">Peak block</span>
+                <strong className="today-hero__brief-value">
+                  {formatPeakBlock(peakBlock)}
+                </strong>
+              </div>
+            ) : null}
+
+            {checkFirstStudents.length > 0 ? (
+              <div className="today-hero__brief-item today-hero__brief-item--students">
+                <span className="today-hero__brief-label">Check first</span>
+                <div className="today-hero__student-chips">
+                  {checkFirstStudents.slice(0, 5).map((studentRef) => (
+                    <button
+                      key={studentRef}
+                      type="button"
+                      className="today-hero__student-chip"
+                      title={studentReasons?.[studentRef]}
+                      onClick={() => onStudentClick?.(studentRef)}
+                    >
+                      {studentRef}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="today-hero__meta-row">
           <PageFreshness
@@ -85,4 +146,14 @@ export default function TodayHero({
       ) : null}
     </section>
   );
+}
+
+function formatOpenItemCount(count: number): string {
+  if (count === 0) return "0 items";
+  if (count === 1) return "1 item";
+  return `${count} items`;
+}
+
+function formatPeakBlock(block: ComplexityBlock): string {
+  return `${block.time_slot} ${block.activity}`;
 }

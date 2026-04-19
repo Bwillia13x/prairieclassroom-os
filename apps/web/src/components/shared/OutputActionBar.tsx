@@ -29,7 +29,7 @@ export interface OutputActionBarProps {
   actions: OutputAction[];
   /** Label rendered at the start of the bar for screen readers and visible context. */
   contextLabel?: string;
-  /** Override sticky positioning — default true. */
+  /** Override top quick-action sticky positioning — bottom bars remain in flow. */
   sticky?: boolean;
   /**
    * Where the bar appears relative to the output content.
@@ -57,9 +57,10 @@ function renderBar(
   dataTestId: string | undefined,
   placement: "top" | "bottom",
 ) {
+  const shouldStick = sticky && placement === "top";
   return (
     <nav
-      className={`output-action-bar output-action-bar--${placement}${sticky ? " output-action-bar--sticky" : ""}`}
+      className={`output-action-bar output-action-bar--${placement}${shouldStick ? " output-action-bar--sticky" : ""}`}
       aria-label={navLabel}
       data-testid={dataTestId}
     >

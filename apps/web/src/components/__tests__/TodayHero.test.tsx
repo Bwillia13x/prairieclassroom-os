@@ -215,6 +215,34 @@ describe("TodayHero", () => {
     const freshness = screen.getByTestId("page-freshness");
     expect(freshness).toHaveTextContent(/AI SNAPSHOT/i);
   });
+
+  it("renders the compact morning brief and opens student drill-down chips", async () => {
+    const user = userEvent.setup();
+    const onStudentClick = vi.fn();
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("high") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        openItemCount={4}
+        checkFirstStudents={["Amira", "Brody", "Farid", "Jae", "Kiana", "Liam"]}
+        peakBlock={makeForecast("high").blocks[1]}
+        onCtaClick={() => {}}
+        onStudentClick={onStudentClick}
+      />,
+    );
+
+    const brief = screen.getByTestId("today-hero-brief");
+    expect(brief).toHaveTextContent(/open items/i);
+    expect(brief).toHaveTextContent(/4 items/i);
+    expect(brief).toHaveTextContent(/peak block/i);
+    expect(brief).toHaveTextContent(/10:00-10:45 Math/i);
+    expect(screen.queryByRole("button", { name: "Liam" })).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Amira" }));
+    expect(onStudentClick).toHaveBeenCalledWith("Amira");
+  });
 });
 
 describe("TodayHero css hygiene", () => {

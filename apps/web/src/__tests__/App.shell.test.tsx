@@ -69,6 +69,7 @@ function makeDemoClassroom(overrides: Partial<ClassroomProfile> = {}): Classroom
 interface RenderShellOptions {
   profile?: ClassroomProfile;
   debtCounts?: Record<string, number>;
+  debtItems?: Array<{ category: string; student_refs: string[]; age_days: number }>;
 }
 
 async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfile = {}) {
@@ -84,7 +85,7 @@ async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfil
       debt_register: {
         register_id: "test-register",
         classroom_id: profile.classroom_id,
-        items: [],
+        items: opts.debtItems ?? [],
         item_count_by_category: opts.debtCounts,
         generated_at: new Date().toISOString(),
         schema_version: "1.0.0",
@@ -168,5 +169,20 @@ describe("App shell — classroom pill trigger", () => {
     const divider = document.querySelector(".shell-bar__divider");
     expect(divider).not.toBeNull();
     expect(divider?.previousElementSibling?.classList.contains("role-pill-anchor")).toBe(true);
+  });
+
+  it("feeds Today debt into the command palette for per-student actions", async () => {
+    await renderShellWithDemo({
+      debtCounts: { stale_followup: 1, unapproved_message: 1 },
+      debtItems: [
+        { category: "stale_followup", student_refs: ["Brody"], age_days: 5 },
+        { category: "unapproved_message", student_refs: ["Amira"], age_days: 1 },
+      ],
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /open command palette/i }));
+
+    expect(await screen.findByText("Log follow-up for Brody")).toBeInTheDocument();
+    expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();
   });
 });

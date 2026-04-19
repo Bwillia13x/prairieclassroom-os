@@ -1,4 +1,5 @@
-import type { ActiveTab } from "../appReducer";
+import { isTabVisibleForRole, type ActiveTab, type ClassroomRole } from "../appReducer";
+import type { ClassroomHealth, TodaySnapshot } from "../types";
 import "./TimeSuggestion.css";
 
 /**
@@ -24,6 +25,13 @@ export interface Suggestion {
   message: string;
   primaryAction: { label: string; tab: ActiveTab };
   secondaryAction?: { label: string; tab: ActiveTab };
+}
+
+interface ContextualSuggestionInput {
+  hour: number;
+  snapshot: TodaySnapshot | null;
+  health?: ClassroomHealth | null;
+  role?: ClassroomRole;
 }
 
 export function getSuggestion(hour: number): Suggestion | null {
@@ -64,6 +72,103 @@ export function getSuggestion(hour: number): Suggestion | null {
     };
   }
   return null;
+}
+
+function canUse(tab: ActiveTab, role: ClassroomRole): boolean {
+  return isTabVisibleForRole(tab, role);
+}
+
+function buildSuggestion(
+  role: ClassroomRole,
+  suggestion: Suggestion,
+): Suggestion | null {
+  if (!canUse(suggestion.primaryAction.tab, role)) return null;
+  const secondaryAction =
+    suggestion.secondaryAction && canUse(suggestion.secondaryAction.tab, role)
+      ? suggestion.secondaryAction
+      : undefined;
+  return { ...suggestion, secondaryAction };
+}
+
+export function getContextualSuggestion({
+  hour,
+  snapshot,
+  health,
+  role = "teacher",
+}: ContextualSuggestionInput): Suggestion | null {
+  const counts = snapshot?.debt_register.item_count_by_category ?? {};
+  const candidates: Suggestion[] = [
+    {
+      kind: "afternoon",
+      label: "Approval queue",
+      message: "Approve family messages before they leave this workspace.",
+      primaryAction: { label: "Family Message", tab: "family-message" },
+      secondaryAction: { label: "Patterns", tab: "support-patterns" },
+    },
+    {
+      kind: "midday",
+      label: "Follow-up needed",
+      message: "Log the next intervention while context is still recent.",
+      primaryAction: { label: "Log Intervention", tab: "log-intervention" },
+      secondaryAction: { label: "EA Briefing", tab: "ea-briefing" },
+    },
+    {
+      kind: "evening",
+      label: "Pattern review",
+      message: "Review support patterns before they become the default routine.",
+      primaryAction: { label: "Patterns", tab: "support-patterns" },
+      secondaryAction: { label: "Tomorrow Plan", tab: "tomorrow-plan" },
+    },
+    {
+      kind: "evening",
+      label: "Review due",
+      message: "Tighten the support record before the review window goes stale.",
+      primaryAction: { label: "Patterns", tab: "support-patterns" },
+      secondaryAction: { label: "Tomorrow Plan", tab: "tomorrow-plan" },
+    },
+  ];
+
+  const debtOrder: Array<[keyof typeof counts, number]> = [
+    ["unapproved_message", 0],
+    ["stale_followup", 1],
+    ["unaddressed_pattern", 2],
+    ["approaching_review", 3],
+  ];
+
+  for (const [key, candidateIndex] of debtOrder) {
+    if ((counts[key] ?? 0) > 0) {
+      const suggestion = buildSuggestion(role, candidates[candidateIndex]);
+      if (suggestion) return suggestion;
+    }
+  }
+
+  if (snapshot && !snapshot.latest_plan) {
+    const suggestion = buildSuggestion(role, {
+      kind: "evening",
+      label: "Plan missing",
+      message: "Capture today's signal so tomorrow starts with clear priorities.",
+      primaryAction: { label: "Tomorrow Plan", tab: "tomorrow-plan" },
+      secondaryAction: { label: "Log Intervention", tab: "log-intervention" },
+    });
+    if (suggestion) return suggestion;
+  }
+
+  const planToday = health?.plans_last_7?.[0] ?? false;
+  if (snapshot?.latest_plan && !snapshot.latest_forecast) {
+    const suggestion = buildSuggestion(role, {
+      kind: "evening",
+      label: "Forecast missing",
+      message: planToday
+        ? "Today's plan is present; add the block-by-block complexity outlook."
+        : "Generate the block-by-block complexity outlook before coverage decisions.",
+      primaryAction: { label: "Forecast", tab: "complexity-forecast" },
+      secondaryAction: { label: "EA Briefing", tab: "ea-briefing" },
+    });
+    if (suggestion) return suggestion;
+  }
+
+  const clockSuggestion = getSuggestion(hour);
+  return clockSuggestion ? buildSuggestion(role, clockSuggestion) : null;
 }
 
 function renderSuggestionIcon(kind: Suggestion["kind"]) {

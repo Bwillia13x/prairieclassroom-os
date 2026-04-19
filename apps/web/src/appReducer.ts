@@ -5,7 +5,7 @@
  * Enables undo toasts, streaming state, contextual onboarding, and time-aware nav.
  */
 
-import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
+import type { ClassroomProfile, ComplexityDebtRegister, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 import type { SectionIconName } from "./components/SectionIcon";
 
 // ─── Active Tab ───
@@ -299,6 +299,7 @@ export interface AppState {
   interventionPrefill: InterventionPrefill | null;
   initError: string | null;
   debtCounts: Record<string, number>;
+  latestDebtRegister: ComplexityDebtRegister | null;
   showOnboarding: boolean;
 
   // New: toast queue (replaces single successMsg)
@@ -337,6 +338,7 @@ export type AppAction =
   | { type: "SET_ACTIVE_TAB"; tab: ActiveTab }
   | { type: "SET_INIT_ERROR"; error: string }
   | { type: "SET_DEBT_COUNTS"; counts: Record<string, number> }
+  | { type: "SET_DEBT_REGISTER"; register: ComplexityDebtRegister }
   | { type: "SET_MESSAGE_PREFILL"; prefill: FamilyMessagePrefill | null }
   | { type: "SET_INTERVENTION_PREFILL"; prefill: InterventionPrefill | null }
   | { type: "SHOW_ONBOARDING"; show: boolean }
@@ -479,6 +481,7 @@ export function createInitialState(): AppState {
     interventionPrefill: null,
     initError: null,
     debtCounts: {},
+    latestDebtRegister: null,
     showOnboarding: !shouldSuppressFirstRunModalsFromUrl() && !localStorage.getItem("prairie-onboarding-done"),
     toasts: [],
     streaming: {
@@ -507,7 +510,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, classrooms: action.classrooms };
 
     case "SET_ACTIVE_CLASSROOM":
-      return { ...state, activeClassroom: action.classroomId };
+      return {
+        ...state,
+        activeClassroom: action.classroomId,
+        debtCounts: {},
+        latestDebtRegister: null,
+      };
 
     case "SET_ACTIVE_TAB":
       return { ...state, activeTab: action.tab };
@@ -517,6 +525,13 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case "SET_DEBT_COUNTS":
       return { ...state, debtCounts: action.counts };
+
+    case "SET_DEBT_REGISTER":
+      return {
+        ...state,
+        latestDebtRegister: action.register,
+        debtCounts: action.register.item_count_by_category,
+      };
 
     case "SET_MESSAGE_PREFILL":
       return { ...state, messagePrefill: action.prefill };

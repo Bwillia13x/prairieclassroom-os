@@ -15,7 +15,7 @@ import SectionIcon from "../components/SectionIcon";
 import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
-import TimeSuggestion, { getSuggestion } from "../components/TimeSuggestion";
+import TimeSuggestion, { getContextualSuggestion } from "../components/TimeSuggestion";
 import { Card, ActionButton } from "../components/shared";
 import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
@@ -42,7 +42,7 @@ interface Props {
 }
 
 export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
-  const { activeClassroom, profile } = useApp();
+  const { activeClassroom, activeRole, profile } = useApp();
   const session = useSession();
   const { error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
@@ -65,7 +65,17 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     [result],
   );
 
-  const suggestion = useMemo(() => getSuggestion(new Date().getHours()), []);
+  const currentHour = useMemo(() => new Date().getHours(), []);
+  const suggestion = useMemo(
+    () =>
+      getContextualSuggestion({
+        hour: currentHour,
+        snapshot: result,
+        health: health.result ?? null,
+        role: activeRole,
+      }),
+    [activeRole, currentHour, health.result, result],
+  );
   const totalActionCount = useMemo(
     () => result?.debt_register.items.length ?? 0,
     [result],
@@ -125,6 +135,11 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     return ordered;
   }, [result]);
 
+  const peakBlock = useMemo(() => {
+    if (!result?.latest_forecast) return null;
+    return getRiskWindowModel(result.latest_forecast).peakBlock;
+  }, [result?.latest_forecast]);
+
   const showTimeSuggestion = useMemo(() => {
     if (!suggestion) return false;
     if (!recommendedAction) return true;
@@ -175,9 +190,14 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             health={health.result ?? null}
             students={studentSummaries.result ?? []}
             recommendedAction={recommendedAction}
+            openItemCount={totalActionCount}
+            checkFirstStudents={studentsToCheckFirst}
+            studentReasons={studentReasons}
+            peakBlock={peakBlock}
             onCtaClick={() => {
               if (recommendedAction) onTabChange(recommendedAction.tab);
             }}
+            onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
           />
         ) : (
           <SectionSkeleton label="Loading today story" variant="story" lines={2} />

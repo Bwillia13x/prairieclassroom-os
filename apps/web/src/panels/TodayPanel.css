@@ -1159,6 +1159,36 @@ html {
 .today-panel .page-intro .status-chip--success { border-left: 2px solid var(--color-text-success); }
 .today-panel .page-intro .status-chip--danger  { border-left: 2px solid var(--color-text-danger); }
 
+@media (max-width: 640px) {
+  .today-panel .page-intro,
+  .today-panel .page-intro.page-intro--sun,
+  .today-panel .page-intro.page-intro--sage,
+  .today-panel .page-intro.page-intro--slate,
+  .today-panel .page-intro.page-intro--forest,
+  .today-panel .page-intro.page-intro--muted {
+    padding: var(--space-2) 0 0;
+    row-gap: var(--space-1);
+  }
+
+  .today-panel .page-intro__eyebrow,
+  .today-panel .page-intro--sun .page-intro__eyebrow,
+  .today-panel .page-intro--sage .page-intro__eyebrow,
+  .today-panel .page-intro--slate .page-intro__eyebrow,
+  .today-panel .page-intro--forest .page-intro__eyebrow,
+  .today-panel .page-intro--muted .page-intro__eyebrow {
+    letter-spacing: 0.08em;
+  }
+
+  .today-panel .page-intro__title {
+    font-size: var(--text-lg);
+  }
+
+  .today-panel .page-intro__description,
+  .today-panel .page-intro .status-chip-row {
+    display: none;
+  }
+}
+
 /* ---------- Shared Card: flatten every instance on Today ---------- */
 
 .today-panel .card,

@@ -48,9 +48,15 @@ describe("usePaletteEntries", () => {
       usePaletteEntries({
         classrooms: [CLASSROOM],
         activeClassroom: CLASSROOM.classroom_id,
-        debtRegister: { items: [{ category: "unapproved_message", student_refs: ["Amara"], age_days: 1 }] },
+        debtRegister: {
+          items: [
+            { category: "unapproved_message", student_refs: ["Amara"], age_days: 1 },
+            { category: "stale_followup", student_refs: ["Brody"], age_days: 5 },
+          ],
+        },
       }),
     );
-    expect(result.current.some((e) => e.kind === "action" && /amara/i.test(e.label))).toBe(true);
+    expect(result.current.some((e) => e.kind === "action" && /draft family message for amara/i.test(e.label))).toBe(true);
+    expect(result.current.some((e) => e.kind === "action" && /log follow-up for brody/i.test(e.label))).toBe(true);
   });
 });

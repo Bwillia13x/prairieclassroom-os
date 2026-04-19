@@ -367,7 +367,7 @@ export default function App() {
     if (!state.activeClassroom || activeRole === "reviewer") return;
     const controller = new AbortController();
     fetchTodaySnapshot(state.activeClassroom, controller.signal)
-      .then((snapshot) => dispatch({ type: "SET_DEBT_COUNTS", counts: snapshot.debt_register.item_count_by_category }))
+      .then((snapshot) => dispatch({ type: "SET_DEBT_REGISTER", register: snapshot.debt_register }))
       .catch((err) => {
         if (controller.signal.aborted) return;
         if (err instanceof DOMException && err.name === "AbortError") return;
@@ -578,7 +578,7 @@ export default function App() {
   const paletteEntries = usePaletteEntries({
     classrooms: state.classrooms,
     activeClassroom: state.activeClassroom,
-    debtRegister: null,
+    debtRegister: state.latestDebtRegister,
     onNavigate: (tab) => {
       setActiveTab(tab);
       setPaletteOpen(false);

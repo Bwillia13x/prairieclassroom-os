@@ -231,7 +231,7 @@ describe("TodayPanel", () => {
   });
 
   it("shows the slim time suggestion when the queue is clear", async () => {
-    const suggestionSpy = vi.spyOn(TimeSuggestionModule, "getSuggestion").mockReturnValue({
+    const suggestionSpy = vi.spyOn(TimeSuggestionModule, "getContextualSuggestion").mockReturnValue({
       kind: "morning",
       label: "Good morning",
       message: "Time to prep for today.",
@@ -286,7 +286,7 @@ describe("TodayPanel", () => {
   });
 
   it("suppresses the time suggestion when it duplicates the primary triage action", async () => {
-    const suggestionSpy = vi.spyOn(TimeSuggestionModule, "getSuggestion").mockReturnValue({
+    const suggestionSpy = vi.spyOn(TimeSuggestionModule, "getContextualSuggestion").mockReturnValue({
       kind: "midday",
       label: "Mid-day",
       message: "Log interventions while they're fresh.",
@@ -327,8 +327,9 @@ describe("TodayPanel", () => {
   it("opens the student drawer from the triage chips", async () => {
     const { user } = renderTodayPanel(makeSnapshot());
 
-    expect(await screen.findByText("Students to check first")).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Amira" }));
+    const triageLabel = await screen.findByText("Students to check first");
+    const triageSection = triageLabel.closest(".today-triage-students") as HTMLElement;
+    await user.click(within(triageSection).getByRole("button", { name: "Amira" }));
 
     expect(await screen.findByRole("dialog", { name: /Amira/i })).toBeInTheDocument();
     await waitFor(() => {
@@ -463,6 +464,21 @@ describe("TodayPanel", () => {
     expect(
       hero.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+  });
+
+  it("keeps the late-layer Today rail grid override in the Nothing theme", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const cssPath = path.resolve(
+      __dirname,
+      "..",
+      "..",
+      "styles",
+      "nothing-theme.css",
+    );
+    const css = fs.readFileSync(cssPath, "utf8");
+    expect(css).toMatch(/\.workspace-page\.today-panel--with-rail\s*{[^}]*display:\s*grid/s);
+    expect(css).toMatch(/@media\s*\(min-width:\s*961px\)\s*{[^}]*\.workspace-page\.today-panel--with-rail\s*{[^}]*grid-template-columns:\s*var\(--today-rail-width,\s*180px\)\s*minmax\(0,\s*1fr\)/s);
   });
 
   it("shows an inline health error without blocking the rest of the dashboard", async () => {
