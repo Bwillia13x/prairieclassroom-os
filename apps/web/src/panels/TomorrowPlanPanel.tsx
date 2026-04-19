@@ -55,6 +55,15 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
     }
     return arr;
   }, [history.items]);
+  // Streak pill copy — shown next to the Generate button so the ongoing-habit
+  // affordance surfaces at the commit moment. Empty string suppresses the
+  // pill when the history is still loading or the teacher is brand new.
+  // 2026-04-19 OPS audit phase 3.
+  const streakLabel = useMemo(() => {
+    const planned = plans14d.reduce<number>((acc, n) => acc + n, 0);
+    if (planned <= 0) return "";
+    return `${planned} of 14 days planned — keep it`;
+  }, [plans14d]);
   const streamer = useStreamingRequest({
     sectionLabels: ["Support priorities", "Prep checklist", "Differentiation notes"],
   });
@@ -174,16 +183,10 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
       <WorkspaceLayout
         rail={(
           <>
-            <HistoryDrawer<TomorrowPlan>
-              items={history.items}
-              loading={history.loading}
-              error={history.error}
-              renderItem={(plan) => `${plan.support_priorities.length} priorities, ${plan.prep_checklist.length} prep items`}
-              getKey={(plan) => plan.plan_id}
-              getTimestamp={(plan) => parseRecordTimestamp(plan.plan_id) ?? new Date().toISOString()}
-              onSelect={handleHistorySelect}
-              label="Plan History"
-            />
+            {/* 2026-04-19 OPS audit phase 3: PlanStreakCalendar stays in the
+                rail but moves directly above the TeacherReflection so the
+                habit cue sits next to the commit action. HistoryDrawer
+                relocates to the canvas footer as a reference surface. */}
             {history.items.length > 0 && <PlanStreakCalendar plans14d={plans14d} />}
             {role.canGenerate ? (
               <TeacherReflection
@@ -192,6 +195,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                 onClassroomChange={setActiveClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
+                streakLabel={streakLabel}
               />
             ) : null}
           </>
@@ -252,6 +256,18 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                 <OutputActionBar
                   actions={actions}
                   contextLabel="Tomorrow plan output"
+                />
+                {/* 2026-04-19 OPS audit phase 3: HistoryDrawer moved out of
+                    the rail into the canvas footer as a reference surface. */}
+                <HistoryDrawer<TomorrowPlan>
+                  items={history.items}
+                  loading={history.loading}
+                  error={history.error}
+                  renderItem={(plan) => `${plan.support_priorities.length} priorities, ${plan.prep_checklist.length} prep items`}
+                  getKey={(plan) => plan.plan_id}
+                  getTimestamp={(plan) => parseRecordTimestamp(plan.plan_id) ?? new Date().toISOString()}
+                  onSelect={handleHistorySelect}
+                  label="Plan History"
                 />
               </>
             ) : null}
