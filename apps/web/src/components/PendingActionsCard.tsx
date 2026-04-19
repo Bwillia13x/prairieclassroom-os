@@ -17,7 +17,9 @@ interface Props {
   items: ActionItem[];
   onItemClick?: (item: ActionItem) => void;
   totalCount: number;
+  previousTotal?: number;
   studentsToCheckFirst?: string[];
+  studentReasons?: Record<string, string>;
   onStudentClick?: (studentRef: string) => void;
 }
 
@@ -27,11 +29,19 @@ function formatActionCount(totalCount: number): string {
   return `${totalCount} actions waiting`;
 }
 
+function formatBenchmark(total: number, previous: number): string {
+  const delta = total - previous;
+  if (delta === 0) return "same as last check";
+  return `${delta > 0 ? "up" : "down"} ${Math.abs(delta)} from last check`;
+}
+
 export default function PendingActionsCard({
   items,
   onItemClick,
   totalCount,
+  previousTotal,
   studentsToCheckFirst = [],
+  studentReasons,
   onStudentClick,
 }: Props) {
   const activeItems = items.filter((item) => item.count > 0);
@@ -48,6 +58,14 @@ export default function PendingActionsCard({
                 tone={totalCount > 0 ? "warning" : "success"}
               />
             </div>
+            {typeof previousTotal === "number" ? (
+              <p
+                className="today-triage-card__benchmark"
+                data-testid="pending-actions-benchmark"
+              >
+                {formatBenchmark(totalCount, previousTotal)}
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -85,6 +103,7 @@ export default function PendingActionsCard({
                   key={studentRef}
                   type="button"
                   className="today-triage-students__chip"
+                  title={studentReasons?.[studentRef]}
                   onClick={() => onStudentClick?.(studentRef)}
                 >
                   {studentRef}

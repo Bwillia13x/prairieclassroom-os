@@ -136,6 +136,17 @@
   gap: var(--space-2);
 }
 
+/* Audit #5: benchmark caption beneath the total — anchors "35 open items"
+   to "up 7 from last check" so the figure has a contextual direction. */
+.today-triage-card__benchmark {
+  margin: var(--space-1) 0 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
 .today-triage-card__description {
   margin: 0;
   max-width: 62ch;

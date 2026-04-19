@@ -80,6 +80,16 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     return series[series.length - 2];
   }, [health.result]);
 
+  // Audit #7: student-chip tooltip source — surface the most recent
+  // priority reason per student so morning triage knows WHY to check.
+  const studentReasons = useMemo(() => {
+    const out: Record<string, string> = {};
+    for (const s of studentSummaries.result ?? []) {
+      if (s.latest_priority_reason) out[s.alias] = s.latest_priority_reason;
+    }
+    return out;
+  }, [studentSummaries.result]);
+
   const studentsToCheckFirst = useMemo(() => {
     if (!result) return [];
 
@@ -198,7 +208,9 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                 },
               ]}
               totalCount={totalActionCount}
+              previousTotal={previousDebtTotal}
               studentsToCheckFirst={studentsToCheckFirst}
+              studentReasons={studentReasons}
               onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
               onItemClick={(item) => {
                 if (item.key) {
