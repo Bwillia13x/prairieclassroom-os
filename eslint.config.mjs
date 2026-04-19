@@ -5,7 +5,16 @@ export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {
-    ignores: ["**/dist/**", "**/node_modules/**", "**/.venv*/**", "**/*.js", "**/*.cjs"],
+    ignores: [
+      "**/dist/**",
+      "**/node_modules/**",
+      "**/.venv*/**",
+      "**/*.js",
+      "**/*.cjs",
+      // Sibling git worktrees under .claude/ share the parser root and
+      // produce duplicate-TSConfigRootDir noise when lint walks into them.
+      ".claude/**",
+    ],
   },
   {
     files: ["scripts/**/*.mjs", "eslint.config.mjs"],

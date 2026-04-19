@@ -362,6 +362,10 @@ const SCOPE_MATRIX: Record<string, readonly Role[] | "*"> = {
   "POST /api/ea-load/stream": ["teacher", "ea"],
   "GET /api/ea-load/stream/:streamId/events": ["teacher", "ea"],
   "POST /api/feedback": ["teacher", "ea"],
+  // Recent-runs cache (Prep panel): teacher writes the run record after
+  // generation; teacher + EA both read the chip row preview.
+  "POST /api/classrooms/:id/runs": ["teacher"],
+  "GET /api/classrooms/:id/runs": ["teacher", "ea"],
   // Teacher + EA + substitute (EA already had UI `canLogInterventions` so
   // aligning backend with that pre-existing capability — see roleCapabilities)
   "POST /api/intervention": ["teacher", "ea", "substitute"],
