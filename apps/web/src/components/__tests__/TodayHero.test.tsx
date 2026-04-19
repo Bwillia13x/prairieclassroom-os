@@ -182,6 +182,39 @@ describe("TodayHero", () => {
       container.querySelector('[aria-label="Today hero"]'),
     ).toBeInTheDocument();
   });
+
+  it("renders the morning triage directive prominently (not as a tag chip)", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+    const directive = screen.getByTestId("today-hero-directive");
+    expect(directive).toHaveTextContent(/morning triage first/i);
+    // It must NOT live in a .pill or .chip or .badge element (elevation check).
+    expect(directive.className).not.toMatch(/pill|chip|badge/i);
+  });
+
+  it("mounts PageFreshness with the snapshot's last_activity_at as AI-snapshot", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({
+          latest_forecast: makeForecast("low"),
+          last_activity_at: "2026-04-18T08:47:00-06:00",
+        })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+    const freshness = screen.getByTestId("page-freshness");
+    expect(freshness).toHaveTextContent(/AI SNAPSHOT/i);
+  });
 });
 
 describe("TodayHero css hygiene", () => {

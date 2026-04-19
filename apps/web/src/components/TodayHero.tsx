@@ -15,6 +15,7 @@ import type {
 } from "../types";
 import TodayStory from "./TodayStory";
 import StatusChip from "./StatusChip";
+import PageFreshness from "./PageFreshness";
 import { ActionButton } from "./shared";
 import "./TodayHero.css";
 
@@ -42,8 +43,27 @@ export default function TodayHero({
   onCtaClick,
 }: Props) {
   return (
-    <section className="today-hero" aria-label="Today hero">
-      <TodayStory snapshot={snapshot} health={health} students={students} />
+    <section
+      className="today-hero"
+      aria-label="Today hero"
+      data-testid="today-hero"
+    >
+      <div className="today-hero__narrative">
+        <TodayStory snapshot={snapshot} health={health} students={students} />
+
+        <p className="today-hero__directive" data-testid="today-hero-directive">
+          <span className="today-hero__directive-arrow" aria-hidden="true">→</span>
+          Morning triage first
+        </p>
+
+        <div className="today-hero__meta-row">
+          <PageFreshness
+            generatedAt={snapshot?.last_activity_at ?? null}
+            kind="ai"
+          />
+        </div>
+      </div>
+
       {recommendedAction ? (
         <div className="today-hero__cta-row">
           <StatusChip

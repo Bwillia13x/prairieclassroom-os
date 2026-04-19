@@ -132,7 +132,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         description={`Your action queue, student snapshot, and recommended next move for Grade ${profile.grade_band} today.`}
         badges={[
           { label: `${profile.students.length} students`, tone: "sun" },
-          { label: "Morning triage first", tone: "pending" },
         ]}
       />
 

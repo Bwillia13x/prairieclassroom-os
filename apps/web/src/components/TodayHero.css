@@ -55,6 +55,41 @@
   min-width: 0;
 }
 
+/* Narrative wrapper holds the TodayStory lede, the elevated triage
+   directive (audit #3), and the edge-anchored freshness caption
+   (audit #4). Using a wrapper preserves the hero's 2-column grid
+   while giving the directive a vertical stack of its own. */
+.today-hero__narrative {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* Audit #3: Morning triage directive — tertiary-elevated, second-loudest
+   after the narrative lede. NOT a pill/chip — it's a structural
+   sentence under the headline. */
+.today-hero__directive {
+  margin: var(--space-3) 0 0;
+  padding-left: var(--space-1);
+  font-family: var(--font-sans);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.today-hero__directive-arrow {
+  display: inline-block;
+  margin-right: var(--space-2);
+  color: var(--color-accent);
+}
+
+/* Audit #4: page freshness strip — tertiary layer, edge-anchored. */
+.today-hero__meta-row {
+  margin-top: var(--space-2);
+}
+
 /* ---------- Primary: the narrative ----------
    The hero lede is the ONE primary element on the home page. It
    earns the full display treatment. PageIntro upstream is demoted
