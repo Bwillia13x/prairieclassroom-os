@@ -727,7 +727,8 @@ button.viz-priority-matrix__watch-row:focus-visible {
   gap: var(--space-1);
 }
 
-.viz-composition__stats span {
+.viz-composition__stats span,
+.viz-composition__header-caption {
   display: inline-flex;
   min-height: 24px;
   align-items: center;
@@ -742,6 +743,36 @@ button.viz-priority-matrix__watch-row:focus-visible {
   text-transform: uppercase;
   letter-spacing: var(--tracking-eyebrow);
   white-space: nowrap;
+}
+
+/* Audit #21: promoted header actions — same typography as the caption
+   treatment, but with an explicit hover/focus state so they read as
+   real buttons. */
+.viz-composition__header-action {
+  display: inline-flex;
+  min-height: 24px;
+  align-items: center;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    border-color var(--motion-fast, 150ms) var(--ease-standard, ease),
+    color var(--motion-fast, 150ms) var(--ease-standard, ease);
+}
+.viz-composition__header-action:hover,
+.viz-composition__header-action:focus-visible {
+  border-color: var(--color-accent, var(--color-text));
+  color: var(--color-text);
+  outline: none;
 }
 
 .viz-composition__body {
@@ -2359,6 +2390,17 @@ button.viz-recency__row:focus-visible {
 .viz-followup-rate--clickable,
 .viz-int-timeline__dot--clickable {
   cursor: pointer;
+}
+
+/* Audit #20: cross-highlight — hovering either the donut segment or
+   its paired bar row tints both so the eye can follow the link without
+   reading labels. */
+.viz-composition__segment--active {
+  opacity: 1;
+  filter: drop-shadow(0 0 2px var(--color-text));
+}
+.viz-composition__row--active {
+  background: var(--color-bg-analysis);
 }
 
 .viz-composition__segment--clickable:focus-visible,

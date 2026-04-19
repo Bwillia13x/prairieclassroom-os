@@ -674,6 +674,15 @@ interface DonutSegment {
   label: string;
   value: number;
   color: string;
+  /**
+   * Audit #20: `pairKey` links a donut segment to its paired bar row
+   * so hovering either tints both. Set independently of `clickable`
+   * because non-interactive segments (e.g. "No EAL tag") still need to
+   * exit any active hover state cleanly.
+   */
+  pairKey?: string;
+  onHover?: (hovered: boolean) => void;
+  active?: boolean;
   clickable?: {
     testid: string;
     ariaLabel: string;
@@ -696,15 +705,30 @@ function drawDonutRing(
   for (const seg of segments) {
     const pct = seg.value / total;
     const dashLength = pct * circumference;
+    const baseClass = "viz-composition__segment";
+    const modifiers = [
+      seg.clickable ? "viz-composition__segment--clickable" : "",
+      seg.active ? "viz-composition__segment--active" : "",
+    ]
+      .filter(Boolean)
+      .join(" ");
+    const className = [baseClass, modifiers].filter(Boolean).join(" ");
     const clickProps = seg.clickable
       ? {
           role: "button" as const,
           tabIndex: 0,
-          className: "viz-composition__segment--clickable",
           "data-testid": seg.clickable.testid,
           "aria-label": seg.clickable.ariaLabel,
           onClick: seg.clickable.onClick,
           onKeyDown: seg.clickable.onKeyDown,
+        }
+      : {};
+    const hoverProps = seg.onHover
+      ? {
+          onMouseEnter: () => seg.onHover!(true),
+          onMouseLeave: () => seg.onHover!(false),
+          onFocus: () => seg.onHover!(true),
+          onBlur: () => seg.onHover!(false),
         }
       : {};
     elements.push(
@@ -717,7 +741,10 @@ function drawDonutRing(
         strokeDashoffset={-offset}
         transform={`rotate(-90 ${cx} ${cy})`}
         opacity={0.85}
+        className={className}
+        data-pair-key={seg.pairKey}
         {...clickProps}
+        {...hoverProps}
       >
         <title>{seg.label}: {seg.value}</title>
       </circle>,
@@ -745,6 +772,12 @@ const LANG_LABELS: Record<string, string> = {
 
 export function ClassroomCompositionRings({ students, onSegmentClick }: CompositionRingsProps) {
   const [mounted, setMounted] = useState(false);
+  /**
+   * Audit #20: cross-highlight state shared between donut segments and
+   * right-side bar rows. `${groupKind}:${tag}` is the pair key. A null
+   * value means no hover is active.
+   */
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null);
 
   useEffect(() => {
     const frame = requestAnimationFrame(() => setMounted(true));
@@ -836,12 +869,18 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
   const nonEalCount = Math.max(0, students.length - ealTotal);
 
   const ealSegments: DonutSegment[] = [
-    ...ealGroups.map((group) => ({
-      label: group.label,
-      value: group.value,
-      color: group.color,
-      clickable: makeClickable(group.groupKind, group.tag, group.label, group.value, (s) => (s.support_tags ?? []).includes(group.tag)),
-    })),
+    ...ealGroups.map((group) => {
+      const pairKey = `${group.groupKind}:${group.tag}`;
+      return {
+        label: group.label,
+        value: group.value,
+        color: group.color,
+        pairKey,
+        onHover: (h: boolean) => setHoveredKey(h ? pairKey : null),
+        active: hoveredKey === pairKey,
+        clickable: makeClickable(group.groupKind, group.tag, group.label, group.value, (s) => (s.support_tags ?? []).includes(group.tag)),
+      };
+    }),
     { label: "No EAL tag", value: nonEalCount, color: "var(--color-border)" },
   ].filter((s) => s.value > 0);
 
@@ -871,12 +910,18 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
 
   const tagSegments: DonutSegment[] = clusterOrder
     .filter((c) => (stats.tagClusters[c] ?? 0) > 0)
-    .map((c) => ({
-      label: formatClusterLabel(c),
-      value: stats.tagClusters[c],
-      color: clusterColors[c] ?? "var(--color-border)",
-      clickable: makeClickable("support_cluster", c, formatClusterLabel(c), stats.tagClusters[c], (s) => (s.support_tags ?? []).some((t) => tagToCluster(t) === c)),
-    }));
+    .map((c) => {
+      const pairKey = `support_cluster:${c}`;
+      return {
+        label: formatClusterLabel(c),
+        value: stats.tagClusters[c],
+        color: clusterColors[c] ?? "var(--color-border)",
+        pairKey,
+        onHover: (h: boolean) => setHoveredKey(h ? pairKey : null),
+        active: hoveredKey === pairKey,
+        clickable: makeClickable("support_cluster", c, formatClusterLabel(c), stats.tagClusters[c], (s) => (s.support_tags ?? []).some((t) => tagToCluster(t) === c)),
+      };
+    });
 
   const languageGroups: CompositionGroupItem[] = Object.entries(stats.languages)
     .sort((a, b) => b[1] - a[1])
@@ -893,12 +938,18 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
       };
     });
 
-  const langSegments: DonutSegment[] = languageGroups.map((group) => ({
-    label: group.label,
-    value: group.value,
-    color: group.color,
-    clickable: makeClickable(group.groupKind, group.tag, group.label, group.value, (s) => familyLanguageLabel(s) === group.tag),
-  }));
+  const langSegments: DonutSegment[] = languageGroups.map((group) => {
+    const pairKey = `${group.groupKind}:${group.tag}`;
+    return {
+      label: group.label,
+      value: group.value,
+      color: group.color,
+      pairKey,
+      onHover: (h: boolean) => setHoveredKey(h ? pairKey : null),
+      active: hoveredKey === pairKey,
+      clickable: makeClickable(group.groupKind, group.tag, group.label, group.value, (s) => familyLanguageLabel(s) === group.tag),
+    };
+  });
 
   const langCount = Object.keys(stats.languages).length;
   const namedSupportGroups = supportGroups
@@ -940,6 +991,19 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
         <span className="viz-composition__group-title">{title}</span>
         <div className="viz-composition__group-list">
           {groups.map((group, index) => {
+            // Audit #20: rows pair with donut segments by `${groupKind}:${tag}`.
+            // Either surface can drive the shared `hoveredKey` state.
+            const pairKey = `${group.groupKind}:${group.tag}`;
+            const isActive = hoveredKey === pairKey;
+            const rowClass = `viz-composition__row${
+              isActive ? " viz-composition__row--active" : ""
+            }`;
+            const hoverHandlers = {
+              onMouseEnter: () => setHoveredKey(pairKey),
+              onMouseLeave: () => setHoveredKey(null),
+              onFocus: () => setHoveredKey(pairKey),
+              onBlur: () => setHoveredKey(null),
+            };
             const rowContent = (
               <>
                 <span className="viz-composition__dot" style={{ background: group.color }} />
@@ -960,8 +1024,9 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
               <button
                 key={`${group.groupKind}-${group.tag}`}
                 type="button"
-                className="viz-composition__row"
+                className={rowClass}
                 data-testid={`viz-composition-row-${group.groupKind}-${group.tag}`}
+                data-pair-key={pairKey}
                 aria-label={`${group.label}: ${group.value} ${group.value === 1 ? "student" : "students"}. Open group.`}
                 onClick={() => onSegmentClick({
                   groupKind: group.groupKind,
@@ -970,6 +1035,7 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
                   students: group.students,
                 })}
                 onKeyDown={(e) => handleGroupKeyDown(e, group)}
+                {...hoverHandlers}
                 style={{ "--composition-row-delay": `${index * 55}ms` } as CSSProperties}
               >
                 {rowContent}
@@ -977,9 +1043,11 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
             ) : (
               <div
                 key={`${group.groupKind}-${group.tag}`}
-                className="viz-composition__row"
+                className={rowClass}
                 data-testid={`viz-composition-row-${group.groupKind}-${group.tag}`}
+                data-pair-key={pairKey}
                 aria-label={`${group.label}: ${group.value} ${group.value === 1 ? "student" : "students"}.`}
+                {...hoverHandlers}
                 style={{ "--composition-row-delay": `${index * 55}ms` } as CSSProperties}
               >
                 {rowContent}
@@ -1000,9 +1068,54 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
             {students.length} students · {ealTotal} EAL · {langCount} languages
           </span>
         </div>
-        <div className="viz-composition__stats" aria-hidden="true">
-          <span>{supportGroups.length} need groups</span>
-          {topNeed ? <span>{topNeed.label} leads</span> : null}
+        {/* Audit #21: the old `N NEED GROUPS` / `LEADS` chips read as
+            ambient metadata but were actually inviting a click. Promote
+            them to labeled action buttons with verb+noun phrasing. */}
+        <div className="viz-composition__stats">
+          {supportGroups.length > 0 && onSegmentClick ? (
+            <button
+              type="button"
+              className="viz-composition__header-action"
+              aria-label={`View ${supportGroups.length} need ${supportGroups.length === 1 ? "group" : "groups"}`}
+              data-testid="viz-composition-view-needs"
+              onClick={() =>
+                onSegmentClick({
+                  groupKind: "support_cluster",
+                  tag: "all",
+                  label: "All need groups",
+                  students: students.filter(
+                    (s) => (s.support_tags ?? []).length > 0,
+                  ),
+                })
+              }
+            >
+              View {supportGroups.length} need {supportGroups.length === 1 ? "group" : "groups"}
+            </button>
+          ) : supportGroups.length > 0 ? (
+            <span className="viz-composition__header-caption">
+              {supportGroups.length} need {supportGroups.length === 1 ? "group" : "groups"}
+            </span>
+          ) : null}
+          {topNeed && onSegmentClick ? (
+            <button
+              type="button"
+              className="viz-composition__header-action"
+              aria-label={`View ${topNeed.label.toLowerCase()} leads`}
+              data-testid="viz-composition-view-top-need"
+              onClick={() =>
+                onSegmentClick({
+                  groupKind: topNeed.groupKind,
+                  tag: topNeed.tag,
+                  label: `${topNeed.label} leads`,
+                  students: topNeed.students,
+                })
+              }
+            >
+              View {topNeed.label.toLowerCase()} leads
+            </button>
+          ) : topNeed ? (
+            <span className="viz-composition__header-caption">{topNeed.label} leads</span>
+          ) : null}
         </div>
       </div>
       <div className="viz-composition__body">
