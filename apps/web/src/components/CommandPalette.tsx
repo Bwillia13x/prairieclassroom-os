@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import type { PaletteEntry } from "../hooks/usePaletteEntries";
 import "./CommandPalette.css";
@@ -8,6 +8,12 @@ interface Props {
   onClose: () => void;
   entries: PaletteEntry[];
 }
+
+const KIND_HEADER: Record<PaletteEntry["kind"], string> = {
+  panel: "PANELS",
+  classroom: "CLASSROOMS",
+  action: "ACTIONS",
+};
 
 const RECENTS_KEY = "prairieclassroom.palette.recents";
 const MAX_RECENTS = 5;
@@ -114,35 +120,50 @@ export default function CommandPalette({ open, onClose, entries }: Props) {
           {filtered.length === 0 ? (
             <li className="command-palette__empty">No matches</li>
           ) : (
-            filtered.slice(0, 40).map((entry, i) => (
-              <li
-                key={entry.id}
-                id={`cp-opt-${entry.id}`}
-                role="option"
-                aria-selected={i === activeIdx}
-                className={`command-palette__item command-palette__item--${entry.kind}${i === activeIdx ? " command-palette__item--active" : ""}`}
-                onMouseEnter={() => setActiveIdx(i)}
-                onClick={() => {
-                  entry.onSelect();
-                  saveRecent(entry.id);
-                  onClose();
-                }}
-              >
-                <span className="command-palette__kind">{entry.kind}</span>
-                <span className="command-palette__label">{entry.label}</span>
-                <span className="command-palette__meta">
-                  {entry.group && <span className="command-palette__group">{entry.group}</span>}
-                  {entry.shortcut && (
-                    <kbd
-                      className="command-palette__shortcut"
-                      aria-label={`Keyboard shortcut ${entry.shortcut}`}
-                    >
-                      {entry.shortcut}
-                    </kbd>
-                  )}
-                </span>
-              </li>
-            ))
+            filtered.slice(0, 40).reduce<ReactElement[]>((acc, entry, i, arr) => {
+              const prevKind = i === 0 ? null : arr[i - 1].kind;
+              if (entry.kind !== prevKind) {
+                acc.push(
+                  <li
+                    key={`hdr-${entry.kind}`}
+                    className="command-palette__group-header"
+                    role="presentation"
+                  >
+                    {KIND_HEADER[entry.kind]}
+                  </li>,
+                );
+              }
+              acc.push(
+                <li
+                  key={entry.id}
+                  id={`cp-opt-${entry.id}`}
+                  role="option"
+                  aria-selected={i === activeIdx}
+                  className={`command-palette__item command-palette__item--${entry.kind}${i === activeIdx ? " command-palette__item--active" : ""}`}
+                  onMouseEnter={() => setActiveIdx(i)}
+                  onClick={() => {
+                    entry.onSelect();
+                    saveRecent(entry.id);
+                    onClose();
+                  }}
+                >
+                  <span className="command-palette__kind">{entry.kind}</span>
+                  <span className="command-palette__label">{entry.label}</span>
+                  <span className="command-palette__meta">
+                    {entry.group && <span className="command-palette__group">{entry.group}</span>}
+                    {entry.shortcut && (
+                      <kbd
+                        className="command-palette__shortcut"
+                        aria-label={`Keyboard shortcut ${entry.shortcut}`}
+                      >
+                        {entry.shortcut}
+                      </kbd>
+                    )}
+                  </span>
+                </li>,
+              );
+              return acc;
+            }, [])
           )}
         </ul>
         <footer className="command-palette__footer">

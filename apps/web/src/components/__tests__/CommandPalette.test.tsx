@@ -99,4 +99,22 @@ describe("CommandPalette", () => {
     render(<CommandPalette open={true} onClose={() => {}} entries={makeEntries()} />);
     expect(screen.getByText(/jump to any panel/i)).toBeInTheDocument();
   });
+
+  it("renders Space-Mono ALL CAPS section headers between kind transitions", () => {
+    const entries: PaletteEntry[] = [
+      { kind: "panel", id: "p1", label: "Today", keywords: "today", onSelect: vi.fn() },
+      { kind: "panel", id: "p2", label: "Differentiate", keywords: "diff", onSelect: vi.fn() },
+      { kind: "classroom", id: "c1", label: "Demo Grade 3-4", keywords: "demo", onSelect: vi.fn() },
+      { kind: "action", id: "a1", label: "Draft family message", keywords: "draft", onSelect: vi.fn() },
+    ];
+    const { container } = render(<CommandPalette open={true} onClose={() => {}} entries={entries} />);
+    const headers = Array.from(
+      container.querySelectorAll<HTMLLIElement>("li.command-palette__group-header"),
+    );
+    expect(headers.length).toBe(3);
+    expect(headers.map((h) => h.textContent)).toEqual(["PANELS", "CLASSROOMS", "ACTIONS"]);
+    headers.forEach((h) => {
+      expect(h.getAttribute("role")).toBe("presentation");
+    });
+  });
 });

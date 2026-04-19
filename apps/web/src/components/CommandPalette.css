@@ -132,6 +132,17 @@
   text-align: center;
 }
 
+.command-palette__group-header {
+  list-style: none;
+  padding: 12px 16px 4px;
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  opacity: 0.45;
+  text-transform: uppercase;
+  pointer-events: none;
+}
+
 @keyframes cp-fade {
   from {
     opacity: 0;
