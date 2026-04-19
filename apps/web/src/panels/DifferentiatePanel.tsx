@@ -182,6 +182,7 @@ export default function DifferentiatePanel() {
       />
 
       <WorkspaceLayout
+        splitState={result ? "output" : "input"}
         rail={(
           <>
             <ContextualHint

@@ -858,16 +858,55 @@ label.form-label {
   gap: var(--space-4);
 }
 
+/* Workspace split-panel contract (Workstream D).
+   ------------------------------------------------------------------
+   The WorkspaceLayout component owns this contract. Two attributes
+   drive responsive behavior:
+
+   - data-layout="split" (default) | "single"
+       "split"  renders rail + canvas side-by-side at >=960px and
+                stacks below. "single" forces a single column at every
+                width and skips the sticky rail (rail still renders in
+                document order, above the canvas). TodayPanel does not
+                yet use WorkspaceLayout; when it adopts it, "single" is
+                the safe starting point until a rail/canvas split is
+                designed for that surface.
+
+   - data-split-state="input" (default) | "output"
+       Only takes effect when data-layout="split" at >=960px.
+       "input"  widens the rail (~42%) so form-driven intake breathes.
+       "output" narrows the rail (~30%) so the generated canvas
+                dominates once a result is rendered. Per-panel
+                adoption is opt-in (see DifferentiatePanel for the
+                pilot). Transitions in 200ms ease-out.
+
+   Below 960px the layout always collapses to a single column,
+   regardless of these attributes. The 960px breakpoint is
+   intentionally aligned with the existing collapse point used
+   elsewhere in this file.
+*/
 .workspace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--panel-gap);
   align-items: start;
+  transition: grid-template-columns 200ms ease-out;
 }
 
 @media (min-width: 960px) {
-  .workspace-layout {
-    grid-template-columns: clamp(300px, 34%, 380px) minmax(0, 1fr);
+  /* Default split state ("input"): rail biased wider for form intake. */
+  .workspace-layout[data-layout="split"] {
+    grid-template-columns: clamp(340px, 42%, 480px) minmax(0, 1fr);
+  }
+
+  /* Output state: canvas dominates once a result is rendered. */
+  .workspace-layout[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: clamp(280px, 30%, 360px) minmax(0, 1fr);
+  }
+
+  /* Single-column override: force one column at every width. */
+  .workspace-layout[data-layout="single"] {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -883,12 +922,18 @@ label.form-label {
 }
 
 @media (min-width: 960px) {
-  .workspace-rail {
+  .workspace-layout[data-layout="split"] > .workspace-rail {
     position: sticky;
     top: calc(var(--shell-sticky-offset, 7rem) + var(--space-3));
     max-height: max(20rem, calc(100dvh - var(--shell-sticky-offset, 7rem) - var(--space-6)));
     overflow-y: auto;
     scrollbar-width: thin;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace-layout {
+    transition: none;
   }
 }
 
@@ -1229,17 +1274,10 @@ label.form-label {
   border-top-color: var(--color-text-accent);
 }
 
-@media (min-width: 960px) {
-  .workspace-layout {
-    grid-template-columns: minmax(0, var(--rail-width)) minmax(0, 1fr);
-  }
-
-  .workspace-rail {
-    position: sticky;
-    top: var(--shell-sticky-offset);
-    align-self: start;
-  }
-}
+/* Note: prior duplicate `.workspace-layout` / `.workspace-rail` rules
+   at >=960px were removed in Workstream D — the canonical contract
+   now lives in the consolidated block above (data-layout +
+   data-split-state attributes). */
 
 @media (max-width: 600px) {
   .btn--primary,
