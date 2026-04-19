@@ -1263,8 +1263,8 @@
 }
 
 .shell-classroom-pill__switcher-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-md);
+  height: var(--icon-md);
   opacity: 0.75;
 }
 
@@ -1272,12 +1272,12 @@
 .shell-bar__actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-2-5);
 }
 .shell-bar__divider {
   display: inline-block;
   width: 1px;
-  height: 20px;
+  height: var(--icon-lg);
   background: currentColor;
   opacity: 0.18;
   flex-shrink: 0;
@@ -1357,9 +1357,9 @@
   box-shadow: none;
   padding: var(--space-3) var(--space-4);
   font-family: var(--font-mono);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
+  font-size: 13px; /* no exact token: between --text-xs (12px) and --text-sm (14px) */
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.06em; /* no matching --tracking-* token */
   text-transform: uppercase;
   color: var(--color-text-tertiary);
   position: relative;
@@ -1399,19 +1399,19 @@
 
 .shell-nav__badge {
   position: absolute;
-  top: 4px;
-  right: 4px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
+  top: var(--space-1);
+  right: var(--space-1);
+  min-width: var(--icon-md);
+  height: var(--icon-md);
+  padding: 0 var(--space-1);
   font-family: var(--font-mono);
-  font-size: 10px;
-  line-height: 16px;
+  font-size: 10px; /* no token: smaller than --text-2xs (11px) */
+  line-height: var(--icon-md);
   text-align: center;
-  border-radius: 999px;
-  font-weight: 500;
+  border-radius: var(--radius-pill);
+  font-weight: var(--font-weight-medium);
   box-shadow: none;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.04em; /* no matching --tracking-* token */
 }
 
 .shell-nav__badge--alert {
@@ -1447,9 +1447,9 @@
   box-shadow: none;
   padding: var(--space-2) var(--space-3);
   font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.1em;
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.1em; /* no matching --tracking-* token */
   text-transform: uppercase;
   color: var(--color-text-tertiary);
   opacity: 0.7;
@@ -1460,7 +1460,7 @@
   background: transparent;
   border-bottom: 2px solid var(--color-text);
   opacity: 1;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .shell-nav__tab:hover {
@@ -1726,7 +1726,7 @@
 }
 .shell-classroom-panel {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% + var(--space-2));
   left: 0;
   right: auto;
   width: max(320px, 100%);
@@ -1813,7 +1813,7 @@
 }
 
 .theme-toggle__icon {
-  width: 18px;
+  width: 18px; /* no token at 18px (between --icon-md 16px and --icon-lg 20px) */
   height: 18px;
 }
 
@@ -2174,27 +2174,27 @@ textarea {
 }
 
 .shell-bar__palette-btn {
-  gap: 8px;
+  gap: var(--space-2);
 }
 .shell-bar__palette-btn-label {
   font-family: var(--font-sans);
-  font-size: 13px;
-  letter-spacing: 0.02em;
+  font-size: 13px; /* no exact token: between --text-xs (12px) and --text-sm (14px) */
+  letter-spacing: 0.02em; /* no matching --tracking-* token */
 }
 .shell-bar__palette-btn-kbd {
   font-family: var(--font-mono);
-  font-size: 11px;
-  padding: 2px 6px;
+  font-size: var(--text-2xs);
+  padding: 2px 6px; /* no token at 2px or 6px */
   border: 1px solid currentColor;
-  border-radius: 4px;
+  border-radius: 4px; /* no token at 4px (--radius-btn-sm is 6px) */
   opacity: 0.7;
 }
 .app-help-btn--icon {
-  width: 32px;
+  width: 32px; /* no token at 32px (--control-h-sm is 36px) */
   height: 32px;
   padding: 0;
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: var(--text-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
