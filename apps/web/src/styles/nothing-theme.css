@@ -1772,6 +1772,12 @@
   color: var(--color-text) !important;
 }
 
+.theme-toggle__icon {
+  width: 18px;
+  height: 18px;
+}
+.theme-toggle-label { display: none; }
+
 .btn--danger,
 .toast-item--error,
 .workspace-page .error-banner {
