@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
@@ -487,5 +487,29 @@ describe("TodayPanel", () => {
     expect(
       screen.queryByText(/could not be loaded/i),
     ).not.toBeInTheDocument();
+  });
+
+  it("renders Open Forecast in a dedicated footer row, not inside the peak-block callout (audit #28)", async () => {
+    renderTodayPanel(makeSnapshot());
+    const footer = await screen.findByTestId("risk-windows-footer");
+    const openForecast = within(footer).getByRole("button", {
+      name: /open forecast/i,
+    });
+    expect(openForecast).toBeInTheDocument();
+    // The peak-block button must not wrap the Open Forecast CTA.
+    const peak = screen.getByRole("button", {
+      name: /open peak window details/i,
+    });
+    expect(peak.contains(openForecast)).toBe(false);
+  });
+
+  it("wraps the timeline in a horizontally-scrollable container so it doesn't clip (audit #27)", async () => {
+    renderTodayPanel(makeSnapshot());
+    await screen.findByTestId("risk-windows-footer");
+    // The wrapper class exists; CSS handles the overflow rule.
+    const wrappers = document.querySelectorAll(
+      ".risk-windows__timeline-scroll",
+    );
+    expect(wrappers.length).toBeGreaterThan(0);
   });
 });

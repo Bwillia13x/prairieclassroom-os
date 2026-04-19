@@ -381,7 +381,10 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
 
   return (
     <Card variant="flat" className="today-forecast-section risk-windows">
-      <Card.Body className="risk-windows__body">
+      <Card.Body
+        className="risk-windows__body"
+        data-testid="risk-windows-body"
+      >
         <div className="risk-windows__readout" aria-label={`${model.highCount} high risk windows`}>
           <p className="risk-windows__eyebrow">Risk Windows</p>
           <div className="risk-windows__metric">
@@ -392,39 +395,36 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
         </div>
 
         <div className="risk-windows__content">
-          <div className="risk-windows__topline">
-            <div className="risk-windows__peak-group">
-              <p className="risk-windows__label">Peak block</p>
-              {model.peakBlock ? (
-                <button
-                  type="button"
-                  className={`risk-windows__peak risk-windows__peak--${model.peakBlock.level}`}
-                  onClick={() => onBlockClick(model.peakIndex)}
-                  aria-label={`Open peak window details for ${model.peakBlock.activity} at ${model.peakBlock.time_slot}`}
-                >
-                  <span className="risk-windows__peak-time">{model.peakBlock.time_slot}</span>
-                  <span className="risk-windows__peak-level">{model.peakBlock.level}</span>
-                </button>
-              ) : (
-                <p className="risk-windows__empty">Forecast ready</p>
-              )}
-            </div>
-            <ActionButton
-              size="sm"
-              variant="secondary"
-              onClick={onOpenForecast}
-              className="risk-windows__open"
-            >
-              Open Forecast
-            </ActionButton>
+          {/* Audit #28: the peak-block callout is its own row — no CTA
+              embedded alongside it. The "Open Forecast" button moves
+              to a dedicated footer below so its target is unambiguous. */}
+          <div className="risk-windows__peak-group">
+            <p className="risk-windows__label">Peak block</p>
+            {model.peakBlock ? (
+              <button
+                type="button"
+                className={`risk-windows__peak risk-windows__peak--${model.peakBlock.level}`}
+                onClick={() => onBlockClick(model.peakIndex)}
+                aria-label={`Open peak window details for ${model.peakBlock.activity} at ${model.peakBlock.time_slot}`}
+              >
+                <span className="risk-windows__peak-time">{model.peakBlock.time_slot}</span>
+                <span className="risk-windows__peak-level">{model.peakBlock.level}</span>
+              </button>
+            ) : (
+              <p className="risk-windows__empty">Forecast ready</p>
+            )}
           </div>
 
           <p className="today-forecast-summary">{getForecastSummary(forecast.overall_summary)}</p>
 
-          <ForecastTimeline
-            blocks={forecast.blocks}
-            onBlockClick={onBlockClick}
-          />
+          {/* Audit #27: timeline lives in its own horizontally-scrollable
+              container so narrow viewports don't clip the right edge. */}
+          <div className="risk-windows__timeline-scroll">
+            <ForecastTimeline
+              blocks={forecast.blocks}
+              onBlockClick={onBlockClick}
+            />
+          </div>
 
           {model.watchBlocks.length > 0 ? (
             <div className="risk-windows__ledger" aria-label="Risk window watch list">
@@ -447,6 +447,15 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
             </div>
           ) : null}
         </div>
+
+        <footer
+          className="risk-windows__footer"
+          data-testid="risk-windows-footer"
+        >
+          <ActionButton size="sm" variant="secondary" onClick={onOpenForecast}>
+            Open Forecast
+          </ActionButton>
+        </footer>
       </Card.Body>
     </Card>
   );

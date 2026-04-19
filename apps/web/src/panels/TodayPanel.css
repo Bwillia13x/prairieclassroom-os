@@ -524,6 +524,10 @@
   min-width: 0;
 }
 
+/* Audit #28: the old `.risk-windows__topline` wrapper bundled the peak-
+   block button and the Open Forecast CTA into a single row. The CTA
+   now lives in a dedicated `.risk-windows__footer` below, so this rule
+   is kept only for any lingering usage. */
 .risk-windows__topline {
   display: flex;
   align-items: flex-start;
@@ -532,6 +536,25 @@
 }
 
 .risk-windows__peak-group { min-width: 0; }
+
+/* Audit #27: horizontal-scroll container so the timeline never clips
+   on narrow viewports. */
+.risk-windows__timeline-scroll {
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+/* Audit #28: dedicated footer row for the Open Forecast CTA. Spans
+   the full width of the two-column body grid so it's unambiguously a
+   card-level action, not peak-block metadata. */
+.risk-windows__footer {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--color-border);
+  margin-top: var(--space-3);
+}
 
 .risk-windows__label {
   margin: 0 0 var(--space-2);
