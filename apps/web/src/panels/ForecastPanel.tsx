@@ -12,7 +12,6 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -152,15 +151,9 @@ export default function ForecastPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="forecast" />}
-                title="No forecast yet"
-                description="Run the forecast once the classroom and any day-specific notes are ready. The canvas will surface the highest-risk blocks first."
-                steps={[
-                  "Confirm the active classroom in the header pill.",
-                  "Optionally add day-specific context in the notes field.",
-                  "Choose a block structure (schedule-driven or custom).",
-                  "Press Generate forecast. Results land here as a timeline, heatmap, and trend sparkline.",
-                ]}
+                variant="minimal"
+                cue="No forecast yet."
+                hint="Run the forecast once the classroom and any day-specific notes are ready."
               />
             ) : null}
             {result ? (

@@ -13,7 +13,6 @@ import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
@@ -256,15 +255,9 @@ export default function FamilyMessagePanel({ prefill }: Props) {
             ) : null}
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="message" />}
-                title="No draft yet"
-                description="Select one or more students, choose the message type, and add any important context before drafting."
-                steps={[
-                  "Pick one or more students from the roster.",
-                  "Choose the message type (update, concern, celebration, or follow-up).",
-                  "Add any classroom context the family should know.",
-                  "Press Draft message. The draft lands here for your review before any send.",
-                ]}
+                variant="minimal"
+                cue="No draft yet."
+                hint="Select students and a message type on the left; the draft lands here for your review before any send."
               />
             ) : null}
             {displayResult ? (

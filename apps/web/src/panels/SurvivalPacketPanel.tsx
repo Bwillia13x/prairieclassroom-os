@@ -11,7 +11,6 @@ import ContextualHint from "../components/ContextualHint";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
@@ -164,14 +163,9 @@ export default function SurvivalPacketPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="packet" />}
-                title="No packet yet"
-                description="Select a classroom and generate a full survival packet for tomorrow's substitute."
-                steps={[
-                  "Confirm the active classroom in the header pill.",
-                  "Review today's schedule and any pending interventions before generating.",
-                  "Press Generate packet. The canvas will build the complete substitute-ready document — schedule, student watchpoints, routines, and emergency contacts.",
-                ]}
+                variant="minimal"
+                cue="No packet yet."
+                hint="Generate a full survival packet for tomorrow's substitute from the form on the left."
               />
             ) : null}
             {result ? (

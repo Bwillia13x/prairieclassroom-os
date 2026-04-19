@@ -10,7 +10,6 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -293,9 +292,9 @@ export default function EALoadPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="forecast" />}
-                title="No EA load profile yet"
-                description="Run the load balancer once tomorrow's schedule, EA coverage, and any day-specific notes are ready. The canvas will show each block and flag sustained high-load sequences."
+                variant="minimal"
+                cue="No EA load profile yet."
+                hint="Run the load balancer once tomorrow's schedule and EA coverage are ready."
               />
             ) : null}
             {result ? (

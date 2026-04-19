@@ -375,36 +375,6 @@
   color: var(--color-text-danger);
 }
 
-.workspace-page .empty-state-card,
-.workspace-page [class*="empty-state-card"] {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  box-shadow: none;
-  padding: var(--space-6);
-  text-align: left;
-}
-
-.workspace-page .empty-state-card [class*="__title"],
-.workspace-page .empty-state-card h2,
-.workspace-page .empty-state-card h3 {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.workspace-page .empty-state-card [class*="__description"],
-.workspace-page .empty-state-card p {
-  color: var(--color-text-secondary);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  line-height: 1.5;
-  max-width: 62ch;
-}
-
 /* ---------- DrillDownDrawer (can open on any panel) ---------- */
 
 .drill-down-drawer [class*="__surface"] {
@@ -946,40 +916,10 @@
   border-color: var(--color-text);
 }
 
-/* Empty-state previews (DifferentiateEmptyState, generic patterns).
-   Flatten chrome; titles go display; body copy measured. */
-.workspace-page [class*="empty-state"],
-[class*="empty-state"] {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  box-shadow: none;
-}
-
-.workspace-page [class*="empty-state"] [class*="__title"],
-[class*="empty-state"] [class*="__title"],
-.workspace-page [class*="empty-state__title"],
-[class*="empty-state__title"] {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.workspace-page [class*="empty-state"] [class*="__description"],
-.workspace-page [class*="empty-state"] [class*="__body"] {
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  line-height: 1.55;
-  max-width: 62ch;
-}
-
-/* Numbered-step markers (1/2/3 circular indicators in empty states
-   and onboarding). Convert from filled circles to flat bordered
-   tabular numerals. */
+/* Numbered-step markers (1/2/3 circular indicators in onboarding flows).
+   Convert from filled circles to flat bordered tabular numerals.
+   Note: empty-state numbered steps were removed in Workstream G;
+   this rule remains for any other onboarding step indicators. */
 .workspace-page [class*="step-marker"],
 .workspace-page [class*="__step-number"],
 .workspace-page [class*="step__number"],

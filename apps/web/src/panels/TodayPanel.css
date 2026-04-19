@@ -2042,38 +2042,6 @@ html {
   color: var(--color-text-danger);
 }
 
-/* ---------- EmptyStateCard ---------- */
-
-.today-panel .empty-state-card,
-.today-panel [class*="empty-state-card"] {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  box-shadow: none;
-  padding: var(--space-6);
-  text-align: left;
-}
-
-.today-panel .empty-state-card [class*="__title"],
-.today-panel .empty-state-card h2,
-.today-panel .empty-state-card h3 {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.today-panel .empty-state-card [class*="__description"],
-.today-panel .empty-state-card p {
-  color: var(--color-text-secondary);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  line-height: 1.5;
-  max-width: 62ch;
-}
-
 /* ---------- DrillDownDrawer (opens on click) ---------- */
 
 .today-panel ~ .drill-down-drawer,

@@ -85,7 +85,7 @@ vi.mock("../../components/WorkspaceLayout", () => ({
     </div>
   ),
 }));
-vi.mock("../../components/DifferentiateEmptyState", () => ({
+vi.mock("../../components/EmptyStateCard", () => ({
   default: () => <div data-testid="empty-state" />,
 }));
 vi.mock("../../components/ErrorBanner", () => ({

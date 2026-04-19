@@ -13,7 +13,6 @@ import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -205,14 +204,9 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
             ) : null}
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="plan" />}
-                title="No plan yet"
-                description="Use the reflection rail to capture the day. The result canvas will fill with tomorrow's priorities, prep actions, and family follow-through."
-                steps={[
-                  "Capture what worked and what slipped in today's reflection rail.",
-                  "Flag any students who need targeted support tomorrow.",
-                  "Press Generate plan. The canvas will organize priorities, prep actions, and family follow-through.",
-                ]}
+                variant="minimal"
+                cue="No plan yet."
+                hint="Capture today's reflection on the left; tomorrow's priorities, prep actions, and follow-through land here."
               />
             ) : null}
             {displayResult ? (

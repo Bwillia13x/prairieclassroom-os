@@ -10,7 +10,6 @@ import ForecastTimeline from "../components/ForecastTimeline";
 import SectionSkeleton from "../components/SectionSkeleton";
 import PageIntro from "../components/PageIntro";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import SectionIcon from "../components/SectionIcon";
 import HealthBar from "../components/HealthBar";
@@ -390,11 +389,9 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
         {result && !result.latest_plan && !result.latest_forecast && result.debt_register.items.length === 0 ? (
           <EmptyStateCard
-            icon={<EmptyStateIllustration name="prairie" />}
-            title="Fresh start"
-            description="No classroom debt or prior planning signal yet. Start with tomorrow planning or log an intervention so the command center has something to track."
-            actionLabel="Build Tomorrow Plan"
-            onAction={() => onTabChange("tomorrow-plan")}
+            variant="minimal"
+            cue="Fresh start — no classroom debt or prior planning signal yet."
+            hint="Build a Tomorrow Plan or log an intervention to give the command center something to track."
           />
         ) : null}
       </div>

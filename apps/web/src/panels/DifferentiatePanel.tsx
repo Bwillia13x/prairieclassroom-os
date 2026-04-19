@@ -11,7 +11,7 @@ import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
 import ContextualHint from "../components/ContextualHint";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
-import DifferentiateEmptyState from "../components/DifferentiateEmptyState";
+import EmptyStateCard from "../components/EmptyStateCard";
 import RecentRunsChipRow from "../components/RecentRunsChipRow";
 import { useRecentRuns } from "../hooks/useRecentRuns";
 import ErrorBanner from "../components/ErrorBanner";
@@ -158,11 +158,6 @@ export default function DifferentiatePanel() {
     resultRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
-  function focusIntake() {
-    intakeRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    intakeRef.current?.querySelector<HTMLElement>("select, input, textarea, button")?.focus();
-  }
-
   return (
     <section className="workspace-page">
       <PageIntro
@@ -212,14 +207,7 @@ export default function DifferentiatePanel() {
               <StreamingIndicator label="Generating lesson variants" onCancel={cancel} />
             ) : null}
             {!loading && result === null && !error ? (
-              <DifferentiateEmptyState
-                onStart={focusIntake}
-                classroomSummary={profile ? {
-                  totalStudents: profile.students.length,
-                  ealStudents: profile.students.filter((s) => s.eal_flag).length,
-                  gradeBand: profile.grade_band,
-                } : undefined}
-              />
+              <EmptyStateCard variant="preview" label="Variant lane preview" />
             ) : null}
             {result ? (
               <>

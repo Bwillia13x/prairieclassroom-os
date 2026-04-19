@@ -13,7 +13,6 @@ import { InterventionTimeline, FollowUpSuccessRate } from "../components/DataVis
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -193,9 +192,9 @@ export default function InterventionPanel({ prefill }: Props) {
             ) : null}
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="intervention" />}
-                title="No intervention logged"
-                description="Select students, capture the observation, and the note will land in a structured record you can revisit later."
+                variant="minimal"
+                cue="Select a student to begin."
+                hint="Capture the observation in the form on the left; the structured note will land here."
               />
             ) : null}
             {displayResult ? (

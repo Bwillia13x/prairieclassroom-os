@@ -38,7 +38,6 @@ vi.mock("../../components/WorkspaceLayout", () => ({
   ),
 }));
 vi.mock("../../components/EmptyStateCard", () => ({ default: () => <div /> }));
-vi.mock("../../components/EmptyStateIllustration", () => ({ default: () => <div /> }));
 vi.mock("../../components/ErrorBanner", () => ({ default: () => <div /> }));
 vi.mock("../../components/ResultBanner", () => ({ default: () => <div /> }));
 vi.mock("../../components/DataVisualizations", () => ({ ComplexityHeatmap: () => <div /> }));

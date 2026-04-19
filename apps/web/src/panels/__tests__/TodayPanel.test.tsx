@@ -277,8 +277,12 @@ describe("TodayPanel", () => {
       }),
     );
 
-    expect(await screen.findByText("Fresh start")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Build Tomorrow Plan" })).toBeInTheDocument();
+    // Workstream G: empty-state CTAs were removed in favor of a quiet
+    // minimal cue. The "Build Tomorrow Plan" button now lives only in
+    // the day's action surface, not inside the empty canvas.
+    expect(
+      await screen.findByText(/fresh start/i),
+    ).toBeInTheDocument();
   });
 
   it("suppresses the time suggestion when it duplicates the primary triage action", async () => {

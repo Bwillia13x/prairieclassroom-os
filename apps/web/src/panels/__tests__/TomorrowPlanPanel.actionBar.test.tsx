@@ -107,9 +107,6 @@ vi.mock("../../components/WorkspaceLayout", () => ({
 vi.mock("../../components/EmptyStateCard", () => ({
   default: () => <div data-testid="empty-state-card" />,
 }));
-vi.mock("../../components/EmptyStateIllustration", () => ({
-  default: () => <div data-testid="empty-state-illustration" />,
-}));
 vi.mock("../../components/ErrorBanner", () => ({
   default: () => <div data-testid="error-banner" />,
 }));

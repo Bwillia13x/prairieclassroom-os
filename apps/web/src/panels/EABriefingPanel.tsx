@@ -10,7 +10,6 @@ import SkeletonLoader from "../components/SkeletonLoader";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
@@ -144,14 +143,9 @@ export default function EABriefingPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="briefing" />}
-                title="No briefing yet"
-                description="Select a classroom and optionally add the EA's name, then generate the coordination document for today."
-                steps={[
-                  "Confirm the active classroom in the header pill.",
-                  "Optionally add the EA's name and any coordination notes.",
-                  "Press Generate briefing. The canvas will surface today's schedule, priority students, and shared watchpoints.",
-                ]}
+                variant="minimal"
+                cue="No briefing yet."
+                hint="Generate today's EA coordination document from the form on the left."
               />
             ) : null}
             {result ? (

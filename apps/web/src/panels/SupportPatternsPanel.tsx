@@ -11,7 +11,6 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
@@ -170,15 +169,27 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="patterns" />}
-                title="No patterns analyzed yet"
-                description="Select a classroom, optionally filter by student, and run the analysis to surface recurring themes and follow-up gaps."
-                steps={[
-                  "Confirm the active classroom in the header pill.",
-                  "Optionally narrow the scope to a single student.",
-                  "Press Analyze patterns. Results land here grouped by theme, with follow-up gaps surfaced explicitly.",
-                  "Click any theme to drill into its underlying interventions.",
-                ]}
+                variant="sample"
+                label="Sample pattern report"
+                sampleNode={(
+                  <section className="pattern-section pattern-section--themes" aria-hidden="true">
+                    <h3>Recurring Themes</h3>
+                    <div className="pattern-card">
+                      <div className="pattern-card-label">
+                        Self-regulation cues at transitions
+                        <span className="pattern-card-tag">
+                          {" · "}Student A, Student C · 4 records
+                        </span>
+                      </div>
+                      <p className="pattern-evidence">
+                        "Asked for a brain-break before math; calmed within 90 seconds."
+                      </p>
+                      <p className="pattern-evidence">
+                        "Used the regulation corner during the read-aloud transition."
+                      </p>
+                    </div>
+                  </section>
+                )}
               />
             ) : null}
             {result ? (
