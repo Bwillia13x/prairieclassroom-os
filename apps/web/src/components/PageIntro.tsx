@@ -71,7 +71,24 @@ export default function PageIntro({
   description,
   dynamicContext,
   sectionTone,
+  badges,
+  breadcrumb,
+  sectionIcon,
 }: Props) {
+  if (import.meta.env.DEV) {
+    const dropped: string[] = [];
+    if (badges?.length) dropped.push("badges");
+    if (breadcrumb) dropped.push("breadcrumb");
+    if (sectionIcon) dropped.push("sectionIcon");
+    if (dropped.length) {
+      console.warn(
+        `[PageIntro] Ignoring deprecated prop(s): ${dropped.join(", ")}. ` +
+          `Static chip row, breadcrumb, and section icon were removed in audit ` +
+          `Workstream C. Use \`dynamicContext\` for genuinely dynamic context. ` +
+          `Caller: "${eyebrow} / ${title}"`,
+      );
+    }
+  }
   const chips = dynamicContext ?? [];
   return (
     <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}`}>
