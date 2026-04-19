@@ -145,3 +145,17 @@ describe("RoleContextPill", () => {
     expect(screen.queryByRole("menu", { name: /classroom role/i })).not.toBeInTheDocument();
   });
 });
+
+describe("RoleContextPill option visuals (radio dot + ACTIVE tag)", () => {
+  it("renders a radio dot per option and an ACTIVE tag on the selected role", async () => {
+    const user = userEvent.setup();
+    renderWith("teacher");
+    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    const teacherOpt = screen.getByRole("menuitemradio", { name: /Teacher/ });
+    expect(teacherOpt.querySelector(".role-pill__option-radio")).not.toBeNull();
+    expect(teacherOpt.querySelector(".role-pill__option-active-tag")?.textContent).toMatch(/active/i);
+    const eaOpt = screen.getByRole("menuitemradio", { name: /^EA/ });
+    expect(eaOpt.querySelector(".role-pill__option-radio")).not.toBeNull();
+    expect(eaOpt.querySelector(".role-pill__option-active-tag")).toBeNull();
+  });
+});

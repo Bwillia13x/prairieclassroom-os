@@ -201,6 +201,20 @@ export function getTabBadgeCount(tab: ActiveTab, debtCounts: Record<string, numb
   }
 }
 
+export type TabBadgeTone = "alert" | "count";
+
+export function getTabBadgeTone(tab: ActiveTab): TabBadgeTone {
+  switch (tab) {
+    case "family-message":
+    case "log-intervention":
+      return "alert";
+    case "support-patterns":
+      return "count";
+    default:
+      return "count";
+  }
+}
+
 // ─── Undo System ───
 
 export interface UndoAction {

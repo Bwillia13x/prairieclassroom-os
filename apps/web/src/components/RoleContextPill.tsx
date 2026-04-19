@@ -112,9 +112,17 @@ export default function RoleContextPill() {
                 className={`role-pill__option${selected ? " role-pill__option--selected" : ""}`}
                 onClick={() => handleSelect(role)}
               >
-                <span className="role-pill__option-chip" data-role={role} aria-hidden="true" />
+                <span
+                  className={`role-pill__option-radio${selected ? " role-pill__option-radio--on" : ""}`}
+                  aria-hidden="true"
+                />
                 <span className="role-pill__option-copy">
-                  <span className="role-pill__option-label">{ROLE_LABEL[role]}</span>
+                  <span className="role-pill__option-label">
+                    {ROLE_LABEL[role]}
+                    {selected ? (
+                      <span className="role-pill__option-active-tag">[ACTIVE]</span>
+                    ) : null}
+                  </span>
                   <span className="role-pill__option-hint">{ROLE_HINT[role]}</span>
                 </span>
               </button>

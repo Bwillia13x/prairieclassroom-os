@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
+import SectionIcon, { type SectionIconName } from "./SectionIcon";
 
 type Theme = "system" | "light" | "dark";
 
 const STORAGE_KEY = "prairie-theme";
-const ICONS: Record<Theme, string> = { light: "L", dark: "D", system: "A" };
 const LABELS: Record<Theme, string> = { light: "Light", dark: "Dark", system: "Auto" };
 const CYCLE: Theme[] = ["system", "light", "dark"];
+const ICON_NAME: Record<Theme, SectionIconName> = {
+  system: "refresh",
+  light: "sun",
+  dark: "moon",
+};
 
 function loadTheme(): Theme {
   try {
@@ -47,8 +52,7 @@ export default function ThemeToggle() {
       aria-label={`Color theme: ${LABELS[theme]}. Click to change.`}
       title={`Theme: ${LABELS[theme]}`}
     >
-      <span aria-hidden="true">{ICONS[theme]}</span>
-      <span className="theme-toggle-label">{LABELS[theme]}</span>
+      <SectionIcon name={ICON_NAME[theme]} className="theme-toggle__icon" />
     </button>
   );
 }

@@ -6,6 +6,7 @@ import {
   createInitialState,
   getGroupForTab,
   getTabBadgeCount,
+  getTabBadgeTone,
   getVisibleNavGroups,
   getVisibleTabsForGroup,
   getVisibleTabs,
@@ -56,25 +57,6 @@ const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 
 function describeClassroom(classroom: ClassroomProfile) {
   return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
-}
-
-function LockIcon({ locked }: { locked: boolean }) {
-  return (
-    <svg viewBox="0 0 18 18" fill="none" aria-hidden="true">
-      {locked ? (
-        <>
-          <path d="M5.5 8V5.9a3.5 3.5 0 117 0V8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <rect x="4" y="8" width="10" height="7.5" rx="2" stroke="currentColor" strokeWidth="1.5" />
-        </>
-      ) : (
-        <>
-          <path d="M11.5 8V5.9a3.5 3.5 0 00-6.27-2.14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <path d="M6.2 10.1L4.8 8.8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          <rect x="4" y="8" width="10" height="7.5" rx="2" stroke="currentColor" strokeWidth="1.5" />
-        </>
-      )}
-    </svg>
-  );
 }
 
 function renderPanel(
@@ -785,8 +767,8 @@ export default function App() {
                   aria-controls="shell-classroom-panel"
                   disabled={!profile}
                 >
-                  <span className={`shell-classroom-pill__lock${profile?.requires_access_code ? " shell-classroom-pill__lock--locked" : ""}`}>
-                    <LockIcon locked={Boolean(profile?.requires_access_code)} />
+                  <span className="shell-classroom-pill__switcher" aria-hidden="true">
+                    <SectionIcon name="grid" className="shell-classroom-pill__switcher-icon" />
                   </span>
                   <span className="shell-classroom-pill__copy">
                     <span className="shell-classroom-pill__eyebrow">Active classroom</span>
@@ -850,6 +832,7 @@ export default function App() {
 
               <div className="shell-bar__actions">
                 <RoleContextPill />
+                <span className="shell-bar__divider" aria-hidden="true" />
                 <button
                   type="button"
                   className="shell-bar__palette-btn"
@@ -857,7 +840,8 @@ export default function App() {
                   aria-label="Open command palette"
                   title="Command palette (⌘K)"
                 >
-                  <span aria-hidden="true">⌘K</span>
+                  <span className="shell-bar__palette-btn-label">Jump to</span>
+                  <kbd className="shell-bar__palette-btn-kbd" aria-hidden="true">⌘K</kbd>
                 </button>
                 <TomorrowChip
                   notes={state.tomorrowNotes}
@@ -866,7 +850,7 @@ export default function App() {
                 />
                 <ThemeToggle />
                 <button
-                  className="btn btn--ghost app-help-btn"
+                  className="btn btn--ghost app-help-btn app-help-btn--icon"
                   onClick={handleQuickHelpClick}
                   type="button"
                   aria-label={
@@ -880,7 +864,7 @@ export default function App() {
                       : "Replay onboarding tour"
                   }
                 >
-                  Quick Help
+                  <span aria-hidden="true">?</span>
                 </button>
               </div>
             </div>
@@ -943,7 +927,14 @@ export default function App() {
                           type="button"
                         >
                           <span>{TAB_META[tab].label}</span>
-                          {count > 0 ? <span className="shell-nav__badge">{count}</span> : null}
+                          {count > 0 ? (
+                            <span
+                              className={`shell-nav__badge shell-nav__badge--${getTabBadgeTone(tab)}`}
+                              aria-label={`${count} pending`}
+                            >
+                              {count}
+                            </span>
+                          ) : null}
                           {shortcutKey ? (
                             <kbd className="shell-nav__kbd" aria-hidden="true">{shortcutKey}</kbd>
                           ) : null}

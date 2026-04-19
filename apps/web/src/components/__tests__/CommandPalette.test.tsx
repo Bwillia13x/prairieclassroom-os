@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
-import CommandPalette from "../CommandPalette";
+import CommandPalette, { buildPaletteRows } from "../CommandPalette";
 import type { PaletteEntry } from "../../hooks/usePaletteEntries";
 
 function makeEntries(): PaletteEntry[] {
@@ -98,5 +98,45 @@ describe("CommandPalette", () => {
   it("renders a footer hint reinforcing keyboard navigation", () => {
     render(<CommandPalette open={true} onClose={() => {}} entries={makeEntries()} />);
     expect(screen.getByText(/jump to any panel/i)).toBeInTheDocument();
+  });
+
+  it("renders Space-Mono ALL CAPS section headers between kind transitions", () => {
+    const entries: PaletteEntry[] = [
+      { kind: "panel", id: "p1", label: "Today", keywords: "today", onSelect: vi.fn() },
+      { kind: "panel", id: "p2", label: "Differentiate", keywords: "diff", onSelect: vi.fn() },
+      { kind: "classroom", id: "c1", label: "Demo Grade 3-4", keywords: "demo", onSelect: vi.fn() },
+      { kind: "action", id: "a1", label: "Draft family message", keywords: "draft", onSelect: vi.fn() },
+    ];
+    const { container } = render(<CommandPalette open={true} onClose={() => {}} entries={entries} />);
+    const headers = Array.from(
+      container.querySelectorAll<HTMLLIElement>("li.command-palette__group-header"),
+    );
+    expect(headers.length).toBe(3);
+    expect(headers.map((h) => h.textContent)).toEqual(["PANELS", "CLASSROOMS", "ACTIONS"]);
+    headers.forEach((h) => {
+      expect(h.getAttribute("role")).toBe("presentation");
+    });
+  });
+});
+
+describe("buildPaletteRows", () => {
+  it("emits a header before each kind transition and tags entries with their filtered index", () => {
+    const entries: PaletteEntry[] = [
+      { id: "a", kind: "panel", label: "Today", keywords: "today", onSelect: vi.fn() },
+      { id: "b", kind: "panel", label: "Differentiate", keywords: "diff", onSelect: vi.fn() },
+      { id: "c", kind: "classroom", label: "Demo", keywords: "demo", onSelect: vi.fn() },
+    ];
+    const rows = buildPaletteRows(entries);
+    expect(rows.map((r) => (r.type === "header" ? `H:${r.label}` : `E:${r.entry.id}@${r.index}`))).toEqual([
+      "H:PANELS",
+      "E:a@0",
+      "E:b@1",
+      "H:CLASSROOMS",
+      "E:c@2",
+    ]);
+  });
+
+  it("returns an empty array for empty input", () => {
+    expect(buildPaletteRows([])).toEqual([]);
   });
 });

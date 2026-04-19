@@ -1258,13 +1258,30 @@
 }
 
 .shell-classroom-pill__caret,
-.shell-classroom-pill__lock {
+.shell-classroom-pill__switcher {
   color: var(--color-text-tertiary);
+}
+
+.shell-classroom-pill__switcher-icon {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  opacity: 0.75;
 }
 
 /* Right-side action buttons */
 .shell-bar__actions {
-  gap: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+}
+.shell-bar__divider {
+  display: inline-block;
+  width: 1px;
+  height: var(--icon-lg);
+  background: currentColor;
+  opacity: 0.18;
+  flex-shrink: 0;
+  align-self: center;
 }
 
 .shell-bar__actions > button,
@@ -1340,9 +1357,9 @@
   box-shadow: none;
   padding: var(--space-3) var(--space-4);
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-size: 13px; /* no exact token: between --text-xs (12px) and --text-sm (14px) */
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.06em; /* no matching --tracking-* token */
   text-transform: uppercase;
   color: var(--color-text-tertiary);
   position: relative;
@@ -1381,23 +1398,33 @@
 .shell-nav__group--active .shell-nav__group-icon { opacity: 1; }
 
 .shell-nav__badge {
-  background: transparent;
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  padding: 1px 5px;
+  position: absolute;
+  top: var(--space-1);
+  right: var(--space-1);
+  min-width: var(--icon-md);
+  height: var(--icon-md);
+  padding: 0 var(--space-1);
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 10px; /* no token: smaller than --text-2xs (11px) */
+  line-height: var(--icon-md);
+  text-align: center;
+  border-radius: var(--radius-pill);
+  font-weight: var(--font-weight-medium);
   box-shadow: none;
-  margin-left: var(--space-2);
+  letter-spacing: 0.04em; /* no matching --tracking-* token */
 }
 
-.shell-nav__group--active .shell-nav__badge {
-  background: var(--color-text);
-  color: var(--color-surface);
-  border-color: var(--color-text);
+.shell-nav__badge--alert {
+  background: var(--color-alert);
+  color: var(--color-text-on-danger);
+  border: 1px solid transparent;
+}
+
+.shell-nav__badge--count {
+  background: transparent;
+  color: currentColor;
+  border: 1px solid currentColor;
+  opacity: 0.6;
 }
 
 .shell-nav__kbd {
@@ -1413,6 +1440,7 @@
 }
 
 .shell-nav__tab {
+  position: relative;
   background: transparent;
   border: 0;
   border-radius: 0;
@@ -1420,16 +1448,19 @@
   padding: var(--space-2) var(--space-3);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.1em; /* no matching --tracking-* token */
   text-transform: uppercase;
   color: var(--color-text-tertiary);
+  opacity: 0.7;
 }
 
 .shell-nav__tab--active {
   color: var(--color-text);
   background: transparent;
   border-bottom: 2px solid var(--color-text);
+  opacity: 1;
+  font-weight: var(--font-weight-medium);
 }
 
 .shell-nav__tab:hover {
@@ -1687,6 +1718,21 @@
   border-radius: 8px !important;
 }
 
+/* Classroom switcher popover anchoring — pinned to its trigger pill,
+   not the viewport. Canonical positioning lives here so the panel
+   never drifts mid-page across viewport widths. */
+.shell-classroom-anchor {
+  position: relative;
+}
+.shell-classroom-panel {
+  position: absolute;
+  top: calc(100% + var(--space-2));
+  left: 0;
+  right: auto;
+  width: max(320px, 100%);
+  z-index: 50;
+}
+
 .shell-classroom-panel,
 .role-pill__menu,
 .role-pill__confirm,
@@ -1766,6 +1812,11 @@
   color: var(--color-text) !important;
 }
 
+.theme-toggle__icon {
+  width: 18px; /* no token at 18px (between --icon-md 16px and --icon-lg 20px) */
+  height: 18px;
+}
+
 .btn--danger,
 .toast-item--error,
 .workspace-page .error-banner {
@@ -1774,9 +1825,8 @@
   color: var(--color-text-danger) !important;
 }
 
-.shell-classroom-pill__lock,
+.shell-classroom-pill__switcher,
 .role-pill__chip,
-.role-pill__option-chip,
 .mobile-nav-badge,
 .mobile-nav-subtab-badge,
 .toast-dismiss-btn {
@@ -2121,4 +2171,31 @@ textarea {
   .app-main {
     border-radius: 2px !important;
   }
+}
+
+.shell-bar__palette-btn {
+  gap: var(--space-2);
+}
+.shell-bar__palette-btn-label {
+  font-family: var(--font-sans);
+  font-size: 13px; /* no exact token: between --text-xs (12px) and --text-sm (14px) */
+  letter-spacing: 0.02em; /* no matching --tracking-* token */
+}
+.shell-bar__palette-btn-kbd {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  padding: 2px 6px; /* no token at 2px or 6px */
+  border: 1px solid currentColor;
+  border-radius: 4px; /* no token at 4px (--radius-btn-sm is 6px) */
+  opacity: 0.7;
+}
+.app-help-btn--icon {
+  width: 32px; /* no token at 32px (--control-h-sm is 36px) */
+  height: 32px;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }

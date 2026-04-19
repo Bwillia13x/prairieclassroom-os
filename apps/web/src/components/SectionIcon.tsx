@@ -4,7 +4,7 @@ interface Props {
   decorative?: boolean;
 }
 
-export type SectionIconName = "sun" | "pencil" | "grid" | "check" | "mail" | "alert" | "star" | "clock" | "lock" | "info" | "refresh";
+export type SectionIconName = "sun" | "moon" | "pencil" | "grid" | "check" | "mail" | "alert" | "star" | "clock" | "lock" | "info" | "refresh";
 
 export default function SectionIcon({ name, className, decorative = true }: Props) {
   const sharedProps = decorative ? { "aria-hidden": true } : { role: "img" as const };
@@ -25,6 +25,9 @@ export default function SectionIcon({ name, className, decorative = true }: Prop
           <circle cx="12" cy="12" r="4.1" />
           <path d="M12 2.75v2.2M12 19.05v2.2M21.25 12h-2.2M4.95 12h-2.2M18.55 5.45l-1.55 1.55M7 17l-1.55 1.55M18.55 18.55L17 17M7 7L5.45 5.45" />
         </>
+      ) : null}
+      {name === "moon" ? (
+        <path d="M20.5 14.2A8 8 0 1 1 9.8 3.5a6.4 6.4 0 0 0 10.7 10.7Z" />
       ) : null}
       {name === "pencil" ? (
         <>
