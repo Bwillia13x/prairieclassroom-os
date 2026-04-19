@@ -1399,23 +1399,33 @@
 .shell-nav__group--active .shell-nav__group-icon { opacity: 1; }
 
 .shell-nav__badge {
-  background: transparent;
-  color: var(--color-text);
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  padding: 1px 5px;
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 10px;
+  line-height: 16px;
+  text-align: center;
+  border-radius: 999px;
+  font-weight: 500;
   box-shadow: none;
-  margin-left: var(--space-2);
+  letter-spacing: 0.04em;
 }
 
-.shell-nav__group--active .shell-nav__badge {
-  background: var(--color-text);
-  color: var(--color-surface);
-  border-color: var(--color-text);
+.shell-nav__badge--alert {
+  background: var(--color-alert, var(--color-danger, #d71921));
+  color: #fff;
+  border: 1px solid transparent;
+}
+
+.shell-nav__badge--count {
+  background: transparent;
+  color: currentColor;
+  border: 1px solid currentColor;
+  opacity: 0.6;
 }
 
 .shell-nav__kbd {
@@ -1431,6 +1441,7 @@
 }
 
 .shell-nav__tab {
+  position: relative;
   background: transparent;
   border: 0;
   border-radius: 0;

@@ -6,6 +6,7 @@ import {
   createInitialState,
   getGroupForTab,
   getTabBadgeCount,
+  getTabBadgeTone,
   getVisibleNavGroups,
   getVisibleTabsForGroup,
   getVisibleTabs,
@@ -925,7 +926,14 @@ export default function App() {
                           type="button"
                         >
                           <span>{TAB_META[tab].label}</span>
-                          {count > 0 ? <span className="shell-nav__badge">{count}</span> : null}
+                          {count > 0 ? (
+                            <span
+                              className={`shell-nav__badge shell-nav__badge--${getTabBadgeTone(tab)}`}
+                              aria-label={`${count} pending`}
+                            >
+                              {count}
+                            </span>
+                          ) : null}
                           {shortcutKey ? (
                             <kbd className="shell-nav__kbd" aria-hidden="true">{shortcutKey}</kbd>
                           ) : null}
