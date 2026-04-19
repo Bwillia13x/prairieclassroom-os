@@ -17,7 +17,11 @@
 .app-header__inner {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  /* Tightened from 0.4rem (audit fix A1) so the two-row chrome reads as a
+     single compact unit rather than two stacked bars. Reclaims ~2-3px of
+     vertical space; combined with the strengthened seam below, Row 1 and
+     Row 2 still parse as distinct conceptual layers (identity vs nav). */
+  gap: 0.25rem;
   padding: 0.5rem 0.85rem;
   border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
   border-radius: var(--radius-lg);
@@ -344,7 +348,11 @@
   gap: 0.6rem;
   align-items: center;
   padding-top: 0.3rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 28%, transparent);
+  /* Strengthened from 28% (audit fix A1/A3): Row 1 and Row 2 share the
+     same glass surface, so we lean on the border alone to signal the
+     identity vs. navigation seam. No background tint differential —
+     that would chunk the unified glass card. */
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
   /* Lock the nav row at the tab-rail's natural height so switching between
      a group with sub-tabs and a solo group does not jump the sticky header
      up and down. control-h-sm covers the groups pill and tabs at the same
@@ -776,11 +784,17 @@
   flex-direction: column;
   gap: var(--space-5);
   margin-top: var(--space-4);
-  padding: var(--space-6);
+  /* Explicit per-side padding so the top edge consumes the canonical
+     --page-content-padding-top token (audit fix B2). Horizontal and
+     bottom retain the prior --space-6 (40px) workspace breathing room. */
+  padding: var(--page-content-padding-top) var(--space-6) var(--space-6);
   background: var(--color-workspace);
-  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  /* Lighter border + softer ambient (audit fix B1) keeps the canvas →
+     workspace → surface stack documented in docs/dark-mode-contract.md §1
+     while reducing the "card on a card" visual weight. */
+  border: 1px solid color-mix(in srgb, var(--color-border) 30%, transparent);
   border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-lg);
+  box-shadow: var(--shadow-sm);
 }
 
 .app-main::before {

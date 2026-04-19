@@ -1,13 +1,12 @@
 import { useState, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
+import { FormCard } from "./shared";
 import DraftRestoreChip from "./DraftRestoreChip";
 import ActionButton from "./shared/ActionButton";
 import "./TeacherReflection.css";
 
 interface Props {
-  classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, reflection: string, teacherGoal?: string) => void;
   loading: boolean;
   /**
@@ -20,9 +19,7 @@ interface Props {
 }
 
 export default function TeacherReflection({
-  classrooms,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
   streakLabel,
@@ -54,9 +51,11 @@ export default function TeacherReflection({
   }
 
   return (
-    <form className="teacher-reflection form-panel" onSubmit={handleSubmit}>
-      {/* 2026-04-19 OPS audit: drop the duplicate header + description row;
-          the PageIntro above already carries that copy. Spacing over titles. */}
+    <FormCard className="teacher-reflection">
+    <form onSubmit={handleSubmit}>
+      {/* 2026-04-19 OPS audit phase 3: dropped the duplicate header +
+          description row. PageIntro above already carries that copy;
+          spacing over titles. */}
       <DraftRestoreChip
         show={hasPendingDraft}
         onRestore={restoreDraft}
@@ -64,28 +63,8 @@ export default function TeacherReflection({
         label="Continue the reflection you started earlier?"
       />
 
-      <div className={`field teacher-reflection__classroom${touched && !selectedClassroom ? " field--error" : ""}`}>
-        <label htmlFor="plan-classroom">
-          Classroom <span className="field-required" aria-hidden="true">*</span>
-        </label>
-        <select
-          id="plan-classroom"
-          value={selectedClassroom}
-          onChange={(e) => onClassroomChange(e.target.value)}
-          onBlur={() => setTouched(true)}
-          aria-required="true"
-          aria-invalid={touched && !selectedClassroom ? "true" : undefined}
-        >
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </div>
-
       <div className={`field${touched && !reflection.trim() ? " field--error" : ""}`}>
-        <label htmlFor="reflection">Today's Reflection <span className="field-required" aria-hidden="true">*</span></label>
+        <label htmlFor="reflection" className="form-label">Today's reflection <span className="field-required" aria-hidden="true">*</span></label>
         <textarea
           id="reflection"
           rows={5}
@@ -104,7 +83,7 @@ export default function TeacherReflection({
       </div>
 
       <div className="field">
-        <label htmlFor="plan-goal">Tomorrow's intention</label>
+        <label htmlFor="plan-goal" className="form-label">Tomorrow's intention</label>
         <textarea
           id="plan-goal"
           rows={2}
@@ -130,5 +109,6 @@ export default function TeacherReflection({
         ) : null}
       </div>
     </form>
+    </FormCard>
   );
 }

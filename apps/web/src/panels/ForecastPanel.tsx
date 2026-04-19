@@ -12,7 +12,6 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -28,7 +27,7 @@ import { serializeForecastToPlainText } from "./outputActionBarHelpers";
 import type { ComplexityForecastResponse } from "../types";
 
 export default function ForecastPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>();
   const streamer = useStreamingRequest({
@@ -113,14 +112,7 @@ export default function ForecastPanel() {
       <PageIntro
         title="Forecast Tomorrow's Complexity"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Forecast" }}
         description="Preview where the day will spike, which blocks need proactive mitigation, and what classroom conditions will shape the day before students arrive."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Forecast suite", tone: "sun" },
-          { label: "Block-by-block outlook", tone: "analysis" },
-          { label: "Retrieval-backed inputs", tone: "slate" },
-        ]}
         infoContent={{
           title: "Complexity Forecast",
           body: (
@@ -143,9 +135,7 @@ export default function ForecastPanel() {
         rail={(
           role.canGenerate ? (
             <ForecastForm
-              classrooms={classrooms}
               selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
               onSubmit={handleSubmit}
               loading={loading}
             />
@@ -161,15 +151,30 @@ export default function ForecastPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="forecast" />}
-                title="No forecast yet"
-                description="Run the forecast once the classroom and any day-specific notes are ready. The canvas will surface the highest-risk blocks first."
-                steps={[
-                  "Confirm the active classroom in the header pill.",
-                  "Optionally add day-specific context in the notes field.",
-                  "Choose a block structure (schedule-driven or custom).",
-                  "Press Generate forecast. Results land here as a timeline, heatmap, and trend sparkline.",
-                ]}
+                variant="sample"
+                label="Sample forecast block"
+                /* aria-hidden on the wrapper div below is LOAD-BEARING:
+                   EmptyStateCard only aria-hides the [SAMPLE] tag, not the
+                   sample body. Without this, screen readers would announce
+                   the fake forecast block as real classroom data. */
+                sampleNode={(
+                  <div className="forecast-block forecast-block--high" aria-hidden="true">
+                    <div className="forecast-block-header">
+                      <span className="forecast-block-time">10:15–11:00</span>
+                      <span className="forecast-block-level forecast-block-level--high">
+                        {"\u26C8"} High
+                      </span>
+                    </div>
+                    <div className="forecast-block-activity">Math — long division block</div>
+                    <ul className="forecast-block-factors">
+                      <li>EA out for the block</li>
+                      <li>Two students returning from a transition</li>
+                    </ul>
+                    <p className="forecast-block-mitigation">
+                      Front-load the worked example, hold a brain-break before independent practice.
+                    </p>
+                  </div>
+                )}
               />
             ) : null}
             {result ? (

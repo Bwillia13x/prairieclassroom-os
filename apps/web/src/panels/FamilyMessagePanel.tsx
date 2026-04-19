@@ -13,7 +13,6 @@ import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
@@ -32,7 +31,7 @@ interface Props {
 }
 
 export default function FamilyMessagePanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess, showError } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, showError } = useApp();
   const role = useRole();
   const { canApproveMessages } = role;
   const session = useSession();
@@ -194,14 +193,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
         eyebrow="Review Workspace"
         title="Draft Family Messages"
         sectionTone="forest"
-        sectionIcon="check"
-        breadcrumb={{ group: "Review", tab: "Family Message" }}
         description="Build a plain-language family update, inspect the draft in the result canvas, and explicitly approve before copying it into your communication channel."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Family comms", tone: "sun" },
-          { label: "Approval required", tone: "pending" },
-          { label: "Plain-language draft", tone: "forest" },
-        ]}
       />
 
       <RoleReadOnlyBanner
@@ -237,10 +229,8 @@ export default function FamilyMessagePanel({ prefill }: Props) {
             />
             {role.canGenerate ? (
               <MessageComposer
-                classrooms={classrooms}
                 students={students}
                 selectedClassroom={activeClassroom}
-                onClassroomChange={setActiveClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
                 prefill={prefill}
@@ -256,15 +246,8 @@ export default function FamilyMessagePanel({ prefill }: Props) {
             ) : null}
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="message" />}
-                title="No draft yet"
-                description="Select one or more students, choose the message type, and add any important context before drafting."
-                steps={[
-                  "Pick one or more students from the roster.",
-                  "Choose the message type (update, concern, celebration, or follow-up).",
-                  "Add any classroom context the family should know.",
-                  "Press Draft message. The draft lands here for your review before any send.",
-                ]}
+                variant="minimal"
+                cue="Pick students to draft a message."
               />
             ) : null}
             {displayResult ? (

@@ -574,6 +574,32 @@
   animation: prefill-highlight 2s ease-out;
 }
 
+/* ------------------------------------------------------------
+   .form-label — shared form-field label class (Workstream F2, #15).
+
+   Form field label — sentence case, no all-caps. ALL CAPS is reserved
+   for section labels and status indicators. Use Inter (sans), 12px,
+   weight 600, secondary text color. Pair with the FormCard wrapper
+   (apps/web/src/components/shared/FormCard.tsx).
+
+   Note: scoped to `label.form-label` to win specificity (0-1-1) over
+   the legacy `.field label` rule above, while also winning the cascade
+   tie because this rule is declared later in the file. As panels
+   migrate off `.field`, the bare `.form-label` selector (also retained
+   below) keeps non-label elements that adopt the class consistent.
+   ------------------------------------------------------------ */
+.form-label,
+label.form-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
 /* ── Custom checkbox ─────────────────────────────────────────── */
 
 .field input[type="checkbox"] {
@@ -625,54 +651,16 @@
   gap: var(--space-3);
 }
 
-.page-intro__breadcrumb {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--space-2);
-  margin-bottom: calc(var(--space-1) * -1);
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  color: var(--color-text-tertiary);
-  letter-spacing: var(--tracking-eyebrow);
-  opacity: 0.78;
-}
-
-.page-intro__breadcrumb-group {
-  color: var(--color-text-tertiary);
-}
-
-.page-intro__breadcrumb-sep {
-  color: var(--color-text-tertiary);
-  font-size: 0.7em;
-  opacity: 0.6;
-}
-
-.page-intro__breadcrumb-tab {
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-semibold);
-}
-
+/* Section label — collapsed to a plain mono caps line per audit Workstream C
+   (Issue #6). Replaced the prior breadcrumb + pill-chrome eyebrow stack so
+   the header reads as a 2-family / 3-size system: label / title / description. */
 .page-intro__eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-  width: fit-content;
-  min-height: var(--control-h-xs);
-  padding: var(--control-py-xs) var(--control-px-xs);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-pill);
-  background: var(--color-bg-muted);
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-secondary);
-}
-
-.page-intro__eyebrow-icon {
-  width: var(--icon-sm);
-  height: var(--icon-sm);
 }
 
 .page-intro__title {
@@ -680,10 +668,11 @@
   font-family: var(--font-display);
   font-feature-settings: var(--font-feature-display);
   font-size: var(--text-display-md);
-  font-weight: var(--font-weight-semibold);
+  font-weight: var(--font-weight-medium);
   font-optical-sizing: auto;
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
+  color: var(--color-text);
   text-wrap: balance;
 }
 
@@ -701,9 +690,11 @@
 
 .page-intro__description {
   max-width: 64ch;
-  font-size: var(--text-md);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-normal);
   line-height: 1.55;
-  color: var(--color-text-secondary);
+  color: var(--color-text-primary);
 }
 
 .page-intro .status-chip-row {
@@ -784,8 +775,6 @@
 .page-intro--slate .page-intro__eyebrow,
 .page-intro--forest .page-intro__eyebrow,
 .page-intro--muted .page-intro__eyebrow {
-  background: color-mix(in srgb, var(--page-intro-tone-bg) 55%, var(--color-surface-elevated));
-  border-color: var(--page-intro-tone-border);
   color: var(--page-intro-tone-text);
 }
 
@@ -881,16 +870,55 @@
   gap: var(--space-4);
 }
 
+/* Workspace split-panel contract (Workstream D).
+   ------------------------------------------------------------------
+   The WorkspaceLayout component owns this contract. Two attributes
+   drive responsive behavior:
+
+   - data-layout="split" (default) | "single"
+       "split"  renders rail + canvas side-by-side at >=960px and
+                stacks below. "single" forces a single column at every
+                width and skips the sticky rail (rail still renders in
+                document order, above the canvas). TodayPanel does not
+                yet use WorkspaceLayout; when it adopts it, "single" is
+                the safe starting point until a rail/canvas split is
+                designed for that surface.
+
+   - data-split-state="input" (default) | "output"
+       Only takes effect when data-layout="split" at >=960px.
+       "input"  widens the rail (~42%) so form-driven intake breathes.
+       "output" narrows the rail (~30%) so the generated canvas
+                dominates once a result is rendered. Per-panel
+                adoption is opt-in (see DifferentiatePanel for the
+                pilot). Transitions in 200ms ease-out.
+
+   Below 960px the layout always collapses to a single column,
+   regardless of these attributes. The 960px breakpoint is
+   intentionally aligned with the existing collapse point used
+   elsewhere in this file.
+*/
 .workspace-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--panel-gap);
   align-items: start;
+  transition: grid-template-columns 200ms ease-out;
 }
 
 @media (min-width: 960px) {
-  .workspace-layout {
-    grid-template-columns: clamp(300px, 34%, 380px) minmax(0, 1fr);
+  /* Default split state ("input"): rail biased wider for form intake. */
+  .workspace-layout[data-layout="split"] {
+    grid-template-columns: clamp(340px, 42%, 480px) minmax(0, 1fr);
+  }
+
+  /* Output state: canvas dominates once a result is rendered. */
+  .workspace-layout[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: clamp(280px, 30%, 360px) minmax(0, 1fr);
+  }
+
+  /* Single-column override: force one column at every width. */
+  .workspace-layout[data-layout="single"] {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -906,12 +934,18 @@
 }
 
 @media (min-width: 960px) {
-  .workspace-rail {
+  .workspace-layout[data-layout="split"] > .workspace-rail {
     position: sticky;
     top: calc(var(--shell-sticky-offset, 7rem) + var(--space-3));
     max-height: max(20rem, calc(100dvh - var(--shell-sticky-offset, 7rem) - var(--space-6)));
     overflow-y: auto;
     scrollbar-width: thin;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .workspace-layout {
+    transition: none;
   }
 }
 
@@ -929,99 +963,91 @@
   scroll-margin-top: calc(var(--shell-sticky-offset) + var(--space-3));
 }
 
+/* Empty state canvas — archetype-differentiated per Workstream G.
+   Three variants live here: minimal (quiet text), preview (skeleton of
+   the expected output shape), and sample (a real component instance
+   behind a [SAMPLE] tag). The legacy icon + title + numbered-steps +
+   descriptor-box treatment has been removed. */
 .empty-state {
-  /* Layer 2 treatment inside the workspace — flat surface, solid thin
-     border, no backdrop blur. The workspace above provides the visual
-     framing; the empty state just needs to read as a content card. */
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-8) var(--space-6);
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface);
-  text-align: center;
-}
-
-.empty-state-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: var(--icon-hero);
-  height: var(--icon-hero);
-  padding: var(--space-2);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-  opacity: 0.9;
-  animation: gentle-float 3.6s ease-in-out infinite;
-}
-
-.empty-state-title {
-  font-size: var(--text-lg);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text);
-}
-
-.empty-state-description {
-  max-width: 52ch;
-  font-size: var(--text-base);
-  line-height: var(--leading-loose);
-  color: var(--color-text-secondary);
-}
-
-.empty-state-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-}
-
-/* Institutional "first-use guide" inside empty states.
-   Numbered steps turn a decorative void into a purposeful tutorial
-   nudge — the register Alberta reviewers expect in education software. */
-.empty-state-steps {
-  /* Nested inside an empty-state card — use the muted surface token
-     to read as an inset panel rather than another elevated card. */
-  list-style: none;
-  margin: 0;
-  padding: var(--space-3) var(--space-4);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
   width: 100%;
-  max-width: 48ch;
-  background: var(--color-surface-muted);
-  border-radius: var(--radius-md);
-  text-align: left;
 }
 
-.empty-state-steps__item {
-  display: grid;
-  grid-template-columns: 1.5rem 1fr;
+/* Minimal cue — for high-frequency tap flows. One quiet line of
+   secondary text; optional tertiary hint. No icon, no steps, no box. */
+.empty-state--minimal {
+  flex-direction: column;
+  align-items: flex-start;
   gap: var(--space-2);
-  align-items: start;
-  font-size: var(--text-sm);
+  padding: var(--space-4) 0;
+}
+
+.empty-state__cue {
+  margin: 0;
+  font-size: var(--text-base);
   line-height: var(--leading-snug);
   color: var(--color-text-secondary);
 }
 
-.empty-state-steps__marker {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  color: var(--color-text-accent);
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  font-weight: var(--font-weight-semibold);
-  line-height: 1;
+.empty-state__hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--color-text-tertiary);
 }
 
-.empty-state-steps__text {
-  padding-top: 0.2rem;
+/* Output preview — a skeleton grid of outlined rounded rectangles.
+   The shape teaches faster than text; no words, no numbers. */
+.empty-state--preview {
+  padding: var(--space-4) 0;
+}
+
+.empty-state__skeleton-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  width: 100%;
+  opacity: 0.4;
+}
+
+@media (max-width: 900px) {
+  .empty-state__skeleton-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.empty-state__skeleton-card {
+  min-height: 140px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+}
+
+/* Sample collapse — a real component instance at 60% opacity with a
+   small [SAMPLE] tag pinned top-right. Real output replaces it with
+   no layout shift. */
+.empty-state--sample {
+  position: relative;
+  padding: 0;
+}
+
+.empty-state__sample-tag {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.empty-state__sample-body {
+  width: 100%;
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .contextual-hint,
@@ -1260,17 +1286,10 @@
   border-top-color: var(--color-text-accent);
 }
 
-@media (min-width: 960px) {
-  .workspace-layout {
-    grid-template-columns: minmax(0, var(--rail-width)) minmax(0, 1fr);
-  }
-
-  .workspace-rail {
-    position: sticky;
-    top: var(--shell-sticky-offset);
-    align-self: start;
-  }
-}
+/* Note: prior duplicate `.workspace-layout` / `.workspace-rail` rules
+   at >=960px were removed in Workstream D — the canonical contract
+   now lives in the consolidated block above (data-layout +
+   data-split-state attributes). */
 
 @media (max-width: 600px) {
   .btn--primary,
@@ -1285,9 +1304,6 @@
     font-size: clamp(1.65rem, 8vw, 2.25rem);
   }
 
-  .empty-state {
-    padding: var(--space-6);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {

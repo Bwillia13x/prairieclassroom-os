@@ -12,7 +12,6 @@ import { InterventionTimeline, FollowUpSuccessRate } from "../components/DataVis
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -36,7 +35,7 @@ interface Props {
  *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, students, showSuccess } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
@@ -146,14 +145,7 @@ export default function InterventionPanel({ prefill }: Props) {
       <PageIntro
         title="Log Intervention Notes"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Log Intervention" }}
         description="Log what happened while the moment is still fresh. The result canvas formats the note for classroom memory, follow-up review, and later pattern analysis."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Intervention log", tone: "sun" },
-          { label: "Saved to memory", tone: "provenance" },
-          { label: "Follow-up status", tone: "slate" },
-        ]}
         infoContent={{
           title: "Log Intervention",
           body: (
@@ -201,16 +193,16 @@ export default function InterventionPanel({ prefill }: Props) {
             )}
             {/* 2026-04-19 OPS audit phase 7.4: always render the structured
                 details disclosure so it reads as an affordance. Role
-                gating stays on the submit inside InterventionLogger, not
-                on the disclosure itself. Renamed to read as a pill button
-                promising a specific payoff (duration · outcome · next step). */}
+                gating stays on the submit inside InterventionLogger via
+                canSubmit, not on the disclosure itself. Audit-fix F2
+                lifted the Classroom field — InterventionLogger now reads
+                activeClassroom from useApp and no longer needs the
+                classrooms/onClassroomChange props. */}
             <details ref={detailsRef} className="intervention-structured-details">
               <summary>Add structured detail (duration · outcome · next step)</summary>
               <InterventionLogger
-                classrooms={classrooms}
                 students={students}
                 selectedClassroom={activeClassroom}
-                onClassroomChange={setActiveClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
                 prefill={prefill}
@@ -227,9 +219,9 @@ export default function InterventionPanel({ prefill }: Props) {
             ) : null}
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="intervention" />}
-                title="No intervention logged"
-                description="Select students, capture the observation, and the note will land in a structured record you can revisit later."
+                variant="minimal"
+                cue="Select a student to begin."
+                hint="Capture the observation in the form on the left; the structured note will land here."
               />
             ) : null}
             {displayResult ? (

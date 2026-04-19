@@ -9,7 +9,6 @@ import SkeletonLoader from "../components/SkeletonLoader";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
@@ -21,7 +20,7 @@ import { serializeEABriefingToPlainText, serializeEABriefingToMarkdown } from ".
 import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, appendTomorrowNote } = useApp();
+  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<EABriefingResponse>();
   const [resultKey, setResultKey] = useState(0);
@@ -113,14 +112,7 @@ export default function EABriefingPanel() {
       <PageIntro
         title="Build the EA Briefing"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "EA Briefing" }}
         description="Generate one briefing that packages schedule blocks, student watch items, pending follow-ups, and the teacher's notes into a shared coordination artifact."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "EA coordination", tone: "sun" },
-          { label: "Coordination document", tone: "analysis" },
-          { label: "Print-ready", tone: "slate" },
-        ]}
         infoContent={{
           title: "EA Briefing",
           body: (
@@ -136,9 +128,7 @@ export default function EABriefingPanel() {
         rail={(
           <>
             <EABriefingForm
-              classrooms={classrooms}
               selectedClassroom={activeClassroom}
-              onClassroomChange={setActiveClassroom}
               onSubmit={handleSubmit}
               loading={loading}
             />
@@ -151,15 +141,13 @@ export default function EABriefingPanel() {
               <SkeletonLoader variant="stack" message="Building EA coordination briefing..." label="Generating EA briefing" />
             ) : null}
             {!loading && result === null && !error ? (
+              /* The real briefing renders 4 regions (notes, schedule,
+                 watch list, follow-ups). The preview archetype hard-codes
+                 3 skeleton cards — under-promised until EmptyStateCard
+                 picks up an optional `count` prop. */
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="briefing" />}
-                title="No briefing yet"
-                description="Select a classroom and optionally add the EA's name, then generate the coordination document for today."
-                steps={[
-                  "Confirm the active classroom in the header pill.",
-                  "Optionally add the EA's name and any coordination notes.",
-                  "Press Generate briefing. The canvas will surface today's schedule, priority students, and shared watchpoints.",
-                ]}
+                variant="preview"
+                label="EA briefing preview"
               />
             ) : null}
             {result ? (

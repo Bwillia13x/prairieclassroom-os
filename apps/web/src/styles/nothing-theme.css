@@ -50,9 +50,10 @@
   content: none;
 }
 
-.workspace-page .page-intro__breadcrumb {
-  display: none;
-}
+/* Audit Workstream C: section header collapsed to label / title /
+   description (2 families, 3 sizes, 2 weights). Breadcrumb and eyebrow
+   icon were removed; the eyebrow is now plain mono caps text and the
+   description is sans body copy (no monospace subtitle). */
 
 .workspace-page .page-intro__eyebrow,
 .workspace-page .page-intro--sun .page-intro__eyebrow,
@@ -65,25 +66,18 @@
   border: 0;
   border-radius: 0;
   padding: 0;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   box-shadow: none;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.workspace-page .page-intro__eyebrow-icon {
-  color: var(--color-text-tertiary);
 }
 
 .workspace-page .page-intro__title {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
+  font-size: var(--text-display-md);
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.1;
@@ -93,13 +87,14 @@
 
 .workspace-page .page-intro__description {
   margin: 0;
-  max-width: none;
-  color: var(--color-text-tertiary);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.4;
+  max-width: 64ch;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0;
+  line-height: 1.55;
+  text-transform: none;
 }
 
 .workspace-page .page-intro .status-chip-row {
@@ -378,36 +373,6 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-danger);
-}
-
-.workspace-page .empty-state-card,
-.workspace-page [class*="empty-state-card"] {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  box-shadow: none;
-  padding: var(--space-6);
-  text-align: left;
-}
-
-.workspace-page .empty-state-card [class*="__title"],
-.workspace-page .empty-state-card h2,
-.workspace-page .empty-state-card h3 {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.workspace-page .empty-state-card [class*="__description"],
-.workspace-page .empty-state-card p {
-  color: var(--color-text-secondary);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  line-height: 1.5;
-  max-width: 62ch;
 }
 
 /* ---------- DrillDownDrawer (can open on any panel) ---------- */
@@ -873,8 +838,13 @@
   box-shadow: none;
 }
 
-/* Contextual hints (tip cards shown inline — "Differentiate / Got it",
-   etc). Flat with a tone-colored left rule. */
+/* Contextual hints (tip cards shown inline — "Differentiate" etc).
+   Workstream E (audit #11/#13): the section-coded LEFT BORDER is now the
+   exclusive affordance for "this is a dismissable hint", and is owned
+   by ContextualHint.css. The nothing-theme override keeps the flat
+   surface treatment but no longer rewrites the left-border colors —
+   those come from --color-border-{sun|sage|slate|forest} tokens via
+   the variant classes. */
 .contextual-hint,
 .contextual-hint--sage,
 .contextual-hint--sun,
@@ -889,12 +859,23 @@
   padding: var(--space-4);
 }
 
-.contextual-hint--sage    { border-left: 2px solid var(--color-text-success); }
-.contextual-hint--sun     { border-left: 2px solid var(--color-text-warning); }
-.contextual-hint--forest  { border-left: 2px solid var(--color-text-success); }
-.contextual-hint--slate   { border-left: 2px solid var(--color-border); }
-.contextual-hint--muted   { border-left: 2px solid var(--color-border); }
-.contextual-hint--accent  { border-left: 2px solid var(--color-text); }
+.contextual-hint--muted   { border-left: 4px solid var(--color-border); }
+.contextual-hint--accent  { border-left: 4px solid var(--color-text); }
+
+/* Collapsed (dismissed) hint must stay borderless even under the
+   nothing-theme flat-surface override. */
+.contextual-hint--collapsed,
+.contextual-hint--collapsed.contextual-hint--sage,
+.contextual-hint--collapsed.contextual-hint--sun,
+.contextual-hint--collapsed.contextual-hint--slate,
+.contextual-hint--collapsed.contextual-hint--forest,
+.contextual-hint--collapsed.contextual-hint--muted,
+.contextual-hint--collapsed.contextual-hint--accent {
+  background: transparent;
+  border: 0;
+  border-left: 0;
+  padding: 0;
+}
 
 .contextual-hint [class*="__title"],
 .contextual-hint-title {
@@ -935,40 +916,10 @@
   border-color: var(--color-text);
 }
 
-/* Empty-state previews (DifferentiateEmptyState, generic patterns).
-   Flatten chrome; titles go display; body copy measured. */
-.workspace-page [class*="empty-state"],
-[class*="empty-state"] {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  box-shadow: none;
-}
-
-.workspace-page [class*="empty-state"] [class*="__title"],
-[class*="empty-state"] [class*="__title"],
-.workspace-page [class*="empty-state__title"],
-[class*="empty-state__title"] {
-  font-family: var(--font-display);
-  font-size: var(--text-xl);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  color: var(--color-text);
-  margin: 0;
-}
-
-.workspace-page [class*="empty-state"] [class*="__description"],
-.workspace-page [class*="empty-state"] [class*="__body"] {
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  color: var(--color-text-secondary);
-  line-height: 1.55;
-  max-width: 62ch;
-}
-
-/* Numbered-step markers (1/2/3 circular indicators in empty states
-   and onboarding). Convert from filled circles to flat bordered
-   tabular numerals. */
+/* Numbered-step markers (1/2/3 circular indicators in onboarding flows).
+   Convert from filled circles to flat bordered tabular numerals.
+   Note: empty-state numbered steps were removed in Workstream G;
+   this rule remains for any other onboarding step indicators. */
 .workspace-page [class*="step-marker"],
 .workspace-page [class*="__step-number"],
 .workspace-page [class*="step__number"],

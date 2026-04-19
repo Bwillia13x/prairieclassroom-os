@@ -256,21 +256,7 @@ export default function LanguageToolsPanel() {
         eyebrow="Prep Workspace"
         title="Language Support Tools"
         sectionTone="sage"
-        sectionIcon="pencil"
-        breadcrumb={{ group: "Prep", tab: "Language Tools" }}
         description="Simplify classroom text for EAL learners or generate bilingual vocabulary cards from any lesson content."
-        badges={[
-          {
-            label: profile ? `Grade ${profile.grade_band}` : "Choose classroom",
-            tone: "live",
-            onClick: () =>
-              document.dispatchEvent(
-                new CustomEvent("prairie:open-classroom-switcher"),
-              ),
-          },
-          { label: "EAL-ready", tone: "muted" },
-          { label: "Bilingual support", tone: "muted" },
-        ]}
       />
 
       <WorkspaceLayout

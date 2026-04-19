@@ -254,8 +254,8 @@
   --icon-md: 1rem;       /* 16px */
   --icon-lg: 1.25rem;    /* 20px */
   --icon-xl: 1.5rem;     /* 24px */
-  --icon-display: 2.5rem; /* 40px — empty-state, error boundary */
-  --icon-hero: 3.5rem;   /* 56px — empty-state-icon, branded loading mark */
+  --icon-display: 2.5rem; /* 40px — error boundary, branded display marks */
+  --icon-hero: 3.5rem;   /* 56px — branded loading mark */
 
   /* Radius — conservative institutional scale.
      Slightly tightened vs editorial-display previous scale. */
@@ -336,10 +336,21 @@
   /* Layout */
   --app-max-width: 1360px;
   --content-max-width: 940px;
-  --rail-width: 380px;
-  --rail-width-compact: 340px;
+  /* Workspace rail widths now live inline as clamps in primitives.css
+     under the `data-split-state` contract (audit workstream D). The
+     prior --rail-width / --rail-width-compact tokens were retired with
+     that contract — do not reintroduce them without updating the layout
+     comment block in primitives.css. */
   --panel-padding: var(--space-6);
   --panel-gap: var(--space-6);
+
+  /* Single source of truth for the page-content top padding inside
+     `.app-main`. Per-panel components must not override this; if a
+     panel needs different breathing room, surface that here so the
+     deviation is visible in code review. 32px (--space-5) is the
+     canonical workspace top padding paired with --space-6 (40px) on
+     the horizontal/bottom sides — see audit fix B2 / shell.css. */
+  --page-content-padding-top: var(--space-5);
 
   /* Motion — unchanged; institutional tone is compatible with
      the existing restrained animation character. */

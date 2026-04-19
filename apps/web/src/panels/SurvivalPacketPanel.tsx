@@ -10,11 +10,10 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
-import { ActionButton, FeedbackCollector, FormSection, OutputActionBar, type OutputAction } from "../components/shared";
+import { ActionButton, FeedbackCollector, FormCard, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useDownloadBlob } from "../hooks/useDownloadBlob";
@@ -23,7 +22,7 @@ import { serializeSurvivalPacketToMarkdown } from "./outputActionBarHelpers";
 import type { SurvivalPacketResponse } from "../types";
 
 export default function SurvivalPacketPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SurvivalPacketResponse>();
   const streamer = useStreamingRequest({
@@ -103,14 +102,7 @@ export default function SurvivalPacketPanel() {
       <PageIntro
         title="Prepare the Substitute Packet"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Sub Packet" }}
         description="Create a print-ready packet that packages routines, student supports, family communication constraints, and the simplified day plan for substitute coverage."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Sub coverage", tone: "sun" },
-          { label: "Print-ready packet", tone: "slate" },
-          { label: "Protected classroom aware", tone: "pending" },
-        ]}
         infoContent={{
           title: "Substitute Packet",
           body: (
@@ -125,24 +117,11 @@ export default function SurvivalPacketPanel() {
       <WorkspaceLayout
         rail={(
           <>
-            <div className="form-panel">
-              <h2>Substitute Survival Packet</h2>
+            <FormCard className="survival-packet-form">
+              <h2>Substitute survival packet</h2>
               <p className="form-description">
                 Generate a print-ready packet for a substitute covering your classroom tomorrow.
               </p>
-              <FormSection label="Classroom" description="Select the classroom for substitute coverage.">
-                <select
-                  id="sp-classroom"
-                  value={activeClassroom}
-                  onChange={(e) => setActiveClassroom(e.target.value)}
-                >
-                  {classrooms.map((c) => (
-                    <option key={c.classroom_id} value={c.classroom_id}>
-                      Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-                    </option>
-                  ))}
-                </select>
-              </FormSection>
               <ActionButton
                 variant="primary"
                 loading={loading}
@@ -152,7 +131,7 @@ export default function SurvivalPacketPanel() {
               >
                 Generate sub packet
               </ActionButton>
-            </div>
+            </FormCard>
           </>
         )}
         canvas={(
@@ -164,15 +143,13 @@ export default function SurvivalPacketPanel() {
                 : <SkeletonLoader variant="stack" message="Building substitute survival packet..." label="Generating survival packet" />
             ) : null}
             {!loading && result === null && !error ? (
+              /* The real packet renders 4+ document regions (schedule,
+                 routines, supports, contacts). The preview archetype
+                 hard-codes 3 skeleton cards — under-promised on purpose
+                 until EmptyStateCard picks up an optional `count` prop. */
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="packet" />}
-                title="No packet yet"
-                description="Select a classroom and generate a full survival packet for tomorrow's substitute."
-                steps={[
-                  "Confirm the active classroom in the header pill.",
-                  "Review today's schedule and any pending interventions before generating.",
-                  "Press Generate packet. The canvas will build the complete substitute-ready document — schedule, student watchpoints, routines, and emergency contacts.",
-                ]}
+                variant="preview"
+                label="Survival packet preview"
               />
             ) : null}
             {result ? (

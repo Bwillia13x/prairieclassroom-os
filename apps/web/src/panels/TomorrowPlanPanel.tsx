@@ -12,7 +12,6 @@ import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -37,7 +36,7 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
@@ -155,14 +154,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
       <PageIntro
         title="Plan Tomorrow's Support"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "Tomorrow Plan" }}
         description="Capture the signal from today and convert it into watchpoints, student priorities, EA actions, prep items, and family follow-ups before the next school day starts."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Planning suite", tone: "sun" },
-          { label: "Reasoned planning", tone: "analysis" },
-          { label: "Pattern-aware", tone: "slate" },
-        ]}
         infoContent={{
           title: "Tomorrow Plan",
           body: (
@@ -190,9 +182,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
             {history.items.length > 0 && <PlanStreakCalendar plans14d={plans14d} />}
             {role.canGenerate ? (
               <TeacherReflection
-                classrooms={classrooms}
                 selectedClassroom={activeClassroom}
-                onClassroomChange={setActiveClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
                 streakLabel={streakLabel}
@@ -209,15 +199,14 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                 : <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
             ) : null}
             {!loading && displayResult === null && !error ? (
+              /* The real plan renders 4+ regions (priorities, prep,
+                 differentiation, family follow-ups). The preview
+                 archetype hard-codes 3 skeleton cards — accept the
+                 under-promise for now; revisit when EmptyStateCard
+                 picks up an optional `count` prop. */
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="plan" />}
-                title="No plan yet"
-                description="Use the reflection rail to capture the day. The result canvas will fill with tomorrow's priorities, prep actions, and family follow-through."
-                steps={[
-                  "Capture what worked and what slipped in today's reflection rail.",
-                  "Flag any students who need targeted support tomorrow.",
-                  "Press Generate plan. The canvas will organize priorities, prep actions, and family follow-through.",
-                ]}
+                variant="preview"
+                label="Tomorrow plan preview"
               />
             ) : null}
             {displayResult ? (

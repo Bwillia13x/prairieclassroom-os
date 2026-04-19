@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { CurriculumSelection, VocabCardsResponse } from "../types";
 import CurriculumPicker from "./CurriculumPicker";
 import PrintButton from "./PrintButton";
+import { FormCard } from "./shared";
 import "./VocabCardGrid.css";
 
 interface Props {
@@ -73,65 +74,67 @@ export default function VocabCardGrid({
 
   return (
     <div className="vocab-card-grid">
-      <form className="vocab-form" onSubmit={handleSubmit}>
-        <h3>Bilingual Vocabulary Cards</h3>
-        <p className="form-hint">
-          Paste lesson text to generate bilingual vocabulary cards for EAL students.
-        </p>
+      <FormCard className="vocab-form">
+        <form onSubmit={handleSubmit}>
+          <h3>Bilingual vocabulary cards</h3>
+          <p className="form-hint">
+            Paste lesson text to generate bilingual vocabulary cards for EAL students.
+          </p>
 
-        <div className="field">
-          <label htmlFor="vocab-text">Lesson text</label>
-          <textarea
-            id="vocab-text"
-            rows={5}
-            value={artifactText}
-            onChange={(e) => setArtifactText(e.target.value)}
-            placeholder="Paste the lesson content…"
+          <div className="field">
+            <label htmlFor="vocab-text" className="form-label">Lesson text</label>
+            <textarea
+              id="vocab-text"
+              rows={5}
+              value={artifactText}
+              onChange={(e) => setArtifactText(e.target.value)}
+              placeholder="Paste the lesson content…"
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="field">
+              <label htmlFor="vocab-lang" className="form-label">Target language</label>
+              <select id="vocab-lang" value={targetLang} onChange={(e) => setTargetLang(e.target.value)}>
+                {LANGUAGE_OPTIONS.map((l) => (
+                  <option key={l.code} value={l.code}>{l.label}</option>
+                ))}
+              </select>
+            </div>
+
+            <div className="field">
+              <label htmlFor="vocab-grade" className="form-label">Grade</label>
+              <select id="vocab-grade" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
+                <option>Grade 1</option>
+                <option>Grade 2</option>
+                <option>Grade 3</option>
+                <option>Grade 4</option>
+                <option>Grade 5</option>
+                <option>Grade 6</option>
+              </select>
+            </div>
+          </div>
+
+          <p className="vocab-form__subject-hint">
+            <span aria-hidden="true">Subject</span>
+            <strong>{subject}</strong>
+            <span className="vocab-form__subject-hint-note">
+              — change via Alberta Curriculum below
+            </span>
+          </p>
+
+          <CurriculumPicker
+            value={curriculumSelection}
+            onChange={setCurriculumSelection}
+            subjectHint={subject}
+            gradeHint={gradeBand}
           />
-        </div>
 
-        <div className="form-row">
-          <div className="field">
-            <label htmlFor="vocab-lang">Target language</label>
-            <select id="vocab-lang" value={targetLang} onChange={(e) => setTargetLang(e.target.value)}>
-              {LANGUAGE_OPTIONS.map((l) => (
-                <option key={l.code} value={l.code}>{l.label}</option>
-              ))}
-            </select>
-          </div>
-
-          <div className="field">
-            <label htmlFor="vocab-grade">Grade</label>
-            <select id="vocab-grade" value={gradeBand} onChange={(e) => setGradeBand(e.target.value)}>
-              <option>Grade 1</option>
-              <option>Grade 2</option>
-              <option>Grade 3</option>
-              <option>Grade 4</option>
-              <option>Grade 5</option>
-              <option>Grade 6</option>
-            </select>
-          </div>
-        </div>
-
-        <p className="vocab-form__subject-hint">
-          <span aria-hidden="true">Subject</span>
-          <strong>{subject}</strong>
-          <span className="vocab-form__subject-hint-note">
-            — change via Alberta Curriculum below
-          </span>
-        </p>
-
-        <CurriculumPicker
-          value={curriculumSelection}
-          onChange={setCurriculumSelection}
-          subjectHint={subject}
-          gradeHint={gradeBand}
-        />
-
-        <button className="btn btn--primary" type="submit" disabled={loading || !artifactText.trim()}>
-          {loading ? "Generating…" : "Generate Cards"}
-        </button>
-      </form>
+          <button className="btn btn--primary" type="submit" disabled={loading || !artifactText.trim()}>
+            {loading ? "Generating…" : "Generate cards"}
+          </button>
+        </form>
+      </FormCard>
 
       {result && (
         <div className="vocab-results">

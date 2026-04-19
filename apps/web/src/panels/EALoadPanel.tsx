@@ -11,17 +11,15 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
-import { FeedbackCollector } from "../components/shared";
-import ActionButton from "../components/shared/ActionButton";
+import { ActionButton, FeedbackCollector, FormCard } from "../components/shared";
 import { EALoadStackedBars } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
-import type { ClassroomProfile, EALoadBlock, EALoadLevel, EALoadResponse } from "../types";
+import type { EALoadBlock, EALoadLevel, EALoadResponse } from "../types";
 
 // Tomorrow, formatted for the date input (YYYY-MM-DD).
 function defaultTargetDate(): string {
@@ -48,100 +46,75 @@ function loadLabel(level: EALoadLevel): string {
 }
 
 interface EALoadFormProps {
-  classrooms: ClassroomProfile[];
   selectedClassroom: string | null;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, targetDate: string, teacherNotes?: string) => Promise<void>;
   loading: boolean;
 }
 
 function EALoadForm({
-  classrooms,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
 }: EALoadFormProps) {
   const [targetDate, setTargetDate] = useState(defaultTargetDate());
   const [teacherNotes, setTeacherNotes] = useState("");
-  const [touched, setTouched] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setTouched(true);
     if (!selectedClassroom) return;
     void onSubmit(selectedClassroom, targetDate, teacherNotes.trim() || undefined);
   };
 
   return (
-    <form className="workspace-form" onSubmit={handleSubmit} aria-label="EA load profile form">
-      <label className={`workspace-form__field${touched && !selectedClassroom ? " field--error" : ""}`}>
-        <span className="workspace-form__label">
-          Classroom <span className="field-required" aria-hidden="true">*</span>
-        </span>
-        <select
-          value={selectedClassroom ?? ""}
-          onChange={(event) => onClassroomChange(event.target.value)}
-          onBlur={() => setTouched(true)}
-          disabled={loading}
-          required
-          aria-required="true"
-          aria-invalid={touched && !selectedClassroom ? "true" : undefined}
+    <FormCard className="ea-load-form" as="section">
+      <form onSubmit={handleSubmit} aria-label="EA load profile form">
+        <div className="field">
+          <label htmlFor="ea-load-target-date" className="form-label">Target date</label>
+          <input
+            id="ea-load-target-date"
+            type="date"
+            value={targetDate}
+            onChange={(event) => setTargetDate(event.target.value)}
+            disabled={loading}
+            required
+          />
+          {/* 2026-04-19 OPS audit phase 5: TZ-safe formatted caption so
+              teachers see "Tue, Apr 21, 2026" instead of MM/DD/YYYY. */}
+          {targetDate ? (
+            <span className="form-caption" aria-live="polite">
+              Selected: {formatTargetDate(targetDate)}
+            </span>
+          ) : null}
+        </div>
+
+        <div className="field">
+          <label htmlFor="ea-load-notes" className="form-label">Teacher notes (optional)</label>
+          <textarea
+            id="ea-load-notes"
+            value={teacherNotes}
+            onChange={(event) => setTeacherNotes(event.target.value)}
+            disabled={loading}
+            rows={4}
+            placeholder="Anything known about tomorrow that affects EA coverage — shortened window, coverage swap, unusual routine..."
+          />
+        </div>
+
+        <ActionButton
+          type="submit"
+          variant="primary"
+          loading={loading}
+          disabled={!selectedClassroom}
         >
-          <option value="" disabled>
-            Select a classroom
-          </option>
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </label>
+          {loading ? "Generating load profile…" : "Generate load profile"}
+        </ActionButton>
 
-      <label className="workspace-form__field">
-        <span className="workspace-form__label">Target date</span>
-        <input
-          type="date"
-          value={targetDate}
-          onChange={(event) => setTargetDate(event.target.value)}
-          disabled={loading}
-          required
-        />
-        {targetDate ? (
-          <span className="workspace-form__caption" aria-live="polite">
-            Selected: {formatTargetDate(targetDate)}
-          </span>
-        ) : null}
-      </label>
-
-      <label className="workspace-form__field">
-        <span className="workspace-form__label">Teacher notes (optional)</span>
-        <textarea
-          value={teacherNotes}
-          onChange={(event) => setTeacherNotes(event.target.value)}
-          disabled={loading}
-          rows={4}
-          placeholder="Anything known about tomorrow that affects EA coverage — shortened window, coverage swap, unusual routine..."
-        />
-      </label>
-
-      <ActionButton
-        type="submit"
-        variant="primary"
-        loading={loading}
-        disabled={!selectedClassroom}
-        className="workspace-form__submit"
-      >
-        {loading ? "Generating load profile…" : "Generate load profile"}
-      </ActionButton>
-
-      {/* 2026-04-19 OPS audit phase 5: the operational-only disclaimer
-          relocates from the form to the viewer. The short "planning tier"
-          helper stays because it sets the expectation for generate
-          latency — different concern from the output disclaimer. */}
-      <p className="workspace-form__helper">Uses the planning tier (thinking on).</p>
-    </form>
+        {/* 2026-04-19 OPS audit phase 5: the operational-only disclaimer
+            relocates from the form to the viewer. The short "planning tier"
+            helper stays because it sets the expectation for generate
+            latency — different concern from the output disclaimer. */}
+        <p className="form-hint">Uses the planning tier (thinking on).</p>
+      </form>
+    </FormCard>
   );
 }
 
@@ -239,7 +212,7 @@ function EALoadViewer({ response }: EALoadViewerProps) {
 }
 
 export default function EALoadPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, profile, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<EALoadResponse>();
   const streamer = useStreamingRequest({
@@ -286,14 +259,7 @@ export default function EALoadPanel() {
       <PageIntro
         title="Balance EA Cognitive Load"
         sectionTone="slate"
-        sectionIcon="grid"
-        breadcrumb={{ group: "Ops", tab: "EA Load" }}
         description="Surface the per-block EA load for tomorrow and flag sequences of sustained high demand without a recovery window. Operational framing only — suggestions never score EA competence."
-        badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "EA load suite", tone: "sun" },
-          { label: "Block-by-block load", tone: "analysis" },
-          { label: "Retrieval-backed", tone: "slate" },
-        ]}
         infoContent={{
           title: "EA Load Balance",
           body: (
@@ -309,9 +275,7 @@ export default function EALoadPanel() {
       <WorkspaceLayout
         rail={(
           <EALoadForm
-            classrooms={classrooms}
             selectedClassroom={activeClassroom}
-            onClassroomChange={setActiveClassroom}
             onSubmit={handleSubmit}
             loading={loading}
           />
@@ -332,9 +296,38 @@ export default function EALoadPanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <EmptyStateCard
-                icon={<EmptyStateIllustration name="forecast" />}
-                title="No EA load profile yet"
-                description="Run the load balancer once tomorrow's schedule, EA coverage, and any day-specific notes are ready. The canvas will show each block and flag sustained high-load sequences."
+                variant="sample"
+                label="Sample EA load block"
+                /* aria-hidden on the wrapper article below is LOAD-BEARING:
+                   EmptyStateCard only aria-hides the [SAMPLE] tag, not the
+                   sample body. Without this, screen readers would announce
+                   the fake "Reading rotations / Student A, Student C" as
+                   real classroom data. Do not strip.
+
+                   Time slot + activity differ from ForecastPanel's sample
+                   so the two empty states don't read as the same template
+                   when a teacher tabs between them. */
+                sampleNode={(
+                  <article className="ea-load-block ea-load-block--rose" aria-hidden="true">
+                    <header className="ea-load-block__header">
+                      <span className="ea-load-block__time">9:30–10:15</span>
+                      <span className="ea-load-block__badge ea-load-block__badge--rose">
+                        HIGH
+                      </span>
+                    </header>
+                    <h3 className="ea-load-block__activity">Reading rotations</h3>
+                    <p className="ea-load-block__supported">
+                      <strong>Supporting:</strong> Student A, Student C
+                    </p>
+                    <ul className="ea-load-block__factors">
+                      <li>Two regulation check-ins likely during station rotation</li>
+                      <li>One student returning from morning transition</li>
+                    </ul>
+                    <p className="ea-load-block__suggestion">
+                      <strong>Consider:</strong> stagger the rotation so the EA can settle the late-arriver before the second station starts.
+                    </p>
+                  </article>
+                )}
               />
             ) : null}
             {result ? (

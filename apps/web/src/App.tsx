@@ -947,7 +947,7 @@ export default function App() {
                       </div>
                       <div className="shell-classroom-panel__title-row">
                         <strong className="shell-classroom-panel__title">{activeClassroomLabel}</strong>
-                        <span className="shell-classroom-panel__id">{profile.classroom_id}</span>
+                        <span className="shell-classroom-panel__id" data-testid="shell-classroom-active-id">{profile.classroom_id}</span>
                       </div>
                       <div className="shell-classroom-panel__details">
                         <span>{students.length} students</span>

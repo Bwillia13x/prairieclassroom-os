@@ -300,8 +300,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .motion-stagger > *,
-  .app-main > [role="tabpanel"]:not([hidden]),
-  .empty-state-icon {
+  .app-main > [role="tabpanel"]:not([hidden]) {
     animation: none !important;
   }
 }

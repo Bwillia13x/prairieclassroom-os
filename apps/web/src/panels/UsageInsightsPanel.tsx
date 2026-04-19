@@ -53,7 +53,6 @@ export default function UsageInsightsPanel() {
         title="Usage Insights"
         description="How your classroom uses PrairieClassroom. This view summarises feedback ratings and workflow patterns to help you reflect on which tools are most useful."
         sectionTone="forest"
-        sectionIcon="check"
       />
 
       <div className="usage-insights-grid">

@@ -5,7 +5,7 @@ import FileUploadZone from "./FileUploadZone";
 import WorksheetUpload from "./WorksheetUpload";
 import CurriculumPicker from "./CurriculumPicker";
 import DraftRestoreChip from "./DraftRestoreChip";
-import { Card, ActionButton } from "./shared";
+import { FormCard, ActionButton } from "./shared";
 import "./ArtifactUpload.css";
 
 type ArtifactSourceMode = "photo" | "file" | "paste";
@@ -13,7 +13,6 @@ type ArtifactSourceMode = "photo" | "file" | "paste";
 interface Props {
   classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (artifact: LessonArtifact, classroomId: string, curriculumSelection: CurriculumSelection | null) => void;
   loading: boolean;
   formRef?: Ref<HTMLFormElement>;
@@ -22,7 +21,6 @@ interface Props {
 export default function ArtifactUpload({
   classrooms,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
   formRef,
@@ -90,12 +88,11 @@ export default function ArtifactUpload({
   }
 
   return (
-    <Card variant="raised" tone="sage" className="artifact-upload">
-    <Card.Body>
+    <FormCard className="artifact-upload">
     <form className="artifact-upload__form" onSubmit={handleSubmit} ref={formRef}>
-      <h2>Prepare Lesson Artifact</h2>
+      <h2>Prepare lesson artifact</h2>
       <p className="form-description">
-        Choose the classroom first, then bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
+        Bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
       </p>
       <p className="artifact-upload__legend">
         <span aria-hidden="true">*</span> Required
@@ -108,24 +105,9 @@ export default function ArtifactUpload({
         label="Resume the lesson artifact you were setting up?"
       />
 
-      <div className="field">
-        <label htmlFor="classroom">Classroom</label>
-        <select
-          id="classroom"
-          value={selectedClassroom}
-          onChange={(e) => onClassroomChange(e.target.value)}
-        >
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </div>
-
       <div className={`field${touched.title && !title.trim() ? " field--error" : ""}`}>
-        <label htmlFor="title">
-          Artifact Title
+        <label htmlFor="title" className="form-label">
+          Artifact title
           <span className="field-required" aria-hidden="true">*</span>
         </label>
         <input
@@ -145,7 +127,7 @@ export default function ArtifactUpload({
       </div>
 
       <div className="field">
-        <label htmlFor="subject">Subject</label>
+        <label htmlFor="subject" className="form-label">Subject</label>
         <input
           id="subject"
           type="text"
@@ -156,8 +138,8 @@ export default function ArtifactUpload({
       </div>
 
       <div className={`field${touched.rawText && !rawText.trim() ? " field--error" : ""}`}>
-        <label htmlFor="raw-text">
-          Artifact Source
+        <label htmlFor="raw-text" className="form-label">
+          Artifact source
           <span className="field-required" aria-hidden="true">*</span>
         </label>
         <div className="artifact-source-switcher" role="tablist" aria-label="Artifact input method">
@@ -223,8 +205,8 @@ export default function ArtifactUpload({
       </div>
 
       <div className="field">
-        <label htmlFor="teacher-goal">
-          Instructional Focus
+        <label htmlFor="teacher-goal" className="form-label">
+          Instructional focus
           <span className="field-optional">(optional)</span>
         </label>
         <textarea
@@ -267,7 +249,6 @@ export default function ArtifactUpload({
         {loading ? "Generating variants…" : "Generate variants"}
       </ActionButton>
     </form>
-    </Card.Body>
-    </Card>
+    </FormCard>
   );
 }

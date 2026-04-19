@@ -1,74 +1,115 @@
 import type { ReactNode } from "react";
 import type { SectionTone } from "../appReducer";
 import type { SectionIconName } from "./SectionIcon";
-import SectionIcon from "./SectionIcon";
 import PageIntroInfoButton from "./PageIntroInfoButton";
 
-interface Badge {
+/** Tone variants reused from the StatusChip surface (see primitives.css). */
+export type ChipTone =
+  | "accent"
+  | "analysis"
+  | "provenance"
+  | "pending"
+  | "success"
+  | "warning"
+  | "danger"
+  | "muted"
+  | "live"
+  | "sun"
+  | "sage"
+  | "slate"
+  | "forest";
+
+/**
+ * Reserved API for genuinely dynamic per-panel context (e.g.
+ * `📍 Pinned to Alberta Curriculum Grade 4 ELA` only when alignment is
+ * active). When undefined or empty, no chip row is rendered. Static
+ * descriptors like "Artifact-led" or grade-band repeats belong in the
+ * shell chrome (`.shell-classroom-pill`), not in the section header.
+ */
+export interface ChipSpec {
   label: string;
-  tone?: "accent" | "analysis" | "provenance" | "pending" | "success" | "warning" | "danger" | "muted" | "live" | "sun" | "sage" | "slate" | "forest";
+  tone?: ChipTone;
   icon?: string;
   onClick?: () => void;
 }
 
-interface Breadcrumb {
-  group: string;
-  tab: string;
-}
+/**
+ * Legacy badge shape — accepted for backwards compatibility while
+ * panels migrate to `dynamicContext`. PageIntro no longer renders
+ * `badges`; per audit Workstream C the static chip row was removed
+ * from the header.
+ */
+type LegacyBadge = ChipSpec;
 
 interface Props {
   /**
    * Small uppercase label above the title. Optional — when omitted, the
-   * eyebrow row is not rendered. OPS panels drop it in favor of the
-   * breadcrumb (2026-04-19 OPS audit). Keep it on panels whose breadcrumb
-   * alone would not read as a complete orienting cue.
+   * eyebrow row is not rendered. OPS panels drop it (2026-04-19 OPS
+   * audit Phase 1) because the section nav already names the workspace.
+   * Keep it on panels whose context isn't redundant with the chrome.
    */
   eyebrow?: string;
+  /** Page title. Rendered with the display scale. */
   title: string;
+  /** Sentence-case description below the title. */
   description: ReactNode;
-  badges?: Badge[];
+  /**
+   * Genuinely dynamic context chips (see {@link ChipSpec}). Renders nothing
+   * when undefined or empty.
+   */
+  dynamicContext?: ChipSpec[];
   sectionTone?: SectionTone;
-  sectionIcon?: SectionIconName;
-  breadcrumb?: Breadcrumb;
   /**
    * Optional per-panel info popover. Rendered as a compact ⓘ affordance
-   * next to the title. Used for OPS panels that shed their
-   * ContextualHint in the 2026-04-19 GOT-IT consolidation.
+   * next to the title. Used for panels that shed their ContextualHint in
+   * the 2026-04-19 OPS GOT-IT consolidation while still wanting a
+   * lightweight in-place hint.
    */
   infoContent?: { title: string; body: ReactNode };
+  /**
+   * @deprecated Static chip row was removed in audit Workstream C
+   * (2026-04-19). Pass dynamic chips through `dynamicContext` instead.
+   * Accepted but ignored to preserve backwards compatibility while
+   * panels migrate.
+   */
+  badges?: LegacyBadge[];
+  /** @deprecated Breadcrumb was removed in audit Workstream C. */
+  breadcrumb?: { group: string; tab: string };
+  /** @deprecated Section identity is now signaled by the section label only. */
+  sectionIcon?: SectionIconName;
 }
 
 export default function PageIntro({
   eyebrow,
   title,
   description,
-  badges = [],
+  dynamicContext,
   sectionTone,
-  sectionIcon,
-  breadcrumb,
   infoContent,
+  badges,
+  breadcrumb,
+  sectionIcon,
 }: Props) {
-  const showBreadcrumbTab =
-    breadcrumb &&
-    (!eyebrow || breadcrumb.tab.trim().toLowerCase() !== eyebrow.trim().toLowerCase());
+  if (import.meta.env.DEV) {
+    const dropped: string[] = [];
+    if (badges?.length) dropped.push("badges");
+    if (breadcrumb) dropped.push("breadcrumb");
+    if (sectionIcon) dropped.push("sectionIcon");
+    if (dropped.length) {
+      console.warn(
+        `[PageIntro] Ignoring deprecated prop(s): ${dropped.join(", ")}. ` +
+          `Static chip row, breadcrumb, and section icon were removed in audit ` +
+          `Workstream C. Use \`dynamicContext\` for genuinely dynamic context, ` +
+          `or \`infoContent\` for a per-panel ⓘ popover. ` +
+          `Caller: "${eyebrow ?? "(no eyebrow)"} / ${title}"`,
+      );
+    }
+  }
+  const chips = dynamicContext ?? [];
   return (
     <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}`}>
-      {breadcrumb ? (
-        <nav className="page-intro__breadcrumb" aria-label="You are here">
-          <span className="page-intro__breadcrumb-group">{breadcrumb.group}</span>
-          {showBreadcrumbTab ? (
-            <>
-              <span className="page-intro__breadcrumb-sep" aria-hidden="true">›</span>
-              <span className="page-intro__breadcrumb-tab">{breadcrumb.tab}</span>
-            </>
-          ) : null}
-        </nav>
-      ) : null}
       {eyebrow ? (
-        <div className="page-intro__eyebrow">
-          {sectionIcon ? <SectionIcon name={sectionIcon} className="page-intro__eyebrow-icon" /> : null}
-          <span>{eyebrow}</span>
-        </div>
+        <div className="page-intro__eyebrow">{eyebrow}</div>
       ) : null}
       <h2 className="page-intro__title">
         <span className="page-intro__title-text">{title}</span>
@@ -77,16 +118,16 @@ export default function PageIntro({
         ) : null}
       </h2>
       <div className="page-intro__description copy-measure">{description}</div>
-      {badges.length > 0 && (
+      {chips.length > 0 && (
         <div className="status-chip-row">
-          {badges.map((badge) => {
-            const tone = badge.tone ?? "muted";
-            const key = `${badge.label}-${tone}`;
+          {chips.map((chip) => {
+            const tone = chip.tone ?? "muted";
+            const key = `${chip.label}-${tone}`;
             const className = `status-chip status-chip--${tone}`;
             const content = (
               <>
-                {badge.icon ? <span aria-hidden="true">{badge.icon}</span> : null}
-                <span>{badge.label}</span>
+                {chip.icon ? <span aria-hidden="true">{chip.icon}</span> : null}
+                <span>{chip.label}</span>
               </>
             );
             if (tone === "live") {
@@ -95,7 +136,7 @@ export default function PageIntro({
                   key={key}
                   type="button"
                   className={className}
-                  onClick={badge.onClick}
+                  onClick={chip.onClick}
                 >
                   {content}
                 </button>

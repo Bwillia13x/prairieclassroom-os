@@ -42,7 +42,6 @@ vi.mock("../../components/WorkspaceLayout", () => ({
   ),
 }));
 vi.mock("../../components/EmptyStateCard", () => ({ default: () => <div /> }));
-vi.mock("../../components/EmptyStateIllustration", () => ({ default: () => <div /> }));
 vi.mock("../../components/ResultBanner", () => ({ default: () => <div /> }));
 vi.mock("../../hooks/useFeedback", () => ({ useFeedback: () => ({ submit: vi.fn(), submitted: false }) }));
 
