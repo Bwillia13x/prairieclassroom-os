@@ -341,6 +341,14 @@
   --panel-padding: var(--space-6);
   --panel-gap: var(--space-6);
 
+  /* Single source of truth for the page-content top padding inside
+     `.app-main`. Per-panel components must not override this; if a
+     panel needs different breathing room, surface that here so the
+     deviation is visible in code review. 32px (--space-5) is the
+     canonical workspace top padding paired with --space-6 (40px) on
+     the horizontal/bottom sides — see audit fix B2 / shell.css. */
+  --page-content-padding-top: var(--space-5);
+
   /* Motion — unchanged; institutional tone is compatible with
      the existing restrained animation character. */
   --motion-fast: 150ms;
