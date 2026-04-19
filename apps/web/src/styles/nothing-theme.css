@@ -1270,7 +1270,19 @@
 
 /* Right-side action buttons */
 .shell-bar__actions {
-  gap: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.shell-bar__actions > .role-pill-anchor + .shell-bar__palette-btn::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 20px;
+  background: currentColor;
+  opacity: 0.18;
+  margin-right: 12px;
+  vertical-align: middle;
 }
 
 .shell-bar__actions > button,
