@@ -33,7 +33,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
 
   router.post("/", validateBody(EABriefingRequestSchema), async (req, res) => {
     try {
-      const { classroom_id, ea_name } = req.body;
+      const { classroom_id, ea_name, coordination_notes } = req.body;
 
       const classroom = deps.loadClassroom(classroom_id);
       if (!classroom) {
@@ -45,7 +45,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
       const route = getRoute("generate_ea_briefing");
       const modelId = getModelId(route.model_tier);
 
-      const briefingInput: EABriefingInput = { classroom_id, ea_name };
+      const briefingInput: EABriefingInput = { classroom_id, ea_name, coordination_notes };
 
       let briefingCtx = "";
       const citations: RetrievalCitation[] = [];
@@ -86,6 +86,7 @@ export function createEABriefingRouter(deps: RouteDeps): Router {
         mockContext: {
           classroom_id,
           ea_name,
+          coordination_notes,
         },
         safetyScanSource: { ...briefingInput, briefingCtx },
       });

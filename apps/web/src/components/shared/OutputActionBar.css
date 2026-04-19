@@ -25,6 +25,21 @@
   box-shadow: 0 -4px 12px color-mix(in srgb, var(--color-border) 50%, transparent);
 }
 
+/* Top placement — sticks to the top instead of the bottom, reverses the
+   drop shadow, and collapses padding a touch so it reads as a utility
+   ribbon rather than a primary action surface. 2026-04-19 OPS audit. */
+.output-action-bar--top.output-action-bar--sticky {
+  top: 0;
+  bottom: auto;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-border) 50%, transparent);
+}
+
+.output-action-bar--top {
+  margin-bottom: var(--space-3);
+  padding-block: var(--space-2);
+  background: color-mix(in srgb, var(--color-surface) 88%, var(--color-surface-muted));
+}
+
 .output-action-bar__list {
   display: flex;
   gap: var(--space-2);

@@ -13,12 +13,13 @@ interface FormProps {
   classrooms: ClassroomProfile[];
   selectedClassroom: string;
   onClassroomChange: (id: string) => void;
-  onSubmit: (classroomId: string, eaName?: string) => void;
+  onSubmit: (classroomId: string, eaName?: string, coordinationNotes?: string) => void;
   loading: boolean;
 }
 
 export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChange, onSubmit, loading }: FormProps) {
   const [eaName, setEaName] = useState("");
+  const [coordinationNotes, setCoordinationNotes] = useState("");
   const [touched, setTouched] = useState(false);
   const classroomMissing = !selectedClassroom;
 
@@ -26,7 +27,7 @@ export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChang
     e.preventDefault();
     setTouched(true);
     if (classroomMissing) return;
-    onSubmit(selectedClassroom, eaName || undefined);
+    onSubmit(selectedClassroom, eaName || undefined, coordinationNotes.trim() || undefined);
   }
 
   return (
@@ -68,6 +69,19 @@ export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChang
           value={eaName}
           onChange={(e) => setEaName(e.target.value)}
           placeholder="e.g. Ms. Chen"
+        />
+      </div>
+
+      <div className="field">
+        <label htmlFor="ea-coordination-notes">
+          Coordination notes for today <span className="field-optional">(optional)</span>
+        </label>
+        <textarea
+          id="ea-coordination-notes"
+          value={coordinationNotes}
+          onChange={(e) => setCoordinationNotes(e.target.value)}
+          rows={3}
+          placeholder="e.g., EA covering blocks 2–3 only, focus on Brody during math, preschool assembly at 10am..."
         />
       </div>
 
@@ -201,7 +215,7 @@ interface Props {
   classrooms: ClassroomProfile[];
   selectedClassroom: string;
   onClassroomChange: (id: string) => void;
-  onSubmit: (classroomId: string, eaName?: string) => void;
+  onSubmit: (classroomId: string, eaName?: string, coordinationNotes?: string) => void;
   loading: boolean;
   result: EABriefingResponse | null;
 }
