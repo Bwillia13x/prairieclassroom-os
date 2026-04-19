@@ -421,7 +421,8 @@ describe("system inventory helpers", () => {
 
     expect(inventory.ui.panel_count).toBe(12);
     expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("Usage Insights");
-    expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("EA Load");
+    // 2026-04-19 OPS audit phase 1.1: "EA Load" → "EA Load Balance" (full nav label).
+    expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("EA Load Balance");
     expect(inventory.prompts.prompt_class_count).toBe(13);
     expect(inventory.prompts.live_count).toBe(7);
     expect(inventory.prompts.planning_count).toBe(6);

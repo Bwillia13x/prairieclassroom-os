@@ -352,7 +352,6 @@ export default function App() {
     // (e.g. teacher dismisses a remaining legacy hint) should NOT re-trigger
     // the migration; the ops-section flag is either set on mount or when the
     // new section hint itself is dismissed.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
