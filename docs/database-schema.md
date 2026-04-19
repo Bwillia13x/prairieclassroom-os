@@ -1,6 +1,6 @@
 # PrairieClassroom OS — Database Schema Reference
 
-*Updated 2026-04-12*
+*Updated 2026-04-19*
 
 ## Overview
 
@@ -159,6 +159,25 @@ Stores supply teacher packets from the `generate_survival_packet` prompt class.
 | `created_at` | TEXT | NOT NULL | ISO 8601 timestamp |
 
 **Index:** `idx_survival_packets_classroom` on `(classroom_id, created_at)`
+
+### `runs`
+
+Lightweight metadata about recent Prep-workspace generations (differentiate, simplify, vocab). Powers the "Recent runs" chip row above the result canvas so teachers can rehydrate a prior run without re-generating it. Full response payloads are *not* stored here — they stay in the teacher's browser sessionStorage. The server row only carries enough to paint the chip and identify the payload after a reload or cross-device resume.
+
+| Column | Type | Constraints | Description |
+|---|---|---|---|
+| `run_id` | TEXT | PRIMARY KEY | Client-supplied stable id (UUID-shaped); upserts replace the existing row so retries never double-count |
+| `classroom_id` | TEXT | NOT NULL | Classroom this run belongs to |
+| `tool` | TEXT | NOT NULL, CHECK IN ('differentiate', 'simplify', 'vocab') | Prep tool that produced the run |
+| `label` | TEXT | NOT NULL | Short human-readable label shown on the chip |
+| `metadata_json` | TEXT | | Optional lightweight JSON (e.g. artifact title, word count); no student text |
+| `created_at` | TEXT | NOT NULL, DEFAULT `datetime('now')` | ISO 8601 timestamp |
+
+**Index:** `idx_runs_classroom_tool` on `(classroom_id, tool, created_at DESC)`
+
+**Retention:** Self-managed in `saveRun` (`services/memory/store.ts`). After every upsert, rows are pruned synchronously to keep only the most recent `RUN_RETENTION_LIMIT` (currently `30`) per `(classroom_id, tool)` pair. The constant lives in `packages/shared/schemas/run.ts` so the memory layer and contract stay in lockstep. Because retention is enforced on write, the `runs` table is intentionally **not** part of the `memory:admin prune` lifecycle and does not appear in per-classroom retention policy overrides.
+
+**Write/read contract:** The write and read payloads are defined by `SaveRunRequestSchema` and `RunRecordSchema` in `packages/shared/schemas/run.ts`. Routes `POST /api/classrooms/:id/runs` and `GET /api/classrooms/:id/runs` are teacher-scoped (see `docs/api-surface.md`).
 
 ## JSON blob schemas
 

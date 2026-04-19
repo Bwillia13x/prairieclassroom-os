@@ -57,3 +57,93 @@
   font-size: var(--text-sm);
   line-height: 1.55;
 }
+
+.artifact-upload__legend {
+  margin: 0 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+}
+
+.artifact-upload__legend > span {
+  color: var(--color-accent);
+  margin-right: var(--space-1);
+}
+
+.field-required {
+  color: var(--color-accent);
+  margin-left: var(--space-1);
+}
+
+.artifact-source-switcher__tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-1);
+  text-align: left;
+}
+
+.artifact-source-switcher__label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: inherit;
+}
+
+.artifact-source-switcher__hint {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-text-tertiary);
+}
+
+.artifact-source-switcher__tab--active .artifact-source-switcher__hint {
+  color: var(--color-text-on-accent);
+}
+
+.artifact-upload__advanced {
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-3);
+}
+
+.artifact-upload__advanced-toggle {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.artifact-upload__advanced-toggle:hover,
+.artifact-upload__advanced-toggle:focus-visible {
+  color: var(--color-accent);
+}
+
+/* Pin the Generate Variants CTA above the rail fold. The form uses
+   display: contents, so the sticky applies to the final ActionButton
+   when the form layout flows it as the last child. */
+.artifact-upload .action-button:last-child {
+  position: sticky;
+  bottom: var(--space-3);
+  z-index: 1;
+  margin-top: var(--space-4);
+  box-shadow: var(--shadow-xs);
+}
+
+@media (min-height: 720px) {
+  .artifact-upload .action-button:last-child {
+    bottom: var(--space-5);
+  }
+}

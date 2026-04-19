@@ -14,6 +14,23 @@ interface Props {
   ) => void;
   result: VocabCardsResponse | null;
   loading: boolean;
+  defaultGradeBand?: string;
+  defaultTargetLanguage?: string;
+}
+
+const SUBJECT_CODE_TO_LABEL: Record<string, string> = {
+  english_language_arts_and_literature: "ELA",
+  mathematics: "Math",
+  science: "Science",
+  social_studies: "Social Studies",
+};
+
+function inferSubjectFromEntryId(entryId: string): string | null {
+  if (entryId.includes("ela")) return "english_language_arts_and_literature";
+  if (entryId.includes("math")) return "mathematics";
+  if (entryId.includes("science")) return "science";
+  if (entryId.includes("social")) return "social_studies";
+  return null;
 }
 
 const LANGUAGE_OPTIONS = [
@@ -29,12 +46,24 @@ const LANGUAGE_OPTIONS = [
   { code: "ko", label: "Korean" },
 ];
 
-export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
+export default function VocabCardGrid({
+  onSubmit,
+  result,
+  loading,
+  defaultGradeBand,
+  defaultTargetLanguage,
+}: Props) {
   const [artifactText, setArtifactText] = useState("");
-  const [subject, setSubject] = useState("ELA");
-  const [targetLang, setTargetLang] = useState("es");
-  const [gradeBand, setGradeBand] = useState("Grade 4");
+  const [targetLang, setTargetLang] = useState(defaultTargetLanguage ?? "es");
+  const [gradeBand, setGradeBand] = useState(defaultGradeBand ?? "Grade 4");
   const [curriculumSelection, setCurriculumSelection] = useState<CurriculumSelection | null>(null);
+
+  const derivedSubjectCode = curriculumSelection?.entry_id
+    ? inferSubjectFromEntryId(curriculumSelection.entry_id)
+    : null;
+  const subject = derivedSubjectCode
+    ? (SUBJECT_CODE_TO_LABEL[derivedSubjectCode] ?? "ELA")
+    : "ELA";
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,17 +92,6 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
 
         <div className="form-row">
           <div className="field">
-            <label htmlFor="vocab-subject">Subject</label>
-            <select id="vocab-subject" value={subject} onChange={(e) => setSubject(e.target.value)}>
-              <option>ELA</option>
-              <option>Math</option>
-              <option>Science</option>
-              <option>Social Studies</option>
-              <option>Health</option>
-            </select>
-          </div>
-
-          <div className="field">
             <label htmlFor="vocab-lang">Target language</label>
             <select id="vocab-lang" value={targetLang} onChange={(e) => setTargetLang(e.target.value)}>
               {LANGUAGE_OPTIONS.map((l) => (
@@ -94,6 +112,14 @@ export default function VocabCardGrid({ onSubmit, result, loading }: Props) {
             </select>
           </div>
         </div>
+
+        <p className="vocab-form__subject-hint">
+          <span aria-hidden="true">Subject</span>
+          <strong>{subject}</strong>
+          <span className="vocab-form__subject-hint-note">
+            — change via Alberta Curriculum below
+          </span>
+        </p>
 
         <CurriculumPicker
           value={curriculumSelection}

@@ -51,6 +51,8 @@ vi.mock("../../useAsyncAction", () => ({
 // Mock api to avoid network calls
 vi.mock("../../api", () => ({
   differentiate: vi.fn().mockResolvedValue({}),
+  fetchRecentRuns: vi.fn().mockResolvedValue([]),
+  saveRun: vi.fn().mockResolvedValue({ run_id: "r", created_at: new Date().toISOString() }),
 }));
 
 // Mock sub-components to avoid deep render tree complexity

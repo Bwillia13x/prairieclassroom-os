@@ -5,8 +5,9 @@ import SectionIcon from "./SectionIcon";
 
 interface Badge {
   label: string;
-  tone?: "accent" | "analysis" | "provenance" | "pending" | "success" | "warning" | "danger" | "muted" | "sun" | "sage" | "slate" | "forest";
+  tone?: "accent" | "analysis" | "provenance" | "pending" | "success" | "warning" | "danger" | "muted" | "live" | "sun" | "sage" | "slate" | "forest";
   icon?: string;
+  onClick?: () => void;
 }
 
 interface Breadcrumb {
@@ -56,12 +57,34 @@ export default function PageIntro({
       <div className="page-intro__description copy-measure">{description}</div>
       {badges.length > 0 && (
         <div className="status-chip-row">
-          {badges.map((badge) => (
-            <span key={`${badge.label}-${badge.tone ?? "muted"}`} className={`status-chip status-chip--${badge.tone ?? "muted"}`}>
-              {badge.icon ? <span aria-hidden="true">{badge.icon}</span> : null}
-              <span>{badge.label}</span>
-            </span>
-          ))}
+          {badges.map((badge) => {
+            const tone = badge.tone ?? "muted";
+            const key = `${badge.label}-${tone}`;
+            const className = `status-chip status-chip--${tone}`;
+            const content = (
+              <>
+                {badge.icon ? <span aria-hidden="true">{badge.icon}</span> : null}
+                <span>{badge.label}</span>
+              </>
+            );
+            if (tone === "live") {
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  className={className}
+                  onClick={badge.onClick}
+                >
+                  {content}
+                </button>
+              );
+            }
+            return (
+              <span key={key} className={className}>
+                {content}
+              </span>
+            );
+          })}
         </div>
       )}
     </header>

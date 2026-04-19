@@ -50,6 +50,7 @@ import { createStudentSummaryRouter } from "./routes/student-summary.js";
 import { createFeedbackRouter } from "./routes/feedback.js";
 import { createSessionsRouter } from "./routes/sessions.js";
 import { createCurriculumRouter } from "./routes/curriculum.js";
+import { createRunsRouter } from "./routes/runs.js";
 
 // ----- Config -----
 
@@ -205,6 +206,7 @@ app.use("/api/today", createTodayRouter(deps));
 app.use("/api/classrooms", createHistoryRouter(deps));
 app.use("/api/classrooms", createClassroomHealthRouter(deps));
 app.use("/api/classrooms", createStudentSummaryRouter(deps));
+app.use("/api/classrooms", createRunsRouter(deps));
 app.use("/api/scaffold-decay", createScaffoldDecayRouter(deps));
 app.use("/api/survival-packet", createSurvivalPacketRouter(deps));
 app.use("/api/extract-worksheet", createExtractWorksheetRouter(deps));

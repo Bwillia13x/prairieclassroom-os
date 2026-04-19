@@ -7,11 +7,12 @@ interface Props {
   onSubmit: (sourceText: string, gradeBand: string, ealLevel: "beginner" | "intermediate" | "advanced") => void;
   result: SimplifyResponse | null;
   loading: boolean;
+  defaultGradeBand?: string;
 }
 
-export default function SimplifiedViewer({ onSubmit, result, loading }: Props) {
+export default function SimplifiedViewer({ onSubmit, result, loading, defaultGradeBand }: Props) {
   const [sourceText, setSourceText] = useState("");
-  const [gradeBand, setGradeBand] = useState("Grade 4");
+  const [gradeBand, setGradeBand] = useState(defaultGradeBand ?? "Grade 4");
   const [ealLevel, setEalLevel] = useState<"beginner" | "intermediate" | "advanced">("beginner");
 
   function handleSubmit(e: React.FormEvent) {

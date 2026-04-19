@@ -462,3 +462,41 @@ These routes are deterministic (no model call) and support the Usage Insights pa
 - `common_flows` — most frequent panel visit sequences with counts
 - `panel_time_distribution` — time spent per panel (estimated from visit order)
 - `generations_per_session` — average generation count
+
+### P. Save Recent Run
+
+**Route:** `POST /api/classrooms/:id/runs`
+**Model:** none (deterministic persistence)
+**Role scope:** teacher
+**Schema:** `SaveRunRequestSchema` in `packages/shared/schemas/run.ts`
+
+**Purpose:** Persist lightweight metadata about a Prep-workspace generation (`differentiate`, `simplify`, or `vocab`) so the "Recent runs" chip row above the result canvas survives a page reload or a cross-device resume. Full response payloads stay in the teacher's browser sessionStorage — only metadata lives server-side.
+
+**Input:**
+- `run_id` (required) — client-supplied stable id; upsert is keyed on this so retries never double-count
+- `tool` (required) — one of `differentiate`, `simplify`, `vocab`
+- `label` (required) — short human-readable chip label
+- `created_at` (required) — ISO 8601 timestamp
+- `metadata` (optional) — free-form key/value map for chip-level hints (e.g. artifact title, word count); must not include student text
+
+**Output:**
+- `run_id` — persisted id
+- `created_at` — timestamp
+
+**Retention:** Enforced synchronously on write — only the most recent 30 runs per `(classroom_id, tool)` pair are retained (`RUN_RETENTION_LIMIT` in `packages/shared/schemas/run.ts`). The `runs` table is self-managing and is intentionally not part of `memory:admin prune`.
+
+### Q. List Recent Runs
+
+**Route:** `GET /api/classrooms/:id/runs?tool=<tool>&limit=<n>`
+**Model:** none (deterministic retrieval)
+**Role scope:** teacher
+**Schema:** `RunListResponseSchema` in `packages/shared/schemas/run.ts`
+
+**Purpose:** Hydrate the chip row on panel mount. Ordered newest-first, bounded by `RUN_RETENTION_LIMIT`.
+
+**Query params:**
+- `tool` (required) — one of `differentiate`, `simplify`, `vocab`
+- `limit` (optional, default 30) — upper bound on rows returned
+
+**Output:**
+- `runs` — array of `RunRecord` entries ordered newest-first

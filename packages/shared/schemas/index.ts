@@ -251,3 +251,20 @@ export type {
   RetrievalCitation,
   RetrievalTrace,
 } from "./retrieval-trace.js";
+
+export {
+  RUN_TOOLS,
+  RUN_RETENTION_LIMIT,
+  RunToolSchema,
+  SaveRunRequestSchema,
+  SaveRunResponseSchema,
+  RunRecordSchema,
+  RunListResponseSchema,
+} from "./run.js";
+export type {
+  RunTool,
+  SaveRunRequest,
+  SaveRunResponse,
+  RunRecord,
+  RunListResponse,
+} from "./run.js";

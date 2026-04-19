@@ -10,6 +10,7 @@ import type { ClassroomProfile } from "../../packages/shared/schemas/classroom.j
 import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold-decay.js";
 import type { FamilyMessageDraft } from "../../packages/shared/schemas/message.js";
 import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
+import type { RunRecord, RunTool } from "../../packages/shared/schemas/run.js";
 import { safeParseJson } from "./json-utils.js";
 import {
   filterRosterScoped,
@@ -32,6 +33,44 @@ export function getRecentPlans(classroomId: ClassroomId, limit = 5): TomorrowPla
 export function getLatestPlan(classroomId: ClassroomId): TomorrowPlan | null {
   const plans = getRecentPlans(classroomId, 1);
   return plans.length > 0 ? plans[0] : null;
+}
+
+/**
+ * Return the most recent run rows for a (classroom, tool), newest first.
+ * Mirrors the Prep chip row on DifferentiatePanel / LanguageToolsPanel.
+ */
+export function getRecentRuns(
+  classroomId: ClassroomId,
+  tool: RunTool,
+  limit = 3,
+): RunRecord[] {
+  const db = getDb(classroomId);
+  const safeLimit = Math.max(1, Math.min(limit, 50));
+  const rows = db.prepare(`
+    SELECT run_id, classroom_id, tool, label, metadata_json, created_at
+    FROM runs
+    WHERE classroom_id = ? AND tool = ?
+    ORDER BY created_at DESC
+    LIMIT ?
+  `).all(classroomId, tool, safeLimit) as {
+    run_id: string;
+    classroom_id: string;
+    tool: RunTool;
+    label: string;
+    metadata_json: string | null;
+    created_at: string;
+  }[];
+
+  return rows.map((r) => ({
+    run_id: r.run_id,
+    classroom_id: r.classroom_id,
+    tool: r.tool,
+    label: r.label,
+    created_at: r.created_at,
+    metadata: r.metadata_json
+      ? safeParseJson<Record<string, unknown>>(r.metadata_json, "run metadata")
+      : null,
+  }));
 }
 
 export function summarizeRecentPlans(plans: TomorrowPlan[]): string {

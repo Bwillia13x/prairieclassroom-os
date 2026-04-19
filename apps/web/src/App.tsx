@@ -46,6 +46,7 @@ import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
 import ShortcutSheet from "./components/ShortcutSheet";
 import CommandPalette from "./components/CommandPalette";
+import PrepSectionIntro from "./components/PrepSectionIntro";
 import { usePaletteEntries } from "./hooks/usePaletteEntries";
 import TomorrowChip from "./components/TomorrowChip";
 import { reportError } from "./errorReporter";
@@ -478,6 +479,27 @@ export default function App() {
     window.addEventListener("keydown", handleKeydown);
     return () => window.removeEventListener("keydown", handleKeydown);
   }, [setActiveTab]);
+
+  // Classroom-switcher opener — dispatched from PageIntro "live" Grade badges
+  // (see DifferentiatePanel + LanguageToolsPanel). Opens the command palette
+  // which already carries classroom-switch entries. Gated so modals take
+  // priority the same way Cmd+K does.
+  useEffect(() => {
+    function handleOpenClassroomSwitcher() {
+      const g = paletteGatingRef.current;
+      if (g.authPrompt || g.rolePrompt || g.showOnboarding || g.shortcutSheetOpen) return;
+      setPaletteOpen(true);
+    }
+    document.addEventListener(
+      "prairie:open-classroom-switcher",
+      handleOpenClassroomSwitcher,
+    );
+    return () =>
+      document.removeEventListener(
+        "prairie:open-classroom-switcher",
+        handleOpenClassroomSwitcher,
+      );
+  }, []);
 
   function handleDismissOnboarding() {
     localStorage.setItem("prairie-onboarding-done", "true");
@@ -936,7 +958,13 @@ export default function App() {
                             </span>
                           ) : null}
                           {shortcutKey ? (
-                            <kbd className="shell-nav__kbd" aria-hidden="true">{shortcutKey}</kbd>
+                            <kbd
+                              className="shell-nav__kbd"
+                              aria-label={`Keyboard shortcut ${shortcutKey}`}
+                              title={`Press ${shortcutKey} to jump here`}
+                            >
+                              {shortcutKey}
+                            </kbd>
                           ) : null}
                         </button>
                       );
@@ -971,6 +999,7 @@ export default function App() {
           ) : null}
 
           {renderPanel(activeTab, "today", mountedTabs, <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
+          {activeGroup === "prep" ? <PrepSectionIntro /> : null}
           {renderPanel(activeTab, "differentiate", mountedTabs, <DifferentiatePanel />)}
           {renderPanel(
             activeTab,

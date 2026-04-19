@@ -53,7 +53,12 @@ vi.mock("../../useAsyncAction", () => {
     },
   };
 });
-vi.mock("../../api", () => ({ simplifyText: vi.fn().mockResolvedValue({}), generateVocabCards: vi.fn().mockResolvedValue({}) }));
+vi.mock("../../api", () => ({
+  simplifyText: vi.fn().mockResolvedValue({}),
+  generateVocabCards: vi.fn().mockResolvedValue({}),
+  fetchRecentRuns: vi.fn().mockResolvedValue([]),
+  saveRun: vi.fn().mockResolvedValue({ run_id: "r", created_at: new Date().toISOString() }),
+}));
 vi.mock("../../components/SimplifiedViewer", () => ({ default: () => <div data-testid="simplified-viewer" /> }));
 vi.mock("../../components/VocabCardGrid", () => ({ default: () => <div data-testid="vocab-card-grid" /> }));
 vi.mock("../../components/ContextualHint", () => ({ default: () => <div /> }));

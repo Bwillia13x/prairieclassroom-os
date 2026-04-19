@@ -3,7 +3,7 @@
 _Generated from `services/orchestrator/server.ts` and `services/orchestrator/routes/*.ts`. Do not edit endpoint rows by hand; run `npm run system:inventory`._
 
 - Mounted Express route bases: 21
-- Exact endpoints: 47
+- Exact endpoints: 49
 
 | Method | Endpoint | Route file | Auth boundary | Role scope |
 |---|---|---|---|---|
@@ -44,6 +44,8 @@ _Generated from `services/orchestrator/server.ts` and `services/orchestrator/rou
 | GET | `/api/classrooms/:id/patterns` | `services/orchestrator/routes/history.ts` | classroom-code | teacher, reviewer |
 | GET | `/api/classrooms/:id/health` | `services/orchestrator/routes/classroom-health.ts` | classroom-code | teacher |
 | GET | `/api/classrooms/:id/student-summary` | `services/orchestrator/routes/student-summary.ts` | classroom-code | teacher |
+| POST | `/api/classrooms/:id/runs` | `services/orchestrator/routes/runs.ts` | classroom-code | teacher |
+| GET | `/api/classrooms/:id/runs` | `services/orchestrator/routes/runs.ts` | classroom-code | teacher, ea |
 | POST | `/api/scaffold-decay` | `services/orchestrator/routes/scaffold-decay.ts` | classroom-code | teacher |
 | GET | `/api/scaffold-decay/latest/:classroomId/:studentRef` | `services/orchestrator/routes/scaffold-decay.ts` | classroom-code | teacher |
 | POST | `/api/survival-packet` | `services/orchestrator/routes/survival-packet.ts` | classroom-code | teacher |

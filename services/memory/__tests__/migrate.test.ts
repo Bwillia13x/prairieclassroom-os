@@ -18,6 +18,7 @@ const ALL_TABLES = [
   "survival_packets",
   "feedback",
   "sessions",
+  "runs",
 ];
 
 const ALL_INDEXES = [
@@ -32,6 +33,7 @@ const ALL_INDEXES = [
   "idx_feedback_classroom",
   "idx_feedback_panel",
   "idx_sessions_classroom",
+  "idx_runs_classroom_tool",
 ];
 
 function getTableNames(db: Database.Database): string[] {
@@ -91,18 +93,18 @@ describe("runMigrations (real migration files)", () => {
 
   it("is idempotent -- second run applies 0 migrations", () => {
     const first = runMigrations(db);
-    expect(first.applied).toBe(2);
-    expect(first.current).toBe(2);
+    expect(first.applied).toBe(3);
+    expect(first.current).toBe(3);
 
     const second = runMigrations(db);
     expect(second.applied).toBe(0);
-    expect(second.current).toBe(2);
+    expect(second.current).toBe(3);
   });
 
   it("records migration versions in _migrations table", () => {
     runMigrations(db);
     const records = getMigrationRecords(db);
-    expect(records).toHaveLength(2);
+    expect(records).toHaveLength(3);
     expect(records[0].version).toBe(1);
     expect(records[0].name).toBe("001_initial_schema");
     expect(records[0].applied_at).toBeTruthy();
@@ -110,6 +112,8 @@ describe("runMigrations (real migration files)", () => {
     expect(new Date(records[0].applied_at).getTime()).not.toBeNaN();
     expect(records[1].version).toBe(2);
     expect(records[1].name).toBe("002_feedback_and_sessions");
+    expect(records[2].version).toBe(3);
+    expect(records[2].name).toBe("003_runs");
   });
 
   it("handles a database that already has tables (backward compatibility)", () => {
@@ -122,7 +126,7 @@ describe("runMigrations (real migration files)", () => {
 
     // Migrations use IF NOT EXISTS, so they should not fail
     const result = runMigrations(db);
-    expect(result.applied).toBe(2);
+    expect(result.applied).toBe(3);
 
     // Existing data should survive
     const row = db
@@ -226,10 +230,10 @@ describe("runMigrations (multi-migration sequence)", () => {
     rmSync(tempDir, { recursive: true, force: true });
   });
 
-  it("applies a third migration file after 001+002", () => {
-    // First, apply the real migrations (001 + 002)
+  it("applies a fourth migration file after 001+002+003", () => {
+    // First, apply the real migrations (001 + 002 + 003)
     runMigrations(db);
-    expect(getMigrationRecords(db)).toHaveLength(2);
+    expect(getMigrationRecords(db)).toHaveLength(3);
 
     // Copy the real migration files into temp dir
     const real001Path = resolve(
@@ -240,12 +244,17 @@ describe("runMigrations (multi-migration sequence)", () => {
       import.meta.dirname ?? ".",
       "../migrations/002_feedback_and_sessions.sql",
     );
+    const real003Path = resolve(
+      import.meta.dirname ?? ".",
+      "../migrations/003_runs.sql",
+    );
     writeFileSync(join(tempDir, "001_initial_schema.sql"), readFileSync(real001Path, "utf-8"));
     writeFileSync(join(tempDir, "002_feedback_and_sessions.sql"), readFileSync(real002Path, "utf-8"));
+    writeFileSync(join(tempDir, "003_runs.sql"), readFileSync(real003Path, "utf-8"));
 
-    // Create a 003 migration that adds a column
+    // Create a 004 migration that adds a column
     writeFileSync(
-      join(tempDir, "003_add_test_column.sql"),
+      join(tempDir, "004_add_test_column.sql"),
       "ALTER TABLE generated_plans ADD COLUMN notes TEXT;\n",
     );
 
@@ -266,12 +275,12 @@ describe("runMigrations (multi-migration sequence)", () => {
       .prepare("SELECT MAX(version) as max_version FROM _migrations")
       .get() as { max_version: number | null };
     const appliedVersion = row?.max_version ?? 0;
-    expect(appliedVersion).toBe(2);
+    expect(appliedVersion).toBe(3);
 
-    // Apply only pending (003)
+    // Apply only pending (004)
     const pending = migrations.filter((m) => m.version > appliedVersion);
     expect(pending).toHaveLength(1);
-    expect(pending[0].name).toBe("003_add_test_column");
+    expect(pending[0].name).toBe("004_add_test_column");
 
     for (const migration of pending) {
       const sql = readFileSync(migration.path, "utf-8");
@@ -284,13 +293,14 @@ describe("runMigrations (multi-migration sequence)", () => {
       run();
     }
 
-    // Verify 003 applied
+    // Verify 004 applied
     const records = getMigrationRecords(db);
-    expect(records).toHaveLength(3);
+    expect(records).toHaveLength(4);
     expect(records[0].version).toBe(1);
     expect(records[1].version).toBe(2);
     expect(records[2].version).toBe(3);
-    expect(records[2].name).toBe("003_add_test_column");
+    expect(records[3].version).toBe(4);
+    expect(records[3].name).toBe("004_add_test_column");
 
     // Verify the column was actually added
     const info = db.prepare("PRAGMA table_info(generated_plans)").all() as {

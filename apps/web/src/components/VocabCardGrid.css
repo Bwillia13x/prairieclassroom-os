@@ -15,6 +15,32 @@
   font-size: var(--text-lg);
 }
 
+.vocab-form__subject-hint {
+  margin: var(--space-3) 0 var(--space-2);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+}
+
+.vocab-form__subject-hint strong {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text);
+}
+
+.vocab-form__subject-hint-note {
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--color-text-tertiary);
+}
+
 .vocab-results {
   background: var(--color-surface-elevated);
   border: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);

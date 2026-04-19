@@ -35,6 +35,7 @@ export default function ArtifactUpload({
   const [curriculumSuggestions, setCurriculumSuggestions] = useState<CurriculumEntry[]>([]);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [sourceMode, setSourceMode] = useState<ArtifactSourceMode>("photo");
+  const [curriculumOpen, setCurriculumOpen] = useState(false);
   const selectedClassroomProfile = classrooms.find((classroom) => classroom.classroom_id === selectedClassroom);
 
   const {
@@ -96,6 +97,9 @@ export default function ArtifactUpload({
       <p className="form-description">
         Choose the classroom first, then bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
       </p>
+      <p className="artifact-upload__legend">
+        <span aria-hidden="true">*</span> Required
+      </p>
 
       <DraftRestoreChip
         show={hasPendingDraft}
@@ -120,7 +124,10 @@ export default function ArtifactUpload({
       </div>
 
       <div className={`field${touched.title && !title.trim() ? " field--error" : ""}`}>
-        <label htmlFor="title">Artifact Title</label>
+        <label htmlFor="title">
+          Artifact Title
+          <span className="field-required" aria-hidden="true">*</span>
+        </label>
         <input
           id="title"
           type="text"
@@ -149,12 +156,15 @@ export default function ArtifactUpload({
       </div>
 
       <div className={`field${touched.rawText && !rawText.trim() ? " field--error" : ""}`}>
-        <label htmlFor="raw-text">Artifact Source</label>
+        <label htmlFor="raw-text">
+          Artifact Source
+          <span className="field-required" aria-hidden="true">*</span>
+        </label>
         <div className="artifact-source-switcher" role="tablist" aria-label="Artifact input method">
           {[
-            { id: "photo", label: "Photo" },
-            { id: "file", label: "File" },
-            { id: "paste", label: "Paste" },
+            { id: "photo", label: "Photo", hint: "Photo of a worksheet" },
+            { id: "file", label: "File", hint: "PDF or Word document" },
+            { id: "paste", label: "Paste", hint: "Paste text directly" },
           ].map((mode) => (
             <button
               key={mode.id}
@@ -164,7 +174,8 @@ export default function ArtifactUpload({
               aria-selected={sourceMode === mode.id}
               onClick={() => setSourceMode(mode.id as ArtifactSourceMode)}
             >
-              {mode.label}
+              <span className="artifact-source-switcher__label">{mode.label}</span>
+              <span className="artifact-source-switcher__hint">{mode.hint}</span>
             </button>
           ))}
         </div>
@@ -225,13 +236,26 @@ export default function ArtifactUpload({
         />
       </div>
 
-      <CurriculumPicker
-        value={curriculumSelection}
-        onChange={setCurriculumSelection}
-        subjectHint={subject || selectedClassroomProfile?.subject_focus}
-        gradeHint={selectedClassroomProfile?.grade_band}
-        suggestedEntries={curriculumSuggestions}
-      />
+      <div className="artifact-upload__advanced">
+        <button
+          type="button"
+          className="artifact-upload__advanced-toggle"
+          aria-expanded={curriculumOpen}
+          onClick={() => setCurriculumOpen((v) => !v)}
+        >
+          Alberta Curriculum Alignment
+          <span aria-hidden="true">{curriculumOpen ? "−" : "+"}</span>
+        </button>
+        {curriculumOpen ? (
+          <CurriculumPicker
+            value={curriculumSelection}
+            onChange={setCurriculumSelection}
+            subjectHint={subject || selectedClassroomProfile?.subject_focus}
+            gradeHint={selectedClassroomProfile?.grade_band}
+            suggestedEntries={curriculumSuggestions}
+          />
+        ) : null}
+      </div>
 
       <ActionButton
         type="submit"

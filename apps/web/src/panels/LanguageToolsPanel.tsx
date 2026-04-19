@@ -10,8 +10,9 @@ import ErrorBanner from "../components/ErrorBanner";
 import { ReadabilityComparisonGauge } from "../components/DataVisualizations";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
-import EmptyStateCard from "../components/EmptyStateCard";
-import EmptyStateIllustration from "../components/EmptyStateIllustration";
+import LanguageToolsEmptyState from "../components/LanguageToolsEmptyState";
+import LanguageToolsStudentPicker, { type StudentLike } from "../components/LanguageToolsStudentPicker";
+import RecentRunsChipRow from "../components/RecentRunsChipRow";
 import StreamingIndicator from "../components/StreamingIndicator";
 import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
 import ResultBanner from "../components/ResultBanner";
@@ -22,6 +23,12 @@ import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useDownloadBlob } from "../hooks/useDownloadBlob";
 import { serializeLanguageOutputToPlainText, serializeVocabCardSetToMarkdown } from "./outputActionBarHelpers";
 import type { CurriculumSelection, SimplifyResponse, VocabCardsResponse } from "../types";
+import {
+  pickDefaultGradeBand,
+  pickDefaultTargetLanguage,
+  topFamilyLanguages,
+} from "../utils/classroomLanguageDefaults";
+import { useRecentRuns } from "../hooks/useRecentRuns";
 
 type LanguageTool = "simplify" | "vocab";
 
@@ -33,7 +40,28 @@ export default function LanguageToolsPanel() {
   const [activeTool, setActiveTool] = useState<LanguageTool>("simplify");
   const [simplifyKey, setSimplifyKey] = useState(0);
   const [vocabKey, setVocabKey] = useState(0);
+  const [focusStudent, setFocusStudent] = useState<StudentLike | null>(null);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const defaultGradeBand = useMemo(() => pickDefaultGradeBand(profile ?? null), [profile]);
+  const defaultTargetLanguage = useMemo(() => pickDefaultTargetLanguage(profile ?? null), [profile]);
+  const effectiveTargetLanguage = useMemo(() => {
+    if (!focusStudent?.family_language) return defaultTargetLanguage;
+    return pickDefaultTargetLanguage({
+      classroom_id: profile?.classroom_id ?? "",
+      grade_band: profile?.grade_band ?? "",
+      subject_focus: profile?.subject_focus ?? "",
+      classroom_notes: profile?.classroom_notes ?? [],
+      students: [
+        {
+          alias: focusStudent.alias,
+          family_language: focusStudent.family_language,
+          eal_flag: focusStudent.eal_flag,
+        },
+      ],
+    });
+  }, [focusStudent, defaultTargetLanguage, profile]);
+  const simplifyRecent = useRecentRuns("simplify", activeClassroom, 3);
+  const vocabRecent = useRecentRuns("vocab", activeClassroom, 3);
   const streamer = useEmulatedStreaming({
     sectionLabels: ["Processing text", "Applying language models", "Formatting output"],
     structuringDelayMs: 1500,
@@ -160,6 +188,22 @@ export default function LanguageToolsPanel() {
       showSuccess("Text simplified");
       session.recordGeneration("language-tools", "simplify_for_student");
       setSimplifyKey((k) => k + 1);
+      const runId = `simplify-${simplifyKey + 1}-${Date.now()}`;
+      simplifyRecent.record(
+        {
+          id: runId,
+          label: sourceText.slice(0, 40) + (sourceText.length > 40 ? "…" : ""),
+          at: Date.now(),
+        },
+        { response: resp },
+      );
+    }
+  }
+
+  function handleRestoreSimplifyRun(runId: string) {
+    const cached = simplifyRecent.getPayload<{ response: SimplifyResponse }>(runId);
+    if (cached) {
+      simplify.execute(async () => cached.response);
     }
   }
 
@@ -185,6 +229,22 @@ export default function LanguageToolsPanel() {
       showSuccess("Cards generated");
       session.recordGeneration("language-tools", "generate_vocab_cards");
       setVocabKey((k) => k + 1);
+      const runId = `vocab-${vocabKey + 1}-${Date.now()}`;
+      vocabRecent.record(
+        {
+          id: runId,
+          label: `${targetLanguage.toUpperCase()} · ${gradeBand}`,
+          at: Date.now(),
+        },
+        { response: resp },
+      );
+    }
+  }
+
+  function handleRestoreVocabRun(runId: string) {
+    const cached = vocabRecent.getPayload<{ response: VocabCardsResponse }>(runId);
+    if (cached) {
+      vocab.execute(async () => cached.response);
     }
   }
 
@@ -200,9 +260,16 @@ export default function LanguageToolsPanel() {
         breadcrumb={{ group: "Prep", tab: "Language Tools" }}
         description="Simplify classroom text for EAL learners or generate bilingual vocabulary cards from any lesson content."
         badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Language prep", tone: "sun" },
-          { label: "EAL-ready output", tone: "sage" },
-          { label: "Bilingual support", tone: "provenance" },
+          {
+            label: profile ? `Grade ${profile.grade_band}` : "Choose classroom",
+            tone: "live",
+            onClick: () =>
+              document.dispatchEvent(
+                new CustomEvent("prairie:open-classroom-switcher"),
+              ),
+          },
+          { label: "EAL-ready", tone: "muted" },
+          { label: "Bilingual support", tone: "muted" },
         ]}
       />
 
@@ -215,28 +282,50 @@ export default function LanguageToolsPanel() {
               description="Simplify text for EAL learners or generate bilingual vocabulary cards from any lesson content."
               tone="sage"
             />
-            <div className="language-tool-toggle">
+            <LanguageToolsStudentPicker
+              students={profile?.students ?? []}
+              value={focusStudent}
+              onChange={setFocusStudent}
+            />
+            <div className="language-tool-toggle" role="tablist" aria-label="Language tool">
               <button
                 type="button"
                 className={`language-tool-toggle__btn${activeTool === "simplify" ? " language-tool-toggle__btn--active" : ""}`}
                 onClick={() => setActiveTool("simplify")}
                 aria-pressed={activeTool === "simplify"}
+                role="tab"
+                aria-selected={activeTool === "simplify"}
               >
-                Simplify Text
+                <span className="language-tool-toggle__glyph" aria-hidden="true">Aa</span>
+                <span className="language-tool-toggle__label">Simplify Text</span>
               </button>
               <button
                 type="button"
                 className={`language-tool-toggle__btn${activeTool === "vocab" ? " language-tool-toggle__btn--active" : ""}`}
                 onClick={() => setActiveTool("vocab")}
                 aria-pressed={activeTool === "vocab"}
+                role="tab"
+                aria-selected={activeTool === "vocab"}
               >
-                Vocab Cards
+                <span className="language-tool-toggle__glyph" aria-hidden="true">▢▢</span>
+                <span className="language-tool-toggle__label">Vocab Cards</span>
               </button>
             </div>
             {activeTool === "simplify" ? (
-              <SimplifiedViewer onSubmit={handleSimplify} result={null} loading={simplify.loading} />
+              <SimplifiedViewer
+                onSubmit={handleSimplify}
+                result={null}
+                loading={simplify.loading}
+                defaultGradeBand={defaultGradeBand}
+              />
             ) : (
-              <VocabCardGrid onSubmit={handleVocabCards} result={null} loading={vocab.loading} />
+              <VocabCardGrid
+                onSubmit={handleVocabCards}
+                result={null}
+                loading={vocab.loading}
+                defaultGradeBand={defaultGradeBand}
+                defaultTargetLanguage={effectiveTargetLanguage}
+              />
             )}
           </>
         )}
@@ -252,17 +341,18 @@ export default function LanguageToolsPanel() {
               />
             ) : null}
             {!activeAction.loading && activeAction.result === null && !activeAction.error ? (
-              <EmptyStateCard
-                icon={<EmptyStateIllustration name="language" />}
-                title={activeTool === "simplify" ? "No simplified text yet" : "No vocabulary cards yet"}
-                description={activeTool === "simplify"
-                  ? "Paste classroom text and select the EAL level to generate a simplified version with key vocabulary and visual cue suggestions."
-                  : "Paste lesson content and choose a target language to generate bilingual vocabulary cards for EAL students."
-                }
+              <LanguageToolsEmptyState
+                mode={activeTool === "simplify" ? "simplify" : "vocab"}
+                ealStudents={profile?.students.filter((s) => s.eal_flag).length ?? 0}
+                topLanguages={topFamilyLanguages(profile?.students ?? [])}
               />
             ) : null}
             {simplify.result && activeTool === "simplify" ? (
               <>
+                <RecentRunsChipRow
+                  runs={simplifyRecent.runs}
+                  onSelect={handleRestoreSimplifyRun}
+                />
                 <ResultBanner label="Text simplified" generatedAt={Date.now()} />
                 <MockModeBanner
                   modelId={simplify.result.model_id}
@@ -272,7 +362,12 @@ export default function LanguageToolsPanel() {
                   sourceText={simplify.result.simplified.source_text}
                   simplifiedText={simplify.result.simplified.simplified_text}
                 />
-                <SimplifiedViewer onSubmit={handleSimplify} result={simplify.result} loading={simplify.loading} />
+                <SimplifiedViewer
+                  onSubmit={handleSimplify}
+                  result={simplify.result}
+                  loading={simplify.loading}
+                  defaultGradeBand={defaultGradeBand}
+                />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}
@@ -283,12 +378,22 @@ export default function LanguageToolsPanel() {
             ) : null}
             {vocab.result && activeTool === "vocab" ? (
               <>
+                <RecentRunsChipRow
+                  runs={vocabRecent.runs}
+                  onSelect={handleRestoreVocabRun}
+                />
                 <ResultBanner label={`${vocab.result.card_set.cards.length} cards generated`} generatedAt={Date.now()} />
                 <MockModeBanner
                   modelId={vocab.result.model_id}
                   panelHint="Vocabulary cards are static fixture content in mock mode and do not vary by source text or target language. Run with Ollama or hosted Gemini to see real vocab generation."
                 />
-                <VocabCardGrid onSubmit={handleVocabCards} result={vocab.result} loading={vocab.loading} />
+                <VocabCardGrid
+                  onSubmit={handleVocabCards}
+                  result={vocab.result}
+                  loading={vocab.loading}
+                  defaultGradeBand={defaultGradeBand}
+                  defaultTargetLanguage={effectiveTargetLanguage}
+                />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}

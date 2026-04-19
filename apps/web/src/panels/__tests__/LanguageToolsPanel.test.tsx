@@ -118,7 +118,8 @@ describe("LanguageToolsPanel", () => {
       </AppContext.Provider>,
     );
 
-    expect(screen.getByText("No simplified text yet")).toBeInTheDocument();
+    // The empty state is now the Nothing-design LanguageToolsEmptyState.
+    expect(screen.getByText(/what a simplified passage looks like/i)).toBeInTheDocument();
   });
 
   it("cancel button calls cancel when streaming is active", async () => {

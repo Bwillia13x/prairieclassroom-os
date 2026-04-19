@@ -12,6 +12,8 @@ import ContextualHint from "../components/ContextualHint";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import DifferentiateEmptyState from "../components/DifferentiateEmptyState";
+import RecentRunsChipRow from "../components/RecentRunsChipRow";
+import { useRecentRuns } from "../hooks/useRecentRuns";
 import ErrorBanner from "../components/ErrorBanner";
 import OutputMetaRow from "../components/OutputMetaRow";
 import { buildModelMetaItems } from "../components/buildModelMetaItems";
@@ -45,6 +47,7 @@ export default function DifferentiatePanel() {
   const intakeRef = useRef<HTMLFormElement>(null);
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const recent = useRecentRuns("differentiate", activeClassroom, 3);
   const streamer = useEmulatedStreaming({
     sectionLabels: ["Readiness variants", "Scaffolded chunking", "Extension variants", "Language support"],
     structuringDelayMs: 2000,
@@ -132,7 +135,27 @@ export default function DifferentiatePanel() {
       showSuccess("Variants generated");
       session.recordGeneration("differentiate", "differentiate_material");
       setResultKey((k) => k + 1);
+      const runId = `diff-${resultKey + 1}-${Date.now()}`;
+      recent.record(
+        { id: runId, label: artifact.title, at: Date.now() },
+        { artifactTitle: artifact.title, response: resp },
+      );
     }
+  }
+
+  function handleRestoreRun(runId: string) {
+    const cached = recent.getPayload<{
+      artifactTitle: string;
+      response: DifferentiateResponse;
+    }>(runId);
+    if (cached) {
+      setArtifactTitle(cached.artifactTitle);
+      // Replay the cached response through useAsyncAction.execute so the
+      // canvas renders via the same code path. Local resolver avoids a new
+      // network request.
+      execute(async () => cached.response);
+    }
+    resultRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
   function focusIntake() {
@@ -150,9 +173,16 @@ export default function DifferentiatePanel() {
         breadcrumb={{ group: "Prep", tab: "Differentiate" }}
         description="Bring one lesson artifact into the system and generate a set of classroom-ready variants with clearer scaffolds, chunking, extension, and language support."
         badges={[
-          { label: profile ? `Grade ${profile.grade_band}` : "Lesson prep", tone: "sun" },
-          { label: "Artifact-led workflow", tone: "provenance" },
-          { label: "Student-ready variants", tone: "sage" },
+          {
+            label: profile ? `Grade ${profile.grade_band}` : "Choose classroom",
+            tone: "live",
+            onClick: () =>
+              document.dispatchEvent(
+                new CustomEvent("prairie:open-classroom-switcher"),
+              ),
+          },
+          { label: "Artifact-led", tone: "muted" },
+          { label: "Student-ready variants", tone: "muted" },
         ]}
       />
 
@@ -182,10 +212,18 @@ export default function DifferentiatePanel() {
               <StreamingIndicator label="Generating lesson variants" onCancel={cancel} />
             ) : null}
             {!loading && result === null && !error ? (
-              <DifferentiateEmptyState onStart={focusIntake} />
+              <DifferentiateEmptyState
+                onStart={focusIntake}
+                classroomSummary={profile ? {
+                  totalStudents: profile.students.length,
+                  ealStudents: profile.students.filter((s) => s.eal_flag).length,
+                  gradeBand: profile.grade_band,
+                } : undefined}
+              />
             ) : null}
             {result ? (
               <>
+                <RecentRunsChipRow runs={recent.runs} onSelect={handleRestoreRun} />
                 <ResultBanner
                   label={`${result.variants.length} variants generated`}
                   generatedAt={Date.now()}

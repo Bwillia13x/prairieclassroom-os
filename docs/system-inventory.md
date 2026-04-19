@@ -53,7 +53,7 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 ## API Mounts
 
 - Mounted Express route bases: 21
-- Exact endpoints: 47
+- Exact endpoints: 49
 - `/api/differentiate`
 - `/api/tomorrow-plan`
 - `/api/family-message`
@@ -117,6 +117,8 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 | GET | `/api/classrooms/:id/patterns` | `services/orchestrator/routes/history.ts` | classroom-code | teacher, reviewer |
 | GET | `/api/classrooms/:id/health` | `services/orchestrator/routes/classroom-health.ts` | classroom-code | teacher |
 | GET | `/api/classrooms/:id/student-summary` | `services/orchestrator/routes/student-summary.ts` | classroom-code | teacher |
+| POST | `/api/classrooms/:id/runs` | `services/orchestrator/routes/runs.ts` | classroom-code | teacher |
+| GET | `/api/classrooms/:id/runs` | `services/orchestrator/routes/runs.ts` | classroom-code | teacher, ea |
 | POST | `/api/scaffold-decay` | `services/orchestrator/routes/scaffold-decay.ts` | classroom-code | teacher |
 | GET | `/api/scaffold-decay/latest/:classroomId/:studentRef` | `services/orchestrator/routes/scaffold-decay.ts` | classroom-code | teacher |
 | POST | `/api/survival-packet` | `services/orchestrator/routes/survival-packet.ts` | classroom-code | teacher |

@@ -594,6 +594,63 @@ export async function fetchPatternHistory(
   return data.patterns;
 }
 
+// ---------------------------------------------------------------------------
+// Recent Prep runs (differentiate / simplify / vocab chip row).
+// Writes are fire-and-forget; failure is silent so the UI remains responsive.
+// ---------------------------------------------------------------------------
+
+type RunTool = "differentiate" | "simplify" | "vocab";
+
+interface RunRecordApi {
+  run_id: string;
+  classroom_id: string;
+  tool: RunTool;
+  label: string;
+  created_at: string;
+  metadata?: Record<string, unknown> | null;
+}
+
+export async function fetchRecentRuns(
+  classroomId: string,
+  tool: RunTool,
+  limit = 3,
+  signal?: AbortSignal,
+): Promise<{ id: string; label: string; at: number }[]> {
+  const params = new URLSearchParams({ tool, limit: String(limit) });
+  const data = await requestJson<{ runs: RunRecordApi[] }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/runs?${params.toString()}`,
+    { classroomId, signal, silent: true },
+  );
+  return data.runs.map((r) => ({
+    id: r.run_id,
+    label: r.label,
+    at: Date.parse(r.created_at),
+  }));
+}
+
+export async function saveRun(
+  classroomId: string,
+  run: {
+    run_id: string;
+    tool: RunTool;
+    label: string;
+    created_at: string;
+    metadata?: Record<string, unknown>;
+  },
+  signal?: AbortSignal,
+): Promise<void> {
+  await requestJson<{ run_id: string; created_at: string }>(
+    `/classrooms/${encodeURIComponent(classroomId)}/runs`,
+    {
+      method: "POST",
+      body: run,
+      classroomId,
+      signal,
+      silent: true,
+    },
+  );
+}
+
 export function extractWorksheet(
   classroomId: string,
   imageBase64: string,

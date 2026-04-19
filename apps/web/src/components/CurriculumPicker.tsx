@@ -280,7 +280,9 @@ export default function CurriculumPicker({
           <option value="">Select a curriculum focus</option>
           {entries.map((entry) => (
             <option key={entry.entry_id} value={entry.entry_id}>
-              {entry.subject_label} {entry.grade_label} — {entry.title}
+              {selectedSubject && selectedGrade
+                ? entry.title
+                : `${entry.subject_label} ${entry.grade_label} — ${entry.title}`}
             </option>
           ))}
         </select>

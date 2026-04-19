@@ -11,6 +11,8 @@ import type { ScaffoldDecayReport } from "../../packages/shared/schemas/scaffold
 import type { SurvivalPacket } from "../../packages/shared/schemas/survival-packet.js";
 import type { FeedbackRequest, FeedbackSummary } from "../../packages/shared/schemas/feedback.js";
 import type { SessionRequest, SessionSummary } from "../../packages/shared/schemas/session.js";
+import type { RunTool } from "../../packages/shared/schemas/run.js";
+import { RUN_RETENTION_LIMIT } from "../../packages/shared/schemas/run.js";
 
 export function savePlan(
   classroomId: ClassroomId,
@@ -246,6 +248,53 @@ export function saveSession(
     record.feedback_count,
     new Date().toISOString(),
   );
+}
+
+// ---------------------------------------------------------------------------
+// Prep run history (differentiate / simplify / vocab chip row)
+// ---------------------------------------------------------------------------
+
+export interface SaveRunInput {
+  run_id: string;
+  tool: RunTool;
+  label: string;
+  created_at: string;
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Upsert a single run row, then prune anything older than the retention
+ * window for the (classroom, tool) pair. Retention is enforced synchronously
+ * so the table never grows unbounded even if no separate cron runs.
+ */
+export function saveRun(classroomId: ClassroomId, input: SaveRunInput): void {
+  const db = getDb(classroomId);
+  const metadataJson = input.metadata ? JSON.stringify(input.metadata) : null;
+  db.prepare(`
+    INSERT OR REPLACE INTO runs
+    (run_id, classroom_id, tool, label, metadata_json, created_at)
+    VALUES (?, ?, ?, ?, ?, ?)
+  `).run(
+    input.run_id,
+    classroomId,
+    input.tool,
+    input.label,
+    metadataJson,
+    input.created_at,
+  );
+
+  // Retention: keep only the most recent RUN_RETENTION_LIMIT per (classroom, tool).
+  db.prepare(`
+    DELETE FROM runs
+    WHERE classroom_id = ?
+      AND tool = ?
+      AND run_id NOT IN (
+        SELECT run_id FROM runs
+        WHERE classroom_id = ? AND tool = ?
+        ORDER BY created_at DESC
+        LIMIT ?
+      )
+  `).run(classroomId, input.tool, classroomId, input.tool, RUN_RETENTION_LIMIT);
 }
 
 /**
