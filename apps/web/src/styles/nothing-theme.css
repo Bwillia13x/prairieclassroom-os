@@ -50,9 +50,10 @@
   content: none;
 }
 
-.workspace-page .page-intro__breadcrumb {
-  display: none;
-}
+/* Audit Workstream C: section header collapsed to label / title /
+   description (2 families, 3 sizes, 2 weights). Breadcrumb and eyebrow
+   icon were removed; the eyebrow is now plain mono caps text and the
+   description is sans body copy (no monospace subtitle). */
 
 .workspace-page .page-intro__eyebrow,
 .workspace-page .page-intro--sun .page-intro__eyebrow,
@@ -65,25 +66,18 @@
   border: 0;
   border-radius: 0;
   padding: 0;
-  color: var(--color-text-tertiary);
+  color: var(--color-text-secondary);
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.18em;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   box-shadow: none;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.workspace-page .page-intro__eyebrow-icon {
-  color: var(--color-text-tertiary);
 }
 
 .workspace-page .page-intro__title {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
+  font-size: var(--text-display-md);
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.1;
@@ -93,13 +87,14 @@
 
 .workspace-page .page-intro__description {
   margin: 0;
-  max-width: none;
-  color: var(--color-text-tertiary);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.4;
+  max-width: 64ch;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0;
+  line-height: 1.55;
+  text-transform: none;
 }
 
 .workspace-page .page-intro .status-chip-row {
