@@ -409,7 +409,7 @@ describe("TodayPanel", () => {
       ).toBeInTheDocument();
     });
     expect(
-      await screen.findByText(/student priority/i),
+      await screen.findByRole("heading", { name: /student priority view/i }),
     ).toBeInTheDocument();
   });
 

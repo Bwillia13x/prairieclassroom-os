@@ -23,6 +23,64 @@
   gap: var(--space-4);
 }
 
+/* Audit #31-#33: sticky anchor-rail variant. On wide viewports the
+   rail lives in the left column; on narrow viewports it collapses so
+   the content gets full width. Scroll-padding compensates for the
+   fixed shell header so in-page jumps don't land behind it. */
+.today-panel--with-rail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  scroll-padding-top: calc(var(--shell-header-height, 72px) + var(--space-2));
+}
+
+@media (min-width: 961px) {
+  .today-panel--with-rail {
+    grid-template-columns: var(--today-rail-width, 180px) minmax(0, 1fr);
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+}
+
+.today-panel__content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Audit #32: anchor-target divs are structural; they add no visual
+   weight of their own. CSS is scoped to declarative use only. */
+.today-anchor-target {
+  scroll-margin-top: calc(var(--shell-header-height, 72px) + var(--space-3));
+}
+
+/* Audit #33: end-of-Today stamp. Mono caption + fresh timestamp so the
+   10-section scroll has a clear terminus. */
+.today-end-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-8) 0 var(--space-4);
+  margin-top: var(--space-8);
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.today-end-marker__stamp {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
 /* -----------------------------------------------------------------
    Grid: vast spacing between groups (skill: 64px = "new context")
    ----------------------------------------------------------------- */

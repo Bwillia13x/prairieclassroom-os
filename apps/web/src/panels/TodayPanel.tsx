@@ -21,6 +21,8 @@ import { Card, ActionButton } from "../components/shared";
 import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
 import TodayHero from "../components/TodayHero";
+import TodayAnchorRail, { type Anchor } from "../components/TodayAnchorRail";
+import PageFreshness from "../components/PageFreshness";
 import type {
   ComplexityBlock,
   ComplexityForecast,
@@ -131,8 +133,29 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
   if (!profile) return null;
 
+  // Audit #31-#33: ten numbered anchors for the rail + end-of-today
+  // marker. The list stays adjacent to the render so any section
+  // rename keeps nav in sync.
+  const anchors: Anchor[] = [
+    { id: "command-center", number: "01", label: "Command Center" },
+    { id: "classroom-pulse", number: "02", label: "Classroom Pulse" },
+    { id: "day-arc", number: "03", label: "Today's Shape" },
+    { id: "complexity-debt", number: "04", label: "Complexity Debt" },
+    { id: "student-priority", number: "05", label: "Student Priority" },
+    { id: "intervention-recency", number: "06", label: "Intervention Recency" },
+    { id: "classroom-profile", number: "07", label: "Classroom Profile" },
+    { id: "planning-health", number: "08", label: "Planning Health" },
+    { id: "carry-forward", number: "09", label: "Carry Forward" },
+    { id: "end-of-today", number: "10", label: "End of Today" },
+  ];
+
   return (
-    <section className="workspace-page today-panel">
+    <section
+      className="workspace-page today-panel today-panel--with-rail"
+      id="today-top"
+    >
+      <TodayAnchorRail anchors={anchors} />
+      <div className="today-panel__content">
       <PageIntro
         eyebrow="Command Center"
         title="Today"
@@ -147,21 +170,24 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 
-      {result ? (
-        <TodayHero
-          snapshot={result}
-          health={health.result ?? null}
-          students={studentSummaries.result ?? []}
-          recommendedAction={recommendedAction}
-          onCtaClick={() => {
-            if (recommendedAction) onTabChange(recommendedAction.tab);
-          }}
-        />
-      ) : (
-        <SectionSkeleton label="Loading today story" variant="story" lines={2} />
-      )}
+      <div id="command-center" className="today-anchor-target">
+        {result ? (
+          <TodayHero
+            snapshot={result}
+            health={health.result ?? null}
+            students={studentSummaries.result ?? []}
+            recommendedAction={recommendedAction}
+            onCtaClick={() => {
+              if (recommendedAction) onTabChange(recommendedAction.tab);
+            }}
+          />
+        ) : (
+          <SectionSkeleton label="Loading today story" variant="story" lines={2} />
+        )}
+      </div>
 
       <section
+        id="classroom-pulse"
         className="today-pulse"
         aria-labelledby="today-pulse-heading"
       >
@@ -224,91 +250,106 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
           )}
 
-          {result ? (
-            <DayArc
-              forecast={result.latest_forecast}
-              students={studentSummaries.result ?? []}
-              debtItems={result.debt_register.items}
-              health={health.result ?? null}
-              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-              onBlockClick={(index) => {
-                const block = result.latest_forecast?.blocks[index];
-                if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
-              }}
-            />
-          ) : (
-            <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
-          )}
+          <div id="day-arc" className="today-anchor-target">
+            {result ? (
+              <DayArc
+                forecast={result.latest_forecast}
+                students={studentSummaries.result ?? []}
+                debtItems={result.debt_register.items}
+                health={health.result ?? null}
+                onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+                onBlockClick={(index) => {
+                  const block = result.latest_forecast?.blocks[index];
+                  if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+                }}
+              />
+            ) : (
+              <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
+            )}
+          </div>
         </div>
 
         {/* Visualization strip: 2×2 grid on wide viewports — paired for at-a-glance reading */}
         <div className="today-grid__viz-row">
           {result && result.debt_register.items.length > 0 && (
-            <ComplexityDebtGauge
-              debtItems={result.debt_register.items}
-              previousTotal={previousDebtTotal}
-              onSegmentClick={(payload) =>
-                setDrillDown({
-                  type: "trend",
-                  trendKey: payload.trendKey,
-                  data: health.result?.trends?.debt_total_14d ?? payload.data,
-                  label: payload.label,
-                })
-              }
-            />
+            <div id="complexity-debt" className="today-anchor-target">
+              <ComplexityDebtGauge
+                debtItems={result.debt_register.items}
+                previousTotal={previousDebtTotal}
+                onSegmentClick={(payload) =>
+                  setDrillDown({
+                    type: "trend",
+                    trendKey: payload.trendKey,
+                    data: health.result?.trends?.debt_total_14d ?? payload.data,
+                    label: payload.label,
+                  })
+                }
+              />
+            </div>
           )}
 
           {studentSummaries.result && studentSummaries.result.length > 0 ? (
-            <StudentPriorityMatrix
-              students={studentSummaries.result}
-              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            />
+            <div id="student-priority" className="today-anchor-target">
+              <StudentPriorityMatrix
+                students={studentSummaries.result}
+                onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+              />
+            </div>
           ) : studentSummaries.loading ? (
             <SectionSkeleton label="Loading student priority matrix" variant="matrix" lines={3} />
           ) : null}
 
           {studentSummaries.result && studentSummaries.result.length > 0 ? (
-            <InterventionRecencyTimeline
-              students={studentSummaries.result}
-              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            />
+            <div id="intervention-recency" className="today-anchor-target">
+              <InterventionRecencyTimeline
+                students={studentSummaries.result}
+                onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+              />
+            </div>
           ) : studentSummaries.loading ? (
             <SectionSkeleton label="Loading intervention recency" variant="matrix" lines={3} />
           ) : null}
 
           {profile && profile.students.length > 0 && (
-            <ClassroomCompositionRings
-              students={profile.students}
-              onSegmentClick={(payload) =>
-                setDrillDown({
-                  type: "student-tag-group",
-                  groupKind: payload.groupKind,
-                  tag: payload.tag,
-                  label: payload.label,
-                  students: payload.students,
-                })
-              }
-            />
+            <div id="classroom-profile" className="today-anchor-target">
+              <ClassroomCompositionRings
+                students={profile.students}
+                onSegmentClick={(payload) =>
+                  setDrillDown({
+                    type: "student-tag-group",
+                    groupKind: payload.groupKind,
+                    tag: payload.tag,
+                    label: payload.label,
+                    students: payload.students,
+                  })
+                }
+              />
+            </div>
           )}
         </div>
 
         {result && showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
 
-        {health.result ? (
-          <HealthBar
-            health={health.result ?? null}
-            loading={false}
-            pendingActionCount={totalActionCount}
-            onTrendClick={(payload) => setDrillDown({ type: "trend", ...payload })}
-          />
-        ) : health.error ? (
-          <div className="today-health-error" role="alert">Couldn&apos;t load health summary: {health.error}</div>
-        ) : (
-          <SectionSkeleton label="Loading health summary" variant="health" lines={2} />
-        )}
+        <div id="planning-health" className="today-anchor-target">
+          {health.result ? (
+            <HealthBar
+              health={health.result ?? null}
+              loading={false}
+              pendingActionCount={totalActionCount}
+              onTrendClick={(payload) => setDrillDown({ type: "trend", ...payload })}
+            />
+          ) : health.error ? (
+            <div className="today-health-error" role="alert">Couldn&apos;t load health summary: {health.error}</div>
+          ) : (
+            <SectionSkeleton label="Loading health summary" variant="health" lines={2} />
+          )}
+        </div>
 
         {result && (result.latest_plan || result.latest_forecast) ? (
-          <div className="today-grid--secondary">
+          <div
+            id="carry-forward"
+            className="today-grid--secondary today-anchor-target"
+          >
             {result.latest_plan ? (
               <PlanRecap
                 plan={result.latest_plan}
@@ -357,6 +398,24 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         ) : null}
       </div>
       </section>
+
+      {/* Audit #33: end-of-Today signal. Gives the 10-section scroll a
+          clear terminus + the same freshness strip used up top, so the
+          teacher ends on an observably-fresh note. */}
+      {result ? (
+        <footer
+          id="end-of-today"
+          className="today-end-marker"
+          aria-label="End of Today"
+        >
+          <span className="today-end-marker__stamp">End of Today</span>
+          <PageFreshness
+            generatedAt={result.last_activity_at ?? null}
+            kind="ai"
+          />
+        </footer>
+      ) : null}
+      </div>
 
       <DrillDownDrawer
         context={drillDown}
