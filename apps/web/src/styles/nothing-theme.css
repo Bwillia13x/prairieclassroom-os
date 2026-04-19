@@ -1719,6 +1719,21 @@
   border-radius: 8px !important;
 }
 
+/* Classroom switcher popover anchoring — pinned to its trigger pill,
+   not the viewport. Canonical positioning lives here so the panel
+   never drifts mid-page across viewport widths. */
+.shell-classroom-anchor {
+  position: relative;
+}
+.shell-classroom-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: auto;
+  width: max(320px, 100%);
+  z-index: 50;
+}
+
 .shell-classroom-panel,
 .role-pill__menu,
 .role-pill__confirm,

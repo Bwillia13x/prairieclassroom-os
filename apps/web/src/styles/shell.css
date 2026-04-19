@@ -168,13 +168,11 @@
   color: var(--color-text-secondary);
 }
 
-/* Classroom switcher panel */
+/* Classroom switcher panel
+   Positioning (position/top/left/right/width/z-index) lives in
+   nothing-theme.css so the panel always anchors to its trigger pill,
+   not the viewport. Visual treatment stays here. */
 .shell-classroom-panel {
-  position: absolute;
-  top: calc(100% + 0.55rem);
-  left: 50%;
-  width: min(92vw, 420px);
-  transform: translateX(-50%);
   padding: var(--space-4);
   border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
   border-radius: var(--radius-lg);
@@ -186,15 +184,6 @@
 }
 
 @keyframes shell-panel-fade-in {
-  from { opacity: 0; transform: translate(-50%, -4px); }
-  to   { opacity: 1; transform: translate(-50%, 0); }
-}
-
-/* Mobile variant: panel spans the viewport (no -50% centering), so the
-   enter animation must skip the horizontal translate or it would flash
-   off-left for a frame. Declared globally, not nested inside @media, so
-   the keyframe registration stays unambiguous. */
-@keyframes shell-panel-fade-in-fullwidth {
   from { opacity: 0; transform: translateY(-4px); }
   to   { opacity: 1; transform: translateY(0); }
 }
@@ -801,13 +790,6 @@
 
   .shell-bar {
     gap: var(--space-2);
-  }
-
-  .shell-classroom-panel {
-    left: 0;
-    transform: none;
-    width: 100%;
-    animation-name: shell-panel-fade-in-fullwidth;
   }
 }
 
