@@ -162,4 +162,11 @@ describe("App shell — classroom pill trigger", () => {
     expect(badge).not.toBeNull();
     expect(badge?.classList.contains("shell-nav__badge--alert")).toBe(true);
   });
+
+  it("renders the actions divider as a real element between role pill and utilities", async () => {
+    await renderShellWithDemo();
+    const divider = document.querySelector(".shell-bar__divider");
+    expect(divider).not.toBeNull();
+    expect(divider?.previousElementSibling?.classList.contains("role-pill-anchor")).toBe(true);
+  });
 });

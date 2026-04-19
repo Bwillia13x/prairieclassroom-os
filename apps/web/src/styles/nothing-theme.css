@@ -1274,15 +1274,14 @@
   align-items: center;
   gap: 12px;
 }
-.shell-bar__actions > .role-pill-anchor + .shell-bar__palette-btn::before {
-  content: "";
+.shell-bar__divider {
   display: inline-block;
   width: 1px;
   height: 20px;
   background: currentColor;
   opacity: 0.18;
-  margin-right: 12px;
-  vertical-align: middle;
+  flex-shrink: 0;
+  align-self: center;
 }
 
 .shell-bar__actions > button,

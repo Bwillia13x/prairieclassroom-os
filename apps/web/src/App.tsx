@@ -832,6 +832,7 @@ export default function App() {
 
               <div className="shell-bar__actions">
                 <RoleContextPill />
+                <span className="shell-bar__divider" aria-hidden="true" />
                 <button
                   type="button"
                   className="shell-bar__palette-btn"
