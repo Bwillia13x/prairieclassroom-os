@@ -449,19 +449,25 @@ export default function DayArc({
                     opacity="0.95"
                   />
                 )}
-                {showActivityLabels && (
-                  <text
-                    x={labelX}
-                    y={BASELINE_Y + 24}
-                    textAnchor="middle"
-                    className="day-arc__activity-label"
-                  >
-                    {formatActivityLabel(p.block.activity, 16)}
-                  </text>
-                )}
+                {showActivityLabels && (() => {
+                  const [line1, line2] = wrapSvgLabel(p.block.activity, 16);
+                  return (
+                    <text
+                      x={labelX}
+                      y={BASELINE_Y + 24}
+                      textAnchor="middle"
+                      className="day-arc__activity-label"
+                    >
+                      <tspan x={labelX} dy={0}>{line1}</tspan>
+                      {line2 ? (
+                        <tspan x={labelX} dy="1.1em">{line2}</tspan>
+                      ) : null}
+                    </text>
+                  );
+                })()}
                 <text
                   x={labelX}
-                  y={BASELINE_Y + (showActivityLabels ? 42 : 28)}
+                  y={BASELINE_Y + (showActivityLabels ? 56 : 28)}
                   textAnchor="middle"
                   className="day-arc__block-label"
                 >
@@ -480,6 +486,19 @@ export default function DayArc({
                   ? VIEW_W - PAD_X
                   : (p.x + ridge[i + 1].x) / 2;
               const hitW = Math.max(20, hitRight - hitLeft);
+              // Audit #10: compose a rich SVG-native tooltip so a hover
+              // reveals time, activity, level, and mitigation on the
+              // peak block without a JS layer.
+              const mitigationLine = p.block.suggested_mitigation
+                ? ` · ${p.block.suggested_mitigation}`
+                : "";
+              const factorLine = p.block.contributing_factors[0]
+                ? ` · ${p.block.contributing_factors[0]}`
+                : "";
+              const tooltip =
+                `${p.block.time_slot} · ${p.block.activity} · ${formatLevel(p.block.level)} complexity` +
+                factorLine +
+                mitigationLine;
               return (
                 <g
                   key={`hit-${i}`}
@@ -495,6 +514,7 @@ export default function DayArc({
                     }
                   }}
                 >
+                  <title>{tooltip}</title>
                   <rect
                     x={hitLeft}
                     y={PAD_TOP - 8}
@@ -644,8 +664,14 @@ export default function DayArc({
         <span><i className="day-arc__legend-swatch day-arc__legend-swatch--low" />Low</span>
         <span><i className="day-arc__legend-swatch day-arc__legend-swatch--medium" />Medium</span>
         <span><i className="day-arc__legend-swatch day-arc__legend-swatch--high" />High</span>
-        <span><i className="day-arc__legend-dot" />Student attention</span>
-        <span><i className="day-arc__legend-thread" />Open threads</span>
+        <span>
+          <i className="day-arc__legend-dot" />
+          Student attention{watchingCount > 0 ? ` (${watchingCount})` : ""}
+        </span>
+        <span>
+          <i className="day-arc__legend-thread" />
+          Open threads{threadsCount > 0 ? ` (${threadsCount})` : ""}
+        </span>
       </div>
     </section>
   );
@@ -705,6 +731,20 @@ function truncateSvgLabel(label: string, maxLength: number): string {
 function formatActivityLabel(activity: string, maxLength: number): string {
   const cleaned = activity.replace(/\s*\([^)]*\)\s*/g, " ").replace(/\s+/g, " ").trim();
   return truncateSvgLabel(cleaned || activity, maxLength);
+}
+
+/**
+ * Audit #8: split a label onto two SVG <tspan> lines at the nearest word
+ * boundary so activity names like "Science — planning" or
+ * "Morning literacy" render fully instead of truncating mid-word.
+ */
+function wrapSvgLabel(activity: string, maxLineLength: number): [string, string] {
+  const clean = activity.replace(/\s*\([^)]*\)\s*/g, " ").replace(/\s+/g, " ").trim();
+  if (clean.length <= maxLineLength) return [clean, ""];
+  const mid = Math.min(maxLineLength, clean.length);
+  const spaceIdx = clean.lastIndexOf(" ", mid);
+  const breakAt = spaceIdx > 0 ? spaceIdx : mid;
+  return [clean.slice(0, breakAt).trim(), clean.slice(breakAt).trim()];
 }
 
 function buildAriaLabel(

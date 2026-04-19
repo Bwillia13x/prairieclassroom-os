@@ -282,6 +282,84 @@ describe("DayArc", () => {
     expect(motes.length).toBeLessThanOrEqual(5);
   });
 
+  it("renders activity block labels fully (no trailing ellipsis on 16-18 char names)", () => {
+    const forecast: ComplexityForecast = {
+      ...makeForecast(),
+      blocks: [
+        {
+          time_slot: "09:00-09:45",
+          activity: "Morning literacy",
+          level: "medium",
+          contributing_factors: [],
+          suggested_mitigation: "",
+        },
+        {
+          time_slot: "10:00-10:45",
+          activity: "Math block",
+          level: "high",
+          contributing_factors: [],
+          suggested_mitigation: "",
+        },
+        {
+          time_slot: "11:00-11:45",
+          activity: "Science — planning",
+          level: "low",
+          contributing_factors: [],
+          suggested_mitigation: "",
+        },
+      ],
+    };
+    const { container } = render(
+      <DayArc
+        forecast={forecast}
+        students={[]}
+        debtItems={[]}
+        health={makeHealth()}
+      />,
+    );
+    // No truncation ellipsis on the short labels inside activity labels.
+    const activityLabels = Array.from(
+      container.querySelectorAll(".day-arc__activity-label"),
+    ).map((el) => el.textContent ?? "");
+    expect(activityLabels.some((t) => t.includes("..."))).toBe(false);
+    // Full text preserved across the tspan lines.
+    expect(activityLabels.some((t) => t.includes("Morning literacy"))).toBe(true);
+    expect(activityLabels.some((t) => t.includes("Science"))).toBe(true);
+    expect(activityLabels.some((t) => t.includes("planning"))).toBe(true);
+  });
+
+  it("appends counts to the Student attention and Open threads legend entries", () => {
+    render(
+      <DayArc
+        forecast={makeForecast()}
+        students={makeStudents()}
+        debtItems={makeDebtItems()}
+        health={makeHealth()}
+      />,
+    );
+    expect(screen.getByText(/Student attention \(/)).toBeInTheDocument();
+    expect(screen.getByText(/Open threads \(/)).toBeInTheDocument();
+  });
+
+  it("renders a native <title> tooltip on each block hit area", () => {
+    const handleBlockClick = vi.fn();
+    const { container } = render(
+      <DayArc
+        forecast={makeForecast()}
+        students={[]}
+        debtItems={[]}
+        health={makeHealth()}
+        onBlockClick={handleBlockClick}
+      />,
+    );
+    const titles = container.querySelectorAll(".day-arc__block-hit > title");
+    expect(titles.length).toBe(3);
+    const firstTitle = titles[0]?.textContent ?? "";
+    expect(firstTitle).toMatch(/09:00-09:45/);
+    expect(firstTitle).toMatch(/Literacy/);
+    expect(firstTitle).toMatch(/Medium complexity/);
+  });
+
   it("handles students with no priority pressure gracefully", () => {
     const calmStudents: StudentSummary[] = [
       {

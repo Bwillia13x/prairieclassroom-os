@@ -293,6 +293,9 @@
   fill: var(--color-text);
   font-family: var(--font-sans);
   font-size: 10px;
+  /* Audit #8: two-line tspan wrap for activity names up to ~20 chars —
+     tighten leading so the second line sits close to the first. */
+  line-height: 1.1;
   font-weight: var(--font-weight-medium);
   letter-spacing: 0;
 }
