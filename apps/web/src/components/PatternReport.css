@@ -55,10 +55,14 @@
   margin-bottom: 0.75rem;
 }
 
-.pattern-section--themes { border-left: 3px solid var(--color-section-theme); }
-.pattern-section--gaps { border-left: 3px solid var(--color-section-gap); }
-.pattern-section--trends { border-left: 3px solid var(--color-section-trend); }
-.pattern-section--focus { border-left: 3px solid var(--color-section-focus); }
+/* Workstream E (audit #13): the section-coded LEFT BORDER is now reserved
+   exclusively for ContextualHint (dismissable hints). Static support-pattern
+   callouts keep their section coding via a TOP border instead, which reads
+   as "label/category" rather than "dismissable affordance". */
+.pattern-section--themes { border-top: 3px solid var(--color-section-theme); }
+.pattern-section--gaps { border-top: 3px solid var(--color-section-gap); }
+.pattern-section--trends { border-top: 3px solid var(--color-section-trend); }
+.pattern-section--focus { border-top: 3px solid var(--color-section-focus); }
 
 .pattern-card {
   background: var(--color-bg-muted);

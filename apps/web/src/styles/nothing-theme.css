@@ -868,8 +868,13 @@
   box-shadow: none;
 }
 
-/* Contextual hints (tip cards shown inline — "Differentiate / Got it",
-   etc). Flat with a tone-colored left rule. */
+/* Contextual hints (tip cards shown inline — "Differentiate" etc).
+   Workstream E (audit #11/#13): the section-coded LEFT BORDER is now the
+   exclusive affordance for "this is a dismissable hint", and is owned
+   by ContextualHint.css. The nothing-theme override keeps the flat
+   surface treatment but no longer rewrites the left-border colors —
+   those come from --color-border-{sun|sage|slate|forest} tokens via
+   the variant classes. */
 .contextual-hint,
 .contextual-hint--sage,
 .contextual-hint--sun,
@@ -884,12 +889,23 @@
   padding: var(--space-4);
 }
 
-.contextual-hint--sage    { border-left: 2px solid var(--color-text-success); }
-.contextual-hint--sun     { border-left: 2px solid var(--color-text-warning); }
-.contextual-hint--forest  { border-left: 2px solid var(--color-text-success); }
-.contextual-hint--slate   { border-left: 2px solid var(--color-border); }
-.contextual-hint--muted   { border-left: 2px solid var(--color-border); }
-.contextual-hint--accent  { border-left: 2px solid var(--color-text); }
+.contextual-hint--muted   { border-left: 4px solid var(--color-border); }
+.contextual-hint--accent  { border-left: 4px solid var(--color-text); }
+
+/* Collapsed (dismissed) hint must stay borderless even under the
+   nothing-theme flat-surface override. */
+.contextual-hint--collapsed,
+.contextual-hint--collapsed.contextual-hint--sage,
+.contextual-hint--collapsed.contextual-hint--sun,
+.contextual-hint--collapsed.contextual-hint--slate,
+.contextual-hint--collapsed.contextual-hint--forest,
+.contextual-hint--collapsed.contextual-hint--muted,
+.contextual-hint--collapsed.contextual-hint--accent {
+  background: transparent;
+  border: 0;
+  border-left: 0;
+  padding: 0;
+}
 
 .contextual-hint [class*="__title"],
 .contextual-hint-title {
