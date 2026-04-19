@@ -5,6 +5,7 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEALoadProfile } from "../api";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
+import { formatTargetDate } from "../utils/formatTargetDate";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
@@ -16,6 +17,7 @@ import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import { FeedbackCollector } from "../components/shared";
+import ActionButton from "../components/shared/ActionButton";
 import { EALoadStackedBars } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
@@ -62,22 +64,29 @@ function EALoadForm({
 }: EALoadFormProps) {
   const [targetDate, setTargetDate] = useState(defaultTargetDate());
   const [teacherNotes, setTeacherNotes] = useState("");
+  const [touched, setTouched] = useState(false);
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setTouched(true);
     if (!selectedClassroom) return;
     void onSubmit(selectedClassroom, targetDate, teacherNotes.trim() || undefined);
   };
 
   return (
     <form className="workspace-form" onSubmit={handleSubmit} aria-label="EA load profile form">
-      <label className="workspace-form__field">
-        <span className="workspace-form__label">Classroom</span>
+      <label className={`workspace-form__field${touched && !selectedClassroom ? " field--error" : ""}`}>
+        <span className="workspace-form__label">
+          Classroom <span className="field-required" aria-hidden="true">*</span>
+        </span>
         <select
           value={selectedClassroom ?? ""}
           onChange={(event) => onClassroomChange(event.target.value)}
+          onBlur={() => setTouched(true)}
           disabled={loading}
           required
+          aria-required="true"
+          aria-invalid={touched && !selectedClassroom ? "true" : undefined}
         >
           <option value="" disabled>
             Select a classroom
@@ -99,6 +108,11 @@ function EALoadForm({
           disabled={loading}
           required
         />
+        {targetDate ? (
+          <span className="workspace-form__caption" aria-live="polite">
+            Selected: {formatTargetDate(targetDate)}
+          </span>
+        ) : null}
       </label>
 
       <label className="workspace-form__field">
@@ -112,9 +126,15 @@ function EALoadForm({
         />
       </label>
 
-      <button type="submit" className="workspace-form__submit" disabled={loading || !selectedClassroom}>
+      <ActionButton
+        type="submit"
+        variant="primary"
+        loading={loading}
+        disabled={!selectedClassroom}
+        className="workspace-form__submit"
+      >
         {loading ? "Generating load profile…" : "Generate load profile"}
-      </button>
+      </ActionButton>
 
       <p className="workspace-form__helper">
         Uses the planning tier (thinking on). Suggestions are operational only — the teacher and EA decide

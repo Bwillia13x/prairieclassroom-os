@@ -1,5 +1,25 @@
 /* apps/web/src/panels/EALoadPanel.css */
 
+/* Human-readable confirmation of the native date picker's ISO value.
+   "Selected: Tue, Apr 21, 2026" — 2026-04-19 OPS audit phase 5. */
+.workspace-form__caption {
+  display: block;
+  margin-top: var(--space-1);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Relocated disclaimer — sits beneath the viewer's summary card, not
+   inside the form. Light text on a muted canvas so it reads like a
+   caption rather than a cautionary banner. */
+.ea-load-viewer__disclaimer {
+  margin: 0 0 var(--space-3) 0;
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  line-height: var(--leading-base);
+}
+
 .ea-load-viewer {
   display: flex;
   flex-direction: column;

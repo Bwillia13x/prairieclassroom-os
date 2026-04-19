@@ -4,6 +4,7 @@ import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
 import { buildModelMetaItems } from "./buildModelMetaItems";
 import { FollowUpDecayIndicators, ScheduleLoadStrip } from "./DataVisualizations";
+import ActionButton from "./shared/ActionButton";
 import "./EABriefing.css";
 
 /* ── Form ─────────────────────────────────────────────────────────── */
@@ -18,20 +19,35 @@ interface FormProps {
 
 export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChange, onSubmit, loading }: FormProps) {
   const [eaName, setEaName] = useState("");
+  const [touched, setTouched] = useState(false);
+  const classroomMissing = !selectedClassroom;
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setTouched(true);
+    if (classroomMissing) return;
+    onSubmit(selectedClassroom, eaName || undefined);
+  }
 
   return (
-    <div className="ea-briefing-form form-panel">
+    <form className="ea-briefing-form form-panel" onSubmit={handleSubmit}>
       <h2>Generate EA Daily Briefing</h2>
       <p className="ea-briefing-description form-description">
         Build a coordination brief for the educational assistant from the current classroom plan, intervention history, and watch-list context.
       </p>
 
-      <div className="field">
-        <label htmlFor="ea-classroom">Classroom</label>
+      <div className={`field${touched && classroomMissing ? " field--error" : ""}`}>
+        <label htmlFor="ea-classroom">
+          Classroom <span className="field-required" aria-hidden="true">*</span>
+        </label>
         <select
           id="ea-classroom"
           value={selectedClassroom}
           onChange={(e) => onClassroomChange(e.target.value)}
+          onBlur={() => setTouched(true)}
+          aria-required="true"
+          aria-invalid={touched && classroomMissing ? "true" : undefined}
+          aria-describedby={touched && classroomMissing ? "ea-classroom-error" : undefined}
         >
           {classrooms.map((c) => (
             <option key={c.classroom_id} value={c.classroom_id}>
@@ -39,6 +55,9 @@ export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChang
             </option>
           ))}
         </select>
+        {touched && classroomMissing && (
+          <span id="ea-classroom-error" className="field-error-hint" role="alert">Select a classroom</span>
+        )}
       </div>
 
       <div className="field">
@@ -52,15 +71,10 @@ export function EABriefingForm({ classrooms, selectedClassroom, onClassroomChang
         />
       </div>
 
-      <button
-        type="button"
-        className="btn btn--primary"
-        onClick={() => onSubmit(selectedClassroom, eaName || undefined)}
-        disabled={loading}
-      >
+      <ActionButton type="submit" variant="primary" loading={loading} disabled={classroomMissing}>
         {loading ? "Generating briefing…" : "Generate briefing"}
-      </button>
-    </div>
+      </ActionButton>
+    </form>
   );
 }
 

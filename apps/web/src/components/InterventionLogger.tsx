@@ -101,12 +101,17 @@ export default function InterventionLogger({
             </div>
           )}
 
-          <div className="field">
-            <label htmlFor="int-classroom">Classroom</label>
+          <div className={`field${touched && !selectedClassroom ? " field--error" : ""}`}>
+            <label htmlFor="int-classroom">
+              Classroom <span className="field-required" aria-hidden="true">*</span>
+            </label>
             <select
               id="int-classroom"
               value={selectedClassroom}
               onChange={(e) => onClassroomChange(e.target.value)}
+              onBlur={() => setTouched(true)}
+              aria-required="true"
+              aria-invalid={touched && !selectedClassroom ? "true" : undefined}
             >
               {classrooms.map((c) => (
                 <option key={c.classroom_id} value={c.classroom_id}>

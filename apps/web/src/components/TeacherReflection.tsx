@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
 import DraftRestoreChip from "./DraftRestoreChip";
+import ActionButton from "./shared/ActionButton";
 import "./TeacherReflection.css";
 
 interface Props {
@@ -58,12 +59,17 @@ export default function TeacherReflection({
         label="Continue the reflection you started earlier?"
       />
 
-      <div className="field">
-        <label htmlFor="plan-classroom">Classroom</label>
+      <div className={`field teacher-reflection__classroom${touched && !selectedClassroom ? " field--error" : ""}`}>
+        <label htmlFor="plan-classroom">
+          Classroom <span className="field-required" aria-hidden="true">*</span>
+        </label>
         <select
           id="plan-classroom"
           value={selectedClassroom}
           onChange={(e) => onClassroomChange(e.target.value)}
+          onBlur={() => setTouched(true)}
+          aria-required="true"
+          aria-invalid={touched && !selectedClassroom ? "true" : undefined}
         >
           {classrooms.map((c) => (
             <option key={c.classroom_id} value={c.classroom_id}>
@@ -78,7 +84,7 @@ export default function TeacherReflection({
         <textarea
           id="reflection"
           rows={5}
-          placeholder="How did today go? What worked, what was hard? Any specific student moments to note…"
+          placeholder="What worked today? Which students struggled? Any surprises or changes to flag for tomorrow? (e.g., 'Math went well, but Mika spiraled during writing — need smoother transition tomorrow.')"
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
           onBlur={() => setTouched(true)}
@@ -106,14 +112,14 @@ export default function TeacherReflection({
         />
       </div>
 
-      <button
+      <ActionButton
         type="submit"
-        className="btn btn--primary"
-        disabled={loading}
+        variant="primary"
+        loading={loading}
         data-testid="generate-tomorrow-plan-submit"
       >
         {loading ? "Generating plan…" : "Generate plan"}
-      </button>
+      </ActionButton>
     </form>
   );
 }

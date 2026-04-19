@@ -174,6 +174,7 @@ export default function QuickCaptureTray({
         className="quick-capture-tray__note"
         rows={3}
         aria-label="Intervention note"
+        placeholder="e.g., 'Brody struggled with transition from recess — used calm corner for 3 min, returned ready to work.'"
         value={note}
         onChange={handleNoteChange}
       />
