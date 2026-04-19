@@ -1357,10 +1357,10 @@
   border-radius: 0;
   box-shadow: none;
   padding: var(--space-3) var(--space-4);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
   position: relative;
@@ -1436,18 +1436,21 @@
   border-radius: 0;
   box-shadow: none;
   padding: var(--space-2) var(--space-3);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.12em;
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
+  opacity: 0.7;
 }
 
-.shell-nav__tab--active {
+.shell-nav__tab.shell-nav__tab--active {
   color: var(--color-text);
   background: transparent;
   border-bottom: 2px solid var(--color-text);
+  opacity: 1;
+  font-weight: 500;
 }
 
 .shell-nav__tab:hover {
