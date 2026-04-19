@@ -196,19 +196,59 @@
 }
 
 .viz-priority-matrix__watch-zone {
-  fill: color-mix(in srgb, var(--color-danger) 5%, transparent);
-  stroke: color-mix(in srgb, var(--color-danger) 22%, transparent);
-  stroke-width: 0.6;
-  stroke-dasharray: 2 3;
+  /* Retained for back-compat; no longer rendered. The quadrant tints
+     below supersede the dashed "check first" box (audit #15). */
+  fill: transparent;
+  stroke: transparent;
 }
 
 .viz-priority-matrix__zone-label {
-  fill: var(--color-text-danger);
+  /* Back-compat only. */
+  display: none;
+}
+
+/* Audit #15: tinted quadrant backgrounds replace the dashed
+   "check first" box. Top-left (urgency high, recency low) is
+   check-first; top-right is watch; bottom-left is stable; bottom-right
+   is stale · calm. */
+.viz-priority-matrix__quadrant {
+  fill: var(--color-surface-muted);
+  opacity: 0.35;
+}
+.viz-priority-matrix__quadrant--check-first {
+  fill: var(--color-bg-danger);
+  opacity: 0.35;
+}
+.viz-priority-matrix__quadrant--watch {
+  fill: var(--color-bg-warning);
+  opacity: 0.25;
+}
+.viz-priority-matrix__quadrant--stable {
+  fill: var(--color-bg-success);
+  opacity: 0.22;
+}
+.viz-priority-matrix__quadrant--stale-ok {
+  fill: var(--color-surface-muted);
+  opacity: 0.3;
+}
+
+.viz-priority-matrix__quadrant-label {
+  fill: var(--color-text-secondary);
   font-family: var(--font-mono);
   font-size: 8px;
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
+}
+.viz-priority-matrix__quadrant-label--muted {
+  fill: var(--color-text-tertiary);
+}
+
+/* Audit #14: low-opacity dots for students with no pending actions +
+   no recent intervention. They provide visual density without noise. */
+.viz-priority-matrix__dot--quiet {
+  fill: var(--color-text-tertiary);
+  opacity: 0.25;
 }
 
 .viz-priority-matrix__grid-line {
@@ -358,6 +398,28 @@ button.viz-priority-matrix__watch-row:focus-visible {
   font-weight: var(--font-weight-normal);
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+/* Audit #17: clicking a watch row expands the priority reason inline
+   instead of truncating with an ellipsis. */
+.viz-priority-matrix__student-reason--expanded {
+  overflow: visible;
+  white-space: normal;
+  text-overflow: clip;
+}
+
+/* Audit #16: two-column header above the check-first list labels the
+   otherwise mystery number on the right as a priority score. */
+.viz-priority-matrix__rank-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: var(--space-1) 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
 }
 
 .viz-priority-matrix__student-score {
