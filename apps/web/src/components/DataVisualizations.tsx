@@ -365,7 +365,21 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
               {delta > 0 ? "▲" : "▼"} {Math.abs(delta)}
             </span>
           )}
-          <span className={`viz-tone-badge viz-tone-badge--${tone}`}>{toneLabel}</span>
+          {/* Audit #12: attach a definition tooltip to the tone badge so
+              CRITICAL / Accumulating / Manageable each carry their
+              threshold rule on hover. */}
+          <span
+            className={`viz-tone-badge viz-tone-badge--${tone}`}
+            title={
+              tone === "danger"
+                ? "Critical: 8 or more open items. Healthy range is 0–3; 4–7 is accumulating."
+                : tone === "warning"
+                  ? "Accumulating: 4–7 open items. Healthy range is 0–3."
+                  : "Manageable: 3 or fewer open items."
+            }
+          >
+            {toneLabel}
+          </span>
         </div>
       </div>
       <div className="viz-debt-gauge__body">
@@ -379,10 +393,21 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
             <strong>{topCategory ?? "No open source"}</strong>
             {topCategory ? <em>{topCategoryCount} {topCategoryCount === 1 ? "item" : "items"}</em> : null}
           </div>
-          <div className="viz-debt-gauge__threshold" aria-hidden="true">
-            <span className={`viz-debt-gauge__threshold-zone${tone === "success" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>0-3</span>
-            <span className={`viz-debt-gauge__threshold-zone${tone === "warning" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>4-7</span>
-            <span className={`viz-debt-gauge__threshold-zone${tone === "danger" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>8+</span>
+          <div className="viz-debt-gauge__threshold-wrapper">
+            {/* Audit #11: explicit legend above the threshold row — it
+                was previously unlabelled, leaving 0-3 / 4-7 / 8+ to
+                read as opaque tier codes. */}
+            <p
+              className="viz-debt-gauge__threshold-legend"
+              data-testid="debt-scale-legend"
+            >
+              Debt severity tier
+            </p>
+            <div className="viz-debt-gauge__threshold" aria-hidden="true">
+              <span className={`viz-debt-gauge__threshold-zone${tone === "success" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>0-3</span>
+              <span className={`viz-debt-gauge__threshold-zone${tone === "warning" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>4-7</span>
+              <span className={`viz-debt-gauge__threshold-zone${tone === "danger" ? " viz-debt-gauge__threshold-zone--active" : ""}`}>8+</span>
+            </div>
           </div>
         </div>
         {categories.length > 0 && (
@@ -425,11 +450,15 @@ function formatDebtCategory(category: string): string {
   return labels[category] ?? category.replace(/_/g, " ");
 }
 
-function debtCategoryTone(category: string): "danger" | "warning" | "analysis" | "success" {
-  if (category === "approaching_review" || category === "stale_followup") return "danger";
-  if (category === "recurring_plan_item" || category === "unapproved_message") return "warning";
-  if (category === "unaddressed_pattern") return "analysis";
-  return "success";
+/**
+ * Unify Complexity Debt breakdown colors with the Day Arc LOW / MEDIUM /
+ * HIGH vocabulary (audit #13). Every category lands on one of three
+ * severity buckets so the dashboard reads with one semantic palette.
+ */
+function debtCategoryTone(category: string): "high" | "medium" | "low" {
+  if (category === "approaching_review" || category === "stale_followup") return "high";
+  if (category === "recurring_plan_item" || category === "unapproved_message") return "medium";
+  return "low";
 }
 
 

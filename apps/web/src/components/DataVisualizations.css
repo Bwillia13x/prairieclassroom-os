@@ -608,6 +608,31 @@ button.viz-priority-matrix__watch-row:focus-visible {
   opacity: 0.6;
 }
 
+/* Audit #11: explicit legend caption above the threshold tier row. */
+.viz-debt-gauge__threshold-legend {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* Audit #13: align category row colors with the Day Arc LOW / MEDIUM /
+   HIGH vocabulary so the dashboard reads with one palette. */
+.viz-debt-gauge__cat--high .viz-debt-gauge__bar-fill {
+  background: var(--color-danger);
+  opacity: 1;
+}
+.viz-debt-gauge__cat--medium .viz-debt-gauge__bar-fill {
+  background: var(--color-warning);
+  opacity: 1;
+}
+.viz-debt-gauge__cat--low .viz-debt-gauge__bar-fill {
+  background: var(--color-analysis);
+  opacity: 0.8;
+}
+
 /* ── 3. Classroom Composition Rings ── */
 
 .viz-composition {
