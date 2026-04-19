@@ -1,0 +1,1597 @@
+/* ================================================================
+   nothing-theme.css — Global Nothing-design vocabulary
+   ================================================================
+   Applies the monochromatic, typographically-driven, flat-surface
+   aesthetic across every panel in the app. Uses only tokens
+   already defined in styles/tokens.css — no token values are
+   redefined here, so the dark-mode contract and contrast tests
+   continue to pass.
+
+   Scope: any `.workspace-page` root (the shell wraps every panel
+   in this class). Today-specific structure (hero, triage ledger,
+   pulse divider, risk windows) lives in TodayPanel.css and the
+   component files under components/.
+
+   Craft principles in effect:
+     • Flat surfaces — no gradients in chrome, no shadows
+     • Typography does the hierarchy work — 3 sizes, 2 weights
+     • Space Mono-style mono (JetBrains Mono) for labels/metadata
+     • Instrument Sans display for titles/heroes
+     • Color is an event — reserved for warning/danger/success
+     • Hairline borders (1px) or no borders — never thicker
+     • 2px border-radius technical rectangles; no pill-like cards
+   ================================================================ */
+
+/* ---------- PageIntro — utility header for every panel ---------- */
+
+.workspace-page .page-intro,
+.workspace-page .page-intro.page-intro--sun,
+.workspace-page .page-intro.page-intro--sage,
+.workspace-page .page-intro.page-intro--slate,
+.workspace-page .page-intro.page-intro--forest,
+.workspace-page .page-intro.page-intro--muted {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-4) 0 var(--space-2);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  row-gap: var(--space-2);
+  position: relative;
+}
+
+.workspace-page .page-intro::before,
+.workspace-page .page-intro--sun::before,
+.workspace-page .page-intro--sage::before,
+.workspace-page .page-intro--slate::before,
+.workspace-page .page-intro--forest::before,
+.workspace-page .page-intro--muted::before {
+  content: none;
+}
+
+.workspace-page .page-intro__breadcrumb {
+  display: none;
+}
+
+.workspace-page .page-intro__eyebrow,
+.workspace-page .page-intro--sun .page-intro__eyebrow,
+.workspace-page .page-intro--sage .page-intro__eyebrow,
+.workspace-page .page-intro--slate .page-intro__eyebrow,
+.workspace-page .page-intro--forest .page-intro__eyebrow,
+.workspace-page .page-intro--muted .page-intro__eyebrow {
+  align-self: start;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  box-shadow: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.workspace-page .page-intro__eyebrow-icon {
+  color: var(--color-text-tertiary);
+}
+
+.workspace-page .page-intro__title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.workspace-page .page-intro__description {
+  margin: 0;
+  max-width: none;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+}
+
+.workspace-page .page-intro .status-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+/* ---------- StatusChip — flat mono-caps token, tone-as-event ---------- */
+
+.workspace-page .status-chip,
+.workspace-page .status-chip.status-chip--accent,
+.workspace-page .status-chip.status-chip--muted,
+.workspace-page .status-chip.status-chip--pending,
+.workspace-page .status-chip.status-chip--success,
+.workspace-page .status-chip.status-chip--warning,
+.workspace-page .status-chip.status-chip--danger,
+.workspace-page .status-chip.status-chip--analysis,
+.workspace-page .status-chip.status-chip--provenance,
+.workspace-page .status-chip.status-chip--critical,
+.workspace-page .status-chip.status-chip--sun,
+.workspace-page .status-chip.status-chip--sage,
+.workspace-page .status-chip.status-chip--slate,
+.workspace-page .status-chip.status-chip--forest,
+.workspace-page .status-chip.status-chip--info {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 3px 9px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+.workspace-page .status-chip--success  { border-left: 2px solid var(--color-text-success); }
+.workspace-page .status-chip--warning  { border-left: 2px solid var(--color-text-warning); }
+.workspace-page .status-chip--danger,
+.workspace-page .status-chip--critical { border-left: 2px solid var(--color-text-danger); }
+
+/* ---------- Shared Card — flat hairline chrome ---------- */
+
+.workspace-page .card,
+.workspace-page .card.card--raised,
+.workspace-page .card.card--floating,
+.workspace-page .card.card--inset,
+.workspace-page .card.card--accent,
+.workspace-page .card.card--flat,
+.workspace-page .card.card--tone-priority,
+.workspace-page .card.card--tone-sun,
+.workspace-page .card.card--tone-sage,
+.workspace-page .card.card--tone-slate,
+.workspace-page .card.card--tone-forest,
+.workspace-page .card.card--tone-analysis,
+.workspace-page .card.card--tone-provenance,
+.workspace-page .card.card--tone-watchpoint,
+.workspace-page .card.card--tone-neutral {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: 0;
+}
+
+.workspace-page .card.card--interactive:hover,
+.workspace-page .card.card--raised:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--color-text-tertiary);
+}
+
+.workspace-page .card__body   { padding: var(--space-5); }
+.workspace-page .card__header { padding: var(--space-5) var(--space-5) 0; }
+.workspace-page .card__footer { padding: 0 var(--space-5) var(--space-5); }
+
+/* ---------- Viz card shared header ---------- */
+
+.workspace-page .viz-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.workspace-page .viz-title,
+.workspace-page [class*="viz-"] [class*="__title"],
+.workspace-page [class*="viz-"] [class*="__header-title"] {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.workspace-page [class*="viz-"] [class*="__subtitle"],
+.workspace-page [class*="viz-"] [class*="__summary"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* ---------- Viz tone badges (Critical, Attention, etc.) ---------- */
+
+.workspace-page .viz-tone-badge,
+.workspace-page .viz-tone-badge--danger,
+.workspace-page .viz-tone-badge--warning,
+.workspace-page .viz-tone-badge--success,
+.workspace-page .viz-tone-badge--analysis,
+.workspace-page .viz-tone-badge--muted {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 3px 9px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+.workspace-page .viz-tone-badge--danger   { border-left: 2px solid var(--color-text-danger); }
+.workspace-page .viz-tone-badge--warning  { border-left: 2px solid var(--color-text-warning); }
+.workspace-page .viz-tone-badge--success  { border-left: 2px solid var(--color-text-success); }
+
+/* ---------- SVG text labels inside viz cards ---------- */
+
+.workspace-page .viz-axis-label,
+.workspace-page .viz-priority-matrix__zone-label {
+  fill: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---------- HealthBar flat utility strip ---------- */
+
+.workspace-page .health-bar {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-3) var(--space-4);
+}
+
+.workspace-page .health-bar__planning-label,
+.workspace-page .health-bar__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.workspace-page .health-bar__dot--filled {
+  background: var(--color-text);
+  border-color: var(--color-text);
+  box-shadow: none;
+}
+
+/* ---------- TimeSuggestion flat band ---------- */
+
+.workspace-page .time-suggestion,
+.workspace-page .time-suggestion--compact {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-text);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-3) var(--space-4);
+}
+
+.workspace-page .time-suggestion:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--color-text);
+}
+
+.workspace-page .time-suggestion-icon {
+  background: transparent;
+  color: var(--color-text);
+  box-shadow: none;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  width: 2rem;
+  height: 2rem;
+}
+
+.workspace-page .time-suggestion-label,
+.workspace-page .time-suggestion__eyebrow,
+.workspace-page .time-suggestion__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.workspace-page .time-suggestion-text,
+.workspace-page .time-suggestion__body {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+/* ---------- ForecastTimeline segments ---------- */
+
+.workspace-page .forecast-timeline {
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page .forecast-timeline-segment {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* ---------- Loading / error / empty states ---------- */
+
+.workspace-page .section-skeleton,
+.workspace-page [class*="section-skeleton"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page [class*="section-skeleton__label"],
+.workspace-page [class*="skeleton-label"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.workspace-page [class*="skeleton-bar"],
+.workspace-page [class*="skeleton__bar"] {
+  background: var(--color-border);
+  border-radius: 0;
+}
+
+.workspace-page .error-banner,
+.workspace-page [class*="error-banner"] {
+  background: transparent;
+  border: 1px solid var(--color-text-danger);
+  border-left: 2px solid var(--color-text-danger);
+  border-radius: 2px;
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  box-shadow: none;
+}
+
+.workspace-page .error-banner [class*="__label"],
+.workspace-page .error-banner [class*="__title"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-danger);
+}
+
+.workspace-page .empty-state-card,
+.workspace-page [class*="empty-state-card"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-6);
+  text-align: left;
+}
+
+.workspace-page .empty-state-card [class*="__title"],
+.workspace-page .empty-state-card h2,
+.workspace-page .empty-state-card h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.workspace-page .empty-state-card [class*="__description"],
+.workspace-page .empty-state-card p {
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  max-width: 62ch;
+}
+
+/* ---------- DrillDownDrawer (can open on any panel) ---------- */
+
+.drill-down-drawer [class*="__surface"] {
+  background: var(--color-surface);
+  border-left: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.drill-down-drawer [class*="__eyebrow"],
+.drill-down-drawer [class*="__label"],
+.drill-down-drawer [class*="__section-heading"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* ---------- Secondary ActionButtons — flat outline ---------- */
+
+.workspace-page .btn--secondary,
+.workspace-page .card .btn--secondary {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 8px 14px;
+}
+
+.workspace-page .btn--secondary:hover,
+.workspace-page .card .btn--secondary:hover {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+  transform: none;
+  box-shadow: none;
+}
+
+/* Primary buttons stay filled but get flattened — solid monochrome
+   rectangle with mono-caps label. Tone-colored variants respect
+   the tone via border-left instead of full fill. */
+.workspace-page .btn--primary {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border: 1px solid var(--color-text);
+  border-radius: 2px;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.workspace-page .btn--primary:hover:not(:disabled),
+.workspace-page .btn--primary:focus-visible {
+  background: color-mix(in srgb, var(--color-text) 85%, transparent);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+  box-shadow: none;
+  transform: none;
+}
+
+/* ---------- Shared workspace page wrapper rhythm ---------- */
+
+/* Give every workspace page a consistent vertical rhythm. Individual
+   panels can override inside their own CSS if they need tighter or
+   looser pacing. */
+.workspace-page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+/* ---------- Viz internal polish (applies everywhere) ---------- */
+
+.workspace-page .viz-composition,
+.workspace-page .viz-debt-gauge,
+.workspace-page .viz-bubble-group,
+.workspace-page .viz-complexity-cal,
+.workspace-page .viz-plan-streak,
+.workspace-page .viz-recency,
+.workspace-page .viz-priority-matrix {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-5);
+}
+
+.workspace-page .viz-axis-label,
+.workspace-page .viz-bubble-label,
+.workspace-page .viz-composition__group-title,
+.workspace-page .viz-complexity-cal__legend-item,
+.workspace-page .viz-debt-gauge__total-label,
+.workspace-page .viz-debt-gauge__cat-label,
+.workspace-page .viz-debt-gauge__cat-count,
+.workspace-page .viz-composition__center-label,
+.workspace-page .viz-priority-matrix__watchlist-label,
+.workspace-page .viz-recency__lead-label,
+.workspace-page .viz-recency__status,
+.workspace-page .viz-plan-streak__count,
+.workspace-page .viz-debt-trend__label,
+.workspace-page .viz-debt-trend__range {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.workspace-page .viz-debt-gauge__total-number,
+.workspace-page .viz-composition__center-number {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* Recency status pills get opaque backgrounds so they overlay
+   data bars cleanly on any panel. */
+.workspace-page .viz-recency__status,
+.workspace-page .viz-recency__status--danger,
+.workspace-page .viz-recency__status--warning,
+.workspace-page .viz-recency__status--success {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 2px 8px;
+  box-shadow: none;
+  position: relative;
+  z-index: 1;
+}
+
+.workspace-page .viz-recency__status--danger  { border-left: 2px solid var(--color-text-danger); }
+.workspace-page .viz-recency__status--warning { border-left: 2px solid var(--color-text-warning); }
+.workspace-page .viz-recency__status--success { border-left: 2px solid var(--color-text-success); }
+
+/* Debt-gauge internal mini-hero flattens on any panel */
+.workspace-page .viz-debt-gauge__summary,
+.workspace-page .viz-debt-gauge__summary.viz-debt-gauge__summary--danger,
+.workspace-page .viz-debt-gauge__summary.viz-debt-gauge__summary--warning,
+.workspace-page .viz-debt-gauge__summary.viz-debt-gauge__summary--success {
+  background: transparent;
+  border: 0;
+  border-right: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-2) var(--space-5) var(--space-2) 0;
+}
+
+/* Debt-gauge threshold chips (0-3 / 4-7 / 8+) */
+.workspace-page .viz-debt-gauge__threshold {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.workspace-page .viz-debt-gauge__threshold-zone {
+  flex: 1;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 4px 8px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  text-align: center;
+}
+
+.workspace-page .viz-debt-gauge__threshold-zone--active {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+}
+
+.workspace-page .viz-debt-gauge__bar {
+  height: 2px;
+  background: var(--color-border);
+  border-radius: 0;
+}
+
+.workspace-page .viz-debt-gauge__bar-fill {
+  height: 100%;
+  border-radius: 0;
+}
+
+/* Recency lead cell */
+.workspace-page .viz-recency__lead,
+.workspace-page .viz-recency__lead--danger,
+.workspace-page .viz-recency__lead--warning {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: var(--space-4);
+  box-shadow: none;
+}
+
+.workspace-page .viz-recency__lead--danger  { border-left: 2px solid var(--color-text-danger); }
+.workspace-page .viz-recency__lead--warning { border-left: 2px solid var(--color-text-warning); }
+
+.workspace-page .viz-recency__lead-student {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-text);
+  letter-spacing: -0.01em;
+}
+
+.workspace-page .viz-recency__lead em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  display: block;
+  margin-top: var(--space-1);
+}
+
+/* Priority-matrix watchlist */
+.workspace-page .viz-priority-matrix__watchlist {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.workspace-page .viz-priority-matrix__watch-row {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  padding: var(--space-3) 0;
+  box-shadow: none;
+  text-align: left;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--space-3);
+  align-items: center;
+}
+
+.workspace-page .viz-priority-matrix__watch-row:first-child { border-top: 0; }
+
+.workspace-page .viz-priority-matrix__watch-row:hover {
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.workspace-page .viz-priority-matrix__rank {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-text-tertiary);
+  min-width: 1.5ch;
+}
+
+.workspace-page .viz-priority-matrix__student,
+.workspace-page .viz-priority-matrix__student-score {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+/* Debt-trend sparkline card */
+.workspace-page .viz-debt-trend,
+.workspace-page .viz-debt-trend.viz-debt-trend--clickable {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-3) var(--space-4);
+}
+
+.workspace-page .viz-debt-trend:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--color-text-tertiary);
+}
+
+/* DayArc (the "weather map" widget — used on Today and potentially
+   Forecast). Internal plot chrome stays; outer card chrome
+   flattens. */
+.workspace-page .day-arc {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page .day-arc::before { content: none; }
+
+.workspace-page .day-arc__title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.workspace-page .day-arc__subtitle,
+.workspace-page .day-arc__meta-label,
+.workspace-page .day-arc__legend-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.workspace-page .day-arc__peak-badge,
+.workspace-page .day-arc__peak-badge--high,
+.workspace-page .day-arc__peak-badge--medium,
+.workspace-page .day-arc__peak-badge--low {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 6px 10px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  box-shadow: none;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.workspace-page .day-arc__peak-badge--high   { border-left: 2px solid var(--color-text-danger); }
+.workspace-page .day-arc__peak-badge--medium { border-left: 2px solid var(--color-text-warning); }
+.workspace-page .day-arc__peak-badge--low    { border-left: 2px solid var(--color-text-success); }
+
+.workspace-page .day-arc__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* Plan recap (Today's Carry Forward card, possibly also Tomorrow Plan) */
+.workspace-page .plan-recap {
+  padding: var(--space-5);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page .plan-recap-heading {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.workspace-page .plan-recap-subtitle {
+  margin: var(--space-1) 0 0;
+  max-width: 48ch;
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+.workspace-page .plan-recap-section { margin-top: var(--space-5); }
+
+.workspace-page .plan-recap-section h4 {
+  margin-bottom: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.workspace-page .plan-recap-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.workspace-page .plan-recap-list li {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--color-border);
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.workspace-page .plan-recap-list li:last-child { border-bottom: none; }
+
+.workspace-page .plan-recap-overflow {
+  color: var(--color-text-tertiary);
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ================================================================
+   Broad pattern layer — catches conventional class suffixes
+   across every panel so new components inherit the vocabulary
+   without needing per-component rules.
+   ================================================================ */
+
+/* Any "__eyebrow" leaf inside a workspace page reads as mono caps */
+.workspace-page [class*="__eyebrow"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  background: transparent;
+  border: 0;
+  padding: 0;
+  box-shadow: none;
+}
+
+/* Surface panels (generic wrapper class used across several panels) */
+.workspace-page .surface-panel,
+.surface-panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+/* Contextual hints (tip cards shown inline — "Differentiate / Got it",
+   etc). Flat with a tone-colored left rule. */
+.contextual-hint,
+.contextual-hint--sage,
+.contextual-hint--sun,
+.contextual-hint--slate,
+.contextual-hint--forest,
+.contextual-hint--muted,
+.contextual-hint--accent {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-4);
+}
+
+.contextual-hint--sage    { border-left: 2px solid var(--color-text-success); }
+.contextual-hint--sun     { border-left: 2px solid var(--color-text-warning); }
+.contextual-hint--forest  { border-left: 2px solid var(--color-text-success); }
+.contextual-hint--slate   { border-left: 2px solid var(--color-border); }
+.contextual-hint--muted   { border-left: 2px solid var(--color-border); }
+.contextual-hint--accent  { border-left: 2px solid var(--color-text); }
+
+.contextual-hint [class*="__title"],
+.contextual-hint-title {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.contextual-hint [class*="__description"],
+.contextual-hint-description,
+.contextual-hint p {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+}
+
+.contextual-hint-dismiss {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  color: var(--color-text);
+}
+
+.contextual-hint-dismiss:hover {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+}
+
+/* Empty-state previews (DifferentiateEmptyState, generic patterns).
+   Flatten chrome; titles go display; body copy measured. */
+.workspace-page [class*="empty-state"],
+[class*="empty-state"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page [class*="empty-state"] [class*="__title"],
+[class*="empty-state"] [class*="__title"],
+.workspace-page [class*="empty-state__title"],
+[class*="empty-state__title"] {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.workspace-page [class*="empty-state"] [class*="__description"],
+.workspace-page [class*="empty-state"] [class*="__body"] {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.55;
+  max-width: 62ch;
+}
+
+/* Numbered-step markers (1/2/3 circular indicators in empty states
+   and onboarding). Convert from filled circles to flat bordered
+   tabular numerals. */
+.workspace-page [class*="step-marker"],
+.workspace-page [class*="__step-number"],
+.workspace-page [class*="step__number"],
+.workspace-page [class*="step-indicator"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;
+}
+
+/* Form sections (generic reusable layout) */
+.workspace-page .form-section,
+.workspace-page [class*="form-section"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page .form-section [class*="__label"],
+.workspace-page [class*="field-label"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+/* Generic input / textarea flattening inside workspace */
+.workspace-page input[type="text"],
+.workspace-page input[type="search"],
+.workspace-page input[type="email"],
+.workspace-page input[type="password"],
+.workspace-page input[type="number"],
+.workspace-page select,
+.workspace-page textarea {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  font-family: var(--font-sans);
+  color: var(--color-text);
+}
+
+.workspace-page input[type="text"]:focus,
+.workspace-page input[type="search"]:focus,
+.workspace-page input[type="email"]:focus,
+.workspace-page input[type="password"]:focus,
+.workspace-page input[type="number"]:focus,
+.workspace-page select:focus,
+.workspace-page textarea:focus {
+  outline: none;
+  border-color: var(--color-text);
+  box-shadow: none;
+}
+
+/* Output / result panels (Differentiate output, Tomorrow Plan view, etc.) */
+.workspace-page .result-display,
+.workspace-page [class*="result-display"],
+.workspace-page .output-canvas,
+.workspace-page [class*="output-canvas"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+/* Feedback collector (rating + comment affordance at the bottom of
+   AI outputs). Flat hairline frame. */
+.workspace-page .feedback-collector,
+.workspace-page [class*="feedback-collector"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+/* OutputActionBar (the row of buttons above/below generated output:
+   Copy, Download, Regenerate, etc.). Convert buttons to mono flat. */
+.workspace-page .output-action-bar,
+.workspace-page [class*="output-action-bar"] {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.workspace-page .output-action-bar button,
+.workspace-page [class*="output-action-bar"] button {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: 6px 10px;
+}
+
+/* Student avatar chips (A/B/C initials) — flat, squared, mono */
+.workspace-page .student-avatar,
+.workspace-page .student-avatar--selected {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-2) var(--space-3);
+  gap: var(--space-2);
+  transition: border-color var(--motion-fast) var(--ease-standard);
+}
+
+.workspace-page .student-avatar:hover {
+  border-color: var(--color-text);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.workspace-page .student-avatar--selected {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+}
+
+.workspace-page .student-avatar__initial {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  width: auto;
+  height: auto;
+}
+
+.workspace-page .student-avatar__name {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: inherit;
+}
+
+/* Intervention chips (Redirect / Calm corner / Praise / etc.) — flat
+   mono tokens. */
+.workspace-page .intervention-chip,
+.workspace-page .intervention-chip--selected {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: 6px 12px;
+  transition: border-color var(--motion-fast) var(--ease-standard);
+}
+
+.workspace-page .intervention-chip:hover {
+  border-color: var(--color-text);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.workspace-page .intervention-chip--selected {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+}
+
+.workspace-page .intervention-chip__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: inherit;
+}
+
+.workspace-page .intervention-chip__icon {
+  color: inherit;
+  opacity: 0.7;
+}
+
+/* Quick capture tray — flatten */
+.workspace-page .quick-capture-tray,
+.workspace-page [class*="quick-capture"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+/* Session / mock banners */
+.workspace-page .session-banner,
+.workspace-page [class*="session-banner"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-text-analysis);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+/* ================================================================
+   Shell chrome — app header, nav, footer, shortcut legend
+   ================================================================
+   These rules apply globally, not just inside `.workspace-page`,
+   because the shell wraps every view.
+   ================================================================ */
+
+.app-header {
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.app-header__inner {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.shell-brand {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.shell-brand__wordmark {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--color-text);
+}
+
+/* Classroom picker pill — technical rectangle, not a rounded pill */
+.shell-classroom-pill,
+.shell-classroom-pill--open {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 6px 12px;
+  box-shadow: none;
+  color: var(--color-text);
+  transition: border-color var(--motion-fast) var(--ease-standard);
+}
+
+.shell-classroom-pill:hover,
+.shell-classroom-pill--open {
+  border-color: var(--color-text);
+  background: transparent;
+}
+
+.shell-classroom-pill__eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.shell-classroom-pill__label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.shell-classroom-pill__caret,
+.shell-classroom-pill__lock {
+  color: var(--color-text-tertiary);
+}
+
+/* Right-side action buttons */
+.shell-bar__actions {
+  gap: var(--space-2);
+}
+
+.shell-bar__actions > button,
+.shell-bar__palette-btn,
+.app-help-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 10px;
+  color: var(--color-text);
+  transition: border-color var(--motion-fast) var(--ease-standard);
+}
+
+.shell-bar__actions > button:hover:not(:disabled),
+.shell-bar__palette-btn:hover:not(:disabled),
+.app-help-btn:hover:not(:disabled) {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+  transform: none;
+  box-shadow: none;
+}
+
+.role-context-pill {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.role-context-pill__eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.role-context-pill__role,
+.role-context-pill__label {
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+/* Nav — flat tab bar */
+.shell-nav,
+.shell-nav--solo {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: none;
+  padding: 0 var(--space-5);
+  gap: 0;
+}
+
+.shell-nav__groups {
+  display: flex;
+  gap: 0;
+}
+
+.shell-nav__group {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-3) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  position: relative;
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+
+.shell-nav__group:hover {
+  background: transparent;
+  color: var(--color-text);
+  transform: none;
+  box-shadow: none;
+}
+
+.shell-nav__group--active {
+  background: transparent;
+  color: var(--color-text);
+}
+
+.shell-nav__group--active::after,
+.shell-nav__group-indicator {
+  content: "";
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: -1px;
+  height: 2px;
+  background: var(--color-text);
+  border-radius: 0;
+}
+
+.shell-nav__group-icon {
+  color: inherit;
+  opacity: 0.7;
+}
+
+.shell-nav__group--active .shell-nav__group-icon { opacity: 1; }
+
+.shell-nav__badge {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 1px 5px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  box-shadow: none;
+  margin-left: var(--space-2);
+}
+
+.shell-nav__group--active .shell-nav__badge {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+}
+
+.shell-nav__kbd {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  color: var(--color-text-tertiary);
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 1px 5px;
+  box-shadow: none;
+}
+
+.shell-nav__tab {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--space-2) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.shell-nav__tab--active {
+  color: var(--color-text);
+  background: transparent;
+  border-bottom: 2px solid var(--color-text);
+}
+
+.shell-nav__tab:hover {
+  color: var(--color-text);
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+/* App footer — flat, hairline top, mono utility copy */
+.app-footer,
+.app-footer--expanded,
+.app-footer--collapsed {
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  box-shadow: none;
+  padding: var(--space-4) var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.12em;
+  color: var(--color-text-tertiary);
+}
+
+.app-footer [class*="__title"] {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.app-footer a,
+.app-footer button {
+  font-family: var(--font-mono);
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* Shortcut chips in footer legend (1 Today, 2 Differentiate, ...) */
+.app-footer [class*="shortcut"],
+.app-footer [class*="keybind"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  padding: 3px 8px;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--color-text);
+  box-shadow: none;
+}
+
+/* Mobile nav */
+.mobile-nav {
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mobile-nav__item {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+  background: transparent;
+  border: 0;
+}
+
+.mobile-nav__item--active {
+  color: var(--color-text);
+}
+
+/* ================================================================
+   Global state components (render outside `.workspace-page`)
+   ================================================================ */
+
+.error-banner {
+  background: transparent;
+  border: 1px solid var(--color-text-danger);
+  border-left: 2px solid var(--color-text-danger);
+  border-radius: 2px;
+  padding: var(--space-3) var(--space-4);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  box-shadow: none;
+}
+
+.mock-mode-banner,
+[class*="mock-mode-banner"] {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--color-text-warning);
+  border-radius: 2px;
+  box-shadow: none;
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text);
+}
+
+/* Student roster + student cards */
+.workspace-page .student-roster {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page .student-roster__label {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.workspace-page .student-card,
+.workspace-page .student-card--attention {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  box-shadow: none;
+}
+
+.workspace-page .student-card--attention {
+  border-left: 2px solid var(--color-text-warning);
+}
+
+.workspace-page .student-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--color-text-tertiary);
+}
+
+.workspace-page .student-card__name {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.workspace-page .student-card__count,
+.workspace-page .student-card__stat {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
