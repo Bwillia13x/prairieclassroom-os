@@ -15,11 +15,8 @@ export default function ForecastForm({
 }: Props) {
   const [forecastNotes, setForecastNotes] = useState("");
 
-  const classroomMissing = !selectedClassroom;
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (classroomMissing) return;
     onSubmit(selectedClassroom, forecastNotes.trim() || undefined);
   }
 
@@ -42,7 +39,7 @@ export default function ForecastForm({
           />
         </div>
 
-        <button type="submit" className="btn btn--primary" disabled={loading || classroomMissing}>
+        <button type="submit" className="btn btn--primary" disabled={loading}>
           {loading ? "Generating forecast…" : "Generate forecast"}
         </button>
       </form>

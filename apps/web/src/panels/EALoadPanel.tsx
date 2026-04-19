@@ -95,7 +95,7 @@ function EALoadForm({
           {loading ? "Generating load profile…" : "Generate load profile"}
         </button>
 
-        <p className="workspace-form__helper">
+        <p className="form-hint">
           Uses the planning tier (thinking on). Suggestions are operational only — the teacher and EA decide
           what moves.
         </p>

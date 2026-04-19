@@ -90,7 +90,7 @@ export default function ArtifactUpload({
   return (
     <FormCard className="artifact-upload">
     <form className="artifact-upload__form" onSubmit={handleSubmit} ref={formRef}>
-      <h2>Prepare Lesson Artifact</h2>
+      <h2>Prepare lesson artifact</h2>
       <p className="form-description">
         Bring in one artifact through a single intake path. The result canvas will organize differentiated versions around this source.
       </p>
