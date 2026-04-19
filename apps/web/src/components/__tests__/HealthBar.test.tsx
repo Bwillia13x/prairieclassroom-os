@@ -98,3 +98,47 @@ describe("HealthBar — no onTrendClick (regression)", () => {
     expect(screen.queryByTestId("viz-plan-streak-cell-10")).toBeNull();
   });
 });
+
+// ----------------------------------------------------------------
+// Block 5 — Audit #22: healthy band on the debt sparkline
+// ----------------------------------------------------------------
+
+describe("HealthBar — debt sparkline healthy band (audit #22)", () => {
+  it("paints a .viz-debt-trend__healthy-band rect behind the line", () => {
+    const { container } = render(
+      <HealthBar health={HEALTH} loading={false} pendingActionCount={37} />,
+    );
+    expect(
+      container.querySelector(".viz-debt-trend__healthy-band"),
+    ).toBeInTheDocument();
+  });
+});
+
+// ----------------------------------------------------------------
+// Block 6 — Audit #23: unified planning denominator
+// ----------------------------------------------------------------
+
+describe("HealthBar — unified planning denominator (audit #23)", () => {
+  it("exposes exactly one denominator form inside the planning-group container", () => {
+    render(<HealthBar health={HEALTH} loading={false} pendingActionCount={37} />);
+    const planning = screen.getByTestId("health-bar-planning");
+    const text = planning.textContent ?? "";
+    const mentions = [/\bof\s+7\b/, /\bof\s+14\b/];
+    const matches = mentions.filter((r) => r.test(text));
+    expect(matches.length).toBe(1);
+  });
+
+  it("falls back to 'N of 7 planned' when no 14-day trend is available", () => {
+    const healthNoTrends: ClassroomHealth = {
+      ...HEALTH,
+      trends: {
+        plans_14d: [],
+        debt_total_14d: [],
+        peak_complexity_14d: [],
+      },
+    };
+    render(<HealthBar health={healthNoTrends} loading={false} />);
+    const planning = screen.getByTestId("health-bar-planning");
+    expect(planning.textContent ?? "").toMatch(/\bof\s+7\b/);
+  });
+});

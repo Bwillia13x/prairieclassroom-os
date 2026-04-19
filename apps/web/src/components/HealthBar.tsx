@@ -61,6 +61,8 @@ export default function HealthBar({ health, loading, pendingActionCount = 0, onT
   const plannedCount = health.plans_last_7.filter(Boolean).length;
   const overallTone = getOverallTone(health, pendingActionCount);
   const overallLabel = getOverallLabel(overallTone);
+  const has14dTrend =
+    !!health.trends?.plans_14d && health.trends.plans_14d.length > 0;
 
   return (
     <div
@@ -78,37 +80,49 @@ export default function HealthBar({ health, loading, pendingActionCount = 0, onT
         </StatusChip>
       )}
 
-      <span className="health-bar__planning">
-        {health.plans_last_7.map((planned, i) => (
-          <span
-            key={i}
-            className={`health-bar__dot${planned ? " health-bar__dot--filled" : ""}`}
-            aria-hidden="true"
-          />
-        ))}
-        <span className="health-bar__planning-label">
-          <NumberTicker value={plannedCount} /> of 7 planned
+      {/* Audit #23: unify the planning denominator. When a 14-day trend
+          is available, PlanStreakCalendar owns the numeric denominator
+          ("N of 14 days planned") and the weekly dots here render as a
+          silent visual scoped by the "this week" caption. When no 14-day
+          trend is available, we fall back to the inline "N of 7 planned"
+          so the teacher still sees a count. */}
+      <div className="health-bar__planning-group" data-testid="health-bar-planning">
+        <span className="health-bar__planning">
+          {health.plans_last_7.map((planned, i) => (
+            <span
+              key={i}
+              className={`health-bar__dot${planned ? " health-bar__dot--filled" : ""}`}
+              aria-hidden="true"
+            />
+          ))}
+          {has14dTrend ? (
+            <span className="health-bar__planning-subnote">this week · 7 days</span>
+          ) : (
+            <span className="health-bar__planning-label">
+              <NumberTicker value={plannedCount} /> of 7 planned
+            </span>
+          )}
         </span>
-      </span>
+
+        {has14dTrend && (
+          <PlanStreakCalendar
+            plans14d={health.trends!.plans_14d}
+            onSegmentClick={
+              onTrendClick
+                ? (payload) =>
+                    onTrendClick({
+                      trendKey: "plans",
+                      label: "Planning streak",
+                      data: health.trends!.plans_14d,
+                      highlightIndex: payload.dayIndex,
+                    })
+                : undefined
+            }
+          />
+        )}
+      </div>
 
       <StatusChip tone={overallTone} label={overallLabel} />
-
-      {health.trends?.plans_14d && health.trends.plans_14d.length > 0 && (
-        <PlanStreakCalendar
-          plans14d={health.trends.plans_14d}
-          onSegmentClick={
-            onTrendClick
-              ? (payload) =>
-                  onTrendClick({
-                    trendKey: "plans",
-                    label: "Planning streak",
-                    data: health.trends!.plans_14d,
-                    highlightIndex: payload.dayIndex,
-                  })
-              : undefined
-          }
-        />
-      )}
       {health.trends?.debt_total_14d && health.trends.debt_total_14d.length > 1 && (
         <DebtTrendSparkline
           data={health.trends.debt_total_14d}

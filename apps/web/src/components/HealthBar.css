@@ -51,6 +51,25 @@
   letter-spacing: var(--tracking-eyebrow);
 }
 
+/* Audit #23: group the 7-dot strip + 14-day calendar so the denominator
+   lives in exactly one place (the calendar). The weekly strip becomes
+   a silent visual, scoped by a "this week" caption. */
+.health-bar__planning-group {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.health-bar__planning-subnote {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+}
+
 .health-bar--loading {
   min-height: var(--control-h-lg);
 }

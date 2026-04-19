@@ -1919,7 +1919,7 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
   const h = 32;
   const pad = 4;
 
-  const { points, lastX, lastY, first, last, trend, tone } = useMemo(() => {
+  const { points, lastX, lastY, first, last, trend, tone, bandY, bandHeight } = useMemo(() => {
     const trimmed = data.slice(-14);
     const max = Math.max(...trimmed, 1);
     const coords = trimmed.map((v, i) => ({
@@ -1932,7 +1932,26 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
     const l = trimmed[trimmed.length - 1] ?? 0;
     const tr = l > f ? "rising" : l < f ? "falling" : "flat";
     const tn = tr === "rising" ? "var(--color-danger)" : tr === "falling" ? "var(--color-success)" : "var(--color-warning)";
-    return { points: pts, lastX: endPt.x, lastY: endPt.y, first: f, last: l, trend: tr, tone: tn, count: trimmed.length };
+    // Audit #22: paint a healthy band (debt <= 15) behind the line so
+    // the Y axis has scale context without overloading the sparkline.
+    // When max <= 15, the entire plot is healthy — the band fills it.
+    const HEALTHY_THRESHOLD = 15;
+    const bandTop = max > HEALTHY_THRESHOLD
+      ? pad + (1 - HEALTHY_THRESHOLD / max) * (h - pad * 2)
+      : pad;
+    const bandBottom = pad + (h - pad * 2);
+    return {
+      points: pts,
+      lastX: endPt.x,
+      lastY: endPt.y,
+      first: f,
+      last: l,
+      trend: tr,
+      tone: tn,
+      count: trimmed.length,
+      bandY: bandTop,
+      bandHeight: Math.max(0, bandBottom - bandTop),
+    };
   }, [data]);
 
   if (data.length < 2) return null;
@@ -1966,6 +1985,19 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
         </span>
       </div>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="viz-svg">
+        {/* Audit #22: healthy band (0–15) gives the Y axis an anchor
+            without requiring tick labels on a sparkline. */}
+        {bandHeight > 0 && (
+          <rect
+            className="viz-debt-trend__healthy-band"
+            x={0}
+            y={bandY}
+            width={w}
+            height={bandHeight}
+          >
+            <title>Healthy range: 0–15 open items</title>
+          </rect>
+        )}
         <polyline
           points={points}
           fill="none"

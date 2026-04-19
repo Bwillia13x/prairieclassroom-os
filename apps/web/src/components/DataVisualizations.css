@@ -1763,6 +1763,13 @@ button.viz-recency__row:focus-visible {
   background: transparent;
 }
 
+/* Audit #22: healthy band (0–15 open items) behind the sparkline.
+   The tint is deliberately quiet so the line stays the primary read. */
+.viz-debt-trend__healthy-band {
+  fill: var(--color-bg-success);
+  opacity: 0.35;
+}
+
 .viz-debt-trend__range {
   display: flex;
   justify-content: space-between;
