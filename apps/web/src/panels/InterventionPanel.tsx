@@ -117,7 +117,6 @@ export default function InterventionPanel({ prefill }: Props) {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Log Intervention Notes"
         sectionTone="slate"
         sectionIcon="grid"

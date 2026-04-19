@@ -105,7 +105,6 @@ export default function EABriefingPanel() {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Build the EA Briefing"
         sectionTone="slate"
         sectionIcon="grid"

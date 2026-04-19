@@ -286,10 +286,12 @@ describe("tab visibility helpers — per-role", () => {
   it("getVisibleTabsForGroup returns only tabs the role may see in that group", () => {
     expect(getVisibleTabsForGroup("prep", "reviewer")).toEqual([]);
     expect(getVisibleTabsForGroup("prep", "teacher")).toEqual(["differentiate", "language-tools"]);
+    // OPS order (2026-04-19 OPS audit): log-intervention leads the row,
+    // forecast/ea-briefing follow. Substitute sees those three.
     expect(getVisibleTabsForGroup("ops", "substitute")).toEqual([
-      "ea-briefing",
-      "complexity-forecast",
       "log-intervention",
+      "complexity-forecast",
+      "ea-briefing",
     ]);
   });
 

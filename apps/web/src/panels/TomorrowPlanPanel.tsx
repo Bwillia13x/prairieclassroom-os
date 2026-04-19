@@ -145,7 +145,6 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Plan Tomorrow's Support"
         sectionTone="slate"
         sectionIcon="grid"

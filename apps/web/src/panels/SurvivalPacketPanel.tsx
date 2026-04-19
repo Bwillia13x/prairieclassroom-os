@@ -102,7 +102,6 @@ export default function SurvivalPacketPanel() {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Prepare the Substitute Packet"
         sectionTone="slate"
         sectionIcon="grid"

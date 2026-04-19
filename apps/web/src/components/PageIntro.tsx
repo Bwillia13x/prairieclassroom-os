@@ -16,7 +16,13 @@ interface Breadcrumb {
 }
 
 interface Props {
-  eyebrow: string;
+  /**
+   * Small uppercase label above the title. Optional — when omitted, the
+   * eyebrow row is not rendered. OPS panels drop it in favor of the
+   * breadcrumb (2026-04-19 OPS audit). Keep it on panels whose breadcrumb
+   * alone would not read as a complete orienting cue.
+   */
+  eyebrow?: string;
   title: string;
   description: ReactNode;
   badges?: Badge[];
@@ -35,7 +41,8 @@ export default function PageIntro({
   breadcrumb,
 }: Props) {
   const showBreadcrumbTab =
-    breadcrumb && breadcrumb.tab.trim().toLowerCase() !== eyebrow.trim().toLowerCase();
+    breadcrumb &&
+    (!eyebrow || breadcrumb.tab.trim().toLowerCase() !== eyebrow.trim().toLowerCase());
   return (
     <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}`}>
       {breadcrumb ? (
@@ -49,10 +56,12 @@ export default function PageIntro({
           ) : null}
         </nav>
       ) : null}
-      <div className="page-intro__eyebrow">
-        {sectionIcon ? <SectionIcon name={sectionIcon} className="page-intro__eyebrow-icon" /> : null}
-        <span>{eyebrow}</span>
-      </div>
+      {eyebrow ? (
+        <div className="page-intro__eyebrow">
+          {sectionIcon ? <SectionIcon name={sectionIcon} className="page-intro__eyebrow-icon" /> : null}
+          <span>{eyebrow}</span>
+        </div>
+      ) : null}
       <h2 className="page-intro__title">{title}</h2>
       <div className="page-intro__description copy-measure">{description}</div>
       {badges.length > 0 && (

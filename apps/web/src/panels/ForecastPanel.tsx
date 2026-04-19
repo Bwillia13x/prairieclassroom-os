@@ -111,7 +111,6 @@ export default function ForecastPanel() {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Forecast Tomorrow's Complexity"
         sectionTone="slate"
         sectionIcon="grid"

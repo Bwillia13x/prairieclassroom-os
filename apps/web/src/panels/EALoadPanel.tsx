@@ -254,7 +254,6 @@ export default function EALoadPanel() {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Balance EA Cognitive Load"
         sectionTone="slate"
         sectionIcon="grid"
