@@ -122,7 +122,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
 
   it("Structured details is collapsed by default", async () => {
     renderPanel();
-    const summary = await screen.findByText(/Structured details/i);
+    const summary = await screen.findByText(/Add structured detail/i);
     const details = summary.closest("details");
     expect(details).not.toBeNull();
     expect(details?.hasAttribute("open")).toBe(false);
@@ -130,7 +130,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
 
   it("Structured form becomes reachable after clicking summary", async () => {
     const { user } = renderPanel();
-    const summary = await screen.findByText(/Structured details/i);
+    const summary = await screen.findByText(/Add structured detail/i);
 
     // Before clicking, the <details> should not have the open attribute.
     const details = summary.closest("details");
@@ -153,7 +153,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     };
     renderPanel(prefill);
     // The details element should be open so the legacy form (and its prefill ingestion) is visible.
-    const details = screen.getByText(/Structured details/i).closest("details");
+    const details = screen.getByText(/Add structured detail/i).closest("details");
     expect(details).not.toBeNull();
     expect(details).toHaveAttribute("open");
   });

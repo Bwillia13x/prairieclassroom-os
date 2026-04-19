@@ -7,11 +7,26 @@ import { useSpeechCapture } from "../../hooks/useSpeechCapture";
 import { ActionButton } from "../shared";
 import type { InterventionRequest } from "../../types";
 
+/**
+ * Per-student signal from the Today snapshot. Drives the corner dot on
+ * StudentAvatar so teachers can see who needs follow-up without reading
+ * the debt register directly. 2026-04-19 OPS audit phase 7.1.
+ */
+export interface StudentFlag {
+  priority?: boolean;
+  staleFollowupDays?: number;
+}
+
 interface QuickCaptureTrayProps {
   classroomId: string;
   students: { alias: string }[];
   loading: boolean;
   onSubmit: (request: InterventionRequest) => boolean | void | Promise<boolean | void>;
+  /**
+   * Optional per-student flag map keyed by alias. Missing entries
+   * render without a dot. 2026-04-19 OPS audit phase 7.1.
+   */
+  studentFlags?: Record<string, StudentFlag>;
 }
 
 /**
@@ -47,6 +62,7 @@ export default function QuickCaptureTray({
   students,
   loading,
   onSubmit,
+  studentFlags,
 }: QuickCaptureTrayProps) {
   const [selectedAliases, setSelectedAliases] = useState<string[]>([]);
   const [selectedChip, setSelectedChip] = useState<InterventionChipKey | null>(null);
@@ -143,55 +159,85 @@ export default function QuickCaptureTray({
         ref={avatarRowRef}
         onKeyDown={(e) => moveFocusByArrow(e, avatarRowRef.current)}
       >
-        {students.map((s) => (
-          <StudentAvatar
-            key={s.alias}
-            alias={s.alias}
-            selected={selectedAliases.includes(s.alias)}
-            onToggle={handleToggleAlias}
-          />
-        ))}
+        {students.map((s) => {
+          const flag = studentFlags?.[s.alias];
+          const dotKind: "priority" | "stale" | undefined = flag?.staleFollowupDays
+            ? "stale"
+            : flag?.priority
+              ? "priority"
+              : undefined;
+          return (
+            <StudentAvatar
+              key={s.alias}
+              alias={s.alias}
+              selected={selectedAliases.includes(s.alias)}
+              onToggle={handleToggleAlias}
+              flag={dotKind}
+            />
+          );
+        })}
       </div>
 
-      {/* What happened? — chip row */}
+      {/* What happened? — chips grouped into one row with a wider gap
+          between behavioral, support, and positive categories so the
+          visual structure reads on mobile without three separate rows.
+          2026-04-19 OPS audit phase 7.2. */}
       <div
         className="quick-capture-tray__chip-row"
         ref={chipRowRef}
         onKeyDown={(e) => moveFocusByArrow(e, chipRowRef.current)}
+        role="group"
+        aria-label="Intervention type"
       >
-        {INTERVENTION_CHIP_DEFS.map((def) => (
-          <InterventionChip
-            key={def.key}
-            def={def}
-            selected={selectedChip === def.key}
-            onSelect={handleSelectChip}
-          />
+        {(["behavioral", "support", "positive"] as const).map((cat, i) => (
+          <div
+            key={cat}
+            className={`quick-capture-tray__chip-group quick-capture-tray__chip-group--${cat}`}
+            data-category={cat}
+            data-first={i === 0 ? "true" : "false"}
+          >
+            {INTERVENTION_CHIP_DEFS.filter((def) => def.category === cat).map((def) => (
+              <InterventionChip
+                key={def.key}
+                def={def}
+                selected={selectedChip === def.key}
+                onSelect={handleSelectChip}
+              />
+            ))}
+          </div>
         ))}
       </div>
 
-      {/* Note textarea */}
-      <textarea
-        className="quick-capture-tray__note"
-        rows={3}
-        aria-label="Intervention note"
-        placeholder="e.g., 'Brody struggled with transition from recess — used calm corner for 3 min, returned ready to work.'"
-        value={note}
-        onChange={handleNoteChange}
-      />
-
-      {/* Controls row */}
-      <div className="quick-capture-tray__controls">
-        {supported && (
+      {/* Note textarea with an integrated mic button in the bottom-right.
+          The standalone "Start dictation" pill is gone; the mic is now a
+          thumb-reachable affordance inside the input itself. 2026-04-19
+          OPS audit phase 7.3. */}
+      <div className="quick-capture-tray__note-wrap">
+        <textarea
+          className="quick-capture-tray__note"
+          rows={3}
+          aria-label="Intervention note"
+          placeholder="e.g., 'Brody struggled with transition from recess — used calm corner for 3 min, returned ready to work.'"
+          value={note}
+          onChange={handleNoteChange}
+        />
+        {supported ? (
           <button
             type="button"
-            className="btn btn--ghost"
+            className={`quick-capture-tray__mic${recording ? " quick-capture-tray__mic--recording" : ""}`}
             aria-label={recording ? "Stop dictation" : "Start dictation"}
             aria-pressed={recording}
             onClick={handleMicToggle}
           >
-            {recording ? "Stop dictation" : "Start dictation"}
+            <span aria-hidden="true">{recording ? "■" : "🎤"}</span>
           </button>
-        )}
+        ) : null}
+      </div>
+
+      {/* Controls row — mic lives inside the textarea now; this row is
+          just the primary submit. Kept as a flex container so later
+          additions (e.g., clear draft) slot in without another rewrite. */}
+      <div className="quick-capture-tray__controls">
         <ActionButton
           variant="primary"
           fullWidth

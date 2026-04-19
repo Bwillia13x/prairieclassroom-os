@@ -8,6 +8,7 @@ const REDIRECT_DEF: InterventionChipDef = {
   key: "redirect",
   label: "Redirect",
   icon: "alert",
+  category: "behavioral",
   starterNote: (names) => `Redirected ${names.join(", ")}`,
 };
 

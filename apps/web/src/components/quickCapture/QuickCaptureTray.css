@@ -76,16 +76,35 @@
   font-size: var(--text-xs, 0.75rem);
 }
 
-/* Chip row — wrapping flex */
+/* Chip row — wrapping flex. 2026-04-19 OPS audit phase 7.2:
+   category groups render with tight intra-group gap and a wider
+   inter-group gap so the three categories read as distinct without
+   a divider or separate rows. */
 .quick-capture-tray__chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+}
+
+.quick-capture-tray__chip-group {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
+/* 2026-04-19 OPS audit phase 7.3: textarea and inline mic share a
+   relative container so the mic sits thumb-reachable at the bottom-right
+   of the input without reflowing layout. */
+.quick-capture-tray__note-wrap {
+  position: relative;
+  display: block;
+}
+
 .quick-capture-tray__note {
   width: 100%;
   padding: var(--space-2);
+  padding-right: calc(var(--space-2) + 2.5rem);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   font-family: inherit;
@@ -101,19 +120,66 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+.quick-capture-tray__mic {
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.quick-capture-tray__mic:hover,
+.quick-capture-tray__mic:focus-visible {
+  color: var(--color-text);
+  border-color: color-mix(in srgb, var(--color-border-strong) 55%, transparent);
+  outline: none;
+}
+
+.quick-capture-tray__mic:active {
+  transform: scale(0.95);
+}
+
+.quick-capture-tray__mic--recording {
+  background: color-mix(in srgb, var(--color-danger) 14%, transparent);
+  border-color: color-mix(in srgb, var(--color-danger) 50%, transparent);
+  color: var(--color-danger);
+  animation: mic-pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-danger) 28%, transparent); }
+  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-danger) 0%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-capture-tray__mic--recording {
+    animation: none;
+  }
+}
+
 .quick-capture-tray__controls {
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
-.quick-capture-tray__mic {
-  flex-shrink: 0;
-}
-
 /* ── StudentAvatar ─────────────────────────────────────────── */
 
 .student-avatar {
+  position: relative;
   display: inline-flex;
   flex-direction: column;
   align-items: center;
@@ -128,6 +194,26 @@
   font-family: inherit;
   font-size: var(--text-sm, 0.875rem);
   color: var(--color-text);
+}
+
+/* Corner follow-up dot — amber for priority, red for stale. Small enough
+   that the name-only visual stays dominant. 2026-04-19 OPS audit phase 7.1. */
+.student-avatar__dot {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--color-surface);
+}
+
+.student-avatar__dot--priority {
+  background: var(--color-warning);
+}
+
+.student-avatar__dot--stale {
+  background: var(--color-danger);
 }
 
 .student-avatar__initial {
@@ -200,6 +286,21 @@
   background: color-mix(in srgb, var(--color-accent) 10%, transparent);
   border-color: var(--color-accent);
   color: var(--color-text-accent);
+}
+
+/* Category tints — subtle, chip shape preserved. 2026-04-19 OPS audit
+   phase 7.2. Selection state still wins (accent border/background). */
+.intervention-chip--behavioral {
+  border-color: color-mix(in srgb, var(--color-border-danger) 55%, transparent);
+}
+
+.intervention-chip--support {
+  border-color: color-mix(in srgb, var(--color-border-slate) 60%, transparent);
+}
+
+.intervention-chip--positive {
+  border-color: color-mix(in srgb, var(--color-border-sage) 60%, transparent);
+  background: color-mix(in srgb, var(--color-bg-sage) 45%, var(--color-surface));
 }
 
 .intervention-chip:focus-visible {

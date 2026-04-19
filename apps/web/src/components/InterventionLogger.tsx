@@ -18,6 +18,13 @@ interface Props {
   ) => void;
   loading: boolean;
   prefill?: InterventionPrefill | null;
+  /**
+   * Role gating — when false, the form still renders but the submit is
+   * disabled. Reading the form is still useful for reviewers even
+   * though they can't post. Defaults to true. 2026-04-19 OPS audit
+   * phase 7.4.
+   */
+  canSubmit?: boolean;
 }
 
 export default function InterventionLogger({
@@ -28,6 +35,7 @@ export default function InterventionLogger({
   onSubmit,
   loading,
   prefill,
+  canSubmit: canSubmitProp = true,
 }: Props) {
   const [selectedStudents, setSelectedStudents] = useState<string[]>(
     prefill ? [prefill.student_ref] : [],
@@ -168,7 +176,7 @@ export default function InterventionLogger({
             variant="primary"
             type="submit"
             loading={loading}
-            disabled={selectedStudents.length === 0 || !teacherNote.trim()}
+            disabled={!canSubmitProp || selectedStudents.length === 0 || !teacherNote.trim()}
           >
             {loading ? "Structuring Note…" : "Log Intervention"}
           </ActionButton>
