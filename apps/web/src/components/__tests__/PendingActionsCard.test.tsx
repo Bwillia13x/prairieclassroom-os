@@ -94,4 +94,27 @@ describe("PendingActionsCard", () => {
     const chip = screen.getByRole("button", { name: /Hannah/ });
     expect(chip).toHaveAttribute("title", "Stale math follow-up (4 days)");
   });
+
+  it("labels the pulse total as 'open items' (audit #29)", () => {
+    render(
+      <PendingActionsCard
+        items={items}
+        totalCount={35}
+        studentsToCheckFirst={[]}
+      />,
+    );
+    expect(screen.getByText(/35 open items/i)).toBeInTheDocument();
+    expect(screen.queryByText(/actions waiting/i)).toBeNull();
+  });
+
+  it("uses singular 'open item' when total is 1", () => {
+    render(
+      <PendingActionsCard
+        items={items}
+        totalCount={1}
+        studentsToCheckFirst={[]}
+      />,
+    );
+    expect(screen.getByText(/1 open item/i)).toBeInTheDocument();
+  });
 });

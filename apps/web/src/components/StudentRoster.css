@@ -8,6 +8,15 @@
   overflow: hidden;
 }
 
+/* Audit #30: end-of-Today footer strip. Different weight from the
+   cards above — a 2px top rule + muted surface tells the teacher "this
+   is the roster footer, not another data card". */
+.student-roster--banded {
+  border-top-width: 2px;
+  background: var(--color-surface-muted, var(--color-surface));
+  margin-top: var(--space-6);
+}
+
 /* Toggle button — full-width header */
 .student-roster__toggle {
   width: 100%;

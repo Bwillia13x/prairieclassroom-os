@@ -147,22 +147,36 @@ export default function StudentRoster({ attentionCount, onDrillDown }: Props) {
   const visible = showAll ? sorted : sorted.slice(0, MAX_VISIBLE);
   const hiddenCount = sorted.length - MAX_VISIBLE;
 
+  const attentionLabel =
+    attentionCount > 0
+      ? `${attentionCount} ${attentionCount === 1 ? "student" : "students"} with open items`
+      : null;
+
   return (
-    <div className="student-roster">
+    // Audit #30: the roster footer is the end-of-Today signal, so it
+    // needs different weight than the cards above. The `--banded`
+    // modifier paints a muted strip with a 2px top rule.
+    <div
+      className="student-roster student-roster--banded"
+      data-testid="student-roster-strip"
+    >
       <button
         className="student-roster__toggle"
         onClick={handleToggle}
         aria-expanded={expanded}
         aria-controls="student-roster-body"
+        aria-label={attentionLabel ?? "Students"}
         type="button"
       >
         <SectionIcon name="grid" className="student-roster__icon" />
         <span className="student-roster__label">Students</span>
-        {attentionCount > 0 && (
-          <span className="student-roster__badge">
-            {attentionCount} need attention
-          </span>
-        )}
+        {/* Audit #29: resolve the 35/3/23 glossary clash. The Pulse
+            card shows "N open items" (debt register), the priority
+            matrix shows "N priority students" (top 5), and this footer
+            shows "N students with open items" (distinct student count). */}
+        {attentionLabel ? (
+          <span className="student-roster__badge">{attentionLabel}</span>
+        ) : null}
         <span
           className={`student-roster__chevron${expanded ? " student-roster__chevron--open" : ""}`}
           aria-hidden="true"

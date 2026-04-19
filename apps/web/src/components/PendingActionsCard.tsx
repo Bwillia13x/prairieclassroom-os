@@ -23,10 +23,17 @@ interface Props {
   onStudentClick?: (studentRef: string) => void;
 }
 
+/**
+ * Audit #29: the Classroom Pulse total is `debt_register.items.length`
+ * — a count of logged debt entries, not "actions waiting". Previously
+ * the label read as a second action queue, which conflicted with the
+ * priority-matrix count ("priority students") and the roster footer
+ * ("students with open items"). Now all three read as distinct units.
+ */
 function formatActionCount(totalCount: number): string {
-  if (totalCount === 0) return "0 actions waiting";
-  if (totalCount === 1) return "1 action waiting";
-  return `${totalCount} actions waiting`;
+  if (totalCount === 0) return "0 open items";
+  if (totalCount === 1) return "1 open item";
+  return `${totalCount} open items`;
 }
 
 function formatBenchmark(total: number, previous: number): string {

@@ -223,7 +223,7 @@ describe("TodayPanel", () => {
     const { onTabChange, user } = renderTodayPanel(makeSnapshot());
 
     expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
-    expect(screen.getByText("4 actions waiting")).toBeInTheDocument();
+    expect(screen.getByText("4 open items")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Open Family Message" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: "Open Family Message" }));
