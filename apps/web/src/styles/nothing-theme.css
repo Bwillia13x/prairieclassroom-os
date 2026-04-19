@@ -1817,7 +1817,6 @@
   width: 18px;
   height: 18px;
 }
-.theme-toggle-label { display: none; }
 
 .btn--danger,
 .toast-item--error,
@@ -1829,7 +1828,6 @@
 
 .shell-classroom-pill__switcher,
 .role-pill__chip,
-.role-pill__option-chip,
 .mobile-nav-badge,
 .mobile-nav-subtab-badge,
 .toast-dismiss-btn {
