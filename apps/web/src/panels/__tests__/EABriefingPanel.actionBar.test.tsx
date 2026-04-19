@@ -77,17 +77,27 @@ function makeCtx(): AppContextValue {
 describe("EABriefingPanel OutputActionBar", () => {
   beforeEach(() => { vi.clearAllMocks(); });
 
-  it("renders 4-button action bar when result is present", () => {
+  it("renders the full action bar plus a sticky top quick-actions bar when result is present", () => {
     mockResult = MOCK_BRIEFING;
     render(
       <AppContext.Provider value={makeCtx()}>
         <EABriefingPanel />
       </AppContext.Provider>,
     );
-    expect(screen.getByRole("navigation", { name: "EA briefing output" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Print" })).toBeInTheDocument();
+    // 2026-04-19 OPS audit phase 4.2: EA Briefing now renders a sticky
+    // top "quick actions" ribbon alongside the full bottom bar. Query by
+    // aria-label to distinguish; both bars exist.
+    expect(
+      screen.getByRole("navigation", { name: "EA briefing output" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("navigation", { name: "EA briefing quick actions" }),
+    ).toBeInTheDocument();
+    // Print + Download appear in BOTH bars; expect 2 each. Copy and
+    // Save to Tomorrow appear only in the bottom bar.
+    expect(screen.getAllByRole("button", { name: "Print" })).toHaveLength(2);
+    expect(screen.getAllByRole("button", { name: "Download" })).toHaveLength(2);
     expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Download" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Save to Tomorrow" })).toBeInTheDocument();
   });
 

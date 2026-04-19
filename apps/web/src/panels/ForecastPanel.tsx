@@ -111,7 +111,6 @@ export default function ForecastPanel() {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Forecast Tomorrow's Complexity"
         sectionTone="slate"
         sectionIcon="grid"
@@ -122,6 +121,16 @@ export default function ForecastPanel() {
           { label: "Block-by-block outlook", tone: "analysis" },
           { label: "Retrieval-backed inputs", tone: "slate" },
         ]}
+        infoContent={{
+          title: "Complexity Forecast",
+          body: (
+            <p>
+              Preview where the day will spike block-by-block. Inputs are
+              retrieval-backed from the classroom's recent history; teacher notes
+              refine the forecast without overriding the underlying signal.
+            </p>
+          ),
+        }}
       />
 
       <RoleReadOnlyBanner

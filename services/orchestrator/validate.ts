@@ -96,6 +96,10 @@ export const SupportPatternsRequestSchema = z.object({
 export const EABriefingRequestSchema = z.object({
   classroom_id: requiredString(SHORT_TEXT_MAX),
   ea_name: optionalString(SHORT_TEXT_MAX),
+  // 2026-04-19 OPS audit phase 4: free-text coordination notes that
+  // parallel Forecast's `teacher_notes` — rendered into the prompt only
+  // when present, and fully optional for backwards compatibility.
+  coordination_notes: optionalString(LONG_TEXT_MAX),
 });
 
 export const ComplexityForecastRequestSchema = z.object({

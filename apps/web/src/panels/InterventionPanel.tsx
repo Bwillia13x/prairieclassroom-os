@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
 import "./InterventionPanel.css";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
@@ -7,7 +7,6 @@ import { logIntervention, fetchInterventionHistory } from "../api";
 import InterventionLogger from "../components/InterventionLogger";
 import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
-import ContextualHint from "../components/ContextualHint";
 import HistoryDrawer from "../components/HistoryDrawer";
 import { InterventionTimeline, FollowUpSuccessRate } from "../components/DataVisualizations";
 import PageIntro from "../components/PageIntro";
@@ -59,6 +58,34 @@ export default function InterventionPanel({ prefill }: Props) {
   );
 
   const displayResult = result ?? historicalResult;
+
+  // 2026-04-19 OPS audit phase 7.1: derive per-student follow-up flags
+  // from intervention history so the avatar row surfaces who still needs
+  // a touchpoint. Graceful degradation: when history is empty or loading,
+  // the map is empty and StudentAvatar renders without a dot.
+  //   priority  — any open follow_up_needed record.
+  //   stale     — follow_up_needed record older than 5 days.
+  const studentFlags = useMemo<Record<string, { priority?: boolean; staleFollowupDays?: number }>>(() => {
+    const now = Date.now();
+    const dayMs = 86_400_000;
+    const flags: Record<string, { priority?: boolean; staleFollowupDays?: number }> = {};
+    for (const rec of history.items) {
+      if (!rec.follow_up_needed) continue;
+      const createdAt = rec.created_at ? new Date(rec.created_at).getTime() : NaN;
+      const ageDays = Number.isFinite(createdAt)
+        ? Math.floor((now - createdAt) / dayMs)
+        : 0;
+      for (const alias of rec.student_refs) {
+        const prev = flags[alias] ?? {};
+        const nextAge = Math.max(prev.staleFollowupDays ?? 0, ageDays);
+        flags[alias] = {
+          priority: true,
+          staleFollowupDays: nextAge >= 5 ? nextAge : prev.staleFollowupDays,
+        };
+      }
+    }
+    return flags;
+  }, [history.items]);
 
   useEffect(() => {
     if (prefill) {
@@ -117,7 +144,6 @@ export default function InterventionPanel({ prefill }: Props) {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Log Intervention Notes"
         sectionTone="slate"
         sectionIcon="grid"
@@ -128,6 +154,15 @@ export default function InterventionPanel({ prefill }: Props) {
           { label: "Saved to memory", tone: "provenance" },
           { label: "Follow-up status", tone: "slate" },
         ]}
+        infoContent={{
+          title: "Log Intervention",
+          body: (
+            <p>
+              Describe what happened and the system structures your note into classroom
+              memory for follow-up review and later pattern analysis.
+            </p>
+          ),
+        }}
       />
 
       <RoleReadOnlyBanner
@@ -145,14 +180,9 @@ export default function InterventionPanel({ prefill }: Props) {
                 students={students}
                 loading={loading}
                 onSubmit={handleQuickSubmit}
+                studentFlags={studentFlags}
               />
             ) : null}
-            <ContextualHint
-              featureKey="log-intervention"
-              title="Log Intervention"
-              description="Describe what happened and the system structures your note into classroom memory for follow-up review and later pattern analysis."
-              tone="slate"
-            />
             <HistoryDrawer<InterventionRecord>
               items={history.items}
               loading={history.loading}
@@ -169,20 +199,24 @@ export default function InterventionPanel({ prefill }: Props) {
                 <FollowUpSuccessRate records={history.items} />
               </>
             )}
-            {role.canLogInterventions ? (
-              <details ref={detailsRef} className="intervention-structured-details">
-                <summary>Structured details (optional)</summary>
-                <InterventionLogger
-                  classrooms={classrooms}
-                  students={students}
-                  selectedClassroom={activeClassroom}
-                  onClassroomChange={setActiveClassroom}
-                  onSubmit={handleSubmit}
-                  loading={loading}
-                  prefill={prefill}
-                />
-              </details>
-            ) : null}
+            {/* 2026-04-19 OPS audit phase 7.4: always render the structured
+                details disclosure so it reads as an affordance. Role
+                gating stays on the submit inside InterventionLogger, not
+                on the disclosure itself. Renamed to read as a pill button
+                promising a specific payoff (duration · outcome · next step). */}
+            <details ref={detailsRef} className="intervention-structured-details">
+              <summary>Add structured detail (duration · outcome · next step)</summary>
+              <InterventionLogger
+                classrooms={classrooms}
+                students={students}
+                selectedClassroom={activeClassroom}
+                onClassroomChange={setActiveClassroom}
+                onSubmit={handleSubmit}
+                loading={loading}
+                prefill={prefill}
+                canSubmit={role.canLogInterventions}
+              />
+            </details>
           </>
         )}
         canvas={(

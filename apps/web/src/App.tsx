@@ -49,6 +49,8 @@ import CommandPalette from "./components/CommandPalette";
 import PrepSectionIntro from "./components/PrepSectionIntro";
 import { usePaletteEntries } from "./hooks/usePaletteEntries";
 import TomorrowChip from "./components/TomorrowChip";
+import TabOverflowMenu from "./components/TabOverflowMenu";
+import OpsSectionHint from "./components/OpsSectionHint";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
@@ -98,7 +100,15 @@ export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const groupsRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  // Hidden mirror row used purely for overflow measurement. Holds the same
+  // tabs as the visible tablist but never clips — so we can read each tab's
+  // natural width even after the real tablist has started truncating.
+  const measureRef = useRef<HTMLDivElement>(null);
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 });
+  // Secondary-tab overflow: indices of tabs that don't fit in the tabstrip
+  // and should render inside the "More ▾" menu instead. 0 means all fit.
+  // 2026-04-19 OPS audit — keeps e.g. "Substitute" discoverable at narrow widths.
+  const [overflowCount, setOverflowCount] = useState<number>(0);
   // state.activeTab already reflects the URL ?tab= via createInitialState,
   // so mounting just the active tab covers deep links without an extra parse.
   const [mountedTabs, setMountedTabs] = useState<Set<ActiveTab>>(
@@ -317,6 +327,32 @@ export default function App() {
   useEffect(() => {
     void flushQueuedClientArtifacts();
   }, [flushQueuedClientArtifacts]);
+
+  // One-time GOT-IT migration (2026-04-19 OPS audit): teachers who already
+  // dismissed any of the six legacy per-panel hints should not be re-onboarded
+  // by the new section-level `ops-section` hint. Runs exactly once per mount.
+  // The effect reads `state.featuresSeen` via a ref-less closure and dispatches
+  // only when the migration target is absent, so React strict-mode double-mount
+  // still results in at most one localStorage write beyond the initial load.
+  useEffect(() => {
+    const LEGACY_OPS_KEYS = [
+      "tomorrow-plan",
+      "ea-briefing",
+      "ea-load",
+      "complexity-forecast",
+      "log-intervention",
+      "survival-packet",
+    ];
+    if (state.featuresSeen["ops-section"]) return;
+    const alreadyDismissedLegacy = LEGACY_OPS_KEYS.some((key) => state.featuresSeen[key]);
+    if (alreadyDismissedLegacy) {
+      dispatch({ type: "MARK_FEATURE_SEEN", feature: "ops-section" });
+    }
+    // Intentionally only runs once on mount — featuresSeen mutating later
+    // (e.g. teacher dismisses a remaining legacy hint) should NOT re-trigger
+    // the migration; the ops-section flag is either set on mount or when the
+    // new section hint itself is dismissed.
+  }, []);
 
   useEffect(() => {
     function handleOnline() {
@@ -659,6 +695,77 @@ export default function App() {
     };
   }, [activeGroup, activeTab]);
 
+  // Overflow-aware tab splitting — if the full secondary tab row wouldn't
+  // fit, hide the trailing tabs and surface them via the "More ▾" dropdown.
+  // Measured from a hidden mirror row so the computation is stable even as
+  // the visible tablist re-renders with fewer items.
+  // 2026-04-19 OPS audit — makes "Substitute" reachable at narrow widths
+  // without relying on horizontal scroll.
+  useLayoutEffect(() => {
+    const container = tabsRef.current;
+    const mirror = measureRef.current;
+    if (!container) {
+      setOverflowCount(0);
+      return;
+    }
+
+    function measure() {
+      const c = tabsRef.current;
+      if (!c) return;
+      // Prefer the mirror (always contains every tab); fall back to the
+      // visible list if the mirror isn't mounted yet.
+      const source = measureRef.current ?? c;
+      const tabButtons = Array.from(
+        source.querySelectorAll<HTMLElement>(".shell-nav__tab"),
+      );
+      if (tabButtons.length <= 1) {
+        setOverflowCount(0);
+        return;
+      }
+      const containerWidth = c.clientWidth;
+      // Reserve ~128px for the "More ▾" trigger when overflow kicks in.
+      // Matches trigger's real min-width + padding + caret + 1rem breathing room.
+      const reservedForTrigger = 128;
+      // First pass: do all tabs fit as-is?
+      const gap = 3; // 0.15rem tab gap ≈ 2.4px; 3px gives a forgiving fudge
+      const totalWithGap = tabButtons.reduce((sum, btn) => sum + btn.offsetWidth, 0)
+        + gap * (tabButtons.length - 1);
+      if (totalWithGap <= containerWidth) {
+        setOverflowCount(0);
+        return;
+      }
+      // Overflow mode — reserve trigger space and count how many tabs fit.
+      const available = Math.max(0, containerWidth - reservedForTrigger);
+      let used = 0;
+      let fit = 0;
+      for (const btn of tabButtons) {
+        const next = used + btn.offsetWidth + (fit === 0 ? 0 : gap);
+        if (next <= available) {
+          used = next;
+          fit += 1;
+        } else {
+          break;
+        }
+      }
+      const overflow = Math.max(0, tabButtons.length - fit);
+      setOverflowCount(overflow);
+    }
+
+    measure();
+
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(measure);
+      ro.observe(container);
+      if (mirror) ro.observe(mirror);
+    }
+    window.addEventListener("resize", measure);
+    return () => {
+      ro?.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [activeGroup, secondaryTabs]);
+
   // WAI-ARIA arrow key navigation within the tablist
   function handleTabKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     const currentIdx = secondaryTabs.indexOf(activeTab);
@@ -925,50 +1032,88 @@ export default function App() {
               {showSecondaryTabs ? (
                 <div className="shell-nav__tabs-frame" key={activeGroup}>
                   <div className="shell-nav__tabs" role="tablist" aria-label={`${activeGroupMeta.label} tools`} ref={tabsRef} onKeyDown={handleTabKeyDown}>
-                    {secondaryTabs.map((tab) => {
-                      const count = getTabBadgeCount(tab, debtCounts);
-                      const tabIndex1Based = visibleTabs.indexOf(tab) + 1;
-                      // Only tabs 1–10 have a keyboard shortcut ("1"–"9", "0").
-                      // Tabs 11+ render no kbd badge to avoid a visual lie.
-                      const shortcutKey =
-                        tabIndex1Based <= 9
-                          ? String(tabIndex1Based)
-                          : tabIndex1Based === 10
-                            ? "0"
-                            : null;
+                    {(() => {
+                      const visibleSecondaryTabs = overflowCount > 0
+                        ? secondaryTabs.slice(0, secondaryTabs.length - overflowCount)
+                        : secondaryTabs;
+                      const overflowTabs = overflowCount > 0
+                        ? secondaryTabs.slice(secondaryTabs.length - overflowCount)
+                        : [];
                       return (
-                        <button
-                          key={tab}
-                          role="tab"
-                          id={`tab-${tab}`}
-                          aria-selected={activeTab === tab}
-                          aria-controls={`panel-${tab}`}
-                          tabIndex={activeTab === tab ? 0 : -1}
-                          className={`shell-nav__tab${activeTab === tab ? " shell-nav__tab--active" : ""}`}
-                          onClick={() => setActiveTab(tab)}
-                          type="button"
-                        >
-                          <span>{TAB_META[tab].label}</span>
-                          {count > 0 ? (
-                            <span
-                              className={`shell-nav__badge shell-nav__badge--${getTabBadgeTone(tab)}`}
-                              aria-label={`${count} pending`}
-                            >
-                              {count}
-                            </span>
+                        <>
+                          {visibleSecondaryTabs.map((tab) => {
+                            const count = getTabBadgeCount(tab, debtCounts);
+                            const tabIndex1Based = visibleTabs.indexOf(tab) + 1;
+                            // Only tabs 1–10 have a keyboard shortcut ("1"–"9", "0").
+                            // Tabs 11+ render no kbd badge to avoid a visual lie.
+                            const shortcutKey =
+                              tabIndex1Based <= 9
+                                ? String(tabIndex1Based)
+                                : tabIndex1Based === 10
+                                  ? "0"
+                                  : null;
+                            return (
+                              <button
+                                key={tab}
+                                role="tab"
+                                id={`tab-${tab}`}
+                                aria-selected={activeTab === tab}
+                                aria-controls={`panel-${tab}`}
+                                tabIndex={activeTab === tab ? 0 : -1}
+                                className={`shell-nav__tab${activeTab === tab ? " shell-nav__tab--active" : ""}`}
+                                onClick={() => setActiveTab(tab)}
+                                type="button"
+                              >
+                                <span>{TAB_META[tab].label}</span>
+                                {count > 0 ? (
+                                  <span
+                                    className={`shell-nav__badge shell-nav__badge--${getTabBadgeTone(tab)}`}
+                                    aria-label={`${count} pending`}
+                                  >
+                                    {count}
+                                  </span>
+                                ) : null}
+                                {shortcutKey ? (
+                                  <kbd
+                                    className="shell-nav__kbd"
+                                    aria-label={`Keyboard shortcut ${shortcutKey}`}
+                                    title={`Press ${shortcutKey} to jump here`}
+                                  >
+                                    {shortcutKey}
+                                  </kbd>
+                                ) : null}
+                              </button>
+                            );
+                          })}
+                          {overflowTabs.length > 0 ? (
+                            <TabOverflowMenu
+                              tabs={overflowTabs}
+                              activeTab={activeTab}
+                              onSelect={setActiveTab}
+                              getBadgeCount={(tab) => getTabBadgeCount(tab, debtCounts)}
+                            />
                           ) : null}
-                          {shortcutKey ? (
-                            <kbd
-                              className="shell-nav__kbd"
-                              aria-label={`Keyboard shortcut ${shortcutKey}`}
-                              title={`Press ${shortcutKey} to jump here`}
-                            >
-                              {shortcutKey}
-                            </kbd>
-                          ) : null}
-                        </button>
+                        </>
                       );
-                    })}
+                    })()}
+                  </div>
+                  {/* Hidden mirror row used purely for width measurement. */}
+                  <div
+                    className="shell-nav__tabs-measure"
+                    aria-hidden="true"
+                    ref={measureRef}
+                    role="presentation"
+                  >
+                    {secondaryTabs.map((tab) => (
+                      <span
+                        key={tab}
+                        className="shell-nav__tab"
+                        // Keep natural width close to real: same label text,
+                        // same font, but no interactivity and no event surface.
+                      >
+                        <span>{TAB_META[tab].label}</span>
+                      </span>
+                    ))}
                   </div>
                 </div>
               ) : null}
@@ -1000,6 +1145,7 @@ export default function App() {
 
           {renderPanel(activeTab, "today", mountedTabs, <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
           {activeGroup === "prep" ? <PrepSectionIntro /> : null}
+          {activeGroup === "ops" ? <OpsSectionHint /> : null}
           {renderPanel(activeTab, "differentiate", mountedTabs, <DifferentiatePanel />)}
           {renderPanel(
             activeTab,

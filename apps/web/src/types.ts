@@ -175,6 +175,13 @@ export interface SupportPatternsRequest {
 export interface EABriefingRequest {
   classroom_id: string;
   ea_name?: string;
+  /**
+   * Teacher-authored coordination notes for today (e.g., "EA covering
+   * blocks 2–3 only, focus on Brody during math"). Optional; when
+   * present the prompt renders them in the same slot Forecast uses
+   * for teacher_notes. 2026-04-19 OPS audit (phase 4).
+   */
+  coordination_notes?: string;
 }
 
 export interface ComplexityForecastRequest {

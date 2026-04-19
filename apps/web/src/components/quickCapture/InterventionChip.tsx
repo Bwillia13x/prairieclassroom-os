@@ -11,9 +11,10 @@ export default function InterventionChip({ def, selected, onSelect }: Props) {
   return (
     <button
       type="button"
-      className={`intervention-chip${selected ? " intervention-chip--selected" : ""}`}
+      className={`intervention-chip intervention-chip--${def.category}${selected ? " intervention-chip--selected" : ""}`}
       aria-pressed={selected}
       aria-label={def.label}
+      data-category={def.category}
       onClick={() => onSelect(def.key)}
     >
       <SectionIcon name={def.icon} className="intervention-chip__icon" />

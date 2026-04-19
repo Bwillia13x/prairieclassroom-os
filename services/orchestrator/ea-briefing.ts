@@ -12,6 +12,14 @@ export interface EABriefingPrompt {
 export interface EABriefingInput {
   classroom_id: string;
   ea_name?: string;
+  /**
+   * Teacher-authored coordination notes for today. Parallels
+   * `teacher_notes` on ComplexityForecast: when present, rendered into
+   * the user prompt as a dedicated input block. Fully optional; the
+   * absence path keeps the prompt text and mock fixtures stable.
+   * 2026-04-19 OPS audit (phase 4).
+   */
+  coordination_notes?: string;
 }
 
 export function buildEABriefingPrompt(
@@ -62,11 +70,18 @@ RULES:
 FORBIDDEN TERMS (never use these):
 diagnosis, disorder, deficit, syndrome, spectrum, pathology, clinical, prognosis, regression, at-risk, risk score, behavioral issue, learning disability, cognitive delay, developmental`);
 
+  // Only render the coordination-notes block when the teacher actually
+  // supplied text; otherwise keep the prompt identical to pre-phase-4 so
+  // existing mock fixtures and snapshot tests stay stable.
+  const coordinationNotesBlock = input.coordination_notes?.trim()
+    ? `\n\n${renderPromptInput(input.coordination_notes, "teacher_coordination_notes")}`
+    : "";
+
   const user = `CLASSROOM: ${classroom.classroom_id} (${classroom.grade_band}, ${classroom.subject_focus})
 
 ROSTER ALIASES: ${rosterAliases.length > 0 ? rosterAliases.join(", ") : "(none provided)"}
 
-${renderPromptInput(briefingContext, "ea_briefing_context", "(no retrieved coordination context available)")}
+${renderPromptInput(briefingContext, "ea_briefing_context", "(no retrieved coordination context available)")}${coordinationNotesBlock}
 
 Generate the EA daily briefing as a JSON object.`;
 

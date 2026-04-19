@@ -122,7 +122,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
 
   it("Structured details is collapsed by default", async () => {
     renderPanel();
-    const summary = await screen.findByText(/Structured details/i);
+    const summary = await screen.findByText(/Add structured detail/i);
     const details = summary.closest("details");
     expect(details).not.toBeNull();
     expect(details?.hasAttribute("open")).toBe(false);
@@ -130,7 +130,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
 
   it("Structured form becomes reachable after clicking summary", async () => {
     const { user } = renderPanel();
-    const summary = await screen.findByText(/Structured details/i);
+    const summary = await screen.findByText(/Add structured detail/i);
 
     // Before clicking, the <details> should not have the open attribute.
     const details = summary.closest("details");
@@ -153,7 +153,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     };
     renderPanel(prefill);
     // The details element should be open so the legacy form (and its prefill ingestion) is visible.
-    const details = screen.getByText(/Structured details/i).closest("details");
+    const details = screen.getByText(/Add structured detail/i).closest("details");
     expect(details).not.toBeNull();
     expect(details).toHaveAttribute("open");
   });
@@ -173,10 +173,13 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     await user.click(praiseChip);
 
     // 3. Submit — target the QuickCaptureTray button (type="button", not type="submit")
+    //    The new PageIntro ⓘ info trigger also has aria-label "About Log Intervention",
+    //    so filter to buttons inside the quick-capture-tray. 2026-04-19 OPS audit.
     const submitButtons = screen.getAllByRole("button", { name: /Log intervention/i });
-    // The QuickCaptureTray button is type="button"; the InterventionLogger one is type="submit".
     const trayButton = submitButtons.find(
-      (btn) => btn.getAttribute("type") === "button",
+      (btn) =>
+        btn.getAttribute("type") === "button" &&
+        btn.closest(".quick-capture-tray") !== null,
     );
     if (!trayButton) throw new Error("QuickCaptureTray submit button not found");
     await user.click(trayButton);

@@ -17,7 +17,7 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 ### ops
 - Tomorrow Plan
 - EA Briefing
-- EA Load
+- EA Load Balance
 - Forecast
 - Log Intervention
 - Sub Packet

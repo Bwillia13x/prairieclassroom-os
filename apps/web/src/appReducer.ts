@@ -27,7 +27,9 @@ export type ActiveTab =
 export const TAB_ORDER: ActiveTab[] = [
   "today",
   "differentiate", "language-tools",
-  "tomorrow-plan", "ea-briefing", "ea-load", "complexity-forecast", "log-intervention", "survival-packet",
+  // OPS order (2026-04-19 OPS audit): daily-capture first → future-plan → forecast →
+  // EA-facing outputs → substitute fallback. See docs/decision-log.md.
+  "log-intervention", "tomorrow-plan", "complexity-forecast", "ea-briefing", "ea-load", "survival-packet",
   "family-message", "support-patterns", "usage-insights",
 ];
 
@@ -103,7 +105,7 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
     roles: ["teacher", "ea", "substitute"],
   },
   "ea-load": {
-    label: "EA Load",
+    label: "EA Load Balance",
     shortLabel: "EA Load",
     group: "ops",
     roles: ["teacher", "ea"],
@@ -124,7 +126,7 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   },
   "survival-packet": {
     label: "Sub Packet",
-    shortLabel: "Sub Packet",
+    shortLabel: "Substitute",
     group: "ops",
     // Only the teacher generates the sub packet. Substitutes conceptually
     // consume it, but the read surface isn't built yet; hide until then.

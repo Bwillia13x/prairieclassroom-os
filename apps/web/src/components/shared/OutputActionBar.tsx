@@ -31,21 +31,35 @@ export interface OutputActionBarProps {
   contextLabel?: string;
   /** Override sticky positioning — default true. */
   sticky?: boolean;
+  /**
+   * Where the bar appears relative to the output content.
+   * - "bottom" (default): render once beneath the output — pre-phase-4 behavior.
+   * - "top":    render once above the output; by default only the "print" and
+   *             "download" keys survive so the above-the-fold bar stays focused.
+   * - "both":   render a condensed top bar (print + download) plus the full
+   *             bottom bar. Useful on long printable outputs like EA Briefing.
+   * 2026-04-19 OPS audit (phase 4.2).
+   */
+  position?: "top" | "bottom" | "both";
+  /**
+   * Keys to surface in the top bar when `position` is "top" or "both".
+   * Defaults to `["print", "download"]`.
+   */
+  topKeys?: OutputActionKey[];
   /** Optional test id for integration tests. */
   "data-testid"?: string;
 }
 
-export default function OutputActionBar({
-  actions,
-  contextLabel,
-  sticky = true,
-  "data-testid": dataTestId,
-}: OutputActionBarProps) {
-  const navLabel = contextLabel ?? "Output actions";
-
+function renderBar(
+  actions: OutputAction[],
+  sticky: boolean,
+  navLabel: string,
+  dataTestId: string | undefined,
+  placement: "top" | "bottom",
+) {
   return (
     <nav
-      className={`output-action-bar${sticky ? " output-action-bar--sticky" : ""}`}
+      className={`output-action-bar output-action-bar--${placement}${sticky ? " output-action-bar--sticky" : ""}`}
       aria-label={navLabel}
       data-testid={dataTestId}
     >
@@ -86,4 +100,32 @@ export default function OutputActionBar({
       </ul>
     </nav>
   );
+}
+
+export default function OutputActionBar({
+  actions,
+  contextLabel,
+  sticky = true,
+  position = "bottom",
+  topKeys = ["print", "download"],
+  "data-testid": dataTestId,
+}: OutputActionBarProps) {
+  const navLabel = contextLabel ?? "Output actions";
+  const topSubset = actions.filter((a) => topKeys.includes(a.key));
+
+  if (position === "top") {
+    return (
+      <>{renderBar(topSubset.length > 0 ? topSubset : actions, sticky, navLabel, dataTestId, "top")}</>
+    );
+  }
+  if (position === "both") {
+    return (
+      <>
+        {renderBar(topSubset.length > 0 ? topSubset : actions, sticky, navLabel, dataTestId, "top")}
+        {renderBar(actions, sticky, navLabel, dataTestId, "bottom")}
+      </>
+    );
+  }
+  // Default — preserve pre-phase-4 behavior exactly.
+  return <>{renderBar(actions, sticky, navLabel, dataTestId, "bottom")}</>;
 }

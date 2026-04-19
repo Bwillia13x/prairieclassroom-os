@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import type { SectionTone } from "../appReducer";
 import type { SectionIconName } from "./SectionIcon";
 import SectionIcon from "./SectionIcon";
+import PageIntroInfoButton from "./PageIntroInfoButton";
 
 interface Badge {
   label: string;
@@ -16,13 +17,25 @@ interface Breadcrumb {
 }
 
 interface Props {
-  eyebrow: string;
+  /**
+   * Small uppercase label above the title. Optional — when omitted, the
+   * eyebrow row is not rendered. OPS panels drop it in favor of the
+   * breadcrumb (2026-04-19 OPS audit). Keep it on panels whose breadcrumb
+   * alone would not read as a complete orienting cue.
+   */
+  eyebrow?: string;
   title: string;
   description: ReactNode;
   badges?: Badge[];
   sectionTone?: SectionTone;
   sectionIcon?: SectionIconName;
   breadcrumb?: Breadcrumb;
+  /**
+   * Optional per-panel info popover. Rendered as a compact ⓘ affordance
+   * next to the title. Used for OPS panels that shed their
+   * ContextualHint in the 2026-04-19 GOT-IT consolidation.
+   */
+  infoContent?: { title: string; body: ReactNode };
 }
 
 export default function PageIntro({
@@ -33,9 +46,11 @@ export default function PageIntro({
   sectionTone,
   sectionIcon,
   breadcrumb,
+  infoContent,
 }: Props) {
   const showBreadcrumbTab =
-    breadcrumb && breadcrumb.tab.trim().toLowerCase() !== eyebrow.trim().toLowerCase();
+    breadcrumb &&
+    (!eyebrow || breadcrumb.tab.trim().toLowerCase() !== eyebrow.trim().toLowerCase());
   return (
     <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}`}>
       {breadcrumb ? (
@@ -49,11 +64,18 @@ export default function PageIntro({
           ) : null}
         </nav>
       ) : null}
-      <div className="page-intro__eyebrow">
-        {sectionIcon ? <SectionIcon name={sectionIcon} className="page-intro__eyebrow-icon" /> : null}
-        <span>{eyebrow}</span>
-      </div>
-      <h2 className="page-intro__title">{title}</h2>
+      {eyebrow ? (
+        <div className="page-intro__eyebrow">
+          {sectionIcon ? <SectionIcon name={sectionIcon} className="page-intro__eyebrow-icon" /> : null}
+          <span>{eyebrow}</span>
+        </div>
+      ) : null}
+      <h2 className="page-intro__title">
+        <span className="page-intro__title-text">{title}</span>
+        {infoContent ? (
+          <PageIntroInfoButton title={infoContent.title} body={infoContent.body} />
+        ) : null}
+      </h2>
       <div className="page-intro__description copy-measure">{description}</div>
       {badges.length > 0 && (
         <div className="status-chip-row">

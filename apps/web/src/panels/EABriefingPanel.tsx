@@ -4,7 +4,6 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEABriefing } from "../api";
 import { EABriefingForm, EABriefingResult } from "../components/EABriefing";
-import ContextualHint from "../components/ContextualHint";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import PageIntro from "../components/PageIntro";
@@ -91,9 +90,16 @@ export default function EABriefingPanel() {
 
   if (classrooms.length === 0) return null;
 
-  async function handleSubmit(classroomId: string, eaName?: string) {
+  async function handleSubmit(classroomId: string, eaName?: string, coordinationNotes?: string) {
     const resp = await execute((signal) =>
-      generateEABriefing({ classroom_id: classroomId, ea_name: eaName }, signal)
+      generateEABriefing(
+        {
+          classroom_id: classroomId,
+          ea_name: eaName,
+          coordination_notes: coordinationNotes,
+        },
+        signal,
+      ),
     );
     if (resp) {
       showSuccess("Briefing generated");
@@ -105,7 +111,6 @@ export default function EABriefingPanel() {
   return (
     <section className="workspace-page">
       <PageIntro
-        eyebrow="Operations Workspace"
         title="Build the EA Briefing"
         sectionTone="slate"
         sectionIcon="grid"
@@ -116,17 +121,20 @@ export default function EABriefingPanel() {
           { label: "Coordination document", tone: "analysis" },
           { label: "Print-ready", tone: "slate" },
         ]}
+        infoContent={{
+          title: "EA Briefing",
+          body: (
+            <p>
+              Build a coordination document for the educational assistant that combines
+              the day plan, student watch items, and pending follow-ups.
+            </p>
+          ),
+        }}
       />
 
       <WorkspaceLayout
         rail={(
           <>
-            <ContextualHint
-              featureKey="ea-briefing"
-              title="EA Briefing"
-              description="Build a coordination document for the educational assistant that combines the day plan, student watch items, and pending follow-ups."
-              tone="slate"
-            />
             <EABriefingForm
               classrooms={classrooms}
               selectedClassroom={activeClassroom}
@@ -161,6 +169,16 @@ export default function EABriefingPanel() {
                   modelId={result.model_id}
                   panelHint="Briefing content does not pull from real intervention history in mock mode. The schedule and watch list shape are real; the retrieval is not."
                 />
+                {/* Above-the-fold utility ribbon — Print + Download only,
+                    sticky to the top of the scroll container. 2026-04-19
+                    OPS audit phase 4.2. Full set still renders at the
+                    bottom so the primary actions stay anchored near the
+                    output's end. */}
+                <OutputActionBar
+                  actions={actions}
+                  contextLabel="EA briefing quick actions"
+                  position="top"
+                />
                 <EABriefingResult result={result} />
                 <RetrievalTraceCard trace={result.retrieval_trace} />
                 <FeedbackCollector
@@ -168,7 +186,10 @@ export default function EABriefingPanel() {
                   submitted={feedback.submitted}
                   panelLabel="EA briefing"
                 />
-                <OutputActionBar actions={actions} contextLabel="EA briefing output" />
+                <OutputActionBar
+                  actions={actions}
+                  contextLabel="EA briefing output"
+                />
               </>
             ) : null}
           </div>

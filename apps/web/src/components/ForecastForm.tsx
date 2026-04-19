@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ActionButton from "./shared/ActionButton";
 import "./ForecastForm.css";
 
 interface Props {
@@ -67,9 +68,9 @@ export default function ForecastForm({
         />
       </div>
 
-      <button type="submit" className="btn btn--primary" disabled={loading || classroomMissing}>
+      <ActionButton type="submit" variant="primary" loading={loading} disabled={classroomMissing}>
         {loading ? "Generating forecast…" : "Generate forecast"}
-      </button>
+      </ActionButton>
     </form>
   );
 }

@@ -602,31 +602,170 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 1.05rem;
-  height: 1.05rem;
-  padding: 0 0.22rem;
-  margin-left: 0.2rem;
-  border: 1px solid color-mix(in srgb, var(--color-text) 14%, transparent);
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.3rem;
+  margin-left: 0.3rem;
+  border: 1px solid color-mix(in srgb, var(--color-text) 12%, transparent);
   border-radius: 4px;
-  background: color-mix(in srgb, var(--color-surface-elevated) 55%, transparent);
+  background: color-mix(in srgb, var(--color-surface-muted) 72%, transparent);
   color: var(--color-text-tertiary);
   font-family: var(--font-mono);
-  font-size: 0.58rem;
-  font-weight: var(--font-weight-semibold);
+  font-size: 0.6rem;
+  font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
   line-height: 1;
-  opacity: 0;
-  transition: opacity var(--motion-fast) var(--ease-standard);
+  letter-spacing: 0;
+  opacity: 0.55;
+  transition:
+    opacity var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
 }
 
 .shell-nav__tabs:hover .shell-nav__kbd,
-.shell-nav__tab:focus-visible .shell-nav__kbd {
-  opacity: 1;
+.shell-nav__tab:focus-visible .shell-nav__kbd,
+.shell-nav__tab--active .shell-nav__kbd {
+  opacity: 0.9;
+  color: var(--color-text-secondary);
 }
 
 @media (max-width: 600px) {
   .shell-nav__kbd {
     display: none;
   }
+}
+
+/* --- Overflow "More ▾" dropdown ---------------------------------
+   When secondary tabs don't all fit, the trailing ones collapse
+   into this menu. The trigger sits inline with the tabs; the menu
+   opens below as a compact popover. 2026-04-19 OPS audit. */
+
+.shell-nav__tabs-overflow {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: var(--space-2);
+}
+
+.shell-nav__tabs-overflow-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: var(--control-h-sm);
+  padding: var(--control-py-sm) var(--control-px-sm);
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-pill);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    opacity var(--motion-fast) var(--ease-standard);
+}
+
+.shell-nav__tabs-overflow-trigger:hover {
+  color: var(--color-text);
+  opacity: 1;
+  background: color-mix(in srgb, var(--color-surface-muted) 65%, transparent);
+}
+
+.shell-nav__tabs-overflow-trigger:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.shell-nav__tabs-overflow-trigger--active {
+  color: var(--color-text);
+  opacity: 1;
+}
+
+.shell-nav__tabs-overflow-caret {
+  font-size: 0.7rem;
+  line-height: 1;
+  opacity: 0.7;
+}
+
+.shell-nav__tabs-overflow-badge {
+  margin-left: 0.2rem;
+}
+
+.shell-nav__tabs-overflow-menu {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  min-width: 12rem;
+  padding: var(--space-1);
+  background: var(--color-surface-elevated);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md), var(--inner-stroke);
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shell-nav__tabs-overflow-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--control-px-sm);
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
+.shell-nav__tabs-overflow-item:hover,
+.shell-nav__tabs-overflow-item:focus-visible {
+  background: color-mix(in srgb, var(--color-surface-muted) 75%, transparent);
+  color: var(--color-text);
+  outline: none;
+}
+
+.shell-nav__tabs-overflow-item--active {
+  background: color-mix(in srgb, var(--color-accent-soft) 70%, transparent);
+  color: var(--color-text);
+}
+
+/* Hidden mirror row — measures natural widths without affecting layout.
+   Positioned off-screen, ignores pointer events, mirrors the visible row's
+   styling enough that widths come out close to the real tabs. */
+.shell-nav__tabs-measure {
+  position: absolute;
+  top: 0;
+  left: -9999px;
+  visibility: hidden;
+  pointer-events: none;
+  display: flex;
+  gap: 0.15rem;
+  white-space: nowrap;
+}
+.shell-nav__tabs-measure .shell-nav__tab {
+  display: inline-flex;
+  min-height: var(--control-h-sm);
+  padding: var(--control-py-sm) var(--control-px-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
 /* Layer 1 — the application workspace surface.
