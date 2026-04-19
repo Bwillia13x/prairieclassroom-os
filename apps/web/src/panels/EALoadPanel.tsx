@@ -136,10 +136,11 @@ function EALoadForm({
         {loading ? "Generating load profile…" : "Generate load profile"}
       </ActionButton>
 
-      <p className="workspace-form__helper">
-        Uses the planning tier (thinking on). Suggestions are operational only — the teacher and EA decide
-        what moves.
-      </p>
+      {/* 2026-04-19 OPS audit phase 5: the operational-only disclaimer
+          relocates from the form to the viewer. The short "planning tier"
+          helper stays because it sets the expectation for generate
+          latency — different concern from the output disclaimer. */}
+      <p className="workspace-form__helper">Uses the planning tier (thinking on).</p>
     </form>
   );
 }
@@ -198,6 +199,15 @@ function EALoadViewer({ response }: EALoadViewerProps) {
           <p>{profile.overall_summary}</p>
         </section>
       ) : null}
+
+      {/* 2026-04-19 OPS audit phase 5: disclaimer relocates here so the
+          framing stays next to the output instead of cluttering the
+          pre-submit form. Never score EA competence — that framing now
+          anchors to the thing being shown, not the thing being entered. */}
+      <p className="ea-load-viewer__disclaimer">
+        Operational framing only — suggestions never score EA competence. The teacher and EA
+        decide what moves.
+      </p>
 
       {profile.alerts.length > 0 ? (
         <section className="ea-load-viewer__alerts" aria-label="Load alerts">
