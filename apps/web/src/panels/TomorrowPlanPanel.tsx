@@ -37,7 +37,7 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
@@ -178,9 +178,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
             {history.items.length > 0 && <PlanStreakCalendar plans14d={plans14d} />}
             {role.canGenerate ? (
               <TeacherReflection
-                classrooms={classrooms}
                 selectedClassroom={activeClassroom}
-                onClassroomChange={setActiveClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
               />

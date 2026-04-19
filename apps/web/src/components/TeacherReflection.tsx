@@ -1,20 +1,17 @@
 import { useState, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
+import { FormCard } from "./shared";
 import DraftRestoreChip from "./DraftRestoreChip";
 import "./TeacherReflection.css";
 
 interface Props {
-  classrooms: { classroom_id: string; grade_band: string; subject_focus: string }[];
   selectedClassroom: string;
-  onClassroomChange: (id: string) => void;
   onSubmit: (classroomId: string, reflection: string, teacherGoal?: string) => void;
   loading: boolean;
 }
 
 export default function TeacherReflection({
-  classrooms,
   selectedClassroom,
-  onClassroomChange,
   onSubmit,
   loading,
 }: Props) {
@@ -45,8 +42,9 @@ export default function TeacherReflection({
   }
 
   return (
-    <form className="teacher-reflection form-panel" onSubmit={handleSubmit}>
-      <h2>Build Tomorrow's Plan</h2>
+    <FormCard className="teacher-reflection">
+    <form onSubmit={handleSubmit}>
+      <h2>Build tomorrow's plan</h2>
       <p className="reflection-description form-description">
         Capture the day in a few sentences and the planner will turn it into tomorrow's priorities, watchpoints, and follow-through actions.
       </p>
@@ -58,23 +56,8 @@ export default function TeacherReflection({
         label="Continue the reflection you started earlier?"
       />
 
-      <div className="field">
-        <label htmlFor="plan-classroom">Classroom</label>
-        <select
-          id="plan-classroom"
-          value={selectedClassroom}
-          onChange={(e) => onClassroomChange(e.target.value)}
-        >
-          {classrooms.map((c) => (
-            <option key={c.classroom_id} value={c.classroom_id}>
-              Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-            </option>
-          ))}
-        </select>
-      </div>
-
       <div className={`field${touched && !reflection.trim() ? " field--error" : ""}`}>
-        <label htmlFor="reflection">Today's Reflection <span className="field-required" aria-hidden="true">*</span></label>
+        <label htmlFor="reflection" className="form-label">Today's reflection <span className="field-required" aria-hidden="true">*</span></label>
         <textarea
           id="reflection"
           rows={5}
@@ -93,8 +76,8 @@ export default function TeacherReflection({
       </div>
 
       <div className="field">
-        <label htmlFor="plan-goal">
-          Goal for Tomorrow
+        <label htmlFor="plan-goal" className="form-label">
+          Goal for tomorrow
           <span className="field-optional">(optional)</span>
         </label>
         <textarea
@@ -115,5 +98,6 @@ export default function TeacherReflection({
         {loading ? "Generating plan…" : "Generate plan"}
       </button>
     </form>
+    </FormCard>
   );
 }

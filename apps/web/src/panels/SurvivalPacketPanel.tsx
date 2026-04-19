@@ -14,7 +14,7 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
-import { ActionButton, FeedbackCollector, FormSection, OutputActionBar, type OutputAction } from "../components/shared";
+import { ActionButton, FeedbackCollector, FormCard, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useDownloadBlob } from "../hooks/useDownloadBlob";
@@ -23,7 +23,7 @@ import { serializeSurvivalPacketToMarkdown } from "./outputActionBarHelpers";
 import type { SurvivalPacketResponse } from "../types";
 
 export default function SurvivalPacketPanel() {
-  const { classrooms, activeClassroom, setActiveClassroom, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SurvivalPacketResponse>();
   const streamer = useStreamingRequest({
@@ -116,24 +116,11 @@ export default function SurvivalPacketPanel() {
               description="Generate a print-ready document for substitute coverage. Includes routines, student supports, and a simplified day plan."
               tone="slate"
             />
-            <div className="form-panel">
-              <h2>Substitute Survival Packet</h2>
+            <FormCard className="survival-packet-form">
+              <h2>Substitute survival packet</h2>
               <p className="form-description">
                 Generate a print-ready packet for a substitute covering your classroom tomorrow.
               </p>
-              <FormSection label="Classroom" description="Select the classroom for substitute coverage.">
-                <select
-                  id="sp-classroom"
-                  value={activeClassroom}
-                  onChange={(e) => setActiveClassroom(e.target.value)}
-                >
-                  {classrooms.map((c) => (
-                    <option key={c.classroom_id} value={c.classroom_id}>
-                      Grade {c.grade_band} — {c.subject_focus.replace(/_/g, " ")}
-                    </option>
-                  ))}
-                </select>
-              </FormSection>
               <ActionButton
                 variant="primary"
                 loading={loading}
@@ -143,7 +130,7 @@ export default function SurvivalPacketPanel() {
               >
                 Generate sub packet
               </ActionButton>
-            </div>
+            </FormCard>
           </>
         )}
         canvas={(

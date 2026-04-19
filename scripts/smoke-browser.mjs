@@ -56,13 +56,13 @@ async function expectSelectValue(page, selector, expected, label) {
 
 /**
  * Verify the chrome's classroom pill shows the expected classroom id.
- * The Workstream F2 lift removed the per-form Classroom select from
- * 7 panels (Differentiate, Family Message, Log Intervention, Support
- * Patterns, EA Briefing, EA Load, Forecast); the canonical classroom
- * affordance is now `.shell-classroom-pill` in the chrome. Open the
- * panel to read the unambiguous `[data-testid="shell-classroom-active-id"]`
- * (per CLAUDE.md feedback memory: prefer testid over class-derived selectors
- * for smoke-browser durability).
+ * The Workstream F2 lift (and its Tomorrow-Plan/Survival-Packet follow-up)
+ * removed the per-form Classroom select from every panel that previously
+ * had one. The canonical classroom affordance is now `.shell-classroom-pill`
+ * in the chrome. Open the panel to read the unambiguous
+ * `[data-testid="shell-classroom-active-id"]` (per CLAUDE.md feedback
+ * memory: prefer testid over class-derived selectors for smoke-browser
+ * durability).
  */
 async function expectActiveClassroom(page, expected, label) {
   await openClassroomPanel(page);
@@ -229,7 +229,7 @@ async function main() {
     await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Differentiate classroom");
 
     await openTab(page, "tomorrow-plan");
-    await expectSelectValue(page, "#plan-classroom", DEMO_CLASSROOM_ID, "Tomorrow Plan classroom");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Tomorrow Plan classroom");
 
     await openTab(page, "family-message");
     await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom");
@@ -285,7 +285,7 @@ async function main() {
     await expectSelectValue(page, "#msg-type", "praise", "Family Message type after pattern handoff");
 
     await openTab(page, "survival-packet");
-    await expectSelectValue(page, "#sp-classroom", DEMO_CLASSROOM_ID, "Survival Packet classroom");
+    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Survival Packet classroom");
     await page.getByTestId("generate-survival-packet-submit").click();
     await page.getByTestId("print-survival-packet").waitFor({ timeout: HOSTED_GENERATION_TIMEOUT_MS });
 
@@ -323,7 +323,7 @@ async function main() {
     assert.match(await page.locator(".shell-classroom-panel__details").innerText(), /saved in this browser/i);
     await page.keyboard.press("Escape");
     await openTab(page, "tomorrow-plan");
-    await expectSelectValue(page, "#plan-classroom", PROTECTED_CLASSROOM_ID, "Protected classroom tomorrow plan");
+    await expectActiveClassroom(page, PROTECTED_CLASSROOM_ID, "Protected classroom tomorrow plan");
 
     await page.reload({ waitUntil: "networkidle" });
     await openClassroomPanel(page);
