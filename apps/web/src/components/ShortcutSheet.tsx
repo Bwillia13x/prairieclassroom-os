@@ -96,7 +96,6 @@ export default function ShortcutSheet({ open, onClose }: Props) {
             {panelRows.map(({ tab, key }) => (
               <div key={tab} className="shortcut-sheet__row">
                 <dt className="shortcut-sheet__keys">
-                  <kbd>⌘</kbd>
                   <kbd>{key}</kbd>
                 </dt>
                 <dd className="shortcut-sheet__label">

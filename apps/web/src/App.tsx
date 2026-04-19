@@ -1076,11 +1076,10 @@ export default function App() {
                                 {shortcutKey ? (
                                   <kbd
                                     className="shell-nav__kbd"
-                                    aria-label={`Keyboard shortcut Command ${shortcutKey}`}
+                                    aria-label={`Keyboard shortcut ${shortcutKey}`}
                                     title={`Press ${shortcutKey} to jump here`}
                                   >
-                                    <span className="shell-nav__kbd-mod" aria-hidden="true">⌘</span>
-                                    <span className="shell-nav__kbd-digit">{shortcutKey}</span>
+                                    {shortcutKey}
                                   </kbd>
                                 ) : null}
                               </button>

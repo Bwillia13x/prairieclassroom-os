@@ -602,8 +602,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 1px;
-  min-width: 1.35rem;
+  min-width: 1.1rem;
   height: 1.1rem;
   padding: 0 0.3rem;
   margin-left: 0.3rem;
@@ -614,20 +613,13 @@
   font-family: var(--font-mono);
   font-size: 0.6rem;
   font-weight: var(--font-weight-medium);
+  font-variant-numeric: tabular-nums;
   line-height: 1;
   letter-spacing: 0;
   opacity: 0.55;
   transition:
     opacity var(--motion-fast) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard);
-}
-
-.shell-nav__kbd-mod {
-  opacity: 0.85;
-}
-
-.shell-nav__kbd-digit {
-  font-variant-numeric: tabular-nums;
 }
 
 .shell-nav__tabs:hover .shell-nav__kbd,
