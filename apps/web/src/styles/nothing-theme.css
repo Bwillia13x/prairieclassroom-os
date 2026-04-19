@@ -2134,3 +2134,20 @@ textarea {
     border-radius: 2px !important;
   }
 }
+
+.shell-bar__palette-btn {
+  gap: 8px;
+}
+.shell-bar__palette-btn-label {
+  font-family: var(--font-sans, "DM Sans", sans-serif);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+.shell-bar__palette-btn-kbd {
+  font-family: var(--font-mono, "Space Mono", monospace);
+  font-size: 11px;
+  padding: 2px 6px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  opacity: 0.7;
+}

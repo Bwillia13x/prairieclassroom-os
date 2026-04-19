@@ -838,7 +838,8 @@ export default function App() {
                   aria-label="Open command palette"
                   title="Command palette (⌘K)"
                 >
-                  <span aria-hidden="true">⌘K</span>
+                  <span className="shell-bar__palette-btn-label">Jump to</span>
+                  <kbd className="shell-bar__palette-btn-kbd" aria-hidden="true">⌘K</kbd>
                 </button>
                 <TomorrowChip
                   notes={state.tomorrowNotes}

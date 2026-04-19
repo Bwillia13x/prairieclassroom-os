@@ -94,4 +94,11 @@ describe("App shell — classroom pill trigger", () => {
     expect(switcherIcon).not.toBeNull();
     expect(trigger.innerHTML).not.toMatch(/M5\.5 8V5\.9/);
   });
+
+  it("renders the command-palette trigger with a visible 'Jump to' label and ⌘K hint", async () => {
+    await renderShellWithDemo();
+    const btn = screen.getByRole("button", { name: /open command palette/i });
+    expect(btn.textContent).toMatch(/jump to/i);
+    expect(btn.textContent).toMatch(/⌘K/);
+  });
 });
