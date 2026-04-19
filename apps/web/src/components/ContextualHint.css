@@ -84,8 +84,8 @@
 }
 
 .contextual-hint-dismiss:focus-visible {
-  outline: 2px solid var(--color-focus, var(--color-text));
-  outline-offset: 2px;
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Collapsed (dismissed) state: hint shrinks to a single ⓘ recovery
@@ -127,8 +127,8 @@
 }
 
 .contextual-hint-restore:focus-visible {
-  outline: 2px solid var(--color-focus, var(--color-text));
-  outline-offset: 2px;
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
 }
 
 /* Section-coded variants (audit #11). Reuse the existing
