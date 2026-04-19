@@ -6,6 +6,7 @@ export { default as IconButton } from "./IconButton";
 export { default as Card } from "./Card";
 export { default as StatusCard } from "./StatusCard";
 export { default as FormSection } from "./FormSection";
+export { default as FormCard } from "./FormCard";
 export { Sparkline, TrendIndicator, HealthDot, ProgressBar } from "./DataViz";
 export { default as ResultDisplay } from "./ResultDisplay";
 export { default as SessionBanner } from "./SessionBanner";

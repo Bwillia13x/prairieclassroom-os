@@ -5,7 +5,7 @@ import FileUploadZone from "./FileUploadZone";
 import WorksheetUpload from "./WorksheetUpload";
 import CurriculumPicker from "./CurriculumPicker";
 import DraftRestoreChip from "./DraftRestoreChip";
-import { Card, ActionButton } from "./shared";
+import { FormCard, ActionButton } from "./shared";
 import "./ArtifactUpload.css";
 
 type ArtifactSourceMode = "photo" | "file" | "paste";
@@ -90,8 +90,7 @@ export default function ArtifactUpload({
   }
 
   return (
-    <Card variant="raised" tone="sage" className="artifact-upload">
-    <Card.Body>
+    <FormCard className="artifact-upload">
     <form className="artifact-upload__form" onSubmit={handleSubmit} ref={formRef}>
       <h2>Prepare Lesson Artifact</h2>
       <p className="form-description">
@@ -109,7 +108,7 @@ export default function ArtifactUpload({
       />
 
       <div className="field">
-        <label htmlFor="classroom">Classroom</label>
+        <label htmlFor="classroom" className="form-label">Classroom</label>
         <select
           id="classroom"
           value={selectedClassroom}
@@ -124,8 +123,8 @@ export default function ArtifactUpload({
       </div>
 
       <div className={`field${touched.title && !title.trim() ? " field--error" : ""}`}>
-        <label htmlFor="title">
-          Artifact Title
+        <label htmlFor="title" className="form-label">
+          Artifact title
           <span className="field-required" aria-hidden="true">*</span>
         </label>
         <input
@@ -145,7 +144,7 @@ export default function ArtifactUpload({
       </div>
 
       <div className="field">
-        <label htmlFor="subject">Subject</label>
+        <label htmlFor="subject" className="form-label">Subject</label>
         <input
           id="subject"
           type="text"
@@ -156,8 +155,8 @@ export default function ArtifactUpload({
       </div>
 
       <div className={`field${touched.rawText && !rawText.trim() ? " field--error" : ""}`}>
-        <label htmlFor="raw-text">
-          Artifact Source
+        <label htmlFor="raw-text" className="form-label">
+          Artifact source
           <span className="field-required" aria-hidden="true">*</span>
         </label>
         <div className="artifact-source-switcher" role="tablist" aria-label="Artifact input method">
@@ -223,8 +222,8 @@ export default function ArtifactUpload({
       </div>
 
       <div className="field">
-        <label htmlFor="teacher-goal">
-          Instructional Focus
+        <label htmlFor="teacher-goal" className="form-label">
+          Instructional focus
           <span className="field-optional">(optional)</span>
         </label>
         <textarea
@@ -267,7 +266,6 @@ export default function ArtifactUpload({
         {loading ? "Generating variants…" : "Generate variants"}
       </ActionButton>
     </form>
-    </Card.Body>
-    </Card>
+    </FormCard>
   );
 }

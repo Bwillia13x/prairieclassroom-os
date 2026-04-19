@@ -1,0 +1,15 @@
+/* ================================================================
+   FormCard — shared form-wrapper primitive (Workstream F1, #14).
+
+   Gives a panel form a visible interactive zone so teachers can
+   instantly identify it against the lightened workspace plane
+   from Workstream B. Surface tint + 1px border at ~30% opacity.
+   No shadow — per nothing-design's "lightest tool that works."
+   ================================================================ */
+
+.form-card {
+  background: var(--color-surface-elevated);
+  border: 1px solid color-mix(in srgb, var(--color-border) 30%, transparent);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
