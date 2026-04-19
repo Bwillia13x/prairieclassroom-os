@@ -168,6 +168,14 @@ describe("EABriefingRequestSchema", () => {
     expectValid(EABriefingRequestSchema, { classroom_id: "demo" }));
   it("accepts with optional ea_name", () =>
     expectValid(EABriefingRequestSchema, { classroom_id: "demo", ea_name: "Ms. Fehr" }));
+  // 2026-04-19 OPS audit phase 4: coordination_notes is a free-text
+  // optional field capped at LONG_TEXT_MAX, mirrored from Forecast's
+  // teacher_notes behavior.
+  it("accepts optional coordination_notes", () =>
+    expectValid(EABriefingRequestSchema, {
+      classroom_id: "demo",
+      coordination_notes: "EA covering blocks 2-3 only; focus on Brody during math.",
+    }));
 });
 
 describe("ComplexityForecastRequestSchema", () => {

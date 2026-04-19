@@ -764,6 +764,23 @@ describe("ea-briefing", () => {
       const noCtx = buildEABriefingPrompt(DEMO_CLASSROOM, eaInput, "");
       expect(noCtx.user).toContain("(no retrieved coordination context available)");
     });
+
+    // 2026-04-19 OPS audit phase 4: coordination_notes is rendered only
+    // when the teacher supplies content, so the absence path stays
+    // identical to pre-phase-4 output.
+    it("omits the teacher_coordination_notes block when coordination_notes is absent", () => {
+      expect(prompt.user).not.toContain("teacher_coordination_notes");
+    });
+
+    it("renders the teacher_coordination_notes block when coordination_notes is present", () => {
+      const withNotes = buildEABriefingPrompt(
+        DEMO_CLASSROOM,
+        { ...eaInput, coordination_notes: "EA covering blocks 2-3 only; focus on Brody during math." },
+        briefingContext,
+      );
+      expect(withNotes.user).toContain("teacher_coordination_notes");
+      expect(withNotes.user).toContain("EA covering blocks 2-3 only");
+    });
   });
 
   describe("parseEABriefingResponse", () => {
