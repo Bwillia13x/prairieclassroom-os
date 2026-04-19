@@ -266,24 +266,33 @@ export default function EALoadPanel() {
               <EmptyStateCard
                 variant="sample"
                 label="Sample EA load block"
+                /* aria-hidden on the wrapper article below is LOAD-BEARING:
+                   EmptyStateCard only aria-hides the [SAMPLE] tag, not the
+                   sample body. Without this, screen readers would announce
+                   the fake "Reading rotations / Student A, Student C" as
+                   real classroom data. Do not strip.
+
+                   Time slot + activity differ from ForecastPanel's sample
+                   so the two empty states don't read as the same template
+                   when a teacher tabs between them. */
                 sampleNode={(
                   <article className="ea-load-block ea-load-block--rose" aria-hidden="true">
                     <header className="ea-load-block__header">
-                      <span className="ea-load-block__time">10:15–11:00</span>
+                      <span className="ea-load-block__time">9:30–10:15</span>
                       <span className="ea-load-block__badge ea-load-block__badge--rose">
                         HIGH
                       </span>
                     </header>
-                    <h3 className="ea-load-block__activity">Math — long division block</h3>
+                    <h3 className="ea-load-block__activity">Reading rotations</h3>
                     <p className="ea-load-block__supported">
                       <strong>Supporting:</strong> Student A, Student C
                     </p>
                     <ul className="ea-load-block__factors">
-                      <li>Two regulation check-ins likely</li>
-                      <li>Manipulatives setup overlaps with transition</li>
+                      <li>Two regulation check-ins likely during station rotation</li>
+                      <li>One student returning from morning transition</li>
                     </ul>
                     <p className="ea-load-block__suggestion">
-                      <strong>Consider:</strong> shift the worked example earlier so the EA can pre-stage materials.
+                      <strong>Consider:</strong> stagger the rotation so the EA can settle the late-arriver before the second station starts.
                     </p>
                   </article>
                 )}

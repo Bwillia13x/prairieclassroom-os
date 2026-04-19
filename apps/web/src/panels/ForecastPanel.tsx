@@ -144,6 +144,10 @@ export default function ForecastPanel() {
               <EmptyStateCard
                 variant="sample"
                 label="Sample forecast block"
+                /* aria-hidden on the wrapper div below is LOAD-BEARING:
+                   EmptyStateCard only aria-hides the [SAMPLE] tag, not the
+                   sample body. Without this, screen readers would announce
+                   the fake forecast block as real classroom data. */
                 sampleNode={(
                   <div className="forecast-block forecast-block--high" aria-hidden="true">
                     <div className="forecast-block-header">

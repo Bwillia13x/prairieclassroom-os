@@ -133,6 +133,10 @@ export default function EABriefingPanel() {
               <SkeletonLoader variant="stack" message="Building EA coordination briefing..." label="Generating EA briefing" />
             ) : null}
             {!loading && result === null && !error ? (
+              /* The real briefing renders 4 regions (notes, schedule,
+                 watch list, follow-ups). The preview archetype hard-codes
+                 3 skeleton cards — under-promised until EmptyStateCard
+                 picks up an optional `count` prop. */
               <EmptyStateCard
                 variant="preview"
                 label="EA briefing preview"

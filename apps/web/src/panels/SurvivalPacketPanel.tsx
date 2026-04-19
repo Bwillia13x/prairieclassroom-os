@@ -142,6 +142,10 @@ export default function SurvivalPacketPanel() {
                 : <SkeletonLoader variant="stack" message="Building substitute survival packet..." label="Generating survival packet" />
             ) : null}
             {!loading && result === null && !error ? (
+              /* The real packet renders 4+ document regions (schedule,
+                 routines, supports, contacts). The preview archetype
+                 hard-codes 3 skeleton cards — under-promised on purpose
+                 until EmptyStateCard picks up an optional `count` prop. */
               <EmptyStateCard
                 variant="preview"
                 label="Survival packet preview"

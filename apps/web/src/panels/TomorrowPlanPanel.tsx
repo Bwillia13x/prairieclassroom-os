@@ -194,6 +194,11 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                 : <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
             ) : null}
             {!loading && displayResult === null && !error ? (
+              /* The real plan renders 4+ regions (priorities, prep,
+                 differentiation, family follow-ups). The preview
+                 archetype hard-codes 3 skeleton cards — accept the
+                 under-promise for now; revisit when EmptyStateCard
+                 picks up an optional `count` prop. */
               <EmptyStateCard
                 variant="preview"
                 label="Tomorrow plan preview"
