@@ -576,45 +576,6 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-/* Single clean active state — a soft filled pill, no underline stack */
-.shell-nav__tab--active {
-  color: var(--color-text);
-  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
-  font-weight: 500;
-  opacity: 1;
-}
-
-/* Active tab inherits the active section tone — so the selected
-   tab visually "belongs" to its group */
-.shell-nav[data-active-section="today"] .shell-nav__tab--active {
-  background: color-mix(in srgb, var(--color-bg-sun) 90%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-sun) 80%, transparent);
-  color: var(--color-text-sun);
-}
-.shell-nav[data-active-section="prep"] .shell-nav__tab--active {
-  background: color-mix(in srgb, var(--color-bg-sage) 90%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-sage) 80%, transparent);
-  color: var(--color-text-sage);
-}
-.shell-nav[data-active-section="ops"] .shell-nav__tab--active {
-  background: color-mix(in srgb, var(--color-bg-slate) 90%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-slate) 80%, transparent);
-  color: var(--color-text-slate);
-}
-.shell-nav[data-active-section="review"] .shell-nav__tab--active {
-  background: color-mix(in srgb, var(--color-bg-forest) 90%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-forest) 80%, transparent);
-  color: var(--color-text-forest);
-}
-
-/* Neutralize the legacy ::before tint and ::after underline used by
-   the old double-emphasis active state. One pill, one message. */
-.shell-nav__tab--active::before,
-.shell-nav__tab--active::after {
-  content: none;
-}
-
 .shell-nav__badge {
   display: inline-flex;
   align-items: center;
