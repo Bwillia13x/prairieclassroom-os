@@ -1,0 +1,38 @@
+/* Nothing-design tertiary caption: Space Mono, ALL CAPS, muted. */
+.page-freshness {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.page-freshness__value {
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.page-freshness__divider {
+  opacity: 0.5;
+}
+
+.source-tag {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.source-tag--ai {
+  color: var(--color-analysis);
+}
+
+.source-tag--record {
+  color: var(--color-text-tertiary);
+}
