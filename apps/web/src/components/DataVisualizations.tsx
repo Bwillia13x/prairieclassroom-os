@@ -1411,7 +1411,7 @@ export function EALoadStackedBars({ blocks }: EALoadStackedBarsProps) {
   const barMaxW = 200;
 
   return (
-    <div className="viz-ea-bars">
+    <div className="viz-ea-bars" role="figure" aria-label="EA Load Distribution chart">
       <div className="viz-header">
         <h4 className="viz-title">EA Load Distribution</h4>
         <span className="viz-subtitle">Students per block</span>
@@ -1521,7 +1521,6 @@ export function SupportPatternRadar({ themes, onSegmentClick }: PatternRadarProp
   // Background rings
   const rings = [0.25, 0.5, 0.75, 1];
   const dataPoints = axisData.map((a, i) => toPoint(i, a.value * maxR));
-  const dataPath = dataPoints.map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`)).join(" ") + " Z";
 
   return (
     <div className="viz-radar">
@@ -1558,7 +1557,7 @@ export function SupportPatternRadar({ themes, onSegmentClick }: PatternRadarProp
           );
         })}
         {/* Data shape */}
-        <polygon points={dataPath.replace(/[MLZ]/g, "").trim().replace(/\s+/g, " ")}
+        <polygon points={dataPoints.map((p) => `${p.x},${p.y}`).join(" ")}
           fill="var(--color-accent)" fillOpacity={0.2}
           stroke="var(--color-accent)" strokeWidth={2}
         />
@@ -1728,14 +1727,16 @@ export function FollowUpDecayIndicators({ gaps, onStudentClick }: FollowUpDecayP
         {sorted.slice(0, 8).map((gap, i) => {
           const pct = Math.min(1, gap.days_since / maxDays);
           const tone = gap.days_since <= 3 ? "success" : gap.days_since <= 7 ? "warning" : "danger";
+          const isClickable = !!(onStudentClick && gap.student_refs[0]);
+          const Tag = isClickable ? "button" : "div";
           return (
-            <button
+            <Tag
               key={`${gap.original_record_id}-${i}`}
               className="viz-decay__row"
-              type="button"
-              onClick={onStudentClick && gap.student_refs[0]
-                ? () => onStudentClick(gap.student_refs[0])
-                : undefined}
+              {...(isClickable ? {
+                type: "button" as const,
+                onClick: () => onStudentClick!(gap.student_refs[0]),
+              } : {})}
               aria-label={`${gap.student_refs.join(", ")}: ${gap.days_since} days overdue`}
             >
               <span className="viz-decay__students">{gap.student_refs.join(", ")}</span>
@@ -1746,7 +1747,7 @@ export function FollowUpDecayIndicators({ gaps, onStudentClick }: FollowUpDecayP
                 />
               </span>
               <span className={`viz-decay__days viz-decay__days--${tone}`}>{gap.days_since}d</span>
-            </button>
+            </Tag>
           );
         })}
       </div>
@@ -1779,7 +1780,7 @@ export function MessageApprovalFunnel({ messagesTotal, messagesApproved }: Messa
   const approvedW = (messagesApproved / messagesTotal) * barW;
 
   return (
-    <div className="viz-funnel">
+    <div className="viz-funnel" role="figure" aria-label={`Message Pipeline: ${Math.round(approvalRate)}% approval rate`}>
       <div className="viz-header">
         <h4 className="viz-title">Message Pipeline</h4>
         <span className="viz-subtitle">{Math.round(approvalRate)}% approval rate</span>
@@ -1828,7 +1829,7 @@ export function ScaffoldEffectivenessChart({ scaffolds }: ScaffoldBarProps) {
   const maxCount = Math.max(1, ...scaffolds.map((s) => s.count));
 
   return (
-    <div className="viz-scaffold">
+    <div className="viz-scaffold" role="figure" aria-label="Active Scaffolds chart">
       <div className="viz-header">
         <h4 className="viz-title">Active Scaffolds</h4>
         <span className="viz-subtitle">Frequency across students</span>

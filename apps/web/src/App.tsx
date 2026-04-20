@@ -48,6 +48,7 @@ import ShortcutSheet from "./components/ShortcutSheet";
 import CommandPalette from "./components/CommandPalette";
 import PrepSectionIntro from "./components/PrepSectionIntro";
 import { usePaletteEntries } from "./hooks/usePaletteEntries";
+import { useNothingButtonPressAnimation } from "./hooks/useNothingButtonPressAnimation";
 import TomorrowChip from "./components/TomorrowChip";
 import TabOverflowMenu from "./components/TabOverflowMenu";
 import OpsSectionHint from "./components/OpsSectionHint";
@@ -85,11 +86,14 @@ export default function App() {
   const [state, dispatch] = useReducer(appReducer, undefined, createInitialState);
   const activeRole: ClassroomRole =
     state.classroomRoles[state.activeClassroom] ?? "teacher";
+  useNothingButtonPressAnimation();
   const authPromptResolverRef = useRef<((code: string | null) => void) | null>(null);
   const classroomsRef = useRef<ClassroomProfile[]>(state.classrooms);
   const classroomCodesRef = useRef(state.classroomAccessCodes);
   const classroomRolesRef = useRef(state.classroomRoles);
   const classroomMenuRef = useRef<HTMLDivElement>(null);
+  const appShellRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLElement>(null);
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
   // Ref mirrors visibleTabs so the global keydown handler doesn't need to
   // re-register whenever the role changes (and so the `1…9/0` shortcuts
@@ -118,6 +122,31 @@ export default function App() {
   useEffect(() => {
     classroomsRef.current = state.classrooms;
   }, [state.classrooms]);
+
+  useLayoutEffect(() => {
+    const shell = appShellRef.current;
+    const header = headerRef.current;
+    if (!shell || !header) return;
+
+    const updateStickyOffset = () => {
+      shell.style.setProperty("--shell-sticky-offset", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+    };
+
+    updateStickyOffset();
+    window.addEventListener("resize", updateStickyOffset);
+
+    let observer: ResizeObserver | null = null;
+    if (typeof ResizeObserver !== "undefined") {
+      observer = new ResizeObserver(() => updateStickyOffset());
+      observer.observe(header);
+    }
+
+    return () => {
+      window.removeEventListener("resize", updateStickyOffset);
+      observer?.disconnect();
+      shell.style.removeProperty("--shell-sticky-offset");
+    };
+  }, []);
 
   useEffect(() => {
     classroomCodesRef.current = state.classroomAccessCodes;
@@ -449,7 +478,7 @@ export default function App() {
     } else {
       const main = document.querySelector(".app-main");
       if (main) {
-        main.scrollIntoView({ behavior: "instant", block: "start" });
+        main.scrollIntoView({ behavior: "auto", block: "start" });
       }
     }
   }, [state.activeTab]);
@@ -873,13 +902,13 @@ export default function App() {
   return (
     <AppContext.Provider value={ctxValue}>
       <SessionProvider classroomId={activeClassroom} enabled={activeRole !== "reviewer"}>
-      <div className="app-shell">
+      <div className="app-shell" ref={appShellRef}>
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
         <ToastQueue />
 
-        <header className="app-header">
+        <header className="app-header" ref={headerRef}>
           <div className="app-header__inner">
             <div className="shell-bar">
               <div className="shell-brand" aria-label="PrairieClassroom home">
@@ -979,7 +1008,7 @@ export default function App() {
                 />
                 <ThemeToggle />
                 <button
-                  className="btn btn--ghost app-help-btn app-help-btn--icon"
+                  className="btn btn--ghost btn--sm btn--icon-only app-help-btn app-help-btn--icon"
                   onClick={handleQuickHelpClick}
                   type="button"
                   aria-label={

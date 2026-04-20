@@ -58,14 +58,19 @@
     margin-bottom: 1rem;
   }
 
-  /* Hide overlays and toasts */
+  /* Hide overlays, toasts, and runtime banners */
   .drill-down-backdrop,
   .drill-down-drawer,
   .onboarding-backdrop,
   .toast-queue,
   .app-footer,
   .streaming-indicator,
-  .output-feedback {
+  .output-feedback,
+  .result-banner,
+  .mock-mode-banner,
+  .mobile-nav,
+  .command-palette-backdrop,
+  .shortcut-sheet-backdrop {
     display: none !important;
   }
 

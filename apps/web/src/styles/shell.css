@@ -566,7 +566,7 @@
   font-weight: var(--font-weight-normal);
   letter-spacing: 0.1em; /* no matching --tracking-* token */
   text-transform: uppercase;
-  opacity: 0.7;
+  opacity: 0.82;
 }
 
 .shell-nav__tab:hover:not(.shell-nav__tab--active) {
@@ -784,6 +784,8 @@
   flex-direction: column;
   gap: var(--space-5);
   margin-top: var(--space-4);
+  /* Keeps scrollIntoView/skip-link landings clear of the sticky shell. */
+  scroll-margin-top: calc(var(--shell-sticky-offset) + var(--space-3));
   /* Explicit per-side padding so the top edge consumes the canonical
      --page-content-padding-top token (audit fix B2). Horizontal and
      bottom retain the prior --space-6 (40px) workspace breathing room. */
@@ -943,7 +945,13 @@
     flex: 1 1 100%;
     width: 100%;
     justify-content: flex-start;
+    gap: 0.3rem;
     margin-left: 0;
+  }
+
+  .shell-bar__divider,
+  .shell-bar__palette-btn-kbd {
+    display: none;
   }
 
   .shell-classroom-anchor {

@@ -95,6 +95,7 @@
   letter-spacing: 0;
   line-height: 1.55;
   text-transform: none;
+  text-wrap: pretty;
 }
 
 .workspace-page .page-intro .status-chip-row {
@@ -579,7 +580,6 @@
 .workspace-page .viz-debt-gauge__threshold-zone--active {
   background: var(--color-text);
   color: var(--color-surface);
-  border-color: var(--color-text);
 }
 
 .workspace-page .viz-debt-gauge__bar {
@@ -1432,7 +1432,7 @@
   letter-spacing: 0.1em; /* no matching --tracking-* token */
   text-transform: uppercase;
   color: var(--color-text-tertiary);
-  opacity: 0.7;
+  opacity: 0.82;
 }
 
 .shell-nav__tab--active {
@@ -1441,6 +1441,10 @@
   border-bottom: 2px solid var(--color-text);
   opacity: 1;
   font-weight: var(--font-weight-medium);
+}
+
+.shell-nav__tab:focus-visible {
+  opacity: 1;
 }
 
 .shell-nav__tab:hover {
@@ -1821,7 +1825,6 @@
 }
 
 .shell-classroom-pill__switcher,
-.role-pill__chip,
 .mobile-nav-badge,
 .mobile-nav-subtab-badge,
 .toast-dismiss-btn {
@@ -2193,4 +2196,1257 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+}
+
+/* ---------- Nothing buttons v2 — circular utilities + signal pills ---------- */
+
+:root {
+  --nothing-button-signal: #d71921;
+  --nothing-button-border: color-mix(in srgb, var(--color-border-strong) 74%, transparent);
+  --nothing-button-border-hover: color-mix(in srgb, var(--color-text) 40%, transparent);
+  --nothing-button-hover: color-mix(in srgb, var(--color-surface-muted) 84%, var(--color-surface));
+  --nothing-button-solid: var(--color-text);
+  --nothing-button-solid-text: var(--color-bg);
+  --nothing-button-press-duration: 180ms;
+  --nothing-button-press-duration-compact: 170ms;
+  --nothing-button-press-marker-duration: 160ms;
+  --nothing-button-press-duration-heavy: 205ms;
+  --nothing-button-press-duration-heavy-compact: 190ms;
+  --nothing-button-press-marker-duration-heavy: 175ms;
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+) {
+  --nothing-button-signal-color: var(--nothing-button-signal);
+  position: relative;
+  overflow: visible !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--nothing-button-border) !important;
+  background: transparent !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+  transform-origin: 50% 50%;
+  filter: none !important;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    opacity var(--motion-fast) var(--ease-standard) !important;
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+)::before,
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: 5px;
+  background: var(--nothing-button-signal-color);
+  opacity: 0.58;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity var(--motion-fast) var(--ease-standard),
+    height var(--motion-fast) var(--ease-standard);
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+)::before {
+  top: -1px;
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+)::after {
+  bottom: -1px;
+}
+
+:is(
+  .btn:not(.btn--link),
+  .shell-bar__palette-btn,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+) {
+  font-family: var(--font-mono) !important;
+  font-weight: 600 !important;
+  font-size: var(--text-xs) !important;
+  letter-spacing: 0.06em !important;
+  text-transform: none !important;
+}
+
+.btn:not(.btn--link):not(.btn--icon-only) {
+  min-height: var(--control-h-md);
+  padding: 0 var(--space-3) !important;
+}
+
+.btn--sm:not(.btn--icon-only) {
+  min-height: var(--control-h-sm);
+  padding: 0 var(--space-2-5) !important;
+  font-size: var(--text-2xs) !important;
+}
+
+.btn--lg:not(.btn--icon-only) {
+  min-height: var(--control-h-lg);
+  padding: 0 var(--space-4) !important;
+  font-size: var(--text-sm) !important;
+}
+
+.btn:not(.btn--link) svg,
+.btn__leading-icon svg,
+.btn__trailing-icon svg,
+.output-action-bar__icon,
+.shell-bar__palette-btn svg {
+  width: var(--icon-md);
+  height: var(--icon-md);
+  flex-shrink: 0;
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):hover:not(:disabled),
+.tomorrow-chip__trigger[aria-expanded="true"],
+.role-pill--open,
+.shell-classroom-pill--open {
+  border-color: var(--nothing-button-border-hover) !important;
+  background: var(--nothing-button-hover) !important;
+  color: var(--color-text) !important;
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):hover:not(:disabled)::before,
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):hover:not(:disabled)::after,
+.tomorrow-chip__trigger[aria-expanded="true"]::before,
+.tomorrow-chip__trigger[aria-expanded="true"]::after,
+.role-pill--open::before,
+.role-pill--open::after,
+.shell-classroom-pill--open::before,
+.shell-classroom-pill--open::after {
+  opacity: 1;
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-surface-muted) 92%, var(--color-surface)) !important;
+}
+
+/* --- Focus-visible: signal-tinted ring for keyboard navigation --- */
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):focus-visible {
+  outline: 2px solid var(--nothing-button-signal) !important;
+  outline-offset: 3px !important;
+}
+
+/* --- Disabled: fade signal markers and dim uniformly --- */
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):disabled {
+  opacity: 0.38 !important;
+  cursor: not-allowed !important;
+}
+
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):disabled::before,
+:is(
+  .btn:not(.btn--link):not(.btn--icon-only),
+  .shell-bar__palette-btn,
+  .role-pill,
+  .shell-classroom-pill,
+  .tomorrow-chip__trigger,
+  .tomorrow-chip__review,
+  .output-action-bar__btn,
+  .draft-restore__btn,
+  .time-suggestion-btn,
+  .output-feedback-submit
+):disabled::after {
+  opacity: 0 !important;
+}
+
+:is(
+  .btn--primary,
+  .output-action-bar__btn--primary,
+  .draft-restore__btn--primary,
+  .time-suggestion-btn--primary
+) {
+  --nothing-button-signal-color: var(--nothing-button-signal);
+  background: var(--nothing-button-solid) !important;
+  border-color: var(--nothing-button-solid) !important;
+  color: var(--nothing-button-solid-text) !important;
+}
+
+:is(
+  .btn--primary,
+  .output-action-bar__btn--primary,
+  .draft-restore__btn--primary,
+  .time-suggestion-btn--primary
+):hover:not(:disabled),
+:is(
+  .btn--primary,
+  .output-action-bar__btn--primary,
+  .draft-restore__btn--primary,
+  .time-suggestion-btn--primary
+):focus-visible {
+  background: color-mix(in srgb, var(--nothing-button-solid) 92%, var(--color-surface)) !important;
+  border-color: var(--nothing-button-solid) !important;
+  color: var(--nothing-button-solid-text) !important;
+}
+
+:is(.btn--approve, .output-action-bar__btn--approve) {
+  --nothing-button-signal-color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 14%, var(--color-surface)) !important;
+  border-color: color-mix(in srgb, var(--color-success) 48%, var(--nothing-button-border)) !important;
+  color: var(--color-text-success) !important;
+}
+
+:is(.btn--approve, .output-action-bar__btn--approve):hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-success) 20%, var(--color-surface)) !important;
+  border-color: color-mix(in srgb, var(--color-success) 70%, var(--nothing-button-border)) !important;
+  color: var(--color-text) !important;
+}
+
+.btn--danger {
+  --nothing-button-signal-color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 48%, var(--nothing-button-border)) !important;
+  color: var(--color-text-danger) !important;
+}
+
+.btn--danger:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-bg-danger) 62%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-danger) 72%, var(--nothing-button-border)) !important;
+  color: var(--color-text-danger) !important;
+}
+
+.btn--danger:active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-bg-danger) 78%, transparent) !important;
+}
+
+.btn--soft {
+  background: color-mix(in srgb, var(--color-bg-accent) 28%, var(--color-surface)) !important;
+  border-color: color-mix(in srgb, var(--color-border-accent) 44%, var(--nothing-button-border)) !important;
+  color: var(--color-text-accent) !important;
+}
+
+.btn--soft:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-bg-accent) 36%, var(--color-surface)) !important;
+  border-color: color-mix(in srgb, var(--color-border-accent) 62%, var(--nothing-button-border)) !important;
+  color: var(--color-text) !important;
+}
+
+.btn--soft:active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-bg-accent) 46%, var(--color-surface)) !important;
+}
+
+.btn--tertiary {
+  color: var(--color-text-secondary) !important;
+}
+
+.btn--link {
+  font-family: var(--font-mono) !important;
+  text-transform: none !important;
+  letter-spacing: 0.04em !important;
+  color: var(--color-text-secondary) !important;
+  border-radius: 0 !important;
+}
+
+.btn--link:hover:not(:disabled) {
+  color: var(--color-text) !important;
+  background: transparent !important;
+}
+
+/* --- Label truncation and internal spacing --- */
+.btn__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.btn__leading-icon,
+.btn__trailing-icon {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* --- Loading spinner: whitelist animation inside Nothing shell --- */
+.workspace-page .btn__spinner {
+  animation: btn-spin 0.7s linear infinite !important;
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+) {
+  --nothing-button-signal-color: var(--nothing-button-signal);
+  position: relative;
+  overflow: visible !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--control-h-sm);
+  min-width: var(--control-h-sm);
+  height: var(--control-h-sm);
+  min-height: var(--control-h-sm);
+  padding: 0 !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--nothing-button-border) !important;
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  transform: none !important;
+  filter: none !important;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-spring) !important;
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+)::before,
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+)::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: 4px;
+  background: var(--nothing-button-signal-color);
+  opacity: 0.6;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity var(--motion-fast) var(--ease-standard),
+    height var(--motion-fast) var(--ease-standard);
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+)::before {
+  top: -1px;
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+)::after {
+  bottom: -1px;
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):hover:not(:disabled),
+.page-intro-info__trigger[aria-expanded="true"] {
+  border-color: var(--nothing-button-border-hover) !important;
+  background: var(--nothing-button-hover) !important;
+  color: var(--color-text) !important;
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):hover:not(:disabled)::before,
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):hover:not(:disabled)::after,
+.page-intro-info__trigger[aria-expanded="true"]::before,
+.page-intro-info__trigger[aria-expanded="true"]::after {
+  opacity: 1;
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):active:not(:disabled) {
+  background: color-mix(in srgb, var(--color-surface-muted) 92%, var(--color-surface)) !important;
+}
+
+/* --- Focus-visible: signal-tinted ring for icon buttons --- */
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):focus-visible {
+  outline: 2px solid var(--nothing-button-signal) !important;
+  outline-offset: 3px !important;
+}
+
+/* --- Disabled: fade markers on icon buttons --- */
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):disabled {
+  opacity: 0.38 !important;
+  cursor: not-allowed !important;
+}
+
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):disabled::before,
+:is(
+  .btn--icon-only,
+  .output-feedback-btn,
+  .tomorrow-chip__remove,
+  .page-intro-info__trigger,
+  .contextual-hint-dismiss,
+  .contextual-hint-restore,
+  .status-chip--live
+):disabled::after {
+  opacity: 0 !important;
+}
+
+.btn--icon-only.btn--sm,
+.theme-toggle.btn--sm,
+.app-help-btn.btn--sm {
+  width: var(--control-h-sm);
+  min-width: var(--control-h-sm);
+  height: var(--control-h-sm);
+  min-height: var(--control-h-sm);
+}
+
+.btn--icon-only.btn--lg {
+  width: var(--control-h-lg);
+  min-width: var(--control-h-lg);
+  height: var(--control-h-lg);
+  min-height: var(--control-h-lg);
+}
+
+.output-feedback-btn,
+.tomorrow-chip__remove,
+.status-chip--live {
+  width: var(--control-h-sm);
+  min-width: var(--control-h-sm);
+  height: var(--control-h-sm);
+  min-height: var(--control-h-sm);
+}
+
+.btn--icon-only svg,
+.theme-toggle__icon,
+.page-intro-info__trigger svg,
+.status-chip--live svg {
+  width: var(--icon-md) !important;
+  height: var(--icon-md) !important;
+}
+
+.app-help-btn--icon {
+  font-size: var(--text-xs) !important;
+  letter-spacing: 0 !important;
+}
+
+.output-feedback-btn {
+  font-size: var(--text-base);
+  line-height: 1;
+}
+
+.output-feedback-btn--up {
+  --nothing-button-signal-color: var(--color-success);
+}
+
+.output-feedback-btn--down {
+  --nothing-button-signal-color: var(--color-danger);
+}
+
+.output-feedback-btn--selected {
+  background: color-mix(in srgb, var(--nothing-button-signal-color) 16%, var(--color-surface)) !important;
+  border-color: color-mix(in srgb, var(--nothing-button-signal-color) 62%, var(--nothing-button-border)) !important;
+  color: var(--color-text) !important;
+}
+
+.page-intro-info__trigger,
+.contextual-hint-dismiss,
+.contextual-hint-restore {
+  font-size: var(--text-sm) !important;
+  line-height: 1 !important;
+}
+
+.contextual-hint-restore {
+  color: var(--color-text-tertiary) !important;
+}
+
+@keyframes nothing-marker-pulse {
+  0% {
+    opacity: 0.58;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.72;
+  }
+}
+
+@keyframes nothing-icon-jog {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  40% {
+    transform: translateY(-1px) scale(1.06);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes nothing-button-press {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  32% {
+    transform: translateY(0.9px) scale(0.982);
+  }
+  68% {
+    transform: translateY(-0.2px) scale(1.004);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes nothing-button-press-compact {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  32% {
+    transform: translateY(0.65px) scale(0.952);
+  }
+  68% {
+    transform: translateY(-0.2px) scale(1.012);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes nothing-button-press-heavy {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  34% {
+    transform: translateY(1.2px) scale(0.976);
+  }
+  70% {
+    transform: translateY(-0.24px) scale(1.006);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes nothing-button-press-heavy-compact {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  34% {
+    transform: translateY(0.92px) scale(0.944);
+  }
+  70% {
+    transform: translateY(-0.24px) scale(1.016);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes nothing-marker-press {
+  0% {
+    opacity: 0.58;
+    transform: translateX(-50%) scaleY(1);
+  }
+  32% {
+    opacity: 0.96;
+    transform: translateX(-50%) scaleY(1.32);
+  }
+  100% {
+    opacity: 0.72;
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+@keyframes nothing-marker-press-heavy {
+  0% {
+    opacity: 0.58;
+    transform: translateX(-50%) scaleY(1);
+  }
+  34% {
+    opacity: 1;
+    transform: translateX(-50%) scaleY(1.42);
+  }
+  100% {
+    opacity: 0.74;
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+@keyframes nothing-icon-press {
+  0% {
+    transform: scale(1);
+  }
+  32% {
+    transform: scale(0.93);
+  }
+  68% {
+    transform: scale(1.03);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes nothing-icon-press-heavy {
+  0% {
+    transform: scale(1);
+  }
+  34% {
+    transform: scale(0.9);
+  }
+  70% {
+    transform: scale(1.04);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :is(
+    .btn:not(.btn--link):not(.btn--icon-only),
+    .shell-bar__palette-btn,
+    .role-pill,
+    .shell-classroom-pill,
+    .tomorrow-chip__trigger,
+    .tomorrow-chip__review,
+    .output-action-bar__btn,
+    .draft-restore__btn,
+    .time-suggestion-btn,
+    .output-feedback-submit
+  )[data-nothing-pressed="true"] {
+    animation: nothing-button-press var(--nothing-button-press-duration) var(--ease-standard) 1;
+  }
+
+  :is(
+    .app-footer__toggle,
+    .mobile-nav-group,
+    .mobile-nav-subtab
+  )[data-nothing-pressed="true"] {
+    animation: nothing-button-press-heavy var(--nothing-button-press-duration-heavy) var(--ease-standard) 1;
+  }
+
+  .app-footer__shortcuts-btn[data-nothing-pressed="true"] {
+    animation: nothing-button-press-heavy-compact var(--nothing-button-press-duration-heavy-compact) var(--ease-standard) 1;
+  }
+
+  :is(
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  )[data-nothing-pressed="true"] {
+    animation: nothing-button-press-compact var(--nothing-button-press-duration-compact) var(--ease-standard) 1;
+  }
+
+  :is(
+    .btn:not(.btn--link):not(.btn--icon-only),
+    .shell-bar__palette-btn,
+    .role-pill,
+    .shell-classroom-pill,
+    .tomorrow-chip__trigger,
+    .tomorrow-chip__review,
+    .output-action-bar__btn,
+    .draft-restore__btn,
+    .time-suggestion-btn,
+    .output-feedback-submit,
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  )[data-nothing-pressed="true"]::before,
+  :is(
+    .btn:not(.btn--link):not(.btn--icon-only),
+    .shell-bar__palette-btn,
+    .role-pill,
+    .shell-classroom-pill,
+    .tomorrow-chip__trigger,
+    .tomorrow-chip__review,
+    .output-action-bar__btn,
+    .draft-restore__btn,
+    .time-suggestion-btn,
+    .output-feedback-submit,
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  )[data-nothing-pressed="true"]::after {
+    opacity: 1;
+    animation: nothing-marker-press var(--nothing-button-press-marker-duration) var(--ease-standard) 1;
+  }
+
+  :is(
+    .app-footer__toggle,
+    .mobile-nav-group,
+    .mobile-nav-subtab,
+    .app-footer__shortcuts-btn
+  )[data-nothing-pressed="true"]::before,
+  :is(
+    .app-footer__toggle,
+    .mobile-nav-group,
+    .mobile-nav-subtab,
+    .app-footer__shortcuts-btn
+  )[data-nothing-pressed="true"]::after {
+    opacity: 1;
+    animation: nothing-marker-press-heavy var(--nothing-button-press-marker-duration-heavy) var(--ease-standard) 1;
+  }
+
+  :is(
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  )[data-nothing-pressed="true"] svg,
+  :is(
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  )[data-nothing-pressed="true"] span[aria-hidden="true"],
+  :is(
+    .mobile-nav-group,
+    .mobile-nav-subtab,
+    .app-footer__toggle,
+    .app-footer__shortcuts-btn
+  )[data-nothing-pressed="true"] svg,
+  :is(
+    .mobile-nav-group,
+    .mobile-nav-subtab,
+    .app-footer__toggle,
+    .app-footer__shortcuts-btn
+  )[data-nothing-pressed="true"] span[aria-hidden="true"],
+  :is(
+    .mobile-nav-group,
+    .mobile-nav-subtab,
+    .app-footer__toggle,
+    .app-footer__shortcuts-btn
+  )[data-nothing-pressed="true"] .mobile-nav-icon,
+  .app-footer__toggle[data-nothing-pressed="true"] .app-footer__toggle-caret {
+    animation: nothing-icon-press-heavy var(--nothing-button-press-duration-heavy-compact) var(--ease-standard) 1;
+  }
+
+  :is(
+    .btn:not(.btn--link):not(.btn--icon-only),
+    .shell-bar__palette-btn,
+    .role-pill,
+    .shell-classroom-pill,
+    .tomorrow-chip__trigger,
+    .tomorrow-chip__review,
+    .output-action-bar__btn,
+    .draft-restore__btn,
+    .time-suggestion-btn,
+    .output-feedback-submit,
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  ):hover:not(:disabled)::before,
+  :is(
+    .btn:not(.btn--link):not(.btn--icon-only),
+    .shell-bar__palette-btn,
+    .role-pill,
+    .shell-classroom-pill,
+    .tomorrow-chip__trigger,
+    .tomorrow-chip__review,
+    .output-action-bar__btn,
+    .draft-restore__btn,
+    .time-suggestion-btn,
+    .output-feedback-submit,
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  ):hover:not(:disabled)::after,
+  .page-intro-info__trigger[aria-expanded="true"]::before,
+  .page-intro-info__trigger[aria-expanded="true"]::after {
+    animation: nothing-marker-pulse 340ms var(--ease-standard) 1;
+  }
+
+  :is(
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  ):hover:not(:disabled) svg,
+  :is(
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  ):hover:not(:disabled) span[aria-hidden="true"] {
+    animation: nothing-icon-jog 320ms var(--ease-standard) 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :is(
+    .btn:not(.btn--link):not(.btn--icon-only),
+    .shell-bar__palette-btn,
+    .role-pill,
+    .shell-classroom-pill,
+    .tomorrow-chip__trigger,
+    .tomorrow-chip__review,
+    .output-action-bar__btn,
+    .draft-restore__btn,
+    .time-suggestion-btn,
+    .output-feedback-submit,
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live,
+    .app-footer__toggle,
+    .mobile-nav-group,
+    .mobile-nav-subtab,
+    .app-footer__shortcuts-btn
+  ) {
+    transition-duration: 0ms !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .shell-bar__actions {
+    gap: 0.3rem;
+  }
+
+  .shell-bar__divider,
+  .shell-bar__palette-btn-kbd {
+    display: none !important;
+  }
+
+  .shell-bar__palette-btn {
+    padding-inline: var(--space-2);
+  }
+}
+
+.role-pill,
+.shell-classroom-pill {
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent) !important;
+  font-family: var(--font-sans) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.role-pill__label,
+.shell-classroom-pill__label {
+  font-family: var(--font-sans) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+}
+
+.shell-bar__palette-btn {
+  gap: var(--space-2);
+}
+
+.shell-bar__palette-btn-label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.08em;
+}
+
+.shell-bar__palette-btn-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.4rem;
+  padding: 0 var(--space-2);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  background: transparent;
+  opacity: 0.72;
+}
+
+.tomorrow-chip__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  padding: 0 var(--space-1);
+  border-radius: 999px;
+  border: 1px solid var(--nothing-button-signal);
+  background: var(--nothing-button-signal) !important;
+  color: #ffffff !important;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.app-footer__toggle,
+.mobile-nav-group,
+.mobile-nav-subtab {
+  --nothing-button-signal-color: var(--nothing-button-signal);
+  position: relative;
+  overflow: visible !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--nothing-button-border) !important;
+  background: transparent !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transform-origin: 50% 50%;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard) !important;
+}
+
+.app-footer__toggle::before,
+.app-footer__toggle::after,
+.mobile-nav-group::before,
+.mobile-nav-group::after,
+.mobile-nav-subtab::before,
+.mobile-nav-subtab::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: 5px;
+  background: var(--nothing-button-signal-color);
+  opacity: 0.58;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity var(--motion-fast) var(--ease-standard),
+    height var(--motion-fast) var(--ease-standard);
+}
+
+.app-footer__toggle::before,
+.mobile-nav-group::before,
+.mobile-nav-subtab::before {
+  top: -1px;
+}
+
+.app-footer__toggle::after,
+.mobile-nav-group::after,
+.mobile-nav-subtab::after {
+  bottom: -1px;
+}
+
+.app-footer__toggle:hover,
+.mobile-nav-group:hover,
+.mobile-nav-subtab:hover,
+.mobile-nav-group--active,
+.mobile-nav-subtab--active {
+  border-color: var(--nothing-button-border-hover) !important;
+  background: var(--nothing-button-hover) !important;
+  color: var(--color-text) !important;
+}
+
+.app-footer__toggle:hover::before,
+.app-footer__toggle:hover::after,
+.mobile-nav-group:hover::before,
+.mobile-nav-group:hover::after,
+.mobile-nav-subtab:hover::before,
+.mobile-nav-subtab:hover::after,
+.mobile-nav-group--active::before,
+.mobile-nav-group--active::after,
+.mobile-nav-subtab--active::before,
+.mobile-nav-subtab--active::after {
+  opacity: 1;
+}
+
+.mobile-nav-group--active,
+.mobile-nav-subtab--active {
+  background: var(--nothing-button-solid) !important;
+  border-color: var(--nothing-button-solid) !important;
+  color: var(--nothing-button-solid-text) !important;
+}
+
+.mobile-nav-group--active .mobile-nav-icon,
+.mobile-nav-subtab--active .mobile-nav-icon {
+  color: inherit !important;
+}
+
+.mobile-nav-badge,
+.mobile-nav-subtab-badge {
+  border-radius: 999px !important;
+  border: 1px solid var(--nothing-button-signal) !important;
+  background: var(--nothing-button-signal) !important;
+  color: #ffffff !important;
+}
+
+.app-footer__shortcuts-btn {
+  --nothing-button-signal-color: var(--nothing-button-signal);
+  position: relative;
+  overflow: visible !important;
+  border-radius: 999px !important;
+  border: 1px solid var(--nothing-button-border) !important;
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  transform-origin: 50% 50%;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard) !important;
+}
+
+.app-footer__shortcuts-btn::before,
+.app-footer__shortcuts-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: 4px;
+  background: var(--nothing-button-signal-color);
+  opacity: 0.6;
+  transform: translateX(-50%);
+  pointer-events: none;
+  transition: opacity var(--motion-fast) var(--ease-standard),
+    height var(--motion-fast) var(--ease-standard);
+}
+
+.app-footer__shortcuts-btn::before {
+  top: -1px;
+}
+
+.app-footer__shortcuts-btn::after {
+  bottom: -1px;
+}
+
+.app-footer__shortcuts-btn:hover {
+  border-color: var(--nothing-button-border-hover) !important;
+  background: var(--nothing-button-hover) !important;
+  color: var(--color-text) !important;
+}
+
+.app-footer__shortcuts-btn:hover::before,
+.app-footer__shortcuts-btn:hover::after {
+  opacity: 1;
+}
+
+/* --- Focus-visible: signal-tinted ring for footer/nav buttons --- */
+.app-footer__toggle:focus-visible,
+.mobile-nav-group:focus-visible,
+.mobile-nav-subtab:focus-visible,
+.app-footer__shortcuts-btn:focus-visible {
+  outline: 2px solid var(--nothing-button-signal) !important;
+  outline-offset: 3px !important;
 }

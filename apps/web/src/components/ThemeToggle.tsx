@@ -46,7 +46,7 @@ export default function ThemeToggle() {
 
   return (
     <button
-      className="btn btn--ghost theme-toggle"
+      className="btn btn--ghost btn--sm btn--icon-only theme-toggle"
       onClick={cycle}
       type="button"
       aria-label={`Color theme: ${LABELS[theme]}. Click to change.`}

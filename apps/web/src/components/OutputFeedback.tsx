@@ -62,7 +62,7 @@ export default function OutputFeedback({ outputId, outputType }: Props) {
         <div className="output-feedback-row">
           <span className="output-feedback-prompt">Was this helpful?</span>
           <button
-            className={`output-feedback-btn${rating === "up" ? " output-feedback-btn--selected" : ""}`}
+            className={`output-feedback-btn output-feedback-btn--up${rating === "up" ? " output-feedback-btn--selected" : ""}`}
             onClick={() => handleRate("up")}
             type="button"
             aria-label="Thumbs up — this was helpful"
@@ -70,7 +70,7 @@ export default function OutputFeedback({ outputId, outputType }: Props) {
             👍
           </button>
           <button
-            className={`output-feedback-btn${rating === "down" ? " output-feedback-btn--selected" : ""}`}
+            className={`output-feedback-btn output-feedback-btn--down${rating === "down" ? " output-feedback-btn--selected" : ""}`}
             onClick={() => handleRate("down")}
             type="button"
             aria-label="Thumbs down — this was not helpful"
@@ -94,7 +94,7 @@ export default function OutputFeedback({ outputId, outputType }: Props) {
               maxLength={200}
               onKeyDown={(e) => { if (e.key === "Enter") handleSubmitNote(); }}
             />
-            <button className="btn btn--ghost output-feedback-submit" onClick={handleSubmitNote} type="button">
+            <button className="btn btn--ghost btn--sm output-feedback-submit" onClick={handleSubmitNote} type="button">
               Send
             </button>
             <button className="output-feedback-skip" onClick={handleSkipNote} type="button">

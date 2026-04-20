@@ -199,6 +199,13 @@ a {
   50% { opacity: 0.15; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-line,
+  .skeleton-card {
+    animation: none !important;
+  }
+}
+
 @keyframes spin {
   to { transform: rotate(360deg); }
 }

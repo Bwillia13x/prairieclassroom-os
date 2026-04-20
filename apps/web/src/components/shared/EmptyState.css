@@ -5,7 +5,7 @@
   justify-content: center;
   padding: var(--ds-space-8) var(--ds-space-6);
   text-align: center;
-  gap: var(--ds-space-1);
+  gap: var(--ds-space-3);
   animation: fade-up 0.4s var(--ease-out-expo) both;
   background: var(--ds-surface);
   border-radius: var(--radius-md);
@@ -13,7 +13,7 @@
 }
 
 .empty-state__title {
-  margin: 0 0 var(--ds-space-2);
+  margin: 0;
   font-family: var(--ds-font-sans);
   font-size: var(--ds-text-lg);
   font-weight: 600;
@@ -21,11 +21,12 @@
 }
 
 .empty-state__description {
-  margin: 0 0 var(--ds-space-4);
+  margin: 0;
   font-size: var(--ds-text-sm);
   color: var(--ds-text-secondary);
   max-width: 38ch;
   line-height: 1.6;
+  text-wrap: pretty;
 }
 
 .empty-state__action {
@@ -42,6 +43,11 @@
     background var(--ds-transition-fast),
     transform var(--motion-fast) var(--ease-spring),
     box-shadow var(--motion-fast) var(--ease-spring);
+}
+
+.empty-state__action:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .empty-state__action:hover {
