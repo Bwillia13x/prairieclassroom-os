@@ -6,6 +6,7 @@ import type { DrillDownContext, StudentSummary } from "../types";
 import SectionIcon from "./SectionIcon";
 import SkeletonLoader from "./SkeletonLoader";
 import { StudentSparkIndicator } from "./DataVisualizations";
+import { NothingSpinner } from "./shared";
 import "./StudentRoster.css";
 
 const STORAGE_KEY = "prairie-roster-expanded";
@@ -163,13 +164,22 @@ export default function StudentRoster({ attentionCount, onDrillDown }: Props) {
       <button
         className="student-roster__toggle"
         onClick={handleToggle}
-        aria-expanded={expanded}
         aria-controls="student-roster-body"
         aria-label={attentionLabel ?? "Students"}
         type="button"
       >
         <SectionIcon name="grid" className="student-roster__icon" />
         <span className="student-roster__label">Students</span>
+        {summaryAction.loading ? (
+          <NothingSpinner
+            variant="pulse-ring"
+            size="sm"
+            tone="accent"
+            label="Refreshing student patterns"
+            className="student-roster__spinner"
+            data-testid="student-roster-spinner"
+          />
+        ) : null}
         {/* Audit #29: resolve the 35/3/23 glossary clash. The Pulse
             card shows "N open items" (debt register), the priority
             matrix shows "N priority students" (top 5), and this footer

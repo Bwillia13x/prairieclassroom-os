@@ -1,5 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import SectionIcon, { type SectionIconName } from "./SectionIcon";
+import {
+  NothingInstrumentButton,
+  type NothingInstrumentAnim,
+} from "./shared";
 
 type Theme = "system" | "light" | "dark";
 
@@ -10,6 +14,18 @@ const ICON_NAME: Record<Theme, SectionIconName> = {
   system: "refresh",
   light: "sun",
   dark: "moon",
+};
+
+/**
+ * Per-theme fire animation:
+ *   system → `refresh` (spins through the cycle)
+ *   light  → `spark`   (warm flash on)
+ *   dark   → `pulse`   (quiet night settle)
+ */
+const FIRE_ANIM: Record<Theme, NothingInstrumentAnim> = {
+  system: "refresh",
+  light: "spark",
+  dark: "pulse",
 };
 
 function loadTheme(): Theme {
@@ -44,15 +60,19 @@ export default function ThemeToggle() {
     });
   }, []);
 
+  // Fire animation tracks the theme we are CURRENTLY showing, i.e. the
+  // theme the user just pressed into. We capture it at render time so the
+  // instrument spinner runs the right animation for the cycle step.
   return (
-    <button
-      className="btn btn--ghost btn--sm btn--icon-only theme-toggle"
+    <NothingInstrumentButton
+      size="sm"
+      tone="accent"
+      fireAnim={FIRE_ANIM[theme]}
       onClick={cycle}
-      type="button"
       aria-label={`Color theme: ${LABELS[theme]}. Click to change.`}
-      title={`Theme: ${LABELS[theme]}`}
+      className="theme-toggle-instrument"
     >
       <SectionIcon name={ICON_NAME[theme]} className="theme-toggle__icon" />
-    </button>
+    </NothingInstrumentButton>
   );
 }

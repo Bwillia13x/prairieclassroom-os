@@ -130,6 +130,34 @@ describe("FamilyMessagePanel", () => {
     expect(FamilyMessagePanel).toBeDefined();
   });
 
+  it("tells the teacher that nothing sends automatically before they approve", () => {
+    const appContext = makeAppContext();
+    render(
+      <AppContext.Provider value={appContext}>
+        <FamilyMessagePanel prefill={null} />
+      </AppContext.Provider>,
+    );
+
+    // The rail ContextualHint anchors the approval gate by stating the product
+    // boundary in plain copy. Multiple surfaces may carry the same phrase
+    // (rail hint + empty-state hint); assert at least one is present.
+    const mentions = screen.getAllByText(/nothing sends automatically/i);
+    expect(mentions.length).toBeGreaterThan(0);
+  });
+
+  it("sets data-split-state='output' on the WorkspaceLayout while a draft is visible", () => {
+    const appContext = makeAppContext();
+    const { container } = render(
+      <AppContext.Provider value={appContext}>
+        <FamilyMessagePanel prefill={null} />
+      </AppContext.Provider>,
+    );
+
+    const layout = container.querySelector(".workspace-layout");
+    expect(layout).toBeTruthy();
+    expect(layout).toHaveAttribute("data-split-state", "output");
+  });
+
   it("persists approval edits, updates the visible approval state, and does not expose fake undo", async () => {
     const appContext = makeAppContext();
     const user = userEvent.setup();

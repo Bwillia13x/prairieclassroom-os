@@ -132,6 +132,7 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
       />
 
       <WorkspaceLayout
+        splitState={result ? "output" : "input"}
         rail={(
           <>
             <ContextualHint
@@ -141,12 +142,15 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
               tone="forest"
             />
             {role.canGenerate ? (
-              <PatternReportForm
-                students={students}
-                selectedClassroom={activeClassroom}
-                onSubmit={handleSubmit}
-                loading={loading}
-              />
+              <>
+                <p className="form-hint">Pattern analysis reflects your own intervention and observation records — not external assessments or diagnoses.</p>
+                <PatternReportForm
+                  students={students}
+                  selectedClassroom={activeClassroom}
+                  onSubmit={handleSubmit}
+                  loading={loading}
+                />
+              </>
             ) : null}
           </>
         )}

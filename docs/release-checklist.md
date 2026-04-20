@@ -46,7 +46,7 @@ After a passing gate, capture current UI review artifacts with:
 npm run ui:evidence
 ```
 
-The evidence script writes five screenshots plus a manifest under `output/playwright/ui-evidence/`.
+The evidence script writes eight screenshots plus a manifest under `output/playwright/ui-evidence/`.
 
 ## Real inference baseline
 

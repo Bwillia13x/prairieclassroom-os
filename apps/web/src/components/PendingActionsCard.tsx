@@ -19,9 +19,6 @@ interface Props {
   onItemClick?: (item: ActionItem) => void;
   totalCount: number;
   previousTotal?: number;
-  studentsToCheckFirst?: string[];
-  studentReasons?: Record<string, string>;
-  onStudentClick?: (studentRef: string) => void;
 }
 
 /**
@@ -48,9 +45,6 @@ export default function PendingActionsCard({
   onItemClick,
   totalCount,
   previousTotal,
-  studentsToCheckFirst = [],
-  studentReasons,
-  onStudentClick,
 }: Props) {
   const activeItems = items.filter((item) => item.count > 0);
 
@@ -104,25 +98,6 @@ export default function PendingActionsCard({
             <p className="pending-actions-clear-text">No pending actions — you're caught up.</p>
           </div>
         )}
-
-        {studentsToCheckFirst.length > 0 ? (
-          <div className="today-triage-students">
-            <span className="today-triage-students__label">Students to check first</span>
-            <div className="today-triage-students__chips">
-              {studentsToCheckFirst.map((studentRef) => (
-                <button
-                  key={studentRef}
-                  type="button"
-                  className="today-triage-students__chip"
-                  title={studentReasons?.[studentRef]}
-                  onClick={() => onStudentClick?.(studentRef)}
-                >
-                  {studentRef}
-                </button>
-              ))}
-            </div>
-          </div>
-        ) : null}
       </Card.Body>
     </Card>
   );

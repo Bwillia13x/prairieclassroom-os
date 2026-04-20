@@ -194,4 +194,23 @@ describe("MessageApprovalDialog", () => {
     );
     expect(screen.getByRole("button", { name: /Approving/i })).toBeInTheDocument();
   });
+
+  it("renders Nothing instrument companions for reject and approve actions", () => {
+    render(
+      <MessageApprovalDialog
+        open={true}
+        draft={DRAFT}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+        copyStatus="idle"
+      />,
+    );
+
+    expect(
+      screen.getByRole("button", { name: /reject message approval/i }),
+    ).toHaveClass("nothing-btn");
+    expect(
+      screen.getByRole("button", { name: /approve and copy family message/i }),
+    ).toHaveClass("nothing-btn");
+  });
 });

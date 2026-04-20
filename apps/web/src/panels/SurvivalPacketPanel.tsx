@@ -4,6 +4,7 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateSurvivalPacket } from "../api";
 import SurvivalPacketView from "../components/SurvivalPacket";
+import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
@@ -114,7 +115,10 @@ export default function SurvivalPacketPanel() {
         }}
       />
 
+      <OpsWorkflowStepper activeTab="survival-packet" />
+
       <WorkspaceLayout
+        splitState={result ? "output" : "input"}
         rail={(
           <>
             <FormCard className="survival-packet-form">
@@ -166,7 +170,12 @@ export default function SurvivalPacketPanel() {
                   submitted={feedback.submitted}
                   panelLabel="survival packet"
                 />
-                <OutputActionBar actions={actions} contextLabel="Survival packet output" />
+                <OutputActionBar
+                  actions={actions}
+                  contextLabel="Survival packet output"
+                  topContextLabel="Survival packet quick actions"
+                  position="both"
+                />
               </>
             ) : null}
           </div>

@@ -122,17 +122,19 @@
   padding: var(--space-2-5) var(--space-3);
   transition:
     border-color var(--motion-letterpress) var(--ease-letterpress),
-    box-shadow var(--motion-letterpress) var(--ease-letterpress),
-    transform var(--motion-letterpress) var(--ease-press);
+    box-shadow var(--motion-letterpress) var(--ease-spring),
+    transform var(--motion-letterpress) var(--ease-spring);
 }
 
 .ea-card:hover {
   border-color: color-mix(in srgb, var(--color-border-strong) 60%, transparent);
   box-shadow: var(--shadow-xs);
+  transform: translateY(-0.5px);
 }
 
 .ea-card:active {
-  transform: scale(0.99);
+  transform: scale(0.988);
+  transition-duration: 80ms;
 }
 
 .ea-card-label {

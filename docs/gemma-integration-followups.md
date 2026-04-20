@@ -159,8 +159,11 @@ is self-contained and bounded — pick any one independently.
     assistant `tool_calls` plus `role: "tool"` result messages.
 - **Hosted proof suite prepared:** `diff-015-tool-calling-curriculum` is now in
   `evals/suites/hosted-gemini-proof.txt`. Live hosted validation was not run in
-  this session because `npm run gemini:readycheck` reported a missing Gemini API
-  key and disabled hosted-run guard.
+  the 2026-04-18 implementation session because `npm run gemini:readycheck`
+  reported a missing Gemini API key and disabled hosted-run guard, but a later
+  2026-04-20 hosted rerun passed with the supplied AI Studio key at
+  `output/release-gate/2026-04-20T20-30-27-270Z-20246` with a matching `12/12`
+  eval summary under `output/evals/2026-04-20-gemini/`.
 
 ## Shipped 2026-04-18 — F3 bundle (real SSE streaming)
 

@@ -4,6 +4,7 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEABriefing } from "../api";
 import { EABriefingForm, EABriefingResult } from "../components/EABriefing";
+import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import PageIntro from "../components/PageIntro";
@@ -124,7 +125,10 @@ export default function EABriefingPanel() {
         }}
       />
 
+      <OpsWorkflowStepper activeTab="ea-briefing" />
+
       <WorkspaceLayout
+        splitState={result ? "output" : "input"}
         rail={(
           <>
             <EABriefingForm
@@ -166,6 +170,7 @@ export default function EABriefingPanel() {
                   actions={actions}
                   contextLabel="EA briefing quick actions"
                   position="top"
+                  topKeys={["copy", "download", "save-to-tomorrow"]}
                 />
                 <EABriefingResult result={result} />
                 <RetrievalTraceCard trace={result.retrieval_trace} />

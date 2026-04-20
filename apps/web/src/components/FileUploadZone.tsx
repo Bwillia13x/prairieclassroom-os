@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
+import { NothingInstrumentButton } from "./shared";
 import "./FileUploadZone.css";
 
 interface Props {
@@ -10,6 +11,7 @@ export default function FileUploadZone({ onTextExtracted, accept = ".txt,.pdf" }
   const [dragOver, setDragOver] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   const handleFile = useCallback(async (file: File) => {
     setError(null);
@@ -55,6 +57,11 @@ export default function FileUploadZone({ onTextExtracted, accept = ".txt,.pdf" }
     e.target.value = ""; // Reset so same file can be re-selected
   }
 
+  function handleBrowseClick() {
+    if (processing) return;
+    inputRef.current?.click();
+  }
+
   return (
     <div
       className={`file-upload-zone${dragOver ? " file-upload-zone--dragover" : ""}`}
@@ -63,27 +70,52 @@ export default function FileUploadZone({ onTextExtracted, accept = ".txt,.pdf" }
       onDrop={handleDrop}
     >
       <input
+        ref={inputRef}
         type="file"
         accept={accept}
         onChange={handleInputChange}
         className="file-upload-input"
         id="file-upload"
-        aria-invalid={!!error}
+        aria-label="Choose a lesson artifact file"
       />
-      <label htmlFor="file-upload" className="file-upload-label">
-        {processing ? (
-          <span>Reading file...</span>
-        ) : (
-          <>
-            <svg className="file-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
-              <path d="M12 16V4m0 0l-4 4m4-4l4 4" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" strokeLinecap="round" />
-            </svg>
-            <span>Drop a file here or <strong>browse</strong></span>
-            <span className="file-upload-hint">.txt or .pdf</span>
-          </>
-        )}
-      </label>
+      <div className="file-upload-zone__content">
+        <NothingInstrumentButton
+          aria-label={processing ? "Reading lesson artifact file" : "Browse for lesson artifact file"}
+          fireAnim="upload"
+          tone="accent"
+          size="lg"
+          showTicks
+          loading={processing}
+          onClick={handleBrowseClick}
+          className="file-upload-zone__primary-action"
+          data-testid="file-upload-zone-action"
+        >
+          <svg className="file-upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+            <path d="M12 16V4m0 0l-4 4m4-4l4 4" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" strokeLinecap="round" />
+          </svg>
+        </NothingInstrumentButton>
+
+        <div className="file-upload-zone__copy">
+          <p className="file-upload-zone__text">
+            {processing ? (
+              <span>Reading file...</span>
+            ) : (
+              <>
+                <span>Drop a file here or </span>
+                <button
+                  type="button"
+                  className="file-upload-zone__browse"
+                  onClick={handleBrowseClick}
+                >
+                  browse
+                </button>
+              </>
+            )}
+          </p>
+          <span className="file-upload-hint">.txt or .pdf</span>
+        </div>
+      </div>
       {error && <p className="file-upload-error">{error}</p>}
     </div>
   );

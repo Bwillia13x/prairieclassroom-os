@@ -168,11 +168,22 @@ async function expectAuthPromptVisible(page) {
 }
 
 async function expectStickyShell(page) {
-  await page.evaluate(() => window.scrollTo({ top: document.body.scrollHeight, behavior: "instant" }));
+  const headerBoxBefore = await page.locator(".app-header").boundingBox();
+  assert.ok(headerBoxBefore, "Shell header should be measurable before scrolling");
+
+  await page.locator(".app-main").evaluate((node) => {
+    node.scrollTop = node.scrollHeight;
+  });
   await page.waitForTimeout(150);
-  const box = await page.locator(".app-header").boundingBox();
-  assert.ok(box && box.y <= 2, `Sticky shell should remain pinned near the top, got y=${box?.y}`);
-  await page.evaluate(() => window.scrollTo({ top: 0, behavior: "instant" }));
+  const headerBoxAfter = await page.locator(".app-header").boundingBox();
+  assert.ok(headerBoxAfter, "Shell header should be measurable after scrolling");
+  assert.ok(
+    Math.abs((headerBoxAfter?.y ?? 0) - (headerBoxBefore?.y ?? 0)) <= 2,
+    `Shell header should stay fixed relative to the viewport, start y=${headerBoxBefore?.y} end y=${headerBoxAfter?.y}`,
+  );
+  await page.locator(".app-main").evaluate((node) => {
+    node.scrollTop = 0;
+  });
 }
 
 async function expectScrollableSubtabs(page) {

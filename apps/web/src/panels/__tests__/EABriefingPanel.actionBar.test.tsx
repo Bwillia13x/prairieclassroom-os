@@ -92,12 +92,13 @@ describe("EABriefingPanel OutputActionBar", () => {
     expect(
       screen.getByRole("navigation", { name: "EA briefing quick actions" }),
     ).toBeInTheDocument();
-    // Print + Download appear in BOTH bars; expect 2 each. Copy and
-    // Save to Tomorrow appear only in the bottom bar.
-    expect(screen.getAllByRole("button", { name: "Print" })).toHaveLength(2);
+    // Top bar shows Copy, Download, Save to Tomorrow (custom topKeys).
+    // Bottom bar shows all actions. So Copy/Download/Save appear 2x each,
+    // Print appears 1x (bottom only).
+    expect(screen.getAllByRole("button", { name: "Copy" })).toHaveLength(2);
     expect(screen.getAllByRole("button", { name: "Download" })).toHaveLength(2);
-    expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Save to Tomorrow" })).toBeInTheDocument();
+    expect(screen.getAllByRole("button", { name: "Save to Tomorrow" })).toHaveLength(2);
+    expect(screen.getByRole("button", { name: "Print" })).toBeInTheDocument();
   });
 
   it("does not render the action bar when result is null", () => {

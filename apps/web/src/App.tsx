@@ -75,6 +75,7 @@ function renderPanel(
       role="tabpanel"
       id={`panel-${targetTab}`}
       aria-labelledby={`tab-${targetTab}`}
+      data-tab={targetTab}
       hidden={activeTab !== targetTab}
     >
       <ErrorBoundary>{panel}</ErrorBoundary>
@@ -226,7 +227,46 @@ export default function App() {
     dispatch({ type: "REMOVE_TOMORROW_NOTE", id });
   }, []);
 
+  const getTabPanelElement = useCallback(
+    (tab: ActiveTab) => document.querySelector(
+      `.app-main > [role="tabpanel"][data-tab="${tab}"]`,
+    ) as HTMLElement | null,
+    [],
+  );
+
+  const getTabScrollElement = useCallback(
+    (tab: ActiveTab) => {
+      const panel = getTabPanelElement(tab);
+      if (!panel) return null;
+
+      const appMain = panel.closest<HTMLElement>(".app-main");
+      const overflowY = window.getComputedStyle(panel).overflowY;
+      const panelOwnsScroll =
+        overflowY !== "visible" &&
+        overflowY !== "clip" &&
+        panel.scrollHeight > panel.clientHeight;
+
+      return panelOwnsScroll ? panel : appMain;
+    },
+    [getTabPanelElement],
+  );
+
+  const saveScrollForTab = useCallback(
+    (tab: ActiveTab) => {
+      const scrollEl = getTabScrollElement(tab);
+      if (!scrollEl) return;
+      sessionStorage.setItem(`prairie-scroll-${tab}`, String(scrollEl.scrollTop));
+    },
+    [getTabScrollElement],
+  );
+
   const setActiveTab = useCallback((tab: ActiveTab) => {
+    if (tab === state.activeTab) {
+      return;
+    }
+
+    saveScrollForTab(state.activeTab);
+
     // Mount the target tab in the same React batch as the active-tab change,
     // so the panel renders on the next frame instead of after a second render.
     // Without this, lazy-mounted panels flash blank for one frame on first visit.
@@ -237,7 +277,7 @@ export default function App() {
       return next;
     });
     dispatch({ type: "SET_ACTIVE_TAB", tab });
-  }, []);
+  }, [saveScrollForTab, state.activeTab]);
 
   const openAuthPrompt = useCallback((prompt: AuthPromptState, resolver?: (code: string | null) => void) => {
     authPromptResolverRef.current?.(null);
@@ -462,26 +502,20 @@ export default function App() {
     window.history.replaceState({}, "", nextUrl);
   }, [state.activeClassroom, state.activeTab, state.classrooms]);
 
-  // Save scroll position before tab switch and restore on return
-  const prevTabRef = useRef(state.activeTab);
-  useEffect(() => {
-    const prev = prevTabRef.current;
-    if (prev !== state.activeTab) {
-      sessionStorage.setItem(`prairie-scroll-${prev}`, String(window.scrollY));
-    }
-    prevTabRef.current = state.activeTab;
+  // Restore scroll before paint so page switches do not jump after render.
+  useLayoutEffect(() => {
+    const scrollEl = getTabScrollElement(state.activeTab);
+    if (!scrollEl) return;
 
     const saved = sessionStorage.getItem(`prairie-scroll-${state.activeTab}`);
     if (saved) {
-      window.scrollTo(0, parseInt(saved, 10));
+      scrollEl.scrollTop = parseInt(saved, 10);
       sessionStorage.removeItem(`prairie-scroll-${state.activeTab}`);
-    } else {
-      const main = document.querySelector(".app-main");
-      if (main) {
-        main.scrollIntoView({ behavior: "auto", block: "start" });
-      }
+      return;
     }
-  }, [state.activeTab]);
+
+    scrollEl.scrollTop = 0;
+  }, [getTabScrollElement, state.activeTab]);
 
   // Mirror gating state in refs so the keydown handler can read current values
   // without forcing the effect to re-register (and without triggering React's
@@ -995,7 +1029,7 @@ export default function App() {
                   type="button"
                   className="shell-bar__palette-btn"
                   onClick={() => setPaletteOpen(true)}
-                  aria-label="Open command palette"
+                  aria-label="Jump to command palette. Open command palette."
                   title="Command palette (⌘K)"
                 >
                   <span className="shell-bar__palette-btn-label">Jump to</span>
@@ -1196,9 +1230,9 @@ export default function App() {
           {renderPanel(activeTab, "complexity-forecast", mountedTabs, <ForecastPanel />)}
           {renderPanel(activeTab, "survival-packet", mountedTabs, <SurvivalPacketPanel />)}
           {renderPanel(activeTab, "usage-insights", mountedTabs, <UsageInsightsPanel />)}
-        </main>
 
-        <AppFooter onOpenShortcuts={() => setShortcutSheetOpen(true)} />
+          <AppFooter onOpenShortcuts={() => setShortcutSheetOpen(true)} />
+        </main>
 
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
 

@@ -528,7 +528,7 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
         : {})}
     >
       <div className="viz-header">
-        <h4 className="viz-title">Complexity Debt <SourceTag kind="record" /></h4>
+        <h3 className="viz-title">Complexity Debt <SourceTag kind="record" /></h3>
         <div className="viz-debt-gauge__badges">
           {delta !== null && (
             <span

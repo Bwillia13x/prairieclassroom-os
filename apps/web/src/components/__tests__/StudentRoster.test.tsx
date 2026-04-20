@@ -1,6 +1,8 @@
 import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
+import { fetchStudentSummary } from "../../api";
 import StudentRoster from "../StudentRoster";
 
 vi.mock("../../api", async (importOriginal) => {
@@ -79,6 +81,20 @@ describe("StudentRoster — audit #29/#30", () => {
     // No badge should be rendered, but the base button still exists.
     expect(
       screen.getByRole("button", { name: /^Students$/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("shows the inline Nothing spinner while student patterns are refreshing", async () => {
+    const user = userEvent.setup();
+    vi.mocked(fetchStudentSummary).mockImplementation(
+      () => new Promise(() => {}),
+    );
+
+    renderRoster(3);
+    await user.click(screen.getByRole("button", { name: /3 students with open items/i }));
+
+    expect(
+      screen.getByRole("status", { name: /refreshing student patterns/i }),
     ).toBeInTheDocument();
   });
 });

@@ -45,15 +45,58 @@ export default function UsageInsightsPanel() {
     : 1;
 
   const weeklyRatings = feedback.result?.by_week?.map((w) => w.avg_rating) ?? [];
+  const weightedAverageRating = feedback.result && feedback.result.by_week.length > 0
+    ? (() => {
+        const totals = feedback.result.by_week.reduce(
+          (acc, week) => ({
+            count: acc.count + week.count,
+            weightedRating: acc.weightedRating + (week.avg_rating * week.count),
+          }),
+          { count: 0, weightedRating: 0 },
+        );
+        return totals.count > 0 ? (totals.weightedRating / totals.count).toFixed(1) : "—";
+      })()
+    : "—";
 
   return (
-    <div className="usage-insights-panel">
+    <section className="workspace-page usage-insights-panel">
       <PageIntro
         eyebrow="Review"
         title="Usage Insights"
         description="How your classroom uses PrairieClassroom. This view summarises feedback ratings and workflow patterns to help you reflect on which tools are most useful."
         sectionTone="forest"
       />
+
+      {(feedback.result || sessions.result) && (
+        <div className="usage-insights-summary-row" data-testid="usage-summary-row">
+          {feedback.result && (
+            <>
+              <div className="usage-insights-summary-stat">
+                <span className="usage-insights-summary-value">{feedback.result.total}</span>
+                <span className="usage-insights-summary-label">Feedback</span>
+              </div>
+              <div className="usage-insights-summary-stat">
+                <span className="usage-insights-summary-value">
+                  {weightedAverageRating}
+                </span>
+                <span className="usage-insights-summary-label">Avg Rating</span>
+              </div>
+            </>
+          )}
+          {sessions.result && (
+            <>
+              <div className="usage-insights-summary-stat">
+                <span className="usage-insights-summary-value">{sessions.result.total_sessions}</span>
+                <span className="usage-insights-summary-label">Sessions</span>
+              </div>
+              <div className="usage-insights-summary-stat">
+                <span className="usage-insights-summary-value">{sessions.result.generations_per_session.toFixed(1)}</span>
+                <span className="usage-insights-summary-label">Gen / Session</span>
+              </div>
+            </>
+          )}
+        </div>
+      )}
 
       <div className="usage-insights-grid">
         <StatusCard
@@ -138,7 +181,7 @@ export default function UsageInsightsPanel() {
           )}
         </StatusCard>
       </div>
-    </div>
+    </section>
   );
 }
 

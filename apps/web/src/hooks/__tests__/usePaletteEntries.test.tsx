@@ -59,4 +59,25 @@ describe("usePaletteEntries", () => {
     expect(result.current.some((e) => e.kind === "action" && /draft family message for amara/i.test(e.label))).toBe(true);
     expect(result.current.some((e) => e.kind === "action" && /log follow-up for brody/i.test(e.label))).toBe(true);
   });
+
+  it("includes section keywords (prep/ops/review) in generic action entries", () => {
+    const { result } = renderHook(() =>
+      usePaletteEntries({ classrooms: [CLASSROOM], activeClassroom: CLASSROOM.classroom_id, debtRegister: null }),
+    );
+    const actions = result.current.filter((e) => e.kind === "action");
+    const prepActions = actions.filter((a) => a.keywords.includes("prep"));
+    const opsActions = actions.filter((a) => a.keywords.includes("ops"));
+    const reviewActions = actions.filter((a) => a.keywords.includes("review"));
+    expect(prepActions.length).toBeGreaterThanOrEqual(2);
+    expect(opsActions.length).toBeGreaterThanOrEqual(4);
+    expect(reviewActions.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("includes 'Start lesson prep' and 'Review support patterns' as new action labels", () => {
+    const { result } = renderHook(() =>
+      usePaletteEntries({ classrooms: [CLASSROOM], activeClassroom: CLASSROOM.classroom_id, debtRegister: null }),
+    );
+    expect(result.current.some((e) => e.kind === "action" && /start lesson prep/i.test(e.label))).toBe(true);
+    expect(result.current.some((e) => e.kind === "action" && /review support patterns/i.test(e.label))).toBe(true);
+  });
 });

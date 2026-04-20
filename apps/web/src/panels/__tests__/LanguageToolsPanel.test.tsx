@@ -122,6 +122,40 @@ describe("LanguageToolsPanel", () => {
     expect(screen.getByText(/what a simplified passage looks like/i)).toBeInTheDocument();
   });
 
+  it("swaps the empty-state copy to reflect the active language tool", async () => {
+    const ctx = makeContext();
+    const user = userEvent.setup();
+
+    render(
+      <AppContext.Provider value={ctx}>
+        <LanguageToolsPanel />
+      </AppContext.Provider>,
+    );
+
+    // Initial state: simplify is the default tool.
+    expect(screen.getByText(/what a simplified passage looks like/i)).toBeInTheDocument();
+    expect(screen.queryByText(/what a bilingual card looks like/i)).not.toBeInTheDocument();
+
+    // Toggling to vocab changes the empty-state copy.
+    await user.click(screen.getByRole("tab", { name: /vocab cards/i }));
+
+    expect(screen.getByText(/what a bilingual card looks like/i)).toBeInTheDocument();
+    expect(screen.queryByText(/what a simplified passage looks like/i)).not.toBeInTheDocument();
+  });
+
+  it("sets data-split-state='input' on the WorkspaceLayout when the active tool has no result", () => {
+    const ctx = makeContext();
+    const { container } = render(
+      <AppContext.Provider value={ctx}>
+        <LanguageToolsPanel />
+      </AppContext.Provider>,
+    );
+
+    const layout = container.querySelector(".workspace-layout");
+    expect(layout).toBeTruthy();
+    expect(layout).toHaveAttribute("data-split-state", "input");
+  });
+
   it("cancel button calls cancel when streaming is active", async () => {
     const ctx = makeContext({ active: true, phase: "thinking" });
     const user = userEvent.setup();

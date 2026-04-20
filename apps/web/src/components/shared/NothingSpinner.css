@@ -1,0 +1,280 @@
+/* ================================================================
+   NothingSpinner — instrument-face loading indicators
+   ----------------------------------------------------------------
+   Mechanical, stepped, typographic spinners adapted from the
+   N0thing buttons reference into the Prairie token system.
+
+   - No hardcoded colors: every tone routes through --color-* so
+     the dark-mode contract + contrast test still pass.
+   - Every animation is gated by prefers-reduced-motion.
+   - Sizes snap to the control scale (sm / md / lg).
+   ================================================================ */
+
+.nothing-spinner {
+  --ns-color: var(--color-text);
+  --ns-color-dim: var(--color-text-tertiary);
+  --ns-track: var(--color-border);
+  --ns-size: 32px;
+  --ns-stroke: 2px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ns-color);
+  width: var(--ns-size);
+  height: var(--ns-size);
+  flex-shrink: 0;
+  line-height: 0;
+}
+
+.nothing-spinner--sm { --ns-size: 22px; --ns-stroke: 1.5px; }
+.nothing-spinner--md { --ns-size: 32px; --ns-stroke: 2px; }
+.nothing-spinner--lg { --ns-size: 46px; --ns-stroke: 2.5px; }
+
+.nothing-spinner--accent   { --ns-color: var(--color-text-accent); --ns-track: var(--color-border-accent); }
+.nothing-spinner--success  { --ns-color: var(--color-text-success); --ns-track: var(--color-border-success); }
+.nothing-spinner--warning  { --ns-color: var(--color-text-warning); --ns-track: var(--color-border-warning); }
+.nothing-spinner--danger   { --ns-color: var(--color-text-danger); --ns-track: var(--color-border-danger); }
+
+/* ---- Shared keyframes ---- */
+@keyframes ns-rot       { to { transform: rotate(360deg); } }
+@keyframes ns-rot-rev   { to { transform: rotate(-360deg); } }
+
+/* ---- V1 · SEGMENTED RING (12 ticks, stepped) ---- */
+.nothing-spinner__segring {
+  position: relative;
+  width: var(--ns-size);
+  height: var(--ns-size);
+  animation: ns-rot 1.2s steps(12, end) infinite;
+}
+.nothing-spinner__segring i {
+  position: absolute;
+  left: 50%; top: 0;
+  width: 2px;
+  height: calc(var(--ns-size) * 0.16);
+  margin-left: -1px;
+  background: var(--ns-color);
+  transform-origin: 1px calc(var(--ns-size) / 2);
+  border-radius: 1px;
+}
+.nothing-spinner__segring i:nth-child(1)  { transform: rotate(0deg);   opacity: 1.00; }
+.nothing-spinner__segring i:nth-child(2)  { transform: rotate(30deg);  opacity: 0.80; }
+.nothing-spinner__segring i:nth-child(3)  { transform: rotate(60deg);  opacity: 0.60; }
+.nothing-spinner__segring i:nth-child(4)  { transform: rotate(90deg);  opacity: 0.42; }
+.nothing-spinner__segring i:nth-child(5)  { transform: rotate(120deg); opacity: 0.28; }
+.nothing-spinner__segring i:nth-child(6)  { transform: rotate(150deg); opacity: 0.18; }
+.nothing-spinner__segring i:nth-child(7)  { transform: rotate(180deg); opacity: 0.12; }
+.nothing-spinner__segring i:nth-child(8)  { transform: rotate(210deg); opacity: 0.08; }
+.nothing-spinner__segring i:nth-child(9)  { transform: rotate(240deg); opacity: 0.05; }
+.nothing-spinner__segring i:nth-child(10) { transform: rotate(270deg); opacity: 0.04; }
+.nothing-spinner__segring i:nth-child(11) { transform: rotate(300deg); opacity: 0.03; }
+.nothing-spinner__segring i:nth-child(12) { transform: rotate(330deg); opacity: 0.02; }
+
+/* ---- V2 · DUAL COUNTER-ROTATING ARCS ---- */
+.nothing-spinner__dual {
+  position: relative;
+  width: var(--ns-size);
+  height: var(--ns-size);
+}
+.nothing-spinner__dual::before,
+.nothing-spinner__dual::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  border: var(--ns-stroke) solid transparent;
+}
+.nothing-spinner__dual::before {
+  inset: 0;
+  border-top-color: var(--ns-color);
+  border-right-color: var(--ns-color);
+  animation: ns-rot 1s linear infinite;
+}
+.nothing-spinner__dual::after {
+  inset: calc(var(--ns-size) * 0.18);
+  border-bottom-color: var(--ns-color-dim);
+  border-left-color: var(--ns-color-dim);
+  animation: ns-rot-rev 1.4s linear infinite;
+}
+
+/* ---- V3 · FADE DOTS (3-phase dots) ---- */
+.nothing-spinner__fadedots {
+  display: flex;
+  gap: 6px;
+  width: auto;
+}
+.nothing-spinner__fadedots i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ns-color);
+  animation: ns-fadedot 1.2s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+}
+.nothing-spinner__fadedots i:nth-child(2) { animation-delay: 0.15s; }
+.nothing-spinner__fadedots i:nth-child(3) { animation-delay: 0.30s; }
+@keyframes ns-fadedot {
+  0%          { opacity: 0.15; transform: scale(0.8); }
+  40%         { opacity: 1;    transform: scale(1); }
+  80%, 100%   { opacity: 0.15; transform: scale(0.8); }
+}
+
+/* ---- V4 · EQ BARS (5-bar pulse) ---- */
+.nothing-spinner__eq {
+  display: flex;
+  align-items: flex-end;
+  gap: 2.5px;
+  height: var(--ns-size);
+  width: auto;
+}
+.nothing-spinner__eq i {
+  width: 3px;
+  background: var(--ns-color);
+  height: 6px;
+  transform-origin: bottom;
+  animation: ns-eqbar 1s ease-in-out infinite;
+}
+.nothing-spinner__eq i:nth-child(1) { animation-delay: 0.00s; }
+.nothing-spinner__eq i:nth-child(2) { animation-delay: 0.18s; }
+.nothing-spinner__eq i:nth-child(3) { animation-delay: 0.36s; }
+.nothing-spinner__eq i:nth-child(4) { animation-delay: 0.12s; }
+.nothing-spinner__eq i:nth-child(5) { animation-delay: 0.24s; }
+@keyframes ns-eqbar {
+  0%, 100%  { height: 20%; }
+  25%       { height: 100%; }
+  50%       { height: 45%; }
+  75%       { height: 75%; }
+}
+
+/* ---- V5 · ARC DASH (SVG dashed arc sweep) ---- */
+.nothing-spinner__arc {
+  width: var(--ns-size);
+  height: var(--ns-size);
+  animation: ns-rot 1.6s linear infinite;
+}
+.nothing-spinner__arc .nothing-spinner__arc-track {
+  stroke: var(--ns-track);
+}
+.nothing-spinner__arc .nothing-spinner__arc-head {
+  stroke: var(--ns-color);
+  animation: ns-dash 1.6s ease-in-out infinite;
+}
+@keyframes ns-dash {
+  0%   { stroke-dasharray: 1 125;  stroke-dashoffset: 0; }
+  50%  { stroke-dasharray: 90 125; stroke-dashoffset: -35; }
+  100% { stroke-dasharray: 90 125; stroke-dashoffset: -124; }
+}
+
+/* ---- V6 · PULSE RING (accented out-ping, 2 rings + core dot) ---- */
+.nothing-spinner__pulsering {
+  position: relative;
+  width: var(--ns-size);
+  height: var(--ns-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.nothing-spinner__pulsering::before,
+.nothing-spinner__pulsering::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid var(--ns-color);
+  animation: ns-ping 1.6s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+  opacity: 0;
+}
+.nothing-spinner__pulsering::after { animation-delay: 0.55s; }
+.nothing-spinner__pulsering i {
+  width: calc(var(--ns-size) * 0.22);
+  height: calc(var(--ns-size) * 0.22);
+  border-radius: 50%;
+  background: var(--ns-color);
+  animation: ns-ping-dot 1.6s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+}
+@keyframes ns-ping {
+  0%   { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1);   opacity: 0; }
+}
+@keyframes ns-ping-dot {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.75); }
+}
+
+/* ---- V7 · ORBIT (3 dots on dashed guide ring) ---- */
+.nothing-spinner__orbit {
+  position: relative;
+  width: var(--ns-size);
+  height: var(--ns-size);
+}
+.nothing-spinner__orbit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px dashed var(--ns-track);
+}
+.nothing-spinner__orbit i {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 5px;
+  height: 5px;
+  margin: -2.5px;
+  border-radius: 50%;
+  background: var(--ns-color);
+  animation: ns-orbit 1.4s linear infinite;
+  --ns-orbit-r: calc(var(--ns-size) / 2);
+}
+.nothing-spinner__orbit i:nth-child(2) { animation-delay: -0.47s; opacity: 0.6; }
+.nothing-spinner__orbit i:nth-child(3) { animation-delay: -0.94s; opacity: 0.28; }
+@keyframes ns-orbit {
+  from { transform: rotate(0deg)   translateX(var(--ns-orbit-r)) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(var(--ns-orbit-r)) rotate(-360deg); }
+}
+
+/* ---- V8 · LINEAR (indeterminate bar sweep) ---- */
+.nothing-spinner__linear {
+  width: calc(var(--ns-size) * 1.6);
+  height: 4px;
+  background: var(--ns-track);
+  position: relative;
+  overflow: hidden;
+  border-radius: 2px;
+}
+.nothing-spinner__linear::after {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  width: 40%;
+  background: var(--ns-color);
+  animation: ns-linear 1.4s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+  border-radius: 2px;
+}
+@keyframes ns-linear {
+  0%   { left: -40%; }
+  100% { left: 100%; }
+}
+
+/* Linear variant should fill any container width when size=lg */
+.nothing-spinner.nothing-spinner--linear-size-full .nothing-spinner__linear {
+  width: 100%;
+}
+.nothing-spinner.nothing-spinner--linear-size-full {
+  width: 100%;
+}
+
+/* ---- Reduced-motion fallback ---- */
+@media (prefers-reduced-motion: reduce) {
+  .nothing-spinner__segring,
+  .nothing-spinner__dual::before,
+  .nothing-spinner__dual::after,
+  .nothing-spinner__arc,
+  .nothing-spinner__arc .nothing-spinner__arc-head,
+  .nothing-spinner__orbit i,
+  .nothing-spinner__pulsering::before,
+  .nothing-spinner__pulsering::after,
+  .nothing-spinner__pulsering i,
+  .nothing-spinner__fadedots i,
+  .nothing-spinner__eq i,
+  .nothing-spinner__linear::after {
+    animation-duration: 3s;
+  }
+}

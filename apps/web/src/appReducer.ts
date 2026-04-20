@@ -337,7 +337,6 @@ export type AppAction =
   | { type: "SET_ACTIVE_CLASSROOM"; classroomId: string }
   | { type: "SET_ACTIVE_TAB"; tab: ActiveTab }
   | { type: "SET_INIT_ERROR"; error: string }
-  | { type: "SET_DEBT_COUNTS"; counts: Record<string, number> }
   | { type: "SET_DEBT_REGISTER"; register: ComplexityDebtRegister }
   | { type: "SET_MESSAGE_PREFILL"; prefill: FamilyMessagePrefill | null }
   | { type: "SET_INTERVENTION_PREFILL"; prefill: InterventionPrefill | null }
@@ -522,9 +521,6 @@ export function appReducer(state: AppState, action: AppAction): AppState {
 
     case "SET_INIT_ERROR":
       return { ...state, initError: action.error };
-
-    case "SET_DEBT_COUNTS":
-      return { ...state, debtCounts: action.counts };
 
     case "SET_DEBT_REGISTER":
       return {

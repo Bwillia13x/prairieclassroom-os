@@ -192,7 +192,15 @@ export default function DifferentiatePanel() {
               <StreamingIndicator label="Generating lesson variants" onCancel={cancel} />
             ) : null}
             {!loading && result === null && !error ? (
-              <EmptyStateCard variant="preview" label="Variant lane preview" />
+              <>
+                <ul className="output-preview-checklist" aria-label="Output will include">
+                  <li>Readiness lane</li>
+                  <li>Scaffolded lane</li>
+                  <li>Extension lane</li>
+                  <li>Language support lane</li>
+                </ul>
+                <EmptyStateCard variant="preview" label="Variant lane preview" />
+              </>
             ) : null}
             {result ? (
               <>

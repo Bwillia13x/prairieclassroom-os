@@ -56,7 +56,7 @@ function renderWith(role: ClassroomRole, setClassroomRole?: ReturnType<typeof vi
 describe("RoleContextPill", () => {
   it("renders the current role label and a color chip keyed to the role", () => {
     renderWith("ea");
-    const trigger = screen.getByRole("button", { name: /current role: ea/i });
+    const trigger = screen.getByRole("button", { name: /role\s*ea/i });
     expect(trigger).toBeInTheDocument();
     const chip = trigger.querySelector(".role-pill__chip");
     expect(chip).not.toBeNull();
@@ -66,7 +66,7 @@ describe("RoleContextPill", () => {
   it("opens the role menu on click and exposes all four options", async () => {
     const user = userEvent.setup();
     renderWith("teacher");
-    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*teacher/i }));
     const menu = screen.getByRole("menu", { name: /classroom role/i });
     expect(menu).toBeInTheDocument();
     expect(screen.getByRole("menuitemradio", { name: /teacher/i })).toHaveAttribute(
@@ -85,7 +85,7 @@ describe("RoleContextPill", () => {
     const user = userEvent.setup();
     const setClassroomRole = vi.fn();
     renderWith("ea", setClassroomRole);
-    await user.click(screen.getByRole("button", { name: /current role: ea/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*ea/i }));
     await user.click(screen.getByRole("menuitemradio", { name: /substitute/i }));
     expect(setClassroomRole).toHaveBeenCalledWith("demo-classroom", "substitute");
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
@@ -95,7 +95,7 @@ describe("RoleContextPill", () => {
     const user = userEvent.setup();
     const setClassroomRole = vi.fn();
     renderWith("reviewer", setClassroomRole);
-    await user.click(screen.getByRole("button", { name: /current role: reviewer/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*reviewer/i }));
     await user.click(screen.getByRole("menuitemradio", { name: /teacher/i }));
     expect(setClassroomRole).toHaveBeenCalledWith("demo-classroom", "teacher");
     expect(screen.queryByRole("alertdialog")).not.toBeInTheDocument();
@@ -105,7 +105,7 @@ describe("RoleContextPill", () => {
     const user = userEvent.setup();
     const setClassroomRole = vi.fn();
     renderWith("teacher", setClassroomRole);
-    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*teacher/i }));
     await user.click(screen.getByRole("menuitemradio", { name: /substitute/i }));
     // No commit yet — the alertdialog asks for confirmation.
     expect(setClassroomRole).not.toHaveBeenCalled();
@@ -118,7 +118,7 @@ describe("RoleContextPill", () => {
     const user = userEvent.setup();
     const setClassroomRole = vi.fn();
     renderWith("teacher", setClassroomRole);
-    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*teacher/i }));
     await user.click(screen.getByRole("menuitemradio", { name: /reviewer/i }));
     await user.click(screen.getByTestId("role-pill-cancel-downgrade"));
     expect(setClassroomRole).not.toHaveBeenCalled();
@@ -129,7 +129,7 @@ describe("RoleContextPill", () => {
     const user = userEvent.setup();
     const setClassroomRole = vi.fn();
     renderWith("teacher", setClassroomRole);
-    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*teacher/i }));
     await user.click(screen.getByRole("menuitemradio", { name: /substitute/i }));
     await user.click(screen.getByTestId("role-pill-confirm-downgrade"));
     expect(setClassroomRole).toHaveBeenCalledWith("demo-classroom", "substitute");
@@ -139,7 +139,7 @@ describe("RoleContextPill", () => {
   it("closes the menu on Escape", async () => {
     const user = userEvent.setup();
     renderWith("teacher");
-    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*teacher/i }));
     expect(screen.getByRole("menu", { name: /classroom role/i })).toBeInTheDocument();
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("menu", { name: /classroom role/i })).not.toBeInTheDocument();
@@ -150,7 +150,7 @@ describe("RoleContextPill option visuals (radio dot + ACTIVE tag)", () => {
   it("renders a radio dot per option and an ACTIVE tag on the selected role", async () => {
     const user = userEvent.setup();
     renderWith("teacher");
-    await user.click(screen.getByRole("button", { name: /current role: teacher/i }));
+    await user.click(screen.getByRole("button", { name: /role\s*teacher/i }));
     const teacherOpt = screen.getByRole("menuitemradio", { name: /Teacher/ });
     expect(teacherOpt.querySelector(".role-pill__option-radio")).not.toBeNull();
     expect(teacherOpt.querySelector(".role-pill__option-active-tag")?.textContent).toMatch(/active/i);

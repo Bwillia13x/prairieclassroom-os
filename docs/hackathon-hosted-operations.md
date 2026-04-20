@@ -11,10 +11,11 @@ This document is the operator source of truth for the hosted Gemma 4 hackathon l
 
 ## Current Proof Status
 
-- Hosted Gemini proof lane: passing
+- Hosted Gemini proof lane: passing on the API-key-only synthetic/demo lane
 - Hosted Gemini eval suite: passed (`12/12` curated cases)
 - Full `release:gate:gemini`: passed
-- Latest passing gate artifact: `output/release-gate/2026-04-18T16-04-28-504Z-87799`
+- Latest passing gate artifact: `output/release-gate/2026-04-20T20-30-27-270Z-20246`
+- Latest passing eval summary: `output/evals/2026-04-20-gemini/2026-04-20T20-30-27-270Z-20246-gemini-summary.json`
 - Hosted reruns remain opt-in and synthetic/demo-only
 
 ## Hosted Models
@@ -28,18 +29,12 @@ Before any later hosted rerun, keep the local-only preparation flow separate fro
 
 ```bash
 npm run proof:check
+export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
+export PRAIRIE_ENABLE_GEMINI_RUNS=true
 npm run gemini:readycheck
 ```
 
-1. Create a Google AI Studio API key.
-2. Export the key:
-
-```bash
-export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
-export PRAIRIE_ENABLE_GEMINI_RUNS=true
-```
-
-3. Run the hosted release gate:
+Then run the hosted release gate:
 
 ```bash
 npm run release:gate:gemini
@@ -61,12 +56,9 @@ Use this exact order for the next full hosted refresh:
 
 ```bash
 npm run proof:check
+export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
+export PRAIRIE_ENABLE_GEMINI_RUNS=true
 npm run gemini:readycheck
-```
-
-2. Run the full hosted gate:
-
-```bash
 npm run release:gate:gemini
 npm run eval:summary
 npm run logs:summary
@@ -83,7 +75,7 @@ If a future rerun is fixing a single hosted route before refreshing the full pro
 PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api
 ```
 
-3. Run the full hosted gate only after the targeted smoke passes.
+1. Run the full hosted gate only after the targeted smoke passes.
 
 ## What This Gate Does
 

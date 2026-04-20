@@ -295,6 +295,399 @@
 }
 
 /* ============================================================
+   Premium micro-interaction keyframes — 2026-04-19 upgrade
+   ============================================================ */
+
+/* ---- Elastic / spring entries ---- */
+
+@keyframes elastic-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.97);
+  }
+  85% {
+    transform: scale(1.01);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes rubber-band {
+  0%   { transform: scaleX(1)    scaleY(1); }
+  30%  { transform: scaleX(1.15) scaleY(0.9); }
+  40%  { transform: scaleX(0.9)  scaleY(1.1); }
+  50%  { transform: scaleX(1.05) scaleY(0.97); }
+  65%  { transform: scaleX(0.98) scaleY(1.02); }
+  80%  { transform: scaleX(1.01) scaleY(0.99); }
+  100% { transform: scaleX(1)    scaleY(1); }
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(4px);
+  }
+  70% {
+    transform: translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Tooltip / popover ---- */
+
+@keyframes tooltip-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(4px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.02) translateY(-1px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes tooltip-dismiss {
+  0% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.95) translateY(3px);
+  }
+}
+
+/* ---- Glow / emphasis ---- */
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 12px 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+}
+
+@keyframes attention-shake {
+  0%, 100% { transform: translateX(0); }
+  15%      { transform: translateX(-4px) rotate(-0.5deg); }
+  30%      { transform: translateX(3px) rotate(0.3deg); }
+  45%      { transform: translateX(-2px) rotate(-0.2deg); }
+  60%      { transform: translateX(1px); }
+  75%      { transform: translateX(-0.5px); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25%      { transform: rotate(-3deg); }
+  75%      { transform: rotate(3deg); }
+}
+
+/* ---- Number / counter tick ---- */
+
+@keyframes counter-tick-up {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes counter-tick-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Badge / chip enter ---- */
+
+@keyframes chip-enter {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(4px);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes badge-ping {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 currentColor;
+  }
+  50% {
+    box-shadow: 0 0 0 4px transparent;
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+/* ---- Card tilt on hover (via CSS — no JS) ---- */
+
+@keyframes card-settle {
+  0%   { transform: perspective(600px) rotateX(0.6deg) rotateY(-0.4deg) translateY(-2px); }
+  100% { transform: perspective(600px) rotateX(0deg) rotateY(0deg) translateY(0); }
+}
+
+/* ---- Slide-up fade for toasts / notifications ---- */
+
+@keyframes toast-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes toast-exit {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.97);
+  }
+}
+
+/* ---- Morph check / completion ---- */
+
+@keyframes morph-check {
+  0% {
+    stroke-dashoffset: 24;
+    transform: scale(0.9);
+  }
+  50% {
+    stroke-dashoffset: 0;
+    transform: scale(1.15);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    stroke-dashoffset: 0;
+    transform: scale(1);
+  }
+}
+
+/* ---- Typewriter cursor blink ---- */
+
+@keyframes cursor-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* ---- Skeleton wave (alternative to shimmer) ---- */
+
+@keyframes skeleton-wave {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* ---- Progress indeterminate ---- */
+
+@keyframes indeterminate-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+/* ---- Rotate for spinners ---- */
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes spin-pulse {
+  0%   { transform: rotate(0deg); opacity: 1; }
+  50%  { opacity: 0.5; }
+  100% { transform: rotate(360deg); opacity: 1; }
+}
+
+/* ============================================================
+   Interaction utility classes — composable micro-interactions
+   ============================================================ */
+
+/* Hover lift with spring easing */
+.motion-hover-lift {
+  transition:
+    transform var(--motion-hover) var(--ease-spring),
+    box-shadow var(--motion-hover) var(--ease-spring);
+}
+.motion-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text) 6%, transparent);
+}
+.motion-hover-lift:active {
+  transform: translateY(0.5px) scale(0.99);
+  transition-duration: 80ms;
+}
+
+/* Scale-on-hover for icons and small elements */
+.motion-hover-grow {
+  transition: transform var(--motion-hover) var(--ease-elastic);
+}
+.motion-hover-grow:hover {
+  transform: scale(1.08);
+}
+.motion-hover-grow:active {
+  transform: scale(0.95);
+  transition-duration: 60ms;
+}
+
+/* Press feedback utility (adds haptic spring feel) */
+.motion-press {
+  transition: transform var(--motion-micro) var(--ease-press);
+}
+.motion-press:active {
+  transform: scale(0.97);
+}
+
+/* Deep press for prominent CTAs */
+.motion-press-deep {
+  transition:
+    transform var(--motion-micro) var(--ease-press),
+    box-shadow var(--motion-micro) var(--ease-press);
+}
+.motion-press-deep:active {
+  transform: scale(0.96) translateY(1px);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-text) 8%, transparent);
+}
+
+/* Glow-on-hover for accent elements */
+.motion-glow-on-hover {
+  transition: box-shadow var(--motion-base) var(--ease-standard);
+}
+.motion-glow-on-hover:hover {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 12%, transparent);
+}
+
+/* Attention shake for error states */
+.motion-shake {
+  animation: attention-shake 0.5s var(--ease-spring) both;
+}
+
+/* ---- Focus-visible ring expansion ---- */
+.motion-focus-ring:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+  animation: focus-ring-expand var(--motion-fast) var(--ease-out-expo) both;
+}
+
+@keyframes focus-ring-expand {
+  from {
+    outline-offset: 0px;
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+  }
+  to {
+    outline-offset: var(--focus-ring-offset);
+    box-shadow: var(--focus-ring-halo);
+  }
+}
+
+/* ---- Typewriter cursor ---- */
+.motion-cursor::after {
+  content: "▎";
+  display: inline-block;
+  animation: cursor-blink 1s steps(1) infinite;
+  color: var(--color-accent);
+  margin-left: 1px;
+}
+
+/* ---- Spinner ---- */
+.motion-spin {
+  animation: spin 0.8s linear infinite;
+}
+
+/* ============================================================
+   Enhanced stagger variants
+   ============================================================ */
+
+/* Scale-in stagger */
+.motion-stagger-scale > * {
+  animation: scale-in-spring 0.36s var(--ease-bounce) both;
+}
+.motion-stagger-scale > *:nth-child(1)  { animation-delay: 0ms; }
+.motion-stagger-scale > *:nth-child(2)  { animation-delay: 45ms; }
+.motion-stagger-scale > *:nth-child(3)  { animation-delay: 90ms; }
+.motion-stagger-scale > *:nth-child(4)  { animation-delay: 135ms; }
+.motion-stagger-scale > *:nth-child(5)  { animation-delay: 180ms; }
+.motion-stagger-scale > *:nth-child(6)  { animation-delay: 225ms; }
+.motion-stagger-scale > *:nth-child(7)  { animation-delay: 270ms; }
+.motion-stagger-scale > *:nth-child(8)  { animation-delay: 315ms; }
+
+/* Slide-in-right stagger */
+.motion-stagger-slide > * {
+  animation: slide-in-right 0.3s var(--ease-out-expo) both;
+}
+.motion-stagger-slide > *:nth-child(1)  { animation-delay: 0ms; }
+.motion-stagger-slide > *:nth-child(2)  { animation-delay: 40ms; }
+.motion-stagger-slide > *:nth-child(3)  { animation-delay: 80ms; }
+.motion-stagger-slide > *:nth-child(4)  { animation-delay: 120ms; }
+.motion-stagger-slide > *:nth-child(5)  { animation-delay: 160ms; }
+.motion-stagger-slide > *:nth-child(6)  { animation-delay: 200ms; }
+.motion-stagger-slide > *:nth-child(7)  { animation-delay: 240ms; }
+.motion-stagger-slide > *:nth-child(8)  { animation-delay: 280ms; }
+
+/* Elastic stagger — bouncier feel for celebratory lists */
+.motion-stagger-elastic > * {
+  animation: elastic-in 0.5s var(--ease-elastic) both;
+}
+.motion-stagger-elastic > *:nth-child(1)  { animation-delay: 0ms; }
+.motion-stagger-elastic > *:nth-child(2)  { animation-delay: 60ms; }
+.motion-stagger-elastic > *:nth-child(3)  { animation-delay: 120ms; }
+.motion-stagger-elastic > *:nth-child(4)  { animation-delay: 180ms; }
+.motion-stagger-elastic > *:nth-child(5)  { animation-delay: 240ms; }
+.motion-stagger-elastic > *:nth-child(6)  { animation-delay: 300ms; }
+
+/* ============================================================
    Respect reduced motion
    ============================================================ */
 

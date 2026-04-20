@@ -203,6 +203,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
       />
 
       <WorkspaceLayout
+        splitState={displayResult ? "output" : "input"}
         rail={(
           <>
             <ContextualHint
@@ -248,6 +249,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
               <EmptyStateCard
                 variant="minimal"
                 cue="Pick students to draft a message."
+                hint="Nothing sends automatically — you review and approve every message first."
               />
             ) : null}
             {displayResult ? (

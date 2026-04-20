@@ -147,9 +147,9 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    expect(
-      screen.getByText(/core planning is up to date/i),
-    ).toBeInTheDocument();
+    // Desktop rationale + mobile next-move both contain this text.
+    const matches = screen.getAllByText(/core planning is up to date/i);
+    expect(matches.length).toBeGreaterThanOrEqual(1);
   });
 
   it("omits the CTA row when recommendedAction is null", () => {
@@ -238,10 +238,76 @@ describe("TodayHero", () => {
     expect(brief).toHaveTextContent(/4 items/i);
     expect(brief).toHaveTextContent(/peak block/i);
     expect(brief).toHaveTextContent(/10:00-10:45 Math/i);
-    expect(screen.queryByRole("button", { name: "Liam" })).not.toBeInTheDocument();
+    // Max 5 students rendered despite 6 passed in.
+    expect(screen.queryByRole("button", { name: /Liam/ })).not.toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Amira" }));
+    await user.click(screen.getByRole("button", { name: /Amira/ }));
     expect(onStudentClick).toHaveBeenCalledWith("Amira");
+  });
+
+  it("renders student names with visible reasons when studentReasons are provided", () => {
+    const reasons: Record<string, string> = {
+      Amira: "Pending follow-up",
+      Brody: "Stale math intervention (4 days)",
+    };
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("high") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        openItemCount={4}
+        checkFirstStudents={["Amira", "Brody", "Farid"]}
+        studentReasons={reasons}
+        peakBlock={makeForecast("high").blocks[1]}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    // Reason text is visible in the chip, not just a title tooltip.
+    expect(screen.getByText("Pending follow-up")).toBeInTheDocument();
+    expect(screen.getByText("Stale math intervention (4 days)")).toBeInTheDocument();
+    // Student without a reason shows just the name.
+    const faridChip = screen.getByRole("button", { name: /Farid/ });
+    expect(faridChip).toBeInTheDocument();
+    expect(faridChip).not.toHaveTextContent(/follow-up|intervention/i);
+  });
+
+  it("uses accessible aria-labels on student chips with reasons", () => {
+    const reasons: Record<string, string> = { Amira: "Pending follow-up" };
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("high") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        checkFirstStudents={["Amira", "Brody"]}
+        studentReasons={reasons}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    const amiraChip = screen.getByRole("button", { name: /Open student details for Amira: Pending follow-up/ });
+    expect(amiraChip).toBeInTheDocument();
+    // Student without a reason gets "Check first" context.
+    const brodyChip = screen.getByRole("button", { name: /Check first: Brody/ });
+    expect(brodyChip).toBeInTheDocument();
+  });
+
+  it("renders a mobile next-move line with the recommended action rationale", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    const nextMove = screen.getByTestId("today-hero-mobile-next-move");
+    expect(nextMove).toHaveTextContent(/next move/i);
+    expect(nextMove).toHaveTextContent(/core planning is up to date/i);
   });
 });
 

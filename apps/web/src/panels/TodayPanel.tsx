@@ -15,7 +15,7 @@ import SectionIcon from "../components/SectionIcon";
 import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
-import TimeSuggestion, { getContextualSuggestion } from "../components/TimeSuggestion";
+import TimeSuggestion from "../components/TimeSuggestion";
 import { Card, ActionButton } from "../components/shared";
 import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
@@ -23,6 +23,12 @@ import TodayHero from "../components/TodayHero";
 import TodayAnchorRail, { type Anchor } from "../components/TodayAnchorRail";
 import PageFreshness from "../components/PageFreshness";
 import SourceTag from "../components/SourceTag";
+import {
+  getTodayPrimaryAction,
+  getTodayContextualSuggestion,
+  getStudentsToCheckFirst,
+  getPeakBlock,
+} from "../utils/todayWorkflow";
 import type {
   ComplexityBlock,
   ComplexityForecast,
@@ -61,14 +67,14 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   }, [activeClassroom, execute, health.execute, studentSummaries.execute]);
 
   const recommendedAction = useMemo(
-    () => result ? getRecommendedAction(result) : null,
-    [result],
+    () => result ? getTodayPrimaryAction(result, activeRole) : null,
+    [result, activeRole],
   );
 
   const currentHour = useMemo(() => new Date().getHours(), []);
   const suggestion = useMemo(
     () =>
-      getContextualSuggestion({
+      getTodayContextualSuggestion({
         hour: currentHour,
         snapshot: result,
         health: health.result ?? null,
@@ -102,43 +108,15 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     return out;
   }, [studentSummaries.result]);
 
-  const studentsToCheckFirst = useMemo(() => {
-    if (!result) return [];
+  const studentsToCheckFirst = useMemo(
+    () => getStudentsToCheckFirst(result),
+    [result],
+  );
 
-    const categoryPriority: Record<string, number> = {
-      unapproved_message: 0,
-      stale_followup: 1,
-      unaddressed_pattern: 2,
-      approaching_review: 3,
-    };
-
-    const seen = new Set<string>();
-    const ordered: string[] = [];
-    const prioritizedItems = [...result.debt_register.items].sort((a, b) => {
-      const aRank = categoryPriority[a.category] ?? Number.MAX_SAFE_INTEGER;
-      const bRank = categoryPriority[b.category] ?? Number.MAX_SAFE_INTEGER;
-      if (aRank !== bRank) return aRank - bRank;
-      return b.age_days - a.age_days;
-    });
-
-    for (const item of prioritizedItems) {
-      for (const studentRef of item.student_refs) {
-        if (!studentRef || seen.has(studentRef)) continue;
-        seen.add(studentRef);
-        ordered.push(studentRef);
-        if (ordered.length === 5) {
-          return ordered;
-        }
-      }
-    }
-
-    return ordered;
-  }, [result]);
-
-  const peakBlock = useMemo(() => {
-    if (!result?.latest_forecast) return null;
-    return getRiskWindowModel(result.latest_forecast).peakBlock;
-  }, [result?.latest_forecast]);
+  const peakBlock = useMemo(
+    () => getPeakBlock(result?.latest_forecast),
+    [result?.latest_forecast],
+  );
 
   const showTimeSuggestion = useMemo(() => {
     if (!suggestion) return false;
@@ -153,7 +131,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   // rename keeps nav in sync.
   const anchors: Anchor[] = [
     { id: "command-center", number: "01", label: "Command Center" },
-    { id: "classroom-pulse", number: "02", label: "Classroom Pulse" },
+    { id: "classroom-pulse", number: "02", label: "What to Watch" },
     { id: "day-arc", number: "03", label: "Today's Shape" },
     { id: "complexity-debt", number: "04", label: "Complexity Debt" },
     { id: "student-priority", number: "05", label: "Student Priority" },
@@ -211,14 +189,32 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
       >
         <header className="today-pulse__header">
           <h2 id="today-pulse-heading" className="today-pulse__title">
-            Classroom pulse
+            What to watch next
           </h2>
           <p className="today-pulse__subtitle">
-            The full snapshot — visualizations, attention queue, and forecast.
+            Risk map, open items, and carry-forward signals.
           </p>
         </header>
         <div className="today-grid motion-stagger">
         <div className="today-grid__hero-row">
+          <div id="day-arc" className="today-anchor-target">
+            {result ? (
+              <DayArc
+                forecast={result.latest_forecast}
+                students={studentSummaries.result ?? []}
+                debtItems={result.debt_register.items}
+                health={health.result ?? null}
+                onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+                onBlockClick={(index) => {
+                  const block = result.latest_forecast?.blocks[index];
+                  if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+                }}
+              />
+            ) : (
+              <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
+            )}
+          </div>
+
           {result ? (
             <PendingActionsCard
               items={[
@@ -253,9 +249,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
               ]}
               totalCount={totalActionCount}
               previousTotal={previousDebtTotal}
-              studentsToCheckFirst={studentsToCheckFirst}
-              studentReasons={studentReasons}
-              onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
               onItemClick={(item) => {
                 if (item.key) {
                   const category = item.key;
@@ -267,24 +260,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           ) : (
             <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
           )}
-
-          <div id="day-arc" className="today-anchor-target">
-            {result ? (
-              <DayArc
-                forecast={result.latest_forecast}
-                students={studentSummaries.result ?? []}
-                debtItems={result.debt_register.items}
-                health={health.result ?? null}
-                onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-                onBlockClick={(index) => {
-                  const block = result.latest_forecast?.blocks[index];
-                  if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
-                }}
-              />
-            ) : (
-              <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
-            )}
-          </div>
         </div>
 
         {/* Visualization strip: 2×2 grid on wide viewports — paired for at-a-glance reading */}
@@ -536,79 +511,6 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
         </footer>
       </Card.Body>
     </Card>
-  );
-}
-
-function getRecommendedAction(snapshot: TodaySnapshot) {
-  const makeAction = (
-    description: string,
-    tab: ActiveTab,
-    cta: string,
-    label: string,
-    tone: "pending" | "warning" | "analysis" | "provenance" | "success",
-  ) => ({ description, tab, cta, label, tone });
-
-  const counts = snapshot.debt_register.item_count_by_category;
-  if ((counts.unapproved_message ?? 0) > 0) {
-    return makeAction(
-      "There are family messages waiting for teacher approval before they can be copied out.",
-      "family-message",
-      "Family Message",
-      "Approval queue",
-      "pending",
-    );
-  }
-  if ((counts.stale_followup ?? 0) > 0) {
-    return makeAction(
-      "Follow-up debt is the highest operational risk right now. Log the next intervention while context is still recent.",
-      "log-intervention",
-      "Intervention Log",
-      "Follow-up needed",
-      "warning",
-    );
-  }
-  if ((counts.unaddressed_pattern ?? 0) > 0) {
-    return makeAction(
-      "Support patterns need review before they quietly become the default classroom routine.",
-      "support-patterns",
-      "Support Patterns",
-      "Pattern review",
-      "analysis",
-    );
-  }
-  if ((counts.approaching_review ?? 0) > 0) {
-    return makeAction(
-      "Several supports are approaching their review window. Tighten the pattern record before it goes stale.",
-      "support-patterns",
-      "Support Patterns",
-      "Review due",
-      "analysis",
-    );
-  }
-  if (!snapshot.latest_plan) {
-    return makeAction(
-      "There is no current plan on record. Capture today's signal so tomorrow starts with clear priorities.",
-      "tomorrow-plan",
-      "Tomorrow Plan",
-      "Plan missing",
-      "analysis",
-    );
-  }
-  if (!snapshot.latest_forecast) {
-    return makeAction(
-      "The planning record exists, but tomorrow's block-by-block complexity outlook has not been generated yet.",
-      "complexity-forecast",
-      "Forecast",
-      "Forecast missing",
-      "provenance",
-    );
-  }
-  return makeAction(
-    "Core planning is up to date. Use the prep suite to build differentiated material for the next lesson artifact.",
-    "differentiate",
-    "Differentiate",
-    "Prep ready",
-    "success",
   );
 }
 

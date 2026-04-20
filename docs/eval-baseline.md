@@ -5,7 +5,7 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-04-19T20:47:29.176Z
+**Run date:** 2026-04-19T20:47:29.194Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
 **Raw artifacts:** `output/release-gate/2026-04-19T20-46-03-888Z-31952`
@@ -44,20 +44,23 @@ npm run release:gate:ollama
 ## Hosted Gemini API Baseline
 
 **Status:** Passing baseline — 12/12 evals passed and the full hosted release gate completed.
-**Run date:** 2026-04-18T16:17:22.585Z
+**Run date:** 2026-04-20T20:54:53.385Z
 **Backend:** `gemini`
 **Key source:** `PRAIRIE_GEMINI_API_KEY`
 **Hosted run guard:** enabled
 **Eval suite:** Hosted Gemini proof suite (12/127 cases from the full corpus).
 **Usage scope:** Synthetic/demo evaluation only.
 **Model identifiers observed:** `gemma-4-26b-a4b-it`, `gemma-4-31b-it`
-**Raw artifacts:** `output/release-gate/2026-04-18T16-04-28-504Z-87799`
+**Raw artifacts:** `output/release-gate/2026-04-20T20-30-27-270Z-20246`
+**Eval summary artifact:** `output/evals/2026-04-20-gemini/2026-04-20T20-30-27-270Z-20246-gemini-summary.json`
+**Zero-cost enforcement:** `true`; the paid Vertex lane remained disabled for this run.
 
 ### Commands
 
 ```bash
 export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
 export PRAIRIE_ENABLE_GEMINI_RUNS=true
+npm run gemini:readycheck
 npm run release:gate:gemini
 ```
 

@@ -69,11 +69,14 @@
   border-radius: var(--radius);
   padding: var(--space-3) var(--space-4);
   margin-bottom: var(--space-2);
-  transition: box-shadow var(--motion-fast) var(--ease-standard);
+  transition:
+    box-shadow var(--motion-fast) var(--ease-spring),
+    transform var(--motion-fast) var(--ease-spring);
 }
 
 .pattern-card:hover {
   box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
 }
 
 .pattern-card:last-child {

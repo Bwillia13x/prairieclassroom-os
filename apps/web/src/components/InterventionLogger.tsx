@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
 import DraftRestoreChip from "./DraftRestoreChip";
+import SectionIcon from "./SectionIcon";
 import type { InterventionPrefill } from "../types";
-import { FormCard, ActionButton } from "./shared";
+import { FormCard, ActionButton, NothingInstrumentButton } from "./shared";
 import "./InterventionLogger.css";
 
 interface Props {
@@ -78,6 +79,9 @@ export default function InterventionLogger({
     clearDraft();
   }
 
+  const submitDisabled =
+    !canSubmitProp || selectedStudents.length === 0 || !teacherNote.trim();
+
   return (
     <FormCard className="intervention-logger" as="section">
       <form onSubmit={handleSubmit}>
@@ -139,7 +143,6 @@ export default function InterventionLogger({
             onBlur={() => setTouched(true)}
             required
             aria-required="true"
-            aria-invalid={touched && !teacherNote.trim() ? "true" : undefined}
             aria-describedby={touched && !teacherNote.trim() ? "int-note-error" : undefined}
           />
           {touched && !teacherNote.trim() && (
@@ -147,14 +150,30 @@ export default function InterventionLogger({
           )}
         </div>
 
-        <ActionButton
-          variant="primary"
-          type="submit"
-          loading={loading}
-          disabled={!canSubmitProp || selectedStudents.length === 0 || !teacherNote.trim()}
-        >
-          {loading ? "Structuring note…" : "Log intervention"}
-        </ActionButton>
+        <div className="intervention-logger__actions">
+          <ActionButton
+            variant="primary"
+            type="submit"
+            loading={loading}
+            disabled={submitDisabled}
+          >
+            {loading ? "Structuring note…" : "Log intervention"}
+          </ActionButton>
+
+          <NothingInstrumentButton
+            aria-label={loading ? "Logging intervention note" : "Log intervention note"}
+            fireAnim="signal"
+            tone="success"
+            size="lg"
+            type="submit"
+            loading={loading}
+            disabled={submitDisabled}
+            className="intervention-logger__submit-instrument"
+            data-testid="intervention-logger-submit-instrument"
+          >
+            <SectionIcon name="check" />
+          </NothingInstrumentButton>
+        </div>
       </form>
     </FormCard>
   );

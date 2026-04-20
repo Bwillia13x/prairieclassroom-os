@@ -646,6 +646,7 @@ label.form-label {
 
 .page-intro {
   position: relative;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
@@ -868,6 +869,10 @@ label.form-label {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+  /* Fill the tab panel so the workspace-layout can claim remaining
+     height and give both columns their own scroll regions. */
+  flex: 1 1 0%;
+  min-height: 0;
 }
 
 /* Workspace split-panel contract (Workstream D).
@@ -909,6 +914,11 @@ label.form-label {
   /* Default split state ("input"): rail biased wider for form intake. */
   .workspace-layout[data-layout="split"] {
     grid-template-columns: clamp(340px, 42%, 480px) minmax(0, 1fr);
+    /* Fill remaining height after page intro so both columns scroll
+       independently inside their own constrained region. */
+    flex: 1 1 0%;
+    min-height: 0;
+    align-items: stretch;
   }
 
   /* Output state: canvas dominates once a result is rendered. */
@@ -935,11 +945,17 @@ label.form-label {
 
 @media (min-width: 960px) {
   .workspace-layout[data-layout="split"] > .workspace-rail {
-    position: sticky;
-    top: calc(var(--shell-sticky-offset, 7rem) + var(--space-3));
-    max-height: max(20rem, calc(100dvh - var(--shell-sticky-offset, 7rem) - var(--space-6)));
+    /* Independent scroll region — no position:sticky, no max-height
+       calc.  The rail fills its grid cell and scrolls internally. */
     overflow-y: auto;
     scrollbar-width: thin;
+    min-height: 0;
+  }
+
+  .workspace-layout[data-layout="split"] > .workspace-canvas {
+    overflow-y: auto;
+    scrollbar-width: thin;
+    min-height: 0;
   }
 }
 
@@ -960,7 +976,7 @@ label.form-label {
 }
 
 .workspace-result[aria-live] {
-  scroll-margin-top: calc(var(--shell-sticky-offset) + var(--space-3));
+  scroll-margin-top: var(--space-3);
 }
 
 /* Empty state canvas — archetype-differentiated per Workstream G.
@@ -1000,6 +1016,23 @@ label.form-label {
    The shape teaches faster than text; no words, no numbers. */
 .empty-state--preview {
   padding: var(--space-4) 0;
+}
+
+/* Compact checklist shown above preview empty state (e.g. Differentiate lanes). */
+.output-preview-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.output-preview-checklist li::before {
+  content: "✓ ";
+  color: var(--color-text-tertiary);
 }
 
 .empty-state__skeleton-grid {
@@ -1273,6 +1306,13 @@ label.form-label {
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
   flex-shrink: 0;
+}
+
+/* When the .loading-indicator contains a N0thing <NothingSpinner /> the
+   legacy CSS-only ::before circle is suppressed so the instrument spinner
+   stands alone (see SkeletonLoader.tsx, 2026-04-20 wire-in). */
+.loading-indicator--nothing::before {
+  content: none;
 }
 
 .loading-indicator--planning {

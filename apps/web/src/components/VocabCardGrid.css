@@ -65,7 +65,7 @@
   box-shadow: var(--shadow-xs);
   transform: rotate(-0.3deg);
   transition:
-    transform var(--motion-letterpress) var(--ease-press),
+    transform var(--motion-letterpress) var(--ease-spring),
     box-shadow var(--motion-letterpress) var(--ease-letterpress);
   animation: fade-up 0.35s var(--ease-letterpress) both;
 }
@@ -75,7 +75,7 @@
 }
 
 .vocab-card:hover {
-  transform: rotate(0deg);
+  transform: rotate(0deg) scale(1.015);
   box-shadow: var(--shadow-sm);
 }
 

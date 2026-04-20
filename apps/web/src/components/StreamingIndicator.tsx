@@ -1,5 +1,8 @@
 import { useApp } from "../AppContext";
 import SectionIcon, { type SectionIconName } from "./SectionIcon";
+import NothingSpinner, {
+  type NothingSpinnerVariant,
+} from "./shared/NothingSpinner";
 import "./StreamingIndicator.css";
 
 /**
@@ -37,6 +40,14 @@ export default function StreamingIndicator({ label, onCancel }: Props) {
   const phaseIconName: SectionIconName =
     streaming.phase === "thinking" ? "star" :
     streaming.phase === "structuring" ? "grid" : "check";
+
+  // Per-phase N0thing instrument spinner — the "deep reasoning" moment.
+  // Thinking = orbit (exploratory), structuring = seg-ring (committing),
+  // complete = hidden (check icon covers the state).
+  const phaseSpinnerVariant: NothingSpinnerVariant | null =
+    streaming.phase === "thinking" ? "orbit" :
+    streaming.phase === "structuring" ? "seg-ring" :
+    null;
 
   return (
     <div className="streaming-indicator" role="status" aria-label={label ?? phaseLabel} aria-busy={streaming.active}>
@@ -95,12 +106,19 @@ export default function StreamingIndicator({ label, onCancel }: Props) {
         </div>
       )}
 
-      {/* Pulsing dot when active */}
-      {streaming.active && (
-        <div className="streaming-pulse" aria-hidden="true">
-          <span className="streaming-dot" />
-          <span className="streaming-dot" />
-          <span className="streaming-dot" />
+      {/* N0thing instrument spinner — the "deep reasoning" moment.
+          Rendered decoratively: the outer StreamingIndicator already
+          exposes role="status" + aria-label, so this avoids a double
+          announcement. */}
+      {streaming.active && phaseSpinnerVariant && (
+        <div className="streaming-pulse">
+          <NothingSpinner
+            variant={phaseSpinnerVariant}
+            size="lg"
+            tone="accent"
+            decorative
+            label={phaseLabel || "Loading"}
+          />
         </div>
       )}
     </div>

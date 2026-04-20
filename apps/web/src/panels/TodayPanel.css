@@ -25,14 +25,15 @@
 
 /* Audit #31-#33: sticky anchor-rail variant. On wide viewports the
    rail lives in the left column; on narrow viewports it collapses so
-   the content gets full width. Scroll-padding compensates for the
-   fixed shell header so in-page jumps don't land behind it. */
+   the content gets full width. */
 .today-panel--with-rail {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
-  scroll-padding-top: calc(var(--shell-header-height, 72px) + var(--space-2));
 }
+
+/* Scroll-padding belongs on the scroll container (.app-main), which
+   is set in shell.css.  Nothing panel-specific needed here. */
 
 @media (min-width: 961px) {
   .today-panel--with-rail {
@@ -52,7 +53,7 @@
 /* Audit #32: anchor-target divs are structural; they add no visual
    weight of their own. CSS is scoped to declarative use only. */
 .today-anchor-target {
-  scroll-margin-top: calc(var(--shell-header-height, 72px) + var(--space-3));
+  scroll-margin-top: var(--space-3);
 }
 
 /* Audit #33: end-of-Today stamp. Mono caption + fresh timestamp so the
@@ -75,10 +76,6 @@
 .today-end-marker__stamp {
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 /* -----------------------------------------------------------------

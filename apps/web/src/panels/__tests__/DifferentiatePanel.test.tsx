@@ -127,6 +127,35 @@ describe("DifferentiatePanel", () => {
     expect(screen.getByText("Build Lesson Variants")).toBeInTheDocument();
   });
 
+  it("lists the four output lanes in the empty-state 'Output will include' checklist", () => {
+    const ctx = makeContext();
+    render(
+      <AppContext.Provider value={ctx}>
+        <DifferentiatePanel />
+      </AppContext.Provider>,
+    );
+
+    const checklist = screen.getByRole("list", { name: /output will include/i });
+    expect(checklist).toBeInTheDocument();
+    expect(checklist).toHaveTextContent(/readiness lane/i);
+    expect(checklist).toHaveTextContent(/scaffolded lane/i);
+    expect(checklist).toHaveTextContent(/extension lane/i);
+    expect(checklist).toHaveTextContent(/language support lane/i);
+  });
+
+  it("sets data-split-state='input' on the WorkspaceLayout when no result is visible", () => {
+    const ctx = makeContext();
+    const { container } = render(
+      <AppContext.Provider value={ctx}>
+        <DifferentiatePanel />
+      </AppContext.Provider>,
+    );
+
+    const layout = container.querySelector(".workspace-layout");
+    expect(layout).toBeTruthy();
+    expect(layout).toHaveAttribute("data-split-state", "input");
+  });
+
   it("cancel button calls cancel when streaming is active", async () => {
     const ctx = makeContext({ active: true, phase: "thinking" });
     const user = userEvent.setup();

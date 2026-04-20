@@ -1,6 +1,7 @@
 /* ─── Contextual Hint — Per-feature first-use tooltip ─── */
 
 .contextual-hint {
+  flex-shrink: 0;
   display: flex;
   align-items: flex-start;
   gap: var(--space-2-5);

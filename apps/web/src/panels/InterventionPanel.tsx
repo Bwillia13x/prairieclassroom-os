@@ -5,6 +5,7 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { logIntervention, fetchInterventionHistory } from "../api";
 import InterventionLogger from "../components/InterventionLogger";
+import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
 import HistoryDrawer from "../components/HistoryDrawer";
@@ -163,7 +164,10 @@ export default function InterventionPanel({ prefill }: Props) {
         whatIsBlocked="Logging interventions is reserved for adults actively working with this classroom."
       />
 
+      <OpsWorkflowStepper activeTab="log-intervention" />
+
       <WorkspaceLayout
+        splitState={displayResult ? "output" : "input"}
         rail={(
           <>
             {role.canLogInterventions ? (

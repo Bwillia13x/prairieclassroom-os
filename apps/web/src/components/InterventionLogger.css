@@ -62,3 +62,24 @@
   width: var(--icon-md);
   height: var(--icon-md);
 }
+
+.intervention-logger__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.intervention-logger__submit-instrument {
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .intervention-logger__actions {
+    align-items: stretch;
+  }
+
+  .intervention-logger__actions .action-button {
+    flex: 1;
+  }
+}

@@ -76,9 +76,10 @@ The current proof sources are:
 - `docs/eval-baseline.md` for provider-specific status
 - `docs/hackathon-proof-brief.md` for the concise judge-facing proof summary
 - `output/release-gate/2026-04-18T12-24-07-826Z-37333` for the latest passing no-cost mock gate artifact
-- `output/release-gate/2026-04-18T16-04-28-504Z-87799` for the latest passing hosted Gemma 4 gate artifact
+- `output/release-gate/2026-04-20T20-30-27-270Z-20246` for the latest passing hosted Gemma 4 gate artifact
+- `output/evals/2026-04-20-gemini/2026-04-20T20-30-27-270Z-20246-gemini-summary.json` for the latest hosted 12/12 eval summary
 
-The normal hosted refresh order is `npm run proof:check`, `npm run gemini:readycheck`, `npm run release:gate:gemini`, `npm run eval:summary`, and `npm run logs:summary`.
+The normal hosted refresh order is `npm run proof:check`, export `PRAIRIE_GEMINI_API_KEY` plus `PRAIRIE_ENABLE_GEMINI_RUNS=true`, `npm run gemini:readycheck`, `npm run release:gate:gemini`, `npm run eval:summary`, and `npm run logs:summary`.
 
 ## 6. Why this is a strong Future of Education entry
 

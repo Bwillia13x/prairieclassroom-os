@@ -20,7 +20,6 @@ describe("PendingActionsCard", () => {
       <PendingActionsCard
         items={items}
         totalCount={2}
-        studentsToCheckFirst={[]}
       />,
     );
     expect(
@@ -35,7 +34,6 @@ describe("PendingActionsCard", () => {
       <PendingActionsCard
         items={items}
         totalCount={2}
-        studentsToCheckFirst={[]}
         onItemClick={onItemClick}
       />,
     );
@@ -49,7 +47,6 @@ describe("PendingActionsCard", () => {
         items={items}
         totalCount={35}
         previousTotal={28}
-        studentsToCheckFirst={[]}
       />,
     );
     const caption = screen.getByTestId("pending-actions-benchmark");
@@ -62,7 +59,6 @@ describe("PendingActionsCard", () => {
         items={items}
         totalCount={5}
         previousTotal={5}
-        studentsToCheckFirst={[]}
       />,
     );
     expect(screen.getByTestId("pending-actions-benchmark")).toHaveTextContent(
@@ -75,24 +71,9 @@ describe("PendingActionsCard", () => {
       <PendingActionsCard
         items={items}
         totalCount={35}
-        studentsToCheckFirst={[]}
       />,
     );
     expect(screen.queryByTestId("pending-actions-benchmark")).toBeNull();
-  });
-
-  it("exposes a title tooltip on the student chip when a reason is supplied", () => {
-    const reasons: Record<string, string> = { Hannah: "Stale math follow-up (4 days)" };
-    render(
-      <PendingActionsCard
-        items={items}
-        totalCount={2}
-        studentsToCheckFirst={["Hannah", "Liam"]}
-        studentReasons={reasons}
-      />,
-    );
-    const chip = screen.getByRole("button", { name: /Hannah/ });
-    expect(chip).toHaveAttribute("title", "Stale math follow-up (4 days)");
   });
 
   it("labels the pulse total as 'open items' (audit #29)", () => {
@@ -100,7 +81,6 @@ describe("PendingActionsCard", () => {
       <PendingActionsCard
         items={items}
         totalCount={35}
-        studentsToCheckFirst={[]}
       />,
     );
     expect(screen.getByText(/35 open items/i)).toBeInTheDocument();
@@ -112,7 +92,6 @@ describe("PendingActionsCard", () => {
       <PendingActionsCard
         items={items}
         totalCount={1}
-        studentsToCheckFirst={[]}
       />,
     );
     expect(screen.getByText(/1 open item/i)).toBeInTheDocument();

@@ -66,6 +66,60 @@ function makeDemoClassroom(overrides: Partial<ClassroomProfile> = {}): Classroom
   };
 }
 
+function mockPanelScrollState(
+  element: HTMLElement,
+  options: {
+    visibleScrollTop: number;
+    hiddenScrollTop?: number;
+    scrollHeight?: number;
+    clientHeight?: number;
+    overflowY?: "auto" | "visible";
+  },
+) {
+  let currentScrollTop = options.visibleScrollTop;
+  const hiddenScrollTop = options.hiddenScrollTop ?? options.visibleScrollTop;
+
+  if (options.overflowY) {
+    element.style.overflowY = options.overflowY;
+  }
+
+  Object.defineProperty(element, "scrollHeight", {
+    configurable: true,
+    get: () => options.scrollHeight ?? 1600,
+  });
+  Object.defineProperty(element, "clientHeight", {
+    configurable: true,
+    get: () => options.clientHeight ?? 400,
+  });
+  Object.defineProperty(element, "scrollTop", {
+    configurable: true,
+    get: () => (element.hasAttribute("hidden") ? hiddenScrollTop : currentScrollTop),
+    set: (value: number) => {
+      currentScrollTop = value;
+    },
+  });
+
+  return {
+    read: () => currentScrollTop,
+  };
+}
+
+function mockContainerScrollState(element: HTMLElement, scrollTop: number) {
+  let currentScrollTop = scrollTop;
+
+  Object.defineProperty(element, "scrollTop", {
+    configurable: true,
+    get: () => currentScrollTop,
+    set: (value: number) => {
+      currentScrollTop = value;
+    },
+  });
+
+  return {
+    read: () => currentScrollTop,
+  };
+}
+
 interface RenderShellOptions {
   profile?: ClassroomProfile;
   debtCounts?: Record<string, number>;
@@ -103,7 +157,7 @@ async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfil
     expect(screen.getByRole("button", { name: /active classroom/i })).toBeTruthy();
   });
   if (opts.debtCounts) {
-    // Wait for the SET_DEBT_COUNTS dispatch to land after fetchTodaySnapshot resolves.
+    // Wait for the SET_DEBT_REGISTER dispatch to land after fetchTodaySnapshot resolves.
     await waitFor(() => {
       expect(mockedFetchTodaySnapshot).toHaveBeenCalled();
     });
@@ -184,5 +238,62 @@ describe("App shell — classroom pill trigger", () => {
 
     expect(await screen.findByText("Log follow-up for Brody")).toBeInTheDocument();
     expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();
+  });
+
+  it("saves the current panel scroll before the previous tab is hidden", async () => {
+    await renderShellWithDemo();
+
+    const todayPanel = document.querySelector(
+      '.app-main > [role="tabpanel"][data-tab="today"]',
+    ) as HTMLElement | null;
+    expect(todayPanel).toBeTruthy();
+
+    const scrollState = mockPanelScrollState(todayPanel!, {
+      visibleScrollTop: 321,
+      hiddenScrollTop: 12,
+      overflowY: "auto",
+    });
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-prep"));
+
+    await waitFor(() => {
+      expect(sessionStorage.getItem("prairie-scroll-today")).toBe("321");
+    });
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-today"));
+
+    await waitFor(() => {
+      expect(scrollState.read()).toBe(321);
+    });
+  });
+
+  it("uses app-main as the scroll container when panels relinquish scrolling", async () => {
+    await renderShellWithDemo();
+
+    const todayPanel = document.querySelector(
+      '.app-main > [role="tabpanel"][data-tab="today"]',
+    ) as HTMLElement | null;
+    const appMain = document.querySelector(".app-main") as HTMLElement | null;
+    expect(todayPanel).toBeTruthy();
+    expect(appMain).toBeTruthy();
+
+    mockPanelScrollState(todayPanel!, {
+      visibleScrollTop: 14,
+      hiddenScrollTop: 3,
+      overflowY: "visible",
+    });
+    const mainScrollState = mockContainerScrollState(appMain!, 77);
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-prep"));
+
+    await waitFor(() => {
+      expect(sessionStorage.getItem("prairie-scroll-today")).toBe("77");
+    });
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-today"));
+
+    await waitFor(() => {
+      expect(mainScrollState.read()).toBe(77);
+    });
   });
 });

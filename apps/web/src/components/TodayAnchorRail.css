@@ -1,10 +1,11 @@
 /* Audit #31: sticky in-page rail for Today panel. Nothing-design §2.7
-   edge-anchored: mono numbers + ALL CAPS labels, no chrome. */
+   edge-anchored: mono numbers + ALL CAPS labels, no chrome.
+   The scroll container is now the tab panel, not the document. */
 .today-anchor-rail {
   position: sticky;
-  top: calc(var(--shell-header-height, 72px) + var(--space-4));
+  top: var(--space-3);
   width: var(--today-rail-width, 180px);
-  max-height: calc(100vh - var(--shell-header-height, 72px) - var(--space-8));
+  max-height: calc(100% - var(--space-6));
   overflow-y: auto;
   padding-right: var(--space-4);
   font-family: var(--font-mono);

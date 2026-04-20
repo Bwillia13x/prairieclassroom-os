@@ -1,3 +1,7 @@
+import NothingSpinner, {
+  type NothingSpinnerVariant,
+} from "./shared/NothingSpinner";
+
 interface Props {
   /** "grid" for variant cards, "stack" for plan/list sections, "single" for a single card */
   variant: "grid" | "stack" | "single";
@@ -7,11 +11,53 @@ interface Props {
   label: string;
 }
 
+/**
+ * Per-variant N0thing instrument pairing:
+ *
+ * - `grid`   → `seg-ring` (stepped, mechanical — fits a differentiation
+ *              grid where variants snap into place)
+ * - `stack`  → `dual-arc` (the heavier, counter-rotating arc reads as
+ *              "deep planning" for Tomorrow Plan / EA Briefing stacks)
+ * - `single` → `orbit`    (single dashed guide — a focused single-card
+ *              compose moment)
+ */
+const VARIANT_SPINNER: Record<Props["variant"], NothingSpinnerVariant> = {
+  grid: "seg-ring",
+  stack: "dual-arc",
+  single: "orbit",
+};
+
+function LoadingLabel({
+  message,
+  planning,
+  variant,
+}: {
+  message: string;
+  planning?: boolean;
+  variant: Props["variant"];
+}) {
+  const cls = planning
+    ? "loading-indicator loading-indicator--nothing loading-indicator--planning"
+    : "loading-indicator loading-indicator--nothing";
+  return (
+    <div className={cls}>
+      <NothingSpinner
+        decorative
+        size="sm"
+        variant={VARIANT_SPINNER[variant]}
+        tone={planning ? "accent" : "default"}
+        label={message}
+      />
+      <span className="loading-indicator__message">{message}</span>
+    </div>
+  );
+}
+
 export default function SkeletonLoader({ variant, message, label }: Props) {
   if (variant === "grid") {
     return (
       <div aria-busy="true" aria-label={label}>
-        <div className="loading-indicator">{message}</div>
+        <LoadingLabel message={message} variant="grid" />
         <div className="skeleton-grid">
           {[1, 2, 3].map((n) => (
             <div key={n} className="skeleton-card">
@@ -29,7 +75,7 @@ export default function SkeletonLoader({ variant, message, label }: Props) {
   if (variant === "stack") {
     return (
       <div aria-busy="true" aria-label={label}>
-        <div className="loading-indicator loading-indicator--planning">{message}</div>
+        <LoadingLabel message={message} variant="stack" planning />
         <div className="skeleton-stack">
           {[1, 2, 3, 4].map((n) => (
             <div key={n} className="skeleton-card">
@@ -45,7 +91,7 @@ export default function SkeletonLoader({ variant, message, label }: Props) {
 
   return (
     <div aria-busy="true" aria-label={label}>
-      <div className="loading-indicator">{message}</div>
+      <LoadingLabel message={message} variant="single" />
       <div className="skeleton-card skeleton-card--single">
         <div className="skeleton-line skeleton-line--full" />
         <div className="skeleton-line skeleton-line--long" />

@@ -4,7 +4,7 @@ import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import TodayPanel from "../TodayPanel";
 import type { ClassroomHealth, TodaySnapshot } from "../../types";
-import * as TimeSuggestionModule from "../../components/TimeSuggestion";
+import * as TodayWorkflowModule from "../../utils/todayWorkflow";
 
 vi.mock("../../api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../../api")>();
@@ -231,7 +231,7 @@ describe("TodayPanel", () => {
   });
 
   it("shows the slim time suggestion when the queue is clear", async () => {
-    const suggestionSpy = vi.spyOn(TimeSuggestionModule, "getContextualSuggestion").mockReturnValue({
+    const suggestionSpy = vi.spyOn(TodayWorkflowModule, "getTodayContextualSuggestion").mockReturnValue({
       kind: "morning",
       label: "Good morning",
       message: "Time to prep for today.",
@@ -286,7 +286,7 @@ describe("TodayPanel", () => {
   });
 
   it("suppresses the time suggestion when it duplicates the primary triage action", async () => {
-    const suggestionSpy = vi.spyOn(TimeSuggestionModule, "getContextualSuggestion").mockReturnValue({
+    const suggestionSpy = vi.spyOn(TodayWorkflowModule, "getTodayContextualSuggestion").mockReturnValue({
       kind: "midday",
       label: "Mid-day",
       message: "Log interventions while they're fresh.",
@@ -324,17 +324,23 @@ describe("TodayPanel", () => {
     suggestionSpy.mockRestore();
   });
 
-  it("opens the student drawer from the triage chips", async () => {
+  it("opens the student drawer from the hero triage chips", async () => {
     const { user } = renderTodayPanel(makeSnapshot());
 
-    const triageLabel = await screen.findByText("Students to check first");
-    const triageSection = triageLabel.closest(".today-triage-students") as HTMLElement;
-    await user.click(within(triageSection).getByRole("button", { name: "Amira" }));
+    // Hero chip for Amira — rendered inside TodayHero, not the lower PendingActionsCard.
+    const heroEl = await screen.findByTestId("today-hero");
+    await user.click(within(heroEl).getByRole("button", { name: /Amira/ }));
 
     expect(await screen.findByRole("dialog", { name: /Amira/i })).toBeInTheDocument();
     await waitFor(() => {
       expect(mockedFetchInterventionHistoryForStudent).toHaveBeenCalledWith("demo-classroom", "Amira", 10, expect.any(AbortSignal));
     });
+  });
+
+  it("does not render 'Students to check first' in the lower PendingActionsCard", async () => {
+    renderTodayPanel(makeSnapshot());
+    await screen.findByText("Needs Attention Now");
+    expect(screen.queryByText("Students to check first")).not.toBeInTheDocument();
   });
 
   it("opens the debt drawer from a triage row", async () => {
@@ -418,7 +424,7 @@ describe("TodayPanel", () => {
     ).toBeInTheDocument();
   });
 
-  it("renders a 'Classroom pulse' section wrapping the grid", async () => {
+  it("renders a 'What to watch next' section wrapping the grid", async () => {
     mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
     mockedFetchClassroomHealth.mockResolvedValue(makeHealth());
     mockedFetchStudentSummary.mockResolvedValue([]);
@@ -435,7 +441,7 @@ describe("TodayPanel", () => {
       expect(container.querySelector(".today-pulse")).toBeInTheDocument();
     });
     expect(
-      screen.getByRole("heading", { name: /classroom pulse/i }),
+      screen.getByRole("heading", { name: /what to watch next/i }),
     ).toBeInTheDocument();
     const pulseSection = container.querySelector(".today-pulse")!;
     expect(pulseSection.querySelector(".today-grid")).toBeInTheDocument();
@@ -463,6 +469,33 @@ describe("TodayPanel", () => {
     // DOM order: hero must appear before the grid.
     expect(
       hero.compareDocumentPosition(grid) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+  });
+
+  it("renders DayArc before PendingActionsCard in the hero row", async () => {
+    mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
+    mockedFetchClassroomHealth.mockResolvedValue(makeHealth());
+    mockedFetchStudentSummary.mockResolvedValue([]);
+    mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
+    mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
+
+    const { container } = render(
+      <AppContext.Provider value={makeAppContext()}>
+        <TodayPanel onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    await waitFor(() => {
+      expect(container.querySelector(".today-grid__hero-row")).toBeInTheDocument();
+    });
+    const heroRow = container.querySelector(".today-grid__hero-row")!;
+    const dayArc = heroRow.querySelector(".day-arc");
+    const triageCard = heroRow.querySelector(".today-triage-card");
+    expect(dayArc).toBeInTheDocument();
+    expect(triageCard).toBeInTheDocument();
+    // DayArc must appear before PendingActionsCard in DOM order.
+    expect(
+      dayArc!.compareDocumentPosition(triageCard!) & Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
   });
 

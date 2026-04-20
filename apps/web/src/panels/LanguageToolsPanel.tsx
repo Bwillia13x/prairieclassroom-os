@@ -260,6 +260,7 @@ export default function LanguageToolsPanel() {
       />
 
       <WorkspaceLayout
+        splitState={activeAction.result ? "output" : "input"}
         rail={(
           <>
             <ContextualHint
@@ -267,11 +268,6 @@ export default function LanguageToolsPanel() {
               title="Language Tools"
               description="Simplify text for EAL learners or generate bilingual vocabulary cards from any lesson content."
               tone="sage"
-            />
-            <LanguageToolsStudentPicker
-              students={profile?.students ?? []}
-              value={focusStudent}
-              onChange={setFocusStudent}
             />
             <div className="language-tool-toggle" role="tablist" aria-label="Language tool">
               <button
@@ -297,6 +293,11 @@ export default function LanguageToolsPanel() {
                 <span className="language-tool-toggle__label">Vocab Cards</span>
               </button>
             </div>
+            <LanguageToolsStudentPicker
+              students={profile?.students ?? []}
+              value={focusStudent}
+              onChange={setFocusStudent}
+            />
             {activeTool === "simplify" ? (
               <SimplifiedViewer
                 onSubmit={handleSimplify}

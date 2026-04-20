@@ -79,9 +79,9 @@ export default function RoleContextPill() {
         className={`role-pill${open ? " role-pill--open" : ""}`}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={`Current role: ${ROLE_LABEL[activeRole]}. Change classroom role.`}
         onClick={() => setOpen((v) => !v)}
         disabled={!activeClassroom}
+        title="Change classroom role"
       >
         <span className="role-pill__chip" data-role={activeRole} aria-hidden="true" />
         <span className="role-pill__copy">

@@ -52,6 +52,10 @@
   list-style: none;
 }
 
+.output-action-bar__instrument {
+  flex-shrink: 0;
+}
+
 .output-action-bar__btn {
   display: inline-flex;
   align-items: center;

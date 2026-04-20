@@ -1,0 +1,350 @@
+/* ================================================================
+   NothingInstrumentButton — circular, instrument-face icon button
+   ----------------------------------------------------------------
+   A signature "N0thing OS" control: round well, dashed inner face,
+   optional compass tick marks, icon that performs a fire animation
+   on press. For high-signal moments like the Today hero action,
+   generation CTAs on key panels, and primary quick actions.
+
+   All colors route through --color-* tokens so the component is
+   dark-mode safe + contrast-test safe. Animations honor
+   prefers-reduced-motion.
+   ================================================================ */
+
+.nothing-btn {
+  --nib-size: 48px;
+  --nib-icon: 18px;
+  --nib-ring: var(--color-border-strong);
+  --nib-color: var(--color-text-secondary);
+  --nib-hover-color: var(--color-text);
+  --nib-hover-ring: var(--color-text);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nib-size);
+  height: var(--nib-size);
+  padding: 0;
+  margin: 0;
+
+  background: transparent;
+  color: var(--nib-color);
+  border: 1px solid var(--nib-ring);
+  border-radius: 999px;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  transition:
+    border-color 220ms var(--ease-standard),
+    color 220ms var(--ease-standard),
+    background 180ms var(--ease-standard),
+    transform 180ms var(--ease-snap, var(--ease-standard));
+}
+
+.nothing-btn:hover:not(:disabled) {
+  color: var(--nib-hover-color);
+  border-color: var(--nib-hover-ring);
+}
+
+.nothing-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.nothing-btn:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-halo);
+}
+
+.nothing-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+/* ---- Sizes (snap to control scale) ---- */
+.nothing-btn--sm { --nib-size: 36px; --nib-icon: 14px; }
+.nothing-btn--md { --nib-size: 48px; --nib-icon: 18px; }
+.nothing-btn--lg { --nib-size: 56px; --nib-icon: 20px; }
+.nothing-btn--xl { --nib-size: 72px; --nib-icon: 22px; }
+
+/* ---- Tones ---- */
+.nothing-btn--accent  {
+  --nib-hover-color: var(--color-text-accent);
+  --nib-hover-ring: var(--color-accent);
+}
+.nothing-btn--success {
+  --nib-hover-color: var(--color-text-success);
+  --nib-hover-ring: var(--color-success);
+}
+.nothing-btn--warning {
+  --nib-hover-color: var(--color-text-warning);
+  --nib-hover-ring: var(--color-warning);
+}
+.nothing-btn--danger  {
+  --nib-hover-color: var(--color-text-danger);
+  --nib-hover-ring: var(--color-danger);
+}
+
+/* ---- Inner dashed face (instrument aesthetic) ---- */
+.nothing-btn__face {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 1px dashed var(--color-border);
+  pointer-events: none;
+  transition:
+    border-color 220ms var(--ease-standard),
+    transform 420ms var(--ease-standard);
+}
+
+.nothing-btn:hover:not(:disabled) .nothing-btn__face {
+  border-color: var(--color-border-strong);
+}
+
+/* ---- Compass tick marks at N / E / S / W ---- */
+.nothing-btn--ticks::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 1px;
+  height: 5px;
+  margin-left: -0.5px;
+  background: var(--nib-ring);
+  box-shadow:
+    0 calc(var(--nib-size) + 1px) 0 0 var(--nib-ring),
+    calc(var(--nib-size) / 2) calc(var(--nib-size) / 2 + 0.5px) 0 -1.5px var(--nib-ring),
+    calc(var(--nib-size) / -2) calc(var(--nib-size) / 2 + 0.5px) 0 -1.5px var(--nib-ring);
+  pointer-events: none;
+  transition: background 220ms var(--ease-standard), box-shadow 220ms var(--ease-standard);
+}
+
+.nothing-btn--ticks:hover:not(:disabled)::before {
+  background: var(--nib-hover-ring);
+  box-shadow:
+    0 calc(var(--nib-size) + 1px) 0 0 var(--nib-hover-ring),
+    calc(var(--nib-size) / 2) calc(var(--nib-size) / 2 + 0.5px) 0 -1.5px var(--nib-hover-ring),
+    calc(var(--nib-size) / -2) calc(var(--nib-size) / 2 + 0.5px) 0 -1.5px var(--nib-hover-ring);
+}
+
+/* ---- Icon slot ---- */
+.nothing-btn__icon {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--nib-icon);
+  height: var(--nib-icon);
+  transform-origin: center;
+  will-change: transform;
+  transition: transform 250ms var(--ease-standard), color 150ms var(--ease-standard);
+}
+
+.nothing-btn__icon > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---- Loading state — use segring as the in-button spinner ---- */
+.nothing-btn--loading {
+  cursor: wait;
+}
+.nothing-btn--loading .nothing-btn__icon {
+  visibility: hidden;
+}
+.nothing-btn__spinner {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* ================================================================
+   Fire animations — triggered by toggling `is-firing`
+   ================================================================ */
+
+.nothing-btn.is-firing[data-anim="bounce"] .nothing-btn__icon {
+  animation: nib-bounce 520ms var(--ease-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+@keyframes nib-bounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-9px); }
+  55%  { transform: translateY(0); }
+  75%  { transform: translateY(-3px); }
+  100% { transform: translateY(0); }
+}
+
+.nothing-btn.is-firing[data-anim="spin"] .nothing-btn__icon {
+  animation: nib-spin 640ms var(--ease-snap, cubic-bezier(0.5, 0, 0.1, 1));
+}
+@keyframes nib-spin {
+  0%   { transform: rotate(0); }
+  100% { transform: rotate(180deg); }
+}
+
+.nothing-btn.is-firing[data-anim="pulse"] .nothing-btn__icon {
+  animation: nib-pulse 460ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+@keyframes nib-pulse {
+  0%   { transform: scale(1); }
+  30%  { transform: scale(1.28); }
+  60%  { transform: scale(0.96); }
+  100% { transform: scale(1); }
+}
+
+.nothing-btn.is-firing[data-anim="shake"] .nothing-btn__icon {
+  animation: nib-shake 480ms steps(10, end);
+}
+@keyframes nib-shake {
+  0%, 100% { transform: translateX(0) rotate(0); }
+  10%      { transform: translateX(-3px) rotate(-4deg); }
+  20%      { transform: translateX(3px) rotate(4deg); }
+  30%      { transform: translateX(-3px) rotate(-3deg); }
+  40%      { transform: translateX(3px) rotate(3deg); }
+  50%      { transform: translateX(-2px) rotate(-2deg); }
+  60%      { transform: translateX(2px) rotate(2deg); }
+  70%      { transform: translateX(-1px); }
+  80%      { transform: translateX(1px); }
+}
+
+.nothing-btn.is-firing[data-anim="check"]          { border-color: var(--color-success); color: var(--color-text-success); }
+.nothing-btn.is-firing[data-anim="check"] .nothing-btn__icon {
+  animation: nib-check 520ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+@keyframes nib-check {
+  0%   { transform: scale(0) rotate(-30deg); opacity: 0; }
+  60%  { transform: scale(1.25) rotate(0); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.nothing-btn.is-firing[data-anim="close"] .nothing-btn__icon {
+  animation: nib-close 420ms var(--ease-snap, cubic-bezier(0.5, 0, 0.1, 1));
+}
+@keyframes nib-close {
+  0%   { transform: rotate(0) scale(1); }
+  50%  { transform: rotate(90deg) scale(1.2); }
+  100% { transform: rotate(90deg) scale(1); }
+}
+
+.nothing-btn.is-firing[data-anim="trash"]          { border-color: var(--color-danger); color: var(--color-text-danger); }
+.nothing-btn.is-firing[data-anim="trash"] .nothing-btn__icon {
+  animation: nib-trash 560ms var(--ease-standard);
+}
+@keyframes nib-trash {
+  0%   { transform: translateY(0) rotate(0); }
+  20%  { transform: translateY(-2px) rotate(-8deg); }
+  40%  { transform: translateY(-2px) rotate(8deg); }
+  60%  { transform: translateY(0) rotate(0); }
+  80%  { transform: translateY(3px) scale(0.9); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+.nothing-btn.is-firing[data-anim="refresh"]        { border-color: var(--color-accent); color: var(--color-text-accent); }
+.nothing-btn.is-firing[data-anim="refresh"] .nothing-btn__icon {
+  animation: nib-refresh 720ms var(--ease-standard);
+}
+@keyframes nib-refresh {
+  0%   { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
+
+.nothing-btn.is-firing[data-anim="upload"] .nothing-btn__icon {
+  animation: nib-upload 560ms var(--ease-standard);
+}
+@keyframes nib-upload {
+  0%   { transform: translateY(0); opacity: 1; }
+  60%  { transform: translateY(-10px); opacity: 0.6; }
+  61%  { transform: translateY(4px); opacity: 0; }
+  62%  { transform: translateY(4px); opacity: 0.3; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.nothing-btn.is-firing[data-anim="drop"] .nothing-btn__icon {
+  animation: nib-drop 520ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+@keyframes nib-drop {
+  0%   { transform: translateY(-10px); opacity: 0.2; }
+  40%  { transform: translateY(2px); opacity: 1; }
+  60%  { transform: translateY(-1px); }
+  100% { transform: translateY(0); }
+}
+
+.nothing-btn.is-firing[data-anim="spark"]          { border-color: var(--color-warning); color: var(--color-text-warning); }
+.nothing-btn.is-firing[data-anim="spark"] .nothing-btn__icon {
+  animation: nib-spark 460ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+@keyframes nib-spark {
+  0%   { transform: scale(1) rotate(0); }
+  40%  { transform: scale(1.35) rotate(20deg); }
+  100% { transform: scale(1) rotate(0); }
+}
+
+.nothing-btn.is-firing[data-anim="heartbeat"]      { border-color: var(--color-danger); color: var(--color-text-danger); }
+.nothing-btn.is-firing[data-anim="heartbeat"] .nothing-btn__icon {
+  animation: nib-heartbeat 720ms var(--ease-standard);
+}
+@keyframes nib-heartbeat {
+  0%   { transform: scale(1); }
+  14%  { transform: scale(1.3); }
+  28%  { transform: scale(1); }
+  42%  { transform: scale(1.22); }
+  70%  { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.nothing-btn.is-firing[data-anim="slide-right"] .nothing-btn__icon {
+  animation: nib-slide-right 420ms var(--ease-standard);
+}
+@keyframes nib-slide-right {
+  0%   { transform: translateX(0); }
+  35%  { transform: translateX(-3px); }
+  65%  { transform: translateX(7px); }
+  100% { transform: translateX(0); }
+}
+
+.nothing-btn.is-firing[data-anim="back"] .nothing-btn__icon {
+  animation: nib-back 420ms var(--ease-standard);
+}
+@keyframes nib-back {
+  0%   { transform: translateX(0); }
+  35%  { transform: translateX(3px); }
+  65%  { transform: translateX(-7px); }
+  100% { transform: translateX(0); }
+}
+
+.nothing-btn.is-firing[data-anim="signal"]         { border-color: var(--color-success); color: var(--color-text-success); }
+.nothing-btn.is-firing[data-anim="signal"] .nothing-btn__icon {
+  animation: nib-signal 560ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+}
+@keyframes nib-signal {
+  0%   { transform: scale(0.8); opacity: 0.4; }
+  55%  { transform: scale(1.18); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+/* Face subtle rotate-on-fire for continuity with the reference */
+.nothing-btn.is-firing .nothing-btn__face {
+  transform: rotate(30deg);
+  border-color: var(--color-border-strong);
+}
+
+/* Reduced-motion: suppress fire animations entirely */
+@media (prefers-reduced-motion: reduce) {
+  .nothing-btn,
+  .nothing-btn .nothing-btn__face,
+  .nothing-btn .nothing-btn__icon,
+  .nothing-btn.is-firing .nothing-btn__icon,
+  .nothing-btn.is-firing .nothing-btn__face {
+    animation: none !important;
+    transition: none !important;
+  }
+  .nothing-btn:active:not(:disabled) {
+    transform: none;
+  }
+}

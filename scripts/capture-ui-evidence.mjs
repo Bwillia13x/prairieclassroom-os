@@ -160,6 +160,62 @@ async function main() {
       fullPage: true,
     });
 
+    // Today mobile evidence: 393×852 iPhone-class viewport
+    await mobilePage.goto(`${WEB_BASE}/?demo=true&tab=today&classroom=${DEMO_CLASSROOM_ID}`, {
+      waitUntil: "networkidle",
+    });
+    await mobilePage.waitForSelector("[data-testid='today-hero']");
+    await mobilePage.screenshot({
+      path: path.join(runDir, "today-mobile.png"),
+      fullPage: true,
+    });
+
+    await desktopPage.goto(`${WEB_BASE}/?demo=true&tab=today&classroom=${DEMO_CLASSROOM_ID}`, {
+      waitUntil: "networkidle",
+    });
+    await desktopPage.waitForSelector("#panel-today:not([hidden])");
+
+    // ─── Layout assertions ───
+
+    // Desktop Today: grid layout with visible rail
+    const desktopTodayIsGrid = await desktopPage.evaluate(() => {
+      const panel = globalThis.document.querySelector(".today-panel--with-rail");
+      if (!panel) return false;
+      return globalThis.getComputedStyle(panel).display === "grid";
+    });
+    assert.ok(desktopTodayIsGrid, "Desktop Today should use grid layout");
+
+    const railVisible = await desktopPage.evaluate(() => {
+      const rail = globalThis.document.querySelector(".today-anchor-rail");
+      if (!rail) return false;
+      return globalThis.getComputedStyle(rail).display !== "none";
+    });
+    assert.ok(railVisible, "Desktop Today anchor rail should be visible");
+
+    // Mobile Today: rail hidden, hero brief visible above mobile nav, CTA above mobile nav
+    const mobileRailHidden = await mobilePage.evaluate(() => {
+      const rail = globalThis.document.querySelector(".today-anchor-rail");
+      if (!rail) return true; // absent counts as hidden
+      return globalThis.getComputedStyle(rail).display === "none";
+    });
+    assert.ok(mobileRailHidden, "Mobile Today anchor rail should be hidden");
+
+    const mobileBriefAboveNav = await mobilePage.evaluate(() => {
+      const brief = globalThis.document.querySelector(".today-hero__brief");
+      const nav = globalThis.document.querySelector(".mobile-nav");
+      if (!brief || !nav) return true; // skip if elements absent
+      return brief.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
+    });
+    assert.ok(mobileBriefAboveNav, "Mobile Today hero brief should appear above mobile nav");
+
+    const mobileCtaAboveNav = await mobilePage.evaluate(() => {
+      const cta = globalThis.document.querySelector(".today-hero__cta");
+      const nav = globalThis.document.querySelector(".mobile-nav");
+      if (!cta || !nav) return true; // skip if elements absent
+      return cta.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
+    });
+    assert.ok(mobileCtaAboveNav, "Mobile Today CTA should appear above mobile nav");
+
     await assertNoRuntimeErrors(desktopPage, desktopConsoleErrors, desktopPageErrors);
     await assertNoRuntimeErrors(tabletPage, tabletConsoleErrors, tabletPageErrors);
     await assertNoRuntimeErrors(darkPage, darkConsoleErrors, darkPageErrors);
@@ -171,6 +227,7 @@ async function main() {
       classroom: DEMO_CLASSROOM_ID,
       files: [
         "today-desktop.png",
+        "today-mobile.png",
         "differentiate-desktop.png",
         "tomorrow-plan-desktop.png",
         "tomorrow-plan-tablet.png",
@@ -186,7 +243,7 @@ async function main() {
       "utf8",
     );
 
-    assert.equal(manifest.files.length, 7, "Expected seven evidence screenshots");
+    assert.equal(manifest.files.length, 8, "Expected eight evidence screenshots");
     console.log(`PASS ui evidence captured at ${runDir}`);
   } finally {
     await desktopContext.close();

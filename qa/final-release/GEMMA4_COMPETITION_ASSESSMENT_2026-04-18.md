@@ -34,9 +34,11 @@ My competitive call: this can plausibly be a finalist or track winner if the sub
 Fresh checks completed in this session:
 
 - `npm run proof:check`: pass.
-- `npm run gemini:readycheck`: blocked as expected because API key is missing and hosted-run guard is disabled; latest hosted artifact remains passing.
+- `npm run gemini:readycheck`: blocked in the 2026-04-18 assessment session because the API key was missing and the hosted-run guard was disabled. This was superseded on 2026-04-20 by a passing readycheck and clean hosted gate rerun with the supplied AI Studio key.
 - Initial `npm run release:gate`: refused due Node version mismatch (`v20.19.5` instead of `.nvmrc` `v25.8.2`).
 - Rerun after `nvm use`: pass, mock mode, zero-cost enforced.
+- `2026-04-20` hosted refresh: `npm run gemini:readycheck` passed with the supplied AI Studio key and hosted-run guard enabled.
+- `2026-04-20` hosted refresh: `npm run release:gate:gemini` passed at `output/release-gate/2026-04-20T20-30-27-270Z-20246`; hosted eval summary `output/evals/2026-04-20-gemini/2026-04-20T20-30-27-270Z-20246-gemini-summary.json` passed `12/12` and browser smoke passed.
 - Latest mock release gate: `output/release-gate/2026-04-18T21-39-00-631Z-96778`.
 - `npm run eval:summary`: only current failure is known Ollama host preflight.
 - `npm run logs:summary`: 2,325 records, 0 retryable responses, 6 injection-suspected responses from expected prompt-injection tests.

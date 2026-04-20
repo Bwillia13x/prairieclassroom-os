@@ -1,0 +1,125 @@
+/* OpsWorkflowStepper — horizontal step indicator for Ops panels.
+   Uses existing token surfaces; no raw hex. */
+
+.ops-stepper {
+  flex-shrink: 0;
+  margin-block: var(--ds-space-3, var(--space-3));
+  padding-inline: var(--ds-space-2, var(--space-2));
+}
+
+.ops-stepper__list {
+  display: flex;
+  gap: var(--ds-space-1, var(--space-1));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.ops-stepper__step {
+  display: flex;
+  align-items: center;
+  gap: var(--ds-space-1, var(--space-1));
+  font-size: var(--ds-text-xs, var(--text-xs, 0.75rem));
+  color: var(--color-text-tertiary);
+  white-space: nowrap;
+  position: relative;
+}
+
+/* Connector line between steps */
+.ops-stepper__step + .ops-stepper__step::before {
+  content: "";
+  display: block;
+  width: var(--ds-space-3, var(--space-3));
+  height: 1px;
+  background: var(--color-border);
+  flex-shrink: 0;
+}
+
+.ops-stepper__step--completed + .ops-stepper__step::before,
+.ops-stepper__step--completed + .ops-stepper__step--active::before {
+  background: var(--color-text-secondary);
+}
+
+/* Number badge */
+.ops-stepper__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  font-size: 0.625rem;
+  font-weight: 600;
+  flex-shrink: 0;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text-tertiary);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.ops-stepper__step--active .ops-stepper__number {
+  background: var(--color-text);
+  color: var(--color-surface);
+  border-color: var(--color-text);
+}
+
+.ops-stepper__step--completed .ops-stepper__number {
+  background: var(--color-surface-muted);
+  color: var(--color-text-secondary);
+  border-color: var(--color-text-secondary);
+}
+
+/* Label */
+.ops-stepper__label {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.ops-stepper__step--active .ops-stepper__label {
+  color: var(--color-text);
+  font-weight: 600;
+}
+
+.ops-stepper__step--completed .ops-stepper__label {
+  color: var(--color-text-secondary);
+}
+
+/* Button variant for navigable steps */
+.ops-stepper__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-1, var(--space-1));
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  border-radius: var(--ds-radius-sm, 4px);
+}
+
+.ops-stepper__btn:hover .ops-stepper__label {
+  color: var(--color-text);
+  text-decoration: underline;
+}
+
+.ops-stepper__btn:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Indicator variant for non-navigable steps */
+.ops-stepper__indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ds-space-1, var(--space-1));
+}
+
+/* Narrow viewports: collapse labels, show numbers only */
+@media (max-width: 600px) {
+  .ops-stepper__label {
+    display: none;
+  }
+}

@@ -4,6 +4,8 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateTomorrowPlan, fetchPlanHistory } from "../api";
 import TeacherReflection from "../components/TeacherReflection";
+import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
+import NextStepBand from "../components/NextStepBand";
 import PlanViewer from "../components/PlanViewer";
 import { PlanStreakCalendar, PlanCoverageRadar } from "../components/DataVisualizations";
 import SkeletonLoader from "../components/SkeletonLoader";
@@ -172,6 +174,8 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
         whatIsBlocked="Generating a new Tomorrow Plan is reserved for the classroom's permanent teacher."
       />
 
+      <OpsWorkflowStepper activeTab="tomorrow-plan" />
+
       <WorkspaceLayout
         splitState={displayResult ? "output" : "input"}
         rail={(
@@ -247,6 +251,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   actions={actions}
                   contextLabel="Tomorrow plan output"
                 />
+                <NextStepBand label="Open Forecast" targetTab="complexity-forecast" />
                 {/* 2026-04-19 OPS audit phase 3: HistoryDrawer moved out of
                     the rail into the canvas footer as a reference surface. */}
                 <HistoryDrawer<TomorrowPlan>

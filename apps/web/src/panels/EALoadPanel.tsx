@@ -5,6 +5,7 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEALoadProfile } from "../api";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
+import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import { formatTargetDate } from "../utils/formatTargetDate";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
@@ -272,7 +273,10 @@ export default function EALoadPanel() {
         }}
       />
 
+      <OpsWorkflowStepper activeTab="ea-load" />
+
       <WorkspaceLayout
+        splitState={result ? "output" : "input"}
         rail={(
           <EALoadForm
             selectedClassroom={activeClassroom}

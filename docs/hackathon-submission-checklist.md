@@ -4,10 +4,10 @@ Repo-side checklist for preparing PrairieClassroom OS for the Gemma 4 Good Hacka
 
 ## Current status
 
-Checked against the repo on 2026-04-18.
+Checked against the repo on 2026-04-20.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-18T21-39-00-631Z-96778`
-- Hosted Gemma 4 proof lane: passing on synthetic/demo data
+- Mock structural gate: passing at `output/release-gate/2026-04-19T20-46-03-888Z-31952`
+- Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-20T20-30-27-270Z-20246`
 - Ollama proof on this machine: not proven
 - Kaggle writeup draft: aligned to the hosted proof lane and current code inventory
 - Public-video script: aligned to the hosted proof lane
@@ -21,6 +21,7 @@ Checked against the repo on 2026-04-18.
   - hosted Gemma 4 is the submission proof lane
   - Ollama is the intended privacy-first deployment path
 - Kept the current proof references anchored to checked-in artifacts.
+- Refreshed the hosted Gemini proof on 2026-04-20 with the supplied AI Studio key on the API-key-only lane.
 - Added roster-scoped memory filtering and reset the demo SQLite memory so stale local test records cannot leak into retrieval citations.
 - Refreshed UI evidence screenshots on 2026-04-18.
 - Added a judge-safe `?demo=true` first-run path that skips onboarding and role-selection modals for the demo classroom.
@@ -87,9 +88,9 @@ npm run release:gate
 If you refresh the hosted proof before submission, run:
 
 ```bash
-npm run gemini:readycheck
 export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
 export PRAIRIE_ENABLE_GEMINI_RUNS=true
+npm run gemini:readycheck
 npm run release:gate:gemini
 npm run eval:summary
 npm run logs:summary

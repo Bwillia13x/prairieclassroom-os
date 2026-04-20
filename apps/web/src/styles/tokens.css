@@ -369,12 +369,19 @@
   --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
   --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
 
+  /* Elastic / bounce — premium micro-interaction curves */
+  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-snap: cubic-bezier(0.5, 0, 0, 1);
+  --ease-out-back: cubic-bezier(0.34, 1.3, 0.64, 1);
+
   --motion-letterpress: 200ms;
   --ease-letterpress: cubic-bezier(0.25, 0.1, 0.25, 1);
   --ease-press: cubic-bezier(0.3, 0.7, 0.4, 1);
 
   --motion-micro: 100ms;
   --motion-hover: 180ms;
+  --motion-stagger-step: 40ms;
   --duration-fast: var(--motion-fast);
 
   --shadow-press: 0 0.5px 1px var(--_shadow-sm-a);

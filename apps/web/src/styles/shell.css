@@ -1,15 +1,19 @@
 .app-shell {
-  /* Height of the sticky header card (~120px inner). Consumers add
-     space-3 for breathing room, reaching the full 136px reach. */
-  --shell-sticky-offset: 7.5rem;
+  /* True app-shell: viewport-locked flex column. The header sits at
+     the top, app-main fills the remainder, footer hugs the bottom.
+     No outer document scroll — each content pane manages its own. */
+  --shell-sticky-offset: 0px;
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
   max-width: var(--app-max-width);
   margin: 0 auto;
-  padding: var(--space-3) var(--space-6) var(--space-9);
+  padding: var(--space-2) var(--space-3) 0;
+  overflow: hidden;
 }
 
 .app-header {
-  position: sticky;
-  top: 0;
+  flex-shrink: 0;
   z-index: 60;
   padding-top: var(--space-3);
 }
@@ -780,35 +784,40 @@
    See docs/dark-mode-contract.md §1 ("material hierarchy"). */
 .app-main {
   position: relative;
+  /* Fill remaining viewport after header + footer. */
+  flex: 1 1 0%;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  margin-top: var(--space-4);
-  /* Keeps scrollIntoView/skip-link landings clear of the sticky shell. */
-  scroll-margin-top: calc(var(--shell-sticky-offset) + var(--space-3));
-  /* Explicit per-side padding so the top edge consumes the canonical
-     --page-content-padding-top token (audit fix B2). Horizontal and
-     bottom retain the prior --space-6 (40px) workspace breathing room. */
+  margin-top: var(--space-2);
+  /* app-main is the sole scroll container at all sizes. Individual
+     panels are overflow:visible; split-layout rail/canvas manage
+     their own independent scroll within the constrained grid cells. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
   padding: var(--page-content-padding-top) var(--space-6) var(--space-6);
   background: var(--color-workspace);
-  /* Lighter border + softer ambient (audit fix B1) keeps the canvas →
-     workspace → surface stack documented in docs/dark-mode-contract.md §1
-     while reducing the "card on a card" visual weight. */
-  border: 1px solid color-mix(in srgb, var(--color-border) 30%, transparent);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-sm);
-}
-
-.app-main::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  border-radius: inherit;
-  box-shadow: var(--inner-stroke);
+  border: 1px solid color-mix(in srgb, var(--color-border) 16%, transparent);
+  border-bottom: none;
+  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+  box-shadow:
+    0 -1px 2px light-dark(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.15)),
+    0 -4px 16px light-dark(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.12));
+  scroll-padding-top: var(--space-3);
 }
 
 .app-main > [role="tabpanel"]:not([hidden]) {
+  /* Panel fills the viewport minimum but can grow taller for long
+     content. app-main handles the scroll; panels stay overflow-visible
+     so split-layout rail/canvas get their height from the grid cell. */
+  flex: none;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow-y: visible;
+  overflow-x: visible;
   animation: panel-enter var(--motion-base) var(--ease-standard) both;
   animation-delay: 60ms;
 }
@@ -842,9 +851,6 @@
 }
 
 @media (max-width: 1100px) {
-  .app-shell {
-    --shell-sticky-offset: 9rem;
-  }
 
   /* Explicit 2-row layout at tablet:
      row 1  →  brand · (spacer) · actions-cluster (incl. role pill)
@@ -885,13 +891,19 @@
 
 @media (max-width: 760px) {
   .app-shell {
-    --shell-sticky-offset: 8rem;
-    padding: var(--space-3) var(--space-3) 7.75rem;
+    padding: var(--space-2) var(--space-2) 0;
   }
 
   .app-main {
     padding: var(--space-4);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+
+  /* Mobile: panels flow naturally in a single column.
+     app-main is already the scroll container. */
+  .app-main > [role="tabpanel"]:not([hidden]) {
+    min-height: auto;
+    flex: none;
   }
 
   .app-header__inner {
@@ -905,12 +917,12 @@
 }
 
 @media (max-width: 600px) {
-  .app-shell {
-    --shell-sticky-offset: 5.75rem;
-  }
-
   .app-main {
+    /* Reserve fixed mobile-nav space inside the scroll container so
+       first-screen content can use the full viewport height while the
+       bottom of long panels still clears the nav. */
     padding: var(--space-3);
+    padding-bottom: calc(var(--space-3) + 7.75rem + env(safe-area-inset-bottom));
   }
 
   .app-header__inner {

@@ -31,8 +31,9 @@
 }
 
 @keyframes toast-slide-in {
-  0% { opacity: 0; transform: translateX(2rem) scale(0.95); }
-  60% { transform: translateX(-0.15rem) scale(1.005); }
+  0% { opacity: 0; transform: translateX(2rem) scale(0.94); }
+  45% { opacity: 1; transform: translateX(-0.2rem) scale(1.008); }
+  70% { transform: translateX(0.06rem) scale(0.999); }
   100% { opacity: 1; transform: translateX(0) scale(1); }
 }
 

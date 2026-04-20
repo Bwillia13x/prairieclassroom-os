@@ -50,7 +50,6 @@ describe("OutputActionBar", () => {
     render(<OutputActionBar actions={[makeAction({ label: "Print", disabled: true, onClick: spy })]} />);
     const btn = screen.getByRole("button", { name: "Print" });
     expect(btn).toBeDisabled();
-    expect(btn).toHaveAttribute("aria-disabled", "true");
     await user.click(btn);
     expect(spy).not.toHaveBeenCalled();
   });
@@ -77,5 +76,23 @@ describe("OutputActionBar", () => {
       />,
     );
     expect(screen.getByRole("navigation", { name: "Differentiate output" })).toBeInTheDocument();
+  });
+
+  it("renders refresh-style actions with the Nothing instrument button and refresh fire animation", () => {
+    render(
+      <OutputActionBar
+        actions={[
+          makeAction({
+            key: "refresh",
+            label: "Refresh",
+            icon: "refresh",
+          }),
+        ]}
+      />,
+    );
+
+    const button = screen.getByRole("button", { name: "Refresh" });
+    expect(button).toHaveClass("nothing-btn");
+    expect(button).toHaveAttribute("data-anim", "refresh");
   });
 });

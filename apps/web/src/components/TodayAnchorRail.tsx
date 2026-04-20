@@ -33,6 +33,13 @@ export default function TodayAnchorRail({ anchors }: Props) {
       .filter((el): el is HTMLElement => el !== null);
     if (targets.length === 0) return;
 
+    /* The scroll container is the tab panel wrapping this page, not
+       the viewport.  Use it as the IntersectionObserver root so the
+       active-section highlight stays accurate even when the panel
+       doesn't exactly fill the screen. */
+    const scrollRoot =
+      targets[0].closest<HTMLElement>('[role="tabpanel"]') ?? null;
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
@@ -40,7 +47,7 @@ export default function TodayAnchorRail({ anchors }: Props) {
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
         if (visible[0]) setActiveId(visible[0].target.id);
       },
-      { rootMargin: "-20% 0px -60% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
+      { root: scrollRoot, rootMargin: "-20% 0px -60% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
     for (const t of targets) observer.observe(t);
     return () => observer.disconnect();

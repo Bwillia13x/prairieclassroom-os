@@ -55,6 +55,10 @@
   flex: 1;
 }
 
+.student-roster__spinner {
+  flex-shrink: 0;
+}
+
 /* Attention badge — pill shape with warning colors */
 .student-roster__badge {
   display: inline-flex;
@@ -109,14 +113,19 @@
   color: var(--color-text);
   transition:
     border-color var(--motion-fast) var(--ease-standard),
-    box-shadow var(--motion-fast) var(--ease-standard),
-    transform var(--motion-fast) var(--ease-standard);
+    box-shadow var(--motion-fast) var(--ease-spring),
+    transform var(--motion-fast) var(--ease-spring);
 }
 
 .student-card:hover {
   border-color: var(--color-border-accent);
   box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.005);
+}
+
+.student-card:active {
+  transform: translateY(0.5px) scale(0.992);
+  transition-duration: 80ms;
 }
 
 .student-card:focus-visible {

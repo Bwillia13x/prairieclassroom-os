@@ -81,26 +81,8 @@ export function usePaletteEntries({
       });
     }
 
-    const actions: Array<{ label: string; tab: ActiveTab; keywords: string }> = [
-      { label: "Draft family message", tab: "family-message", keywords: "message family parent send" },
-      { label: "Log intervention", tab: "log-intervention", keywords: "log intervention note behavior" },
-      { label: "Differentiate a lesson", tab: "differentiate", keywords: "differentiate variant adapt lesson" },
-      { label: "Forecast tomorrow's complexity", tab: "complexity-forecast", keywords: "forecast tomorrow complexity" },
-      { label: "Brief the EA", tab: "ea-briefing", keywords: "ea briefing assistant" },
-      { label: "Balance EA load", tab: "ea-load", keywords: "ea load balance schedule" },
-      { label: "Build a sub packet", tab: "survival-packet", keywords: "sub substitute packet survival" },
-      { label: "Simplify text for a student", tab: "language-tools", keywords: "simplify language vocab translate" },
-    ];
-    for (const a of actions) {
-      entries.push({
-        kind: "action",
-        id: `action:${a.tab}:${a.label}`,
-        label: a.label,
-        keywords: [a.label, a.keywords, TAB_META[a.tab].group].join(" ").toLowerCase(),
-        onSelect: () => onNavigate?.(a.tab),
-      });
-    }
-
+    // Debt-backed per-student actions appear before generic actions so the
+    // command palette surfaces the most relevant daily workflow items first.
     if (debtRegister) {
       const seen = new Set<string>();
       for (const item of debtRegister.items) {
@@ -114,7 +96,8 @@ export function usePaletteEntries({
               kind: "action",
               id: `action:message:${ref}`,
               label: `Draft family message for ${ref}`,
-              keywords: `message family ${ref}`.toLowerCase(),
+              group: "Today",
+              keywords: `today debt unapproved message family ${ref}`.toLowerCase(),
               onSelect: () => {
                 onMessagePrefill?.({ student_ref: ref, reason: "", message_type: "routine_update" });
               },
@@ -125,7 +108,8 @@ export function usePaletteEntries({
               kind: "action",
               id: `action:log:${ref}`,
               label: `Log follow-up for ${ref}`,
-              keywords: `log follow-up intervention ${ref}`.toLowerCase(),
+              group: "Today",
+              keywords: `today debt stale follow-up intervention ${ref}`.toLowerCase(),
               onSelect: () => {
                 onInterventionPrefill?.({ student_ref: ref, suggested_action: "", reason: "follow-up from Today" });
               },
@@ -133,6 +117,28 @@ export function usePaletteEntries({
           }
         }
       }
+    }
+
+    const actions: Array<{ label: string; tab: ActiveTab; keywords: string }> = [
+      { label: "Start lesson prep", tab: "differentiate", keywords: "prep start lesson differentiate variant adapt" },
+      { label: "Simplify text", tab: "language-tools", keywords: "prep simplify language vocab translate" },
+      { label: "Log intervention", tab: "log-intervention", keywords: "ops log intervention note behavior" },
+      { label: "Plan tomorrow", tab: "tomorrow-plan", keywords: "ops plan tomorrow support priorities" },
+      { label: "Forecast tomorrow", tab: "complexity-forecast", keywords: "ops forecast tomorrow complexity risk" },
+      { label: "Prepare EA briefing", tab: "ea-briefing", keywords: "ops ea briefing assistant prepare" },
+      { label: "Balance EA load", tab: "ea-load", keywords: "ops ea load balance schedule" },
+      { label: "Build a sub packet", tab: "survival-packet", keywords: "ops sub substitute packet survival" },
+      { label: "Draft family message", tab: "family-message", keywords: "review message family parent send draft" },
+      { label: "Review support patterns", tab: "support-patterns", keywords: "review support patterns themes analysis" },
+    ];
+    for (const a of actions) {
+      entries.push({
+        kind: "action",
+        id: `action:${a.tab}:${a.label}`,
+        label: a.label,
+        keywords: [a.label, a.keywords, TAB_META[a.tab].group].join(" ").toLowerCase(),
+        onSelect: () => onNavigate?.(a.tab),
+      });
     }
 
     return entries;

@@ -85,10 +85,12 @@ describe("SurvivalPacketPanel OutputActionBar", () => {
         <SurvivalPacketPanel />
       </AppContext.Provider>,
     );
+    expect(screen.getByRole("navigation", { name: "Survival packet quick actions" })).toBeInTheDocument();
     expect(screen.getByRole("navigation", { name: "Survival packet output" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Print" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Copy" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Download" })).toBeInTheDocument();
+    // Print + Download appear in both bars; Copy remains in the full bottom bar only.
+    expect(screen.getAllByRole("button", { name: "Print" }).length).toBe(2);
+    expect(screen.getAllByRole("button", { name: "Copy" }).length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByRole("button", { name: "Download" }).length).toBe(2);
     expect(screen.queryByRole("button", { name: "Save to Tomorrow" })).not.toBeInTheDocument();
   });
 
