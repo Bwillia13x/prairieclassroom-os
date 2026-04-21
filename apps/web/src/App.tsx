@@ -1167,16 +1167,31 @@ export default function App() {
                     ref={measureRef}
                     role="presentation"
                   >
-                    {secondaryTabs.map((tab) => (
-                      <span
-                        key={tab}
-                        className="shell-nav__tab"
-                        // Keep natural width close to real: same label text,
-                        // same font, but no interactivity and no event surface.
-                      >
-                        <span>{TAB_META[tab].label}</span>
-                      </span>
-                    ))}
+                    {secondaryTabs.map((tab) => {
+                      const tabIndex1Based = visibleTabs.indexOf(tab) + 1;
+                      const shortcutKey =
+                        tabIndex1Based <= 9
+                          ? String(tabIndex1Based)
+                          : tabIndex1Based === 10
+                            ? "0"
+                            : null;
+                      return (
+                        <span
+                          key={tab}
+                          className="shell-nav__tab"
+                          // Keep natural width close to real: same label text,
+                          // same font, same kbd badge. No interactivity and no
+                          // event surface.
+                        >
+                          <span>{TAB_META[tab].label}</span>
+                          {shortcutKey ? (
+                            <kbd className="shell-nav__kbd" aria-hidden="true">
+                              {shortcutKey}
+                            </kbd>
+                          ) : null}
+                        </span>
+                      );
+                    })}
                   </div>
                 </div>
               ) : null}

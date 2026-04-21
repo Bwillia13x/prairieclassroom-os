@@ -534,7 +534,6 @@
     color-mix(in srgb, var(--color-surface-elevated) 0%, transparent),
     var(--color-surface-elevated)
   );
-  opacity: 0.5;
 }
 
 .shell-nav__tabs-frame[data-scrolled-start="true"]::before {

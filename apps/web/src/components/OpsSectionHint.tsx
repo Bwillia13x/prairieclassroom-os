@@ -42,8 +42,9 @@ export default function OpsSectionHint() {
         onClick={handleDismiss}
         type="button"
         aria-label="Dismiss Operations tip"
+        title="Dismiss Operations tip"
       >
-        Got it
+        <span aria-hidden="true">✕</span>
       </button>
     </div>
   );

@@ -167,14 +167,16 @@ export default function UsageInsightsPanel() {
                     Common workflows
                   </p>
                   <WorkflowFlowStrip flows={sessions.result.common_flows.slice(0, 5)} />
-                  <ol className="usage-insights-flow-list">
-                    {sessions.result.common_flows.slice(0, 5).map((flow, i) => (
-                      <li key={i}>
-                        {flow.sequence.map(formatPanelName).join(" \u2192 ")}
-                        <span className="usage-insights-flow-count">({flow.count}x)</span>
-                      </li>
-                    ))}
-                  </ol>
+                  {sessions.result.common_flows.slice(0, 5).some((f) => f.sequence.length > 1) && (
+                    <ol className="usage-insights-flow-list">
+                      {sessions.result.common_flows.slice(0, 5).map((flow, i) => (
+                        <li key={i}>
+                          {flow.sequence.map(formatPanelName).join(" \u2192 ")}
+                          <span className="usage-insights-flow-count">({flow.count}x)</span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
                 </>
               )}
             </>
