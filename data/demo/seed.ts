@@ -9,6 +9,7 @@ import {
   savePatternReport,
   saveFamilyMessage,
   approveFamilyMessage,
+  saveSession,
 } from "../../services/memory/store.js";
 import { closeAll } from "../../services/memory/db.js";
 
@@ -1058,6 +1059,86 @@ console.log("\nApproving family message...");
 approveFamilyMessage(CLASSROOM, familyMessage.draft_id);
 console.log(`  ✓ ${familyMessage.draft_id} — approved`);
 
+// ─── SESSION USAGE (drives Review → Usage Insights) ──────────────────────────
+// Seeded sessions mix realistic multi-panel teacher workflows so the Usage
+// Insights "Common workflows" strip demonstrates arrow-joined flows (not just
+// single-panel visits). The `common_flows` aggregator groups identical
+// `panels_visited` arrays and sorts by frequency, so repeating a sequence
+// boosts its rank.
+const sessions = [
+  // Morning triage flow — seeded 2x so it wins the #1 slot.
+  {
+    session_id: "sess-demo-001",
+    started_at: "2025-03-18T08:05:00.000Z",
+    ended_at: "2025-03-18T08:21:30.000Z",
+    panels_visited: ["today", "log-intervention", "tomorrow-plan"],
+    generations_triggered: [
+      { panel_id: "tomorrow-plan", prompt_class: "prepare_tomorrow_plan", timestamp: "2025-03-18T08:18:00.000Z" },
+    ],
+    feedback_count: 1,
+  },
+  {
+    session_id: "sess-demo-002",
+    started_at: "2025-03-19T08:02:00.000Z",
+    ended_at: "2025-03-19T08:19:00.000Z",
+    panels_visited: ["today", "log-intervention", "tomorrow-plan"],
+    generations_triggered: [
+      { panel_id: "tomorrow-plan", prompt_class: "prepare_tomorrow_plan", timestamp: "2025-03-19T08:16:00.000Z" },
+    ],
+    feedback_count: 1,
+  },
+  // Prep block — classic two-stop flow.
+  {
+    session_id: "sess-demo-003",
+    started_at: "2025-03-19T15:40:00.000Z",
+    ended_at: "2025-03-19T16:02:00.000Z",
+    panels_visited: ["differentiate", "language-tools"],
+    generations_triggered: [
+      { panel_id: "differentiate", prompt_class: "differentiate_material", timestamp: "2025-03-19T15:48:00.000Z" },
+      { panel_id: "language-tools", prompt_class: "generate_vocab_cards", timestamp: "2025-03-19T15:58:00.000Z" },
+    ],
+    feedback_count: 2,
+  },
+  // Friday wrap — weekly reflection + family follow-up.
+  {
+    session_id: "sess-demo-004",
+    started_at: "2025-03-21T15:10:00.000Z",
+    ended_at: "2025-03-21T15:28:00.000Z",
+    panels_visited: ["today", "support-patterns", "family-message"],
+    generations_triggered: [
+      { panel_id: "support-patterns", prompt_class: "detect_support_patterns", timestamp: "2025-03-21T15:18:00.000Z" },
+      { panel_id: "family-message", prompt_class: "draft_family_message", timestamp: "2025-03-21T15:25:00.000Z" },
+    ],
+    feedback_count: 1,
+  },
+  // Solo EA briefing — a tail single-panel visit for contrast.
+  {
+    session_id: "sess-demo-005",
+    started_at: "2025-03-20T08:35:00.000Z",
+    ended_at: "2025-03-20T08:42:00.000Z",
+    panels_visited: ["ea-briefing"],
+    generations_triggered: [
+      { panel_id: "ea-briefing", prompt_class: "generate_ea_briefing", timestamp: "2025-03-20T08:38:00.000Z" },
+    ],
+    feedback_count: 0,
+  },
+];
+
+console.log("\nSaving sessions...");
+for (const s of sessions) {
+  saveSession(CLASSROOM, {
+    id: s.session_id,
+    classroom_id: CLASSROOM,
+    session_id: s.session_id,
+    started_at: s.started_at,
+    ended_at: s.ended_at,
+    panels_visited: s.panels_visited,
+    generations_triggered: s.generations_triggered,
+    feedback_count: s.feedback_count,
+  });
+  console.log(`  ✓ ${s.session_id} — ${s.panels_visited.join(" → ")}`);
+}
+
 closeAll();
 
 console.log("\n" + "─".repeat(50));
@@ -1066,5 +1147,6 @@ console.log(`  Interventions:    ${interventions.length}`);
 console.log(`  Plans:            ${plans.length}`);
 console.log(`  Pattern reports:  1`);
 console.log(`  Family messages:  1 (approved)`);
+console.log(`  Sessions:         ${sessions.length}`);
 console.log(`\n  DB: data/memory/${CLASSROOM}.sqlite`);
 console.log("─".repeat(50) + "\n");

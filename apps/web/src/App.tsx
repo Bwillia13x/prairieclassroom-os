@@ -55,6 +55,7 @@ import OpsSectionHint from "./components/OpsSectionHint";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
+import { computeTabScrollFadeState } from "./utils/tabScrollFade";
 import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
@@ -845,9 +846,11 @@ export default function App() {
       const c = tabsRef.current;
       const f = tabsFrameRef.current;
       if (!c || !f) return;
-      const scrollable = c.scrollWidth - c.clientWidth > 1;
-      const atStart = !scrollable || c.scrollLeft <= 0;
-      const atEnd = !scrollable || c.scrollLeft + c.clientWidth >= c.scrollWidth - 1;
+      const { atStart, atEnd } = computeTabScrollFadeState(
+        c.scrollLeft,
+        c.scrollWidth,
+        c.clientWidth,
+      );
       if (!atStart) {
         f.setAttribute("data-scrolled-start", "true");
       } else {
