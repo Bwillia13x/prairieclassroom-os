@@ -105,6 +105,7 @@ export default function App() {
   const [paletteOpen, setPaletteOpen] = useState(false);
   const groupsRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const tabsFrameRef = useRef<HTMLDivElement>(null);
   // Hidden mirror row used purely for overflow measurement. Holds the same
   // tabs as the visible tablist but never clips — so we can read each tab's
   // natural width even after the real tablist has started truncating.
@@ -829,6 +830,49 @@ export default function App() {
     };
   }, [activeGroup, secondaryTabs]);
 
+  // Scroll-indicator fades — toggle data-scrolled-start/-end on the frame so
+  // the ::before/::after gradients appear only when the tabstrip has actually
+  // been scrolled past an edge. Defensive: with the "More ▾" overflow menu,
+  // the tabstrip rarely scrolls, but when it does these fades cue the user
+  // that more tabs are off-canvas. Re-runs when the active group swaps the
+  // tab list.
+  useLayoutEffect(() => {
+    const container = tabsRef.current;
+    const frame = tabsFrameRef.current;
+    if (!container || !frame) return;
+
+    function update() {
+      const c = tabsRef.current;
+      const f = tabsFrameRef.current;
+      if (!c || !f) return;
+      const scrollable = c.scrollWidth - c.clientWidth > 1;
+      const atStart = !scrollable || c.scrollLeft <= 0;
+      const atEnd = !scrollable || c.scrollLeft + c.clientWidth >= c.scrollWidth - 1;
+      if (!atStart) {
+        f.setAttribute("data-scrolled-start", "true");
+      } else {
+        f.removeAttribute("data-scrolled-start");
+      }
+      if (!atEnd) {
+        f.setAttribute("data-scrolled-end", "true");
+      } else {
+        f.removeAttribute("data-scrolled-end");
+      }
+    }
+
+    update();
+    container.addEventListener("scroll", update, { passive: true });
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(update);
+      ro.observe(container);
+    }
+    return () => {
+      container.removeEventListener("scroll", update);
+      ro?.disconnect();
+    };
+  }, [activeGroup, secondaryTabs, overflowCount]);
+
   // WAI-ARIA arrow key navigation within the tablist
   function handleTabKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
     const currentIdx = secondaryTabs.indexOf(activeTab);
@@ -1093,7 +1137,7 @@ export default function App() {
               </div>
 
               {showSecondaryTabs ? (
-                <div className="shell-nav__tabs-frame" key={activeGroup}>
+                <div className="shell-nav__tabs-frame" key={activeGroup} ref={tabsFrameRef}>
                   <div className="shell-nav__tabs" role="tablist" aria-label={`${activeGroupMeta.label} tools`} ref={tabsRef} onKeyDown={handleTabKeyDown}>
                     {(() => {
                       const visibleSecondaryTabs = overflowCount > 0

@@ -28,15 +28,22 @@ PrairieClassroom OS is a teacher- and EA-facing classroom complexity copilot for
 - Urban-mirror measurement scaffold for responsive Ops tab overflow.
 
 ### Polish done this session (2026-04-21)
+
+**Round 1 — primary UI/UX fixes**
 - **Ops intro banner dismiss affordance**: `OpsSectionHint` was still rendering the text `Got it` inside a 1.5rem × 1.5rem slot whose CSS was migrated during audit #12 to expect a `✕` icon. Replaced the text with `<span aria-hidden>✕</span>`; kept the `Dismiss Operations tip` aria-label. (`apps/web/src/components/OpsSectionHint.tsx`)
 - **Ops tab overflow detection**: The hidden width-measurement mirror was rendering label-only spans while the real tabs include a `<kbd>` shortcut badge. At 1920×900 that undercounted tab widths by ~80-130px so the "More ▾" trigger never appeared, and `SUB PACKET 9` bled past the container's right edge. Added a matching `<kbd aria-hidden>` to each mirror tab so measured widths match the live tabs. Overflow now correctly collapses `EA LOAD BALANCE` + `SUB PACKET` into the "MORE ▾" menu when the Ops group doesn't fit. (`apps/web/src/App.tsx`)
-- **Always-on right fade obscuring last tab**: `.shell-nav__tabs-frame::after` defaulted to `opacity: 0.5` and was never toggled on (no `data-scrolled-end` wiring), so it always washed out the trailing tab. Zeroed its default opacity to match `::before`; the scroll-indicator becomes dead CSS that a future scroll observer can re-enable without re-tuning. (`apps/web/src/styles/shell.css`)
+- **Always-on right fade obscuring last tab**: `.shell-nav__tabs-frame::after` defaulted to `opacity: 0.5` and was never toggled on (no `data-scrolled-end` wiring), so it always washed out the trailing tab. Zeroed its default opacity to match `::before`. (`apps/web/src/styles/shell.css`)
 - **Usage Insights duplicate workflow list**: `UsageInsightsPanel` rendered the same `common_flows` data twice — a `WorkflowFlowStrip` and an ordered list — which looked redundant for the trivial/single-step flows that dominate demo and early-pilot data. Hid the `<ol>` when every flow is a single step; keep it for multi-step flows where the arrow sequence adds information. (`apps/web/src/panels/UsageInsightsPanel.tsx`)
+
+**Round 2 — follow-ups**
+- **Scroll-indicator fade wiring**: Added a `tabsFrameRef` + scroll / ResizeObserver listener on `.shell-nav__tabs` that toggles `data-scrolled-start` / `data-scrolled-end` on `.shell-nav__tabs-frame` so the `::before` / `::after` gradient fades appear only when the tabstrip is actually scrolled past an edge. Verified via playwright: `scrollLeft=500` shows both fades, `scrollLeft=scrollWidth` shows only the start fade, `scrollLeft=0` shows neither. (`apps/web/src/App.tsx`)
+- **Regression test for Usage Insights suppression**: Added `UsageInsightsPanel.workflowPatterns.test.tsx` with 3 cases — all-single-step flows hide the `<ol>`; mixed single + multi-step renders the `<ol>`; any multi-step flow renders its arrow-joined sequence. (`apps/web/src/panels/__tests__/UsageInsightsPanel.workflowPatterns.test.tsx`)
+- **Vite dev-server allowedHosts**: Added the Emergent preview hostname suffixes to `server.allowedHosts` so `npm run dev` can be accessed through the preview proxy without the Cloudflare tunnel choking with a 403 "Blocked request" page. (`apps/web/vite.config.ts`)
 
 ### Validation results after polish
 - `npm run lint` — PASS
 - `npm run typecheck` — PASS
-- `npm run test` — **158 files / 1779 tests PASS**
+- `npm run test` — **159 files / 1782 tests PASS** (+3 new regression tests)
 - `npm run test:python` — **69 tests PASS**
 - `npm run check:contrast` — all 80 pairs meet WCAG AA ✓
 - `npm run system:inventory:check` — canonical claims in sync
@@ -48,14 +55,13 @@ PrairieClassroom OS is a teacher- and EA-facing classroom complexity copilot for
 
 ## Prioritized backlog
 
-### P1 — ready if user wants
-- Re-enable the horizontal scroll-indicator fades on `.shell-nav__tabs-frame` by wiring `data-scrolled-start` / `data-scrolled-end` from the tabs scroll event (now that the default `::after` opacity is 0, this becomes additive).
-- Add a `UsageInsightsPanel.workflowPatterns.test.tsx` covering the new single-step flow suppression branch.
+### P1 — candidates for next session
+- Add a visual test (playwright or vitest + jsdom) asserting that `data-scrolled-start` / `data-scrolled-end` flip on scroll, so the fade wiring is regression-guarded.
+- Multi-step `common_flows` in the seeded demo data so the restored `<ol>` in Usage Insights also gets exercised in a browser smoke test.
 
 ### P2 — deferred
 - Hosted-proof refresh (Gemini lane) to clear `proof:check` drift — requires paid API budget.
 - Node upgrade to v25 to unlock `npm run release:gate` — host-image work.
-- Multi-step `common_flows` demo data so the restored `<ol>` gets exercised in the demo classroom.
 
 ## Next action items
 - Hand back to user for review; await direction on the P1 items or further UI polish.
