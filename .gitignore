@@ -72,3 +72,12 @@ data/memory/*.sqlite-shm
 qa/demo-script/screenshots/
 qa/demo-script/videos/
 qa/demo-script/flows/
+-e 
+# Environment and credential files
+.env
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
