@@ -6,8 +6,8 @@ Repo-side checklist for preparing PrairieClassroom OS for the Gemma 4 Good Hacka
 
 Checked against the repo on 2026-04-20.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-19T20-46-03-888Z-31952`
-- Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-20T20-30-27-270Z-20246`
+- Mock structural gate: passing at `output/release-gate/2026-04-21T05-10-48-317Z-50710`
+- Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-21T05-13-43-243Z-52665`
 - Ollama proof on this machine: not proven
 - Kaggle writeup draft: aligned to the hosted proof lane and current code inventory
 - Public-video script: aligned to the hosted proof lane
@@ -21,7 +21,7 @@ Checked against the repo on 2026-04-20.
   - hosted Gemma 4 is the submission proof lane
   - Ollama is the intended privacy-first deployment path
 - Kept the current proof references anchored to checked-in artifacts.
-- Refreshed the hosted Gemini proof on 2026-04-20 with the supplied AI Studio key on the API-key-only lane.
+- Refreshed the hosted Gemini proof onwith the supplied AI Studio key on the API-key-only lane.
 - Added roster-scoped memory filtering and reset the demo SQLite memory so stale local test records cannot leak into retrieval citations.
 - Refreshed UI evidence screenshots on 2026-04-18.
 - Added a judge-safe `?demo=true` first-run path that skips onboarding and role-selection modals for the demo classroom.

@@ -232,12 +232,24 @@ describe("SessionSummarySchema", () => {
       common_flows: [
         { sequence: ["today", "tomorrow-plan", "differentiate"], count: 5 },
       ],
+      transition_counts: [
+        { from_panel: "today", to_panel: "tomorrow-plan", count: 6 },
+      ],
+      terminal_counts: [
+        { panel_id: "family-message", count: 3 },
+      ],
       panel_time_distribution: {
         today: 0.3,
         "tomorrow-plan": 0.25,
         differentiate: 0.2,
       },
       generations_per_session: 3.2,
+      today_workflow_nudge: {
+        week: "2026-W16",
+        is_current_week: true,
+        sequence: ["today", "log-intervention", "tomorrow-plan"],
+        count: 4,
+      },
     });
     expect(result.success).toBe(true);
   });

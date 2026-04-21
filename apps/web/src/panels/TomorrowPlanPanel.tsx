@@ -19,6 +19,8 @@ import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
+import DrillDownDrawer from "../components/DrillDownDrawer";
+import { CoverageTimeline } from "../components/TriageSurfaces";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useRole } from "../hooks/useRole";
@@ -30,7 +32,7 @@ import {
 import { useHistory } from "../hooks/useHistory";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
-import type { TomorrowPlanResponse, TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
+import type { DrillDownContext, TomorrowPlanResponse, TomorrowPlan, FamilyMessagePrefill, InterventionPrefill } from "../types";
 
 interface Props {
   onFollowupClick: (prefill: FamilyMessagePrefill) => void;
@@ -38,11 +40,12 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<TomorrowPlanResponse | null>(null);
+  const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
 
   const plans14d = useMemo(() => {
     const now = Date.now();
@@ -86,6 +89,32 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   );
 
   const displayResult = result ?? historicalResult;
+
+  function handleTimelineBlockClick(index: number) {
+    const forecastBlock = latestTodaySnapshot?.latest_forecast?.blocks[index];
+    if (forecastBlock) {
+      setDrillDown({ type: "forecast-block", blockIndex: index, block: forecastBlock });
+      return;
+    }
+
+    const scheduleBlock = profile?.schedule?.[index];
+    if (!scheduleBlock) return;
+    const matchingWatchpoints = (displayResult?.plan.transition_watchpoints ?? latestTodaySnapshot?.latest_plan?.transition_watchpoints ?? [])
+      .filter((watchpoint) => {
+        const text = `${scheduleBlock.time_slot} ${scheduleBlock.activity}`.toLowerCase();
+        return text.includes(watchpoint.time_or_activity.toLowerCase());
+      })
+      .map((watchpoint) => watchpoint.risk_description);
+
+    if (matchingWatchpoints.length > 0) {
+      setDrillDown({
+        type: "plan-coverage-section",
+        section: "watchpoints",
+        label: `${scheduleBlock.time_slot} · ${scheduleBlock.activity}`,
+        items: matchingWatchpoints,
+      });
+    }
+  }
 
   const actions = useMemo<OutputAction[]>(() => {
     if (!displayResult) return [];
@@ -176,6 +205,15 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
 
       <OpsWorkflowStepper activeTab="tomorrow-plan" />
 
+      <CoverageTimeline
+        title="Tomorrow plan coverage"
+        schedule={profile?.schedule}
+        forecastBlocks={latestTodaySnapshot?.latest_forecast?.blocks}
+        watchpoints={displayResult?.plan.transition_watchpoints ?? latestTodaySnapshot?.latest_plan?.transition_watchpoints}
+        unresolvedFollowups={latestTodaySnapshot?.debt_register.item_count_by_category.stale_followup ?? 0}
+        onBlockClick={handleTimelineBlockClick}
+      />
+
       <WorkspaceLayout
         splitState={displayResult ? "output" : "input"}
         rail={(
@@ -204,15 +242,19 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                 : <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
             ) : null}
             {!loading && displayResult === null && !error ? (
-              /* The real plan renders 4+ regions (priorities, prep,
-                 differentiation, family follow-ups). The preview
-                 archetype hard-codes 3 skeleton cards — accept the
-                 under-promise for now; revisit when EmptyStateCard
-                 picks up an optional `count` prop. */
-              <EmptyStateCard
-                variant="preview"
-                label="Tomorrow plan preview"
-              />
+              <>
+                <PlanCoverageRadar
+                  watchpoints={3}
+                  priorities={2}
+                  eaActions={2}
+                  prepItems={3}
+                  familyFollowups={1}
+                />
+                <EmptyStateCard
+                  variant="preview"
+                  label="Tomorrow plan preview"
+                />
+              </>
             ) : null}
             {displayResult ? (
               <>
@@ -268,6 +310,17 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
             ) : null}
           </div>
         )}
+      />
+      <DrillDownDrawer
+        context={drillDown}
+        onClose={() => setDrillDown(null)}
+        onNavigate={(tab) => {
+          setDrillDown(null);
+          setActiveTab(tab);
+        }}
+        onContextChange={setDrillDown}
+        onInterventionPrefill={onInterventionClick}
+        onMessagePrefill={onFollowupClick}
       />
     </section>
   );

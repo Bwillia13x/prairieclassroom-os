@@ -4,7 +4,7 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 
 ## Current State
 
-- **Mock gate:** green at `output/release-gate/2026-04-19T20-46-03-888Z-31952`
+- **Mock gate:** green at `output/release-gate/2026-04-21T05-10-48-317Z-50710`
 - **Hosted Gemini proof lane:** passing on the API-key-only synthetic/demo lane
 - **Ollama privacy-first lane:** blocked on host capability on the current machine
 - **Paid Vertex lane:** intentionally not run in the zero-cost sprint
@@ -14,18 +14,18 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 - **Models used:** `gemma-4-26b-a4b-it` (live), `gemma-4-31b-it` (planning)
 - **Hosted readycheck:** passed with the supplied AI Studio key and explicit run guard
 - **Curated hosted eval suite:** `12/12` passed
-- **Full hosted release gate:** passed at `output/release-gate/2026-04-20T20-30-27-270Z-20246`
+- **Full hosted release gate:** passed at `output/release-gate/2026-04-21T05-13-43-243Z-52665`
 - **What this proves:** real hosted Gemma 4 execution on synthetic/demo classroom data for the curated proof suite, API smoke, and browser smoke without enabling the paid Vertex lane or any rented GPU path
 
 ## Artifact Trail
 
 - **Provider truth source:** `docs/eval-baseline.md`
-- **Latest passing mock gate:** `output/release-gate/2026-04-19T20-46-03-888Z-31952`
-- **Latest mock gate summary:** `output/release-gate/2026-04-19T20-46-03-888Z-31952/summary.json`
-- **Latest passing hosted gate:** `output/release-gate/2026-04-20T20-30-27-270Z-20246`
-- **Hosted release summary:** `output/release-gate/2026-04-20T20-30-27-270Z-20246/summary.json`
-- **Hosted eval summary:** `output/evals/2026-04-20-gemini/2026-04-20T20-30-27-270Z-20246-gemini-summary.json`
-- **Hosted eval artifacts:** `output/evals/2026-04-20-gemini`
+- **Latest passing mock gate:** `output/release-gate/2026-04-21T05-10-48-317Z-50710`
+- **Latest mock gate summary:** `output/release-gate/2026-04-21T05-10-48-317Z-50710/summary.json`
+- **Latest passing hosted gate:** `output/release-gate/2026-04-21T05-13-43-243Z-52665`
+- **Hosted release summary:** `output/release-gate/2026-04-21T05-13-43-243Z-52665/summary.json`
+- **Hosted eval summary:** `output/evals/2026-04-21-gemini/2026-04-21T05-13-43-243Z-52665-gemini-summary.json`
+- **Hosted eval artifacts:** `output/evals/2026-04-21-gemini`
 
 ## Privacy Boundary
 

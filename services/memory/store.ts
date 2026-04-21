@@ -14,6 +14,86 @@ import type { SessionRequest, SessionSummary } from "../../packages/shared/schem
 import type { RunTool } from "../../packages/shared/schemas/run.js";
 import { RUN_RETENTION_LIMIT } from "../../packages/shared/schemas/run.js";
 
+interface SessionRow {
+  started_at: string;
+  panels_visited: string;
+  generations_triggered: string;
+}
+
+interface FlowAggregate {
+  sequence: string[];
+  count: number;
+  last_seen_at: string;
+}
+
+const TODAY_NUDGE_SEQUENCE_LIMIT = 4;
+
+function getUtcIsoWeekKey(date: Date): string {
+  const working = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  const day = working.getUTCDay() || 7;
+  working.setUTCDate(working.getUTCDate() + 4 - day);
+  const yearStart = new Date(Date.UTC(working.getUTCFullYear(), 0, 1));
+  const dayOfYear = Math.floor((working.getTime() - yearStart.getTime()) / 86400000) + 1;
+  const week = Math.ceil(dayOfYear / 7);
+  return `${working.getUTCFullYear()}-W${String(week).padStart(2, "0")}`;
+}
+
+function trackFlow(
+  flowCounts: Map<string, FlowAggregate>,
+  sequence: string[],
+  startedAt: string,
+): void {
+  const key = sequence.join(" -> ");
+  const existing = flowCounts.get(key);
+  if (existing) {
+    existing.count += 1;
+    if (startedAt > existing.last_seen_at) {
+      existing.last_seen_at = startedAt;
+    }
+    return;
+  }
+  flowCounts.set(key, {
+    sequence,
+    count: 1,
+    last_seen_at: startedAt,
+  });
+}
+
+function pickTopFlow(flowCounts: Map<string, FlowAggregate>): { sequence: string[]; count: number } | null {
+  const ranked = [...flowCounts.values()].sort((a, b) => {
+    if (b.count !== a.count) return b.count - a.count;
+    if (b.last_seen_at !== a.last_seen_at) return b.last_seen_at.localeCompare(a.last_seen_at);
+    if (b.sequence.length !== a.sequence.length) return b.sequence.length - a.sequence.length;
+    return a.sequence.join(" -> ").localeCompare(b.sequence.join(" -> "));
+  });
+
+  if (ranked.length === 0) return null;
+  return {
+    sequence: ranked[0].sequence,
+    count: ranked[0].count,
+  };
+}
+
+function getTodayNudgeSequence(panels: string[]): string[] | null {
+  if (panels[0] !== "today") return null;
+
+  const sequence: string[] = [];
+  const seen = new Set<string>();
+
+  for (const panel of panels) {
+    if (!panel) continue;
+    if (sequence.length > 0 && panel === "today") break;
+    if (seen.has(panel)) break;
+
+    sequence.push(panel);
+    seen.add(panel);
+
+    if (sequence.length >= TODAY_NUDGE_SEQUENCE_LIMIT) break;
+  }
+
+  return sequence.length >= 2 ? sequence : null;
+}
+
 export function savePlan(
   classroomId: ClassroomId,
   plan: TomorrowPlan,
@@ -417,8 +497,11 @@ export function getSessionSummary(classroomId: ClassroomId): SessionSummary {
       total_sessions: 0,
       avg_duration_minutes: 0,
       common_flows: [],
+      transition_counts: [],
+      terminal_counts: [],
       panel_time_distribution: {},
       generations_per_session: 0,
+      today_workflow_nudge: null,
     };
   }
 
@@ -434,13 +517,19 @@ export function getSessionSummary(classroomId: ClassroomId): SessionSummary {
 
   // All sessions for flow analysis
   const allSessions = db
-    .prepare("SELECT panels_visited, generations_triggered FROM sessions WHERE classroom_id = ?")
-    .all(classroomId) as { panels_visited: string; generations_triggered: string }[];
+    .prepare("SELECT started_at, panels_visited, generations_triggered FROM sessions WHERE classroom_id = ?")
+    .all(classroomId) as SessionRow[];
 
   // Common flows: count occurrences of panel visit sequences
   const flowCounts = new Map<string, { sequence: string[]; count: number }>();
+  const todayFlowCountsByWeek = new Map<string, Map<string, FlowAggregate>>();
+  const transitionCounts = new Map<string, { from_panel: string; to_panel: string; count: number }>();
+  const terminalCounts = new Map<string, number>();
   const panelVisitCounts: Record<string, number> = {};
   let totalGenerations = 0;
+  let latestTodayWeekKey: string | null = null;
+  let latestTodayWeekSeenAt: string | null = null;
+  const currentWeekKey = getUtcIsoWeekKey(new Date());
 
   for (const sess of allSessions) {
     const panels: string[] = JSON.parse(sess.panels_visited);
@@ -460,12 +549,66 @@ export function getSessionSummary(classroomId: ClassroomId): SessionSummary {
     } else {
       flowCounts.set(key, { sequence: panels, count: 1 });
     }
+
+    for (let i = 0; i < panels.length - 1; i += 1) {
+      const from = panels[i];
+      const to = panels[i + 1];
+      if (!from || !to) continue;
+      const transitionKey = `${from}->${to}`;
+      const existingTransition = transitionCounts.get(transitionKey);
+      if (existingTransition) {
+        existingTransition.count += 1;
+      } else {
+        transitionCounts.set(transitionKey, {
+          from_panel: from,
+          to_panel: to,
+          count: 1,
+        });
+      }
+    }
+
+    const terminalPanel = panels[panels.length - 1];
+    if (terminalPanel) {
+      terminalCounts.set(terminalPanel, (terminalCounts.get(terminalPanel) ?? 0) + 1);
+    }
+
+    const todayNudgeSequence = getTodayNudgeSequence(panels);
+    if (todayNudgeSequence) {
+      const startedAt = new Date(sess.started_at);
+      if (!Number.isNaN(startedAt.getTime())) {
+        const weekKey = getUtcIsoWeekKey(startedAt);
+        let weekFlows = todayFlowCountsByWeek.get(weekKey);
+        if (!weekFlows) {
+          weekFlows = new Map<string, FlowAggregate>();
+          todayFlowCountsByWeek.set(weekKey, weekFlows);
+        }
+        trackFlow(weekFlows, todayNudgeSequence, sess.started_at);
+        if (!latestTodayWeekSeenAt || sess.started_at > latestTodayWeekSeenAt) {
+          latestTodayWeekSeenAt = sess.started_at;
+          latestTodayWeekKey = weekKey;
+        }
+      }
+    }
   }
 
   // Sort flows by count descending, take top 5
   const commonFlows = [...flowCounts.values()]
     .sort((a, b) => b.count - a.count)
     .slice(0, 5);
+  const rankedTransitions = [...transitionCounts.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 12);
+  const rankedTerminals = [...terminalCounts.entries()]
+    .map(([panel_id, count]) => ({ panel_id, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
+
+  const nudgeWeekKey = todayFlowCountsByWeek.has(currentWeekKey)
+    ? currentWeekKey
+    : latestTodayWeekKey;
+  const nudgeFlow = nudgeWeekKey
+    ? pickTopFlow(todayFlowCountsByWeek.get(nudgeWeekKey) ?? new Map())
+    : null;
 
   // Normalize panel distribution to proportions
   const totalVisits = Object.values(panelVisitCounts).reduce((a, b) => a + b, 0);
@@ -478,7 +621,17 @@ export function getSessionSummary(classroomId: ClassroomId): SessionSummary {
     total_sessions: totalRow.total,
     avg_duration_minutes: Math.round((durationRow.avg_min ?? 0) * 100) / 100,
     common_flows: commonFlows,
+    transition_counts: rankedTransitions,
+    terminal_counts: rankedTerminals,
     panel_time_distribution: panelTimeDistribution,
     generations_per_session: Math.round((totalGenerations / totalRow.total) * 100) / 100,
+    today_workflow_nudge: nudgeWeekKey && nudgeFlow
+      ? {
+          week: nudgeWeekKey,
+          is_current_week: nudgeWeekKey === currentWeekKey,
+          sequence: nudgeFlow.sequence,
+          count: nudgeFlow.count,
+        }
+      : null,
   };
 }

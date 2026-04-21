@@ -40,6 +40,10 @@ import {
   sendSseError,
 } from "../streaming.js";
 
+function shouldUseBufferedHostedStreamFallback(): boolean {
+  return (process.env.PRAIRIE_INFERENCE_PROVIDER ?? "").trim().toLowerCase() === "gemini";
+}
+
 async function buildSupportPatternsPayload(
   deps: RouteDeps,
   req: Request,
@@ -127,7 +131,11 @@ async function buildSupportPatternsPayload(
     safetyScanSource: { ...patternInput, patternCtx },
     abortSignal,
   };
-  const inferenceData = emit
+  const useBufferedStreamFallback = Boolean(emit) && shouldUseBufferedHostedStreamFallback();
+  if (useBufferedStreamFallback && emit) {
+    await emit({ type: "thinking", text: "Analyzing classroom records without live token streaming." });
+  }
+  const inferenceData = emit && !useBufferedStreamFallback
     ? await callInferenceStream(inferenceOptions, emit)
     : await callInference(inferenceOptions);
 

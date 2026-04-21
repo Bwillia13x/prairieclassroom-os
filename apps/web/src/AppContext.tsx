@@ -1,5 +1,5 @@
 import { createContext, useContext, type Dispatch } from "react";
-import type { ClassroomProfile, TomorrowNote } from "./types";
+import type { ClassroomProfile, TodaySnapshot, TomorrowNote } from "./types";
 import type {
   ActiveTab,
   AppAction,
@@ -15,6 +15,7 @@ export interface AppContextValue {
   activeTab: ActiveTab;
   setActiveClassroom: (id: string) => void;
   setActiveTab: (tab: ActiveTab) => void;
+  latestTodaySnapshot?: TodaySnapshot | null;
   profile: ClassroomProfile | undefined;
   students: { alias: string; family_language?: string }[];
   classroomAccessCodes: Record<string, string>;

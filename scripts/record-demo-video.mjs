@@ -143,10 +143,17 @@ async function typeInto(page, selector, text, delayMs) {
 
 async function clickByText(page, text) {
   await page.evaluate((text) => {
-    const btn = Array.from(document.querySelectorAll("button")).find(
-      (b) => b.textContent?.trim() === text,
+    const normalize = (value) => value?.replace(/\s+/g, " ").trim().toLowerCase() ?? "";
+    const wanted = normalize(text);
+    const buttons = Array.from(document.querySelectorAll("button")).filter(
+      (b) => !b.disabled,
     );
-    btn?.click();
+    const btn =
+      buttons.find((b) => normalize(b.textContent) === wanted) ??
+      buttons.find((b) => normalize(b.textContent).startsWith(wanted)) ??
+      buttons.find((b) => normalize(b.textContent).includes(wanted));
+    if (!btn) throw new Error(`Button not found: ${text}`);
+    btn.click();
   }, text);
 }
 

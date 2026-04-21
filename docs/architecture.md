@@ -185,8 +185,8 @@ Teacher feedback and session tracking form a closed evidence loop:
 
 1. **Feedback submission** (`POST /api/feedback`) — the UI submits per-output ratings (thumbs up/down plus optional comment) to the orchestrator, which persists them to the `feedback` table in the classroom's SQLite database.
 2. **Session submission** (`POST /api/sessions`) — at session end, the UI submits a session record (panels visited, generations triggered, start/end time) to the `sessions` table.
-3. **Summary aggregation** — `GET /api/feedback/summary/:classroomId` and `GET /api/sessions/summary/:classroomId` compute aggregates (by-panel counts, weekly trends, common workflow flows, duration statistics) from the stored records.
-4. **Usage Insights panel** — the web UI's Usage Insights tab (Review group) renders these summaries in a teacher-facing view with per-panel progress bars, sparkline trends, and workflow sequence lists.
+3. **Summary aggregation** — `GET /api/feedback/summary/:classroomId` and `GET /api/sessions/summary/:classroomId` compute aggregates (by-panel counts, weekly trends, common workflow flows, a repeated Today-starting workflow nudge, duration statistics) from the stored records.
+4. **Teacher-facing surfaces** — the web UI's Usage Insights tab (Review group) renders these summaries in a teacher-facing view with per-panel progress bars, sparkline trends, and workflow sequence lists. The Today panel consumes the same session summary to surface a one-line "usual next step" nudge when the teacher has a repeated multi-panel workflow that starts from Today.
 5. **Evidence generation** — `npm run evidence:generate` reads all classroom databases and request logs to produce markdown evidence reports in `docs/evidence/`.
 
 No feedback or session data is sent to any external service. All data remains in the per-classroom SQLite databases.

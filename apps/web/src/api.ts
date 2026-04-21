@@ -758,12 +758,41 @@ export interface FeedbackSummary {
   top_comments: { text: string; panel_id: string; rating: number; created_at: string }[];
 }
 
+export interface SessionWorkflowNudge {
+  week: string;
+  is_current_week: boolean;
+  sequence: string[];
+  count: number;
+}
+
+export interface SessionTransitionCount {
+  from_panel: string;
+  to_panel: string;
+  count: number;
+}
+
+export interface SessionTerminalCount {
+  panel_id: string;
+  count: number;
+}
+
+export interface SessionResolutionCount {
+  panel_id: string;
+  count: number;
+}
+
 export interface SessionSummary {
   total_sessions: number;
   avg_duration_minutes: number;
   common_flows: { sequence: string[]; count: number }[];
+  transition_counts?: SessionTransitionCount[];
+  terminal_counts?: SessionTerminalCount[];
+  completion_counts?: SessionResolutionCount[];
+  reopen_counts?: SessionResolutionCount[];
+  median_time_to_resolution_minutes?: number | null;
   panel_time_distribution: Record<string, number>;
   generations_per_session: number;
+  today_workflow_nudge: SessionWorkflowNudge | null;
 }
 
 export function submitFeedbackApi(

@@ -13,6 +13,7 @@ vi.mock("../../api", async (importOriginal) => {
     fetchTodaySnapshot: vi.fn(),
     fetchClassroomHealth: vi.fn(),
     fetchStudentSummary: vi.fn(),
+    fetchSessionSummary: vi.fn(),
     fetchInterventionHistoryForStudent: vi.fn(),
     fetchMessageHistoryForStudent: vi.fn(),
   };
@@ -22,6 +23,7 @@ import {
   fetchTodaySnapshot,
   fetchClassroomHealth,
   fetchStudentSummary,
+  fetchSessionSummary,
   fetchInterventionHistoryForStudent,
   fetchMessageHistoryForStudent,
 } from "../../api";
@@ -29,6 +31,7 @@ import {
 const mockedFetchTodaySnapshot = vi.mocked(fetchTodaySnapshot);
 const mockedFetchClassroomHealth = vi.mocked(fetchClassroomHealth);
 const mockedFetchStudentSummary = vi.mocked(fetchStudentSummary);
+const mockedFetchSessionSummary = vi.mocked(fetchSessionSummary);
 const mockedFetchInterventionHistoryForStudent = vi.mocked(fetchInterventionHistoryForStudent);
 const mockedFetchMessageHistoryForStudent = vi.mocked(fetchMessageHistoryForStudent);
 
@@ -189,10 +192,33 @@ function makeAppContext(): AppContextValue {
   };
 }
 
-function renderTodayPanel(snapshot: TodaySnapshot, health = makeHealth()) {
+function makeSessionSummary(overrides: Partial<Awaited<ReturnType<typeof fetchSessionSummary>>> = {}) {
+  return {
+    total_sessions: 5,
+    avg_duration_minutes: 18.2,
+    common_flows: [
+      { sequence: ["today", "log-intervention", "tomorrow-plan"], count: 2 },
+    ],
+    panel_time_distribution: {
+      today: 0.4,
+      "log-intervention": 0.3,
+      "tomorrow-plan": 0.3,
+    },
+    generations_per_session: 1.4,
+    today_workflow_nudge: null,
+    ...overrides,
+  };
+}
+
+function renderTodayPanel(
+  snapshot: TodaySnapshot,
+  health = makeHealth(),
+  sessionSummary = makeSessionSummary(),
+) {
   mockedFetchTodaySnapshot.mockResolvedValue(snapshot);
   mockedFetchClassroomHealth.mockResolvedValue(health);
   mockedFetchStudentSummary.mockResolvedValue([]);
+  mockedFetchSessionSummary.mockResolvedValue(sessionSummary);
   mockedFetchInterventionHistoryForStudent.mockResolvedValue([]);
   mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
 
@@ -228,6 +254,28 @@ describe("TodayPanel", () => {
 
     await user.click(screen.getByRole("button", { name: "Open Family Message" }));
     expect(onTabChange).toHaveBeenCalledWith("family-message");
+  });
+
+  it("renders the weekly workflow nudge and jumps to the suggested panel", async () => {
+    const { onTabChange, user } = renderTodayPanel(
+      makeSnapshot(),
+      makeHealth(),
+      makeSessionSummary({
+        today_workflow_nudge: {
+          week: "2026-W16",
+          is_current_week: true,
+          sequence: ["today", "log-intervention", "tomorrow-plan"],
+          count: 2,
+        },
+      }),
+    );
+
+    const nudge = await screen.findByTestId("today-workflow-nudge");
+    expect(within(nudge).getByText(/most-used workflow this week/i)).toBeInTheDocument();
+    expect(within(nudge).getByText(/Today → Log Intervention → Tomorrow Plan/)).toBeInTheDocument();
+
+    await user.click(within(nudge).getByRole("button", { name: /jump to log intervention/i }));
+    expect(onTabChange).toHaveBeenCalledWith("log-intervention");
   });
 
   it("shows the slim time suggestion when the queue is clear", async () => {

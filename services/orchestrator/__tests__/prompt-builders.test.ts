@@ -806,6 +806,13 @@ describe("ea-briefing", () => {
       expect(result.schedule_blocks).toHaveLength(1);
     });
 
+    it("unwraps a single-object array from hosted model output", () => {
+      const result = parseEABriefingResponse(`[${validBriefing}]`, "test-classroom");
+      expect(result.classroom_id).toBe("test-classroom");
+      expect(result.schedule_blocks).toHaveLength(1);
+      expect(result.student_watch_list[0]?.student_ref).toBe("Mika");
+    });
+
     it("filters student refs by allowed aliases", () => {
       const withLeak = JSON.stringify({
         schedule_blocks: [{ time_slot: "10:00", student_refs: ["Ari", "UnknownKid"], task_description: "Help", materials_needed: [] }],

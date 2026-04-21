@@ -34,6 +34,30 @@ const CLASSROOM = "demo-okafor-grade34";
 const MODEL = "mock-gemma-4-4b-it";
 const SCHEMA_V = "1.0";
 
+function startOfCurrentIsoWeekUtc(): Date {
+  const today = new Date();
+  const isoDay = today.getUTCDay() || 7;
+  const weekStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
+  weekStart.setUTCDate(weekStart.getUTCDate() - isoDay + 1);
+  return weekStart;
+}
+
+const CURRENT_ISO_WEEK_START = startOfCurrentIsoWeekUtc();
+const CURRENT_SCHOOL_DAY_INDEX = Math.min((new Date().getUTCDay() || 7) - 1, 4);
+
+function currentWeekSessionIso(
+  preferredDayIndex: number,
+  hour: number,
+  minute: number,
+  second = 0,
+): string {
+  const actualDayIndex = Math.min(preferredDayIndex, CURRENT_SCHOOL_DAY_INDEX);
+  const timestamp = new Date(CURRENT_ISO_WEEK_START);
+  timestamp.setUTCDate(timestamp.getUTCDate() + actualDayIndex);
+  timestamp.setUTCHours(hour, minute, second, 0);
+  return timestamp.toISOString();
+}
+
 // ─── INTERVENTIONS ────────────────────────────────────────────────────────────
 
 const interventions: InterventionRecord[] = [
@@ -1059,66 +1083,69 @@ console.log("\nApproving family message...");
 approveFamilyMessage(CLASSROOM, familyMessage.draft_id);
 console.log(`  ✓ ${familyMessage.draft_id} — approved`);
 
-// ─── SESSION USAGE (drives Review → Usage Insights) ──────────────────────────
+// ─── SESSION USAGE (drives Review → Usage Insights + Today workflow nudge) ──
 // Seeded sessions mix realistic multi-panel teacher workflows so the Usage
 // Insights "Common workflows" strip demonstrates arrow-joined flows (not just
-// single-panel visits). The `common_flows` aggregator groups identical
-// `panels_visited` arrays and sorts by frequency, so repeating a sequence
-// boosts its rank.
+// single-panel visits). The same records now feed the top-of-Today workflow
+// nudge by looking for the most common repeated sequence that starts on
+// `today`. Repeating a sequence boosts both summaries. Session timestamps are
+// anchored inside the current ISO week and clamped to the current school day,
+// so a fresh reseed stays on the literal "this week" path without creating
+// future-dated demo records.
 const sessions = [
   // Morning triage flow — seeded 2x so it wins the #1 slot.
   {
     session_id: "sess-demo-001",
-    started_at: "2025-03-18T08:05:00.000Z",
-    ended_at: "2025-03-18T08:21:30.000Z",
+    started_at: currentWeekSessionIso(0, 8, 5),
+    ended_at: currentWeekSessionIso(0, 8, 21, 30),
     panels_visited: ["today", "log-intervention", "tomorrow-plan"],
     generations_triggered: [
-      { panel_id: "tomorrow-plan", prompt_class: "prepare_tomorrow_plan", timestamp: "2025-03-18T08:18:00.000Z" },
+      { panel_id: "tomorrow-plan", prompt_class: "prepare_tomorrow_plan", timestamp: currentWeekSessionIso(0, 8, 18) },
     ],
     feedback_count: 1,
   },
   {
     session_id: "sess-demo-002",
-    started_at: "2025-03-19T08:02:00.000Z",
-    ended_at: "2025-03-19T08:19:00.000Z",
+    started_at: currentWeekSessionIso(1, 8, 2),
+    ended_at: currentWeekSessionIso(1, 8, 19),
     panels_visited: ["today", "log-intervention", "tomorrow-plan"],
     generations_triggered: [
-      { panel_id: "tomorrow-plan", prompt_class: "prepare_tomorrow_plan", timestamp: "2025-03-19T08:16:00.000Z" },
+      { panel_id: "tomorrow-plan", prompt_class: "prepare_tomorrow_plan", timestamp: currentWeekSessionIso(1, 8, 16) },
     ],
     feedback_count: 1,
   },
   // Prep block — classic two-stop flow.
   {
     session_id: "sess-demo-003",
-    started_at: "2025-03-19T15:40:00.000Z",
-    ended_at: "2025-03-19T16:02:00.000Z",
+    started_at: currentWeekSessionIso(2, 15, 40),
+    ended_at: currentWeekSessionIso(2, 16, 2),
     panels_visited: ["differentiate", "language-tools"],
     generations_triggered: [
-      { panel_id: "differentiate", prompt_class: "differentiate_material", timestamp: "2025-03-19T15:48:00.000Z" },
-      { panel_id: "language-tools", prompt_class: "generate_vocab_cards", timestamp: "2025-03-19T15:58:00.000Z" },
+      { panel_id: "differentiate", prompt_class: "differentiate_material", timestamp: currentWeekSessionIso(2, 15, 48) },
+      { panel_id: "language-tools", prompt_class: "generate_vocab_cards", timestamp: currentWeekSessionIso(2, 15, 58) },
     ],
     feedback_count: 2,
   },
-  // Friday wrap — weekly reflection + family follow-up.
+  // Review flow — pattern reflection + family follow-up.
   {
     session_id: "sess-demo-004",
-    started_at: "2025-03-21T15:10:00.000Z",
-    ended_at: "2025-03-21T15:28:00.000Z",
+    started_at: currentWeekSessionIso(4, 15, 10),
+    ended_at: currentWeekSessionIso(4, 15, 28),
     panels_visited: ["today", "support-patterns", "family-message"],
     generations_triggered: [
-      { panel_id: "support-patterns", prompt_class: "detect_support_patterns", timestamp: "2025-03-21T15:18:00.000Z" },
-      { panel_id: "family-message", prompt_class: "draft_family_message", timestamp: "2025-03-21T15:25:00.000Z" },
+      { panel_id: "support-patterns", prompt_class: "detect_support_patterns", timestamp: currentWeekSessionIso(4, 15, 18) },
+      { panel_id: "family-message", prompt_class: "draft_family_message", timestamp: currentWeekSessionIso(4, 15, 25) },
     ],
     feedback_count: 1,
   },
   // Solo EA briefing — a tail single-panel visit for contrast.
   {
     session_id: "sess-demo-005",
-    started_at: "2025-03-20T08:35:00.000Z",
-    ended_at: "2025-03-20T08:42:00.000Z",
+    started_at: currentWeekSessionIso(1, 8, 35),
+    ended_at: currentWeekSessionIso(1, 8, 42),
     panels_visited: ["ea-briefing"],
     generations_triggered: [
-      { panel_id: "ea-briefing", prompt_class: "generate_ea_briefing", timestamp: "2025-03-20T08:38:00.000Z" },
+      { panel_id: "ea-briefing", prompt_class: "generate_ea_briefing", timestamp: currentWeekSessionIso(1, 8, 38) },
     ],
     feedback_count: 0,
   },

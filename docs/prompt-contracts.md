@@ -463,6 +463,7 @@ These routes are deterministic (no model call) and support the Usage Insights pa
 - `common_flows` — most frequent panel visit sequences with counts
 - `panel_time_distribution` — time spent per panel (estimated from visit order)
 - `generations_per_session` — average generation count
+- `today_workflow_nudge` — most common repeated multi-step sequence that starts on `today` for the current week; falls back to the latest recorded week with a qualifying Today-starting flow when the current week has none
 
 ### P. Save Recent Run
 

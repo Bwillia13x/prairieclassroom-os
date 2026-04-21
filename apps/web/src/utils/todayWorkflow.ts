@@ -7,7 +7,8 @@
  * share the same precedence logic.
  */
 
-import type { ActiveTab, ClassroomRole } from "../appReducer";
+import type { SessionSummary } from "../api";
+import { TAB_META, isTabVisibleForRole, type ActiveTab, type ClassroomRole } from "../appReducer";
 import type { TodayHeroAction } from "../components/TodayHero";
 import { getContextualSuggestion, type Suggestion } from "../components/TimeSuggestion";
 import type {
@@ -16,6 +17,17 @@ import type {
   TodaySnapshot,
   ClassroomHealth,
 } from "../types";
+
+export interface TodayWorkflowNudge {
+  kicker: string;
+  message: string;
+  targetTab: ActiveTab;
+  cta: string;
+  sequenceLabel: string;
+  countLabel: string;
+}
+
+const TODAY_NUDGE_SEQUENCE_LIMIT = 4;
 
 // ─── Shared priority constants ───
 
@@ -114,6 +126,72 @@ export function getTodayContextualSuggestion(input: {
   role?: ClassroomRole;
 }): Suggestion | null {
   return getContextualSuggestion(input);
+}
+
+function asActiveTab(tabId: string): ActiveTab | null {
+  return Object.prototype.hasOwnProperty.call(TAB_META, tabId)
+    ? (tabId as ActiveTab)
+    : null;
+}
+
+function formatWorkflowTabLabel(tabId: string): string {
+  const tab = asActiveTab(tabId);
+  if (tab) return TAB_META[tab].label;
+  return tabId
+    .replace(/-/g, " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function getConciseTodaySequence(sequence: string[]): string[] | null {
+  if (sequence[0] !== "today") return null;
+
+  const concise: string[] = [];
+  const seen = new Set<string>();
+
+  for (const step of sequence) {
+    if (!step) continue;
+    if (concise.length > 0 && step === "today") break;
+    if (seen.has(step)) break;
+
+    concise.push(step);
+    seen.add(step);
+
+    if (concise.length >= TODAY_NUDGE_SEQUENCE_LIMIT) break;
+  }
+
+  return concise.length >= 2 ? concise : null;
+}
+
+export function getTodayWorkflowNudge(
+  sessionSummary: Pick<SessionSummary, "today_workflow_nudge"> | null | undefined,
+  role: ClassroomRole = "teacher",
+): TodayWorkflowNudge | null {
+  const nudge = sessionSummary?.today_workflow_nudge;
+  if (!nudge || nudge.count < 2 || nudge.sequence.length < 2) return null;
+
+  const sequence = getConciseTodaySequence(nudge.sequence);
+  if (!sequence) return null;
+
+  const [, nextStep, ...remainingSteps] = sequence;
+  const targetTab = asActiveTab(nextStep);
+  if (!targetTab || !isTabVisibleForRole(targetTab, role)) return null;
+
+  const targetLabel = TAB_META[targetTab].label;
+  const remainingLabels = remainingSteps.map(formatWorkflowTabLabel);
+  const message = remainingLabels.length > 0
+    ? `You usually open ${targetLabel} right after this check-in, then move to ${remainingLabels.join(" then ")}.`
+    : `You usually open ${targetLabel} right after this check-in.`;
+
+  return {
+    kicker: nudge.is_current_week
+      ? "Most-used workflow this week"
+      : "Most-used workflow in the latest week on record",
+    message,
+    targetTab,
+    cta: `Jump to ${targetLabel}`,
+    sequenceLabel: sequence.map(formatWorkflowTabLabel).join(" → "),
+    countLabel: `${nudge.count}x`,
+  };
 }
 
 // ─── Student-first triage ordering ───

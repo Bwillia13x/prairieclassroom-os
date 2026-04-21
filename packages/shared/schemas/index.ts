@@ -229,15 +229,23 @@ export type {
 
 export {
   GenerationEventSchema,
+  SessionFlowSchema,
   SessionRequestSchema,
   SessionResponseSchema,
   SessionSummarySchema,
+  SessionTerminalSchema,
+  SessionTransitionSchema,
+  TodayWorkflowNudgeSchema,
 } from "./session.js";
 export type {
   GenerationEvent,
+  SessionFlow,
   SessionRequest,
   SessionResponse,
   SessionSummary,
+  SessionTerminal,
+  SessionTransition,
+  TodayWorkflowNudge,
 } from "./session.js";
 
 export {

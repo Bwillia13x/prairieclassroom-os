@@ -1092,7 +1092,7 @@ function renderBlockedVertexSection() {
 }
 
 async function renderLatestGeminiSection() {
-  const summary = await findLatestRunSummary({ inferenceMode: "gemini" });
+  const summary = await findLatestRunSummary({ inferenceMode: "gemini", status: "passed" });
   if (!summary) {
     return renderBlockedGeminiSection();
   }

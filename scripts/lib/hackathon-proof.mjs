@@ -11,7 +11,7 @@ export const PROOF_DOC_PATHS = [
   "docs/kaggle-writeup.md",
 ];
 
-export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-04-18T16-04-28-504Z-87799";
+export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-04-21T05-13-43-243Z-52665";
 export const TARGETED_HOSTED_SMOKE_COMMAND = "PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api";
 export const LOCAL_PREP_COMMANDS = [
   "npm run proof:check",

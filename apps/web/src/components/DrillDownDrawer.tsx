@@ -10,6 +10,15 @@ import TrendDetailView from "./TrendDetailView";
 import PlanCoverageSectionView from "./PlanCoverageSectionView";
 import StudentTagGroupView from "./StudentTagGroupView";
 import VariantLaneView from "./VariantLaneView";
+import {
+  CoverageCellView,
+  EALoadBlockView,
+  PanelStatusView,
+  QueueStateView,
+  StudentThreadView,
+  TransitionRiskView,
+  WeekDayView,
+} from "./TriageDrawerViews";
 import "./DrillDownDrawer.css";
 
 interface Props {
@@ -50,12 +59,26 @@ function computeTitle(context: DrillDownContext): string {
   switch (context.type) {
     case "forecast-block":
       return `${context.block.time_slot} — ${context.block.activity} · ${context.block.level} complexity`;
+    case "ea-load-block":
+      return `${context.block.time_slot} — ${context.block.activity} · EA ${context.block.load_level}`;
     case "student":
       return `${context.alias} — Student Detail`;
+    case "student-thread":
+      return `${context.thread.alias} — Open Threads`;
+    case "week-day":
+      return `${context.day.label} ${context.day.date_label} — Operating Dashboard`;
+    case "queue-state":
+      return `${context.queue.label} — Queue`;
+    case "coverage-cell":
+      return `${context.row.alias} — ${context.cell.label} Coverage`;
+    case "transition-risk":
+      return `${context.risk.time_slot} — Transition Risk`;
     case "debt-category": {
       const label = DEBT_CATEGORY_LABELS[context.category] ?? context.category.replace(/_/g, " ");
       return `${context.items.length} ${label}`;
     }
+    case "panel-status":
+      return `${context.status.label} — Workflow Status`;
     case "trend":
       return `${context.label} — 14-day trend`;
     case "plan-coverage-section":
@@ -77,7 +100,7 @@ export default function DrillDownDrawer({
   onInterventionPrefill,
   onMessagePrefill,
 }: Props) {
-  const { activeClassroom } = useApp();
+  const { activeClassroom, activeRole } = useApp();
   const drawerRef = useRef<HTMLDivElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const [isClosing, setIsClosing] = useState(false);
@@ -162,6 +185,10 @@ export default function DrillDownDrawer({
             <ForecastBlockView block={context.block} />
           )}
 
+          {context.type === "ea-load-block" && (
+            <EALoadBlockView block={context.block} />
+          )}
+
           {context.type === "debt-category" && (
             <DebtCategoryView
               items={context.items}
@@ -186,6 +213,45 @@ export default function DrillDownDrawer({
           )}
 
           {context.type === "variant-lane" && <VariantLaneView context={context} />}
+
+          {context.type === "panel-status" && (
+            <PanelStatusView status={context.status} onNavigate={onNavigate} activeRole={activeRole} />
+          )}
+
+          {context.type === "student-thread" && (
+            <StudentThreadView
+              thread={context.thread}
+              onNavigate={onNavigate}
+              activeRole={activeRole}
+              onOpenStudent={(alias) => onContextChange?.({ type: "student", alias })}
+              onInterventionPrefill={onInterventionPrefill}
+              onMessagePrefill={onMessagePrefill}
+            />
+          )}
+
+          {context.type === "week-day" && (
+            <WeekDayView day={context.day} onNavigate={onNavigate} activeRole={activeRole} />
+          )}
+
+          {context.type === "queue-state" && (
+            <QueueStateView queue={context.queue} onNavigate={onNavigate} activeRole={activeRole} />
+          )}
+
+          {context.type === "coverage-cell" && (
+            <CoverageCellView
+              row={context.row}
+              cell={context.cell}
+              onNavigate={onNavigate}
+              activeRole={activeRole}
+              onOpenStudent={(alias) => onContextChange?.({ type: "student", alias })}
+              onInterventionPrefill={onInterventionPrefill}
+              onMessagePrefill={onMessagePrefill}
+            />
+          )}
+
+          {context.type === "transition-risk" && (
+            <TransitionRiskView risk={context.risk} onNavigate={onNavigate} activeRole={activeRole} />
+          )}
         </div>
       </div>
     </>

@@ -15,6 +15,7 @@ import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
+import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useRole } from "../hooks/useRole";
@@ -29,13 +30,14 @@ interface Props {
 }
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, appendTomorrowNote, streaming, latestTodaySnapshot } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SupportPatternsResponse>();
   const streamer = useStreamingRequest({
     sectionLabels: ["Themes", "Follow-up gaps", "Suggested focus"],
   });
   const [resultKey, setResultKey] = useState(0);
+  const [selectedAlias, setSelectedAlias] = useState<string | null>(null);
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
   const role = useRole();
@@ -131,6 +133,15 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
         whatIsBlocked="Running pattern analysis is reserved for the classroom's permanent teacher."
       />
 
+      {latestTodaySnapshot?.student_threads?.length ? (
+        <StudentCoverageStrip
+          threads={latestTodaySnapshot.student_threads}
+          title="Support pattern coverage"
+          selectedAlias={selectedAlias}
+          onSelectThread={(thread) => setSelectedAlias(thread.alias)}
+        />
+      ) : null}
+
       <WorkspaceLayout
         splitState={result ? "output" : "input"}
         rail={(
@@ -149,6 +160,7 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
                   selectedClassroom={activeClassroom}
                   onSubmit={handleSubmit}
                   loading={loading}
+                  prefillStudent={selectedAlias}
                 />
               </>
             ) : null}

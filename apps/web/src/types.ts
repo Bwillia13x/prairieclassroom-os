@@ -337,12 +337,147 @@ export interface ExtractWorksheetResponse {
 
 // ── Composite API types ─────────────────────────────────────────────────────
 
+export type PanelStatusState =
+  | "needs_action"
+  | "draft_ready"
+  | "fresh"
+  | "stale"
+  | "not_applicable";
+
+export type PanelDependencyState = "ready" | "waiting" | "stale";
+
+export interface PanelStatus {
+  panel_id: string;
+  label: string;
+  state: PanelStatusState;
+  dependency_state: PanelDependencyState;
+  pending_count: number;
+  detail: string;
+  last_run_at: string | null;
+}
+
+export interface StudentThreadAction {
+  category: string;
+  label: string;
+  count: number;
+  target_tab: string;
+  state: Extract<PanelStatusState, "needs_action" | "draft_ready" | "fresh">;
+}
+
+export interface StudentThread {
+  alias: string;
+  priority_reason: string | null;
+  last_intervention_days: number | null;
+  pending_action_count: number;
+  pending_message_count: number;
+  active_pattern_count: number;
+  thread_count: number;
+  eal_flag?: boolean;
+  family_language?: string;
+  support_tags?: string[];
+  actions: StudentThreadAction[];
+}
+
 export interface TodaySnapshot {
   debt_register: ComplexityDebtRegister;
   latest_plan: TomorrowPlan | null;
   latest_forecast: ComplexityForecast | null;
   student_count: number;
   last_activity_at: string | null;
+  panel_statuses?: PanelStatus[];
+  student_threads?: StudentThread[];
+}
+
+export type OperatingDashboardBlockLevel = ComplexityBlock["level"] | "unknown";
+export type OperatingDashboardSource = "forecast" | "schedule" | "event" | "insufficient_data";
+
+export interface OperatingDashboardWeekBlock {
+  id: string;
+  day_id: string;
+  time_slot: string;
+  activity: string;
+  level: OperatingDashboardBlockLevel;
+  source: OperatingDashboardSource;
+  detail: string;
+  forecast_index?: number | null;
+  event_count?: number;
+}
+
+export interface OperatingDashboardDay {
+  id: string;
+  label: string;
+  date_label: string;
+  is_today: boolean;
+  source: OperatingDashboardSource;
+  blocks: OperatingDashboardWeekBlock[];
+}
+
+export type OperatingDashboardCoverageCategory =
+  | "touchpoint"
+  | "family"
+  | "eal"
+  | "support"
+  | "plan";
+
+export type OperatingDashboardCoverageState =
+  | "open"
+  | "watch"
+  | "covered"
+  | "not_applicable";
+
+export interface OperatingDashboardCoverageCell {
+  category: OperatingDashboardCoverageCategory;
+  label: string;
+  state: OperatingDashboardCoverageState;
+  count: number;
+  detail: string;
+  target_tab: string | null;
+}
+
+export interface OperatingDashboardCoverageRow {
+  alias: string;
+  priority_reason: string | null;
+  thread_count: number;
+  eal_flag?: boolean;
+  family_language?: string;
+  support_tags?: string[];
+  cells: OperatingDashboardCoverageCell[];
+  thread?: StudentThread;
+}
+
+export interface OperatingDashboardQueue {
+  id: string;
+  label: string;
+  count: number;
+  state: PanelStatusState | "waiting" | "clear";
+  target_tab: string | null;
+  detail: string;
+  status?: PanelStatus;
+}
+
+export interface OperatingDashboardTransitionRisk {
+  id: string;
+  time_slot: string;
+  activity: string;
+  level: OperatingDashboardBlockLevel;
+  reason: string;
+  mitigation: string;
+  watchpoints: string[];
+  target_tab: string | null;
+  forecast_index?: number | null;
+}
+
+export interface OperatingDashboardSnapshot {
+  week_overview: OperatingDashboardDay[];
+  support_coverage: OperatingDashboardCoverageRow[];
+  communication_queue: OperatingDashboardQueue[];
+  prep_queue: OperatingDashboardQueue[];
+  transition_risks: OperatingDashboardTransitionRisk[];
+  outcome_metrics: {
+    today_exits: number;
+    return_loops: number;
+    session_endings: number;
+  };
 }
 
 // ── UI-only types ───────────────────────────────────────────────────────────
@@ -379,8 +514,15 @@ export interface InterventionPrefill {
 
 export type DrillDownContext =
   | { type: "forecast-block"; blockIndex: number; block: ComplexityBlock }
+  | { type: "ea-load-block"; blockIndex: number; block: EALoadBlock }
   | { type: "student"; alias: string; initialData?: StudentSummary }
+  | { type: "student-thread"; thread: StudentThread }
+  | { type: "week-day"; day: OperatingDashboardDay }
+  | { type: "queue-state"; queue: OperatingDashboardQueue }
+  | { type: "coverage-cell"; row: OperatingDashboardCoverageRow; cell: OperatingDashboardCoverageCell }
+  | { type: "transition-risk"; risk: OperatingDashboardTransitionRisk }
   | { type: "debt-category"; category: string; items: DebtItem[] }
+  | { type: "panel-status"; status: PanelStatus }
   | { type: "trend"; trendKey: "debt" | "plans" | "complexity"; data: number[]; label: string; highlightIndex?: number }
   | { type: "plan-coverage-section"; section: "watchpoints" | "priorities" | "ea_actions" | "prep_items" | "family_followups"; label: string; items: string[] }
   | { type: "student-tag-group"; groupKind: "eal" | "support_cluster" | "family_language"; tag: string; label: string; students: { alias: string; eal_flag?: boolean; support_tags?: string[]; family_language?: string }[] }

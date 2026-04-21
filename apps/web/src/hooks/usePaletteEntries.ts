@@ -1,6 +1,6 @@
 import { useMemo } from "react";
-import { TAB_META, TAB_ORDER, type ActiveTab } from "../appReducer";
-import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill } from "../types";
+import { TAB_META, TAB_ORDER, type ActiveTab, type ClassroomRole, isTabVisibleForRole } from "../appReducer";
+import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, PanelStatus, TodaySnapshot } from "../types";
 
 export type PaletteEntryKind = "panel" | "classroom" | "action";
 
@@ -9,6 +9,7 @@ export interface PaletteEntry {
   id: string;
   label: string;
   group?: string;
+  recommended?: boolean;
   keywords: string;
   /** Keyboard shortcut that navigates to this entry's target (panel entries only). */
   shortcut?: string;
@@ -37,16 +38,35 @@ interface Input {
   classrooms: ClassroomProfile[];
   activeClassroom: string;
   debtRegister: DebtRegister | null;
+  latestTodaySnapshot?: TodaySnapshot | null;
+  activeRole?: ClassroomRole;
   onNavigate?: (tab: ActiveTab) => void;
   onSwitchClassroom?: (id: string) => void;
   onMessagePrefill?: (prefill: FamilyMessagePrefill) => void;
   onInterventionPrefill?: (prefill: InterventionPrefill) => void;
 }
 
+function rankStatus(status: PanelStatus): number {
+  switch (status.state) {
+    case "needs_action":
+      return 4;
+    case "stale":
+      return 3;
+    case "draft_ready":
+      return 2;
+    case "fresh":
+      return 1;
+    case "not_applicable":
+      return 0;
+  }
+}
+
 export function usePaletteEntries({
   classrooms,
   activeClassroom,
   debtRegister,
+  latestTodaySnapshot,
+  activeRole,
   onNavigate,
   onSwitchClassroom,
   onMessagePrefill,
@@ -54,6 +74,28 @@ export function usePaletteEntries({
 }: Input): PaletteEntry[] {
   return useMemo(() => {
     const entries: PaletteEntry[] = [];
+
+    const recommendedStatus = [...(latestTodaySnapshot?.panel_statuses ?? [])]
+      .filter((status) => status.panel_id in TAB_META)
+      .filter((status) => activeRole ? isTabVisibleForRole(status.panel_id as ActiveTab, activeRole) : true)
+      .sort((a, b) => {
+        const rankDiff = rankStatus(b) - rankStatus(a);
+        if (rankDiff !== 0) return rankDiff;
+        return b.pending_count - a.pending_count;
+      })[0];
+
+    if (recommendedStatus && recommendedStatus.panel_id in TAB_META) {
+      const targetTab = recommendedStatus.panel_id as ActiveTab;
+      entries.push({
+        kind: "action",
+        id: `action:recommended:${targetTab}`,
+        label: `Recommended now: ${TAB_META[targetTab].label}`,
+        group: "Now",
+        recommended: true,
+        keywords: `recommended now next ${TAB_META[targetTab].label} ${recommendedStatus.detail}`.toLowerCase(),
+        onSelect: () => onNavigate?.(targetTab),
+      });
+    }
 
     for (const tab of TAB_ORDER) {
       const meta = TAB_META[tab];
@@ -142,5 +184,5 @@ export function usePaletteEntries({
     }
 
     return entries;
-  }, [classrooms, activeClassroom, debtRegister, onNavigate, onSwitchClassroom, onMessagePrefill, onInterventionPrefill]);
+  }, [classrooms, activeClassroom, debtRegister, latestTodaySnapshot, activeRole, onNavigate, onSwitchClassroom, onMessagePrefill, onInterventionPrefill]);
 }

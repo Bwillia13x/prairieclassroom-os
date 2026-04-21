@@ -164,7 +164,7 @@ npm run release:gate
 If the gate fails because a port is already in use, stop the existing local processes and re-run the command. The gate expects to own `:3200`, `:3100`, and `:5173`.
 
 For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. The checked-in hosted proof is now passing: the curated hosted eval suite passed and the full hosted release gate completed on synthetic/demo data. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present.
-The latest passing hosted artifact is `output/release-gate/2026-04-18T16-04-28-504Z-87799`.
+The latest passing hosted artifact is `output/release-gate/2026-04-21T05-13-43-243Z-52665`.
 
 Before any future hosted rerun, keep the local-only preparation flow separate from live execution:
 

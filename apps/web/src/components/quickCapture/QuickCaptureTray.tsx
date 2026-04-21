@@ -27,6 +27,7 @@ interface QuickCaptureTrayProps {
    * render without a dot. 2026-04-19 OPS audit phase 7.1.
    */
   studentFlags?: Record<string, StudentFlag>;
+  prefillAliases?: string[];
 }
 
 /**
@@ -63,6 +64,7 @@ export default function QuickCaptureTray({
   loading,
   onSubmit,
   studentFlags,
+  prefillAliases,
 }: QuickCaptureTrayProps) {
   const [selectedAliases, setSelectedAliases] = useState<string[]>([]);
   const [selectedChip, setSelectedChip] = useState<InterventionChipKey | null>(null);
@@ -87,6 +89,11 @@ export default function QuickCaptureTray({
 
   const avatarRowRef = useRef<HTMLDivElement | null>(null);
   const chipRowRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!prefillAliases || prefillAliases.length === 0) return;
+    setSelectedAliases(prefillAliases);
+  }, [prefillAliases]);
 
   function handleToggleAlias(alias: string) {
     setSelectedAliases((prev) =>

@@ -14,6 +14,7 @@ import LanguageToolsEmptyState from "../components/LanguageToolsEmptyState";
 import LanguageToolsStudentPicker, { type StudentLike } from "../components/LanguageToolsStudentPicker";
 import RecentRunsChipRow from "../components/RecentRunsChipRow";
 import StreamingIndicator from "../components/StreamingIndicator";
+import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -33,7 +34,7 @@ import { useRecentRuns } from "../hooks/useRecentRuns";
 type LanguageTool = "simplify" | "vocab";
 
 export default function LanguageToolsPanel() {
-  const { profile, showSuccess, appendTomorrowNote, activeClassroom, streaming } = useApp();
+  const { profile, showSuccess, appendTomorrowNote, activeClassroom, streaming, latestTodaySnapshot } = useApp();
   const session = useSession();
   const simplify = useAsyncAction<SimplifyResponse>();
   const vocab = useAsyncAction<VocabCardsResponse>();
@@ -258,6 +259,24 @@ export default function LanguageToolsPanel() {
         sectionTone="sage"
         description="Simplify classroom text for EAL learners or generate bilingual vocabulary cards from any lesson content."
       />
+
+      {latestTodaySnapshot?.student_threads?.length ? (
+        <StudentCoverageStrip
+          threads={latestTodaySnapshot.student_threads}
+          title="Language support coverage"
+          selectedAlias={focusStudent?.alias ?? null}
+          onSelectThread={(thread) => {
+            const match = profile?.students.find((student) => student.alias === thread.alias);
+            if (match) {
+              setFocusStudent({
+                alias: match.alias,
+                eal_flag: match.eal_flag,
+                family_language: match.family_language,
+              });
+            }
+          }}
+        />
+      ) : null}
 
       <WorkspaceLayout
         splitState={activeAction.result ? "output" : "input"}

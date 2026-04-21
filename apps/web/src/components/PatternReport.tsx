@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type {
   SupportPatternsResponse,
   InterventionPrefill,
@@ -20,6 +20,7 @@ interface FormProps {
   selectedClassroom: string;
   onSubmit: (classroomId: string, studentFilter?: string, timeWindow?: number) => void;
   loading: boolean;
+  prefillStudent?: string | null;
 }
 
 export function PatternReportForm({
@@ -27,9 +28,15 @@ export function PatternReportForm({
   selectedClassroom,
   onSubmit,
   loading,
+  prefillStudent,
 }: FormProps) {
   const [studentFilter, setStudentFilter] = useState("");
   const [timeWindow, setTimeWindow] = useState(10);
+
+  useEffect(() => {
+    if (prefillStudent === undefined) return;
+    setStudentFilter(prefillStudent ?? "");
+  }, [prefillStudent]);
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();

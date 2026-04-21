@@ -22,6 +22,7 @@ import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import { useRole } from "../hooks/useRole";
 import QuickCaptureTray from "../components/quickCapture/QuickCaptureTray";
+import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import type { InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
 
 interface Props {
@@ -36,11 +37,12 @@ interface Props {
  *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, latestTodaySnapshot } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
+  const [selectedAlias, setSelectedAlias] = useState<string | null>(prefill?.student_ref ?? null);
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const role = useRole();
 
@@ -91,6 +93,7 @@ export default function InterventionPanel({ prefill }: Props) {
     if (prefill) {
       reset();
       setHistoricalResult(null);
+      setSelectedAlias(prefill.student_ref);
     }
   }, [prefill, reset]);
 
@@ -164,6 +167,15 @@ export default function InterventionPanel({ prefill }: Props) {
         whatIsBlocked="Logging interventions is reserved for adults actively working with this classroom."
       />
 
+      {latestTodaySnapshot?.student_threads?.length ? (
+        <StudentCoverageStrip
+          threads={latestTodaySnapshot.student_threads}
+          title="Intervention coverage"
+          selectedAlias={selectedAlias}
+          onSelectThread={(thread) => setSelectedAlias(thread.alias)}
+        />
+      ) : null}
+
       <OpsWorkflowStepper activeTab="log-intervention" />
 
       <WorkspaceLayout
@@ -177,6 +189,7 @@ export default function InterventionPanel({ prefill }: Props) {
                 loading={loading}
                 onSubmit={handleQuickSubmit}
                 studentFlags={studentFlags}
+                prefillAliases={selectedAlias ? [selectedAlias] : undefined}
               />
             ) : null}
             <HistoryDrawer<InterventionRecord>

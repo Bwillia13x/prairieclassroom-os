@@ -19,6 +19,7 @@ import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
 import { FeedbackCollector, OutputActionBar } from "../components/shared";
 import type { OutputAction } from "../components/shared";
 import { MessageApprovalFunnel } from "../components/DataVisualizations";
+import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import { useRole } from "../hooks/useRole";
@@ -31,7 +32,7 @@ interface Props {
 }
 
 export default function FamilyMessagePanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, showError } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, showError, dispatch, latestTodaySnapshot } = useApp();
   const role = useRole();
   const { canApproveMessages } = role;
   const session = useSession();
@@ -41,6 +42,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [approvalOverrides, setApprovalOverrides] = useState<Record<string, { editedText?: string }>>({});
+  const [selectedAlias, setSelectedAlias] = useState<string | null>(prefill?.student_ref ?? null);
   const { copy, status: copyStatus } = useCopyToClipboard();
   const feedback = useFeedback(activeClassroom, session.sessionId);
 
@@ -79,6 +81,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     if (prefill) {
       reset();
       setHistoricalResult(null);
+      setSelectedAlias(prefill.student_ref);
     }
   }, [prefill, reset]);
 
@@ -202,6 +205,25 @@ export default function FamilyMessagePanel({ prefill }: Props) {
         whatIsBlocked="Drafting and approving family messages is reserved for the classroom's permanent teacher."
       />
 
+      {latestTodaySnapshot?.student_threads?.length ? (
+        <StudentCoverageStrip
+          threads={latestTodaySnapshot.student_threads}
+          title="Family follow-up coverage"
+          selectedAlias={selectedAlias}
+          onSelectThread={(thread) => {
+            setSelectedAlias(thread.alias);
+            dispatch({
+              type: "SET_MESSAGE_PREFILL",
+              prefill: {
+                student_ref: thread.alias,
+                reason: thread.priority_reason ?? "Follow up with family from the coverage strip",
+                message_type: "routine_update",
+              },
+            });
+          }}
+        />
+      ) : null}
+
       <WorkspaceLayout
         splitState={displayResult ? "output" : "input"}
         rail={(
@@ -246,11 +268,17 @@ export default function FamilyMessagePanel({ prefill }: Props) {
               <SkeletonLoader variant="single" message="Drafting family message..." label="Drafting family message" />
             ) : null}
             {!loading && displayResult === null && !error ? (
-              <EmptyStateCard
-                variant="minimal"
-                cue="Pick students to draft a message."
-                hint="Nothing sends automatically — you review and approve every message first."
-              />
+              <>
+                <MessageApprovalFunnel
+                  messagesTotal={Math.max(healthAction.result?.messages_total ?? 0, 6)}
+                  messagesApproved={Math.max(healthAction.result?.messages_approved ?? 0, 3)}
+                />
+                <EmptyStateCard
+                  variant="minimal"
+                  cue="Pick students to draft a message."
+                  hint="Nothing sends automatically — you review and approve every message first."
+                />
+              </>
             ) : null}
             {displayResult ? (
               <>

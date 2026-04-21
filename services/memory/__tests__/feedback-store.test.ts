@@ -26,6 +26,21 @@ function createTestDb(): Database.Database {
   return db;
 }
 
+function getUtcWeekStart(base = new Date()): Date {
+  const day = base.getUTCDay() || 7;
+  const monday = new Date(Date.UTC(base.getUTCFullYear(), base.getUTCMonth(), base.getUTCDate()));
+  monday.setUTCDate(monday.getUTCDate() - day + 1);
+  monday.setUTCHours(8, 0, 0, 0);
+  return monday;
+}
+
+function isoInWeek(weekOffset: number, dayOffset: number, hour = 8): string {
+  const date = getUtcWeekStart();
+  date.setUTCDate(date.getUTCDate() + (weekOffset * 7) + dayOffset);
+  date.setUTCHours(hour, 0, 0, 0);
+  return date.toISOString();
+}
+
 // ---------------------------------------------------------------------------
 // saveFeedback / getFeedbackSummary
 // ---------------------------------------------------------------------------
@@ -258,8 +273,11 @@ describe("getSessionSummary", () => {
     expect(summary.total_sessions).toBe(0);
     expect(summary.avg_duration_minutes).toBe(0);
     expect(summary.common_flows).toEqual([]);
+    expect(summary.transition_counts).toEqual([]);
+    expect(summary.terminal_counts).toEqual([]);
     expect(summary.panel_time_distribution).toEqual({});
     expect(summary.generations_per_session).toBe(0);
+    expect(summary.today_workflow_nudge).toBeNull();
   });
 
   it("computes average duration in minutes", () => {
@@ -313,6 +331,14 @@ describe("getSessionSummary", () => {
     expect(summary.common_flows[0].sequence).toEqual([
       "today",
       "tomorrow-plan",
+    ]);
+    expect(summary.transition_counts).toEqual([
+      { from_panel: "today", to_panel: "tomorrow-plan", count: 2 },
+      { from_panel: "today", to_panel: "differentiate", count: 1 },
+    ]);
+    expect(summary.terminal_counts).toEqual([
+      { panel_id: "tomorrow-plan", count: 2 },
+      { panel_id: "differentiate", count: 1 },
     ]);
   });
 
@@ -368,5 +394,88 @@ describe("getSessionSummary", () => {
     const summary = getSessionSummary(TEST_ROOM);
     // 3 total generations / 2 sessions = 1.5
     expect(summary.generations_per_session).toBe(1.5);
+  });
+
+  it("returns the repeated Today-starting workflow for the current week", () => {
+    const makeSession = (id: string, startedAt: string, panels: string[]) => ({
+      id,
+      classroom_id: "test-room",
+      session_id: id,
+      started_at: startedAt,
+      ended_at: new Date(new Date(startedAt).getTime() + (30 * 60 * 1000)).toISOString(),
+      panels_visited: panels,
+      generations_triggered: [] as { panel_id: string; prompt_class: string; timestamp: string }[],
+      feedback_count: 0,
+    });
+
+    saveSession(TEST_ROOM, makeSession("sess-w1", isoInWeek(0, 0), ["today", "log-intervention", "tomorrow-plan"]));
+    saveSession(TEST_ROOM, makeSession("sess-w2", isoInWeek(0, 1), ["today", "log-intervention", "tomorrow-plan"]));
+    saveSession(TEST_ROOM, makeSession("sess-w3", isoInWeek(0, 2), ["today", "support-patterns", "family-message"]));
+
+    const summary = getSessionSummary(TEST_ROOM);
+    expect(summary.today_workflow_nudge).toEqual({
+      week: expect.any(String),
+      is_current_week: true,
+      sequence: ["today", "log-intervention", "tomorrow-plan"],
+      count: 2,
+    });
+  });
+
+  it("truncates the Today workflow nudge before repeated navigation loops", () => {
+    const makeSession = (id: string, startedAt: string, panels: string[]) => ({
+      id,
+      classroom_id: "test-room",
+      session_id: id,
+      started_at: startedAt,
+      ended_at: new Date(new Date(startedAt).getTime() + (35 * 60 * 1000)).toISOString(),
+      panels_visited: panels,
+      generations_triggered: [] as { panel_id: string; prompt_class: string; timestamp: string }[],
+      feedback_count: 0,
+    });
+
+    const loopedFlow = [
+      "today",
+      "differentiate",
+      "today",
+      "differentiate",
+      "log-intervention",
+      "family-message",
+    ];
+
+    saveSession(TEST_ROOM, makeSession("sess-loop-1", isoInWeek(0, 0), loopedFlow));
+    saveSession(TEST_ROOM, makeSession("sess-loop-2", isoInWeek(0, 1), loopedFlow));
+    saveSession(TEST_ROOM, makeSession("sess-other", isoInWeek(0, 2), ["today", "log-intervention", "tomorrow-plan"]));
+
+    const summary = getSessionSummary(TEST_ROOM);
+    expect(summary.today_workflow_nudge).toEqual({
+      week: expect.any(String),
+      is_current_week: true,
+      sequence: ["today", "differentiate"],
+      count: 2,
+    });
+  });
+
+  it("falls back to the latest recorded Today-starting workflow when the current week is empty", () => {
+    const makeSession = (id: string, startedAt: string, panels: string[]) => ({
+      id,
+      classroom_id: "test-room",
+      session_id: id,
+      started_at: startedAt,
+      ended_at: new Date(new Date(startedAt).getTime() + (25 * 60 * 1000)).toISOString(),
+      panels_visited: panels,
+      generations_triggered: [] as { panel_id: string; prompt_class: string; timestamp: string }[],
+      feedback_count: 0,
+    });
+
+    saveSession(TEST_ROOM, makeSession("sess-old-1", isoInWeek(-2, 0), ["today", "support-patterns", "family-message"]));
+    saveSession(TEST_ROOM, makeSession("sess-old-2", isoInWeek(-2, 1), ["today", "support-patterns", "family-message"]));
+
+    const summary = getSessionSummary(TEST_ROOM);
+    expect(summary.today_workflow_nudge).toEqual({
+      week: expect.any(String),
+      is_current_week: false,
+      sequence: ["today", "support-patterns", "family-message"],
+      count: 2,
+    });
   });
 });

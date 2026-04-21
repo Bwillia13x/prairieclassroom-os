@@ -156,7 +156,7 @@ export default function CommandPalette({ open, onClose, entries }: Props) {
                   id={`cp-opt-${entry.id}`}
                   role="option"
                   aria-selected={i === activeIdx}
-                  className={`command-palette__item command-palette__item--${entry.kind}${i === activeIdx ? " command-palette__item--active" : ""}`}
+                  className={`command-palette__item command-palette__item--${entry.kind}${entry.recommended ? " command-palette__item--recommended" : ""}${i === activeIdx ? " command-palette__item--active" : ""}`}
                   onMouseEnter={() => setActiveIdx(i)}
                   onClick={() => {
                     entry.onSelect();
@@ -167,6 +167,7 @@ export default function CommandPalette({ open, onClose, entries }: Props) {
                   <span className="command-palette__kind">{entry.kind}</span>
                   <span className="command-palette__label">{entry.label}</span>
                   <span className="command-palette__meta">
+                    {entry.recommended ? <span className="command-palette__badge">Now</span> : null}
                     {entry.group && <span className="command-palette__group">{entry.group}</span>}
                     {entry.shortcut && (
                       <kbd

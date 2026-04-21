@@ -52,11 +52,13 @@ import { useNothingButtonPressAnimation } from "./hooks/useNothingButtonPressAni
 import TomorrowChip from "./components/TomorrowChip";
 import TabOverflowMenu from "./components/TabOverflowMenu";
 import OpsSectionHint from "./components/OpsSectionHint";
+import DrillDownDrawer from "./components/DrillDownDrawer";
+import { ActionAtlas } from "./components/TriageSurfaces";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
 import { computeTabScrollFadeState } from "./utils/tabScrollFade";
-import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
+import type { ClassroomProfile, DrillDownContext, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 
@@ -104,6 +106,7 @@ export default function App() {
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
   const [shortcutSheetOpen, setShortcutSheetOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
+  const [shellDrillDown, setShellDrillDown] = useState<DrillDownContext | null>(null);
   const groupsRef = useRef<HTMLDivElement>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
   const tabsFrameRef = useRef<HTMLDivElement>(null);
@@ -438,7 +441,7 @@ export default function App() {
     if (!state.activeClassroom || activeRole === "reviewer") return;
     const controller = new AbortController();
     fetchTodaySnapshot(state.activeClassroom, controller.signal)
-      .then((snapshot) => dispatch({ type: "SET_DEBT_REGISTER", register: snapshot.debt_register }))
+      .then((snapshot) => dispatch({ type: "SET_TODAY_SNAPSHOT", snapshot }))
       .catch((err) => {
         if (controller.signal.aborted) return;
         if (err instanceof DOMException && err.name === "AbortError") return;
@@ -644,6 +647,8 @@ export default function App() {
     classrooms: state.classrooms,
     activeClassroom: state.activeClassroom,
     debtRegister: state.latestDebtRegister,
+    latestTodaySnapshot: state.latestTodaySnapshot,
+    activeRole,
     onNavigate: (tab) => {
       setActiveTab(tab);
       setPaletteOpen(false);
@@ -933,6 +938,7 @@ export default function App() {
       activeTab,
       setActiveClassroom,
       setActiveTab,
+      latestTodaySnapshot: state.latestTodaySnapshot,
       profile,
       students,
       classroomAccessCodes: state.classroomAccessCodes,
@@ -972,6 +978,7 @@ export default function App() {
       state.classroomRoles,
       state.classrooms,
       state.featuresSeen,
+      state.latestTodaySnapshot,
       state.streaming,
       state.toasts,
       state.tomorrowNotes,
@@ -1268,9 +1275,19 @@ export default function App() {
             <div className="error-banner">{initError}</div>
           ) : null}
 
-          {renderPanel(activeTab, "today", mountedTabs, <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
           {activeGroup === "prep" ? <PrepSectionIntro /> : null}
           {activeGroup === "ops" ? <OpsSectionHint /> : null}
+          {state.classrooms.length > 0 && !initError && activeRole !== "reviewer" ? (
+            <ActionAtlas
+              snapshot={state.latestTodaySnapshot}
+              activeRole={activeRole}
+              onTabChange={setActiveTab}
+              onOpenContext={setShellDrillDown}
+              onInterventionPrefill={handleInterventionClick}
+              onMessagePrefill={handleFollowupClick}
+            />
+          ) : null}
+          {renderPanel(activeTab, "today", mountedTabs, <TodayPanel onTabChange={setActiveTab} onInterventionPrefill={handleInterventionClick} onMessagePrefill={handleFollowupClick} />)}
           {renderPanel(activeTab, "differentiate", mountedTabs, <DifferentiatePanel />)}
           {renderPanel(
             activeTab,
@@ -1300,6 +1317,17 @@ export default function App() {
 
         <ShortcutSheet open={shortcutSheetOpen} onClose={() => setShortcutSheetOpen(false)} />
         <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} entries={paletteEntries} />
+        <DrillDownDrawer
+          context={shellDrillDown}
+          onClose={() => setShellDrillDown(null)}
+          onNavigate={(tab) => {
+            setShellDrillDown(null);
+            setActiveTab(tab);
+          }}
+          onContextChange={setShellDrillDown}
+          onInterventionPrefill={handleInterventionClick}
+          onMessagePrefill={handleFollowupClick}
+        />
 
         {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
         {state.rolePrompt ? (

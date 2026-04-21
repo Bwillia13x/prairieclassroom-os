@@ -193,6 +193,14 @@ export default function DifferentiatePanel() {
             ) : null}
             {!loading && result === null && !error ? (
               <>
+                <VariantSummaryStrip
+                  variants={[
+                    { variant_type: "core", title: "Core path", estimated_minutes: 18 },
+                    { variant_type: "chunked", title: "Chunked path", estimated_minutes: 14 },
+                    { variant_type: "extension", title: "Extension path", estimated_minutes: 20 },
+                    { variant_type: "eal_supported", title: "Language-supported path", estimated_minutes: 16 },
+                  ]}
+                />
                 <ul className="output-preview-checklist" aria-label="Output will include">
                   <li>Readiness lane</li>
                   <li>Scaffolded lane</li>

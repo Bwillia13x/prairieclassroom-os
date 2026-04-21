@@ -98,7 +98,17 @@ export function parseEABriefingResponse(
     cleaned = cleaned.replace(/^```(?:json)?\s*/, "").replace(/```\s*$/, "");
   }
 
-  const parsed = JSON.parse(cleaned);
+  let parsed = JSON.parse(cleaned) as unknown;
+  if (
+    Array.isArray(parsed)
+    && parsed.length === 1
+    && typeof parsed[0] === "object"
+    && parsed[0] !== null
+    && !Array.isArray(parsed[0])
+  ) {
+    parsed = parsed[0];
+  }
+
   if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) {
     throw new Error("Expected JSON object for EA briefing");
   }

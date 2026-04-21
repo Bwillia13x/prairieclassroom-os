@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { buildDebtRegister, getLatestPlan, getLatestForecast } from "../../memory/retrieve.js";
+import { getStudentSummaries } from "../../memory/student-summary.js";
+import { buildPanelStatuses, buildStudentThreads } from "../../memory/triage.js";
 import { handleRouteError, sendClassroomNotFound, sendRouteError } from "../errors.js";
 import { isValidClassroomId } from "../validate.js";
 import { requireRoles, type RouteDeps } from "../route-deps.js";
@@ -32,15 +34,33 @@ export function createTodayRouter(deps: RouteDeps): Router {
       const register = buildDebtRegister(classroomId, classroom, undefined, rosterScope);
       const latestPlan = getLatestPlan(classroomId);
       const latestForecast = getLatestForecast(classroomId);
+      const scopedPlan = isRosterScopedValue(latestPlan, rosterScope) ? latestPlan : null;
+      const scopedForecast = isRosterScopedValue(latestForecast, rosterScope) ? latestForecast : null;
+      const studentSummaries = getStudentSummaries(classroomId, classroom.students);
+      const panelStatuses = buildPanelStatuses(
+        classroomId,
+        classroom,
+        register,
+        scopedPlan,
+        scopedForecast,
+      );
+      const studentThreads = buildStudentThreads(
+        classroom,
+        register,
+        scopedPlan,
+        studentSummaries,
+      );
 
       res.json({
         debt_register: register,
-        latest_plan: isRosterScopedValue(latestPlan, rosterScope) ? latestPlan : null,
-        latest_forecast: isRosterScopedValue(latestForecast, rosterScope) ? latestForecast : null,
+        latest_plan: scopedPlan,
+        latest_forecast: scopedForecast,
         student_count: classroom.students.length,
         last_activity_at: register.items.length > 0
           ? register.generated_at
           : null,
+        panel_statuses: panelStatuses,
+        student_threads: studentThreads,
       });
     } catch (err) {
       console.error("Today snapshot error:", err);

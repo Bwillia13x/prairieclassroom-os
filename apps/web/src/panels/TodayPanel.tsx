@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
-import { fetchTodaySnapshot, fetchClassroomHealth, fetchStudentSummary } from "../api";
+import { fetchTodaySnapshot, fetchClassroomHealth, fetchStudentSummary, fetchSessionSummary } from "../api";
+import type { SessionSummary } from "../api";
 import type { ActiveTab } from "../appReducer";
 import PendingActionsCard from "../components/PendingActionsCard";
 import PlanRecap from "../components/PlanRecap";
@@ -16,6 +17,9 @@ import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import TimeSuggestion from "../components/TimeSuggestion";
+import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
+import { CoverageTimeline, StudentCoverageStrip } from "../components/TriageSurfaces";
+import OperatingDashboard from "../components/OperatingDashboard";
 import { Card, ActionButton } from "../components/shared";
 import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
@@ -26,6 +30,7 @@ import SourceTag from "../components/SourceTag";
 import {
   getTodayPrimaryAction,
   getTodayContextualSuggestion,
+  getTodayWorkflowNudge,
   getStudentsToCheckFirst,
   getPeakBlock,
 } from "../utils/todayWorkflow";
@@ -53,6 +58,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   const { error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
   const studentSummaries = useAsyncAction<StudentSummary[]>();
+  const sessionSummary = useAsyncAction<SessionSummary>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
 
   useEffect(() => {
@@ -64,7 +70,8 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     execute((signal) => fetchTodaySnapshot(activeClassroom, signal));
     health.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
     studentSummaries.execute((signal) => fetchStudentSummary(activeClassroom, undefined, signal));
-  }, [activeClassroom, execute, health.execute, studentSummaries.execute]);
+    sessionSummary.execute((signal) => fetchSessionSummary(activeClassroom, signal));
+  }, [activeClassroom, execute, health.execute, sessionSummary.execute, studentSummaries.execute]);
 
   const recommendedAction = useMemo(
     () => result ? getTodayPrimaryAction(result, activeRole) : null,
@@ -81,6 +88,10 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         role: activeRole,
       }),
     [activeRole, currentHour, health.result, result],
+  );
+  const workflowNudge = useMemo(
+    () => getTodayWorkflowNudge(sessionSummary.result ?? null, activeRole),
+    [activeRole, sessionSummary.result],
   );
   const totalActionCount = useMemo(
     () => result?.debt_register.items.length ?? 0,
@@ -117,6 +128,37 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     () => getPeakBlock(result?.latest_forecast),
     [result?.latest_forecast],
   );
+  const selectedCoverageAlias = useMemo(() => {
+    if (drillDown?.type === "student") return drillDown.alias;
+    if (drillDown?.type === "student-thread") return drillDown.thread.alias;
+    return null;
+  }, [drillDown]);
+
+  function handleCoverageTimelineClick(index: number) {
+    const forecastBlock = result?.latest_forecast?.blocks[index];
+    if (forecastBlock) {
+      setDrillDown({ type: "forecast-block", blockIndex: index, block: forecastBlock });
+      return;
+    }
+
+    const scheduleBlock = profile?.schedule?.[index];
+    if (!scheduleBlock) return;
+    const matchingWatchpoints = (result?.latest_plan?.transition_watchpoints ?? [])
+      .filter((watchpoint) => {
+        const text = `${scheduleBlock.time_slot} ${scheduleBlock.activity}`.toLowerCase();
+        return text.includes(watchpoint.time_or_activity.toLowerCase());
+      })
+      .map((watchpoint) => watchpoint.risk_description);
+
+    if (matchingWatchpoints.length > 0) {
+      setDrillDown({
+        type: "plan-coverage-section",
+        section: "watchpoints",
+        label: `${scheduleBlock.time_slot} · ${scheduleBlock.activity}`,
+        items: matchingWatchpoints,
+      });
+    }
+  }
 
   const showTimeSuggestion = useMemo(() => {
     if (!suggestion) return false;
@@ -131,15 +173,16 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   // rename keeps nav in sync.
   const anchors: Anchor[] = [
     { id: "command-center", number: "01", label: "Command Center" },
-    { id: "classroom-pulse", number: "02", label: "What to Watch" },
-    { id: "day-arc", number: "03", label: "Today's Shape" },
-    { id: "complexity-debt", number: "04", label: "Complexity Debt" },
-    { id: "student-priority", number: "05", label: "Student Priority" },
-    { id: "intervention-recency", number: "06", label: "Intervention Recency" },
-    { id: "classroom-profile", number: "07", label: "Classroom Profile" },
-    { id: "planning-health", number: "08", label: "Planning Health" },
-    { id: "carry-forward", number: "09", label: "Carry Forward" },
-    { id: "end-of-today", number: "10", label: "End of Today" },
+    { id: "operating-dashboard", number: "02", label: "Operating Board" },
+    { id: "classroom-pulse", number: "03", label: "What to Watch" },
+    { id: "day-arc", number: "04", label: "Today's Shape" },
+    { id: "complexity-debt", number: "05", label: "Complexity Debt" },
+    { id: "student-priority", number: "06", label: "Student Priority" },
+    { id: "intervention-recency", number: "07", label: "Intervention Recency" },
+    { id: "classroom-profile", number: "08", label: "Classroom Profile" },
+    { id: "planning-health", number: "09", label: "Planning Health" },
+    { id: "carry-forward", number: "10", label: "Carry Forward" },
+    { id: "end-of-today", number: "11", label: "End of Today" },
   ];
 
   return (
@@ -160,6 +203,38 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
       />
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
+
+      {workflowNudge ? (
+        <div className="today-workflow-nudge" data-testid="today-workflow-nudge" role="note" aria-label="Weekly workflow suggestion">
+          <div className="today-workflow-nudge__copy">
+            <span className="today-workflow-nudge__eyebrow">{workflowNudge.kicker}</span>
+            <p className="today-workflow-nudge__text">{workflowNudge.message}</p>
+            <p className="today-workflow-nudge__meta">
+              <span>{workflowNudge.sequenceLabel}</span>
+              <span aria-hidden="true">·</span>
+              <span>{workflowNudge.countLabel}</span>
+            </p>
+          </div>
+          <ActionButton
+            size="sm"
+            variant="soft"
+            onClick={() => onTabChange(workflowNudge.targetTab)}
+          >
+            {workflowNudge.cta}
+          </ActionButton>
+        </div>
+      ) : null}
+
+      <OpsWorkflowStepper activeTab="today" variant="compact" />
+
+      {result?.student_threads?.length ? (
+        <StudentCoverageStrip
+          threads={result.student_threads}
+          title="Who needs a touchpoint"
+          selectedAlias={selectedCoverageAlias}
+          onSelectThread={(thread) => setDrillDown({ type: "student-thread", thread })}
+        />
+      ) : null}
 
       <div id="command-center" className="today-anchor-target">
         {result ? (
@@ -182,6 +257,20 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         )}
       </div>
 
+      {result ? (
+        <div id="operating-dashboard" className="today-anchor-target">
+          <OperatingDashboard
+            snapshot={result}
+            profile={profile}
+            health={health.result ?? null}
+            sessionSummary={sessionSummary.result ?? null}
+            activeRole={activeRole}
+            onNavigate={onTabChange}
+            onOpenContext={setDrillDown}
+          />
+        </div>
+      ) : null}
+
       <section
         id="classroom-pulse"
         className="today-pulse"
@@ -195,6 +284,16 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             Risk map, open items, and carry-forward signals.
           </p>
         </header>
+        {result ? (
+          <CoverageTimeline
+            title="Tomorrow coverage snapshot"
+            schedule={profile.schedule}
+            forecastBlocks={result.latest_forecast?.blocks}
+            watchpoints={result.latest_plan?.transition_watchpoints}
+            unresolvedFollowups={result.debt_register.item_count_by_category.stale_followup ?? 0}
+            onBlockClick={handleCoverageTimelineClick}
+          />
+        ) : null}
         <div className="today-grid motion-stagger">
         <div className="today-grid__hero-row">
           <div id="day-arc" className="today-anchor-target">

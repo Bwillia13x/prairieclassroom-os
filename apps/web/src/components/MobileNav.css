@@ -25,6 +25,39 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.mobile-nav-recommended {
+  padding: var(--space-2) var(--space-3) 0;
+}
+
+.mobile-nav-recommended__btn {
+  display: grid;
+  width: 100%;
+  gap: 0.15rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border-accent) 56%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-bg-sage) 18%, var(--color-surface));
+  text-align: left;
+}
+
+.mobile-nav-recommended__eyebrow {
+  font-size: 0.68rem;
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.mobile-nav-recommended__label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.mobile-nav-recommended__detail {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
 .mobile-nav-subtabs::-webkit-scrollbar {
   display: none;
 }

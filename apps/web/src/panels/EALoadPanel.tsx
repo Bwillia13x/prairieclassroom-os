@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import "./EALoadPanel.css";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
@@ -16,11 +16,13 @@ import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
+import DrillDownDrawer from "../components/DrillDownDrawer";
+import { CoverageTimeline } from "../components/TriageSurfaces";
 import { ActionButton, FeedbackCollector, FormCard } from "../components/shared";
 import { EALoadStackedBars } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
-import type { EALoadBlock, EALoadLevel, EALoadResponse } from "../types";
+import type { DrillDownContext, EALoadBlock, EALoadLevel, EALoadResponse } from "../types";
 
 // Tomorrow, formatted for the date input (YYYY-MM-DD).
 function defaultTargetDate(): string {
@@ -213,13 +215,26 @@ function EALoadViewer({ response }: EALoadViewerProps) {
 }
 
 export default function EALoadPanel() {
-  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<EALoadResponse>();
+  const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const streamer = useStreamingRequest({
     sectionLabels: ["Schedule analysis", "Load curves", "Redistribution"],
   });
   const feedback = useFeedback(activeClassroom, session.sessionId);
+  const previewBlocks = useMemo<EALoadBlock[]>(
+    () => (profile?.schedule ?? []).map((block, index) => ({
+      time_slot: block.time_slot,
+      activity: block.activity,
+      load_level: !block.ea_available ? "break" : index % 3 === 1 ? "high" : index % 3 === 0 ? "medium" : "low",
+      supported_students: !block.ea_available ? [] : index % 3 === 1 ? ["Student A", "Student C"] : index % 3 === 0 ? ["Student B"] : [],
+      load_factors: !block.ea_available ? ["EA unavailable in this block"] : ["Plan transitions and regulation checks early"],
+      redistribution_suggestion: block.ea_available ? "Shift a check-in earlier so the block opens calmer." : undefined,
+      ea_available: Boolean(block.ea_available),
+    })),
+    [profile?.schedule],
+  );
 
   useEffect(() => {
     session.recordPanelVisit("ea-load");
@@ -255,6 +270,19 @@ export default function EALoadPanel() {
     }
   }
 
+  function handleTimelineBlockClick(index: number) {
+    const block = result?.profile.blocks[index];
+    if (block) {
+      setDrillDown({ type: "ea-load-block", blockIndex: index, block });
+      return;
+    }
+
+    const forecastBlock = latestTodaySnapshot?.latest_forecast?.blocks[index];
+    if (forecastBlock) {
+      setDrillDown({ type: "forecast-block", blockIndex: index, block: forecastBlock });
+    }
+  }
+
   return (
     <section className="workspace-page">
       <PageIntro
@@ -274,6 +302,16 @@ export default function EALoadPanel() {
       />
 
       <OpsWorkflowStepper activeTab="ea-load" />
+
+      <CoverageTimeline
+        title="EA load timeline"
+        schedule={profile?.schedule}
+        forecastBlocks={latestTodaySnapshot?.latest_forecast?.blocks}
+        eaLoadBlocks={result?.profile.blocks}
+        watchpoints={latestTodaySnapshot?.latest_plan?.transition_watchpoints}
+        unresolvedFollowups={latestTodaySnapshot?.debt_register.item_count_by_category.stale_followup ?? 0}
+        onBlockClick={handleTimelineBlockClick}
+      />
 
       <WorkspaceLayout
         splitState={result ? "output" : "input"}
@@ -299,40 +337,34 @@ export default function EALoadPanel() {
               )
             ) : null}
             {!loading && result === null && !error ? (
-              <EmptyStateCard
-                variant="sample"
-                label="Sample EA load block"
-                /* aria-hidden on the wrapper article below is LOAD-BEARING:
-                   EmptyStateCard only aria-hides the [SAMPLE] tag, not the
-                   sample body. Without this, screen readers would announce
-                   the fake "Reading rotations / Student A, Student C" as
-                   real classroom data. Do not strip.
-
-                   Time slot + activity differ from ForecastPanel's sample
-                   so the two empty states don't read as the same template
-                   when a teacher tabs between them. */
-                sampleNode={(
-                  <article className="ea-load-block ea-load-block--rose" aria-hidden="true">
-                    <header className="ea-load-block__header">
-                      <span className="ea-load-block__time">9:30–10:15</span>
-                      <span className="ea-load-block__badge ea-load-block__badge--rose">
-                        HIGH
-                      </span>
-                    </header>
-                    <h3 className="ea-load-block__activity">Reading rotations</h3>
-                    <p className="ea-load-block__supported">
-                      <strong>Supporting:</strong> Student A, Student C
-                    </p>
-                    <ul className="ea-load-block__factors">
-                      <li>Two regulation check-ins likely during station rotation</li>
-                      <li>One student returning from morning transition</li>
-                    </ul>
-                    <p className="ea-load-block__suggestion">
-                      <strong>Consider:</strong> stagger the rotation so the EA can settle the late-arriver before the second station starts.
-                    </p>
-                  </article>
-                )}
-              />
+              <>
+                {previewBlocks.length > 0 ? <EALoadStackedBars blocks={previewBlocks} /> : null}
+                <EmptyStateCard
+                  variant="sample"
+                  label="Sample EA load block"
+                  sampleNode={(
+                    <article className="ea-load-block ea-load-block--rose" aria-hidden="true">
+                      <header className="ea-load-block__header">
+                        <span className="ea-load-block__time">9:30–10:15</span>
+                        <span className="ea-load-block__badge ea-load-block__badge--rose">
+                          HIGH
+                        </span>
+                      </header>
+                      <h3 className="ea-load-block__activity">Reading rotations</h3>
+                      <p className="ea-load-block__supported">
+                        <strong>Supporting:</strong> Student A, Student C
+                      </p>
+                      <ul className="ea-load-block__factors">
+                        <li>Two regulation check-ins likely during station rotation</li>
+                        <li>One student returning from morning transition</li>
+                      </ul>
+                      <p className="ea-load-block__suggestion">
+                        <strong>Consider:</strong> stagger the rotation so the EA can settle the late-arriver before the second station starts.
+                      </p>
+                    </article>
+                  )}
+                />
+              </>
             ) : null}
             {result ? (
               <>
@@ -356,6 +388,15 @@ export default function EALoadPanel() {
             ) : null}
           </div>
         )}
+      />
+      <DrillDownDrawer
+        context={drillDown}
+        onClose={() => setDrillDown(null)}
+        onNavigate={(tab) => {
+          setDrillDown(null);
+          setActiveTab(tab);
+        }}
+        onContextChange={setDrillDown}
       />
     </section>
   );

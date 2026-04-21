@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -19,6 +19,8 @@ import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
+import DrillDownDrawer from "../components/DrillDownDrawer";
+import { CoverageTimeline } from "../components/TriageSurfaces";
 import { FeedbackCollector, OutputActionBar, Sparkline as SharedSparkline, type OutputAction } from "../components/shared";
 import { ComplexityHeatmap } from "../components/DataVisualizations";
 import { useFeedback } from "../hooks/useFeedback";
@@ -26,18 +28,29 @@ import { useRole } from "../hooks/useRole";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import { serializeForecastToPlainText } from "./outputActionBarHelpers";
-import type { ComplexityForecastResponse } from "../types";
+import type { ComplexityBlock, ComplexityForecastResponse, DrillDownContext } from "../types";
 
 export default function ForecastPanel() {
-  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>();
+  const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const streamer = useStreamingRequest({
     sectionLabels: ["Block analysis", "Complexity curves", "Risk assessment"],
   });
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
   const role = useRole();
+  const previewBlocks = useMemo<ComplexityBlock[]>(
+    () => (profile?.schedule ?? []).map((block, index) => ({
+      time_slot: block.time_slot,
+      activity: block.activity,
+      level: index % 3 === 1 ? "medium" : "low",
+      contributing_factors: block.ea_available ? ["EA scheduled in this block"] : ["Support coverage may need staging"],
+      suggested_mitigation: "Stage the opening move and keep the transition cue close.",
+    })),
+    [profile?.schedule],
+  );
 
   const actions = useMemo<OutputAction[]>(() => {
     if (!result) return [];
@@ -109,6 +122,32 @@ export default function ForecastPanel() {
     }
   }
 
+  function handleTimelineBlockClick(index: number) {
+    const block = result?.forecast.blocks[index] ?? latestTodaySnapshot?.latest_forecast?.blocks[index];
+    if (block) {
+      setDrillDown({ type: "forecast-block", blockIndex: index, block });
+      return;
+    }
+
+    const scheduleBlock = profile?.schedule?.[index];
+    if (!scheduleBlock) return;
+    const watchpoints = (latestTodaySnapshot?.latest_plan?.transition_watchpoints ?? [])
+      .filter((watchpoint) => {
+        const text = `${scheduleBlock.time_slot} ${scheduleBlock.activity}`.toLowerCase();
+        return text.includes(watchpoint.time_or_activity.toLowerCase());
+      })
+      .map((watchpoint) => watchpoint.risk_description);
+
+    if (watchpoints.length > 0) {
+      setDrillDown({
+        type: "plan-coverage-section",
+        section: "watchpoints",
+        label: `${scheduleBlock.time_slot} · ${scheduleBlock.activity}`,
+        items: watchpoints,
+      });
+    }
+  }
+
   return (
     <section className="workspace-page">
       <PageIntro
@@ -135,6 +174,15 @@ export default function ForecastPanel() {
 
       <OpsWorkflowStepper activeTab="complexity-forecast" />
 
+      <CoverageTimeline
+        title="Forecast timeline"
+        schedule={profile?.schedule}
+        forecastBlocks={result?.forecast.blocks ?? latestTodaySnapshot?.latest_forecast?.blocks}
+        watchpoints={latestTodaySnapshot?.latest_plan?.transition_watchpoints}
+        unresolvedFollowups={latestTodaySnapshot?.debt_register.item_count_by_category.stale_followup ?? 0}
+        onBlockClick={handleTimelineBlockClick}
+      />
+
       <WorkspaceLayout
         splitState={result ? "output" : "input"}
         rail={(
@@ -155,32 +203,31 @@ export default function ForecastPanel() {
                 : <SkeletonLoader variant="stack" message="Generating complexity forecast with deep reasoning..." label="Generating complexity forecast" />
             ) : null}
             {!loading && result === null && !error ? (
-              <EmptyStateCard
-                variant="sample"
-                label="Sample forecast block"
-                /* aria-hidden on the wrapper div below is LOAD-BEARING:
-                   EmptyStateCard only aria-hides the [SAMPLE] tag, not the
-                   sample body. Without this, screen readers would announce
-                   the fake forecast block as real classroom data. */
-                sampleNode={(
-                  <div className="forecast-block forecast-block--high" aria-hidden="true">
-                    <div className="forecast-block-header">
-                      <span className="forecast-block-time">10:15–11:00</span>
-                      <span className="forecast-block-level forecast-block-level--high">
-                        {"\u26C8"} High
-                      </span>
+              <>
+                {previewBlocks.length > 0 ? <ComplexityHeatmap blocks={previewBlocks} /> : null}
+                <EmptyStateCard
+                  variant="sample"
+                  label="Sample forecast block"
+                  sampleNode={(
+                    <div className="forecast-block forecast-block--high" aria-hidden="true">
+                      <div className="forecast-block-header">
+                        <span className="forecast-block-time">10:15–11:00</span>
+                        <span className="forecast-block-level forecast-block-level--high">
+                          {"\u26C8"} High
+                        </span>
+                      </div>
+                      <div className="forecast-block-activity">Math — long division block</div>
+                      <ul className="forecast-block-factors">
+                        <li>EA out for the block</li>
+                        <li>Two students returning from a transition</li>
+                      </ul>
+                      <p className="forecast-block-mitigation">
+                        Front-load the worked example, hold a brain-break before independent practice.
+                      </p>
                     </div>
-                    <div className="forecast-block-activity">Math — long division block</div>
-                    <ul className="forecast-block-factors">
-                      <li>EA out for the block</li>
-                      <li>Two students returning from a transition</li>
-                    </ul>
-                    <p className="forecast-block-mitigation">
-                      Front-load the worked example, hold a brain-break before independent practice.
-                    </p>
-                  </div>
-                )}
-              />
+                  )}
+                />
+              </>
             ) : null}
             {result ? (
               <>
@@ -219,6 +266,15 @@ export default function ForecastPanel() {
             ) : null}
           </div>
         )}
+      />
+      <DrillDownDrawer
+        context={drillDown}
+        onClose={() => setDrillDown(null)}
+        onNavigate={(tab) => {
+          setDrillDown(null);
+          setActiveTab(tab);
+        }}
+        onContextChange={setDrillDown}
       />
     </section>
   );

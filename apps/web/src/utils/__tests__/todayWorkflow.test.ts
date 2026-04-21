@@ -3,9 +3,11 @@ import {
   DEBT_CATEGORY_PRIORITY,
   getTodayPrimaryAction,
   getTodayContextualSuggestion,
+  getTodayWorkflowNudge,
   getStudentsToCheckFirst,
   getPeakBlock,
 } from "../todayWorkflow";
+import type { SessionSummary } from "../../api";
 import type { TodaySnapshot, ComplexityForecast } from "../../types";
 
 function makeSnapshot(overrides: Partial<TodaySnapshot> = {}): TodaySnapshot {
@@ -52,6 +54,29 @@ function makeSnapshot(overrides: Partial<TodaySnapshot> = {}): TodaySnapshot {
     } as TodaySnapshot["latest_forecast"],
     student_count: 0,
     last_activity_at: null,
+    ...overrides,
+  };
+}
+
+function makeSessionSummary(overrides: Partial<SessionSummary> = {}): SessionSummary {
+  return {
+    total_sessions: 6,
+    avg_duration_minutes: 18.4,
+    common_flows: [
+      { sequence: ["today", "log-intervention", "tomorrow-plan"], count: 3 },
+    ],
+    panel_time_distribution: {
+      today: 0.4,
+      "log-intervention": 0.3,
+      "tomorrow-plan": 0.3,
+    },
+    generations_per_session: 1.8,
+    today_workflow_nudge: {
+      week: "2026-W16",
+      is_current_week: true,
+      sequence: ["today", "log-intervention", "tomorrow-plan"],
+      count: 3,
+    },
     ...overrides,
   };
 }
@@ -142,6 +167,103 @@ describe("getTodayContextualSuggestion", () => {
       role: "teacher",
     });
     expect(suggestion?.primaryAction.tab).toBe("differentiate");
+  });
+});
+
+describe("getTodayWorkflowNudge", () => {
+  it("returns a Today-specific workflow nudge when the flow repeats", () => {
+    const nudge = getTodayWorkflowNudge(makeSessionSummary(), "teacher");
+    expect(nudge).toMatchObject({
+      kicker: "Most-used workflow this week",
+      targetTab: "log-intervention",
+      cta: "Jump to Log Intervention",
+      sequenceLabel: "Today → Log Intervention → Tomorrow Plan",
+      countLabel: "3x",
+    });
+    expect(nudge?.message).toContain("Log Intervention");
+    expect(nudge?.message).toContain("Tomorrow Plan");
+  });
+
+  it("shortens repeated Today navigation loops before rendering the copy", () => {
+    const nudge = getTodayWorkflowNudge(
+      makeSessionSummary({
+        today_workflow_nudge: {
+          week: "2026-W16",
+          is_current_week: true,
+          sequence: [
+            "today",
+            "differentiate",
+            "today",
+            "differentiate",
+            "log-intervention",
+            "family-message",
+          ],
+          count: 12,
+        },
+      }),
+      "teacher",
+    );
+
+    expect(nudge).toMatchObject({
+      targetTab: "differentiate",
+      message: "You usually open Differentiate right after this check-in.",
+      sequenceLabel: "Today → Differentiate",
+      countLabel: "12x",
+    });
+  });
+
+  it("caps long one-way workflow labels to the first useful steps", () => {
+    const nudge = getTodayWorkflowNudge(
+      makeSessionSummary({
+        today_workflow_nudge: {
+          week: "2026-W16",
+          is_current_week: true,
+          sequence: [
+            "today",
+            "differentiate",
+            "language-tools",
+            "family-message",
+            "support-patterns",
+          ],
+          count: 4,
+        },
+      }),
+      "teacher",
+    );
+
+    expect(nudge?.sequenceLabel).toBe("Today → Differentiate → Language Tools → Family Message");
+    expect(nudge?.message).not.toContain("Support Patterns");
+  });
+
+  it("suppresses the nudge when the flow only occurred once", () => {
+    const nudge = getTodayWorkflowNudge(
+      makeSessionSummary({
+        today_workflow_nudge: {
+          week: "2026-W16",
+          is_current_week: true,
+          sequence: ["today", "log-intervention", "tomorrow-plan"],
+          count: 1,
+        },
+      }),
+      "teacher",
+    );
+    expect(nudge).toBeNull();
+  });
+
+  it("uses the fallback label when the latest recorded week is not current", () => {
+    const nudge = getTodayWorkflowNudge(
+      makeSessionSummary({
+        today_workflow_nudge: {
+          week: "2026-W14",
+          is_current_week: false,
+          sequence: ["today", "support-patterns", "family-message"],
+          count: 2,
+        },
+      }),
+      "teacher",
+    );
+    expect(nudge?.kicker).toBe("Most-used workflow in the latest week on record");
+    expect(nudge?.targetTab).toBe("support-patterns");
   });
 });
 

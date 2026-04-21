@@ -12,6 +12,7 @@ import {
   type NavGroup,
 } from "../appReducer";
 import { useApp } from "../AppContext";
+import { pickRecommendedPanelStatus } from "./TriageSurfaces";
 import SectionIcon from "./SectionIcon";
 import "./MobileNav.css";
 
@@ -22,7 +23,7 @@ interface Props {
 }
 
 export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props) {
-  const { activeRole } = useApp();
+  const { activeRole, latestTodaySnapshot } = useApp();
   const role: ClassroomRole = activeRole;
   const visibleGroups = getVisibleNavGroups(role);
   const initialGroup = isTabVisibleForRole(activeTab, role)
@@ -52,9 +53,28 @@ export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props)
 
   const visibleTabs = getVisibleTabsForGroup(expandedGroup, role);
   const showSubtabs = visibleTabs.length > 1;
+  const recommended = pickRecommendedPanelStatus(latestTodaySnapshot?.panel_statuses ?? [], role);
+  const recommendedTab = recommended && isTabVisibleForRole(recommended.panel_id as ActiveTab, role)
+    ? recommended.panel_id as ActiveTab
+    : null;
 
   return (
     <nav className="mobile-nav" aria-label="Mobile navigation">
+      {recommended && recommendedTab ? (
+        <div className="mobile-nav-recommended">
+          <button
+            type="button"
+            className="mobile-nav-recommended__btn"
+            onClick={() => onTabChange(recommendedTab)}
+          >
+            <span className="mobile-nav-recommended__eyebrow">Recommended now</span>
+            <span className="mobile-nav-recommended__label">{recommended.label}</span>
+            <span className="mobile-nav-recommended__detail">
+              {recommended.pending_count > 0 ? `${recommended.pending_count} pending` : recommended.state.replace(/_/g, " ")}
+            </span>
+          </button>
+        </div>
+      ) : null}
       {showSubtabs ? (
         <div className="mobile-nav-subtabs">
           {visibleTabs.map((tab) => (

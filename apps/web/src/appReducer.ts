@@ -5,7 +5,7 @@
  * Enables undo toasts, streaming state, contextual onboarding, and time-aware nav.
  */
 
-import type { ClassroomProfile, ComplexityDebtRegister, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
+import type { ClassroomProfile, ComplexityDebtRegister, FamilyMessagePrefill, InterventionPrefill, TodaySnapshot, TomorrowNote } from "./types";
 import type { SectionIconName } from "./components/SectionIcon";
 
 // ─── Active Tab ───
@@ -300,6 +300,7 @@ export interface AppState {
   initError: string | null;
   debtCounts: Record<string, number>;
   latestDebtRegister: ComplexityDebtRegister | null;
+  latestTodaySnapshot: TodaySnapshot | null;
   showOnboarding: boolean;
 
   // New: toast queue (replaces single successMsg)
@@ -337,6 +338,7 @@ export type AppAction =
   | { type: "SET_ACTIVE_CLASSROOM"; classroomId: string }
   | { type: "SET_ACTIVE_TAB"; tab: ActiveTab }
   | { type: "SET_INIT_ERROR"; error: string }
+  | { type: "SET_TODAY_SNAPSHOT"; snapshot: TodaySnapshot }
   | { type: "SET_DEBT_REGISTER"; register: ComplexityDebtRegister }
   | { type: "SET_MESSAGE_PREFILL"; prefill: FamilyMessagePrefill | null }
   | { type: "SET_INTERVENTION_PREFILL"; prefill: InterventionPrefill | null }
@@ -481,6 +483,7 @@ export function createInitialState(): AppState {
     initError: null,
     debtCounts: {},
     latestDebtRegister: null,
+    latestTodaySnapshot: null,
     showOnboarding: !shouldSuppressFirstRunModalsFromUrl() && !localStorage.getItem("prairie-onboarding-done"),
     toasts: [],
     streaming: {
@@ -514,6 +517,15 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         activeClassroom: action.classroomId,
         debtCounts: {},
         latestDebtRegister: null,
+        latestTodaySnapshot: null,
+      };
+
+    case "SET_TODAY_SNAPSHOT":
+      return {
+        ...state,
+        latestTodaySnapshot: action.snapshot,
+        latestDebtRegister: action.snapshot.debt_register,
+        debtCounts: action.snapshot.debt_register.item_count_by_category,
       };
 
     case "SET_ACTIVE_TAB":

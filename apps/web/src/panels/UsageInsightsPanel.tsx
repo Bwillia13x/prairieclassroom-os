@@ -57,6 +57,28 @@ export default function UsageInsightsPanel() {
         return totals.count > 0 ? (totals.weightedRating / totals.count).toFixed(1) : "—";
       })()
     : "—";
+  const transitionCounts = sessions.result?.transition_counts ?? [];
+  const terminalCounts = sessions.result?.terminal_counts ?? [];
+  const afterToday = transitionCounts
+    .filter((edge) => edge.from_panel === "today")
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 4);
+  const returnLoops = transitionCounts
+    .filter((edge) => edge.to_panel === "today" && edge.from_panel !== "today")
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3);
+  const sessionEndings = terminalCounts
+    .slice()
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 4);
+  const totalAfterToday = afterToday.reduce((total, edge) => total + edge.count, 0);
+  const totalReturnLoops = returnLoops.reduce((total, edge) => total + edge.count, 0);
+  const totalSessionEndings = terminalCounts.reduce((total, terminal) => total + terminal.count, 0);
+  const completions = sessions.result?.completion_counts ?? [];
+  const reopens = sessions.result?.reopen_counts ?? [];
+  const topCompletion = completions.slice().sort((a, b) => b.count - a.count)[0] ?? null;
+  const topReopen = reopens.slice().sort((a, b) => b.count - a.count)[0] ?? null;
+  const mostRepeatedFlow = sessions.result?.common_flows?.[0] ?? null;
 
   return (
     <section className="workspace-page usage-insights-panel">
@@ -97,6 +119,50 @@ export default function UsageInsightsPanel() {
           )}
         </div>
       )}
+
+      {sessions.result ? (
+        <section className="usage-impact-dashboard" aria-labelledby="usage-impact-heading">
+          <div className="usage-impact-dashboard__header">
+            <div>
+              <span className="usage-impact-dashboard__eyebrow">Decision impact</span>
+              <h2 id="usage-impact-heading">What helps the teacher move work forward</h2>
+            </div>
+            <p>
+              Based on recorded session behavior. Resolution telemetry appears here when completion and reopen events are stored.
+            </p>
+          </div>
+          <div className="usage-impact-dashboard__grid">
+            <div className="usage-impact-dashboard__metric">
+              <span>{totalAfterToday}</span>
+              <strong>After-Today moves</strong>
+              <em>{afterToday[0] ? `Most often to ${formatPanelName(afterToday[0].to_panel)}` : "No follow-on path yet"}</em>
+            </div>
+            <div className="usage-impact-dashboard__metric">
+              <span>{totalReturnLoops}</span>
+              <strong>Return loops</strong>
+              <em>{returnLoops[0] ? `${formatPanelName(returnLoops[0].from_panel)} loops back most` : "No repeated return loop yet"}</em>
+            </div>
+            <div className="usage-impact-dashboard__metric">
+              <span>{totalSessionEndings}</span>
+              <strong>Session endings</strong>
+              <em>{sessionEndings[0] ? `Most end on ${formatPanelName(sessionEndings[0].panel_id)}` : "No ending data yet"}</em>
+            </div>
+            <div className="usage-impact-dashboard__metric">
+              <span>{sessions.result.median_time_to_resolution_minutes ?? "—"}</span>
+              <strong>Median resolution</strong>
+              <em>
+                {topCompletion
+                  ? `${formatPanelName(topCompletion.panel_id)} closes most work`
+                  : topReopen
+                    ? `${formatPanelName(topReopen.panel_id)} reopens most often`
+                    : mostRepeatedFlow
+                      ? `${mostRepeatedFlow.sequence.length}-step workflow is the strongest recorded path`
+                      : "Completion data not recorded yet"}
+              </em>
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       <div className="usage-insights-grid">
         <StatusCard
@@ -160,6 +226,52 @@ export default function UsageInsightsPanel() {
                 {" / "}
                 {sessions.result.generations_per_session.toFixed(1)} generations per session
               </p>
+
+              {(afterToday.length > 0 || returnLoops.length > 0 || sessionEndings.length > 0) ? (
+                <div className="usage-insights-lanes">
+                  {afterToday.length > 0 ? (
+                    <section className="usage-insights-lane">
+                      <p className="usage-insights-lane__label">After Today</p>
+                      <ul className="usage-insights-lane__list">
+                        {afterToday.map((edge) => (
+                          <li key={`${edge.from_panel}-${edge.to_panel}`}>
+                            <span>{formatPanelName(edge.to_panel)}</span>
+                            <strong>{edge.count}</strong>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  {returnLoops.length > 0 ? (
+                    <section className="usage-insights-lane">
+                      <p className="usage-insights-lane__label">Return Loops</p>
+                      <ul className="usage-insights-lane__list">
+                        {returnLoops.map((edge) => (
+                          <li key={`${edge.from_panel}-${edge.to_panel}`}>
+                            <span>{formatPanelName(edge.from_panel)} → Today</span>
+                            <strong>{edge.count}</strong>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+
+                  {sessionEndings.length > 0 ? (
+                    <section className="usage-insights-lane">
+                      <p className="usage-insights-lane__label">Sessions End Here</p>
+                      <ul className="usage-insights-lane__list">
+                        {sessionEndings.map((terminal) => (
+                          <li key={terminal.panel_id}>
+                            <span>{formatPanelName(terminal.panel_id)}</span>
+                            <strong>{terminal.count}</strong>
+                          </li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : null}
+                </div>
+              ) : null}
 
               {sessions.result.common_flows.length > 0 && (
                 <>
