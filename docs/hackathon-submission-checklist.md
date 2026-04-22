@@ -4,14 +4,15 @@ Repo-side checklist for preparing PrairieClassroom OS for the Gemma 4 Good Hacka
 
 ## Current status
 
-Checked against the repo on 2026-04-20.
+Checked against the repo on 2026-04-21.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-21T05-10-48-317Z-50710`
-- Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-21T05-13-43-243Z-52665`
+- Mock structural gate: passing at `output/release-gate/2026-04-21T17-40-46-011Z-52231`
+- Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-22T02-16-16-557Z-74236`
 - Ollama proof on this machine: not proven
 - Kaggle writeup draft: aligned to the hosted proof lane and current code inventory
 - Public-video script: aligned to the hosted proof lane
 - Judge/demo URL: `?demo=true` now skips first-run onboarding and role-selection modals for the demo classroom
+- Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md)
 
 ## Completed safely in repo
 
@@ -21,9 +22,10 @@ Checked against the repo on 2026-04-20.
   - hosted Gemma 4 is the submission proof lane
   - Ollama is the intended privacy-first deployment path
 - Kept the current proof references anchored to checked-in artifacts.
-- Refreshed the hosted Gemini proof onwith the supplied AI Studio key on the API-key-only lane.
+- Refreshed the hosted Gemini proof references to the latest passing artifact set and added a judge-facing short summary.
+- Added a safe dry-run-first artifact pruning script for reclaiming local disk from old generated outputs.
 - Added roster-scoped memory filtering and reset the demo SQLite memory so stale local test records cannot leak into retrieval citations.
-- Refreshed UI evidence screenshots on 2026-04-18.
+- Refreshed UI evidence screenshots on 2026-04-20.
 - Added a judge-safe `?demo=true` first-run path that skips onboarding and role-selection modals for the demo classroom.
 - Split the Vite production bundle into React, panel, and visualization chunks so the current web build no longer emits the large-entry-chunk warning.
 - Added [public demo operations](./public-demo-operations.md) with the deployment shape and judge-safe smoke checklist.
@@ -32,11 +34,11 @@ Checked against the repo on 2026-04-20.
 
 Use the current UI evidence bundle for cover-image and gallery selection:
 
-- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/today-desktop.png`
-- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/differentiate-desktop.png`
-- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/tomorrow-plan-desktop.png`
-- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/family-message-desktop.png`
-- `output/playwright/ui-evidence/2026-04-18T21-23-02-371Z/shell-mobile.png`
+- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/today-desktop.png`
+- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/differentiate-desktop.png`
+- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/tomorrow-plan-desktop.png`
+- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/family-message-desktop.png`
+- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/shell-mobile.png`
 
 Current local video candidate:
 
@@ -53,6 +55,7 @@ These are required for an actual competition submission but cannot be completed 
 4. Attach the public repo URL, live demo URL, and YouTube URL to the Kaggle writeup.
 5. Add a cover image and supporting screenshots to the media gallery.
 6. Confirm the final Kaggle writeup is submitted, not left as a draft.
+7. If a real teacher/EA walkthrough is completed before submission, add the anonymized artifact under `docs/pilot/` and update `docs/pilot/claims-ledger.md`. If not, leave human validation explicitly unclaimed.
 
 ## Claims to avoid
 

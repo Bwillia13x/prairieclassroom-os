@@ -72,6 +72,15 @@ const eaBriefingRoute: RouteConfig = {
   output_schema_version: "0.1.0",
 };
 
+const supportPatternsRoute: RouteConfig = {
+  prompt_class: "detect_support_patterns",
+  model_tier: "planning",
+  thinking_enabled: true,
+  retrieval_required: true,
+  tool_call_capable: true,
+  output_schema_version: "0.1.0",
+};
+
 describe("callInference", () => {
   beforeEach(() => {
     vi.unstubAllGlobals();
@@ -121,6 +130,26 @@ describe("callInference", () => {
     expect(getRequestContext(res).timeout_ms).toBe(60_000);
   });
 
+  it("extends support-patterns beyond the generic planning timeout even without provider env", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      text: "{\"report\":{}}",
+      model_id: "mock-plan",
+      latency_ms: 30,
+    }), { status: 200 })));
+
+    const res = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res,
+      route: supportPatternsRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
+    expect(getRequestContext(res).timeout_ms).toBe(180_000);
+  });
+
   it("uses longer hosted timeouts for the gemini lane", async () => {
     vi.stubEnv("PRAIRIE_INFERENCE_PROVIDER", "gemini");
     vi.stubGlobal("fetch", vi.fn().mockImplementation(() => Promise.resolve(new Response(JSON.stringify({
@@ -159,9 +188,20 @@ describe("callInference", () => {
       maxTokens: 128,
     });
 
+    const patternsRes = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res: patternsRes,
+      route: supportPatternsRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
     expect(getRequestContext(liveRes).timeout_ms).toBe(100_000);
     expect(getRequestContext(planningRes).timeout_ms).toBe(130_000);
     expect(getRequestContext(eaRes).timeout_ms).toBe(130_000);
+    expect(getRequestContext(patternsRes).timeout_ms).toBe(180_000);
   });
 
   it("retries retryable HTTP failures only", async () => {

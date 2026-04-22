@@ -185,6 +185,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
       <PageIntro
         title="Plan Tomorrow's Support"
         sectionTone="slate"
+        visual={{ src: "/brand/workflow-ops.png" }}
         description="Capture the signal from today and convert it into watchpoints, student priorities, EA actions, prep items, and family follow-ups before the next school day starts."
         infoContent={{
           title: "Tomorrow Plan",

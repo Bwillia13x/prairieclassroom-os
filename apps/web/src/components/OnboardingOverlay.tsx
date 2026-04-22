@@ -11,26 +11,31 @@ const STEPS = [
     title: "Your morning starts here",
     description: "The Today dashboard shows what needs attention first — pending messages, follow-up debt, yesterday's plan, and today's complexity forecast. Start every session here.",
     group: "Today",
+    visualSrc: "/brand/onboarding-morning-command.png",
   },
   {
     title: "Prep materials for tomorrow",
     description: "Use Differentiate to create adapted versions of lesson artifacts for EAL, chunked, and extension groups. Language Tools simplifies text and builds vocabulary cards.",
     group: "Prep",
+    visualSrc: "/brand/workflow-prep.png",
   },
   {
     title: "Plan and log your day",
     description: "Reflect on today's wins and challenges to generate tomorrow's support plan. Log interventions, generate EA briefings, forecast complexity, or prep a substitute packet.",
     group: "Daily Ops",
+    visualSrc: "/brand/workflow-ops.png",
   },
   {
     title: "Review and communicate",
     description: "Draft family messages in any language — every message requires your explicit approval before copying. Track support patterns across students over time.",
     group: "Review",
+    visualSrc: "/brand/workflow-review.png",
   },
   {
     title: "Navigate with your keyboard",
     description: "Press 1–0 to jump directly to any panel. Use the classroom pill in the header to switch classrooms. Protected classrooms will prompt for an access code that's saved in your browser.",
     group: "Quick tips",
+    visualSrc: "/brand/prairieclassroom-mark.png",
   },
 ];
 
@@ -61,6 +66,15 @@ export default function OnboardingOverlay({ onDismiss }: Props) {
             <div key={i} className={`onboarding-dot${i === step ? " onboarding-dot--active" : i < step ? " onboarding-dot--done" : ""}`} />
           ))}
         </div>
+
+        <img
+          className="onboarding-visual"
+          src={current.visualSrc}
+          alt=""
+          width="760"
+          height="351"
+          aria-hidden="true"
+        />
 
         <span className="onboarding-group-label">{current.group}</span>
         <h2 className="onboarding-title">{current.title}</h2>

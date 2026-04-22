@@ -69,11 +69,19 @@ const DEFAULT_TIMEOUT_BY_TIER = {
   live: 30_000,
   planning: 60_000,
 } as const;
+const DEFAULT_TIMEOUT_BY_PROMPT_CLASS: Partial<Record<RouteConfig["prompt_class"], number>> = {
+  // Support-pattern synthesis can exceed the generic planning budget even on
+  // the documented hosted manual-start path, because that path may omit the
+  // provider env on the orchestrator. Keep the route-specific budget local so
+  // the workflow survives that startup mismatch.
+  detect_support_patterns: 180_000,
+} as const;
 const GEMINI_TIMEOUT_BY_TIER = {
   live: 100_000,
   planning: 130_000,
 } as const;
 const GEMINI_TIMEOUT_BY_PROMPT_CLASS: Partial<Record<RouteConfig["prompt_class"], number>> = {
+  detect_support_patterns: 180_000,
   generate_ea_briefing: 130_000,
 } as const;
 
@@ -162,7 +170,7 @@ function resolveTimeoutForRoute(route: RouteConfig): number {
   if (provider === "gemini") {
     return GEMINI_TIMEOUT_BY_PROMPT_CLASS[route.prompt_class] ?? GEMINI_TIMEOUT_BY_TIER[route.model_tier];
   }
-  return DEFAULT_TIMEOUT_BY_TIER[route.model_tier];
+  return DEFAULT_TIMEOUT_BY_PROMPT_CLASS[route.prompt_class] ?? DEFAULT_TIMEOUT_BY_TIER[route.model_tier];
 }
 
 function getRequestClassroomId(req: Request): string | undefined {

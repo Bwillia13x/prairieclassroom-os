@@ -1117,7 +1117,7 @@ export default function App() {
 
             <nav
               className={`shell-nav${showSecondaryTabs ? "" : " shell-nav--solo"}`}
-              aria-label="PrairieGem OS navigation"
+              aria-label="PrairieClassroom OS navigation"
               data-active-section={activeGroup}
             >
               <div className="shell-nav__groups" role="toolbar" aria-label="Primary navigation groups" ref={groupsRef}>
@@ -1256,11 +1256,14 @@ export default function App() {
         <main id="main-content" className="app-main">
           {state.classrooms.length === 0 && !initError ? (
             <div className="branded-loading">
-              <svg className="branded-loading__mark" viewBox="0 0 40 24" aria-hidden="true" fill="none">
-                <path d="M0 18 Q5 10 10 14 Q14 6 18 12 Q22 4 26 10 Q30 6 34 12 Q37 8 40 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" fill="none" />
-                <line x1="0" y1="20" x2="40" y2="20" stroke="currentColor" strokeWidth="1.5" opacity="0.35" />
-                <circle cx="10" cy="8" r="3" fill="currentColor" opacity="0.2" />
-              </svg>
+              <img
+                className="branded-loading__mark"
+                src="/brand/prairieclassroom-mark.png"
+                alt=""
+                width="512"
+                height="512"
+                aria-hidden="true"
+              />
               <div className="skeleton-stack">
                 <div className="skeleton-card">
                   <div className="skeleton-line skeleton-line--medium" />

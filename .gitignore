@@ -58,6 +58,7 @@ output/manual-run/
 output/pilot/
 output/contrast-report.md
 output/evidence-snapshots/
+output/prairieclassroom-logo-header-*.png
 apps/web/tsconfig.tsbuildinfo
 
 # SQLite classroom memory

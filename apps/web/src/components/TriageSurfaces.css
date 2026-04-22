@@ -101,6 +101,95 @@
   background: var(--color-bg-muted);
 }
 
+.action-atlas__compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: var(--space-2);
+}
+
+.action-atlas__compact-card,
+.action-atlas__compact-stat {
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.action-atlas__compact-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-height: 7.25rem;
+  color: var(--color-text);
+  text-align: left;
+}
+
+button.action-atlas__compact-card {
+  cursor: pointer;
+  transition:
+    transform var(--motion-fast) var(--ease-spring),
+    border-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard);
+}
+
+button.action-atlas__compact-card:hover,
+button.action-atlas__compact-card:focus-visible {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-border-accent) 64%, transparent);
+  box-shadow: var(--shadow-xs);
+  outline: none;
+}
+
+button.action-atlas__compact-card:disabled {
+  cursor: default;
+  opacity: 0.82;
+}
+
+.action-atlas__compact-card--focus {
+  background: color-mix(in srgb, var(--color-bg-analysis) 22%, var(--color-surface));
+}
+
+.action-atlas__compact-label,
+.action-atlas__compact-stat span {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.action-atlas__compact-card strong,
+.action-atlas__compact-stat strong {
+  color: var(--color-text);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+}
+
+.action-atlas__compact-card p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+}
+
+.action-atlas__compact-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  align-content: start;
+}
+
+.action-atlas__compact-stat {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.35rem;
+  min-height: 0;
+  background: color-mix(in srgb, var(--color-bg-muted) 82%, transparent);
+}
+
 .action-atlas__grid {
   display: grid;
   grid-template-columns: minmax(10rem, 1.4fr) repeat(6, minmax(6.25rem, 1fr));
@@ -456,6 +545,15 @@
   .student-coverage__header,
   .coverage-timeline__header {
     flex-direction: column;
+  }
+
+  .action-atlas__header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .action-atlas__compact {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .student-coverage {

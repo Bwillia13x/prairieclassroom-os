@@ -217,6 +217,10 @@ export function ActionAtlas({
     const activeThreads = threads.filter((thread) => thread.thread_count > 0 || thread.pending_action_count > 0);
     return (activeThreads.length > 0 ? activeThreads : threads).slice(0, 5);
   }, [snapshot?.student_threads]);
+  const activeThreadCount = useMemo(
+    () => (snapshot?.student_threads ?? []).filter((thread) => thread.thread_count > 0 || thread.pending_action_count > 0).length,
+    [snapshot?.student_threads],
+  );
 
   const summaryRows = useMemo(
     () => [
@@ -240,6 +244,7 @@ export function ActionAtlas({
     () => pickRecommendedPanelStatus(snapshot?.panel_statuses ?? [], activeRole),
     [snapshot?.panel_statuses, activeRole],
   );
+  const checkFirstThread = studentRows[0] ?? null;
 
   function getSummaryCell(rowId: string, columnId: AtlasColumnId): AtlasCell {
     const statuses: PanelStatus[] = [];
@@ -343,7 +348,7 @@ export function ActionAtlas({
           <h2 className="action-atlas__title">Action Atlas</h2>
         </div>
         <div className="action-atlas__header-actions">
-          {recommended && recommendedTab ? (
+          {!collapsed && recommended && recommendedTab ? (
             <button
               type="button"
               className="action-atlas__recommended"
@@ -353,23 +358,94 @@ export function ActionAtlas({
               <strong>{recommended.label}</strong>
             </button>
           ) : null}
-          <button
-            type="button"
-            className="action-atlas__collapse"
-            onClick={() => setCollapsed((value) => !value)}
-            aria-expanded={!collapsed}
-            aria-controls="action-atlas-grid"
-          >
-            {collapsed ? "Show matrix" : "Hide matrix"}
-          </button>
+          {collapsed ? (
+            <button
+              type="button"
+              className="action-atlas__collapse"
+              onClick={() => setCollapsed(false)}
+              aria-expanded="false"
+              aria-controls="action-atlas-grid"
+            >
+              Show matrix
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="action-atlas__collapse"
+              onClick={() => setCollapsed(true)}
+              aria-expanded="true"
+              aria-controls="action-atlas-grid"
+            >
+              Hide matrix
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="action-atlas__meta">
-        <span>{snapshot.debt_register.items.length} open classroom threads</span>
-        <span>{(snapshot.student_threads ?? []).filter((thread) => thread.thread_count > 0).length} students with active threads</span>
-        {!capability.canGenerate ? <span>Role-filtered view</span> : null}
-      </div>
+      {collapsed ? (
+        <div className="action-atlas__compact" data-testid="action-atlas-compact">
+          {recommended && recommendedTab ? (
+            <button
+              type="button"
+              className="action-atlas__compact-card action-atlas__compact-card--focus"
+              onClick={() => onTabChange(recommendedTab)}
+              data-testid="action-atlas-focus-card"
+            >
+              <span className="action-atlas__compact-label">Focus now</span>
+              <strong>{recommended.label}</strong>
+              <p>{recommended.detail}</p>
+            </button>
+          ) : (
+            <div className="action-atlas__compact-card action-atlas__compact-card--focus">
+              <span className="action-atlas__compact-label">Room pulse</span>
+              <strong>Classroom triage</strong>
+              <p>{summaryRows[0].description}</p>
+            </div>
+          )}
+
+          {checkFirstThread ? (
+            <button
+              type="button"
+              className="action-atlas__compact-card"
+              onClick={() => onOpenContext?.({ type: "student-thread", thread: checkFirstThread })}
+              disabled={!onOpenContext}
+              data-testid="action-atlas-check-first-card"
+            >
+              <span className="action-atlas__compact-label">Check first</span>
+              <strong>{checkFirstThread.alias}</strong>
+              <p>
+                {checkFirstThread.priority_reason
+                  ?? (checkFirstThread.thread_count > 0
+                    ? `${checkFirstThread.thread_count} active threads`
+                    : "No active thread reason yet")}
+              </p>
+            </button>
+          ) : null}
+
+          <div className="action-atlas__compact-stats" aria-label="Shell triage summary">
+            <div className="action-atlas__compact-stat">
+              <span>Open threads</span>
+              <strong>{snapshot.debt_register.items.length}</strong>
+            </div>
+            <div className="action-atlas__compact-stat">
+              <span>Students active</span>
+              <strong>{activeThreadCount}</strong>
+            </div>
+            {!capability.canGenerate ? (
+              <div className="action-atlas__compact-stat">
+                <span>Access</span>
+                <strong>Role filtered</strong>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : (
+        <div className="action-atlas__meta">
+          <span>{snapshot.debt_register.items.length} open classroom threads</span>
+          <span>{activeThreadCount} students with active threads</span>
+          {!capability.canGenerate ? <span>Role-filtered view</span> : null}
+        </div>
+      )}
 
       {!collapsed ? (
         <div id="action-atlas-grid" className="action-atlas__grid">
@@ -632,7 +708,7 @@ export function CoverageTimeline({
       </div>
 
       <div className="coverage-timeline__scroll">
-        <ol className="coverage-timeline__rail">
+        <div className="coverage-timeline__rail" role="list">
           {blocks.map((block, index) => {
             const forecast = forecastBlocks?.[index] ?? null;
             const load = eaLoadBlocks?.[index] ?? null;
@@ -667,7 +743,11 @@ export function CoverageTimeline({
               </>
             );
             return (
-              <li key={`${block.time_slot}-${block.activity}-${index}`} className="coverage-timeline__item">
+              <div
+                key={`${block.time_slot}-${block.activity}-${index}`}
+                className="coverage-timeline__item"
+                role="listitem"
+              >
                 {interactive ? (
                   <button
                     type="button"
@@ -682,10 +762,10 @@ export function CoverageTimeline({
                     {content}
                   </div>
                 )}
-              </li>
+              </div>
             );
           })}
-        </ol>
+        </div>
       </div>
     </section>
   );

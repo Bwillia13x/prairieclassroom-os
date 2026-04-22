@@ -34,6 +34,8 @@
     "host:preflight:ollama": "node scripts/host-preflight-ollama.mjs",
     "logs:summary": "node scripts/logs-summary.mjs",
     "logs:prune": "node scripts/logs-prune.mjs",
+    "artifacts:prune:dry-run": "node scripts/artifacts-prune.mjs",
+    "artifacts:prune": "node scripts/artifacts-prune.mjs --apply",
     "cost:rollup": "node scripts/cost-rollup.mjs",
     "cost:status": "node scripts/cost-status.mjs",
     "eval:regression": "node scripts/eval-regression.mjs",

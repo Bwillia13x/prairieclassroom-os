@@ -85,11 +85,13 @@ export PRAIRIE_ENABLE_GEMINI_RUNS=true
 cd services/inference && python server.py --mode gemini --port 3200
 
 # Terminal 2: Orchestrator API
-INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
+PRAIRIE_INFERENCE_PROVIDER=gemini INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 
 # Terminal 3: UI dev server
 npm run dev -w apps/web
 ```
+
+When you start the hosted lane manually, the orchestrator also needs `PRAIRIE_INFERENCE_PROVIDER=gemini`. That flag enables the hosted timeout budget and Gemini-specific planning fallbacks used by heavier routes like Support Patterns.
 
 Use this lane only with synthetic/demo content. Do not use real classroom or student data in the hosted lane.
 
@@ -186,7 +188,7 @@ If you are repairing a single hosted route, you can run a cheaper targeted smoke
 ```bash
 export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
 export PRAIRIE_ENABLE_GEMINI_RUNS=true
-PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api
+PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=tomorrow-plan npm run smoke:api
 ```
 
 For zero-cost live-model validation, use the Ollama gate. It performs the same local startup flow, verifies the required Gemma 4 models are present in Ollama, runs the eval suite locally, and refreshes `docs/eval-baseline.md`.
@@ -303,7 +305,7 @@ Flask Inference :3200
 
 ## Evaluation
 
-127 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 1,464 TypeScript tests and 67 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+127 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 1,802 TypeScript tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
 ```bash
 # Run evals (requires orchestrator + inference running)

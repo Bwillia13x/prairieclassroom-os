@@ -3,11 +3,26 @@
   display: contents;
 }
 
+.artifact-upload__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.artifact-upload__visual {
+  width: min(100%, 220px);
+  height: auto;
+  justify-self: center;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--color-accent) 10%, transparent));
+}
+
 .artifact-upload h2 {
   font-family: var(--font-serif);
   font-size: var(--text-xl);
   font-weight: var(--font-weight-semibold);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
   color: var(--color-text);
 }
 

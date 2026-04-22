@@ -1184,8 +1184,8 @@ label.form-label {
 
 .branded-loading__mark {
   width: var(--icon-hero);
-  height: calc(var(--icon-hero) * 0.6); /* brand mark aspect ratio — keeps 56×34 */
-  color: var(--color-accent);
+  height: var(--icon-hero);
+  object-fit: contain;
   animation: skeleton-pulse 1.8s ease-in-out infinite;
 }
 

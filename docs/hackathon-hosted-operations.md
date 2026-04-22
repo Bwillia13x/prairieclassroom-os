@@ -14,8 +14,9 @@ This document is the operator source of truth for the hosted Gemma 4 hackathon l
 - Hosted Gemini proof lane: passing on the API-key-only synthetic/demo lane
 - Hosted Gemini eval suite: passed (`12/12` curated cases)
 - Full `release:gate:gemini`: passed
-- Latest passing gate artifact: `output/release-gate/2026-04-21T05-13-43-243Z-52665`
-- Latest passing eval summary: `output/evals/2026-04-21-gemini/2026-04-21T05-13-43-243Z-52665-gemini-summary.json`
+- Latest passing gate artifact: `output/release-gate/2026-04-22T02-16-16-557Z-74236`
+- Latest passing eval summary: `output/evals/2026-04-22-gemini/2026-04-22T02-16-16-557Z-74236-gemini-summary.json`
+- Latest failure summary contains only the Ollama host-preflight artifact, not a hosted Gemini route failure.
 - Hosted reruns remain opt-in and synthetic/demo-only
 
 ## Hosted Models
@@ -47,6 +48,8 @@ If you are repairing one hosted route before rerunning the full gate, use a targ
 ```bash
 PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api
 ```
+
+If you are launching the hosted stack manually instead of using `release:gate:gemini`, start the orchestrator with `PRAIRIE_INFERENCE_PROVIDER=gemini` as well. The hosted timeout budget and buffered planning fallbacks are keyed off that env on the orchestrator process, not just on the smoke command.
 
 ## Primary Hosted Verification Order
 

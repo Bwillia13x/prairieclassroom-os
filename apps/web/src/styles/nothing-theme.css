@@ -105,6 +105,59 @@
   margin-top: var(--space-3);
 }
 
+.workspace-page .page-intro--with-visual {
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "eyebrow visual"
+    "title visual"
+    "description visual"
+    "chips chips";
+  column-gap: var(--space-4);
+  align-items: center;
+}
+
+.workspace-page .page-intro--with-visual .page-intro__eyebrow {
+  grid-area: eyebrow;
+}
+
+.workspace-page .page-intro--with-visual .page-intro__title {
+  grid-area: title;
+}
+
+.workspace-page .page-intro--with-visual .page-intro__description {
+  grid-area: description;
+}
+
+.workspace-page .page-intro--with-visual .status-chip-row {
+  grid-area: chips;
+}
+
+.workspace-page .page-intro__visual {
+  grid-area: visual;
+  width: clamp(4.5rem, 8vw, 6.5rem);
+  height: clamp(4.5rem, 8vw, 6.5rem);
+  object-fit: contain;
+  opacity: 0.9;
+  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--color-accent) 10%, transparent));
+}
+
+@media (max-width: 760px) {
+  .workspace-page .page-intro--with-visual {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "visual"
+      "eyebrow"
+      "title"
+      "description"
+      "chips";
+  }
+
+  .workspace-page .page-intro__visual {
+    width: 4.75rem;
+    height: 4.75rem;
+  }
+}
+
 /* ---------- StatusChip — flat mono-caps token, tone-as-event ---------- */
 
 .workspace-page .status-chip,

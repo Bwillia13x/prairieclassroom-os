@@ -1,335 +1,221 @@
 # PrairieClassroom OS -- Demo Script
 
 **System:** Gemma-4-native classroom complexity copilot for Alberta K-6  
-**Demo classroom:** Mrs. Okafor's Grade 3/4 split, Lethbridge (6 students)
+**Demo classroom:** Mrs. Okafor's Grade 3/4 split, Lethbridge (26 synthetic students)
 
-This script has two tracks. Choose the one that fits your audience and time.
+Use this script for a competition demo, stakeholder walkthrough, or teacher-facing product conversation. The safest public story is:
+
+- hosted Gemma 4 is the competition proof lane
+- the demo uses synthetic classroom data only
+- the local/Ollama path is an intended privacy-first deployment lane, not proven on the current maintenance host
+- teacher validation is not claimed unless a completed pilot artifact exists under `docs/pilot/`
 
 | Track | Audience | Duration |
 |-------|----------|----------|
-| **A: Stakeholder Pitch** | School leaders, funders, community partners | ~5 minutes |
+| **A: Competition Pitch** | Judges, funders, technical reviewers | ~5 minutes |
 | **B: Teacher Walkthrough** | Educators, EAs, curriculum leads | ~15 minutes |
 
 ---
 
-## SETUP (both tracks)
+## Setup
 
-### Prerequisites
-
-Ensure all services are running before starting the demo:
+### Start services
 
 ```bash
-# Terminal 1: Flask inference service (port 3200)
-# Option A: Mock mode (no GPU, canned responses)
+# Terminal 1: Flask inference service
 python services/inference/server.py --mode mock --port 3200
 
-# Option B: Zero-cost live Gemma via Ollama
-# ollama pull gemma4:4b
-# ollama pull gemma4:27b
-# npm run host:preflight:ollama
-# python services/inference/server.py --mode ollama --port 3200
-
-# Option C: Hosted Gemma 4 via Gemini API (hackathon/demo only)
+# Optional hosted competition proof lane; synthetic/demo data only
 # export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
 # export PRAIRIE_ENABLE_GEMINI_RUNS=true
 # python services/inference/server.py --mode gemini --port 3200
 
-# Paid Vertex validation exists, but it is outside the zero-cost sprint:
-# export PRAIRIE_ALLOW_PAID_SERVICES=true
-# export GOOGLE_CLOUD_PROJECT=<your-project-id>
-# gcloud auth application-default login
-# python services/inference/server.py --mode api --port 3200
-
-# Terminal 2: Express orchestrator (port 3100)
+# Terminal 2: Express orchestrator
 INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 
-# Terminal 3: Vite development server (port 5173)
+# Terminal 3: Vite web app
 npm run dev -w apps/web
 ```
 
-**Note:** The demo classroom (`demo-okafor-grade34`) bypasses authentication. Other protected classrooms now prompt for a classroom code in the UI and direct API callers still authenticate with `X-Classroom-Code` on protected reads and writes, including `today` and history routes.
-Use only synthetic/demo data if you run the hosted Gemini lane.
+The demo classroom (`demo-okafor-grade34`) bypasses classroom-code auth for judging. Protected classrooms still require `X-Classroom-Code` and role-scoped access.
 
-### Seed demo classroom data
-
-If this is the first demo run, seed the database with 8 interventions, 3 plans, 1 pattern report, and 1 approved message:
+### Reset demo data
 
 ```bash
 npx tsx data/demo/seed.ts
 ```
 
-### Generate evidence reports (recommended)
+The current seed gives the demo classroom a 26-student roster, 42 intervention records, 3 plans, 1 pattern report, 1 approved family message, and session/feedback surfaces for Usage Insights.
 
-Before the demo, generate the evidence portfolio so Usage Insights has data to display:
+### Refresh evidence
 
 ```bash
 npm run evidence:generate
 ```
 
-### Open demo URL
+Use the generated reports as instrumentation proof. Do not present them as real teacher usage unless the underlying session came from a documented human walkthrough.
 
-Navigate to: **http://localhost:5173/?demo=true**
+### Open
 
-You should see the UI with the classroom selector pre-populated to `demo-okafor-grade34`.
+Navigate to:
+
+```text
+http://localhost:5173/?demo=true
+```
 
 ---
 
-# TRACK A: 5-Minute Stakeholder Pitch
-
-**Goal:** Convince stakeholders this is real, responsible, and worth supporting.
+# Track A: 5-Minute Competition Pitch
 
 ## A1. Problem (45 seconds)
 
-> "Alberta K-6 teachers manage extraordinary classroom complexity: mixed grades, EAL learners at different stages, accessibility needs, shared EA staffing, family communication in multiple languages. The coordination work is massive, and it happens on top of actual teaching. There is no tool that helps with the *operations* side of a complex classroom."
+> "Mrs. Okafor teaches a Grade 3/4 split in Lethbridge. Twenty-six students. Multiple home languages. Sensory and transition supports. An educational assistant only in the morning. The hard part is not one worksheet or one message. It is coordinating the whole classroom day."
 
-**Show:** Open the demo classroom. Point at the 6-student roster with three EAL learners, one with sensory needs, one with math anxiety.
+**Show:** Today panel. Point to the 26-student classroom and the recommended next action.
 
-## A2. Solution (90 seconds)
+## A2. Core Loop (90 seconds)
 
-> "PrairieClassroom OS is a classroom operations copilot -- not a chatbot, not a grading tool. It has ten structured workflows that help with the coordination work."
+> "PrairieClassroom OS turns classroom signal into teacher action. A worksheet becomes differentiated variants. A quick note becomes structured memory. That memory feeds tomorrow's plan, the EA briefing, the forecast, and family communication."
 
-**Show quickly (30 seconds each):**
+**Show quickly:**
 
-1. **Differentiate** -- paste the fractions worksheet, generate variants. Show that Amira gets EAL supports, Elena gets scaffolding, Chantal gets extension.
-2. **Tomorrow Plan** -- show a generated plan that references specific students, specific times, specific EA actions. Point out the "Pattern-informed" badge.
-3. **Family Message** -- show a drafted message and the approval gate. "The teacher always decides."
+1. **Differentiate:** one fractions worksheet becomes multiple variants.
+2. **Log Intervention:** one Brody note becomes structured classroom memory.
+3. **Tomorrow Plan:** recent memory becomes specific next-day actions.
 
-## A3. Evidence (60 seconds)
+## A3. Gemma 4 Proof (60 seconds)
 
-> "This is not a prototype with mock data. We track how the system is actually used."
+> "This is a Gemma-4-native app, not a generic education shell. The live tier handles fast classroom transformations. The planning tier handles deeper synthesis across classroom memory. The competition proof lane is hosted Gemma 4 on synthetic data only."
 
-**[EVIDENCE] Show the Usage Insights tab.** Point out:
-- Total feedback ratings across panels
-- Per-panel breakdown showing which workflows teachers use most
-- Session patterns showing common workflow sequences
-- Average session duration
+**Point to artifact-backed proof if needed:**
 
-> "The system reliability report shows a {successRate}% success rate across {totalRequests} requests."
-
-**[EVIDENCE]** Reference `docs/evidence/system-reliability.md` if available: latency percentiles, error rates, request volume.
+- Hosted gate: `output/release-gate/2026-04-21T05-13-43-243Z-52665`
+- Hosted eval summary: `output/evals/2026-04-21-gemini/2026-04-21T05-13-43-243Z-52665-gemini-summary.json`
+- System inventory: `docs/system-inventory.md`
 
 ## A4. Safety (45 seconds)
 
-> "Three principles that are non-negotiable:"
->
-> 1. "**No diagnosis.** The system describes what was observed. Never 'this student has ADHD.' Always 'your records show a pattern of transition difficulty.'"
-> 2. "**No autonomous sends.** Family messages require teacher approval. Every time."
-> 3. "**No surveillance.** This is a teacher's thinking partner, not a monitoring tool."
+> "Three boundaries are permanent: no diagnosis, no discipline scoring, and no autonomous family messaging. The system drafts; the teacher reviews. The system retrieves records; it does not pretend to observe. Hosted model runs use synthetic data only."
 
-## A5. Ask (30 seconds)
+**Show:** Family Message approval dialog. Do not click any button that implies a real send.
 
-> "We are looking for pilot classrooms in Alberta to test this with real teachers. The system runs locally -- no student data leaves the building. We need 3-5 classrooms willing to try it for a month."
+## A5. Close (30 seconds)
 
-**Hand out:** Pilot observation template (`docs/pilot/observation-template.md`).
+> "PrairieClassroom OS is not an AI tutor with school branding. It is a classroom operating layer for the adult coordination work of inclusive teaching."
 
 ---
 
-# TRACK B: 15-Minute Teacher Walkthrough
+# Track B: 15-Minute Teacher Walkthrough
 
-**Goal:** Show a realistic morning-to-review cycle that a teacher would actually use.
+## B1. Classroom Context (1 minute)
 
-## B1. Morning Routine -- Classroom Context (30 seconds)
+**Show:**
 
-### What to click/show
-- **Show the classroom selector dropdown** at the top of the screen.
-- **Verify `demo-okafor-grade34` is selected.**
-- Briefly scroll through the **classroom roster** to show the 6 students:
-  - **Amira** -- EAL L2 (Tagalog home), strong in math
-  - **Brody** -- sensory/transition needs
-  - **Chantal** -- extension/peer mentor
-  - **Daniyal** -- EAL L1 (Urdu, new to school)
-  - **Elena** -- math anxiety
-  - **Farid** -- EAL L3 (Arabic, verbal > written)
+- Classroom selector with `demo-okafor-grade34`.
+- Today panel.
+- Student roster or classroom profile view.
 
-### What to narrate
-> "This is Mrs. Okafor's Grade 3/4 split in Lethbridge. Twenty-six students total, with three EAL learners in different stages. Brody has sensory needs. The EA, Ms. Fehr, is here mornings only. And the system has two weeks of classroom memory."
+**Narration:**
 
-### What to point out
-- **Real-world complexity:** mixed grades, EAL diversity, accessibility needs, shared staffing.
-- **Continuous memory:** the system doesn't start from scratch.
+> "This is a synthetic Grade 3/4 split with 26 students. Eight are EAL learners across several home languages. Brody has transition and sensory supports. Gabriel uses hearing aids. Hannah has fine-motor supports. The EA, Ms. Fehr, is here mornings only. The system has seeded classroom memory so it does not start from zero."
 
-## B2. Differentiation (2 minutes)
+## B2. Differentiate One Artifact (2 minutes)
 
-### What to click
-- **Navigate to the "Differentiate" workflow.**
-- **Paste the following sample fractions worksheet text:**
+Paste this worksheet into **Prep -> Differentiate**:
 
-```
+```text
 Fractions Review Worksheet
 
 1. Circle the larger fraction: 1/4 or 1/3?
-
 2. Show 2/3 on the number line below.
-   [---]
-
 3. Solve: 1/2 + 1/4 = ___
-
 4. Mrs. Okafor has 3/4 of a pizza. If she eats 1/4, how much is left?
-
 5. Write a fraction that is equal to 1/2.
-
 6. Challenge: 5/6 - 2/6 = ___
 ```
 
-- Set teacher goal:
-  > "I need this differentiated for mixed abilities: support for Elena (math anxiety), extension for Chantal (advanced), and EAL adaptations for Amira and Daniyal."
-- **Click "Generate 5 variants."**
+Teacher goal:
 
-### What to point out
-- **EAL-supported version for Amira/Daniyal:** simpler language, visual supports, vocab pre-teaching.
-- **Scaffolded version for Elena:** step-by-step guides, confidence-building language.
-- **Challenge version for Chantal:** multi-step problems, real-world context.
-
-**[EVIDENCE]** "If we look at Usage Insights later, this generation will appear in the session's panel visits and workflow patterns."
-
-## B3. Language Tools (1.5 minutes)
-
-### What to click
-- **Navigate to "Language Tools".**
-- **Choose "Simplify for EAL beginner."**
-- **Paste the same fractions worksheet text.**
-- **Generate Tagalog vocab cards** for Amira.
-
-### What to narrate
-> "These tools are ephemeral -- they don't persist to the record. They're on-demand supports a teacher can generate and use right away."
-
-### What to point out
-- **Teacher agency:** tools are suggestions, not decisions.
-- **Language-aware:** the system knows Amira's home language.
-- **No record clutter:** one-off tools don't pollute the student database.
-
-## B4. Family Communication (2 minutes)
-
-### Log an intervention first
-- **Navigate to "Log intervention".**
-- Write:
-
-```
-Brody used his visual timer independently during the math center rotation today. 
-He set it for 10 minutes, watched it count down, and transitioned to the next station 
-without adult prompting. This is the first time he's done this without support.
+```text
+Differentiate for mixed readiness: support for Elena, EAL adaptations for Amira and Daniyal, and extension for Chantal.
 ```
 
-- Show the structured output (observation, action taken, outcome, follow-up).
+**Show:** generated variants, reading-level chips, and output actions.
 
-### Draft a family message
-- **Navigate to "Family message."**
-- Select **Brody** and write a brief note about his milestone.
-- **Show the approval gate. Do NOT click "Approve & send."**
+**Narration:**
 
-> "The system can draft messages -- but it never sends them. The teacher reads it, can edit it, and only then does it go home."
+> "One artifact becomes multiple classroom-ready variants. The value is not more content. It is getting the right version to the right learner without rebuilding the worksheet by hand."
 
-**[EVIDENCE]** "Every time a teacher rates one of these outputs, that feedback flows into the Usage Insights panel -- which panels are most useful, what the average ratings are."
+## B3. Capture A Classroom Event (2 minutes)
 
-## B5. Review Cycle (3 minutes)
+Open **Ops -> Log Intervention** and use the quick-capture flow or full form:
 
-### Support Patterns
-- **Navigate to "Support patterns."**
-- **Click "Detect patterns."**
-- Show the pattern report: recurring themes, follow-up gaps, positive trends.
-- If running in planning tier, show the reasoning trace.
-
-> "The system is reading everything -- every observation, every action. The thinking is visible. And notice the language: 'Your records show...' not 'I think...'"
-
-### Tomorrow Plan
-- **Navigate to "Tomorrow plan."**
-- Write a reflection:
-
-```
-This week has been a breakthrough for Brody -- the visual timer is working. 
-Elena had a confidence moment on Wednesday solving fractions without help. 
-But Monday has the community math event and the routine will be disrupted. 
-Ms. Fehr is only here in the morning.
+```text
+Brody used his visual timer independently during the math center rotation today. He set it for 10 minutes, watched it count down, and transitioned to the next station without adult prompting.
 ```
 
-- **Click "Generate plan for tomorrow."**
-- Show the pattern-informed badge, specific EA actions, student watch list, family follow-ups.
+**Show:** structured intervention record.
 
-### EA Briefing
-- **Navigate to "EA briefing."**
-- Generate briefing for Ms. Fehr.
+**Narration:**
 
-> "This briefing is a synthesis, not a record. Ms. Fehr sees priorities, changes, watch points -- generated fresh each morning."
+> "This is the memory layer. A hallway note becomes a structured record that later planning workflows can retrieve."
 
-## B6. Usage Insights (1 minute)
+## B4. Plan Tomorrow From Today (3 minutes)
 
-**[EVIDENCE]** Navigate to the **Usage Insights** tab (in the Review group).
+Open **Ops -> Tomorrow Plan** and enter:
 
-> "This is the teacher-facing view of how your classroom uses PrairieClassroom. Not analytics for administrators -- insights for the teacher."
+```text
+This week has been a breakthrough for Brody. The visual timer is working. Elena had a confidence moment solving fractions with manipulatives. Tomorrow's math block comes after lunch and Ms. Fehr is only available in the morning.
+```
 
-**Show:**
-- **Feedback Overview:** Total ratings, per-panel breakdown with progress bars, weekly trend sparkline.
-- **Workflow Patterns:** Total sessions, average duration, common workflow sequences.
+**Show:** support priorities, EA actions, family follow-ups, and retrieval trace.
 
-> "Over time, this helps a teacher see which workflows save the most time and which outputs need improvement. The data stays in the classroom -- it is never sent to a central dashboard."
+**Narration:**
 
-## B7. Closing Narration (1.5 minutes)
+> "The planning tier reads recent classroom memory and turns it into next-day actions. The Sources disclosure is intentionally honest: it shows which records were retrieved into the prompt, not a fake claim about what the model used internally."
 
-> "PrairieClassroom OS is not a chatbot. It is eleven structured workflows:
->
-> 1. **Differentiate** worksheets for mixed learners.
-> 2. **Simplify** text and generate home-language supports.
-> 3. **Log interventions** in structured form.
-> 4. **Detect patterns** across two weeks of memory.
-> 5. **Plan tomorrow** using those patterns.
-> 6. **Brief the EA** with a real-time synthesis.
-> 7. **Draft family messages** for teacher approval.
-> 8. **Forecast complexity** across the school day.
-> 9. **Generate sub packets** for supply teachers.
-> 10. **Track usage insights** to reflect on what works.
-> 11. And underneath it: **routing logic** that sends faster transformations to the efficient tier and deeper synthesis to the larger tier.
->
-> **[EVIDENCE]** The evidence portfolio documents this: system reliability at {successRate}% across {totalRequests} requests, latency within classroom-speed targets, and every output traceable to a rated feedback loop.
->
-> For this demo, the real-model proof lane is hosted Gemma 4 through the Gemini API, using synthetic classroom data only. The same orchestration stack also keeps a separate local/Ollama lane for the privacy-preserving school deployment target. The classroom memory is SQL-based and the teacher remains fully in control. This is a **thinking partner**, not a decision-maker."
+## B5. Brief The EA (2 minutes)
+
+Open **Ops -> EA Briefing** and generate the briefing.
+
+**Show:** priority items for Ms. Fehr's morning window.
+
+**Narration:**
+
+> "The EA briefing is role-specific. It turns the same classroom memory into a two-minute support handoff."
+
+## B6. Family Message Approval (2 minutes)
+
+Open **Review -> Family Message**, select Brody, and draft a positive update about the timer milestone.
+
+**Show:** draft and approval dialog.
+
+**Narration:**
+
+> "This is useful but bounded. The system can draft a plain-language message, but it never sends on its own. The teacher reviews, edits, and approves."
+
+## B7. Evidence And Limits (3 minutes)
+
+Open **Review -> Usage Insights** if populated, or reference the proof docs directly.
+
+**Say clearly:**
+
+> "The proof lane is hosted Gemma 4 on synthetic/demo data. The latest hosted gate passed, the current generated inventory records 12 panels, 13 prompt classes, 49 endpoints, and 127 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
 
 ---
 
-## TIMING SUMMARY
+## Presenter Notes
 
-### Track A (Stakeholder Pitch)
+- If using mock mode, point out panel-level mock banners. Do not let a viewer mistake fixture output for hosted model quality.
+- If using hosted Gemini, remind the audience that all inputs are synthetic/demo only.
+- Do not say "no student data leaves the building" during a hosted demo. Say that the local/Ollama lane is the intended privacy-preserving deployment path.
+- Do not claim teacher validation, measured time savings, or improved classroom outcomes unless a completed `docs/pilot/` artifact supports it.
+- Use "coordinated next day" instead of unsupported outcome language.
+- Keep the family-message approval gate visible. It is a central safety proof point.
 
-| Step | Duration |
-|------|----------|
-| A1: Problem | 45 sec |
-| A2: Solution (3 quick demos) | 90 sec |
-| A3: Evidence + Usage Insights | 60 sec |
-| A4: Safety principles | 45 sec |
-| A5: Ask | 30 sec |
-| **Total** | **~5 min** |
+## Contingency Notes
 
-### Track B (Teacher Walkthrough)
-
-| Step | Duration |
-|------|----------|
-| Setup | 2-3 min |
-| B1: Classroom Context | 30 sec |
-| B2: Differentiate | 2 min |
-| B3: Language Tools | 1.5 min |
-| B4: Family Communication | 2 min |
-| B5: Review Cycle | 3 min |
-| B6: Usage Insights | 1 min |
-| B7: Closing narration | 1.5 min |
-| **Total** | **~15 min** |
-
----
-
-## NOTES FOR PRESENTER
-
-- **Live mode:** If using the hosted Gemini lane, describe latency as classroom-speed rather than promising a fixed sub-2-second number.
-- **Classroom is demo:** Remind audience this is a demo classroom with seed data, not real student records.
-- **Two-lane story:** Say explicitly that hosted Gemini API is the hackathon proof lane and local/Ollama is the intended privacy-preserving deployment lane.
-- **Two weeks of memory:** Pattern detection is most impressive with >7 observations. Less data = less compelling patterns.
-- **Dark mode:** Use whichever mode is more visible to your audience.
-- **Connectivity claim depends on lane:** If demoing Ollama, emphasise local/privacy-first. If demoing hosted Gemini, do not claim no-internet behaviour.
-- **Teacher approval loop:** Repeat often -- every auto-generated output has a human approval gate.
-- **[EVIDENCE] callouts:** Before the demo, run `npm run evidence:generate` to populate the evidence reports. Reference specific numbers from `docs/evidence/system-reliability.md` when you see `{successRate}` and `{totalRequests}` placeholders.
-- **Usage Insights tab:** Navigate to it during the demo. It is in the Review group alongside Family Message and Support Patterns.
-
-## Contingency notes
-
-- **If a service crashes:** Restart in the relevant terminal. The UI will reconnect automatically.
-- **If seeding fails:** Check that `data/memory/demo-okafor-grade34.sqlite` exists. If not, run `npx tsx data/demo/seed.ts` again.
-- **If patterns don't show:** Ensure you have at least 4-5 logged interventions. Run the seed script and refresh.
-- **If latency is >10 seconds:** Likely a model cold-start. Wait. Model loading is a one-time cost per session.
-- **If Usage Insights shows empty:** Run `npm run evidence:generate` or exercise the feedback/session API routes first.
+- If a service crashes, restart the affected terminal and refresh the browser.
+- If generated output looks generic, confirm whether the inference service is running in mock mode.
+- If Usage Insights is empty, say that instrumentation is built but the current local data does not represent real teacher usage.
+- If latency is high in hosted mode, describe it as model/API latency and continue with the next visible artifact.

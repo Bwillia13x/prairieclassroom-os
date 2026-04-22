@@ -197,6 +197,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         title="Today"
         sectionTone="sun"
         description={`Your action queue, student snapshot, and recommended next move for Grade ${profile.grade_band} today.`}
+        visual={{ src: "/brand/workflow-today.png" }}
         dynamicContext={[
           { label: `${profile.students.length} students`, tone: "sun" },
         ]}

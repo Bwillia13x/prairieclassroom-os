@@ -67,6 +67,12 @@ interface Props {
    */
   infoContent?: { title: string; body: ReactNode };
   /**
+   * Optional workflow thumbnail for high-level workspace introductions.
+   * Keep this sparse: it is meant for the main Today/Prep/Ops/Review entry
+   * surfaces, not every sub-panel.
+   */
+  visual?: { src: string; alt?: string };
+  /**
    * @deprecated Static chip row was removed in audit Workstream C
    * (2026-04-19). Pass dynamic chips through `dynamicContext` instead.
    * Accepted but ignored to preserve backwards compatibility while
@@ -86,6 +92,7 @@ export default function PageIntro({
   dynamicContext,
   sectionTone,
   infoContent,
+  visual,
   badges,
   breadcrumb,
   sectionIcon,
@@ -107,7 +114,17 @@ export default function PageIntro({
   }
   const chips = dynamicContext ?? [];
   return (
-    <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}`}>
+    <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}${visual ? " page-intro--with-visual" : ""}`}>
+      {visual ? (
+        <img
+          className="page-intro__visual"
+          src={visual.src}
+          alt={visual.alt ?? ""}
+          width="320"
+          height="320"
+          aria-hidden={visual.alt ? undefined : true}
+        />
+      ) : null}
       {eyebrow ? (
         <div className="page-intro__eyebrow">{eyebrow}</div>
       ) : null}

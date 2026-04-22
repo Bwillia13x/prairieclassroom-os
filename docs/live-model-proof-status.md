@@ -7,8 +7,8 @@ _This document is generated from zero-cost host-preflight and release-gate artif
 - Hosted Gemma 4 proof: Passing on synthetic/demo data through the guarded Gemini lane.
 - Zero-cost school-deployment proof: Blocked pending a viable zero-cost Ollama host.
 - Zero-cost enforcement: mock and Ollama remain the default no-spend lanes; hosted Gemini is explicit opt-in only.
-- Latest passed mock gate: `output/release-gate/2026-04-21T16-58-05-657Z-71685`
-- Latest passed hosted Gemini gate: `output/release-gate/2026-04-21T05-13-43-243Z-52665`
+- Latest passed mock gate: `output/release-gate/2026-04-21T17-40-46-011Z-52231`
+- Latest passed hosted Gemini gate: `output/release-gate/2026-04-22T02-16-16-557Z-74236`
 - Latest passed Ollama gate: _none recorded_
 
 ## Commands
@@ -27,7 +27,7 @@ npm run logs:summary
 
 | Provider | Models | Scope | Artifact |
 | --- | --- | --- | --- |
-| Gemini API | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` | Synthetic/demo only | `output/release-gate/2026-04-21T05-13-43-243Z-52665` |
+| Gemini API | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` | Synthetic/demo only | `output/release-gate/2026-04-22T02-16-16-557Z-74236` |
 
 ## Proven Hosts
 

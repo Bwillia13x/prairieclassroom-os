@@ -163,6 +163,7 @@ export default function DifferentiatePanel() {
         eyebrow="Prep Workspace"
         title="Build Lesson Variants"
         sectionTone="sage"
+        visual={{ src: "/brand/workflow-prep.png" }}
         description="Bring one lesson artifact into the system and generate a set of classroom-ready variants with clearer scaffolds, chunking, extension, and language support."
       />
 
