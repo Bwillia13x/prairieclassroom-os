@@ -56,6 +56,30 @@ describe("PageIntro section header (audit Workstream C)", () => {
     expect(screen.getByText("Differentiated for 4 students")).toBeInTheDocument();
   });
 
+  it("applies the page-intro--brand modifier when emphasis='brand' (2026-04-22 Tier-B)", () => {
+    const { container, rerender } = render(
+      <PageIntro
+        eyebrow="Today"
+        title="Classroom pulse"
+        description="Test"
+      />,
+    );
+    const defaultHeader = container.querySelector(".page-intro");
+    expect(defaultHeader?.classList.contains("page-intro--brand")).toBe(false);
+
+    rerender(
+      <PageIntro
+        eyebrow="Today"
+        title="Classroom pulse"
+        description="Test"
+        emphasis="brand"
+      />,
+    );
+    const brandHeader = container.querySelector(".page-intro");
+    expect(brandHeader?.classList.contains("page-intro--brand")).toBe(true);
+    expect(container.querySelector(".page-intro__eyebrow")?.textContent).toBe("Today");
+  });
+
   it("renders nothing for the chip row when dynamicContext is omitted or empty", () => {
     const { container, rerender } = render(
       <PageIntro

@@ -41,8 +41,14 @@ Component-level accent halos are capped at 10%. Status halos are capped at 12%. 
 | `--color-accent-hover` | `#143a65` | `#4a74a1` |
 | `--color-accent-soft` / `--color-bg-accent` | `#e7ecf4` | `#070d15` |
 | `--color-brand-highlight` | `#ae671a` (Prairie cognac, legacy brand) | `#d4a15c` (lifted cognac) |
+| `--color-brand-highlight-soft` | `#e8d096` (wheat-soft, decorative) | `#2a2418` (dimmed wheat for dark mode) |
+| `--color-brand-highlight-strong` | `#8a4f12` (deep cognac for hover) | `#e8b87a` (lifted deep cognac) |
+| `--color-brand-green` | `#184030` (prairie deep, second brand color) | `#6d9481` (desaturated prairie green) |
+| `--color-brand-green-soft` | `#e6ede8` (soft sage wash, decorative) | `#0e1a14` (black-first dim green) |
 
 The dark accent is deliberately darker than the previous sky-blue `#7aa7d9`. It must read as a control state, not as an ambient brand wash. Contributors: if you feel pressure to make dark surfaces navy again, re-saturate the dark accent, bring back cream surfaces, or collapse the three-layer stack back to two, push back, or bring the case to `docs/decision-log.md` first.
+
+**Brand-highlight extensions scope (2026-04-22).** The `--color-brand-highlight-*` and `--color-brand-green*` tokens are **brand-affordance tokens**, not material tokens. Allowed placements: decorative rules (`.brand-rule` utility), section eyebrows with opt-in brand emphasis, brand-mark reinforcement, hero underlines, and hover-state warmth on brand-emphasis links. Prohibited: page/workspace/card backgrounds (the neutral material stack still owns these), primary CTA fills (the navy `--color-accent` still owns these), and broad semantic washes. The `prairie-green` tokens in particular are a second brand color — not a general-purpose alias for the sage/forest semantic family, which has its own WCAG-tuned values (`--color-section-family`, `--color-text-sage`, etc.) that must not be displaced.
 
 ### Dark semantic backgrounds
 

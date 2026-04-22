@@ -49,6 +49,30 @@
      limited editorial emphasis). Not used as a primary UI accent. */
   --color-brand-highlight: light-dark(#ae671a, #d4a15c);
 
+  /* ------------------------------------------------------------
+     Brand-highlight extensions (2026-04-22).
+     These tokens extend the retained cognac family with a wheat-soft
+     decorative tone and a deeper cognac for hover-state warmth, and
+     introduce a second brand color — prairie-green — for brand-mark
+     reinforcement and editorial emphasis. Values derived from the
+     pixel-perfect-replica prairie palette (wheat 40 60% 58%, wheat-soft
+     42 55% 75%, prairie-deep 145 40% 16%) and retuned to the institutional
+     light-dark() pattern with dark-mode values that read as sparse
+     affordances, not ambient washes (dark-mode contract §1 round 6).
+
+     Use rules (decision-log 2026-04-22 — "Prairie brand-affordance
+     expansion"):
+       - These are brand-affordance tokens, not material tokens.
+       - Never use for page/workspace/card backgrounds.
+       - Allowed placements: decorative rules, section eyebrows,
+         brand-mark marks, hero underlines, hover-state warmth.
+       - `--color-accent` (navy) remains the primary UI affordance.
+     ------------------------------------------------------------ */
+  --color-brand-highlight-soft: light-dark(#e8d096, #2a2418);
+  --color-brand-highlight-strong: light-dark(#8a4f12, #e8b87a);
+  --color-brand-green: light-dark(#184030, #6d9481);
+  --color-brand-green-soft: light-dark(#e6ede8, #0e1a14);
+
   /* Semantic status family — conservative education-sector palette */
   --color-success: light-dark(#1f7a44, #6cc38f);
   --color-warning: light-dark(#a66a00, #e7b35c);

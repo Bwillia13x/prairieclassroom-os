@@ -83,6 +83,15 @@ interface Props {
   breadcrumb?: { group: string; tab: string };
   /** @deprecated Section identity is now signaled by the section label only. */
   sectionIcon?: SectionIconName;
+  /**
+   * Opt-in brand emphasis. When `"brand"`, the eyebrow color shifts from
+   * `--color-text-secondary` to the retained Prairie cognac
+   * `--color-brand-highlight`. Use sparingly — only on landing surfaces
+   * where brand recognition matters. Not a replacement for `sectionTone`,
+   * which carries workspace identity. Introduced 2026-04-22 with the
+   * Tier-B brand-affordance expansion (`docs/decision-log.md`).
+   */
+  emphasis?: "brand";
 }
 
 export default function PageIntro({
@@ -96,6 +105,7 @@ export default function PageIntro({
   badges,
   breadcrumb,
   sectionIcon,
+  emphasis,
 }: Props) {
   if (import.meta.env.DEV) {
     const dropped: string[] = [];
@@ -114,7 +124,7 @@ export default function PageIntro({
   }
   const chips = dynamicContext ?? [];
   return (
-    <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}${visual ? " page-intro--with-visual" : ""}`}>
+    <header className={`page-intro${sectionTone ? ` page-intro--${sectionTone}` : ""}${visual ? " page-intro--with-visual" : ""}${emphasis === "brand" ? " page-intro--brand" : ""}`}>
       {visual ? (
         <img
           className="page-intro__visual"

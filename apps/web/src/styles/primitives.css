@@ -779,6 +779,16 @@ label.form-label {
   color: var(--page-intro-tone-text);
 }
 
+/* Brand-emphasis variant — opt-in per Tier-B brand-affordance expansion
+   (2026-04-22). The eyebrow picks up the retained Prairie cognac
+   instead of the neutral --color-text-secondary. Pairable with any
+   section tone; the brand color wins because it sits at a higher
+   specificity. Not for default use — only surfaces where brand
+   recognition earns the emphasis. */
+.page-intro--brand .page-intro__eyebrow {
+  color: var(--color-brand-highlight);
+}
+
 .status-chip-row,
 .output-meta-row {
   display: flex;
@@ -1420,4 +1430,44 @@ label.form-label {
 
 .language-tool-toggle__btn--active .language-tool-toggle__glyph {
   color: var(--color-surface);
+}
+
+/* ------------------------------------------------------------
+   Brand decorative rule (2026-04-22).
+   Opt-in branded horizontal divider for editorial moments — hero
+   headers, page-intro dividers, section transitions. Uses the
+   wheat-soft + cognac brand-highlight family introduced with the
+   Prairie brand-affordance expansion. See tokens.css and
+   docs/dark-mode-contract.md §1 for scope rules.
+
+   Keep usage narrow: these replace a plain `hr` or a neutral
+   `--color-border` rule only where brand emphasis is explicitly
+   wanted. Do not retrofit across the product.
+   ------------------------------------------------------------ */
+.brand-rule {
+  height: 2px;
+  border: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-brand-highlight) 35%,
+    var(--color-brand-highlight-soft) 65%,
+    transparent 100%
+  );
+  opacity: 0.72;
+}
+
+.brand-rule--green {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-brand-green) 40%,
+    var(--color-brand-green-soft) 70%,
+    transparent 100%
+  );
+}
+
+.brand-rule--thin {
+  height: 1px;
+  opacity: 0.5;
 }
