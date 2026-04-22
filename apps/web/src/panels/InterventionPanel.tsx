@@ -3,7 +3,7 @@ import "./InterventionPanel.css";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
-import { logIntervention, fetchInterventionHistory } from "../api";
+import { logIntervention, logInterventionQuick, fetchInterventionHistory } from "../api";
 import InterventionLogger from "../components/InterventionLogger";
 import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import InterventionCard from "../components/InterventionCard";
@@ -107,21 +107,16 @@ export default function InterventionPanel({ prefill }: Props) {
 
   if (classrooms.length === 0) return null;
 
-  async function handleSubmit(
-    classroomId: string,
-    studentRefs: string[],
-    teacherNote: string,
-    context?: string,
+  async function submitIntervention(
+    request: InterventionRequest,
+    // Hallway-grade capture: the quick path saves a deterministic record
+    // server-side in <100ms. Structured-details submissions continue to use
+    // the full model-enriched path so action_taken + follow-up stay accurate.
+    path: "quick" | "full",
   ) {
     setHistoricalResult(null);
-    const resp = await execute((signal) =>
-      logIntervention({
-        classroom_id: classroomId,
-        student_refs: studentRefs,
-        teacher_note: teacherNote,
-        context,
-      }, signal)
-    );
+    const call = path === "quick" ? logInterventionQuick : logIntervention;
+    const resp = await execute((signal) => call(request, signal));
     if (resp) {
       showSuccess("Intervention logged");
       session.recordGeneration("log-intervention", "log_intervention");
@@ -131,13 +126,25 @@ export default function InterventionPanel({ prefill }: Props) {
     return false;
   }
 
-  function handleQuickSubmit(request: InterventionRequest) {
-    return handleSubmit(
-      request.classroom_id,
-      request.student_refs,
-      request.teacher_note,
-      request.context,
+  async function handleSubmit(
+    classroomId: string,
+    studentRefs: string[],
+    teacherNote: string,
+    context?: string,
+  ) {
+    return submitIntervention(
+      {
+        classroom_id: classroomId,
+        student_refs: studentRefs,
+        teacher_note: teacherNote,
+        context,
+      },
+      "full",
     );
+  }
+
+  function handleQuickSubmit(request: InterventionRequest) {
+    return submitIntervention(request, "quick");
   }
 
   function handleHistorySelect(record: InterventionRecord) {
@@ -232,7 +239,7 @@ export default function InterventionPanel({ prefill }: Props) {
           <div className="workspace-result" aria-live="polite" aria-busy={loading && displayResult === null}>
             {error && displayResult === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
             {loading && displayResult === null ? (
-              <SkeletonLoader variant="single" message="Structuring your intervention note..." label="Structuring intervention note" />
+              <SkeletonLoader variant="single" message="Saving your note to the classroom log…" label="Saving intervention note" />
             ) : null}
             {!loading && displayResult === null && !error ? (
               <EmptyStateCard

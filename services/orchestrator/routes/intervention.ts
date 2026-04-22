@@ -12,6 +12,35 @@ import { callInference } from "../inference-client.js";
 import { inferenceResponseMeta } from "../response-meta.js";
 import { handleRouteError, sendClassroomNotFound, sendParseError } from "../errors.js";
 
+/**
+ * Deterministic quick-capture record: no model call, no enrichment. The
+ * teacher's hallway submission persists as-is and returns in <100ms.
+ * Enrichment (action_taken, outcome, follow-up) happens later when the
+ * teacher re-submits via the structured-details form on the intervention
+ * panel. model_id="deterministic-quick" tags the row in memory so audit +
+ * admin tooling can distinguish it from model-enriched rows.
+ */
+const QUICK_MODEL_ID = "deterministic-quick";
+
+function buildQuickInterventionRecord(
+  classroomId: string,
+  studentRefs: string[],
+  teacherNote: string,
+): InterventionRecord {
+  return {
+    record_id: `int-${classroomId}-${Date.now()}-q`,
+    classroom_id: classroomId,
+    student_refs: studentRefs,
+    observation: teacherNote,
+    // Intentionally empty: a placeholder string would read as real content
+    // and mislead the EA/reviewer who consumes the record downstream.
+    action_taken: "",
+    follow_up_needed: false,
+    created_at: new Date().toISOString(),
+    schema_version: "0.1.0",
+  };
+}
+
 export function createInterventionRouter(deps: RouteDeps): Router {
   const router = Router();
 
@@ -76,6 +105,44 @@ export function createInterventionRouter(deps: RouteDeps): Router {
       });
     } catch (err) {
       console.error("Intervention logging error:", err);
+      handleRouteError(res, err);
+    }
+  });
+
+  router.post("/quick", validateBody(InterventionRequestSchema), async (req, res) => {
+    const startedAt = Date.now();
+    try {
+      const { classroom_id, student_refs, teacher_note } = req.body;
+
+      const classroom = deps.loadClassroom(classroom_id);
+      if (!classroom) {
+        sendClassroomNotFound(res, classroom_id);
+        return;
+      }
+
+      const record = buildQuickInterventionRecord(classroom_id, student_refs, teacher_note);
+
+      // Schema-validate for parity with the model-enriched path so the quick
+      // record is indistinguishable at the DB layer.
+      const validated = validateParsedResponse(
+        InterventionRecordSchema,
+        record,
+        { promptClass: "log_intervention", rawText: JSON.stringify(record) },
+      );
+
+      try {
+        saveIntervention(classroom_id, validated, QUICK_MODEL_ID);
+      } catch (memErr) {
+        console.warn("Memory save failed (intervention quick):", memErr);
+      }
+
+      res.json({
+        record: validated,
+        model_id: QUICK_MODEL_ID,
+        latency_ms: Date.now() - startedAt,
+      });
+    } catch (err) {
+      console.error("Intervention quick logging error:", err);
       handleRouteError(res, err);
     }
   });

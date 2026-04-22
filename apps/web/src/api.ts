@@ -412,6 +412,23 @@ export function logIntervention(
   });
 }
 
+/**
+ * Quick-capture log: deterministic server-side record save with no model
+ * enrichment. Used by the hallway-grade QuickCaptureTray so submission
+ * returns in &lt;1s. The teacher can later enrich tags + action_taken via the
+ * structured-details form (which hits the full `/intervention` endpoint).
+ */
+export function logInterventionQuick(
+  request: InterventionRequest,
+  signal?: AbortSignal,
+): Promise<InterventionResponse> {
+  return requestJson<InterventionResponse>("/intervention/quick", {
+    method: "POST",
+    body: request,
+    signal,
+  });
+}
+
 export function simplifyText(
   request: SimplifyRequest,
   signal?: AbortSignal,
@@ -456,7 +473,15 @@ export function detectSupportPatterns(
 export function generateEABriefing(
   request: EABriefingRequest,
   signal?: AbortSignal,
+  stream?: StreamingEventHandlers,
 ): Promise<EABriefingResponse> {
+  if (stream) {
+    return streamRequestJson<EABriefingResponse>("/ea-briefing", {
+      method: "POST",
+      body: request,
+      signal,
+    }, stream);
+  }
   return requestJson<EABriefingResponse>("/ea-briefing", {
     method: "POST",
     body: request,

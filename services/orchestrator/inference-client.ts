@@ -831,7 +831,10 @@ export async function callInferenceStream(
 
       const records = await executeToolCalls(rawToolCalls, registeredTools, toolContext);
       executedToolCalls.push(...records);
-      await emit({ type: "thinking", text: "\nConsulted local classroom tools; finalizing structured output." });
+      // Teacher-safe progress signal. The UI only renders thinking-stream
+      // text when the operator toggle is on, so this is dev-visible only;
+      // the copy is kept neutral in case the toggle is ever flipped.
+      await emit({ type: "thinking", text: "\nCross-checking classroom memory…" });
       continue;
     }
 

@@ -10,7 +10,7 @@ PrairieClassroom OS | Gemma 4 for Inclusive Classroom Coordination
 
 PrairieClassroom OS is a Gemma-4-native operating layer for high-complexity inclusive classrooms.
 
-Instead of acting like a generic tutor, it helps teachers and educational assistants coordinate the work around instruction: differentiation, intervention logging, support-pattern detection, family-message drafting with teacher approval, multilingual support, and next-day planning.
+Instead of acting like a generic tutor, it helps teachers and educational assistants handle four adult jobs: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families using the same classroom context.
 
 For this hackathon submission, the artifact-backed proof lane is hosted Gemma 4 on synthetic/demo classroom data:
 
@@ -20,7 +20,8 @@ For this hackathon submission, the artifact-backed proof lane is hosted Gemma 4 
 The project also keeps a separate local/self-hosted Ollama path for the intended privacy-preserving school deployment model. That local path is not claimed as proven on the current maintenance host.
 
 Project links:
-- Code: https://github.com/Bwillia13x/prairieclassroom-os
+
+- Code: [PrairieClassroom OS source code](https://github.com/Bwillia13x/prairieclassroom-os)
 - Live demo: [add public deployed URL after deployment]
 - Kaggle writeup: [add Kaggle writeup URL after submission]
 
@@ -66,4 +67,4 @@ Responsive shell for quick classroom access to planning and communication workfl
 
 ## One-Sentence Verbal Pitch
 
-PrairieClassroom OS is a Gemma-4-native operating layer that helps teachers coordinate differentiated instruction, classroom memory, and next-day planning in inclusive classrooms.
+PrairieClassroom OS is a Gemma-4-native operating layer that helps teachers open the day, adapt instruction, prepare tomorrow, and coordinate family or EA communication in inclusive classrooms.

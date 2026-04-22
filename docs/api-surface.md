@@ -3,7 +3,7 @@
 _Generated from `services/orchestrator/server.ts` and `services/orchestrator/routes/*.ts`. Do not edit endpoint rows by hand; run `npm run system:inventory`._
 
 - Mounted Express route bases: 21
-- Exact endpoints: 49
+- Exact endpoints: 52
 
 | Method | Endpoint | Route file | Auth boundary | Role scope |
 |---|---|---|---|---|
@@ -22,6 +22,7 @@ _Generated from `services/orchestrator/server.ts` and `services/orchestrator/rou
 | POST | `/api/family-message` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |
 | POST | `/api/family-message/approve` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |
 | POST | `/api/intervention` | `services/orchestrator/routes/intervention.ts` | classroom-code | teacher, ea, substitute |
+| POST | `/api/intervention/quick` | `services/orchestrator/routes/intervention.ts` | classroom-code | teacher, ea, substitute |
 | POST | `/api/simplify` | `services/orchestrator/routes/language-tools.ts` | classroom-code | teacher |
 | POST | `/api/vocab-cards` | `services/orchestrator/routes/language-tools.ts` | classroom-code | teacher |
 | POST | `/api/support-patterns` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher |
@@ -29,6 +30,8 @@ _Generated from `services/orchestrator/server.ts` and `services/orchestrator/rou
 | GET | `/api/support-patterns/stream/:streamId/events` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher |
 | GET | `/api/support-patterns/latest/:classroomId` | `services/orchestrator/routes/support-patterns.ts` | classroom-code | teacher, reviewer |
 | POST | `/api/ea-briefing` | `services/orchestrator/routes/ea-briefing.ts` | classroom-code | teacher, ea, substitute |
+| POST | `/api/ea-briefing/stream` | `services/orchestrator/routes/ea-briefing.ts` | classroom-code | teacher, ea, substitute |
+| GET | `/api/ea-briefing/stream/:streamId/events` | `services/orchestrator/routes/ea-briefing.ts` | classroom-code | teacher, ea, substitute |
 | POST | `/api/complexity-forecast` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |
 | POST | `/api/complexity-forecast/stream` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |
 | GET | `/api/complexity-forecast/stream/:streamId/events` | `services/orchestrator/routes/forecast.ts` | classroom-code | teacher |

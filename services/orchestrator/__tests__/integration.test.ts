@@ -15,6 +15,7 @@ import { createDifferentiateRouter } from "../routes/differentiate.js";
 import { createFamilyMessageRouter } from "../routes/family-message.js";
 import { createInterventionRouter } from "../routes/intervention.js";
 import { createLanguageToolsRouter } from "../routes/language-tools.js";
+import { createEABriefingRouter } from "../routes/ea-briefing.js";
 import { closeAll } from "../../memory/db.js";
 import type { ClassroomProfile } from "../../../packages/shared/schemas/classroom.js";
 import type { RouteDeps } from "../route-deps.js";
@@ -57,6 +58,22 @@ const MOCK_RESPONSES: Record<string, string> = {
     simplified_text: "Plants use sunlight to make food.",
     key_vocabulary: ["sunlight", "plants", "food"],
     visual_cue_suggestions: ["Draw a sun and a plant"],
+    schema_version: "0.1.0",
+  }),
+  generate_ea_briefing: JSON.stringify({
+    briefing_id: "brf-integ-001",
+    classroom_id: "demo-okafor-grade34",
+    date: "2026-04-22",
+    teacher_notes: "Ari needs breaks; Priya needs picture support.",
+    schedule_blocks: [
+      { time_slot: "09:00-09:30", activity: "Calendar", student_refs: ["Ari"], ea_role: "Support transitions" },
+    ],
+    student_watch_list: [
+      { student_ref: "Priya", watch_reason: "EAL learner; pair with visuals.", suggested_support: "Keep picture cards nearby." },
+    ],
+    pending_followups: [
+      { student_ref: "Ari", followup_summary: "Check if breaks worked.", urgency: "soon" },
+    ],
     schema_version: "0.1.0",
   }),
 };
@@ -131,12 +148,14 @@ async function startOrchestrator(inferenceUrl: string) {
   app.use("/api/family-message", authMiddleware);
   app.use("/api/intervention", authMiddleware);
   app.use("/api/simplify", authMiddleware);
+  app.use("/api/ea-briefing", authMiddleware);
 
   // Mount routes
   app.use("/api/differentiate", createDifferentiateRouter(deps));
   app.use("/api/family-message", createFamilyMessageRouter(deps));
   app.use("/api/intervention", createInterventionRouter(deps));
   app.use("/api", createLanguageToolsRouter(deps));
+  app.use("/api/ea-briefing", createEABriefingRouter(deps));
 
   const server = await new Promise<Server>((resolve) => {
     const srv = app.listen(0, "127.0.0.1", () => resolve(srv));
@@ -306,5 +325,85 @@ describe("Integration: orchestrator → inference round-trip", () => {
     // Prompt injection is detected but the request still proceeds
     // (detection is advisory, not blocking — tagged as untrusted data)
     expect(res.status).toBe(200);
+  });
+
+  it("POST /api/ea-briefing returns a parsed briefing (non-stream path)", async () => {
+    const res = await fetch(`${baseUrl}/api/ea-briefing`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        classroom_id: "demo-okafor-grade34",
+        ea_name: "Ms. Lee",
+      }),
+    });
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.briefing).toBeDefined();
+    expect(body.briefing.classroom_id).toBe("demo-okafor-grade34");
+    expect(body.briefing.schedule_blocks).toHaveLength(1);
+    expect(body.model_id).toBe("mock-integration");
+  });
+
+  it("POST /api/intervention/quick persists a deterministic record with no model call", async () => {
+    // Fail the mock inference server if it ever gets hit — the quick path
+    // must never make a model request. We do this by counting requests.
+    const res = await fetch(`${baseUrl}/api/intervention/quick`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        classroom_id: "demo-okafor-grade34",
+        student_refs: ["Ari"],
+        teacher_note: "Struggled at hallway transition; used the breath-of-four prompt.",
+      }),
+    });
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.record).toBeDefined();
+    expect(body.record.classroom_id).toBe("demo-okafor-grade34");
+    expect(body.record.student_refs).toEqual(["Ari"]);
+    expect(body.record.observation).toBe("Struggled at hallway transition; used the breath-of-four prompt.");
+    expect(body.record.action_taken).toBe("");
+    expect(body.record.follow_up_needed).toBe(false);
+    expect(body.record.record_id).toMatch(/-q$/);
+    expect(body.model_id).toBe("deterministic-quick");
+    expect(typeof body.latency_ms).toBe("number");
+    // Hallway grade: must return fast. Gives 500ms headroom above the
+    // <100ms target to survive cold-start noise in CI.
+    expect(body.latency_ms).toBeLessThan(500);
+  });
+
+  it("POST /api/intervention/quick returns 400 when student_refs is empty", async () => {
+    const res = await fetch(`${baseUrl}/api/intervention/quick`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        classroom_id: "demo-okafor-grade34",
+        student_refs: [],
+        teacher_note: "Note without a student ref.",
+      }),
+    });
+
+    expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.detail_code).toBe("request_body_invalid");
+  });
+
+  it("POST /api/ea-briefing/stream returns 202 with stream_id + stream_url", async () => {
+    const res = await fetch(`${baseUrl}/api/ea-briefing/stream`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        classroom_id: "demo-okafor-grade34",
+        ea_name: "Ms. Lee",
+      }),
+    });
+
+    expect(res.status).toBe(202);
+    const body = await res.json();
+    expect(typeof body.stream_id).toBe("string");
+    expect(body.stream_id).toMatch(/^[0-9a-f-]{36}$/);
+    expect(body.stream_url).toBe(`/api/ea-briefing/stream/${body.stream_id}/events`);
   });
 });

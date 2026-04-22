@@ -162,8 +162,8 @@ is self-contained and bounded — pick any one independently.
   the 2026-04-18 implementation session because `npm run gemini:readycheck`
   reported a missing Gemini API key and disabled hosted-run guard, but a later
  hosted rerun passed with the supplied AI Studio key at
-  `output/release-gate/2026-04-21T05-13-43-243Z-52665` with a matching `12/12`
-  eval summary under `output/evals/2026-04-21-gemini/`.
+  `output/release-gate/2026-04-22T02-16-16-557Z-74236` with a matching `12/12`
+  eval summary under `output/evals/2026-04-22-gemini/`.
 
 ## Shipped 2026-04-18 — F3 bundle (real SSE streaming)
 

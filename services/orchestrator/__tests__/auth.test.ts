@@ -369,6 +369,7 @@ const SCOPE_MATRIX: Record<string, readonly Role[] | "*"> = {
   // Teacher + EA + substitute (EA already had UI `canLogInterventions` so
   // aligning backend with that pre-existing capability — see roleCapabilities)
   "POST /api/intervention": ["teacher", "ea", "substitute"],
+  "POST /api/intervention/quick": ["teacher", "ea", "substitute"],
   // Teacher + reviewer (reviewer can read history surfaces)
   "GET /api/classrooms/:id/plans": ["teacher", "reviewer"],
   "GET /api/classrooms/:id/messages": ["teacher", "reviewer"],
@@ -377,6 +378,8 @@ const SCOPE_MATRIX: Record<string, readonly Role[] | "*"> = {
   "GET /api/support-patterns/latest/:classroomId": ["teacher", "reviewer"],
   // Teacher + EA + substitute (operational working views)
   "POST /api/ea-briefing": ["teacher", "ea", "substitute"],
+  "POST /api/ea-briefing/stream": ["teacher", "ea", "substitute"],
+  "GET /api/ea-briefing/stream/:streamId/events": ["teacher", "ea", "substitute"],
   "GET /api/today/:classroomId": ["teacher", "ea", "substitute"],
   "POST /api/sessions": ["teacher", "ea", "substitute"],
   // Teacher + EA + reviewer (aggregated summaries, feedback evidence)

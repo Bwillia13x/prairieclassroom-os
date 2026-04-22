@@ -7,6 +7,7 @@ import { EABriefingForm, EABriefingResult } from "../components/EABriefing";
 import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
+import StreamingIndicator from "../components/StreamingIndicator";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
@@ -17,13 +18,17 @@ import { FeedbackCollector, OutputActionBar, type OutputAction } from "../compon
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useDownloadBlob } from "../hooks/useDownloadBlob";
+import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import { serializeEABriefingToPlainText, serializeEABriefingToMarkdown } from "./outputActionBarHelpers";
 import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
-  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote } = useApp();
+  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, reset } = useAsyncAction<EABriefingResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<EABriefingResponse>();
+  const streamer = useStreamingRequest({
+    sectionLabels: ["Notes", "Schedule", "Watch list", "Follow-ups"],
+  });
   const [resultKey, setResultKey] = useState(0);
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
@@ -91,14 +96,17 @@ export default function EABriefingPanel() {
   if (classrooms.length === 0) return null;
 
   async function handleSubmit(classroomId: string, eaName?: string, coordinationNotes?: string) {
-    const resp = await execute((signal) =>
-      generateEABriefing(
-        {
-          classroom_id: classroomId,
-          ea_name: eaName,
-          coordination_notes: coordinationNotes,
-        },
-        signal,
+    const resp = await streamer.execute((stream) =>
+      execute((signal) =>
+        generateEABriefing(
+          {
+            classroom_id: classroomId,
+            ea_name: eaName,
+            coordination_notes: coordinationNotes,
+          },
+          signal,
+          stream,
+        ),
       ),
     );
     if (resp) {
@@ -142,7 +150,9 @@ export default function EABriefingPanel() {
           <div className="workspace-result" aria-live="polite" aria-busy={loading && result === null}>
             {error && result === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
             {loading && result === null ? (
-              <SkeletonLoader variant="stack" message="Building EA coordination briefing..." label="Generating EA briefing" />
+              streaming.phase !== "idle"
+                ? <StreamingIndicator label="Generating EA briefing" onCancel={cancel} />
+                : <SkeletonLoader variant="stack" message="Building EA coordination briefing…" label="Generating EA briefing" />
             ) : null}
             {!loading && result === null && !error ? (
               /* The real briefing renders 4 regions (notes, schedule,

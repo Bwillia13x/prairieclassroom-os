@@ -25,6 +25,7 @@ import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
 import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
 import RoleContextPill from "./components/RoleContextPill";
+import RoleEscapeBanner from "./components/RoleEscapeBanner";
 import RolePromptDialog from "./components/RolePromptDialog";
 import DifferentiatePanel from "./panels/DifferentiatePanel";
 import TomorrowPlanPanel from "./panels/TomorrowPlanPanel";
@@ -915,6 +916,32 @@ export default function App() {
     [],
   );
 
+  // First-session demo convenience: a persisted reviewer or substitute role
+  // from a previous session would land fresh demo visitors on dead-end
+  // tabs. On the first mount of a new session where the demo classroom
+  // has a non-teacher stored role, reset it back to teacher exactly once
+  // (guarded by sessionStorage so mid-session role toggles are honored).
+  useEffect(() => {
+    try {
+      if (typeof window === "undefined") return;
+      if (window.sessionStorage.getItem("prairie-demo-role-welcomed")) return;
+      const storedDemoRole = state.classroomRoles[DEMO_CLASSROOM_ID];
+      if (storedDemoRole && storedDemoRole !== "teacher") {
+        dispatch({
+          type: "SET_CLASSROOM_ROLE",
+          classroomId: DEMO_CLASSROOM_ID,
+          role: "teacher",
+        });
+      }
+      window.sessionStorage.setItem("prairie-demo-role-welcomed", "1");
+    } catch {
+      /* sessionStorage unavailable — accept the original persisted role */
+    }
+    // Intentionally empty deps: this effect runs exactly once per mount,
+    // so classroomRoles is read via `state.classroomRoles` inside the
+    // effect (the latest value is captured because dispatch is stable).
+  }, []);
+
   // Prompt for role when a classroom is loaded but has no stored role
   // Wait for the onboarding tour to finish before asking the user to pick
   // their role — stacking both modals simultaneously feels like an ambush.
@@ -1278,6 +1305,7 @@ export default function App() {
             <div className="error-banner">{initError}</div>
           ) : null}
 
+          {state.classrooms.length > 0 && !initError ? <RoleEscapeBanner /> : null}
           {activeGroup === "prep" ? <PrepSectionIntro /> : null}
           {activeGroup === "ops" ? <OpsSectionHint /> : null}
           {state.classrooms.length > 0 && !initError && activeRole !== "reviewer" ? (

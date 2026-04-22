@@ -1,14 +1,29 @@
 # Future Development — PrairieClassroom OS
 
+## Status
+
+This document is now a historical feature-ideation inventory.
+
+Several capabilities described below have since shipped, so this file should not be treated as the active roadmap or as the current-state source of truth.
+
+Use these documents for active planning and current behavior instead:
+
+- `docs/plans/2026-04-22-strategic-roadmap.md` — active sequencing and next-phase priorities
+- `README.md` — current operator reality
+- `docs/spec.md` — product scope and success criteria
+- `docs/architecture.md` — implemented system shape
+
 ## Purpose
 
-This document maps out six novel capabilities that extend PrairieClassroom OS beyond its current MVP (8 workflows, 44 evals, dual-speed Gemma routing) into a system that treats classroom complexity as a dynamic, forecastable, and actively manageable signal.
+This document originally mapped out six novel capabilities that would extend PrairieClassroom OS beyond its early MVP into a system that treats classroom complexity as a dynamic, forecastable, and actively manageable signal.
+
+It remains useful as historical product thinking and architectural rationale, but not as the canonical backlog.
 
 Each capability builds on the existing architecture — Gemma routing, SQLite memory, intervention logs, pattern detection — without violating any safety boundaries defined in `safety-governance.md`.
 
 ## Priority ranking
 
-Capabilities are ranked by leverage, novelty, and architectural fit:
+The ranking below reflects the original prioritization at the time this document was written:
 
 | Priority | Capability | Novelty | Real-world impact | Implementation cost |
 |----------|-----------|---------|-------------------|---------------------|

@@ -14,7 +14,16 @@ A Gemma-4-native operating layer for high-complexity inclusive classrooms
 
 The hardest part of teaching an inclusive classroom is usually not writing the lesson. It is coordinating everything around it.
 
-PrairieClassroom OS is built for that coordination problem. It is a classroom operations copilot for teachers and educational assistants, not a tutor and not a replacement for teacher judgment. The system spans 12 primary panels and 13 model-routed workflows: differentiation, worksheet extraction, tomorrow planning, family-message drafting with approval gates, intervention logging, language supports, support-pattern detection, EA briefings, complexity forecasting, scaffold-decay review, substitute packets, and EA load balancing.
+PrairieClassroom OS is built for that coordination problem. It is a classroom operations copilot for teachers and educational assistants, not a tutor and not a replacement for teacher judgment.
+
+The clearest product story is four adult jobs:
+
+1. open the day and decide where to start
+2. adapt instruction for different learners
+3. prepare tomorrow from what happened today
+4. coordinate with adults or families using the same classroom context
+
+Behind that simpler story, the repo currently includes 12 primary panels and 13 model-routed workflows across differentiation, worksheet extraction, tomorrow planning, family-message drafting with approval gates, intervention logging, language supports, support-pattern detection, EA briefings, complexity forecasting, scaffold-decay review, substitute packets, and EA load balancing.
 
 The product thesis is simple: classroom complexity is a coordination problem. A useful AI system in this setting needs memory, retrieval, safety boundaries, and role-specific workflows, not just text generation.
 

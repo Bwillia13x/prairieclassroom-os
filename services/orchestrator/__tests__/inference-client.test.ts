@@ -582,7 +582,7 @@ describe("callInferenceStream", () => {
     expect(secondBody.prompt).toContain("TOOL RESULTS:");
     expect(emit).toHaveBeenCalledWith({
       type: "thinking",
-      text: "\nConsulted local classroom tools; finalizing structured output.",
+      text: "\nCross-checking classroom memory…",
     });
     expect(result.text).toBe("{\"ok\":true}");
     expect(result.tool_calls[0]).toMatchObject({

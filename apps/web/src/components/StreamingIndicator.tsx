@@ -8,7 +8,9 @@ import "./StreamingIndicator.css";
 /**
  * StreamingIndicator — replaces static skeleton for planning-tier requests.
  * Shows progressive disclosure: thinking phase → structuring phase → complete.
- * Displays real thinking text, a progress bar, elapsed time, and cancel control.
+ * Teacher-facing copy only. Raw model reasoning text is hidden by default and
+ * only renders when an operator sets the `prairie-debug-thinking` toggle in
+ * localStorage — never shown to teachers in normal use.
  */
 interface Props {
   /** Contextual label, e.g. "Generating tomorrow plan" */
@@ -23,6 +25,23 @@ function formatElapsed(seconds: number): string {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 }
 
+/**
+ * Operator-only toggle for surfacing raw model reasoning. Kept as a
+ * localStorage flag rather than a DEV-only check so the same UI can be
+ * debugged against a deployed build by setting:
+ *   localStorage.setItem('prairie-debug-thinking', 'true')
+ * Safe inside render: localStorage is a sync DOM API and this component
+ * re-renders on every streaming tick anyway.
+ */
+function shouldShowThinkingText(): boolean {
+  try {
+    return typeof window !== "undefined"
+      && window.localStorage?.getItem("prairie-debug-thinking") === "true";
+  } catch {
+    return false;
+  }
+}
+
 export default function StreamingIndicator({ label, onCancel }: Props) {
   const { streaming } = useApp();
 
@@ -32,9 +51,9 @@ export default function StreamingIndicator({ label, onCancel }: Props) {
   const showTimeoutHint = elapsed >= 60;
 
   const phaseLabel =
-    streaming.phase === "thinking" ? "Deep reasoning in progress…" :
-    streaming.phase === "structuring" ? "Structuring your plan…" :
-    streaming.phase === "complete" ? "Complete" : "";
+    streaming.phase === "thinking" ? "Reviewing classroom context…" :
+    streaming.phase === "structuring" ? "Preparing your plan…" :
+    streaming.phase === "complete" ? "Ready" : "";
 
   // SVG over emoji: district Windows/Chromebooks render emoji inconsistently.
   const phaseIconName: SectionIconName =
@@ -84,10 +103,12 @@ export default function StreamingIndicator({ label, onCancel }: Props) {
         </div>
       )}
 
-      {/* Thinking text — streams in progressively */}
-      {streaming.thinkingText && (
-        <div className="streaming-thinking">
-          <div className="streaming-thinking-label">Model reasoning</div>
+      {/* Operator-only working notes — hidden from teachers by default.
+          Renders only when `localStorage['prairie-debug-thinking'] === 'true'`
+          so raw model reasoning never leaks into the classroom UI. */}
+      {streaming.thinkingText && shouldShowThinkingText() && (
+        <div className="streaming-thinking" data-testid="streaming-thinking-debug">
+          <div className="streaming-thinking-label">Working notes</div>
           <p className="streaming-thinking-text">{streaming.thinkingText}</p>
         </div>
       )}

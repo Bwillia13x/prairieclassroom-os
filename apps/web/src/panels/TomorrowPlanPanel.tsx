@@ -240,7 +240,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
             {loading && displayResult === null ? (
               streaming.phase !== "idle"
                 ? <StreamingIndicator onCancel={cancel} />
-                : <SkeletonLoader variant="stack" message="Deep reasoning in progress — generating your support plan..." label="Generating tomorrow plan" />
+                : <SkeletonLoader variant="stack" message="Preparing your support plan…" label="Generating tomorrow plan" />
             ) : null}
             {!loading && displayResult === null && !error ? (
               <>

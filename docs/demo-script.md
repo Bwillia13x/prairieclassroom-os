@@ -10,10 +10,10 @@ Use this script for a competition demo, stakeholder walkthrough, or teacher-faci
 - the local/Ollama path is an intended privacy-first deployment lane, not proven on the current maintenance host
 - teacher validation is not claimed unless a completed pilot artifact exists under `docs/pilot/`
 
-| Track | Audience | Duration |
-|-------|----------|----------|
-| **A: Competition Pitch** | Judges, funders, technical reviewers | ~5 minutes |
-| **B: Teacher Walkthrough** | Educators, EAs, curriculum leads | ~15 minutes |
+For Phase 0 pilot sessions, prefer the 4-workflow story defined in `docs/plans/2026-04-22-phase-0-checklist.md`: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families. Treat intervention logging as supporting infrastructure inside that story, not as the lead narrative.
+
+- **A: Competition Pitch** — Judges, funders, technical reviewers — ~5 minutes
+- **B: Teacher Walkthrough** — Educators, EAs, curriculum leads — ~15 minutes
 
 ---
 
@@ -65,7 +65,7 @@ http://localhost:5173/?demo=true
 
 ---
 
-# Track A: 5-Minute Competition Pitch
+## Track A: 5-Minute Competition Pitch
 
 ## A1. Problem (45 seconds)
 
@@ -75,13 +75,14 @@ http://localhost:5173/?demo=true
 
 ## A2. Core Loop (90 seconds)
 
-> "PrairieClassroom OS turns classroom signal into teacher action. A worksheet becomes differentiated variants. A quick note becomes structured memory. That memory feeds tomorrow's plan, the EA briefing, the forecast, and family communication."
+> "PrairieClassroom OS turns classroom signal into teacher action across four adult jobs: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families. A quick note becomes structured memory, but memory capture is supporting infrastructure, not the headline."
 
 **Show quickly:**
 
-1. **Differentiate:** one fractions worksheet becomes multiple variants.
-2. **Log Intervention:** one Brody note becomes structured classroom memory.
+1. **Today:** the system recommends the first move.
+2. **Differentiate:** one fractions worksheet becomes multiple variants.
 3. **Tomorrow Plan:** recent memory becomes specific next-day actions.
+4. **Family Message or EA Briefing:** the same context becomes coordinated communication.
 
 ## A3. Gemma 4 Proof (60 seconds)
 
@@ -89,8 +90,8 @@ http://localhost:5173/?demo=true
 
 **Point to artifact-backed proof if needed:**
 
-- Hosted gate: `output/release-gate/2026-04-21T05-13-43-243Z-52665`
-- Hosted eval summary: `output/evals/2026-04-21-gemini/2026-04-21T05-13-43-243Z-52665-gemini-summary.json`
+- Hosted gate: `output/release-gate/2026-04-22T02-16-16-557Z-74236`
+- Hosted eval summary: `output/evals/2026-04-22-gemini/2026-04-22T02-16-16-557Z-74236-gemini-summary.json`
 - System inventory: `docs/system-inventory.md`
 
 ## A4. Safety (45 seconds)
@@ -105,9 +106,11 @@ http://localhost:5173/?demo=true
 
 ---
 
-# Track B: 15-Minute Teacher Walkthrough
+## Track B: 15-Minute Teacher Walkthrough
 
-## B1. Classroom Context (1 minute)
+This walkthrough should be framed as a 4-workflow teacher story, not a 12-panel tour. If time is short, prioritize B1, B2, B4, and B6.
+
+## B1. Open The Day (1 minute)
 
 **Show:**
 
@@ -118,8 +121,9 @@ http://localhost:5173/?demo=true
 **Narration:**
 
 > "This is a synthetic Grade 3/4 split with 26 students. Eight are EAL learners across several home languages. Brody has transition and sensory supports. Gabriel uses hearing aids. Hannah has fine-motor supports. The EA, Ms. Fehr, is here mornings only. The system has seeded classroom memory so it does not start from zero."
+> "The first workflow is opening the day and deciding where to start. The point of Today is not generic dashboarding. It is giving the teacher one clear first move."
 
-## B2. Differentiate One Artifact (2 minutes)
+## B2. Adapt Instruction (2 minutes)
 
 Paste this worksheet into **Prep -> Differentiate**:
 
@@ -146,7 +150,7 @@ Differentiate for mixed readiness: support for Elena, EAL adaptations for Amira 
 
 > "One artifact becomes multiple classroom-ready variants. The value is not more content. It is getting the right version to the right learner without rebuilding the worksheet by hand."
 
-## B3. Capture A Classroom Event (2 minutes)
+## B3. Supporting Workflow: Capture A Classroom Event (2 minutes)
 
 Open **Ops -> Log Intervention** and use the quick-capture flow or full form:
 
@@ -158,9 +162,9 @@ Brody used his visual timer independently during the math center rotation today.
 
 **Narration:**
 
-> "This is the memory layer. A hallway note becomes a structured record that later planning workflows can retrieve."
+> "This is the memory layer. A hallway note becomes a structured record that later planning workflows can retrieve. It matters, but in the product story it supports the core workflows rather than replacing them."
 
-## B4. Plan Tomorrow From Today (3 minutes)
+## B4. Prepare Tomorrow (3 minutes)
 
 Open **Ops -> Tomorrow Plan** and enter:
 
@@ -174,7 +178,7 @@ This week has been a breakthrough for Brody. The visual timer is working. Elena 
 
 > "The planning tier reads recent classroom memory and turns it into next-day actions. The Sources disclosure is intentionally honest: it shows which records were retrieved into the prompt, not a fake claim about what the model used internally."
 
-## B5. Brief The EA (2 minutes)
+## B5. Coordinate With Adults (2 minutes)
 
 Open **Ops -> EA Briefing** and generate the briefing.
 
@@ -184,7 +188,7 @@ Open **Ops -> EA Briefing** and generate the briefing.
 
 > "The EA briefing is role-specific. It turns the same classroom memory into a two-minute support handoff."
 
-## B6. Family Message Approval (2 minutes)
+## B6. Coordinate With Families (2 minutes)
 
 Open **Review -> Family Message**, select Brody, and draft a positive update about the timer milestone.
 

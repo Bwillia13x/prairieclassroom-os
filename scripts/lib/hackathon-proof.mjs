@@ -11,7 +11,13 @@ export const PROOF_DOC_PATHS = [
   "docs/kaggle-writeup.md",
 ];
 
-export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-04-21T05-13-43-243Z-52665";
+// Fallback seed only. `validateProofSurfaces` derives the canonical
+// artifact at runtime from the "Latest passing hosted gate:" line in
+// docs/hackathon-proof-brief.md — that doc is the single source of truth
+// for proof surfaces. This constant still backs `readHostedProofSummary`
+// callers that don't have a surfaces object, and the `ops-scripts.test.ts`
+// fixtures that construct synthetic proof surfaces inline.
+export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-04-22T02-16-16-557Z-74236";
 export const TARGETED_HOSTED_SMOKE_COMMAND = "PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api";
 export const LOCAL_PREP_COMMANDS = [
   "npm run proof:check",
@@ -63,8 +69,30 @@ export async function loadProofSurfaces(rootDir, docPaths = PROOF_DOC_PATHS) {
   return Object.fromEntries(entries);
 }
 
+const CANONICAL_HOSTED_GATE_PATTERN = /Latest passing hosted gate[:*\s]*`(output\/release-gate\/[^`]+)`/i;
+
+function extractCanonicalHostedArtifact(surfaces) {
+  const proofBrief = surfaces["docs/hackathon-proof-brief.md"];
+  if (typeof proofBrief !== "string") {
+    return null;
+  }
+  const match = proofBrief.match(CANONICAL_HOSTED_GATE_PATTERN)?.[1];
+  return match?.startsWith("output/release-gate/") ? match : null;
+}
+
 export function validateProofSurfaces(surfaces) {
   const issues = [];
+
+  const canonicalArtifact = extractCanonicalHostedArtifact(surfaces);
+  if (!canonicalArtifact) {
+    recordIssue(
+      issues,
+      "docs/hackathon-proof-brief.md",
+      "could not extract canonical hosted artifact — expected a line like `Latest passing hosted gate: `output/release-gate/...``",
+    );
+    return { ok: false, issues };
+  }
+
   for (const docPath of PROOF_DOC_PATHS) {
     if (!(docPath in surfaces)) {
       recordIssue(issues, docPath, "missing proof surface");
@@ -72,7 +100,7 @@ export function validateProofSurfaces(surfaces) {
     }
 
     const content = surfaces[docPath];
-    requireSubstring(issues, docPath, content, HOSTED_PROOF_RUN_DIR, "hosted proof artifact path");
+    requireSubstring(issues, docPath, content, canonicalArtifact, "hosted proof artifact path");
     requireSubstring(issues, docPath, content, DEFAULT_GEMINI_MODEL_IDS.live, "hosted live model id");
     requireSubstring(issues, docPath, content, DEFAULT_GEMINI_MODEL_IDS.planning, "hosted planning model id");
     requireSubstring(issues, docPath, content, "npm run release:gate:gemini", "hosted release gate command");
@@ -106,12 +134,14 @@ export function validateProofSurfaces(surfaces) {
 }
 
 export function extractHostedProofRunDir(surfaces) {
+  // Character class `[:*\s]*` after each label tolerates the real docs'
+  // markdown emphasis (e.g., `**Latest passing hosted gate:**`) between the
+  // label and the backticked path. The proof-brief entry is intentionally
+  // first so the validator's canonical source wins over alternatives.
   const preferredExtractions = [
-    ["docs/hackathon-proof-brief.md", /Latest passing hosted gate:\s*`([^`]+)`/i],
-    ["docs/hackathon-hosted-operations.md", /Latest passing gate artifact:\s*`([^`]+)`/i],
-    ["docs/eval-baseline.md", /Raw artifacts:\s*`([^`]+)`/i],
+    ["docs/hackathon-proof-brief.md", /Latest passing hosted gate[:*\s]*`([^`]+)`/i],
+    ["docs/hackathon-hosted-operations.md", /Latest passing gate artifact[:*\s]*`([^`]+)`/i],
     ["README.md", /latest passing hosted artifact is\s*`([^`]+)`/i],
-    ["docs/kaggle-writeup.md", /latest passing hosted artifact is\s*`([^`]+)`/i],
   ];
 
   for (const [docPath, pattern] of preferredExtractions) {

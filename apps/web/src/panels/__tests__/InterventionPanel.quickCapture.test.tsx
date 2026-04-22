@@ -8,14 +8,16 @@ import type { InterventionPrefill } from "../../types";
 // ── API mock ─────────────────────────────────────────────────────────────────
 vi.mock("../../api", () => ({
   logIntervention: vi.fn(),
+  logInterventionQuick: vi.fn(),
   fetchInterventionHistory: vi.fn(),
   submitFeedbackApi: vi.fn(),
   submitSessionApi: vi.fn(),
 }));
 
-import { logIntervention, fetchInterventionHistory } from "../../api";
+import { logIntervention, logInterventionQuick, fetchInterventionHistory } from "../../api";
 
 const mockedLogIntervention = vi.mocked(logIntervention);
+const mockedLogInterventionQuick = vi.mocked(logInterventionQuick);
 const mockedFetchInterventionHistory = vi.mocked(fetchInterventionHistory);
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -99,7 +101,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockedFetchInterventionHistory.mockResolvedValue([]);
-    mockedLogIntervention.mockResolvedValue({
+    const fixtureResponse = {
       record: {
         record_id: "rec-1",
         classroom_id: "demo-classroom",
@@ -112,7 +114,11 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
       },
       model_id: "mock",
       latency_ms: 100,
-    });
+    };
+    // Stub both endpoints: hallway quick-capture uses the quick path, and
+    // the structured-details disclosure still exercises the full path.
+    mockedLogIntervention.mockResolvedValue(fixtureResponse);
+    mockedLogInterventionQuick.mockResolvedValue(fixtureResponse);
   });
 
   it("Quick capture renders first — heading is present in the document", async () => {
@@ -158,7 +164,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     expect(details).toHaveAttribute("open");
   });
 
-  it("QuickCaptureTray submit calls logIntervention via handleSubmit", async () => {
+  it("QuickCaptureTray submit routes through the fast-path logInterventionQuick api", async () => {
     const { appContext, user } = renderPanel();
 
     // Wait for the tray to be mounted
@@ -174,7 +180,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
 
     // 3. Submit — target the QuickCaptureTray button (type="button", not type="submit")
     //    The new PageIntro ⓘ info trigger also has aria-label "About Log Intervention",
-    //    so filter to buttons inside the quick-capture-tray. 2026-04-19 OPS audit.
+    //    so filter to buttons inside the quick-capture-tray.
     const submitButtons = screen.getAllByRole("button", { name: /Log intervention/i });
     const trayButton = submitButtons.find(
       (btn) =>
@@ -184,9 +190,12 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     if (!trayButton) throw new Error("QuickCaptureTray submit button not found");
     await user.click(trayButton);
 
-    // 4. Assert spy was called with the expected payload shape
-    expect(mockedLogIntervention).toHaveBeenCalledTimes(1);
-    const [payload] = mockedLogIntervention.mock.calls[0];
+    // 4. Hallway-grade capture must route through the deterministic quick
+    // endpoint. The full model-enriched path is reserved for the structured
+    // details disclosure (exercised separately).
+    expect(mockedLogInterventionQuick).toHaveBeenCalledTimes(1);
+    expect(mockedLogIntervention).not.toHaveBeenCalled();
+    const [payload] = mockedLogInterventionQuick.mock.calls[0];
     expect(payload.student_refs).toContain("Amira");
     expect(payload.teacher_note.length).toBeGreaterThan(0);
     expect(payload.classroom_id).toBe("demo-classroom");
