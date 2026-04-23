@@ -246,35 +246,6 @@
   color: var(--color-text-sage);
 }
 
-.app-main[data-section="tomorrow"] .action-atlas {
-  gap: var(--space-2);
-  margin-bottom: var(--space-3);
-  padding-top: var(--space-3);
-  padding-right: var(--space-3);
-  padding-bottom: var(--space-3);
-}
-
-.app-main[data-section="tomorrow"] .action-atlas__compact {
-  grid-template-columns: minmax(12rem, 1.15fr) minmax(16rem, 1.45fr) minmax(12rem, 0.9fr);
-}
-
-.app-main[data-section="tomorrow"] .action-atlas__compact-card,
-.app-main[data-section="tomorrow"] .action-atlas__compact-stat {
-  min-height: 5.25rem;
-  padding: var(--space-2) var(--space-3);
-}
-
-.app-main[data-section="tomorrow"] .action-atlas__compact-stats {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.app-main[data-section="tomorrow"] .action-atlas__compact-card p {
-  display: -webkit-box;
-  overflow: hidden;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-}
-
 .tomorrow-queue-strip {
   display: flex;
   align-items: center;
@@ -448,9 +419,15 @@
     flex-direction: column;
   }
 
+  .tomorrow-page {
+    gap: var(--space-2);
+  }
+
   .tomorrow-planning-hub {
     grid-template-columns: minmax(0, 1fr);
-    padding: var(--space-4);
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+    padding: var(--space-3);
   }
 
   .tomorrow-planning-hub__metrics {
@@ -467,34 +444,29 @@
   }
 
   .tomorrow-page .page-tool-switcher--cards {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .tomorrow-page .page-tool-switcher.page-tool-switcher--cards {
-    grid-auto-flow: row !important;
-    grid-template-columns: minmax(0, 1fr) !important;
+    grid-auto-flow: column !important;
+    grid-auto-columns: minmax(0, 1fr) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    margin-bottom: var(--space-2) !important;
+  }
+
+  .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn {
+    min-height: 7rem !important;
+    gap: var(--space-1);
+    padding: var(--space-2) !important;
   }
 
   .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
+    border-left: 2px solid transparent !important;
     border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
   }
 
-  .app-main[data-section="tomorrow"] .action-atlas__compact {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .app-main[data-section="tomorrow"] .action-atlas__compact-card,
-  .app-main[data-section="tomorrow"] .action-atlas__compact-stat {
-    min-height: 4.2rem;
-  }
-
-  .app-main[data-section="tomorrow"] .action-atlas__compact-card p {
+  .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn-description {
     display: none;
-  }
-
-  .app-main[data-section="tomorrow"] .action-atlas__compact-stats {
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .tomorrow-queue-strip .tomorrow-chip,

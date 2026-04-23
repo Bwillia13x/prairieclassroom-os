@@ -89,4 +89,42 @@ describe("MobileNav", () => {
     fireEvent.click(screen.getByTestId("mobile-nav-group-tomorrow"));
     expect(onTabChange).toHaveBeenCalledWith("tomorrow");
   });
+
+  it("keeps the shell recommendation rail out of Today and Tomorrow page-owned workspaces", () => {
+    const snapshot = {
+      panel_statuses: [{
+        panel_id: "family-message",
+        label: "Messages",
+        state: "needs_action",
+        dependency_state: "ready",
+        pending_count: 2,
+        detail: "Draft family follow-ups",
+        last_run_at: null,
+      }],
+    } as AppContextValue["latestTodaySnapshot"];
+
+    const { rerender } = render(
+      <AppContext.Provider value={makeContext({ latestTodaySnapshot: snapshot })}>
+        <MobileNav activeTab="today" onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    expect(screen.queryByText("Recommended now")).not.toBeInTheDocument();
+
+    rerender(
+      <AppContext.Provider value={makeContext({ latestTodaySnapshot: snapshot })}>
+        <MobileNav activeTab="tomorrow" onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    expect(screen.queryByText("Recommended now")).not.toBeInTheDocument();
+
+    rerender(
+      <AppContext.Provider value={makeContext({ latestTodaySnapshot: snapshot })}>
+        <MobileNav activeTab="prep" onTabChange={vi.fn()} />
+      </AppContext.Provider>,
+    );
+
+    expect(screen.getByText("Recommended now")).toBeInTheDocument();
+  });
 });

@@ -254,7 +254,7 @@ describe("App shell — classroom pill trigger", () => {
     const pages = [
       ["classroom", "Classroom sections", /01.*Temporal Lens/i],
       ["today", "Today sections", /01.*Command Center/i],
-      ["tomorrow", "Tomorrow sections", /01.*Planning Tools/i],
+      ["tomorrow", "Tomorrow sections", /01.*Planning Hub/i],
       ["week", "Week sections", /01.*Commit a Day/i],
       ["prep", "Prep sections", /01.*Prep Tools/i],
       ["ops", "Ops sections", /01.*Ops Tools/i],
