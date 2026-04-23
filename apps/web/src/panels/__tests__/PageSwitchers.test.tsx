@@ -74,6 +74,20 @@ function renderWithContext(ui: ReactElement, overrides: Partial<AppContextValue>
 }
 
 describe("multi-tool page switchers", () => {
+  it("renders the Tomorrow planning hub and stateful tool cards", () => {
+    renderWithContext(
+      <TomorrowPanel onFollowupClick={vi.fn()} onInterventionClick={vi.fn()} />,
+      { activeTab: "tomorrow", activeTool: "tomorrow-plan" },
+    );
+
+    expect(screen.getByRole("region", { name: /morning-ready plan, forecast, and carry-forward queue/i })).toBeInTheDocument();
+    expect(screen.getByText("Queued notes")).toBeInTheDocument();
+
+    const switcher = screen.getByRole("tablist", { name: /tomorrow tool/i });
+    expect(within(switcher).getByRole("tab", { name: /01 planning order/i })).toHaveTextContent("Plan not generated");
+    expect(within(switcher).getByRole("tab", { name: /02 block risk/i })).toHaveTextContent("Forecast not generated");
+  });
+
   it("renders and updates the Tomorrow page switcher", () => {
     const { setActiveTool } = renderWithContext(
       <TomorrowPanel onFollowupClick={vi.fn()} onInterventionClick={vi.fn()} />,

@@ -85,6 +85,196 @@
   min-height: 0;
 }
 
+.tomorrow-page {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tomorrow-planning-hub {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(18rem, 0.85fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  margin: 0 0 var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--color-border-sun) 72%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent);
+}
+
+.tomorrow-planning-hub__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.tomorrow-planning-hub__eyebrow,
+.page-tool-switcher--cards .page-tool-switcher__btn-kicker,
+.page-tool-switcher--cards .page-tool-switcher__btn-status {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.tomorrow-planning-hub__eyebrow {
+  color: var(--color-text-tertiary);
+}
+
+.tomorrow-planning-hub h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(var(--text-2xl), 2vw, var(--text-4xl));
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: 0;
+}
+
+.tomorrow-planning-hub p {
+  max-width: 58rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.tomorrow-planning-hub__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.tomorrow-planning-hub__metric {
+  display: flex;
+  min-width: 0;
+  min-height: 5.5rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.tomorrow-planning-hub__metric strong {
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.tomorrow-planning-hub__metric span {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+/* Ambient theme restates the base switcher with !important later in the
+   cascade. These Tomorrow-specific cards intentionally opt out. */
+.tomorrow-page .page-tool-switcher.page-tool-switcher--cards {
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(0, 1fr) !important;
+  gap: var(--space-2) !important;
+  margin: 0 0 var(--space-3) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  overflow: visible !important;
+}
+
+.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn {
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--space-2);
+  min-height: 8.4rem !important;
+  padding: var(--space-3) !important;
+  border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent) !important;
+  border-left: 2px solid transparent !important;
+  border-radius: var(--radius-sm) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 58%, transparent) !important;
+  text-align: left !important;
+  white-space: normal !important;
+  overflow: visible;
+}
+
+.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
+  border-left: 2px solid transparent !important;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent) !important;
+}
+
+.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn--active {
+  border-left-color: color-mix(in srgb, var(--color-border-sun) 80%, var(--color-border)) !important;
+  background: color-mix(in srgb, var(--color-bg-sun) 26%, var(--color-surface)) !important;
+  color: var(--color-text) !important;
+}
+
+.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn--active::after {
+  content: none;
+}
+
+.page-tool-switcher--cards .page-tool-switcher__btn-kicker {
+  color: var(--color-text-tertiary);
+}
+
+.page-tool-switcher--cards .page-tool-switcher__btn-title {
+  color: var(--color-text);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.page-tool-switcher--cards .page-tool-switcher__btn-description {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--leading-snug);
+}
+
+.page-tool-switcher--cards .page-tool-switcher__btn-status {
+  margin-top: auto;
+  color: var(--color-text-sage);
+}
+
+.app-main[data-section="tomorrow"] .action-atlas {
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding-top: var(--space-3);
+  padding-right: var(--space-3);
+  padding-bottom: var(--space-3);
+}
+
+.app-main[data-section="tomorrow"] .action-atlas__compact {
+  grid-template-columns: minmax(12rem, 1.15fr) minmax(16rem, 1.45fr) minmax(12rem, 0.9fr);
+}
+
+.app-main[data-section="tomorrow"] .action-atlas__compact-card,
+.app-main[data-section="tomorrow"] .action-atlas__compact-stat {
+  min-height: 5.25rem;
+  padding: var(--space-2) var(--space-3);
+}
+
+.app-main[data-section="tomorrow"] .action-atlas__compact-stats {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.app-main[data-section="tomorrow"] .action-atlas__compact-card p {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .tomorrow-queue-strip {
   display: flex;
   align-items: center;
@@ -256,6 +446,55 @@
   .tomorrow-queue-strip {
     align-items: stretch;
     flex-direction: column;
+  }
+
+  .tomorrow-planning-hub {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-4);
+  }
+
+  .tomorrow-planning-hub__metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .tomorrow-planning-hub__metric {
+    min-height: 4.5rem;
+    padding: var(--space-2);
+  }
+
+  .tomorrow-planning-hub h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .tomorrow-page .page-tool-switcher--cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tomorrow-page .page-tool-switcher.page-tool-switcher--cards {
+    grid-auto-flow: row !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+  }
+
+  .app-main[data-section="tomorrow"] .action-atlas__compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .app-main[data-section="tomorrow"] .action-atlas__compact-card,
+  .app-main[data-section="tomorrow"] .action-atlas__compact-stat {
+    min-height: 4.2rem;
+  }
+
+  .app-main[data-section="tomorrow"] .action-atlas__compact-card p {
+    display: none;
+  }
+
+  .app-main[data-section="tomorrow"] .action-atlas__compact-stats {
+    grid-column: 1 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .tomorrow-queue-strip .tomorrow-chip,

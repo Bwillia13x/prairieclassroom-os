@@ -37,8 +37,9 @@ export const PAGE_ANCHORS: Record<ActiveTab, PageAnchorConfig> = {
     label: "Tomorrow sections",
     topAnchorId: "tomorrow-top",
     anchors: [
-      { id: "tomorrow-tools", number: "01", label: "Planning Tools" },
-      { id: "tomorrow-workspace", number: "02", label: "Active Workspace" },
+      { id: "tomorrow-hub", number: "01", label: "Planning Hub" },
+      { id: "tomorrow-tools", number: "02", label: "Planning Tools" },
+      { id: "tomorrow-workspace", number: "03", label: "Active Workspace" },
     ],
   },
   week: {

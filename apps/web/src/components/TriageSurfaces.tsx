@@ -187,6 +187,7 @@ interface ActionAtlasProps {
   snapshot: TodaySnapshot | null;
   activeRole: ClassroomRole;
   onTabChange: (target: NavTarget) => void;
+  compactByDefault?: boolean;
   onOpenContext?: (context: DrillDownContext) => void;
   onInterventionPrefill?: (prefill: {
     student_ref: string;
@@ -204,23 +205,24 @@ export function ActionAtlas({
   snapshot,
   activeRole,
   onTabChange,
+  compactByDefault = false,
   onOpenContext,
   onInterventionPrefill,
   onMessagePrefill,
 }: ActionAtlasProps) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(compactByDefault);
 
   useEffect(() => {
     if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      setCollapsed(false);
+      setCollapsed(compactByDefault);
       return;
     }
     const media = window.matchMedia("(max-width: 820px)");
-    const sync = () => setCollapsed(media.matches);
+    const sync = () => setCollapsed(compactByDefault || media.matches);
     sync();
     media.addEventListener("change", sync);
     return () => media.removeEventListener("change", sync);
-  }, []);
+  }, [compactByDefault]);
 
   const capability = roleCapabilities(activeRole);
   const statusMap = useMemo(

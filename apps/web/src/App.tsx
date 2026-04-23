@@ -1018,6 +1018,7 @@ export default function App() {
               snapshot={state.latestTodaySnapshot}
               activeRole={activeRole}
               onTabChange={setActiveTab}
+              compactByDefault={activeTab === "tomorrow"}
               onOpenContext={setShellDrillDown}
               onInterventionPrefill={handleInterventionClick}
               onMessagePrefill={handleFollowupClick}
