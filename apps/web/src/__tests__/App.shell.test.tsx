@@ -240,6 +240,21 @@ describe("App shell — classroom pill trigger", () => {
     expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();
   });
 
+  it("keeps the global Action Atlas out of the Today first-open flow", async () => {
+    await renderShellWithDemo({
+      debtCounts: { stale_followup: 1 },
+      debtItems: [
+        { category: "stale_followup", student_refs: ["Brody"], age_days: 5 },
+      ],
+    });
+
+    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-prep"));
+
+    expect(await screen.findByRole("region", { name: /action atlas/i })).toBeInTheDocument();
+  });
+
   it("saves the current panel scroll before the previous tab is hidden", async () => {
     await renderShellWithDemo();
 

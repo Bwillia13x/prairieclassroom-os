@@ -1237,6 +1237,12 @@
 .today-panel .page-intro .status-chip--danger  { border-left: 2px solid var(--color-text-danger); }
 
 @media (max-width: 640px) {
+  /* On phones the first-open teacher task is the morning command center,
+     not the utility header/nudge stack. Keep desktop ordering intact. */
+  .today-panel #command-center {
+    order: -1;
+  }
+
   .today-panel .page-intro,
   .today-panel .page-intro.page-intro--sun,
   .today-panel .page-intro.page-intro--sage,

@@ -1308,7 +1308,7 @@ export default function App() {
           {state.classrooms.length > 0 && !initError ? <RoleEscapeBanner /> : null}
           {activeGroup === "prep" ? <PrepSectionIntro /> : null}
           {activeGroup === "ops" ? <OpsSectionHint /> : null}
-          {state.classrooms.length > 0 && !initError && activeRole !== "reviewer" ? (
+          {state.classrooms.length > 0 && !initError && activeRole !== "reviewer" && activeTab !== "today" ? (
             <ActionAtlas
               snapshot={state.latestTodaySnapshot}
               activeRole={activeRole}

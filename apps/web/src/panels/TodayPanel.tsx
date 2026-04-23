@@ -229,15 +229,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
       <OpsWorkflowStepper activeTab="today" variant="compact" />
 
-      {result?.student_threads?.length ? (
-        <StudentCoverageStrip
-          threads={result.student_threads}
-          title="Who needs a touchpoint"
-          selectedAlias={selectedCoverageAlias}
-          onSelectThread={(thread) => setDrillDown({ type: "student-thread", thread })}
-        />
-      ) : null}
-
       <div id="command-center" className="today-anchor-target">
         {result ? (
           <TodayHero
@@ -258,6 +249,15 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           <SectionSkeleton label="Loading today story" variant="story" lines={2} />
         )}
       </div>
+
+      {result?.student_threads?.length ? (
+        <StudentCoverageStrip
+          threads={result.student_threads}
+          title="Who needs a touchpoint"
+          selectedAlias={selectedCoverageAlias}
+          onSelectThread={(thread) => setDrillDown({ type: "student-thread", thread })}
+        />
+      ) : null}
 
       {result ? (
         <div id="operating-dashboard" className="today-anchor-target">
