@@ -196,6 +196,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
         eyebrow="Review Workspace"
         title="Draft Family Messages"
         sectionTone="forest"
+        emphasis="brand"
         visual={{ src: "/brand/workflow-review.png" }}
         description="Build a plain-language family update, inspect the draft in the result canvas, and explicitly approve before copying it into your communication channel."
       />
