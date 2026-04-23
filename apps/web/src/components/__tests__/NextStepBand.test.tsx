@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
+import type { NavTarget } from "../../appReducer";
 import NextStepBand from "../NextStepBand";
 
 const mockSetActiveTab = vi.fn();
@@ -10,7 +11,7 @@ function makeContext(overrides: Partial<AppContextValue> = {}): AppContextValue 
   return {
     classrooms: [],
     activeClassroom: "",
-    activeTab: "tomorrow-plan",
+    activeTab: "tomorrow",
     setActiveClassroom: vi.fn(),
     setActiveTab: mockSetActiveTab,
     profile: undefined,
@@ -39,11 +40,15 @@ function makeContext(overrides: Partial<AppContextValue> = {}): AppContextValue 
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    activeTool: null,
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
     ...overrides,
   };
 }
 
-function renderBand(label: string, targetTab: AppContextValue["activeTab"]) {
+function renderBand(label: string, targetTab: NavTarget) {
   return render(
     <AppContext.Provider value={makeContext()}>
       <NextStepBand label={label} targetTab={targetTab} />

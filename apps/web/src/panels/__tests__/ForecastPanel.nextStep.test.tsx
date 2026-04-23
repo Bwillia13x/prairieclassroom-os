@@ -100,7 +100,8 @@ function makeCtx(): AppContextValue {
       },
     ],
     activeClassroom: "demo",
-    activeTab: "complexity-forecast",
+    activeTab: "tomorrow",
+    activeTool: "complexity-forecast",
     setActiveClassroom: vi.fn(),
     setActiveTab: vi.fn(),
     profile: {
@@ -136,6 +137,9 @@ function makeCtx(): AppContextValue {
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
   };
 }
 

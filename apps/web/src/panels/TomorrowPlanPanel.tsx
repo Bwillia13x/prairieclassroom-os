@@ -4,7 +4,6 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateTomorrowPlan, fetchPlanHistory } from "../api";
 import TeacherReflection from "../components/TeacherReflection";
-import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import NextStepBand from "../components/NextStepBand";
 import PlanViewer from "../components/PlanViewer";
 import { PlanStreakCalendar, PlanCoverageRadar } from "../components/DataVisualizations";
@@ -203,8 +202,6 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
         required="canGenerate"
         whatIsBlocked="Generating a new Tomorrow Plan is reserved for the classroom's permanent teacher."
       />
-
-      <OpsWorkflowStepper activeTab="tomorrow-plan" />
 
       <CoverageTimeline
         title="Tomorrow plan coverage"

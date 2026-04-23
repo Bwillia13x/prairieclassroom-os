@@ -1,6 +1,14 @@
 import { useMemo } from "react";
 import type { CSSProperties } from "react";
-import { TAB_META, isTabVisibleForRole, type ActiveTab, type ClassroomRole } from "../appReducer";
+import {
+  isActiveTab as isAppActiveTab,
+  isActiveTool,
+  isTabVisibleForRole,
+  resolveLegacyPanel,
+  type ActiveTool,
+  type ClassroomRole,
+  type NavTarget,
+} from "../appReducer";
 import type {
   ClassroomHealth,
   ClassroomProfile,
@@ -29,7 +37,7 @@ interface OperatingDashboardProps {
   health?: ClassroomHealth | null;
   sessionSummary?: Pick<SessionSummary, "transition_counts" | "terminal_counts" | "common_flows"> | null;
   activeRole: ClassroomRole;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   onOpenContext: (context: DrillDownContext) => void;
 }
 
@@ -58,7 +66,7 @@ const COVERAGE_LABELS: Record<OperatingDashboardCoverageCell["category"], string
   plan: "Plan",
 };
 
-const CATEGORY_TARGET_TAB: Record<string, ActiveTab> = {
+const CATEGORY_TARGET_TAB: Record<string, ActiveTool> = {
   unapproved_message: "family-message",
   family_followup: "family-message",
   stale_followup: "log-intervention",
@@ -66,12 +74,20 @@ const CATEGORY_TARGET_TAB: Record<string, ActiveTab> = {
   ea_action: "ea-briefing",
 };
 
-function tabFromString(value: string | null | undefined): ActiveTab | null {
-  return typeof value === "string" && value in TAB_META ? value as ActiveTab : null;
+function targetFromString(value: string | null | undefined): NavTarget | null {
+  if (typeof value !== "string") return null;
+  if (isAppActiveTab(value) || isActiveTool(value)) return value;
+  return null;
 }
 
-function resolveActionTarget(action: StudentThread["actions"][number]): ActiveTab | null {
-  return CATEGORY_TARGET_TAB[action.category] ?? tabFromString(action.target_tab);
+function isVisibleTargetForRole(target: NavTarget | null, role: ClassroomRole): boolean {
+  if (!target) return false;
+  const hostTab = resolveLegacyPanel(target).tab;
+  return isTabVisibleForRole(hostTab, role);
+}
+
+function resolveActionTarget(action: StudentThread["actions"][number]): NavTarget | null {
+  return CATEGORY_TARGET_TAB[action.category] ?? targetFromString(action.target_tab);
 }
 
 function formatDateKey(date: Date): string {
@@ -216,7 +232,7 @@ function buildWeekOverview(snapshot: TodaySnapshot, profile: ClassroomProfile): 
   });
 }
 
-function hasActionForTarget(thread: StudentThread | null, targets: ActiveTab[]): boolean {
+function hasActionForTarget(thread: StudentThread | null, targets: NavTarget[]): boolean {
   if (!thread) return false;
   return thread.actions.some((action) => {
     const target = resolveActionTarget(action);
@@ -224,7 +240,7 @@ function hasActionForTarget(thread: StudentThread | null, targets: ActiveTab[]):
   });
 }
 
-function actionCountForTarget(thread: StudentThread | null, targets: ActiveTab[]): number {
+function actionCountForTarget(thread: StudentThread | null, targets: NavTarget[]): number {
   if (!thread) return 0;
   return thread.actions.reduce((total, action) => {
     const target = resolveActionTarget(action);
@@ -545,9 +561,9 @@ export default function OperatingDashboard({
   const debtDelta = latestDebt - previousDebt;
 
   function navigateIfVisible(tabRaw: string | null) {
-    const tab = tabFromString(tabRaw);
-    if (tab && isTabVisibleForRole(tab, activeRole)) {
-      onNavigate(tab);
+    const target = targetFromString(tabRaw);
+    if (target && isVisibleTargetForRole(target, activeRole)) {
+      onNavigate(target);
     }
   }
 
@@ -645,8 +661,8 @@ export default function OperatingDashboard({
                   <span>{row.priority_reason ?? `${row.thread_count} active threads`}</span>
                 </button>
                 {row.cells.map((cell) => {
-                  const targetTab = tabFromString(cell.target_tab);
-                  const hidden = targetTab ? !isTabVisibleForRole(targetTab, activeRole) : false;
+                  const targetTab = targetFromString(cell.target_tab);
+                  const hidden = targetTab ? !isVisibleTargetForRole(targetTab, activeRole) : false;
                   return (
                     <button
                       key={`${row.alias}-${cell.category}`}
@@ -742,8 +758,8 @@ function QueueLane({ title, queues, activeRole, onOpenContext, onNavigate }: Que
       </div>
       <div className="queue-lane__items">
         {queues.map((queue) => {
-          const targetTab = tabFromString(queue.target_tab);
-          const hidden = targetTab ? !isTabVisibleForRole(targetTab, activeRole) : false;
+          const targetTab = targetFromString(queue.target_tab);
+          const hidden = targetTab ? !isVisibleTargetForRole(targetTab, activeRole) : false;
           return (
             <button
               key={queue.id}

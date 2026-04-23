@@ -39,7 +39,7 @@ Each scenario was walked once. This is a first pass, not a deep study.
 
 - Orchestrator (`services/orchestrator`) running on port 3100, mock inference mode.
 - Web UI (`apps/web`) running on port 5173.
-- Demo classroom seeded via `npx tsx data/demo/seed.ts` (20 interventions, 3 plans, 1 pattern report, 1 approved family message).
+- Demo classroom reset via `npm run pilot:reset` (26 students, 36 interventions, 3 plans, 1 pattern report, 1 approved family message, 5 synthetic session records, no seeded human feedback).
 - Protected auth code not required: demo classroom bypasses auth.
 - No hosted spend, no GPU, no real model calls.
 

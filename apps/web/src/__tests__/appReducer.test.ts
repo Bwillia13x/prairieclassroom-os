@@ -3,13 +3,19 @@ import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   appReducer,
   createInitialState,
+  defaultToolForTab,
   getVisibleTabs,
-  getVisibleTabsForGroup,
-  getVisibleNavGroups,
+  isActiveTab,
+  isActiveTool,
   isTabVisibleForRole,
+  resolveLegacyPanel,
+  resolveNavTarget,
+  restoreNavFromUrl,
   shouldSuppressFirstRunModalsFromUrl,
   TAB_META,
+  TOOLS_BY_TAB,
   type ActiveTab,
+  type ActiveTool,
   type AppState,
 } from "../appReducer";
 import type { ClassroomRole } from "../appReducer";
@@ -202,8 +208,8 @@ describe("ClassroomRole literal shape", () => {
   });
 });
 
-describe("tab visibility helpers — per-role", () => {
-  it("TAB_META: every tab declares the roles that may see it", () => {
+describe("seven-view top-level navigation — per-role visibility", () => {
+  it("TAB_META: every top-level page declares the roles that may see it", () => {
     for (const [tab, meta] of Object.entries(TAB_META)) {
       expect(meta.roles.length).toBeGreaterThan(0);
       for (const role of meta.roles) {
@@ -213,65 +219,28 @@ describe("tab visibility helpers — per-role", () => {
     }
   });
 
-  it("teacher sees every tab", () => {
-    const tabs = getVisibleTabs("teacher");
-    const allTabs: ActiveTab[] = [
-      "today", "differentiate", "tomorrow-plan", "family-message",
-      "log-intervention", "language-tools", "support-patterns",
-      "ea-briefing", "ea-load", "complexity-forecast",
-      "survival-packet", "usage-insights",
-    ];
-    for (const tab of allTabs) expect(tabs).toContain(tab);
+  it("teacher sees every top-level page in the fixed canonical order", () => {
+    expect(getVisibleTabs("teacher")).toEqual([
+      "classroom", "today", "tomorrow", "week", "prep", "ops", "review",
+    ]);
   });
 
-  it("ea sees today, ea-briefing, ea-load, log-intervention, usage-insights only", () => {
-    const tabs = getVisibleTabs("ea");
-    const expected: ActiveTab[] = [
-      "today", "ea-briefing", "ea-load", "log-intervention", "usage-insights",
-    ];
-    expect([...tabs].sort()).toEqual([...expected].sort());
+  it("ea sees classroom, today, ops, review (no prep / no tomorrow / no week)", () => {
+    expect(getVisibleTabs("ea")).toEqual([
+      "classroom", "today", "ops", "review",
+    ]);
   });
 
-  it("substitute sees today, ea-briefing, complexity-forecast (read), log-intervention only", () => {
-    const tabs = getVisibleTabs("substitute");
-    const expected: ActiveTab[] = [
-      "today", "ea-briefing", "complexity-forecast", "log-intervention",
-    ];
-    expect([...tabs].sort()).toEqual([...expected].sort());
+  it("substitute sees classroom, today, tomorrow, week, ops (no prep / no review)", () => {
+    expect(getVisibleTabs("substitute")).toEqual([
+      "classroom", "today", "tomorrow", "week", "ops",
+    ]);
   });
 
-  it("reviewer sees read-only history & aggregate surfaces only (tomorrow-plan, complexity-forecast, log-intervention, family-message, support-patterns, usage-insights)", () => {
-    const tabs = getVisibleTabs("reviewer");
-    const expected: ActiveTab[] = [
-      "tomorrow-plan",
-      "complexity-forecast",
-      "log-intervention",
-      "family-message",
-      "support-patterns",
-      "usage-insights",
-    ];
-    expect([...tabs].sort()).toEqual([...expected].sort());
-  });
-
-  it("substitute never sees the sub-packet tab — it exists to consume the packet, but the read surface is not built yet", () => {
-    const tabs = getVisibleTabs("substitute");
-    expect(tabs).not.toContain("survival-packet");
-  });
-
-  it("reviewer never sees today (reviewer works from history, not the live operational view)", () => {
-    const tabs = getVisibleTabs("reviewer");
-    expect(tabs).not.toContain("today");
-  });
-
-  it("ea never sees tomorrow-plan, differentiate, language-tools, family-message, support-patterns, survival-packet, complexity-forecast", () => {
-    const tabs = getVisibleTabs("ea");
-    expect(tabs).not.toContain("tomorrow-plan");
-    expect(tabs).not.toContain("differentiate");
-    expect(tabs).not.toContain("language-tools");
-    expect(tabs).not.toContain("family-message");
-    expect(tabs).not.toContain("support-patterns");
-    expect(tabs).not.toContain("survival-packet");
-    expect(tabs).not.toContain("complexity-forecast");
+  it("reviewer sees tomorrow, week, review only (no classroom/today/prep/ops)", () => {
+    expect(getVisibleTabs("reviewer")).toEqual([
+      "tomorrow", "week", "review",
+    ]);
   });
 
   it("isTabVisibleForRole matches the TAB_META declaration", () => {
@@ -282,23 +251,168 @@ describe("tab visibility helpers — per-role", () => {
       }
     }
   });
+});
 
-  it("getVisibleTabsForGroup returns only tabs the role may see in that group", () => {
-    expect(getVisibleTabsForGroup("prep", "reviewer")).toEqual([]);
-    expect(getVisibleTabsForGroup("prep", "teacher")).toEqual(["differentiate", "language-tools"]);
-    // OPS order (2026-04-19 OPS audit): log-intervention leads the row,
-    // forecast/ea-briefing follow. Substitute sees those three.
-    expect(getVisibleTabsForGroup("ops", "substitute")).toEqual([
+describe("embedded tool catalog", () => {
+  it("lists the tools hosted by each multi-tool page", () => {
+    expect(TOOLS_BY_TAB.prep).toEqual(["differentiate", "language-tools"]);
+    expect(TOOLS_BY_TAB.tomorrow).toEqual(["tomorrow-plan", "complexity-forecast"]);
+    expect(TOOLS_BY_TAB.ops).toEqual([
       "log-intervention",
-      "complexity-forecast",
       "ea-briefing",
+      "ea-load",
+      "survival-packet",
+    ]);
+    expect(TOOLS_BY_TAB.review).toEqual([
+      "family-message",
+      "support-patterns",
+      "usage-insights",
     ]);
   });
 
-  it("getVisibleNavGroups hides a group with zero visible tabs (reviewer has no Prep)", () => {
-    expect(getVisibleNavGroups("reviewer")).not.toContain("prep");
-    expect(getVisibleNavGroups("teacher")).toEqual(["today", "prep", "ops", "review"]);
-    expect(getVisibleNavGroups("ea")).toEqual(["today", "ops", "review"]);
+  it("defaults each multi-tool page to its first tool", () => {
+    expect(defaultToolForTab("prep")).toBe("differentiate");
+    expect(defaultToolForTab("tomorrow")).toBe("tomorrow-plan");
+    expect(defaultToolForTab("ops")).toBe("log-intervention");
+    expect(defaultToolForTab("review")).toBe("family-message");
+  });
+
+  it("returns null for single-surface pages", () => {
+    expect(defaultToolForTab("classroom")).toBeNull();
+    expect(defaultToolForTab("today")).toBeNull();
+    expect(defaultToolForTab("week")).toBeNull();
+  });
+});
+
+describe("legacy panel mapping", () => {
+  const legacyMap: Array<{ panel: string; tab: ActiveTab; tool: ActiveTool | null }> = [
+    { panel: "today", tab: "today", tool: null },
+    { panel: "differentiate", tab: "prep", tool: "differentiate" },
+    { panel: "language-tools", tab: "prep", tool: "language-tools" },
+    { panel: "tomorrow-plan", tab: "tomorrow", tool: "tomorrow-plan" },
+    { panel: "complexity-forecast", tab: "tomorrow", tool: "complexity-forecast" },
+    { panel: "log-intervention", tab: "ops", tool: "log-intervention" },
+    { panel: "ea-briefing", tab: "ops", tool: "ea-briefing" },
+    { panel: "ea-load", tab: "ops", tool: "ea-load" },
+    { panel: "survival-packet", tab: "ops", tool: "survival-packet" },
+    { panel: "family-message", tab: "review", tool: "family-message" },
+    { panel: "support-patterns", tab: "review", tool: "support-patterns" },
+    { panel: "usage-insights", tab: "review", tool: "usage-insights" },
+  ];
+
+  it("resolves every legacy panel id to its canonical (tab, tool) pair", () => {
+    for (const { panel, tab, tool } of legacyMap) {
+      expect(resolveLegacyPanel(panel)).toEqual({ tab, tool });
+    }
+  });
+
+  it("falls back to today for unknown inputs", () => {
+    expect(resolveLegacyPanel("not-a-panel")).toEqual({ tab: "today", tool: null });
+    expect(resolveLegacyPanel(undefined)).toEqual({ tab: "today", tool: null });
+    expect(resolveLegacyPanel(null)).toEqual({ tab: "today", tool: null });
+  });
+});
+
+describe("URL restore — default + legacy + canonical", () => {
+  beforeEach(() => {
+    installLocalStorage();
+    localStorage.clear();
+    setUrl("/");
+  });
+
+  it("lands on the classroom page when no ?tab= is present", () => {
+    expect(restoreNavFromUrl()).toEqual({ tab: "classroom", tool: null });
+  });
+
+  it("accepts a canonical top-level tab and defaults to its first tool", () => {
+    setUrl("/?tab=prep");
+    expect(restoreNavFromUrl()).toEqual({ tab: "prep", tool: "differentiate" });
+  });
+
+  it("honors an explicit ?tool= when valid for the resolved page", () => {
+    setUrl("/?tab=prep&tool=language-tools");
+    expect(restoreNavFromUrl()).toEqual({ tab: "prep", tool: "language-tools" });
+  });
+
+  it("redirects every legacy ?tab=<old-panel> link to its new destination", () => {
+    const legacy: Array<[string, { tab: ActiveTab; tool: ActiveTool | null }]> = [
+      ["differentiate", { tab: "prep", tool: "differentiate" }],
+      ["language-tools", { tab: "prep", tool: "language-tools" }],
+      ["tomorrow-plan", { tab: "tomorrow", tool: "tomorrow-plan" }],
+      ["complexity-forecast", { tab: "tomorrow", tool: "complexity-forecast" }],
+      ["log-intervention", { tab: "ops", tool: "log-intervention" }],
+      ["ea-briefing", { tab: "ops", tool: "ea-briefing" }],
+      ["ea-load", { tab: "ops", tool: "ea-load" }],
+      ["survival-packet", { tab: "ops", tool: "survival-packet" }],
+      ["family-message", { tab: "review", tool: "family-message" }],
+      ["support-patterns", { tab: "review", tool: "support-patterns" }],
+      ["usage-insights", { tab: "review", tool: "usage-insights" }],
+    ];
+    for (const [legacyTab, expected] of legacy) {
+      setUrl(`/?tab=${legacyTab}`);
+      expect(restoreNavFromUrl()).toEqual(expected);
+    }
+  });
+});
+
+describe("SET_ACTIVE_TAB — embedded tool handling", () => {
+  beforeEach(() => {
+    installLocalStorage();
+    localStorage.clear();
+    setUrl("/");
+  });
+
+  it("seeds the embedded tool with the page default when no tool is supplied", () => {
+    const initial = baseState({ activeTab: "classroom", activeTool: null });
+    const next = appReducer(initial, { type: "SET_ACTIVE_TAB", tab: "prep" });
+    expect(next.activeTab).toBe("prep");
+    expect(next.activeTool).toBe("differentiate");
+  });
+
+  it("honors an explicit tool when valid for the target page", () => {
+    const initial = baseState({ activeTab: "classroom", activeTool: null });
+    const next = appReducer(initial, { type: "SET_ACTIVE_TAB", tab: "prep", tool: "language-tools" });
+    expect(next.activeTool).toBe("language-tools");
+  });
+
+  it("falls back to the page default when the explicit tool is not hosted there", () => {
+    const initial = baseState({ activeTab: "classroom", activeTool: null });
+    const next = appReducer(initial, {
+      type: "SET_ACTIVE_TAB",
+      tab: "ops",
+      tool: "differentiate" as unknown as ActiveTool,
+    });
+    expect(next.activeTool).toBe("log-intervention");
+  });
+
+  it("SET_ACTIVE_TOOL ignores tools not hosted by the active page", () => {
+    const initial = baseState({ activeTab: "prep", activeTool: "differentiate" });
+    const ignored = appReducer(initial, { type: "SET_ACTIVE_TOOL", tool: "log-intervention" });
+    expect(ignored.activeTool).toBe("differentiate");
+  });
+});
+
+describe("resolveNavTarget — call-site shortcut", () => {
+  it("maps a legacy tool id to (host tab, tool)", () => {
+    expect(resolveNavTarget("tomorrow-plan")).toEqual({ tab: "tomorrow", tool: "tomorrow-plan" });
+  });
+
+  it("applies a page default when only a top-level tab is provided", () => {
+    expect(resolveNavTarget("review")).toEqual({ tab: "review", tool: "family-message" });
+  });
+
+  it("clears the tool when the caller explicitly passes null", () => {
+    expect(resolveNavTarget("today", null)).toEqual({ tab: "today", tool: null });
+  });
+});
+
+describe("type-guard helpers", () => {
+  it("isActiveTab / isActiveTool split panel-id strings correctly", () => {
+    expect(isActiveTab("classroom")).toBe(true);
+    expect(isActiveTab("today")).toBe(true);
+    expect(isActiveTab("tomorrow-plan")).toBe(false);
+    expect(isActiveTool("tomorrow-plan")).toBe(true);
+    expect(isActiveTool("classroom")).toBe(false);
   });
 });
 

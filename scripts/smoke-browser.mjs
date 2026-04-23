@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, URLSearchParams } from "node:url";
 import { chromium } from "playwright";
 import { assertGeminiRunsAllowed } from "./lib/gemini-api-preflight.mjs";
 
@@ -18,30 +18,52 @@ const OUTPUT_DIR = path.resolve(
   "playwright",
 );
 const FAILURE_SCREENSHOT = path.join(OUTPUT_DIR, "browser-smoke-failure.png");
-const TAB_GROUPS = {
-  today: "Today",
-  differentiate: "Prep",
-  "language-tools": "Prep",
-  "tomorrow-plan": "Ops",
-  "ea-briefing": "Ops",
-  "complexity-forecast": "Ops",
-  "log-intervention": "Ops",
-  "survival-packet": "Ops",
-  "family-message": "Review",
-  "support-patterns": "Review",
+
+/** Seven-view shell top-level tabs (order matches `TAB_ORDER` in appReducer). */
+const TOP_LEVEL_TABS = ["classroom", "today", "tomorrow", "week", "prep", "ops", "review"];
+const TOP_LEVEL = new Set(TOP_LEVEL_TABS);
+
+/** Map legacy tool / surface ids to canonical `?tab=` + optional `?tool=` (2026-04-23 nav reorg). */
+const TOOL_HOST = {
+  differentiate: { tab: "prep", tool: "differentiate" },
+  "language-tools": { tab: "prep", tool: "language-tools" },
+  "tomorrow-plan": { tab: "tomorrow", tool: "tomorrow-plan" },
+  "complexity-forecast": { tab: "tomorrow", tool: "complexity-forecast" },
+  "log-intervention": { tab: "ops", tool: "log-intervention" },
+  "ea-briefing": { tab: "ops", tool: "ea-briefing" },
+  "ea-load": { tab: "ops", tool: "ea-load" },
+  "survival-packet": { tab: "ops", tool: "survival-packet" },
+  "family-message": { tab: "review", tool: "family-message" },
+  "support-patterns": { tab: "review", tool: "support-patterns" },
+  "usage-insights": { tab: "review", tool: "usage-insights" },
 };
-const TAB_LABELS = {
-  today: "Today",
+
+function resolveSurface(id) {
+  if (TOP_LEVEL.has(id)) {
+    return { tab: id, tool: null };
+  }
+  const spec = TOOL_HOST[id];
+  assert.ok(spec, `Unknown navigation target: ${id}`);
+  return spec;
+}
+
+function hostTabForSurface(id) {
+  return resolveSurface(id).tab;
+}
+
+/** Visible labels in each page's `page-tool-switcher` (see `TOOL_META` in appReducer). */
+const TOOL_SWITCHER_NAME = {
   differentiate: "Differentiate",
   "language-tools": "Language Tools",
   "tomorrow-plan": "Tomorrow Plan",
-  "ea-briefing": "EA Briefing",
-  "ea-load": "EA Load Balance",
   "complexity-forecast": "Forecast",
   "log-intervention": "Log Intervention",
+  "ea-briefing": "EA Briefing",
+  "ea-load": "EA Load Balance",
   "survival-packet": "Sub Packet",
   "family-message": "Family Message",
   "support-patterns": "Support Patterns",
+  "usage-insights": "Usage Insights",
 };
 
 function assertNoAlphaAliases(text, label) {
@@ -84,9 +106,10 @@ async function expectActiveClassroom(page, expected, label) {
   assert.equal(actual, expected, `${label} expected ${expected}, got ${actual}`);
 }
 
-async function expectCheckedStudentInPanel(page, panelId, student, label) {
+async function expectCheckedStudentInPanel(page, surfaceId, student, label) {
+  const host = hostTabForSurface(surfaceId);
   const checkbox = page
-    .locator(`#panel-${panelId}:not([hidden]) .student-checkbox`)
+    .locator(`#panel-${host}:not([hidden]) .student-checkbox`)
     .filter({ hasText: student })
     .locator("input");
   await checkbox.waitFor();
@@ -124,41 +147,41 @@ async function selectShellClassroom(page, classroomId) {
   await page.selectOption("#shell-classroom", classroomId);
 }
 
+/**
+ * Deep-link to a top-level tab or embedded tool workspace (canonical URL).
+ * Preserves classroom when `classroom` is passed; use after switching to a protected demo class.
+ */
+async function navigateToSurface(page, surfaceId, { classroom = DEMO_CLASSROOM_ID } = {}) {
+  await dismissRolePromptIfPresent(page);
+  const { tab, tool } = resolveSurface(surfaceId);
+  const params = new URLSearchParams({ tab, classroom });
+  if (tool) params.set("tool", tool);
+  if (classroom === DEMO_CLASSROOM_ID) {
+    params.set("demo", "true");
+  }
+  await page.goto(`${WEB_BASE}/?${params.toString()}`, { waitUntil: "networkidle" });
+  await page.waitForSelector(`#panel-${tab}:not([hidden])`);
+}
+
+/**
+ * Navigate via the live shell (preserves SPA state across handoffs — e.g. a
+ * generated Tomorrow plan before returning from Family Message).
+ */
 async function openTab(page, id) {
   await dismissRolePromptIfPresent(page);
-  const groupLabel = TAB_GROUPS[id];
-  if (groupLabel) {
-    await page.getByTestId(`shell-nav-group-${groupLabel.toLowerCase()}`).click();
-  }
-  const directTab = page.locator(`#tab-${id}`);
-  if (await directTab.count()) {
-    await directTab.click();
-  } else {
-    await page.getByTestId("shell-nav-tabs-overflow-trigger").click();
-    await page
-      .locator(".shell-nav__tabs-overflow-item")
-      .filter({ hasText: TAB_LABELS[id] ?? id })
-      .click();
-  }
-  await page.waitForSelector(`#panel-${id}:not([hidden])`);
+  const { tab, tool } = resolveSurface(id);
+  await page.getByTestId(`shell-nav-group-${tab}`).click();
+  await page.waitForSelector(`#panel-${tab}:not([hidden])`);
+  if (!tool) return;
+  const label = TOOL_SWITCHER_NAME[tool];
+  assert.ok(label, `switcher label for ${tool}`);
+  await page.getByRole("tab", { name: label }).click();
 }
 
-async function expectPrimaryGroups(page) {
-  const labels = await page.locator(".shell-nav__group").allInnerTexts();
-  assert.deepEqual(
-    labels.map((label) => label.trim().toLowerCase()),
-    ["today", "prep", "ops", "review"],
-    "Desktop primary nav groups should match the new shell IA",
-  );
-}
-
-async function openGroup(page, groupLabel, expectedTabId) {
-  await dismissRolePromptIfPresent(page);
-  await page.getByTestId(`shell-nav-group-${groupLabel.toLowerCase()}`).click();
-  if (await page.locator(`#tab-${expectedTabId}`).count()) {
-    await page.waitForSelector(`#tab-${expectedTabId}[aria-selected="true"]`);
+async function expectSevenViewShell(page) {
+  for (const tab of TOP_LEVEL_TABS) {
+    await page.waitForSelector(`[data-testid="shell-nav-group-${tab}"]`);
   }
-  await page.waitForSelector(`#panel-${expectedTabId}:not([hidden])`);
 }
 
 async function expectAuthPromptVisible(page) {
@@ -184,19 +207,6 @@ async function expectStickyShell(page) {
   await page.locator(".app-main").evaluate((node) => {
     node.scrollTop = 0;
   });
-}
-
-async function expectScrollableSubtabs(page) {
-  const metrics = await page.locator(".shell-nav__tabs").evaluate((node) => ({
-    scrollWidth: node.scrollWidth,
-    clientWidth: node.clientWidth,
-    overflowX: getComputedStyle(node).overflowX,
-    rowCount: new Set(
-      Array.from(node.children, (child) => Math.round(child.getBoundingClientRect().top)),
-    ).size,
-  }));
-  assert.equal(metrics.overflowX, "auto", "Secondary tabs should scroll horizontally on tablet");
-  assert.equal(metrics.rowCount, 1, `Secondary tabs should remain on one row, got ${JSON.stringify(metrics)}`);
 }
 
 async function submitAccessCode(page, code) {
@@ -244,18 +254,21 @@ async function main() {
     await openClassroomPanel(page);
     assert.equal((await page.locator('[data-testid="shell-classroom-active-id"]').innerText()).trim(), DEMO_CLASSROOM_ID);
     await page.keyboard.press("Escape");
-    await expectPrimaryGroups(page);
-    await openGroup(page, "Today", "today");
-    await openGroup(page, "Prep", "differentiate");
-    await openGroup(page, "Ops", "log-intervention");
-    await openGroup(page, "Review", "family-message");
+    await expectSevenViewShell(page);
+    await navigateToSurface(page, "today");
+    await navigateToSurface(page, "differentiate");
+    await navigateToSurface(page, "log-intervention");
+    await navigateToSurface(page, "family-message");
     await expectStickyShell(page);
 
-    await page.goto(`${WEB_BASE}/?demo=true&tab=family-message&classroom=${DEMO_CLASSROOM_ID}`, { waitUntil: "networkidle" });
-    await page.waitForSelector("#panel-family-message:not([hidden])");
+    await page.goto(
+      `${WEB_BASE}/?demo=true&tab=review&tool=family-message&classroom=${DEMO_CLASSROOM_ID}`,
+      { waitUntil: "networkidle" },
+    );
+    await page.waitForSelector("#panel-review:not([hidden])");
     await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message deep link classroom");
     await page.reload({ waitUntil: "networkidle" });
-    await page.waitForSelector("#panel-family-message:not([hidden])");
+    await page.waitForSelector("#panel-review:not([hidden])");
     await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom after refresh");
 
     await openTab(page, "differentiate");
@@ -292,7 +305,7 @@ async function main() {
 
     await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Intervention classroom after plan handoff");
     const interventionCheckbox = page
-      .locator('#panel-log-intervention:not([hidden]) .student-checkbox')
+      .locator("#panel-ops:not([hidden]) .student-checkbox")
       .filter({ hasText: interventionStudent })
       .locator("input");
     await page.waitForFunction(
@@ -306,7 +319,7 @@ async function main() {
     await page.getByTestId("detect-patterns-submit").click();
     await page.waitForSelector(".pattern-header", { timeout: HOSTED_GENERATION_TIMEOUT_MS });
 
-    const patternText = await page.locator("#panel-support-patterns:not([hidden]) .workspace-result").innerText();
+    const patternText = await page.locator("#panel-review:not([hidden]) .workspace-result").innerText();
     assertNoAlphaAliases(patternText, "Support Patterns UI");
 
     const trendCard = page.locator(".pattern-section--trends .pattern-card").first();
@@ -355,7 +368,7 @@ async function main() {
     await openClassroomPanel(page);
     assert.match(await page.locator(".shell-classroom-panel__details").innerText(), /saved in this browser/i);
     await page.keyboard.press("Escape");
-    await openTab(page, "tomorrow-plan");
+    await navigateToSurface(page, "tomorrow-plan", { classroom: PROTECTED_CLASSROOM_ID });
     await expectActiveClassroom(page, PROTECTED_CLASSROOM_ID, "Protected classroom tomorrow plan");
 
     await page.reload({ waitUntil: "networkidle" });
@@ -371,10 +384,12 @@ async function main() {
       globalThis.localStorage.setItem("prairie-onboarding-done", "true");
     });
     const tabletPage = await tabletContext.newPage();
-    await tabletPage.goto(`${WEB_BASE}/?demo=true&tab=tomorrow-plan&classroom=${DEMO_CLASSROOM_ID}`, { waitUntil: "networkidle" });
-    await tabletPage.waitForSelector("#panel-tomorrow-plan:not([hidden])");
+    await tabletPage.goto(
+      `${WEB_BASE}/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=${DEMO_CLASSROOM_ID}`,
+      { waitUntil: "networkidle" },
+    );
+    await tabletPage.waitForSelector("#panel-tomorrow:not([hidden])");
     await dismissRolePromptIfPresent(tabletPage);
-    await expectScrollableSubtabs(tabletPage);
     await expectStickyShell(tabletPage);
     await tabletContext.close();
 
@@ -383,13 +398,16 @@ async function main() {
       globalThis.localStorage.setItem("prairie-onboarding-done", "true");
     });
     const mobilePage = await mobileContext.newPage();
-    await mobilePage.goto(`${WEB_BASE}/?demo=true&tab=family-message&classroom=${DEMO_CLASSROOM_ID}`, { waitUntil: "networkidle" });
+    await mobilePage.goto(
+      `${WEB_BASE}/?demo=true&tab=review&tool=family-message&classroom=${DEMO_CLASSROOM_ID}`,
+      { waitUntil: "networkidle" },
+    );
     await mobilePage.waitForSelector(".mobile-nav");
     await dismissRolePromptIfPresent(mobilePage);
     const navBox = await mobilePage.locator(".mobile-nav").boundingBox();
     assert.ok(navBox && navBox.y + navBox.height <= 852.5, "Mobile nav should stay pinned to the viewport bottom");
     await mobilePage.getByTestId("mobile-nav-group-ops").click();
-    await mobilePage.waitForSelector("#panel-log-intervention:not([hidden])");
+    await mobilePage.waitForSelector("#panel-ops:not([hidden])");
     assert.equal(await mobilePage.locator(".mobile-nav-group--active").count(), 1, "Expected one active mobile nav group");
     await mobileContext.close();
 

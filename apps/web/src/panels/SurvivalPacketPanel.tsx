@@ -115,7 +115,7 @@ export default function SurvivalPacketPanel() {
         }}
       />
 
-      <OpsWorkflowStepper activeTab="survival-packet" />
+      <OpsWorkflowStepper activeTool="survival-packet" />
 
       <WorkspaceLayout
         splitState={result ? "output" : "input"}

@@ -53,7 +53,7 @@ A credible MVP must support this loop:
 
 The implemented system now exceeds the original MVP loop. The current operating surface includes:
 
-- 12 teacher-facing panels across Today, Prep, Ops, and Review groups.
+- Seven top-level pages (`classroom`, `today`, `tomorrow`, `week`, `prep`, `ops`, `review`) hosting 12 teacher-facing working surfaces — the Today surface plus 11 embedded tools on Prep/Tomorrow/Ops/Review.
 - 13 model-routed prompt classes plus deterministic retrieval surfaces.
 - 37 Express endpoints tracked in generated `docs/api-surface.md`.
 - Per-classroom SQLite memory for plans, variants, family messages, interventions, pattern reports, forecasts, scaffold reviews, survival packets, feedback, and sessions.

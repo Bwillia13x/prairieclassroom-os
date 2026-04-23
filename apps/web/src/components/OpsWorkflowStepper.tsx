@@ -1,26 +1,31 @@
 import { useId, useMemo } from "react";
 import { useApp } from "../AppContext";
-import { type ActiveTab, type ClassroomRole, isTabVisibleForRole } from "../appReducer";
+import {
+  isTabVisibleForRole,
+  resolveLegacyPanel,
+  type ActiveTool,
+  type ClassroomRole,
+} from "../appReducer";
 import type { PanelStatus, PanelStatusState } from "../types";
 import { pickRecommendedPanelStatus } from "./TriageSurfaces";
 import "./OpsWorkflowStepper.css";
 
 /**
- * Ordered Ops workflow steps. Single source of truth — consumed by the
- * stepper component and available to tests via the named export.
+ * Ordered Ops workflow steps. The 2026-04-23 navigation reorg removed
+ * Tomorrow Plan and Complexity Forecast from Ops entirely — they now
+ * live on the Tomorrow page. The ops stepper therefore walks only the
+ * four adult-coordination tools hosted by the Ops page.
  */
-export const OPS_STEPS: ReadonlyArray<{ tab: ActiveTab; label: string }> = [
-  { tab: "log-intervention", label: "Log" },
-  { tab: "tomorrow-plan", label: "Plan" },
-  { tab: "complexity-forecast", label: "Forecast" },
-  { tab: "ea-briefing", label: "EA Brief" },
-  { tab: "ea-load", label: "EA Load" },
-  { tab: "survival-packet", label: "Sub Packet" },
+export const OPS_STEPS: ReadonlyArray<{ tool: ActiveTool; label: string }> = [
+  { tool: "log-intervention", label: "Log" },
+  { tool: "ea-briefing", label: "EA Brief" },
+  { tool: "ea-load", label: "EA Load" },
+  { tool: "survival-packet", label: "Sub Packet" },
 ] as const;
 
 interface Props {
-  /** Currently active tab — determines which step is highlighted. */
-  activeTab: ActiveTab;
+  /** Currently focused tool id — determines which step is highlighted. */
+  activeTool: ActiveTool | null;
   variant?: "full" | "compact";
 }
 
@@ -39,28 +44,32 @@ function statusRank(state: PanelStatusState): number {
   }
 }
 
-function isActiveTabValue(value: string | null | undefined): value is ActiveTab {
-  return Boolean(value) && OPS_STEPS.some((step) => step.tab === value);
+function isOpsToolValue(value: string | null | undefined): value is ActiveTool {
+  return Boolean(value) && OPS_STEPS.some((step) => step.tool === value);
 }
 
-function pickOpsFocusTab(statuses: PanelStatus[], role: ClassroomRole): ActiveTab | null {
+function pickOpsFocusTool(statuses: PanelStatus[], role: ClassroomRole): ActiveTool | null {
   const recommended = pickRecommendedPanelStatus(
-    statuses.filter((status) => isActiveTabValue(status.panel_id)),
+    statuses.filter((status) => isOpsToolValue(status.panel_id)),
     role,
   );
-  if (recommended && isActiveTabValue(recommended.panel_id)) {
+  if (recommended && isOpsToolValue(recommended.panel_id)) {
     return recommended.panel_id;
   }
 
   const fallback = [...statuses]
-    .filter((status) => isActiveTabValue(status.panel_id) && isTabVisibleForRole(status.panel_id, role))
+    .filter((status) => {
+      if (!isOpsToolValue(status.panel_id)) return false;
+      const resolved = resolveLegacyPanel(status.panel_id);
+      return isTabVisibleForRole(resolved.tab, role);
+    })
     .sort((a, b) => {
       const rankDiff = statusRank(b.state) - statusRank(a.state);
       if (rankDiff !== 0) return rankDiff;
       return b.pending_count - a.pending_count;
     })[0];
 
-  return fallback && isActiveTabValue(fallback.panel_id) ? fallback.panel_id : null;
+  return fallback && isOpsToolValue(fallback.panel_id) ? fallback.panel_id : null;
 }
 
 function statusBadge(status: PanelStatus | null): string {
@@ -95,22 +104,24 @@ function statusNote(status: PanelStatus | null): string {
 }
 
 /**
- * OpsWorkflowStepper — stateful workflow strip for daily ops work.
- * On Today it can render in a compact mode; within Ops panels it stays full.
+ * OpsWorkflowStepper — workflow strip for the four Ops-page tools.
+ * Renders inside the Ops page's embedded tool workspace. It no longer
+ * appears on the Today page: the reorg removed the compact variant that
+ * previously acted as a cross-page nudge.
  */
-export default function OpsWorkflowStepper({ activeTab, variant = "full" }: Props) {
-  const { setActiveTab, latestTodaySnapshot, activeRole } = useApp();
+export default function OpsWorkflowStepper({ activeTool, variant = "full" }: Props) {
+  const { setActiveTool, latestTodaySnapshot, activeRole } = useApp();
   const stepperId = useId();
   const statuses = latestTodaySnapshot?.panel_statuses ?? [];
   const statusMap = useMemo(
     () => new Map(statuses.map((status) => [status.panel_id, status])),
     [statuses],
   );
-  const focusTab = useMemo(
-    () => (OPS_STEPS.some((step) => step.tab === activeTab) ? activeTab : pickOpsFocusTab(statuses, activeRole)),
-    [activeRole, activeTab, statuses],
+  const focusTool = useMemo(
+    () => (activeTool && isOpsToolValue(activeTool) ? activeTool : pickOpsFocusTool(statuses, activeRole)),
+    [activeRole, activeTool, statuses],
   );
-  const activeIdx = focusTab ? OPS_STEPS.findIndex((step) => step.tab === focusTab) : -1;
+  const activeIdx = focusTool ? OPS_STEPS.findIndex((step) => step.tool === focusTool) : -1;
 
   return (
     <nav
@@ -120,8 +131,8 @@ export default function OpsWorkflowStepper({ activeTab, variant = "full" }: Prop
     >
       <ol className="ops-stepper__list">
         {OPS_STEPS.map((step, i) => {
-          const status = statusMap.get(step.tab) ?? null;
-          const isActive = step.tab === focusTab;
+          const status = statusMap.get(step.tool) ?? null;
+          const isActive = step.tool === focusTool;
           const isCompleted = activeIdx >= 0 && i < activeIdx;
           const stateClass = isActive
             ? "ops-stepper__step--active"
@@ -130,7 +141,7 @@ export default function OpsWorkflowStepper({ activeTab, variant = "full" }: Prop
               : "";
           const statusClass = status ? `ops-stepper__step--${status.state}` : "ops-stepper__step--waiting";
           const dependencyClass = status ? `ops-stepper__step--dependency-${status.dependency_state}` : "";
-          const noteId = `${stepperId}-${step.tab}-note`;
+          const noteId = `${stepperId}-${step.tool}-note`;
           const content = (
             <>
               <span className="ops-stepper__number">{i + 1}</span>
@@ -152,14 +163,14 @@ export default function OpsWorkflowStepper({ activeTab, variant = "full" }: Prop
           if (!isActive) {
             return (
               <li
-                key={step.tab}
+                key={step.tool}
                 className={`ops-stepper__step ${stateClass} ${statusClass} ${dependencyClass}`}
                 title={statusNote(status)}
               >
                 <button
                   type="button"
                   className="ops-stepper__btn"
-                  onClick={() => setActiveTab(step.tab)}
+                  onClick={() => setActiveTool(step.tool)}
                   aria-label={`Step ${i + 1}: ${step.label}`}
                   aria-describedby={variant === "full" ? noteId : undefined}
                   aria-current={undefined}
@@ -172,7 +183,7 @@ export default function OpsWorkflowStepper({ activeTab, variant = "full" }: Prop
 
           return (
             <li
-              key={step.tab}
+              key={step.tool}
               className={`ops-stepper__step ${stateClass} ${statusClass} ${dependencyClass}`}
               aria-label={`Current step ${i + 1}: ${step.label}. ${statusNote(status)}`}
               aria-current="step"

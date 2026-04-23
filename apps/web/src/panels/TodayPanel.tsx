@@ -4,7 +4,7 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { fetchTodaySnapshot, fetchClassroomHealth, fetchStudentSummary, fetchSessionSummary } from "../api";
 import type { SessionSummary } from "../api";
-import type { ActiveTab } from "../appReducer";
+import type { NavTarget } from "../appReducer";
 import PendingActionsCard from "../components/PendingActionsCard";
 import PlanRecap from "../components/PlanRecap";
 import ForecastTimeline from "../components/ForecastTimeline";
@@ -13,18 +13,13 @@ import PageIntro from "../components/PageIntro";
 import EmptyStateCard from "../components/EmptyStateCard";
 import ErrorBanner from "../components/ErrorBanner";
 import SectionIcon from "../components/SectionIcon";
-import HealthBar from "../components/HealthBar";
-import StudentRoster from "../components/StudentRoster";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import TimeSuggestion from "../components/TimeSuggestion";
-import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
-import { CoverageTimeline, StudentCoverageStrip } from "../components/TriageSurfaces";
-import OperatingDashboard from "../components/OperatingDashboard";
+import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { Card, ActionButton } from "../components/shared";
-import { ComplexityDebtGauge, StudentPriorityMatrix, InterventionRecencyTimeline, ClassroomCompositionRings } from "../components/DataVisualizations";
+import { ComplexityDebtGauge } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
 import TodayHero from "../components/TodayHero";
-import TodayAnchorRail, { type Anchor } from "../components/TodayAnchorRail";
 import PageFreshness from "../components/PageFreshness";
 import SourceTag from "../components/SourceTag";
 import {
@@ -47,11 +42,19 @@ import type {
 import "./TodayPanel.css";
 
 interface Props {
-  onTabChange: (tab: ActiveTab) => void;
+  onTabChange: (target: NavTarget) => void;
   onInterventionPrefill?: (prefill: InterventionPrefill) => void;
   onMessagePrefill?: (prefill: FamilyMessagePrefill) => void;
 }
 
+/**
+ * TodayPanel — live-day triage surface. The 2026-04-23 navigation reorg
+ * moved week-level content (OperatingDashboard, week heatmap, broader
+ * classroom profile visualizations) to the dedicated Classroom and Week
+ * pages so Today focuses on same-day execution: hero, recommended move,
+ * touchpoint strip, immediate risks, day arc, stale follow-ups, and
+ * current-day carry-forward.
+ */
 export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
   const { activeClassroom, activeRole, profile } = useApp();
   const session = useSession();
@@ -98,19 +101,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     [result],
   );
 
-  const attentionStudents = useMemo(
-    () => new Set(result?.debt_register.items.flatMap((i) => i.student_refs) ?? []),
-    [result],
-  );
-
   const previousDebtTotal = useMemo(() => {
     const series = health.result?.trends?.debt_total_14d;
     if (!series || series.length < 2) return undefined;
     return series[series.length - 2];
   }, [health.result]);
 
-  // Audit #7: student-chip tooltip source — surface the most recent
-  // priority reason per student so morning triage knows WHY to check.
   const studentReasons = useMemo(() => {
     const out: Record<string, string> = {};
     for (const s of studentSummaries.result ?? []) {
@@ -134,32 +130,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     return null;
   }, [drillDown]);
 
-  function handleCoverageTimelineClick(index: number) {
-    const forecastBlock = result?.latest_forecast?.blocks[index];
-    if (forecastBlock) {
-      setDrillDown({ type: "forecast-block", blockIndex: index, block: forecastBlock });
-      return;
-    }
-
-    const scheduleBlock = profile?.schedule?.[index];
-    if (!scheduleBlock) return;
-    const matchingWatchpoints = (result?.latest_plan?.transition_watchpoints ?? [])
-      .filter((watchpoint) => {
-        const text = `${scheduleBlock.time_slot} ${scheduleBlock.activity}`.toLowerCase();
-        return text.includes(watchpoint.time_or_activity.toLowerCase());
-      })
-      .map((watchpoint) => watchpoint.risk_description);
-
-    if (matchingWatchpoints.length > 0) {
-      setDrillDown({
-        type: "plan-coverage-section",
-        section: "watchpoints",
-        label: `${scheduleBlock.time_slot} · ${scheduleBlock.activity}`,
-        items: matchingWatchpoints,
-      });
-    }
-  }
-
   const showTimeSuggestion = useMemo(() => {
     if (!suggestion) return false;
     if (!recommendedAction) return true;
@@ -168,36 +138,14 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
   if (!profile) return null;
 
-  // Audit #31-#33: ten numbered anchors for the rail + end-of-today
-  // marker. The list stays adjacent to the render so any section
-  // rename keeps nav in sync.
-  const anchors: Anchor[] = [
-    { id: "command-center", number: "01", label: "Command Center" },
-    { id: "operating-dashboard", number: "02", label: "Operating Board" },
-    { id: "classroom-pulse", number: "03", label: "What to Watch" },
-    { id: "day-arc", number: "04", label: "Today's Shape" },
-    { id: "complexity-debt", number: "05", label: "Complexity Debt" },
-    { id: "student-priority", number: "06", label: "Student Priority" },
-    { id: "intervention-recency", number: "07", label: "Intervention Recency" },
-    { id: "classroom-profile", number: "08", label: "Classroom Profile" },
-    { id: "planning-health", number: "09", label: "Planning Health" },
-    { id: "carry-forward", number: "10", label: "Carry Forward" },
-    { id: "end-of-today", number: "11", label: "End of Today" },
-  ];
-
   return (
-    <section
-      className="workspace-page today-panel today-panel--with-rail"
-      id="today-top"
-    >
-      <TodayAnchorRail anchors={anchors} />
-      <div className="today-panel__content">
+    <section className="workspace-page today-panel" id="today-top">
       <PageIntro
-        eyebrow="Command Center"
+        eyebrow="Today"
         title="Today"
         sectionTone="sun"
         emphasis="brand"
-        description={`Your action queue, student snapshot, and recommended next move for Grade ${profile.grade_band} today.`}
+        description={`Same-day triage for Grade ${profile.grade_band}: recommended next move, immediate risks, and the carry-forward you committed to before the day started.`}
         visual={{ src: "/brand/workflow-today.png" }}
         dynamicContext={[
           { label: `${profile.students.length} students`, tone: "sun" },
@@ -205,29 +153,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
       />
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
-
-      {workflowNudge ? (
-        <div className="today-workflow-nudge" data-testid="today-workflow-nudge" role="note" aria-label="Weekly workflow suggestion">
-          <div className="today-workflow-nudge__copy">
-            <span className="today-workflow-nudge__eyebrow">{workflowNudge.kicker}</span>
-            <p className="today-workflow-nudge__text">{workflowNudge.message}</p>
-            <p className="today-workflow-nudge__meta">
-              <span>{workflowNudge.sequenceLabel}</span>
-              <span aria-hidden="true">·</span>
-              <span>{workflowNudge.countLabel}</span>
-            </p>
-          </div>
-          <ActionButton
-            size="sm"
-            variant="soft"
-            onClick={() => onTabChange(workflowNudge.targetTab)}
-          >
-            {workflowNudge.cta}
-          </ActionButton>
-        </div>
-      ) : null}
-
-      <OpsWorkflowStepper activeTab="today" variant="compact" />
 
       <div id="command-center" className="today-anchor-target">
         {result ? (
@@ -259,17 +184,24 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         />
       ) : null}
 
-      {result ? (
-        <div id="operating-dashboard" className="today-anchor-target">
-          <OperatingDashboard
-            snapshot={result}
-            profile={profile}
-            health={health.result ?? null}
-            sessionSummary={sessionSummary.result ?? null}
-            activeRole={activeRole}
-            onNavigate={onTabChange}
-            onOpenContext={setDrillDown}
-          />
+      {workflowNudge ? (
+        <div className="today-workflow-nudge" data-testid="today-workflow-nudge" role="note" aria-label="Weekly workflow suggestion">
+          <div className="today-workflow-nudge__copy">
+            <span className="today-workflow-nudge__eyebrow">{workflowNudge.kicker}</span>
+            <p className="today-workflow-nudge__text">{workflowNudge.message}</p>
+            <p className="today-workflow-nudge__meta">
+              <span>{workflowNudge.sequenceLabel}</span>
+              <span aria-hidden="true">·</span>
+              <span>{workflowNudge.countLabel}</span>
+            </p>
+          </div>
+          <ActionButton
+            size="sm"
+            variant="soft"
+            onClick={() => onTabChange(workflowNudge.targetTab)}
+          >
+            {workflowNudge.cta}
+          </ActionButton>
         </div>
       ) : null}
 
@@ -283,22 +215,18 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             What to watch next
           </h2>
           <p className="today-pulse__subtitle">
-            Risk map, open items, and carry-forward signals.
+            Day-of risk map, open items, and carry-forward signal. Week-level coverage lives on the Week page.
           </p>
         </header>
-        {result ? (
-          <CoverageTimeline
-            title="Tomorrow coverage snapshot"
-            schedule={profile.schedule}
-            forecastBlocks={result.latest_forecast?.blocks}
-            watchpoints={result.latest_plan?.transition_watchpoints}
-            unresolvedFollowups={result.debt_register.item_count_by_category.stale_followup ?? 0}
-            onBlockClick={handleCoverageTimelineClick}
-          />
-        ) : null}
         <div className="today-grid motion-stagger">
         <div className="today-grid__hero-row">
-          <div id="day-arc" className="today-anchor-target">
+          <div
+            id="day-arc"
+            className={[
+              "today-anchor-target today-anchor-target--day-arc",
+              result && !result.latest_forecast ? "today-anchor-target--compact-arc" : "",
+            ].filter(Boolean).join(" ")}
+          >
             {result ? (
               <DayArc
                 forecast={result.latest_forecast}
@@ -316,56 +244,55 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             )}
           </div>
 
-          {result ? (
-            <PendingActionsCard
-              items={[
-                {
-                  key: "unapproved_message",
-                  label: "unapproved messages",
-                  count: result.debt_register.item_count_by_category.unapproved_message ?? 0,
-                  targetTab: "family-message",
-                  icon: <SectionIcon name="mail" className="shell-nav__group-icon" />,
-                },
-                {
-                  key: "stale_followup",
-                  label: "open follow-ups",
-                  count: result.debt_register.item_count_by_category.stale_followup ?? 0,
-                  targetTab: "log-intervention",
-                  icon: <SectionIcon name="alert" className="shell-nav__group-icon" />,
-                },
-                {
-                  key: "unaddressed_pattern",
-                  label: "unaddressed patterns",
-                  count: result.debt_register.item_count_by_category.unaddressed_pattern ?? 0,
-                  targetTab: "support-patterns",
-                  icon: <SectionIcon name="star" className="shell-nav__group-icon" />,
-                },
-                {
-                  key: "approaching_review",
-                  label: "approaching review",
-                  count: result.debt_register.item_count_by_category.approaching_review ?? 0,
-                  targetTab: "support-patterns",
-                  icon: <SectionIcon name="clock" className="shell-nav__group-icon" />,
-                },
-              ]}
-              totalCount={totalActionCount}
-              previousTotal={previousDebtTotal}
-              onItemClick={(item) => {
-                if (item.key) {
-                  const category = item.key;
-                  const items = result.debt_register.items.filter((i) => i.category === category);
-                  setDrillDown({ type: "debt-category", category, items });
-                }
-              }}
-            />
-          ) : (
-            <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
-          )}
-        </div>
+          <div id="pending-actions" className="today-anchor-target today-anchor-target--pending-actions">
+            {result ? (
+              <PendingActionsCard
+                items={[
+                  {
+                    key: "unapproved_message",
+                    label: "unapproved messages",
+                    count: result.debt_register.item_count_by_category.unapproved_message ?? 0,
+                    targetTab: "family-message",
+                    icon: <SectionIcon name="mail" className="shell-nav__group-icon" />,
+                  },
+                  {
+                    key: "stale_followup",
+                    label: "open follow-ups",
+                    count: result.debt_register.item_count_by_category.stale_followup ?? 0,
+                    targetTab: "log-intervention",
+                    icon: <SectionIcon name="alert" className="shell-nav__group-icon" />,
+                  },
+                  {
+                    key: "unaddressed_pattern",
+                    label: "unaddressed patterns",
+                    count: result.debt_register.item_count_by_category.unaddressed_pattern ?? 0,
+                    targetTab: "support-patterns",
+                    icon: <SectionIcon name="star" className="shell-nav__group-icon" />,
+                  },
+                  {
+                    key: "approaching_review",
+                    label: "approaching review",
+                    count: result.debt_register.item_count_by_category.approaching_review ?? 0,
+                    targetTab: "support-patterns",
+                    icon: <SectionIcon name="clock" className="shell-nav__group-icon" />,
+                  },
+                ]}
+                totalCount={totalActionCount}
+                previousTotal={previousDebtTotal}
+                onItemClick={(item) => {
+                  if (item.key) {
+                    const category = item.key;
+                    const items = result.debt_register.items.filter((i) => i.category === category);
+                    setDrillDown({ type: "debt-category", category, items });
+                  }
+                }}
+              />
+            ) : (
+              <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
+            )}
+          </div>
 
-        {/* Visualization strip: 2×2 grid on wide viewports — paired for at-a-glance reading */}
-        <div className="today-grid__viz-row">
-          {result && result.debt_register.items.length > 0 && (
+          {result && result.debt_register.items.length > 0 ? (
             <div id="complexity-debt" className="today-anchor-target">
               <ComplexityDebtGauge
                 debtItems={result.debt_register.items}
@@ -380,76 +307,54 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                 }
               />
             </div>
-          )}
-
-          {studentSummaries.result && studentSummaries.result.length > 0 ? (
-            <div id="student-priority" className="today-anchor-target">
-              <StudentPriorityMatrix
-                students={studentSummaries.result}
-                onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-              />
-            </div>
-          ) : studentSummaries.loading ? (
-            <SectionSkeleton label="Loading student priority matrix" variant="matrix" lines={3} />
           ) : null}
-
-          {studentSummaries.result && studentSummaries.result.length > 0 ? (
-            <div id="intervention-recency" className="today-anchor-target">
-              <InterventionRecencyTimeline
-                students={studentSummaries.result}
-                onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-              />
-            </div>
-          ) : studentSummaries.loading ? (
-            <SectionSkeleton label="Loading intervention recency" variant="matrix" lines={3} />
-          ) : null}
-
-          {profile && profile.students.length > 0 && (
-            <div id="classroom-profile" className="today-anchor-target">
-              <ClassroomCompositionRings
-                students={profile.students}
-                onSegmentClick={(payload) =>
-                  setDrillDown({
-                    type: "student-tag-group",
-                    groupKind: payload.groupKind,
-                    tag: payload.tag,
-                    label: payload.label,
-                    students: payload.students,
-                  })
-                }
-              />
-            </div>
-          )}
         </div>
 
         {result && showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
 
         <div id="planning-health" className="today-anchor-target">
           {health.result ? (
-            <HealthBar
-              health={health.result ?? null}
-              loading={false}
-              pendingActionCount={totalActionCount}
-              onTrendClick={(payload) => setDrillDown({ type: "trend", ...payload })}
-            />
+            <Card variant="flat" className="today-planning-jump" aria-label="Deeper lenses">
+              <Card.Body>
+                <div className="classroom-jump-actions__row">
+                  <div className="classroom-jump-actions__copy">
+                    <strong>Need the wider lens?</strong>
+                    <span>
+                      Classroom shows the full operating dashboard and health trend; Week opens the multi-day forecast band.
+                    </span>
+                  </div>
+                  <div className="classroom-jump-actions__buttons">
+                    <ActionButton size="sm" variant="soft" onClick={() => onTabChange("classroom")}>
+                      Open Classroom
+                    </ActionButton>
+                    <ActionButton size="sm" variant="soft" onClick={() => onTabChange("week")}>
+                      Open Week
+                    </ActionButton>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
           ) : health.error ? (
             <div className="today-health-error" role="alert">Couldn&apos;t load health summary: {health.error}</div>
           ) : (
-            <SectionSkeleton label="Loading health summary" variant="health" lines={2} />
+            <SectionSkeleton label="Loading planning lenses" variant="health" lines={2} />
           )}
         </div>
 
         {result && (result.latest_plan || result.latest_forecast) ? (
           <div
             id="carry-forward"
-            className="today-grid--secondary today-anchor-target"
+            className={[
+              "today-grid--secondary today-anchor-target",
+              Boolean(result.latest_plan) !== Boolean(result.latest_forecast) ? "today-grid--secondary--single" : "",
+            ].filter(Boolean).join(" ")}
           >
             {result.latest_plan ? (
               <PlanRecap
                 plan={result.latest_plan}
                 classroomId={activeClassroom}
                 onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
-                onOpenPlan={() => onTabChange("tomorrow-plan")}
+                onOpenPlan={() => onTabChange("tomorrow")}
                 onMessagePrefill={
                   onMessagePrefill
                     ? (prefill) => {
@@ -474,13 +379,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           </div>
         ) : null}
 
-        {result ? (
-          <StudentRoster
-            attentionCount={attentionStudents.size}
-            onDrillDown={(context) => setDrillDown(context)}
-          />
-        ) : null}
-
         {result && !result.latest_plan && !result.latest_forecast && result.debt_register.items.length === 0 ? (
           <EmptyStateCard
             variant="minimal"
@@ -491,9 +389,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
       </div>
       </section>
 
-      {/* Audit #33: end-of-Today signal. Gives the 10-section scroll a
-          clear terminus + the same freshness strip used up top, so the
-          teacher ends on an observably-fresh note. */}
       {result ? (
         <footer
           id="end-of-today"
@@ -507,7 +402,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           />
         </footer>
       ) : null}
-      </div>
 
       <DrillDownDrawer
         context={drillDown}
@@ -537,7 +431,6 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
         data-testid="risk-windows-body"
       >
         <div className="risk-windows__readout" aria-label={`${model.highCount} high risk windows`}>
-          {/* Audit #34: complexity forecasts are AI-generated. */}
           <p className="risk-windows__eyebrow">
             Risk Windows <SourceTag kind="ai" />
           </p>
@@ -549,9 +442,6 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
         </div>
 
         <div className="risk-windows__content">
-          {/* Audit #28: the peak-block callout is its own row — no CTA
-              embedded alongside it. The "Open Forecast" button moves
-              to a dedicated footer below so its target is unambiguous. */}
           <div className="risk-windows__peak-group">
             <p className="risk-windows__label">Peak block</p>
             {model.peakBlock ? (
@@ -571,8 +461,6 @@ function RiskWindowsPanel({ forecast, onOpenForecast, onBlockClick }: RiskWindow
 
           <p className="today-forecast-summary">{getForecastSummary(forecast.overall_summary)}</p>
 
-          {/* Audit #27: timeline lives in its own horizontally-scrollable
-              container so narrow viewports don't clip the right edge. */}
           <div className="risk-windows__timeline-scroll">
             <ForecastTimeline
               blocks={forecast.blocks}

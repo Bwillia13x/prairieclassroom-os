@@ -24,7 +24,7 @@ As of 2026-04-18, the practical state of the repo is:
 - The Ollama privacy-first live-model lane is implemented, but this host is **structurally blocked** for the full dual-speed lane: the 2026-04-12 `host:preflight:ollama` run recorded 8 GiB total RAM and 6.76 GiB free disk, which cannot fit the planning-tier `gemma4:27b` weights regardless of whether Ollama is installed. The `gemma4:4b` live-tier model may still be feasible on this host. See `docs/decision-log.md` (2026-04-12 maintenance host finding) and `docs/development-gaps.md` G-02.
 - The paid Vertex lane exists, but it is intentionally gated behind `PRAIRIE_ALLOW_PAID_SERVICES=true` and is not part of the default no-cost proof story.
 - The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 127 eval cases, and broad unit coverage (1,802 vitest + 69 pytest in the latest mock gate) across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
-- The web shell supports grouped `Today / Prep / Ops / Review` navigation, URL-backed `tab` and `classroom` state, and a classroom-code prompt that retries protected reads and writes from the UI.
+- The web shell exposes a flat seven-view navigation (`classroom / today / tomorrow / week / prep / ops / review`) with URL-backed `tab` + optional `tool` state and a classroom-code prompt that retries protected reads and writes from the UI.
 - Protected classroom APIs now support `X-Classroom-Code` plus optional `X-Classroom-Role`; the role defaults to `teacher`, and generated `docs/api-surface.md` records current teacher-only and teacher/EA scopes.
 - Security hardened: classroomId path traversal validation, rate limiting (global + per-classroom auth), security headers, safe JSON deserialization, atomic schedule writes, prompt injection detection.
 - Documentation current: generated system/API inventory, pilot-readiness gates, memory lifecycle controls, database schema, classroom profiles, and eval inventory.
@@ -91,14 +91,18 @@ Exact endpoint inventory is generated in `docs/api-surface.md`; do not maintain 
 
 ### Primary UI panels
 
+The teacher-facing working-surface inventory stays at 12 — the one
+stand-alone Today surface plus the eleven workflow tools hosted inside
+the new multi-tool pages (Prep, Tomorrow, Ops, Review):
+
 - Today
 - Differentiate
 - Language Tools
 - Tomorrow Plan
-- EA Briefing
-- EA Load Balance
 - Forecast
 - Log Intervention
+- EA Briefing
+- EA Load Balance
 - Sub Packet
 - Family Message
 - Support Patterns
@@ -108,8 +112,28 @@ Exact endpoint inventory is generated in `docs/api-surface.md`; do not maintain 
 
 ### Web shell contract
 
-- Primary shell groups are `Today`, `Prep`, `Ops`, and `Review`.
-- The web UI treats `?tab=` and `?classroom=` as stable deep-link state.
+- The web shell exposes seven standalone top-level pages in this fixed
+  order: `classroom`, `today`, `tomorrow`, `week`, `prep`, `ops`,
+  `review`. `classroom` is the default landing page when no `?tab=` is
+  present.
+- `Classroom` is the bird's-eye operating dashboard (health, coverage,
+  queues, student watch).
+- `Today` is the live-day triage surface.
+- `Tomorrow` hosts the Tomorrow Plan and Complexity Forecast tools on
+  one page; it is also the destination for all "Save to Tomorrow" flows.
+- `Week` centers the multi-day forecast band, upcoming events, planning
+  rhythm, and pattern pressure.
+- `Prep` hosts Differentiate + Language Tools with a local tool switcher.
+- `Ops` hosts Log Intervention, EA Briefing, EA Load, and Sub Packet
+  with a local tool switcher and the ops workflow stepper.
+- `Review` hosts Family Message, Support Patterns, and Usage Insights
+  with a local tool switcher.
+- The web UI treats `?tab=` as the canonical top-level selector and
+  `?tool=` as an optional embedded-tool selector. `?classroom=` remains
+  a stable deep-link parameter, and legacy `?tab=<old-panel>` values
+  (e.g. `tomorrow-plan`, `log-intervention`, `differentiate`) are
+  migrated on load to their canonical (tab, tool) pair on the next URL
+  write.
 - `?demo=true` remains a convenience selector for the seeded demo classroom when `classroom` is not provided.
 - Protected classroom codes are stored locally in-browser and reused automatically for protected `today`, history, and generation routes.
 
@@ -118,6 +142,7 @@ Exact endpoint inventory is generated in `docs/api-surface.md`; do not maintain 
 - Protected classroom endpoints accept `X-Classroom-Code` and optional `X-Classroom-Role`.
 - Supported role header values are `teacher`, `ea`, `substitute`, and `reviewer`; missing role defaults to `teacher` for backwards compatibility.
 - Current implemented scopes are intentionally narrow: teacher-only routes cover generation, history, schedule writes, health, and student summaries; teacher/EA routes cover Today, EA briefing, debt register, feedback, and session summaries.
+- Top-level page visibility mirrors the backend scope: `classroom` and `today` are teacher/ea/substitute; `tomorrow` and `week` are teacher/substitute/reviewer; `prep` is teacher-only; `ops` is teacher/ea/substitute; `review` is teacher/ea/reviewer. Embedded tool capabilities inside each page remain gated by `roleCapabilities()`.
 - Substitute and reviewer roles are declared for future bounded views, but they are not granted raw classroom-memory endpoint access by default.
 - Exact route scopes are generated in `docs/api-surface.md`; do not hand-maintain a separate role table.
 
@@ -173,6 +198,16 @@ If you change env expectations, update `.env.example`, `README.md`, and any affe
 - evidence reports: `docs/evidence/`
 - evidence snapshots: `output/evidence-snapshots/`
 - generated system inventory: `docs/system-inventory.md`
+
+### Demo Classroom Data Contract
+
+- Canonical demo classroom: `demo-okafor-grade34` (`data/synthetic_classrooms/classroom_demo.json`). It is synthetic-only and may bypass classroom-code auth for judging.
+- The demo roster is intentionally tiered: 8 active support threads, 7 lighter watchlist students, and 11 ordinary, light-touch, or strength-only classmates. Do not return to an "every student has a support need" fixture.
+- Load-bearing aliases must remain stable unless evals, tests, and docs are deliberately updated together: D1 Amira, D2 Brody, D3 Chantal, D4 Daniyal, D5 Elena, D6 Farid.
+- The clean seed contract is 26 students, 36 interventions, 3 generated plans, 1 pattern report, 1 approved family message, 5 sessions, and zero seeded feedback/forecast/scaffold/survival/variant/run rows.
+- `npm run pilot:reset` is the canonical deterministic reset. `npx tsx data/demo/seed.ts` is upsert-only and will not purge manual-demo drift.
+- `npm run demo:fixture:check` validates alias uniqueness, demo EAL tag conventions, clean-seed counts, latest-plan determinism (`plan-demo-003`), and no real/student-identifying fixture language. `npm run release:gate` runs this check before starting services.
+- Do not seed fake human feedback. If demo telemetry is added later, label it explicitly as synthetic demo telemetry.
 
 ## Supported Inference Lanes
 

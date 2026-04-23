@@ -1,4 +1,14 @@
-import { TAB_META, isTabVisibleForRole, type ActiveTab, type ClassroomRole } from "../appReducer";
+import {
+  TAB_META,
+  TOOL_META,
+  isActiveTab as isAppActiveTab,
+  isActiveTool,
+  isTabVisibleForRole,
+  resolveLegacyPanel,
+  type ActiveTool,
+  type ClassroomRole,
+  type NavTarget,
+} from "../appReducer";
 import type {
   EALoadBlock,
   OperatingDashboardCoverageCell,
@@ -12,7 +22,7 @@ import type {
 } from "../types";
 import { ActionButton } from "./shared";
 
-const TARGET_TAB_BY_CATEGORY: Record<string, ActiveTab> = {
+const TARGET_TAB_BY_CATEGORY: Record<string, ActiveTool> = {
   unapproved_message: "family-message",
   family_followup: "family-message",
   stale_followup: "log-intervention",
@@ -20,24 +30,47 @@ const TARGET_TAB_BY_CATEGORY: Record<string, ActiveTab> = {
   ea_action: "ea-briefing",
 };
 
-function isActiveTab(value: string | null | undefined): value is ActiveTab {
-  return typeof value === "string" && value in TAB_META;
+function isNavTargetValue(value: string | null | undefined): value is NavTarget {
+  return typeof value === "string" && (isAppActiveTab(value) || isActiveTool(value));
 }
 
-function tabFromString(value: string | null | undefined): ActiveTab | null {
-  return isActiveTab(value) ? value : null;
+function targetFromString(value: string | null | undefined): NavTarget | null {
+  return isNavTargetValue(value) ? value : null;
 }
 
-function tabFromAction(action: StudentThreadAction): ActiveTab | null {
+function tabFromAction(action: StudentThreadAction): NavTarget | null {
   const mapped = TARGET_TAB_BY_CATEGORY[action.category];
   if (mapped) return mapped;
-  return isActiveTab(action.target_tab) ? action.target_tab : null;
+  return isNavTargetValue(action.target_tab) ? action.target_tab : null;
 }
 
-function formatPanelName(tab: string) {
-  return isActiveTab(tab)
-    ? TAB_META[tab].label
-    : tab.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+function hostTabForTarget(target: NavTarget | null): ReturnType<typeof resolveLegacyPanel>["tab"] | null {
+  if (!target) return null;
+  return resolveLegacyPanel(target).tab;
+}
+
+function isTargetVisibleForRole(target: NavTarget | null, role?: ClassroomRole): boolean {
+  if (!role) return true;
+  const hostTab = hostTabForTarget(target);
+  return hostTab ? isTabVisibleForRole(hostTab, role) : false;
+}
+
+function formatPanelName(value: string) {
+  if (isAppActiveTab(value)) return TAB_META[value].label;
+  if (isActiveTool(value)) return TOOL_META[value].label;
+  return value.replace(/-/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+function labelForTarget(target: NavTarget): string {
+  if (isAppActiveTab(target)) return TAB_META[target].label;
+  if (isActiveTool(target)) return TOOL_META[target].label;
+  return String(target);
+}
+
+function shortLabelForTarget(target: NavTarget): string {
+  if (isAppActiveTab(target)) return TAB_META[target].shortLabel;
+  if (isActiveTool(target)) return TOOL_META[target].shortLabel;
+  return String(target);
 }
 
 function formatStatusLabel(value: string) {
@@ -58,13 +91,13 @@ function formatTimestamp(value: string | null) {
 
 interface PanelStatusViewProps {
   status: PanelStatus;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   activeRole?: ClassroomRole;
 }
 
 export function PanelStatusView({ status, onNavigate, activeRole }: PanelStatusViewProps) {
-  const targetTab = isActiveTab(status.panel_id) ? status.panel_id : null;
-  const canOpenTarget = targetTab ? !activeRole || isTabVisibleForRole(targetTab, activeRole) : false;
+  const targetTab = targetFromString(status.panel_id);
+  const canOpenTarget = targetTab ? isTargetVisibleForRole(targetTab, activeRole) : false;
 
   return (
     <>
@@ -106,7 +139,7 @@ export function PanelStatusView({ status, onNavigate, activeRole }: PanelStatusV
       {targetTab && canOpenTarget ? (
         <div className="drill-down-actions">
           <ActionButton size="sm" variant="secondary" onClick={() => onNavigate(targetTab)}>
-            Open {TAB_META[targetTab].shortLabel}
+            Open {shortLabelForTarget(targetTab)}
           </ActionButton>
         </div>
       ) : null}
@@ -116,7 +149,7 @@ export function PanelStatusView({ status, onNavigate, activeRole }: PanelStatusV
 
 interface StudentThreadViewProps {
   thread: StudentThread;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   activeRole?: ClassroomRole;
   onOpenStudent?: (alias: string) => void;
   onInterventionPrefill?: (prefill: {
@@ -141,7 +174,7 @@ export function StudentThreadView({
 }: StudentThreadViewProps) {
   const primaryAction = thread.actions[0] ?? null;
   const primaryTarget = primaryAction ? tabFromAction(primaryAction) : null;
-  const canOpenPrimaryTarget = primaryTarget ? !activeRole || isTabVisibleForRole(primaryTarget, activeRole) : false;
+  const canOpenPrimaryTarget = primaryTarget ? isTargetVisibleForRole(primaryTarget, activeRole) : false;
 
   return (
     <>
@@ -195,7 +228,7 @@ export function StudentThreadView({
                   <div className="drill-down-record__meta">
                     <span>{action.count} open</span>
                     <span>{formatStatusLabel(action.state)}</span>
-                    {targetTab ? <span>{TAB_META[targetTab].label}</span> : null}
+                    {targetTab ? <span>{labelForTarget(targetTab)}</span> : null}
                   </div>
                 </li>
               );
@@ -246,7 +279,7 @@ export function StudentThreadView({
             variant="secondary"
             onClick={() => onNavigate(primaryTarget)}
           >
-            Open {TAB_META[primaryTarget].shortLabel}
+            Open {shortLabelForTarget(primaryTarget)}
           </ActionButton>
         ) : null}
       </div>
@@ -305,14 +338,14 @@ export function EALoadBlockView({ block }: EALoadBlockViewProps) {
 
 interface WeekDayViewProps {
   day: OperatingDashboardDay;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   activeRole?: ClassroomRole;
 }
 
 export function WeekDayView({ day, onNavigate, activeRole }: WeekDayViewProps) {
   const forecastBlocks = day.blocks.filter((block) => block.source === "forecast").length;
   const eventBlocks = day.blocks.filter((block) => block.source === "event").length;
-  const canOpenForecast = !activeRole || isTabVisibleForRole("complexity-forecast", activeRole);
+  const canOpenForecast = isTargetVisibleForRole("complexity-forecast", activeRole);
 
   return (
     <>
@@ -368,13 +401,13 @@ export function WeekDayView({ day, onNavigate, activeRole }: WeekDayViewProps) {
 
 interface QueueStateViewProps {
   queue: OperatingDashboardQueue;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   activeRole?: ClassroomRole;
 }
 
 export function QueueStateView({ queue, onNavigate, activeRole }: QueueStateViewProps) {
-  const targetTab = tabFromString(queue.target_tab);
-  const canOpenTarget = targetTab ? !activeRole || isTabVisibleForRole(targetTab, activeRole) : false;
+  const targetTab = targetFromString(queue.target_tab);
+  const canOpenTarget = targetTab ? isTargetVisibleForRole(targetTab, activeRole) : false;
 
   return (
     <>
@@ -385,7 +418,7 @@ export function QueueStateView({ queue, onNavigate, activeRole }: QueueStateView
           <div className="drill-down-record__meta">
             <span>{queue.count} queued</span>
             <span>{formatStatusLabel(queue.state)}</span>
-            {targetTab ? <span>{TAB_META[targetTab].label}</span> : null}
+            {targetTab ? <span>{labelForTarget(targetTab)}</span> : null}
           </div>
         </div>
       </section>
@@ -417,7 +450,7 @@ export function QueueStateView({ queue, onNavigate, activeRole }: QueueStateView
       {targetTab && canOpenTarget ? (
         <div className="drill-down-actions">
           <ActionButton size="sm" variant="secondary" onClick={() => onNavigate(targetTab)}>
-            Open {TAB_META[targetTab].shortLabel}
+            Open {shortLabelForTarget(targetTab)}
           </ActionButton>
         </div>
       ) : null}
@@ -428,7 +461,7 @@ export function QueueStateView({ queue, onNavigate, activeRole }: QueueStateView
 interface CoverageCellViewProps {
   row: OperatingDashboardCoverageRow;
   cell: OperatingDashboardCoverageCell;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   activeRole?: ClassroomRole;
   onOpenStudent?: (alias: string) => void;
   onInterventionPrefill?: (prefill: {
@@ -452,8 +485,8 @@ export function CoverageCellView({
   onInterventionPrefill,
   onMessagePrefill,
 }: CoverageCellViewProps) {
-  const targetTab = tabFromString(cell.target_tab);
-  const canOpenTarget = targetTab ? !activeRole || isTabVisibleForRole(targetTab, activeRole) : false;
+  const targetTab = targetFromString(cell.target_tab);
+  const canOpenTarget = targetTab ? isTargetVisibleForRole(targetTab, activeRole) : false;
 
   return (
     <>
@@ -530,7 +563,7 @@ export function CoverageCellView({
         ) : null}
         {targetTab && targetTab !== "family-message" && targetTab !== "log-intervention" && canOpenTarget ? (
           <ActionButton size="sm" variant="secondary" onClick={() => onNavigate(targetTab)}>
-            Open {TAB_META[targetTab].shortLabel}
+            Open {shortLabelForTarget(targetTab)}
           </ActionButton>
         ) : null}
       </div>
@@ -540,13 +573,13 @@ export function CoverageCellView({
 
 interface TransitionRiskViewProps {
   risk: OperatingDashboardTransitionRisk;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   activeRole?: ClassroomRole;
 }
 
 export function TransitionRiskView({ risk, onNavigate, activeRole }: TransitionRiskViewProps) {
-  const targetTab = tabFromString(risk.target_tab);
-  const canOpenTarget = targetTab ? !activeRole || isTabVisibleForRole(targetTab, activeRole) : false;
+  const targetTab = targetFromString(risk.target_tab);
+  const canOpenTarget = targetTab ? isTargetVisibleForRole(targetTab, activeRole) : false;
 
   return (
     <>
@@ -579,7 +612,7 @@ export function TransitionRiskView({ risk, onNavigate, activeRole }: TransitionR
       {targetTab && canOpenTarget ? (
         <div className="drill-down-actions">
           <ActionButton size="sm" variant="secondary" onClick={() => onNavigate(targetTab)}>
-            Open {TAB_META[targetTab].shortLabel}
+            Open {shortLabelForTarget(targetTab)}
           </ActionButton>
         </div>
       ) : null}

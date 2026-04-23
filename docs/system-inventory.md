@@ -5,7 +5,7 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 ## UI Surface
 
 - Primary panels: 12
-- Navigation groups: today, prep, ops, review
+- Navigation groups: today, prep, tomorrow, ops, review
 
 ### today
 - Today
@@ -14,12 +14,14 @@ _Generated from code-level inventory sources. Do not update counts by hand witho
 - Differentiate
 - Language Tools
 
-### ops
+### tomorrow
 - Tomorrow Plan
+- Forecast
+
+### ops
+- Log Intervention
 - EA Briefing
 - EA Load Balance
-- Forecast
-- Log Intervention
 - Sub Packet
 
 ### review

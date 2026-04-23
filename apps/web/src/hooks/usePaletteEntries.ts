@@ -1,8 +1,20 @@
 import { useMemo } from "react";
-import { TAB_META, TAB_ORDER, type ActiveTab, type ClassroomRole, isTabVisibleForRole } from "../appReducer";
+import {
+  isActiveTool,
+  resolveLegacyPanel,
+  TAB_META,
+  TAB_ORDER,
+  TOOL_META,
+  TOOLS_BY_TAB,
+  type ActiveTab,
+  type ActiveTool,
+  type ClassroomRole,
+  type NavTarget,
+  isTabVisibleForRole,
+} from "../appReducer";
 import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, PanelStatus, TodaySnapshot } from "../types";
 
-export type PaletteEntryKind = "panel" | "classroom" | "action";
+export type PaletteEntryKind = "panel" | "tool" | "classroom" | "action";
 
 export interface PaletteEntry {
   kind: PaletteEntryKind;
@@ -20,7 +32,6 @@ function paletteShortcutForTab(tab: ActiveTab): string | null {
   const idx = TAB_ORDER.indexOf(tab) + 1;
   if (idx < 1) return null;
   if (idx <= 9) return String(idx);
-  if (idx === 10) return "0";
   return null;
 }
 
@@ -40,7 +51,7 @@ interface Input {
   debtRegister: DebtRegister | null;
   latestTodaySnapshot?: TodaySnapshot | null;
   activeRole?: ClassroomRole;
-  onNavigate?: (tab: ActiveTab) => void;
+  onNavigate?: (target: NavTarget) => void;
   onSwitchClassroom?: (id: string) => void;
   onMessagePrefill?: (prefill: FamilyMessagePrefill) => void;
   onInterventionPrefill?: (prefill: InterventionPrefill) => void;
@@ -76,27 +87,34 @@ export function usePaletteEntries({
     const entries: PaletteEntry[] = [];
 
     const recommendedStatus = [...(latestTodaySnapshot?.panel_statuses ?? [])]
-      .filter((status) => status.panel_id in TAB_META)
-      .filter((status) => activeRole ? isTabVisibleForRole(status.panel_id as ActiveTab, activeRole) : true)
+      .filter((status) => isActiveTool(status.panel_id) || TAB_ORDER.includes(status.panel_id as ActiveTab))
+      .filter((status) => {
+        if (!activeRole) return true;
+        const resolved = resolveLegacyPanel(status.panel_id);
+        return isTabVisibleForRole(resolved.tab, activeRole);
+      })
       .sort((a, b) => {
         const rankDiff = rankStatus(b) - rankStatus(a);
         if (rankDiff !== 0) return rankDiff;
         return b.pending_count - a.pending_count;
       })[0];
 
-    if (recommendedStatus && recommendedStatus.panel_id in TAB_META) {
-      const targetTab = recommendedStatus.panel_id as ActiveTab;
+    if (recommendedStatus) {
+      const target = recommendedStatus.panel_id;
+      const resolved = resolveLegacyPanel(target);
+      const label = isActiveTool(target) ? TOOL_META[target].label : TAB_META[resolved.tab].label;
       entries.push({
         kind: "action",
-        id: `action:recommended:${targetTab}`,
-        label: `Recommended now: ${TAB_META[targetTab].label}`,
+        id: `action:recommended:${target}`,
+        label: `Recommended now: ${label}`,
         group: "Now",
         recommended: true,
-        keywords: `recommended now next ${TAB_META[targetTab].label} ${recommendedStatus.detail}`.toLowerCase(),
-        onSelect: () => onNavigate?.(targetTab),
+        keywords: `recommended now next ${label} ${recommendedStatus.detail}`.toLowerCase(),
+        onSelect: () => onNavigate?.(isActiveTool(target) ? (target as ActiveTool) : resolved.tab),
       });
     }
 
+    // Top-level page entries — one per seven-view surface.
     for (const tab of TAB_ORDER) {
       const meta = TAB_META[tab];
       const shortcut = paletteShortcutForTab(tab);
@@ -104,11 +122,29 @@ export function usePaletteEntries({
         kind: "panel",
         id: `panel:${tab}`,
         label: meta.label,
-        group: meta.group,
-        keywords: [meta.label, meta.shortLabel, meta.group, tab].join(" ").toLowerCase(),
+        group: meta.purpose,
+        keywords: [meta.label, meta.shortLabel, meta.purpose, tab].join(" ").toLowerCase(),
         shortcut: shortcut ?? undefined,
         onSelect: () => onNavigate?.(tab),
       });
+    }
+
+    // Embedded tool entries — one per tool hosted inside Prep / Tomorrow
+    // / Ops / Review. Selecting an entry opens the host page and focuses
+    // the named tool.
+    for (const [tab, tools] of Object.entries(TOOLS_BY_TAB) as [ActiveTab, ActiveTool[]][]) {
+      const tabLabel = TAB_META[tab].label;
+      for (const tool of tools) {
+        const toolMeta = TOOL_META[tool];
+        entries.push({
+          kind: "tool",
+          id: `tool:${tool}`,
+          label: `${tabLabel} · ${toolMeta.label}`,
+          group: tabLabel,
+          keywords: [tabLabel, toolMeta.label, toolMeta.shortLabel, tool].join(" ").toLowerCase(),
+          onSelect: () => onNavigate?.(tool),
+        });
+      }
     }
 
     for (const c of classrooms) {
@@ -161,25 +197,26 @@ export function usePaletteEntries({
       }
     }
 
-    const actions: Array<{ label: string; tab: ActiveTab; keywords: string }> = [
-      { label: "Start lesson prep", tab: "differentiate", keywords: "prep start lesson differentiate variant adapt" },
-      { label: "Simplify text", tab: "language-tools", keywords: "prep simplify language vocab translate" },
-      { label: "Log intervention", tab: "log-intervention", keywords: "ops log intervention note behavior" },
-      { label: "Plan tomorrow", tab: "tomorrow-plan", keywords: "ops plan tomorrow support priorities" },
-      { label: "Forecast tomorrow", tab: "complexity-forecast", keywords: "ops forecast tomorrow complexity risk" },
-      { label: "Prepare EA briefing", tab: "ea-briefing", keywords: "ops ea briefing assistant prepare" },
-      { label: "Balance EA load", tab: "ea-load", keywords: "ops ea load balance schedule" },
-      { label: "Build a sub packet", tab: "survival-packet", keywords: "ops sub substitute packet survival" },
-      { label: "Draft family message", tab: "family-message", keywords: "review message family parent send draft" },
-      { label: "Review support patterns", tab: "support-patterns", keywords: "review support patterns themes analysis" },
+    const actions: Array<{ label: string; target: NavTarget; keywords: string }> = [
+      { label: "Start lesson prep", target: "differentiate", keywords: "prep start lesson differentiate variant adapt" },
+      { label: "Simplify text", target: "language-tools", keywords: "prep simplify language vocab translate" },
+      { label: "Log intervention", target: "log-intervention", keywords: "ops log intervention note behavior" },
+      { label: "Plan tomorrow", target: "tomorrow-plan", keywords: "tomorrow plan support priorities" },
+      { label: "Forecast tomorrow", target: "complexity-forecast", keywords: "tomorrow forecast complexity risk" },
+      { label: "Prepare EA briefing", target: "ea-briefing", keywords: "ops ea briefing assistant prepare" },
+      { label: "Balance EA load", target: "ea-load", keywords: "ops ea load balance schedule" },
+      { label: "Build a sub packet", target: "survival-packet", keywords: "ops sub substitute packet survival" },
+      { label: "Draft family message", target: "family-message", keywords: "review message family parent send draft" },
+      { label: "Review support patterns", target: "support-patterns", keywords: "review support patterns themes analysis" },
     ];
     for (const a of actions) {
+      const resolved = resolveLegacyPanel(a.target);
       entries.push({
         kind: "action",
-        id: `action:${a.tab}:${a.label}`,
+        id: `action:${a.target}:${a.label}`,
         label: a.label,
-        keywords: [a.label, a.keywords, TAB_META[a.tab].group].join(" ").toLowerCase(),
-        onSelect: () => onNavigate?.(a.tab),
+        keywords: [a.label, a.keywords, TAB_META[resolved.tab].label].join(" ").toLowerCase(),
+        onSelect: () => onNavigate?.(a.target),
       });
     }
 

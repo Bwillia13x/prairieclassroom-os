@@ -24,7 +24,6 @@ function shortcutKeyForTab(tab: ActiveTab): string | null {
   const idx = TAB_ORDER.indexOf(tab) + 1;
   if (idx < 1) return null;
   if (idx <= 9) return String(idx);
-  if (idx === 10) return "0";
   return null;
 }
 
@@ -90,8 +89,8 @@ export default function ShortcutSheet({ open, onClose }: Props) {
           </dl>
         </section>
 
-        <section className="shortcut-sheet__section" aria-label="Jump to panel">
-          <h3 className="shortcut-sheet__section-title">Jump to panel</h3>
+        <section className="shortcut-sheet__section" aria-label="Jump to page">
+          <h3 className="shortcut-sheet__section-title">Jump to page</h3>
           <dl className="shortcut-sheet__list shortcut-sheet__list--panels">
             {panelRows.map(({ tab, key }) => (
               <div key={tab} className="shortcut-sheet__row">
@@ -100,7 +99,7 @@ export default function ShortcutSheet({ open, onClose }: Props) {
                 </dt>
                 <dd className="shortcut-sheet__label">
                   <span className="shortcut-sheet__panel-label">{TAB_META[tab].label}</span>
-                  <span className="shortcut-sheet__panel-group">{TAB_META[tab].group}</span>
+                  <span className="shortcut-sheet__panel-group">{TAB_META[tab].purpose}</span>
                 </dd>
               </div>
             ))}

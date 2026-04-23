@@ -183,7 +183,7 @@ export default function InterventionPanel({ prefill }: Props) {
         />
       ) : null}
 
-      <OpsWorkflowStepper activeTab="log-intervention" />
+      <OpsWorkflowStepper activeTool="log-intervention" />
 
       <WorkspaceLayout
         splitState={displayResult ? "output" : "input"}

@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import MobileNav from "../MobileNav";
 
-function makeContext(): AppContextValue {
+function makeContext(overrides: Partial<AppContextValue> = {}): AppContextValue {
   return {
     classrooms: [],
     activeClassroom: "demo-classroom",
@@ -36,6 +36,11 @@ function makeContext(): AppContextValue {
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    activeTool: null,
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
+    ...overrides,
   };
 }
 
@@ -58,5 +63,30 @@ describe("MobileNav", () => {
 
     expect(screen.getByRole("button", { name: /ops\s*8/i })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /review\s*9/i })).toBeInTheDocument();
+  });
+
+  it("surfaces queued Tomorrow notes as the Tomorrow tab badge and keeps routing intact", () => {
+    const onTabChange = vi.fn();
+    render(
+      <AppContext.Provider
+        value={makeContext({
+          tomorrowNotes: [{
+            id: "mobile-note-1",
+            sourcePanel: "differentiate",
+            sourceType: "differentiate_material",
+            summary: "Carry visual vocabulary forward",
+            createdAt: "2026-04-23T10:00:00Z",
+          }],
+        })}
+      >
+        <MobileNav activeTab="today" onTabChange={onTabChange} />
+      </AppContext.Provider>,
+    );
+
+    const tomorrow = screen.getByRole("button", { name: /tomorrow\s*1/i });
+    expect(tomorrow).toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("mobile-nav-group-tomorrow"));
+    expect(onTabChange).toHaveBeenCalledWith("tomorrow");
   });
 });

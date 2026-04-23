@@ -40,6 +40,10 @@ function makeContext(
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    activeTool: null,
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
     ...overrides,
   };
 }

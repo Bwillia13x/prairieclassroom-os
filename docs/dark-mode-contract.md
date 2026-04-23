@@ -1,6 +1,6 @@
 # Theme Contract
 
-**Status:** Canonical. Last updated 2026-04-17 (round 7 — light/dark theme polish).
+**Status:** Canonical. Last updated 2026-04-22 (dark-mode de-sepia pass).
 **Scope:** `apps/web` — the teacher-facing PrairieClassroom UI.
 
 This document is the single source of truth for the light/dark color system. When you touch anything in `apps/web/src/styles/tokens.css`, `apps/web/src/tokens.css`, or any component CSS that defines color, read this first.
@@ -14,6 +14,14 @@ This document is the single source of truth for the light/dark color system. Whe
 **2026-04-17 round 3 — black-first dark mode.** User feedback after the institutional repositioning was that dark mode still read too navy/blue-dominant. The fix is not a new theme and not a rollback to the prior warm palette: the existing dark theme is retuned in place so large surfaces are black/graphite while navy appears only as a sparse affordance color for active nav, primary CTAs, focus, links, selected rows/chips, and small status signals.
 
 **2026-04-17 round 7 — light/dark theme polish.** The theme system now also treats light mode as a clean institutional paper/neutral stack, not a gray-heavy canvas. Broad accent and semantic washes were reduced across shared primitives, empty states, contextual hints, feature panels, and visualizations. Legacy token names are aliased back to canonical roles so old call sites cannot fall through to bootstrap blues, warm browns, or missing-variable defaults.
+
+**2026-04-22 de-beige pass (both modes).** Three surfaces were painting a broad warm wash over the workspace canvas — read as sand/beige in light mode and as sepia/brown in dark mode — and the directive was to remove the beige color wherever it appeared. The pass started dark-mode-only, then broadened to both modes after light mode was shown to carry the same issue:
+
+1. `.shell-brand` (`apps/web/src/styles/shell.css`) carried a `#fff7cf` 92% cream plate in dark mode, producing a visibly beige card behind the logo. The dark-mode side is now `var(--color-surface-muted)` — a near-black graphite plate consistent with the three-layer material hierarchy. Light mode remained transparent.
+2. `.app-main::before` (`apps/web/src/styles/ambient.css`) paired a cool section tint with a warm secondary channel (`--_ambient-section-warm`, defaulting to `--color-brand-highlight` cognac) at 10%/8%/6% radial opacities. In both modes that warm channel combined with the aurora's blur + saturate + animated opacity (0.55–0.78 keyframe) to produce a broad colored wash. The warm channel now collapses onto the section tint in *both* modes (`--_ambient-section-warm: var(--_ambient-section-tint)` on every section variant), the gradient percentages drop to 4%/3%/2%, and `saturate` drops to 0.85. The aurora still shifts hue between sections for wayfinding but no longer reads as a color field.
+3. `--gradient-prairie-horizon` (`apps/web/src/styles/tokens.css`) — the singular TodayHero atmospheric backdrop, originally sanctioned at 12% cognac / 8% prairie-green in the 2026-04-22 Tier C decision — is now pinned to 4% / 3% in the base token definition (both modes share the same percentages). The cognac + green compositional structure remains; only the intensity is tightened.
+
+Net result: the workspace canvas reads as institutional neutral in both modes. Wayfinding color survives as a barely-perceptible section-tint breath in the aurora. Prairie warm identity survives on the TodayHero hero band as a whisper-quiet atmospheric moment. The Alberta-institutional register of the product is preserved across both themes, and no large surface reads as an editorial warm/beige field.
 
 ### Material hierarchy
 

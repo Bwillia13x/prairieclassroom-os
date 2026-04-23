@@ -36,11 +36,13 @@ The operator source of truth for the no-spend local lane is [docs/zero-cost-oper
 The operator source of truth for the hosted hackathon lane is [docs/hackathon-hosted-operations.md](docs/hackathon-hosted-operations.md).
 The artifact-backed proof registry lives in [docs/live-model-proof-status.md](docs/live-model-proof-status.md) for Ollama-host evidence, while provider comparisons live in [docs/eval-baseline.md](docs/eval-baseline.md).
 
-### Seed demo data (first time only)
+### Reset demo data
 
 ```bash
-npx tsx data/demo/seed.ts
+npm run pilot:reset
 ```
+
+Direct `npx tsx data/demo/seed.ts` is upsert-only. Use `npm run pilot:reset` when you need the canonical clean demo state.
 
 ### Run (three terminals)
 
@@ -116,17 +118,28 @@ cd services/inference && python server.py --mode api --port 3200
 
 Navigate to **http://localhost:5173/?demo=true** for the demo classroom (Mrs. Okafor's Grade 3/4 split, pre-loaded with 2 weeks of classroom memory).
 
+The shell exposes seven standalone top-level pages in this fixed
+order: **classroom → today → tomorrow → week → prep → ops → review**.
+`classroom` is the default landing page. Prep, Tomorrow, Ops, and
+Review each host multiple embedded tools behind a local tool switcher.
+
 The shell also supports stable deep links:
 
-- `?tab=<panel-id>` restores the active panel on load and refresh
-- `?classroom=<classroom-id>` restores the active classroom
-- `?demo=true` still selects the demo classroom when no explicit classroom is provided
+- `?tab=<page-id>` restores the active top-level page on load and refresh.
+- `?tool=<tool-id>` (optional) refines the embedded tool on pages that
+  host more than one (e.g. Prep → `differentiate` | `language-tools`).
+- `?classroom=<classroom-id>` restores the active classroom.
+- `?demo=true` still selects the demo classroom when no explicit classroom is provided.
+- Legacy `?tab=<old-panel>` values (e.g. `tomorrow-plan`,
+  `log-intervention`, `differentiate`) are migrated on load to their
+  canonical (tab, tool) pair and emitted on the next URL write.
 
 Examples:
 
 ```text
-http://localhost:5173/?demo=true&tab=family-message
-http://localhost:5173/?classroom=alpha-grade4&tab=tomorrow-plan
+http://localhost:5173/?demo=true&tab=review&tool=family-message
+http://localhost:5173/?classroom=alpha-grade4&tab=tomorrow
+http://localhost:5173/?tab=tomorrow-plan   # legacy; redirects to tab=tomorrow&tool=tomorrow-plan
 ```
 
 `GET /api/classrooms` now returns non-secret classroom metadata for the shell, including `requires_access_code` and `is_demo`. It never returns the classroom access code itself.
@@ -145,7 +158,7 @@ npm run smoke
 ```
 
 The browser smoke saves failure screenshots to `output/playwright/`.
-It now verifies grouped shell navigation, `tab` and `classroom` deep-link restore, the demo classroom flow, and protected classroom auth recovery for missing and invalid codes.
+It now verifies the seven-view top-level shell navigation, `tab` + optional `tool` deep-link restore (including legacy `?tab=<old-panel>` migration), the demo classroom flow, and protected classroom auth recovery for missing and invalid codes.
 
 To capture a screenshot bundle for UI review artifacts:
 

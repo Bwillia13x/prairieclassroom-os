@@ -74,37 +74,50 @@
   --color-brand-green-soft: light-dark(#e6ede8, #0e1a14);
 
   /* ------------------------------------------------------------
-     Prairie-horizon atmospheric backdrop (2026-04-22 Tier C).
+     Prairie-horizon atmospheric backdrop (2026-04-22 Tier C,
+     retuned in the 2026-04-22 de-beige pass).
      Dual-radial-gradient hero backdrop for the single atmospheric
      moment in the product — the TodayHero. A warm cognac glow rises
-     from the bottom (12% opacity) paired with a cooler prairie-green
-     sky wash from the upper-left corner (8% opacity). The percentages
-     sit at or below the existing .surface-panel--atmospheric standard
-     (accent 8%, analysis 6%), so the hue shift carries the Prairie
-     identity without breaking the institutional register.
+     from the bottom paired with a cooler prairie-green sky wash
+     from the upper-left corner. The original Tier-C sanction set
+     intensities at 12%/8%, which the subsequent de-beige directive
+     lowered to 4%/3% in both modes because the higher values read
+     as a broad warm wash on both canvases. The 4%/3% pair keeps the
+     Prairie identity present as atmosphere without crossing into a
+     colored-field wash.
 
      Because --color-brand-highlight and --color-brand-green are each
      defined with light-dark() values, the color-mix() calls below
      automatically produce mode-appropriate output — no explicit
-     light-dark() wrapper needed on the gradient itself. On dark-mode
-     black-first surfaces the mode-appropriate dark cognac (#d4a15c)
-     and lifted green (#6d9481) still read as sparse affordances over
-     the near-black canvas, not ambient washes.
+     light-dark() wrapper needed on the gradient itself.
 
      Consumers: exactly one — `.today-hero` in TodayHero.css. Do not
      reuse for cards, panels, or other surfaces; the decision-log
      entry for this token is explicit that atmospheric treatment is
      limited to the single hero moment.
      ------------------------------------------------------------ */
+  /* 2026-04-22 de-beige retune: the original 12%/8% percentages paired
+     cognac with prairie-green at intensities that read as a warm sand
+     band over the light institutional canvas (and a sepia wash over
+     the dark graphite canvas). The directive was to remove the beige
+     wherever it appears. Percentages drop to 4% cognac / 3% green,
+     unified across both modes — still the sanctioned single atmospheric
+     moment, but sub-5% contribution keeps the Prairie identity as a
+     whisper under the hero composition rather than a broad wash. The
+     cognac-first bottom glow and the green upper-left wash are both
+     retained for compositional structure; only the intensity is
+     tightened. Since both colors are themselves `light-dark()` tokens,
+     this gradient continues to resolve to mode-appropriate values
+     automatically. */
   --gradient-prairie-horizon:
     radial-gradient(
       ellipse 120% 60% at 50% 110%,
-      color-mix(in srgb, var(--color-brand-highlight) 12%, transparent),
+      color-mix(in srgb, var(--color-brand-highlight) 4%, transparent),
       transparent 60%
     ),
     radial-gradient(
       ellipse 100% 55% at 18% -8%,
-      color-mix(in srgb, var(--color-brand-green) 8%, transparent),
+      color-mix(in srgb, var(--color-brand-green) 3%, transparent),
       transparent 55%
     );
 

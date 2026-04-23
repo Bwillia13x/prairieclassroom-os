@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, URLSearchParams } from "node:url";
 import { chromium } from "playwright";
 
 const WEB_BASE = process.env.PRAIRIE_WEB_BASE ?? "http://localhost:5173";
@@ -46,8 +46,20 @@ async function assertNoRuntimeErrors(page, consoleErrors, pageErrors) {
   }
 }
 
-async function captureDesktopTab(page, tab, filename) {
-  await page.goto(`${WEB_BASE}/?demo=true&tab=${tab}&classroom=${DEMO_CLASSROOM_ID}`, {
+/**
+ * @param {import('playwright').Page} page
+ * @param {string} tab — top-level shell tab (`classroom` … `review`)
+ * @param {string | null} [tool] — optional embedded tool (`differentiate`, `tomorrow-plan`, …)
+ * @param {string} filename
+ */
+async function captureDesktopTab(page, tab, filename, tool = null) {
+  const params = new URLSearchParams({
+    demo: "true",
+    tab,
+    classroom: DEMO_CLASSROOM_ID,
+  });
+  if (tool) params.set("tool", tool);
+  await page.goto(`${WEB_BASE}/?${params.toString()}`, {
     waitUntil: "networkidle",
   });
   await page.waitForSelector(`#panel-${tab}:not([hidden])`);
@@ -118,10 +130,10 @@ async function main() {
 
   try {
     const captures = [
-      { tab: "today", filename: "today-desktop.png" },
-      { tab: "differentiate", filename: "differentiate-desktop.png" },
-      { tab: "tomorrow-plan", filename: "tomorrow-plan-desktop.png" },
-      { tab: "family-message", filename: "family-message-desktop.png" },
+      { tab: "today", tool: null, filename: "today-desktop.png" },
+      { tab: "prep", tool: "differentiate", filename: "differentiate-desktop.png" },
+      { tab: "tomorrow", tool: "tomorrow-plan", filename: "tomorrow-plan-desktop.png" },
+      { tab: "review", tool: "family-message", filename: "family-message-desktop.png" },
     ];
 
     for (const capture of captures) {
@@ -129,31 +141,44 @@ async function main() {
         desktopPage,
         capture.tab,
         path.join(runDir, capture.filename),
+        capture.tool,
       );
     }
 
-    await tabletPage.goto(`${WEB_BASE}/?demo=true&tab=tomorrow-plan&classroom=${DEMO_CLASSROOM_ID}`, {
+    const tabletParams = new URLSearchParams({
+      demo: "true",
+      tab: "tomorrow",
+      tool: "tomorrow-plan",
+      classroom: DEMO_CLASSROOM_ID,
+    });
+    await tabletPage.goto(`${WEB_BASE}/?${tabletParams.toString()}`, {
       waitUntil: "networkidle",
     });
-    await tabletPage.waitForSelector("#panel-tomorrow-plan:not([hidden])");
+    await tabletPage.waitForSelector("#panel-tomorrow:not([hidden])");
     await tabletPage.screenshot({
       path: path.join(runDir, "tomorrow-plan-tablet.png"),
       fullPage: true,
     });
 
-    await darkPage.goto(`${WEB_BASE}/?demo=true&tab=tomorrow-plan&classroom=${DEMO_CLASSROOM_ID}`, {
+    await darkPage.goto(`${WEB_BASE}/?${tabletParams.toString()}`, {
       waitUntil: "networkidle",
     });
-    await darkPage.waitForSelector("#panel-tomorrow-plan:not([hidden])");
+    await darkPage.waitForSelector("#panel-tomorrow:not([hidden])");
     await darkPage.screenshot({
       path: path.join(runDir, "tomorrow-plan-dark-desktop.png"),
       fullPage: true,
     });
 
-    await mobilePage.goto(`${WEB_BASE}/?demo=true&tab=family-message&classroom=${DEMO_CLASSROOM_ID}`, {
+    const reviewParams = new URLSearchParams({
+      demo: "true",
+      tab: "review",
+      tool: "family-message",
+      classroom: DEMO_CLASSROOM_ID,
+    });
+    await mobilePage.goto(`${WEB_BASE}/?${reviewParams.toString()}`, {
       waitUntil: "networkidle",
     });
-    await mobilePage.waitForSelector("#panel-family-message:not([hidden])");
+    await mobilePage.waitForSelector("#panel-review:not([hidden])");
     await mobilePage.waitForSelector(".mobile-nav");
     await mobilePage.screenshot({
       path: path.join(runDir, "shell-mobile.png"),

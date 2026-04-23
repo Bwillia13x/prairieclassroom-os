@@ -10,7 +10,7 @@
 
 ## How to use this document
 
-1. **Screenshots** are in `qa/demo-script/screenshots/` — 21 images covering 8 beats plus mobile.
+1. **Screenshots** are in `qa/demo-script/screenshots/` — filenames below match the 8 beats (regenerate with dev + API up: `npm run demo:screenshots` from repo root).
 2. **Narration drafts** below are starting points — rewrite them in your voice before recording voiceover. The tightest 3-minute story is about 420–450 words of narration at a natural teacher-presenter pace (~150 wpm). The draft hits ~440 words.
 3. **Assemble the video** in your tool of choice (iMovie, Final Cut, CapCut, DaVinci Resolve). Suggested cadence: 1 image every 6–12 seconds, with light Ken Burns motion on the wider shots. Keep cuts tight — no lingering beyond 15 seconds on any single frame.
 4. **Background music**: low-BPM instrumental, ~60 dB under voiceover. Avoid anything percussive during the Differentiate/Family Message beats — the narration carries emotional weight there.
@@ -36,7 +36,7 @@
 
 **Screenshot:** `01-today-hero.png`
 
-**Visual notes:** Dark theme, full-bleed dashboard. Hero card dominates the frame with the line *"10:00–10:45 is today's real test"*. Sub-caption: *"Amira enters with unfinished threads — meet them first."* Top nav shows Today / Prep / Ops / Review. Active classroom: Grade 3-4 cross-curricular.
+**Visual notes:** Dark theme, full-bleed dashboard. Hero card dominates the frame with the line *"10:00–10:45 is today's real test"*. Sub-caption: *"Amira enters with unfinished threads — meet them first."* Top nav shows seven primary views (Classroom · Today · Tomorrow · Week · Prep · Ops · Review); this beat is captured on **Today** (same-day triage). Active classroom: Grade 3-4 cross-curricular.
 
 **Narration draft (55 words / ~20s):**
 > A Grade 3-4 teacher in Alberta walks into her classroom at 8:47 AM. Twenty-six students. Eight English learners. Ninety-four open threads carried over from yesterday. She has seventy minutes before the first real test of the day: a math block right after the whole-school assembly. This is the problem PrairieClassroom OS exists to solve.
@@ -136,7 +136,7 @@
 
 **Screenshots:** `19-today-light-theme.png` (warm close) + `20-mobile-today.png` (picture-in-picture mobile inset, or cut to mobile for the final 5s)
 
-**Visual notes:** The light theme brings warmth. The mobile shot shows the same app adapts to the phone with the Today / Prep / Ops / Review bottom nav — teacher uses it from her laptop at prep and from her phone during recess duty.
+**Visual notes:** The light theme brings warmth. The mobile shot shows the same app adapts to the phone with the same seven-view bottom nav — teacher uses it from her laptop at prep and from her phone during recess duty.
 
 **Narration draft (70 words / ~25s):**
 > PrairieClassroom OS runs entirely on hardware the teacher already owns. Thirteen model-routed prompt classes. Sixteen prompt injection detection rules. One thousand one hundred twenty-three tests. Zero cloud by default. Zero student data leaving the building. Classroom complexity isn't a behavior problem. It's a coordination problem. And when the coordination load drops, teachers get their afternoons back — and every student gets the attention they deserve.

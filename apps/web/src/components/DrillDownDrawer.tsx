@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import type { DrillDownContext } from "../types";
-import type { ActiveTab } from "../appReducer";
+import type { NavTarget } from "../appReducer";
 import StudentDetailView from "./StudentDetailView";
 import ForecastBlockView from "./ForecastBlockView";
 import DebtCategoryView from "./DebtCategoryView";
@@ -24,7 +24,7 @@ import "./DrillDownDrawer.css";
 interface Props {
   context: DrillDownContext | null;
   onClose: () => void;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   /**
    * Called when a child view needs to escalate to a different context
    * without closing the drawer (e.g., student-tag-group → student detail).

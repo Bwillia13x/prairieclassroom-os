@@ -4,7 +4,7 @@
 "@claude.md perform final review and testing of this application. ensure everything is working perfectly. polish/fine-tune the ui/ux where recommended"
 
 ## Project summary
-PrairieClassroom OS is a teacher- and EA-facing classroom complexity copilot for Alberta K-6 classrooms. It is a production-hardened monorepo (Vite + React UI `apps/web`, Express orchestrator `services/orchestrator`, Python inference service `services/inference`, per-classroom SQLite memory `services/memory`, shared Zod schemas `packages/shared`). Twelve teacher-facing panels across Today / Prep / Ops / Review surface 13 model-routed prompt classes plus deterministic retrieval views.
+PrairieClassroom OS is a teacher- and EA-facing classroom complexity copilot for Alberta K-6 classrooms. It is a production-hardened monorepo (Vite + React UI `apps/web`, Express orchestrator `services/orchestrator`, Python inference service `services/inference`, per-classroom SQLite memory `services/memory`, shared Zod schemas `packages/shared`). Twelve teacher-facing **working surfaces** (tool workspaces hosted under seven top-level shell views: Classroom · Today · Tomorrow · Week · Prep · Ops · Review) surface 13 model-routed prompt classes plus deterministic retrieval views.
 
 ## User personas
 - **Teacher** (primary) — generates, approves, logs; sees every panel.

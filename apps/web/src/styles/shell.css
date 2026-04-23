@@ -3,38 +3,40 @@
      the top, app-main fills the remainder, footer hugs the bottom.
      No outer document scroll — each content pane manages its own. */
   --shell-sticky-offset: 0px;
+  --shell-control-h: 3.1rem;
+  --shell-nav-h: 3.95rem;
+  --shell-control-radius: var(--radius-md);
+  --shell-control-border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  --shell-control-bg: color-mix(in srgb, var(--color-surface-elevated) 56%, transparent);
+  --shell-control-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 86%, transparent);
+  --shell-control-accent: var(--color-brand-highlight);
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  max-width: var(--app-max-width);
+  max-width: min(100%, 1920px);
   margin: 0 auto;
-  padding: var(--space-2) var(--space-3) 0;
+  padding: var(--space-3) var(--space-4) 0;
   overflow: hidden;
 }
 
 .app-header {
   flex-shrink: 0;
   z-index: 60;
-  padding-top: var(--space-3);
+  padding-top: var(--space-2);
 }
 
 .app-header__inner {
   display: flex;
   flex-direction: column;
-  /* Tightened from 0.4rem (audit fix A1) so the two-row chrome reads as a
-     single compact unit rather than two stacked bars. Reclaims ~2-3px of
-     vertical space; combined with the strengthened seam below, Row 1 and
-     Row 2 still parse as distinct conceptual layers (identity vs nav). */
-  gap: 0.25rem;
-  padding: 0.5rem 0.85rem;
-  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
-  border-radius: var(--radius-lg);
-  background: color-mix(in srgb, var(--color-surface-glass) 96%, transparent);
-  box-shadow:
-    var(--shadow-sm),
-    var(--inner-stroke);
-  backdrop-filter: blur(28px) saturate(1.35);
-  -webkit-backdrop-filter: blur(28px) saturate(1.35);
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 
 /* ─── Row 1 — brand, classroom, actions ──────────────────────────── */
@@ -48,7 +50,7 @@
   grid-template-columns: auto minmax(180px, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: var(--control-h-lg);
+  min-height: var(--shell-control-h);
 }
 
 .shell-brand {
@@ -56,31 +58,71 @@
   align-items: center;
   gap: 0.55rem;
   min-width: 0;
-  padding: 0.08rem 0.32rem 0.08rem 0;
-  border-radius: var(--radius-md);
-  background: light-dark(
-    transparent,
-    color-mix(in srgb, #fff7cf 92%, transparent)
-  );
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
   color: var(--color-text);
 }
 
 .app-logo {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
   width: auto;
-  height: clamp(2.3rem, 3.8vw, 3.2rem);
-  max-width: min(300px, 44vw);
-  object-fit: contain;
+  height: clamp(2.55rem, 2.8vw, 3.15rem);
+  max-width: min(280px, 38vw);
   flex-shrink: 0;
-  image-rendering: auto;
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
   transition: filter var(--motion-fast, 0.15s) ease;
+}
+
+.brand-mark__glyph {
+  width: clamp(1.85rem, 2.3vw, 2.35rem);
+  height: clamp(1.85rem, 2.3vw, 2.35rem);
+  flex-shrink: 0;
+  color: var(--shell-control-accent);
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent));
+}
+
+.brand-mark__glyph path {
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.brand-mark__wordmark {
+  min-width: 0;
+  color: var(--color-text);
+  font-size: clamp(0.95rem, 1.05vw, 1.08rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+
+.brand-mark__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  min-height: 1.45rem;
+  padding: 0 0.45rem;
+  /* Demoted 2026-04-23 — the prior `--shell-control-accent` border + text
+     made the OS badge the single highest-chroma element on every page,
+     pulling the eye away from page content. The tertiary monochrome
+     treatment matches the rest of the wordmark utility row. */
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--shell-control-radius) * 0.42);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  line-height: 1;
 }
 
 @media (max-width: 720px) {
   .app-logo {
-    height: 2.15rem;
+    height: 2.55rem;
     max-width: 58vw;
   }
 }
@@ -88,20 +130,20 @@
 /* Classroom pill — centered in row 1, slimmer than before */
 .shell-classroom-anchor {
   position: relative;
-  width: min(100%, 380px);
+  width: min(100%, 520px);
   justify-self: center;
 }
 
 .shell-classroom-pill {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: 0;
   width: 100%;
-  min-height: var(--control-h-md);
-  padding: var(--control-py-xs) var(--space-2) var(--control-py-xs) var(--space-1);
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-surface-elevated) 68%, transparent);
+  min-height: var(--shell-control-h);
+  padding: 0 var(--space-3) 0 0;
+  border: var(--shell-control-border);
+  border-radius: var(--shell-control-radius);
+  background: var(--shell-control-bg);
   color: var(--color-text);
   will-change: transform;
   transition:
@@ -113,7 +155,7 @@
 
 .shell-classroom-pill:hover:not(:disabled) {
   border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
-  background: var(--color-surface-elevated);
+  background: var(--shell-control-bg-hover);
   transform: translateY(-0.5px);
 }
 
@@ -124,17 +166,20 @@
 
 .shell-classroom-pill--open {
   border-color: color-mix(in srgb, var(--color-border-accent) 65%, transparent);
-  background: var(--color-surface-elevated);
-  box-shadow: var(--shadow-sm);
+  background: var(--shell-control-bg-hover);
+  box-shadow: inset 0 -2px 0 var(--shell-control-accent);
 }
 
 .shell-classroom-pill__switcher {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: var(--control-h-xs);
-  height: var(--control-h-xs);
-  border-radius: var(--radius-pill);
+  align-self: stretch;
+  width: var(--shell-control-h);
+  height: auto;
+  margin-right: var(--space-3);
+  border-right: var(--shell-control-border);
+  border-radius: 0;
   flex-shrink: 0;
 }
 
@@ -145,6 +190,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 0;
+  padding-left: 0;
 }
 
 /* The "Active classroom" eyebrow is redundant in a trimmed header —
@@ -290,7 +336,7 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-2);
   justify-self: end;
 }
 
@@ -305,12 +351,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--control-h-sm);
-  min-width: var(--control-h-sm);
-  padding: 0 var(--space-2);
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-surface-elevated) 55%, transparent);
+  min-height: var(--shell-control-h);
+  min-width: var(--shell-control-h);
+  padding: 0 var(--space-3);
+  border: var(--shell-control-border);
+  border-radius: var(--shell-control-radius);
+  background: var(--shell-control-bg);
   color: var(--color-text-secondary);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
@@ -326,7 +372,7 @@
 
 .shell-bar__palette-btn:hover {
   border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
-  background: var(--color-surface-elevated);
+  background: var(--shell-control-bg-hover);
   color: var(--color-text);
   transform: translateY(-0.5px);
 }
@@ -337,38 +383,47 @@
 }
 
 .theme-toggle,
+.theme-toggle-instrument,
 .app-help-btn {
-  min-width: var(--control-h-sm);
-  min-height: var(--control-h-sm);
+  min-width: var(--shell-control-h);
+  min-height: var(--shell-control-h);
+}
+
+.theme-toggle-instrument.nothing-btn {
+  --nib-size: var(--shell-control-h);
+  border: var(--shell-control-border);
+  border-radius: var(--shell-control-radius);
+  background: var(--shell-control-bg);
+  color: var(--color-text-secondary);
+}
+
+.theme-toggle-instrument.nothing-btn:hover:not(:disabled) {
+  background: var(--shell-control-bg-hover);
+  color: var(--color-text);
+}
+
+.theme-toggle-instrument .nothing-btn__face {
+  inset: 6px;
+  border-radius: calc(var(--shell-control-radius) - 4px);
 }
 
 .app-help-btn {
-  padding: 0 var(--space-2-5);
+  padding: 0 var(--space-3);
   font-size: var(--text-xs);
   font-weight: var(--font-weight-semibold);
-  border-radius: var(--radius-pill);
+  border: var(--shell-control-border);
+  border-radius: var(--shell-control-radius);
+  background: var(--shell-control-bg);
   white-space: nowrap;
 }
 
 /* ─── Row 2 — section nav + contextual tab rail ──────────────────── */
 
 .shell-nav {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 0.6rem;
-  align-items: center;
-  padding-top: 0.3rem;
-  /* Strengthened from 28% (audit fix A1/A3): Row 1 and Row 2 share the
-     same glass surface, so we lean on the border alone to signal the
-     identity vs. navigation seam. No background tint differential —
-     that would chunk the unified glass card. */
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
-  /* Lock the nav row at the tab-rail's natural height so switching between
-     a group with sub-tabs and a solo group does not jump the sticky header
-     up and down. control-h-sm covers the groups pill and tabs at the same
-     vertical pitch; the +0.44rem accounts for the 0.22rem padding on
-     both .shell-nav__groups and .shell-nav__tabs. */
-  min-height: calc(var(--control-h-sm) + 0.44rem);
+  display: block;
+  padding: 0;
+  border-top: 0;
+  min-height: var(--shell-nav-h);
 }
 
 /* When no sub-tabs, groups take the full width — left-aligned, calmer.
@@ -380,31 +435,22 @@
 
 .shell-nav__groups {
   position: relative;
-  display: inline-flex;
-  gap: 0.15rem;
-  padding: 0.22rem;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-surface) 55%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-border) 32%, transparent);
-  justify-self: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  width: 100%;
+  min-height: var(--shell-nav-h);
+  gap: 0;
+  padding: 0;
+  border: var(--shell-control-border);
+  border-radius: var(--shell-control-radius);
+  background: color-mix(in srgb, var(--color-surface-elevated) 38%, transparent);
+  overflow: hidden;
+  justify-self: stretch;
 }
 
 /* Sliding indicator — soft ambient, tinted per active section ─────── */
 .shell-nav__group-indicator {
-  position: absolute;
-  top: 0.22rem;
-  bottom: 0.22rem;
-  border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
-  box-shadow: var(--shadow-xs);
-  pointer-events: none;
-  z-index: 0;
-  transition:
-    left var(--motion-base) var(--ease-spring),
-    width var(--motion-base) var(--ease-spring),
-    background-color var(--motion-base) var(--ease-standard),
-    border-color var(--motion-base) var(--ease-standard);
+  display: none;
 }
 
 .shell-nav[data-active-section="today"] .shell-nav__group-indicator {
@@ -429,7 +475,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0.75rem;
   border: 0;
   background: transparent;
   cursor: pointer;
@@ -444,29 +490,47 @@
 .shell-nav__group {
   position: relative;
   z-index: 1;
-  min-height: var(--control-h-sm);
-  padding: var(--control-py-sm) var(--control-px-sm);
-  border-radius: var(--radius-pill);
+  width: 100%;
+  min-height: var(--shell-nav-h);
+  padding: 0 var(--space-2);
+  border-radius: 0;
   color: var(--color-text-secondary);
-  font-family: var(--font-mono);
-  font-size: 13px; /* no exact token: between --text-xs (12px) and --text-sm (14px) */
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.06em; /* no matching --tracking-* token */
-  text-transform: uppercase;
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 0.95vw, 1.02rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.shell-nav__group + .shell-nav__group {
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
 }
 
 .shell-nav__group:hover:not(.shell-nav__group--active) {
   color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface-elevated) 54%, transparent);
 }
 
 .shell-nav__group-icon {
-  width: var(--icon-md);
-  height: var(--icon-md);
+  width: 1.35rem;
+  height: 1.35rem;
   opacity: 0.78;
 }
 
 .shell-nav__group--active {
-  color: var(--color-text);
+  color: var(--shell-control-accent);
+  background: color-mix(in srgb, var(--color-surface-elevated) 62%, transparent);
+}
+
+.shell-nav__group--active::after {
+  content: "";
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  bottom: 0;
+  height: 2px;
+  border-radius: var(--radius-pill) var(--radius-pill) 0 0;
+  background: var(--shell-control-accent);
 }
 
 .shell-nav__group--active .shell-nav__group-icon {
@@ -475,21 +539,9 @@
 
 /* Active group text + icon adopt section tone — cohesion with the
    sliding indicator, without repeating the accent color everywhere */
-.shell-nav[data-active-section="today"] .shell-nav__group--active,
-.shell-nav[data-active-section="today"] .shell-nav__group--active .shell-nav__group-icon {
-  color: var(--color-text-sun);
-}
-.shell-nav[data-active-section="prep"] .shell-nav__group--active,
-.shell-nav[data-active-section="prep"] .shell-nav__group--active .shell-nav__group-icon {
-  color: var(--color-text-sage);
-}
-.shell-nav[data-active-section="ops"] .shell-nav__group--active,
-.shell-nav[data-active-section="ops"] .shell-nav__group--active .shell-nav__group-icon {
-  color: var(--color-text-slate);
-}
-.shell-nav[data-active-section="review"] .shell-nav__group--active,
-.shell-nav[data-active-section="review"] .shell-nav__group--active .shell-nav__group-icon {
-  color: var(--color-text-forest);
+.shell-nav[data-active-section] .shell-nav__group--active,
+.shell-nav[data-active-section] .shell-nav__group--active .shell-nav__group-icon {
+  color: var(--shell-control-accent);
 }
 
 .shell-nav__group:focus-visible {
@@ -616,7 +668,7 @@
 }
 
 .shell-nav__kbd {
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-content: center;
   min-width: 1.1rem;
@@ -786,31 +838,61 @@
 }
 
 /* Layer 1 — the application workspace surface.
-   See docs/dark-mode-contract.md §1 ("material hierarchy"). */
+   See docs/dark-mode-contract.md §1 ("material hierarchy").
+
+   2026-04-22 shell-continuity pass: `.app-main` now docks flush against
+   the header card (no margin-top, no top shadow) so the glass chrome and
+   the workspace read as one continuous silhouette. The 1px seam between
+   them is the header's own border-top on `.shell-nav` carried down to
+   the workspace border. Active section tone is picked up via
+   `data-section` and painted as a soft 2px accent rail along the top
+   edge, so the eye tracks color straight from the active tab into the
+   workspace below. */
 .app-main {
   position: relative;
-  /* Fill remaining viewport after header + footer. */
   flex: 1 1 0%;
   min-height: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-5);
-  margin-top: var(--space-2);
-  /* app-main is the sole scroll container at all sizes. Individual
-     panels are overflow:visible; split-layout rail/canvas manage
-     their own independent scroll within the constrained grid cells. */
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
   padding: var(--page-content-padding-top) var(--space-6) var(--space-6);
   background: var(--color-workspace);
-  border: 1px solid color-mix(in srgb, var(--color-border) 16%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  border-top: 0;
   border-bottom: none;
-  border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-  box-shadow:
-    0 -1px 2px light-dark(rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0.15)),
-    0 -4px 16px light-dark(rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.12));
+  border-radius: 0 0 0 0;
   scroll-padding-top: var(--space-3);
+}
+
+/* Section-toned top rail — a 2px accent that falls directly under the
+   active secondary tab, so the nav→workspace transition carries the
+   active section's color. Rides above `.app-main` without affecting
+   scroll or layout. Neutral fallback when no section is set (shouldn't
+   happen in practice — App.tsx always assigns activeGroup). */
+.app-main::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-border) 38%, transparent);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.app-main[data-section="today"]::before {
+  background: color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+.app-main[data-section="prep"]::before {
+  background: color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+.app-main[data-section="ops"]::before {
+  background: color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+.app-main[data-section="review"]::before {
+  background: color-mix(in srgb, var(--color-border) 38%, transparent);
 }
 
 .app-main > [role="tabpanel"]:not([hidden]) {
@@ -839,8 +921,15 @@
   }
   to {
     opacity: 1;
-    transform: translateY(0) scale(1);
-    filter: blur(0);
+    /* Explicitly return to `none` rather than identity values like
+       `translateY(0) scale(1)` / `blur(0)`. Non-`none` transform or
+       filter values establish a new containing block for descendants,
+       which breaks `position: fixed` inside tab panels (fixed children
+       end up anchored to the panel instead of the viewport). Using
+       `none` at the settled state leaves the visual identical but
+       lets fixed/sticky descendants anchor correctly. */
+    transform: none;
+    filter: none;
   }
 }
 
@@ -890,7 +979,7 @@
   }
 
   .shell-nav__groups {
-    justify-self: start;
+    justify-self: stretch;
   }
 }
 
@@ -901,7 +990,9 @@
 
   .app-main {
     padding: var(--space-4);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    /* Flush with the header card (no top rounding) to preserve the
+       merged shell silhouette from the desktop layout. */
+    border-radius: 0;
   }
 
   /* Mobile: panels flow naturally in a single column.
@@ -913,7 +1004,7 @@
 
   .app-header__inner {
     gap: var(--space-2);
-    padding: var(--space-2);
+    padding: var(--space-2) 0;
   }
 
   .shell-bar {
@@ -922,17 +1013,22 @@
 }
 
 @media (max-width: 600px) {
+  .app-shell {
+    --shell-control-h: 2.75rem;
+    --shell-nav-h: 0rem;
+  }
+
   .app-main {
     /* Reserve fixed mobile-nav space inside the scroll container so
        first-screen content can use the full viewport height while the
        bottom of long panels still clears the nav. */
     padding: var(--space-3);
-    padding-bottom: calc(var(--space-3) + 7.75rem + env(safe-area-inset-bottom));
+    padding-bottom: calc(var(--space-3) + 5.25rem + env(safe-area-inset-bottom));
   }
 
   .app-header__inner {
-    padding: 0.55rem 0.6rem;
-    border-radius: var(--radius-md);
+    padding: 0.55rem 0;
+    border-radius: 0;
   }
 
   /* Reset to flex-wrap at phone widths — grid with fixed column counts
@@ -981,7 +1077,7 @@
   }
 
   .shell-classroom-pill {
-    min-height: 44px;
+    min-height: 40px;
     padding: 0.5rem 0.6rem;
   }
 

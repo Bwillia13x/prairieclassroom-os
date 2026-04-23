@@ -112,7 +112,7 @@ describe("CommandPalette", () => {
       container.querySelectorAll<HTMLLIElement>("li.command-palette__group-header"),
     );
     expect(headers.length).toBe(3);
-    expect(headers.map((h) => h.textContent)).toEqual(["PANELS", "CLASSROOMS", "ACTIONS"]);
+    expect(headers.map((h) => h.textContent)).toEqual(["PAGES", "CLASSROOMS", "ACTIONS"]);
     headers.forEach((h) => {
       expect(h.getAttribute("role")).toBe("presentation");
     });
@@ -128,7 +128,7 @@ describe("buildPaletteRows", () => {
     ];
     const rows = buildPaletteRows(entries);
     expect(rows.map((r) => (r.type === "header" ? `H:${r.label}` : `E:${r.entry.id}@${r.index}`))).toEqual([
-      "H:PANELS",
+      "H:PAGES",
       "E:a@0",
       "E:b@1",
       "H:CLASSROOMS",

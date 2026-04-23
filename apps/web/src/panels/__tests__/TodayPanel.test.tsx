@@ -189,6 +189,10 @@ function makeAppContext(): AppContextValue {
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    activeTool: null,
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
   };
 }
 
@@ -429,16 +433,20 @@ describe("TodayPanel", () => {
 
     expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
 
-    const healthSkeleton = screen.getByRole("status", { name: /loading health/i });
-    expect(healthSkeleton).toBeInTheDocument();
-    expect(healthSkeleton).toHaveAttribute("aria-busy", "true");
+    // The 2026-04-23 reorg moved the planning-health trend into the
+    // Classroom page. Today now renders a soft "Need the wider lens?"
+    // skeleton while classroom-scope data loads — the loading state is
+    // the "Loading planning lenses" skeleton, not the old HealthBar one.
+    expect(
+      screen.getByRole("status", { name: /loading planning lenses/i }),
+    ).toBeInTheDocument();
 
     expect(
       screen.queryByLabelText("Loading dashboard"),
     ).not.toBeInTheDocument();
   });
 
-  it("renders the visualization strip after studentSummaries arrives even if health is still pending", async () => {
+  it("keeps same-day signal visible while classroom-scope health is still pending", async () => {
     mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
     mockedFetchClassroomHealth.mockImplementation(
       () => new Promise(() => {}),
@@ -462,14 +470,14 @@ describe("TodayPanel", () => {
       </AppContext.Provider>,
     );
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("status", { name: /loading health/i }),
-      ).toBeInTheDocument();
-    });
+    // Today keeps its own coverage strip + pending-actions card; the
+    // week-level visualizations now live on Classroom/Week pages.
     expect(
-      await screen.findByRole("heading", { name: /student priority view/i }),
+      await screen.findByText("Needs Attention Now"),
     ).toBeInTheDocument();
+    expect(
+      screen.queryByRole("heading", { name: /student priority view/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("renders a 'What to watch next' section wrapping the grid", async () => {
@@ -547,19 +555,27 @@ describe("TodayPanel", () => {
     ).toBeTruthy();
   });
 
-  it("keeps the late-layer Today rail grid override in the Nothing theme", async () => {
+  it("keeps the shared page rail offset in the PageAnchorRail stylesheet", async () => {
     const fs = await import("node:fs");
     const path = await import("node:path");
     const cssPath = path.resolve(
       __dirname,
       "..",
       "..",
-      "styles",
-      "nothing-theme.css",
+      "components",
+      "PageAnchorRail.css",
     );
     const css = fs.readFileSync(cssPath, "utf8");
-    expect(css).toMatch(/\.workspace-page\.today-panel--with-rail\s*{[^}]*display:\s*grid/s);
-    expect(css).toMatch(/@media\s*\(min-width:\s*961px\)\s*{[^}]*\.workspace-page\.today-panel--with-rail\s*{[^}]*grid-template-columns:\s*var\(--today-rail-width,\s*180px\)\s*minmax\(0,\s*1fr\)/s);
+    expect(css).toMatch(/\.page-anchor-rail\s*{[^}]*position:\s*fixed/s);
+    expect(css).toMatch(/\.app-main\[data-page-rail\]\s*>\s*\[role="tabpanel"\]:not\(\[hidden\]\)/s);
+  });
+
+  it("leaves the collapsible page drawer to the app shell", async () => {
+    renderTodayPanel(makeSnapshot());
+
+    await screen.findByText("Needs Attention Now");
+    expect(screen.queryByRole("navigation", { name: /today sections/i })).not.toBeInTheDocument();
+    expect(document.querySelector(".today-panel")).not.toHaveAttribute("data-rail-collapsed");
   });
 
   it("shows an inline health error without blocking the rest of the dashboard", async () => {

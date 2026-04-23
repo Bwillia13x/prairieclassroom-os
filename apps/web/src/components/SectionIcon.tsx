@@ -4,7 +4,21 @@ interface Props {
   decorative?: boolean;
 }
 
-export type SectionIconName = "sun" | "moon" | "pencil" | "grid" | "check" | "mail" | "alert" | "star" | "clock" | "lock" | "info" | "refresh";
+export type SectionIconName =
+  | "sun"
+  | "moon"
+  | "pencil"
+  | "grid"
+  | "check"
+  | "mail"
+  | "alert"
+  | "star"
+  | "clock"
+  | "calendar"
+  | "bars"
+  | "lock"
+  | "info"
+  | "refresh";
 
 export default function SectionIcon({ name, className, decorative = true }: Props) {
   const sharedProps = decorative ? { "aria-hidden": true } : { role: "img" as const };
@@ -71,6 +85,25 @@ export default function SectionIcon({ name, className, decorative = true }: Prop
         <>
           <circle cx="12" cy="12" r="9" />
           <path d="M12 7v5l3 3" />
+        </>
+      ) : null}
+      {name === "calendar" ? (
+        <>
+          <rect x="4" y="5" width="16" height="15" rx="2" />
+          <path d="M8 3.5v4" />
+          <path d="M16 3.5v4" />
+          <path d="M4 10h16" />
+          <path d="M8.3 14h.01" />
+          <path d="M12 14h.01" />
+          <path d="M15.7 14h.01" />
+        </>
+      ) : null}
+      {name === "bars" ? (
+        <>
+          <path d="M5 19V9" />
+          <path d="M12 19V5" />
+          <path d="M19 19v-7" />
+          <path d="M3.5 19.5h17" />
         </>
       ) : null}
       {name === "lock" ? (

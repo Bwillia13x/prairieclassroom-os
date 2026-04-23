@@ -5,7 +5,6 @@ import { useAsyncAction } from "../useAsyncAction";
 import { generateComplexityForecast } from "../api";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
 import ForecastForm from "../components/ForecastForm";
-import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import NextStepBand from "../components/NextStepBand";
 import ForecastTimeline from "../components/ForecastTimeline";
 import ForecastViewer from "../components/ForecastViewer";
@@ -171,8 +170,6 @@ export default function ForecastPanel() {
         required="canGenerate"
         whatIsBlocked="Generating a new forecast is reserved for the classroom's permanent teacher. Substitutes and reviewers can read the latest forecast."
       />
-
-      <OpsWorkflowStepper activeTab="complexity-forecast" />
 
       <CoverageTimeline
         title="Forecast timeline"

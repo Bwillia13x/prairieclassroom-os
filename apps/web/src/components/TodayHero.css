@@ -32,28 +32,25 @@
 .today-hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(17rem, 20rem);
+  /* Lede gets the dominant column; rail widens to a real rail (~22rem)
+     so the CTA, rationale, and tone chip read as one decisive instrument
+     instead of a narrow afterthought. */
+  grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 20rem);
   grid-template-areas:
     "narrative cta"
     "brief cta";
   align-items: stretch;
-  gap: var(--space-7);
-  padding: var(--space-6) var(--space-6) var(--space-6) 0;
-  /* Atmospheric prairie-horizon backdrop — the one sanctioned
-     decorative moment in the product. The gradient wraps a transparent
-     base so the workspace surface shows through beneath the wash. */
-  background: var(--gradient-prairie-horizon), transparent;
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-3) var(--space-4) 0;
+  /* A single warm hairline replaces the legacy prairie-horizon wash —
+     same "one moment of warmth" intent, 1/50th the CSS, and no need for
+     overflow clipping. The bottom hairline keeps the section terminus. */
+  background: transparent;
   border: 0;
-  /* Single hairline at the bottom. The PageIntro collapses its own
-     bottom border upstream so the top of the hero inherits the
-     section's natural flow — no double rule. */
-  border-top: 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-brand-highlight) 28%, var(--color-border) 72%);
   border-bottom: 1px solid var(--color-border);
   border-radius: 0;
   box-shadow: none;
-  /* overflow clipped so the radial washes don't bleed past the hero's
-     bottom hairline into the next section (retired classroom pulse). */
-  overflow: hidden;
 }
 
 /* Hero stamp is retired — the PageIntro already provides the
@@ -83,7 +80,7 @@
   grid-area: narrative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: calc(var(--space-1) * 1.5);
   min-width: 0;
 }
 
@@ -91,10 +88,10 @@
    after the narrative lede. NOT a pill/chip — it's a structural
    sentence under the headline. */
 .today-hero__directive {
-  margin: var(--space-3) 0 0;
+  margin: 0;
   padding-left: var(--space-1);
   font-family: var(--font-sans);
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
   font-weight: 500;
   color: var(--color-text);
   letter-spacing: -0.01em;
@@ -110,13 +107,13 @@
   grid-area: brief;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
-  max-width: 56rem;
+  gap: calc(var(--space-1) * 1.5);
+  max-width: 60rem;
 }
 
 .today-hero__brief-item {
   min-width: 0;
-  padding: var(--space-3);
+  padding: calc(var(--space-1) * 1.5) var(--space-2);
   border: 1px solid var(--color-border);
   border-radius: 2px;
   background: transparent;
@@ -128,7 +125,7 @@
 
 .today-hero__brief-label {
   display: block;
-  margin-bottom: var(--space-2);
+  margin-bottom: var(--space-1);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: 600;
@@ -230,14 +227,17 @@
   display: flex;
   flex-direction: column;
   justify-content: end;
-  gap: var(--space-3);
+  gap: calc(var(--space-1) * 1.5);
 }
 
 .today-hero .today-story__text {
-  max-width: 36ch;
+  /* Wrapper has no measure constraint — the lede and sub set their own.
+     `ch` on a wrapper resolves against the wrapper's own (16px) font
+     and silently strangles a 48px display block. */
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: calc(var(--space-1) * 1.5);
+  min-width: 0;
 }
 
 .today-hero .today-story__lede {
@@ -245,43 +245,54 @@
   font-feature-settings: var(--font-feature-display);
   /* Push the lede larger than --text-display-lg: the home page
      gets the biggest type in the app, earning the primary layer. */
-  font-size: clamp(2.75rem, 3.2vw + 1rem, 4.6rem);
+  font-size: clamp(2.05rem, 1.85vw + 0.85rem, 3.05rem);
   font-weight: 500;
   font-optical-sizing: auto;
-  line-height: 0.98;
-  letter-spacing: -0.03em;
+  line-height: 1.02;
+  letter-spacing: -0.025em;
   color: var(--color-text);
   text-wrap: balance;
   margin: 0;
+  /* Hold the lede to ~3 lines on display copy; rem scales with the
+     hero's display scale and is independent of the wrapper's font. */
+  max-width: 34rem;
 }
 
 .today-hero .today-story__sub {
   margin: 0;
-  max-width: 46ch;
+  max-width: 28rem;
   font-family: var(--font-sans);
-  font-size: var(--text-md);
+  font-size: var(--text-sm);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.45;
   color: var(--color-text-secondary);
   text-wrap: pretty;
 }
 
 /* ---------- Tertiary rail: chip → rationale → CTA ---------- */
 
-/* The CTA rail uses a three-cell grid: chip anchored top, rationale
-   centered, CTA anchored bottom. That vertical tension is the
-   asymmetric-composition principle from the skill's section 2.7 —
-   the rail reads as three distinct beats rather than a stack. */
+/* The CTA rail is a tight vertical stack: tone chip → rationale → CTA.
+   Flex column with consistent gap reads as one decisive instrument
+   instead of the prior 3-cell grid that left dead space between beats. */
 .today-hero__cta-row {
   grid-area: cta;
-  display: grid;
-  grid-template-rows: auto auto auto;
-  align-content: end;
-  align-items: start;
-  gap: var(--space-4);
-  padding-left: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--space-2);
+  padding-left: var(--space-4);
   border-left: 1px solid var(--color-border);
-  min-height: 14rem;
+  min-height: 0;
+}
+
+.today-hero__rail-kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
 }
 
 /* Force the StatusChip to read as ALL-CAPS mono metadata, consistent
@@ -338,7 +349,7 @@
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  padding: 14px 20px;
+  padding: 12px 16px;
   transition: background-color var(--motion-fast) var(--ease-standard);
 }
 
@@ -355,107 +366,52 @@
   margin: 0;
   font-family: var(--font-sans);
   font-size: var(--text-sm);
-  line-height: 1.55;
+  line-height: 1.45;
   color: var(--color-text-secondary);
   text-align: left;
   text-wrap: pretty;
-  max-width: 30ch;
+  max-width: 28ch;
 }
 
-/* CTA + N0thing instrument pair. The ActionButton remains the primary
-   text CTA; the instrument button is the "launch signal" mark. On wide
-   viewports they sit side-by-side; on narrow viewports the instrument
-   collapses below the text button. */
-.today-hero__cta-actions {
-  grid-area: cta;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  width: 100%;
-}
+/* The N0thing instrument companion was removed 2026-04-23 — the doubled
+   click target competed with the single decisive-move story. The text
+   ActionButton remains the sole hero CTA. */
 
-.today-hero__cta-actions .today-hero__cta.today-hero__cta {
-  flex: 1 1 auto;
-  width: auto;
-  min-width: 0;
-}
+/* ---------- Responsive collapse ----------
+   Breakpoint moved below tablet-landscape widths so the in-app browser
+   and iPad-landscape keep the two-column hero; phone/portrait widths
+   still collapse to a single-column stack. */
 
-.today-hero__cta-instrument {
-  flex: 0 0 auto;
-}
-
-@media (max-width: 640px) {
-  .today-hero__cta-actions {
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .today-hero__cta-actions .today-hero__cta.today-hero__cta {
-    flex: 1 1 100%;
-  }
-
-  /* On mobile the instrument is optional flavor — hidden to keep the
-     CTA row compact. The fire animation only lands when there's room
-     for it to breathe. */
-  .today-hero__cta-instrument {
-    display: none;
-  }
-}
-
-/* Duplicate of the doubled-class rule above left as a single-class
-   fallback for non-ActionButton CTA renders. The doubled-class rule
-   upstream beats ActionButton's internal variant styles. */
-
-/* ---------- Responsive collapse ---------- */
-
-@media (max-width: 1100px) {
-  .today-hero {
-    gap: var(--space-6);
-    padding: var(--space-6) 0;
-  }
-
-  .today-hero__cta-row {
-    padding-left: var(--space-5);
-  }
-}
-
-@media (max-width: 900px) {
+@media (max-width: 879.98px) {
   .today-hero {
     grid-template-columns: 1fr;
     grid-template-areas:
       "narrative"
       "cta"
       "brief";
-    gap: var(--space-5);
-    padding: var(--space-6) 0;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
   }
 
   .today-hero__brief {
-    grid-template-columns: 1fr;
-  }
-
-  .today-hero::before {
-    top: calc(var(--space-6) * -1 + var(--space-2));
-  }
-
-  .today-hero .today-story__text {
-    max-width: none;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .today-hero .today-story__lede {
-    font-size: var(--text-display-md);
+    font-size: clamp(2rem, 4.8vw, 2.65rem);
   }
 
   .today-hero .today-story__sub {
     font-size: var(--text-sm);
+    max-width: none;
   }
 
   .today-hero__cta-row {
     min-height: 0;
-    align-content: start;
-    gap: var(--space-3);
+    justify-content: flex-start;
+    gap: var(--space-2);
     padding-left: 0;
-    padding-top: var(--space-5);
+    padding-top: var(--space-2);
     border-left: 0;
     border-top: 1px solid var(--color-border);
   }
@@ -465,10 +421,16 @@
   }
 }
 
+@media (max-width: 760px) {
+  .today-hero__brief {
+    grid-template-columns: 1fr;
+  }
+}
+
 @media (max-width: 640px) {
   .today-hero {
-    gap: 10px;
-    padding: var(--space-3) 0 var(--space-4);
+    gap: var(--space-3);
+    padding: var(--space-2-5) 0;
   }
 
   .today-hero__narrative,
@@ -478,12 +440,18 @@
   }
 
   .today-hero .today-story__lede {
-    font-size: var(--text-2xl);
-    line-height: 1.05;
+    /* Bumped 8vw→9vw and ceiling 2.25→2.4 so the lede holds its display
+       weight on phone — teachers should land on the headline at-a-glance
+       even on a 360-px screen. */
+    font-size: clamp(1.8rem, 7.6vw, 2.15rem);
+    line-height: 1.03;
+    max-width: none;
   }
 
   .today-hero .today-story__sub {
+    font-size: var(--text-sm);
     line-height: 1.4;
+    max-width: none;
   }
 
   .today-hero__directive {
@@ -492,7 +460,10 @@
   }
 
   .today-hero__brief {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* On phones only Open Items earns its tile — peak block and check-
+       first chips are hidden below; using a single column means the one
+       tile spans the row instead of leaving an awkward second cell. */
+    grid-template-columns: 1fr;
     gap: 6px;
     margin-top: 0;
   }
@@ -507,8 +478,16 @@
 
   /* On phone-sized viewports the story lede already names the immediate
      focus student, so collapse the extra chip row and keep the full hero
-     summary + primary CTA above the fixed mobile nav. */
+     summary + primary CTA above the fixed mobile nav. The peak-block
+     tile is also hidden — teachers tap the DayArc to see block detail
+     once they're inside the day. */
   .today-hero__brief-item--students {
+    display: none;
+  }
+
+  /* Hide the Peak block tile on phone — defer to the DayArc card below
+     for time-block detail. Open items + Next move CTA carry the morning. */
+  .today-hero__brief-item:nth-child(2):not(.today-hero__brief-item--students) {
     display: none;
   }
 

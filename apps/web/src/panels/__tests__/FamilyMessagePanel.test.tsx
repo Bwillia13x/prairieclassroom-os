@@ -67,7 +67,8 @@ function makeAppContext(): AppContextValue {
       },
     ],
     activeClassroom: "demo-classroom",
-    activeTab: "family-message",
+    activeTab: "review",
+    activeTool: "family-message",
     setActiveClassroom: vi.fn(),
     setActiveTab: vi.fn(),
     profile: {
@@ -103,6 +104,9 @@ function makeAppContext(): AppContextValue {
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
   };
 }
 

@@ -18,6 +18,8 @@ The pilot coordinator has already:
 3. Opened http://localhost:5173/?demo=true in your browser.
 4. Confirmed the role picker shows "Teacher" and skipped/clicked through.
 
+The reset uses a synthetic-only, tiered 26-student demo roster with 36 seeded intervention records, 3 plans, 1 pattern report, 1 approved family message, and 5 synthetic session records. It does not include real student data or seeded human feedback.
+
 If any of those is not true when you sit down, ask the coordinator before starting.
 
 ---
@@ -43,7 +45,9 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 
 **Steps:**
 
-1. Make sure the **Today** tab is selected (top-left of the workspace).
+1. The shell opens on the **Classroom** page by default — it is the
+   bird's-eye operating view. Click the **Today** tab in the top nav
+   (second in the row) to switch to the live-day triage view.
 2. Read what is on screen for one minute. Don't click anything yet.
 3. After one minute, click the large primary button on the right side of the hero card (probably says "Open Family Message" or similar).
 
@@ -69,7 +73,7 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 
 **Steps:**
 
-1. Click the **Prep** tab, then **Differentiate**.
+1. Click the **Prep** tab. The page opens on **Differentiate** by default; use the local switcher to reach **Language Tools** on the same page.
 2. In the left rail under "Prepare Lesson Artifact":
    - Title: *Prairie grasslands reading*
    - Source text (paste): *The prairie is a wide grassland. In summer, the grass grows tall and golden. Animals like bison, gophers, and prairie chickens make their home there. Children can see the prairie from a school bus window on a long drive across Alberta.*
@@ -96,7 +100,7 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 
 **Steps:**
 
-1. Click the **Review** tab, then **Family Message**.
+1. Click the **Review** tab. The page opens on the **Family Message** tool by default; use the local switcher to reach **Support Patterns** or **Usage Insights**.
 2. In the left rail:
    - Pick the student **Amira** from the checkbox list.
    - Message Type: *Routine Update*.
@@ -126,7 +130,7 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 
 **Steps:**
 
-1. Click **Ops**, then **Log Intervention**.
+1. Click **Ops**. The page opens on **Log Intervention** by default; the local workflow stepper also exposes EA Briefing, EA Load, and Sub Packet.
 2. Look for the **Quick Capture** chip tray at the top — a row of pre-canned chips like "transition," "regulation," "reading," "EAL support."
 3. Click one chip ("transition"), then click a student alias (try **Brody**).
 4. Type one short line in the free-text field: *Used calm corner before joining group; settled in 6 minutes.*
@@ -152,7 +156,7 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 
 **Steps:**
 
-1. Click **Prep**, then **Tomorrow Plan**.
+1. Click **Tomorrow** in the top nav. The page opens on the **Tomorrow Plan** tool by default (the local tool switcher also exposes **Forecast** on the same page).
 2. In the left rail's **Teacher reflection** field, type:
    *Today was rough after lunch — math block fell apart for three students during the fractions review. Daniyal needs more visual scaffolds tomorrow. Brody held it together until almost the end.*
 3. Press **Generate plan**.
@@ -179,7 +183,7 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 
 **Steps:**
 
-1. Click **Ops**, then **Forecast**.
+1. Stay on the **Tomorrow** tab and flip the local tool switcher to **Forecast**.
 2. Press **Generate forecast** with the default classroom.
 
 **What you should see:**
@@ -204,7 +208,7 @@ You do **not** have to complete every scenario. Stop when you are tired or out o
 
 **Steps:**
 
-1. Go back to **Today**.
+1. Click **Today** in the top nav.
 2. In the "Pending actions" card, click the row labeled **open follow-ups** (the count beside it).
 3. The drill-down drawer slides in from the right.
 

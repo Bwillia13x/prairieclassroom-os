@@ -1,0 +1,932 @@
+/* ================================================================
+   ambient.css — Ambient Signal wow-factor polish layer
+   ================================================================
+   Additive enhancement layer on top of the institutional design
+   system. All rules here are decorative/atmospheric — none change
+   layout, spacing, or accessibility semantics. The goal: take the
+   already-mature UI from "very good institutional" to "this feels
+   alive" with five restrained moments:
+
+     1. Ambient shell aurora  — section-tinted breathing gradient
+                                 beneath app-main content.
+     2. Nav indicator glow     — soft halo + underline sweep on the
+                                 active primary group.
+     3. Hero entrance          — staggered fade-up of the narrative,
+                                 directive, CTA rail, and brief, with
+                                 a grain overlay and CTA shimmer.
+     4. Aurora-on-hover cards  — mouse-tracked subtle radial glow on
+                                 elevated surface panels.
+     5. Branded loader         — a rotating aperture ring around the
+                                 logo mark while classrooms load.
+
+   Every animation respects `prefers-reduced-motion: reduce` via the
+   blanket override already in motion.css (0.01ms clamp).
+   ================================================================ */
+
+/* ---------- Shared keyframes ---------- */
+
+@keyframes ambient-aurora-drift {
+  0% {
+    transform: translate3d(-4%, -2%, 0) scale(1.02);
+    opacity: 0.55;
+  }
+  33% {
+    transform: translate3d(3%, 2%, 0) scale(1.06);
+    opacity: 0.78;
+  }
+  66% {
+    transform: translate3d(-2%, 4%, 0) scale(1.04);
+    opacity: 0.62;
+  }
+  100% {
+    transform: translate3d(-4%, -2%, 0) scale(1.02);
+    opacity: 0.55;
+  }
+}
+
+@keyframes ambient-indicator-halo {
+  0%, 100% {
+    box-shadow:
+      var(--shadow-xs),
+      0 0 0 1px color-mix(in srgb, var(--_ambient-section-tint, var(--color-accent)) 14%, transparent),
+      0 0 18px -2px color-mix(in srgb, var(--_ambient-section-tint, var(--color-accent)) 22%, transparent);
+  }
+  50% {
+    box-shadow:
+      var(--shadow-xs),
+      0 0 0 1px color-mix(in srgb, var(--_ambient-section-tint, var(--color-accent)) 22%, transparent),
+      0 0 26px 0 color-mix(in srgb, var(--_ambient-section-tint, var(--color-accent)) 30%, transparent);
+  }
+}
+
+@keyframes ambient-shimmer-sweep {
+  0%   { transform: translateX(-120%) skewX(-18deg); }
+  100% { transform: translateX(260%)  skewX(-18deg); }
+}
+
+@keyframes ambient-hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes ambient-aperture-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes ambient-aperture-breathe {
+  0%, 100% { opacity: 0.35; }
+  50%      { opacity: 0.85; }
+}
+
+/* ================================================================
+   1. AMBIENT SHELL AURORA — RETIRED (2026-04-22 de-beige pass)
+   ================================================================
+   The aurora originally painted a whisper-quiet gradient mesh beneath
+   app-main with section-tinted radials for wayfinding. In practice
+   — even at sub-5% gradient percentages with the warm channel
+   collapsed onto the cool section tint — the Today section's amber
+   watchpoint tint over the light institutional canvas still read as
+   a broad sand-beige wash, and the prior iterations painted sepia
+   over the dark graphite canvas. The directive was to remove the
+   beige from every location, so the paint is fully retired here.
+
+   The section-tint CSS custom properties (`--_ambient-section-tint`)
+   remain defined below because downstream decorative elements — the
+   active-tab underline sweep, the nav indicator halo, the
+   aurora-on-hover card border glow — still consume them as small-
+   area affordances where the hue reads as signal, not as a wash.
+
+   The `.app-main::before` pseudo-element itself is not reused here;
+   section wayfinding under the nav/workspace seam is now carried
+   solely by the 2px section-toned rail defined in shell.css.
+   ================================================================ */
+
+.app-shell {
+  /* Section tint defaults to the accent until a primary group is
+     active. Individual shell-nav[data-active-section] overrides
+     below set this per section. The warm channel is collapsed onto
+     the section tint so any consumer that still references
+     `--_ambient-section-warm` inherits a single monochromatic hue. */
+  --_ambient-section-tint: var(--color-accent);
+  --_ambient-section-warm: var(--_ambient-section-tint);
+}
+
+.app-shell:has(.shell-nav[data-active-section="today"]) {
+  --_ambient-section-tint: var(--color-section-watchpoint);
+  --_ambient-section-warm: var(--_ambient-section-tint);
+}
+
+.app-shell:has(.shell-nav[data-active-section="prep"]) {
+  --_ambient-section-tint: var(--color-section-family);
+  --_ambient-section-warm: var(--_ambient-section-tint);
+}
+
+.app-shell:has(.shell-nav[data-active-section="ops"]) {
+  --_ambient-section-tint: var(--color-section-ea);
+  --_ambient-section-warm: var(--_ambient-section-tint);
+}
+
+.app-shell:has(.shell-nav[data-active-section="review"]) {
+  --_ambient-section-tint: var(--color-section-trend);
+  --_ambient-section-warm: var(--_ambient-section-tint);
+}
+
+/* Keep direct children of .app-main above any decorative pseudo
+   elements carried by the shell (e.g., the 2px section rail). The
+   original rule pre-dated the aurora retirement and still earns its
+   keep as a stacking safeguard for any future ::before/::after
+   decorations on .app-main. */
+.app-main > *:not(.page-anchor-rail) {
+  position: relative;
+  z-index: 1;
+}
+
+/* ================================================================
+   2. NAV INDICATOR GLOW + ACTIVE-TAB UNDERLINE SWEEP
+   ================================================================
+   The primary-group sliding indicator already carries a tonal plate.
+   We add a soft section-tinted halo so it reads as a "light" rather
+   than a flat background, and add a gradient underline that sweeps
+   into place on the active secondary tab.
+   ================================================================ */
+
+.shell-nav__group-indicator {
+  /* Halo animates on a long, calm cycle — noticeable but never loud. */
+  animation: ambient-indicator-halo 6.5s var(--ease-in-out-circ) infinite;
+}
+
+.shell-nav[data-active-section="today"] .shell-nav__group-indicator {
+  --_ambient-section-tint: var(--color-section-watchpoint);
+}
+.shell-nav[data-active-section="prep"] .shell-nav__group-indicator {
+  --_ambient-section-tint: var(--color-section-family);
+}
+.shell-nav[data-active-section="ops"] .shell-nav__group-indicator {
+  --_ambient-section-tint: var(--color-section-ea);
+}
+.shell-nav[data-active-section="review"] .shell-nav__group-indicator {
+  --_ambient-section-tint: var(--color-section-trend);
+}
+
+/* Active secondary tab gets a precision gradient underline that
+   grows in from the center. The base shell.css already paints a
+   solid rule via background-image/box-shadow; we layer this on top
+   without replacing it. */
+.shell-nav__tab--active::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -2px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--_ambient-section-tint, var(--color-accent)) 18%,
+    color-mix(in srgb, var(--_ambient-section-tint, var(--color-accent)) 78%, white 22%) 50%,
+    var(--_ambient-section-tint, var(--color-accent)) 82%,
+    transparent 100%
+  );
+  opacity: 0.85;
+  transform-origin: center;
+  animation: ambient-underline-grow 480ms var(--ease-out-expo) both;
+  pointer-events: none;
+}
+
+.shell-nav__tab {
+  position: relative;
+}
+
+@keyframes ambient-underline-grow {
+  from {
+    transform: scaleX(0.1);
+    opacity: 0;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 0.85;
+  }
+}
+
+/* ================================================================
+   3. HERO WOW — grain overlay + stagger entrance + CTA shimmer
+   ================================================================
+   The TodayHero already carries the sanctioned prairie-horizon
+   gradient. We add:
+     - A very fine SVG noise overlay so the wash reads tactile
+       instead of flat (dark mode benefits most).
+     - A staggered entrance that lifts the narrative → directive →
+       CTA → brief on mount.
+     - A subtle diagonal shimmer across the primary CTA on hover.
+   ================================================================ */
+
+.today-hero {
+  /* Safari compositing hint */
+  isolation: isolate;
+}
+
+.today-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.04  0 0 0 0 0.04  0 0 0 0 0.06  0 0 0 0.55 0'/></filter><rect width='240' height='240' filter='url(%23n)' opacity='0.6'/></svg>");
+  background-size: 240px 240px;
+}
+
+:root[data-theme="light"] .today-hero::after,
+:root:not([data-theme="dark"]) .today-hero::after {
+  opacity: 0.22;
+  mix-blend-mode: multiply;
+}
+
+/* Children fade up in a gentle cascade on first mount */
+.today-hero__narrative {
+  animation: ambient-hero-rise 520ms var(--ease-out-expo) 40ms both;
+}
+.today-hero__directive {
+  animation: ambient-hero-rise 520ms var(--ease-out-expo) 180ms both;
+}
+.today-hero__cta-row {
+  animation: ambient-hero-rise 520ms var(--ease-out-expo) 240ms both;
+}
+.today-hero__brief {
+  animation: ambient-hero-rise 520ms var(--ease-out-expo) 320ms both;
+}
+
+.today-hero__brief-item {
+  animation: ambient-hero-rise 480ms var(--ease-out-expo) both;
+}
+.today-hero__brief-item:nth-child(1) { animation-delay: 360ms; }
+.today-hero__brief-item:nth-child(2) { animation-delay: 420ms; }
+.today-hero__brief-item:nth-child(3) { animation-delay: 480ms; }
+
+/* Shimmer sweep on primary CTA — restrained, only on hover/focus.
+   Uses a clipped pseudo so the doubled-class CTA override doesn't
+   need to be touched. */
+.today-hero__cta.today-hero__cta {
+  position: relative;
+  overflow: hidden;
+}
+
+.today-hero__cta.today-hero__cta::before {
+  content: "";
+  position: absolute;
+  top: -40%;
+  left: 0;
+  width: 40%;
+  height: 180%;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-surface) 55%, transparent) 45%,
+    color-mix(in srgb, var(--color-surface) 80%, transparent) 50%,
+    color-mix(in srgb, var(--color-surface) 55%, transparent) 55%,
+    transparent 100%
+  );
+  transform: translateX(-120%) skewX(-18deg);
+  opacity: 0;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+.today-hero__cta.today-hero__cta:hover::before,
+.today-hero__cta.today-hero__cta:focus-visible::before {
+  opacity: 1;
+  animation: ambient-shimmer-sweep 900ms var(--ease-out-expo) forwards;
+}
+
+/* The hero instrument button can share the same treatment at a
+   lower intensity. */
+.today-hero__cta-instrument {
+  position: relative;
+  transition:
+    transform var(--motion-hover) var(--ease-spring),
+    filter var(--motion-hover) var(--ease-spring);
+}
+.today-hero__cta-instrument:hover,
+.today-hero__cta-instrument:focus-visible {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--color-accent) 25%, transparent));
+}
+
+/* ================================================================
+   4. AURORA-ON-HOVER for elevated surfaces
+   ================================================================
+   Elevated card surfaces get a mouse-tracked radial glow that hints
+   at "this is interactive". We paint the glow onto the border via
+   a gradient mask so the card's existing background stays untouched.
+   Uses `--_ambient-mx` / `--_ambient-my` fallback so the glow is
+   centered if JS never sets them.
+   ================================================================ */
+
+.surface-panel,
+.shell-classroom-panel,
+.shell-bar__palette-btn {
+  position: relative;
+  --_ambient-mx: 50%;
+  --_ambient-my: 0%;
+}
+
+.surface-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background: radial-gradient(
+    180px 180px at var(--_ambient-mx) var(--_ambient-my),
+    color-mix(in srgb, var(--_ambient-section-tint, var(--color-accent)) 38%, transparent) 0%,
+    transparent 70%
+  );
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-standard);
+  z-index: 2;
+}
+
+.surface-panel:hover::before,
+.surface-panel:focus-within::before {
+  opacity: 0.9;
+}
+
+/* Palette-button gets a more playful interior glow on hover — it's a
+   clickable call-to-action that deserves a little extra sparkle. */
+.shell-bar__palette-btn {
+  overflow: hidden;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-base) var(--ease-spring);
+}
+
+.shell-bar__palette-btn::after {
+  content: "";
+  position: absolute;
+  inset: -40% -20%;
+  pointer-events: none;
+  background: radial-gradient(
+    60% 60% at var(--_ambient-mx) var(--_ambient-my),
+    color-mix(in srgb, var(--color-accent) 22%, transparent) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity var(--motion-base) var(--ease-standard);
+  z-index: -1;
+}
+
+.shell-bar__palette-btn:hover::after,
+.shell-bar__palette-btn:focus-visible::after {
+  opacity: 1;
+}
+
+.shell-bar__palette-btn:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
+}
+
+/* ================================================================
+   5. BRANDED LOADER — rotating aperture ring
+   ================================================================
+   The existing branded loading mark gets two counter-rotating
+   section-tinted arcs that gently breathe. Adds cinematic presence
+   to the first-paint moment without blocking content.
+   ================================================================ */
+
+.branded-loading {
+  position: relative;
+}
+
+.branded-loading__mark {
+  position: relative;
+  z-index: 1;
+}
+
+.branded-loading::before,
+.branded-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  z-index: 0;
+  animation:
+    ambient-aperture-spin 9s linear infinite,
+    ambient-aperture-breathe 3.5s var(--ease-in-out-circ) infinite;
+}
+
+.branded-loading::before {
+  width: clamp(8rem, 20vw, 13rem);
+  height: clamp(8rem, 20vw, 13rem);
+  margin: calc(clamp(8rem, 20vw, 13rem) / -2) 0 0 calc(clamp(8rem, 20vw, 13rem) / -2);
+  border-top-color: color-mix(in srgb, var(--color-accent) 55%, transparent);
+  border-right-color: color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+
+.branded-loading::after {
+  width: clamp(10rem, 26vw, 17rem);
+  height: clamp(10rem, 26vw, 17rem);
+  margin: calc(clamp(10rem, 26vw, 17rem) / -2) 0 0 calc(clamp(10rem, 26vw, 17rem) / -2);
+  border-bottom-color: color-mix(in srgb, var(--color-brand-highlight) 45%, transparent);
+  border-left-color: color-mix(in srgb, var(--color-brand-highlight) 14%, transparent);
+  animation-direction: reverse;
+  animation-duration: 14s, 4.5s;
+}
+
+/* ================================================================
+   Reduced-motion fallbacks
+   ================================================================
+   motion.css already clamps all animation-duration to 0.01ms when
+   `prefers-reduced-motion: reduce` is set. The aurora-specific
+   override here was retired with the aurora itself; what remains
+   is the nav-indicator halo stop and a slight calm-down on the
+   hero grain overlay so a fully static wash still reads gracefully.
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .shell-nav__group-indicator {
+    animation: none;
+  }
+  .today-hero::after {
+    opacity: 0.35;
+  }
+}
+
+/* ================================================================
+   Option B shell chrome — final cascade layer
+   ================================================================
+   nothing-theme.css intentionally uses high-specificity technical
+   overrides. This late layer preserves that aesthetic while applying the
+   refined Option B hierarchy: unboxed brand, shared control geometry,
+   full-width segmented top rail, matching local switchers, and neutral
+   workspace seam.
+   ================================================================ */
+
+.app-shell {
+  --shell-control-h: 3.1rem;
+  --shell-nav-h: 3.95rem;
+  --shell-control-radius: var(--radius-md);
+  --shell-control-border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  --shell-control-bg: color-mix(in srgb, var(--color-surface-elevated) 48%, transparent);
+  --shell-control-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 78%, transparent);
+  --shell-control-accent: var(--color-brand-highlight);
+  --shell-page-rail-width: 9.25rem;
+  --shell-page-rail-collapsed-width: 2.5rem;
+  max-width: min(100%, 1920px) !important;
+  padding: var(--space-3) var(--space-4) 0 !important;
+}
+
+.app-header__inner {
+  gap: var(--space-3) !important;
+  padding: var(--space-2) 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.shell-brand {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.app-logo {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: var(--space-3) !important;
+  height: clamp(2.55rem, 2.8vw, 3.15rem) !important;
+  max-width: min(280px, 38vw) !important;
+  object-fit: unset !important;
+}
+
+.brand-mark__glyph {
+  width: clamp(1.85rem, 2.3vw, 2.35rem) !important;
+  height: clamp(1.85rem, 2.3vw, 2.35rem) !important;
+  flex-shrink: 0 !important;
+  color: var(--shell-control-accent) !important;
+  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent)) !important;
+}
+
+.brand-mark__glyph path {
+  stroke: currentColor !important;
+  stroke-width: 1.7 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+.brand-mark__wordmark {
+  min-width: 0 !important;
+  color: var(--color-text) !important;
+  font-size: clamp(0.95rem, 1.05vw, 1.08rem) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  letter-spacing: -0.035em !important;
+  white-space: nowrap !important;
+}
+
+.brand-mark__badge {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 2rem !important;
+  min-height: 1.45rem !important;
+  padding: 0 0.45rem !important;
+  /* Demoted 2026-04-23 — see shell.css for rationale. The ambient
+     overrides here exist to defeat external skin layers, so the demoted
+     monochrome treatment must be repeated under the same !important
+     guard. */
+  border: 1px solid var(--color-border) !important;
+  border-radius: calc(var(--shell-control-radius) * 0.42) !important;
+  color: var(--color-text-tertiary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.78rem !important;
+  font-weight: var(--font-weight-bold) !important;
+  letter-spacing: 0.08em !important;
+  line-height: 1 !important;
+}
+
+.shell-bar__actions {
+  gap: var(--space-2) !important;
+}
+
+.shell-bar__divider {
+  display: none !important;
+}
+
+.shell-classroom-pill,
+.role-pill,
+.shell-bar__palette-btn,
+.theme-toggle-instrument.nothing-btn,
+.app-help-btn,
+.tomorrow-chip__trigger {
+  min-height: var(--shell-control-h) !important;
+  height: var(--shell-control-h) !important;
+  border: var(--shell-control-border) !important;
+  border-radius: var(--shell-control-radius) !important;
+  background: var(--shell-control-bg) !important;
+  color: var(--color-text) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  filter: none !important;
+}
+
+.shell-classroom-pill,
+.role-pill,
+.shell-bar__palette-btn,
+.tomorrow-chip__trigger {
+  padding-block: 0 !important;
+  padding-inline: var(--space-3) !important;
+}
+
+.shell-classroom-pill {
+  gap: 0 !important;
+  padding: 0 var(--space-3) 0 0 !important;
+}
+
+.shell-classroom-pill__switcher {
+  align-self: stretch !important;
+  width: var(--shell-control-h) !important;
+  height: auto !important;
+  margin-right: var(--space-3) !important;
+  border-right: var(--shell-control-border) !important;
+  border-radius: 0 !important;
+}
+
+.shell-classroom-pill__copy {
+  padding-left: 0 !important;
+}
+
+.shell-classroom-pill:hover:not(:disabled),
+.shell-classroom-pill--open,
+.role-pill:hover:not(:disabled),
+.role-pill--open,
+.shell-bar__palette-btn:hover:not(:disabled),
+.theme-toggle-instrument.nothing-btn:hover:not(:disabled),
+.app-help-btn:hover:not(:disabled),
+.tomorrow-chip__trigger:hover,
+.tomorrow-chip__trigger[aria-expanded="true"] {
+  background: var(--shell-control-bg-hover) !important;
+  border-color: color-mix(in srgb, var(--color-border-accent) 58%, transparent) !important;
+  color: var(--color-text) !important;
+}
+
+.role-pill--open,
+.shell-classroom-pill--open {
+  box-shadow: inset 0 -2px 0 var(--shell-control-accent) !important;
+}
+
+.theme-toggle-instrument.nothing-btn {
+  width: var(--shell-control-h) !important;
+  min-width: var(--shell-control-h) !important;
+  padding: 0 !important;
+}
+
+.theme-toggle-instrument .nothing-btn__face {
+  inset: 6px !important;
+  border-radius: calc(var(--shell-control-radius) - 4px) !important;
+}
+
+.app-help-btn {
+  width: var(--shell-control-h) !important;
+  min-width: var(--shell-control-h) !important;
+  padding: 0 !important;
+}
+
+.shell-nav,
+.shell-nav--solo {
+  display: block !important;
+  min-height: var(--shell-nav-h) !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.shell-nav__groups {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important;
+  width: 100% !important;
+  min-height: var(--shell-nav-h) !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: var(--shell-control-border) !important;
+  border-radius: var(--shell-control-radius) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 38%, transparent) !important;
+  overflow: hidden !important;
+  justify-self: stretch !important;
+}
+
+.shell-nav__group-indicator {
+  display: none !important;
+}
+
+.shell-nav__group {
+  width: 100% !important;
+  min-width: 0 !important;
+  min-height: var(--shell-nav-h) !important;
+  padding: 0 var(--space-2) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  font-family: var(--font-sans) !important;
+  font-size: clamp(0.9rem, 0.95vw, 1.02rem) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
+.shell-nav__group,
+.shell-nav__tab {
+  gap: 0.75rem !important;
+}
+
+.shell-nav__group-icon {
+  width: 1.35rem !important;
+  height: 1.35rem !important;
+}
+
+.shell-nav__group + .shell-nav__group {
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent) !important;
+}
+
+.shell-nav__group:hover:not(.shell-nav__group--active) {
+  background: color-mix(in srgb, var(--color-surface-elevated) 54%, transparent) !important;
+  color: var(--color-text) !important;
+}
+
+.shell-nav__group--active {
+  background: color-mix(in srgb, var(--color-surface-elevated) 64%, transparent) !important;
+  border-bottom: 0 !important;
+  color: var(--shell-control-accent) !important;
+}
+
+.shell-nav[data-active-section] .shell-nav__group--active,
+.shell-nav[data-active-section] .shell-nav__group--active .shell-nav__group-icon {
+  color: var(--shell-control-accent) !important;
+}
+
+.shell-nav__group--active::after {
+  content: "" !important;
+  position: absolute !important;
+  left: var(--space-4) !important;
+  right: var(--space-4) !important;
+  bottom: 0 !important;
+  height: 2px !important;
+  background: var(--shell-control-accent) !important;
+  border-radius: var(--radius-pill) var(--radius-pill) 0 0 !important;
+}
+
+.shell-nav__kbd {
+  display: none !important;
+}
+
+.shell-nav__badge {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-width: 1.2rem !important;
+  height: 1.2rem !important;
+  margin-left: 0.15rem !important;
+  padding: 0 0.36rem !important;
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent) !important;
+  border-radius: var(--radius-pill) !important;
+  color: var(--color-text) !important;
+  font-size: 0.62rem !important;
+  line-height: 1 !important;
+  opacity: 1 !important;
+}
+
+.app-main::before,
+.app-main[data-section]::before {
+  height: 1px !important;
+  background: color-mix(in srgb, var(--color-border) 38%, transparent) !important;
+}
+
+.page-tool-switcher {
+  display: grid !important;
+  grid-auto-flow: column !important;
+  grid-auto-columns: minmax(0, 1fr) !important;
+  width: 100% !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  border: var(--shell-control-border) !important;
+  border-radius: var(--shell-control-radius) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 40%, transparent) !important;
+  overflow: hidden !important;
+}
+
+.page-tool-switcher__btn {
+  min-height: var(--shell-control-h) !important;
+  padding: 0 var(--space-3) !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  color: var(--color-text-secondary) !important;
+  font-family: var(--font-sans) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  text-transform: none !important;
+  letter-spacing: 0.01em !important;
+}
+
+.page-tool-switcher__btn + .page-tool-switcher__btn {
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent) !important;
+}
+
+.page-tool-switcher__btn--active {
+  background: color-mix(in srgb, var(--color-surface-elevated) 64%, transparent) !important;
+  color: var(--shell-control-accent) !important;
+}
+
+.tomorrow-queue-strip {
+  border: var(--shell-control-border) !important;
+  border-radius: var(--shell-control-radius) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 38%, transparent) !important;
+}
+
+.ops-page .ops-stepper {
+  display: none !important;
+}
+
+.mobile-nav-groups {
+  grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+  gap: 0 !important;
+  padding: var(--space-1) max(var(--space-2), env(safe-area-inset-right, var(--space-2))) max(var(--space-1), env(safe-area-inset-bottom)) max(var(--space-2), env(safe-area-inset-left, var(--space-2))) !important;
+}
+
+.mobile-nav-group {
+  min-height: 3.55rem !important;
+  padding: 0.35rem 0.2rem !important;
+  border: 0 !important;
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 32%, transparent) !important;
+  border-radius: 0 !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 22%, transparent) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.mobile-nav-group:first-child {
+  border-left: 0 !important;
+}
+
+.mobile-nav-group--active {
+  background: color-mix(in srgb, var(--color-surface-elevated) 64%, transparent) !important;
+  color: var(--shell-control-accent) !important;
+  box-shadow: inset 0 2px 0 var(--shell-control-accent) !important;
+}
+
+.mobile-nav-badge,
+.tomorrow-chip__count {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent) !important;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent) !important;
+  border-radius: var(--radius-pill) !important;
+  color: var(--color-text) !important;
+}
+
+.page-anchor-rail {
+  --page-rail-accent: var(--shell-control-accent) !important;
+  position: fixed !important;
+  z-index: 45 !important;
+}
+
+.page-anchor-rail__toggle {
+  height: 2.75rem !important;
+  min-width: 2.75rem !important;
+  border: var(--shell-control-border) !important;
+  border-radius: var(--shell-control-radius) !important;
+  background: var(--shell-control-bg) !important;
+  color: var(--color-text) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--shell-control-accent) 12%, transparent),
+    0 8px 18px color-mix(in srgb, black 12%, transparent) !important;
+}
+
+.page-anchor-rail__toggle:hover {
+  background: var(--shell-control-bg-hover) !important;
+  border-color: color-mix(in srgb, var(--color-border-accent) 58%, transparent) !important;
+  color: var(--shell-control-accent) !important;
+}
+
+.page-anchor-rail--collapsed .page-anchor-rail__toggle {
+  width: var(--shell-page-rail-collapsed-width) !important;
+  border-left: 0 !important;
+  border-radius: 0 var(--shell-control-radius) var(--shell-control-radius) 0 !important;
+  box-shadow:
+    inset 2px 0 0 var(--shell-control-accent),
+    0 0 0 1px color-mix(in srgb, var(--shell-control-accent) 16%, transparent),
+    0 0 14px color-mix(in srgb, var(--shell-control-accent) 22%, transparent) !important;
+}
+
+.page-anchor-rail__link--active::before,
+.page-anchor-rail__link:focus-visible::before,
+.page-anchor-rail__back-to-top--active::before,
+.page-anchor-rail__back-to-top:focus-visible::before {
+  background: var(--shell-control-accent) !important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--shell-control-accent) 30%, transparent),
+    0 0 10px color-mix(in srgb, var(--shell-control-accent) 45%, transparent) !important;
+}
+
+@media (max-width: 720px) {
+  .page-tool-switcher {
+    grid-auto-flow: row !important;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)) !important;
+  }
+
+  .page-tool-switcher__btn + .page-tool-switcher__btn {
+    border-left: 0 !important;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .app-shell {
+    --shell-control-h: 2.75rem;
+    --shell-nav-h: 0rem;
+    padding: var(--space-2) var(--space-2) 0 !important;
+  }
+
+  .app-header__inner {
+    gap: var(--space-2) !important;
+    padding: 0.55rem 0 !important;
+  }
+
+  .app-logo {
+    height: 2.55rem !important;
+    max-width: 58vw !important;
+  }
+
+  .shell-nav {
+    display: none !important;
+  }
+}

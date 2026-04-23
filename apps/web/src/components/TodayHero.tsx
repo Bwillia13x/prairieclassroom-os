@@ -7,7 +7,7 @@
  * the "Classroom pulse" section divider.
  */
 
-import type { ActiveTab } from "../appReducer";
+import type { NavTarget } from "../appReducer";
 import type {
   TodaySnapshot,
   ClassroomHealth,
@@ -17,12 +17,12 @@ import type {
 import TodayStory from "./TodayStory";
 import StatusChip from "./StatusChip";
 import PageFreshness from "./PageFreshness";
-import { ActionButton, NothingInstrumentButton } from "./shared";
+import { ActionButton } from "./shared";
 import "./TodayHero.css";
 
 export interface TodayHeroAction {
   description: string;
-  tab: ActiveTab;
+  tab: NavTarget;
   cta: string;
   label: string;
   tone: "pending" | "warning" | "analysis" | "provenance" | "success";
@@ -82,6 +82,7 @@ export default function TodayHero({
 
       {recommendedAction ? (
         <div className="today-hero__cta-row">
+          <span className="today-hero__rail-kicker">Recommended now</span>
           <StatusChip
             label={recommendedAction.label}
             tone={recommendedAction.tone}
@@ -98,43 +99,14 @@ export default function TodayHero({
               {recommendedAction.description}
             </p>
           </div>
-          <div className="today-hero__cta-actions">
-            <ActionButton
-              variant="primary"
-              size="lg"
-              onClick={onCtaClick}
-              className="today-hero__cta"
-            >
-              Open {recommendedAction.cta}
-            </ActionButton>
-            {/* N0thing instrument companion mark — the "launch signal" for
-                the Today hero action. Triggers the same onCtaClick so a
-                click anywhere in the pair lands the navigation. Decorative
-                tick marks frame it as an instrument, not a generic button. */}
-            <NothingInstrumentButton
-              size="xl"
-              tone="accent"
-              showTicks
-              fireAnim="slide-right"
-              onClick={onCtaClick}
-              aria-label={`Launch ${recommendedAction.cta}`}
-              className="today-hero__cta-instrument"
-              data-testid="today-hero-cta-instrument"
-            >
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M5 12h14" />
-                <path d="M13 6l6 6-6 6" />
-              </svg>
-            </NothingInstrumentButton>
-          </div>
+          <ActionButton
+            variant="primary"
+            size="lg"
+            onClick={onCtaClick}
+            className="today-hero__cta"
+          >
+            Open {recommendedAction.cta}
+          </ActionButton>
         </div>
       ) : null}
 

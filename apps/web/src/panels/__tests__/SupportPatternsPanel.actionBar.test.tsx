@@ -51,7 +51,8 @@ function makeCtx(): AppContextValue {
   return {
     classrooms: [{ classroom_id: "demo", grade_band: "3-4", subject_focus: "cross_curricular", classroom_notes: [], students: [], is_demo: true }],
     activeClassroom: "demo",
-    activeTab: "support-patterns",
+    activeTab: "review",
+    activeTool: "support-patterns",
     setActiveClassroom: vi.fn(),
     setActiveTab: vi.fn(),
     profile: { classroom_id: "demo", grade_band: "3-4", subject_focus: "cross_curricular", classroom_notes: [], students: [], is_demo: true },
@@ -73,6 +74,9 @@ function makeCtx(): AppContextValue {
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
   };
 }
 

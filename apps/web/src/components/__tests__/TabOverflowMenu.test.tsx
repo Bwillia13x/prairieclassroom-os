@@ -9,9 +9,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import TabOverflowMenu from "../TabOverflowMenu";
-import type { ActiveTab } from "../../appReducer";
+import type { NavTarget } from "../../appReducer";
 
-const HIDDEN: ActiveTab[] = ["ea-briefing", "ea-load", "survival-packet"];
+const HIDDEN: NavTarget[] = ["ea-briefing", "ea-load", "survival-packet"];
 
 describe("TabOverflowMenu", () => {
   it("opens on trigger click and shows every overflow tab as a menuitem", () => {

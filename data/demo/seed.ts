@@ -1,6 +1,18 @@
 #!/usr/bin/env npx tsx
 // data/demo/seed.ts
-// Populates a demo classroom SQLite database using the live store functions.
+// Populates the demo classroom SQLite database using the live store functions.
+//
+// ─── Behavior ────────────────────────────────────────────────────────────────
+// This script is upsert-only. Running it against an existing DB will re-insert
+// or refresh the canonical records listed below; it will NOT delete extra rows
+// a manual demo may have left behind. For deterministic clean state, use:
+//
+//   npm run pilot:reset          (purges the demo DB, then re-runs this script)
+//
+// Canonical clean-seed counts (from a blank DB): see scripts/validate-demo-fixture.mjs
+// and docs/demo-script.md. Those counts are contract — if you edit this file,
+// update the fixture validator and the docs together.
+//
 // Run: npx tsx data/demo/seed.ts
 
 import {
@@ -11,7 +23,7 @@ import {
   approveFamilyMessage,
   saveSession,
 } from "../../services/memory/store.js";
-import { closeAll } from "../../services/memory/db.js";
+import { closeAll, getDb } from "../../services/memory/db.js";
 
 import type { InterventionRecord } from "../../packages/shared/schemas/intervention.js";
 import type {
@@ -34,16 +46,30 @@ const CLASSROOM = "demo-okafor-grade34";
 const MODEL = "mock-gemma-4-4b-it";
 const SCHEMA_V = "1.0";
 
-function startOfCurrentIsoWeekUtc(): Date {
-  const today = new Date();
-  const isoDay = today.getUTCDay() || 7;
-  const weekStart = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
-  weekStart.setUTCDate(weekStart.getUTCDate() - isoDay + 1);
+const NOW = new Date();
+
+function startOfCurrentIsoWeekLocal(): Date {
+  const isoDay = NOW.getDay() || 7;
+  const weekStart = new Date(NOW.getFullYear(), NOW.getMonth(), NOW.getDate());
+  weekStart.setDate(weekStart.getDate() - isoDay + 1);
+  weekStart.setHours(0, 0, 0, 0);
   return weekStart;
 }
 
-const CURRENT_ISO_WEEK_START = startOfCurrentIsoWeekUtc();
-const CURRENT_SCHOOL_DAY_INDEX = Math.min((new Date().getUTCDay() || 7) - 1, 4);
+const CURRENT_ISO_WEEK_START = startOfCurrentIsoWeekLocal();
+const CURRENT_SCHOOL_DAY_INDEX = Math.min((NOW.getDay() || 7) - 1, 4);
+
+function localSchoolWeekTimestamp(
+  schoolDayIndex: number,
+  hour: number,
+  minute: number,
+  second: number,
+): Date {
+  const timestamp = new Date(CURRENT_ISO_WEEK_START);
+  timestamp.setDate(timestamp.getDate() + schoolDayIndex);
+  timestamp.setHours(hour, minute, second, 0);
+  return timestamp;
+}
 
 function currentWeekSessionIso(
   preferredDayIndex: number,
@@ -51,11 +77,38 @@ function currentWeekSessionIso(
   minute: number,
   second = 0,
 ): string {
-  const actualDayIndex = Math.min(preferredDayIndex, CURRENT_SCHOOL_DAY_INDEX);
-  const timestamp = new Date(CURRENT_ISO_WEEK_START);
-  timestamp.setUTCDate(timestamp.getUTCDate() + actualDayIndex);
-  timestamp.setUTCHours(hour, minute, second, 0);
+  let actualDayIndex = Math.min(preferredDayIndex, CURRENT_SCHOOL_DAY_INDEX);
+  let timestamp = localSchoolWeekTimestamp(actualDayIndex, hour, minute, second);
+  while (timestamp > NOW && actualDayIndex > 0) {
+    actualDayIndex -= 1;
+    timestamp = localSchoolWeekTimestamp(actualDayIndex, hour, minute, second);
+  }
+  if (timestamp > NOW) {
+    timestamp = new Date(NOW.getTime() - 60_000);
+  }
   return timestamp.toISOString();
+}
+
+function currentSchoolDayIso(hour: number, minute: number, second = 0): string {
+  return currentWeekSessionIso(CURRENT_SCHOOL_DAY_INDEX, hour, minute, second);
+}
+
+function stampPlanCreatedAt(planId: string, createdAt: string): void {
+  getDb(CLASSROOM)
+    .prepare("UPDATE generated_plans SET created_at = ? WHERE plan_id = ?")
+    .run(createdAt, planId);
+}
+
+function stampPatternReportCreatedAt(reportId: string, createdAt: string): void {
+  getDb(CLASSROOM)
+    .prepare("UPDATE pattern_reports SET created_at = ? WHERE report_id = ?")
+    .run(createdAt, reportId);
+}
+
+function stampFamilyMessageCreatedAt(draftId: string, createdAt: string): void {
+  getDb(CLASSROOM)
+    .prepare("UPDATE family_messages SET created_at = ? WHERE draft_id = ?")
+    .run(createdAt, draftId);
 }
 
 // ─── INTERVENTIONS ────────────────────────────────────────────────────────────
@@ -336,20 +389,6 @@ const interventions: InterventionRecord[] = [
     schema_version: SCHEMA_V,
   },
   {
-    record_id: "int-demo-022",
-    classroom_id: CLASSROOM,
-    student_refs: ["Liam"],
-    observation:
-      "Liam didn't follow the post-lunch transition back to math. Continued playing with a puzzle at his choice station even after the whole class had moved to their desks. Not defiant — visibly absorbed. First time observing this specific pattern; usually his attention drift is at morning transitions.",
-    action_taken:
-      "Walked to his station, tapped twice on the puzzle box, said 'Liam, math in 60 seconds — finish or pause.' Gave a visible countdown on fingers. Liam paused the puzzle at 30 seconds and moved to his desk without argument.",
-    outcome:
-      "Liam settled into math within a minute of sitting down. Noted that the 60-second countdown worked better than the usual 2-minute advance notice at this time of day. Try the shorter countdown as a standing afternoon support.",
-    follow_up_needed: true,
-    created_at: "2026-04-08T12:47:00.000Z",
-    schema_version: SCHEMA_V,
-  },
-  {
     record_id: "int-demo-023",
     classroom_id: CLASSROOM,
     student_refs: ["Maya"],
@@ -392,34 +431,6 @@ const interventions: InterventionRecord[] = [
     schema_version: SCHEMA_V,
   },
   {
-    record_id: "int-demo-026",
-    classroom_id: CLASSROOM,
-    student_refs: ["Xavier"],
-    observation:
-      "Xavier started the journal writing task at his seat and within 5 minutes was squirming and tapping his feet loudly. First instinct was to redirect, but remembered the standing option I'd set up at the side counter.",
-    action_taken:
-      "Walked over quietly and said 'Xavier, you can take your journal to the standing spot if you want.' Pointed to the counter. Didn't make it conditional on his behaviour — made it a choice.",
-    outcome:
-      "Xavier moved to the standing spot within 10 seconds. Completed a full journal entry (6 sentences, his longest in two weeks) over the remaining 15 minutes. Came back to his desk calmly at the end of the block. The standing option is working — make it a permanent fixture, not an intervention.",
-    follow_up_needed: false,
-    created_at: "2026-04-09T09:45:00.000Z",
-    schema_version: SCHEMA_V,
-  },
-  {
-    record_id: "int-demo-027",
-    classroom_id: CLASSROOM,
-    student_refs: ["Sebastián"],
-    observation:
-      "Sebastián stalled on a word problem during math. Similar profile to what we see with Amira (int-demo-002, Mar 21): the math was clear to him, but the English phrasing was blocking the entry. He read the problem aloud twice and said quietly 'I know what to do but I can't find the words.'",
-    action_taken:
-      "Sat beside him and offered the same sentence frame card ('First I need to find ___, then I need to ___') that we use with Amira. No one in class shares Spanish, so paired him with Farid as a verbal-first thinking partner — Farid's approach of 'say it aloud before you write' translated well across languages.",
-    outcome:
-      "Sebastián wrote three sentences of working, solved the problem correctly, and the final answer was in English with a Spanish annotation next to it ('= cinco'). Kept the Spanish annotation intact — it's his thinking, not an error. Pattern match with Amira's language-scaffolding need is strong.",
-    follow_up_needed: false,
-    created_at: "2026-04-10T10:08:00.000Z",
-    schema_version: SCHEMA_V,
-  },
-  {
     record_id: "int-demo-028",
     classroom_id: CLASSROOM,
     student_refs: ["Navpreet", "Farid"],
@@ -431,34 +442,6 @@ const interventions: InterventionRecord[] = [
       "Both students produced correct vocabulary matching sheets. Navpreet's written work was more complete than usual (he stayed focused to explain concepts to Farid) and Farid's pronunciation of the two target words improved. Mutual benefit — this pairing is worth repeating.",
     follow_up_needed: false,
     created_at: "2026-04-10T09:30:00.000Z",
-    schema_version: SCHEMA_V,
-  },
-  {
-    record_id: "int-demo-029",
-    classroom_id: CLASSROOM,
-    student_refs: ["Zayn"],
-    observation:
-      "Zayn arrived at his desk before the morning bell and immediately pulled out his laminated desk checklist (5 items: bag away, pencil box out, agenda open, water bottle on desk, check carpet number). He worked through all five items without prompting and sat ready before the bell rang. First fully independent morning setup since I introduced the laminated checklist.",
-    action_taken:
-      "Did not draw attention to it — acknowledged him with a small nod and a quiet 'good start today' at his desk. Kept the routine private so it stays his own accomplishment rather than something performed for adults.",
-    outcome:
-      "Zayn stayed regulated for the entire morning block. The laminated checklist is load-bearing for his morning setup; do not remove it, do not replace it with verbal reminders. Monday will be the test — do the same setup before he arrives.",
-    follow_up_needed: false,
-    created_at: "2026-04-10T08:38:00.000Z",
-    schema_version: SCHEMA_V,
-  },
-  {
-    record_id: "int-demo-030",
-    classroom_id: CLASSROOM,
-    student_refs: ["Uyen"],
-    observation:
-      "Uyen's third week. Recess transition back to the classroom was overwhelming — she stood at the doorway holding her coat, visibly tense, not moving. Other students walked around her. She appeared to not know where to hang her coat despite having done so successfully the previous two days. Sensory overwhelm, not forgetting.",
-    action_taken:
-      "Walked to the doorway, took her coat without comment, hung it in her spot, and pointed to her desk. She followed, sat down, and took three minutes to resettle. Did not ask her to explain.",
-    outcome:
-      "Uyen resettled within 5 minutes and engaged with the literacy block. Note for tomorrow: pair her with Imani on the way back from recess this week — they're both still in the routine-learning window and can anchor each other. Follow-up: confirm whether hallway noise is a specific trigger for her.",
-    follow_up_needed: true,
-    created_at: "2026-04-11T10:28:00.000Z",
     schema_version: SCHEMA_V,
   },
   {
@@ -577,20 +560,6 @@ const interventions: InterventionRecord[] = [
     schema_version: SCHEMA_V,
   },
   {
-    record_id: "int-demo-039",
-    classroom_id: CLASSROOM,
-    student_refs: ["Violet"],
-    observation:
-      "Art period — clay work. The classroom was louder than usual (clay tools, excited voices, moving chairs). Violet put her headphones on within 2 minutes and moved to the corner of her table. She was still working but her shoulders were up near her ears and she was pressing the clay very hard.",
-    action_taken:
-      "Offered the quiet workspace (desk near the bookshelf) as an option. Violet nodded and moved without speaking. She continued the clay project at her own pace in the quieter spot. Did not ask her to rejoin the main group.",
-    outcome:
-      "Violet produced a detailed and careful clay piece — her fine motor control was excellent when she wasn't managing sensory overload simultaneously. She returned to her regular desk when the cleanup announcement came, calm and ready. Fire drill practice is Thursday — need to send parent a heads-up tonight so they can prepare her.",
-    follow_up_needed: true,
-    created_at: "2026-04-11T14:15:00.000Z",
-    schema_version: SCHEMA_V,
-  },
-  {
     record_id: "int-demo-040",
     classroom_id: CLASSROOM,
     student_refs: ["Nadia"],
@@ -607,13 +576,13 @@ const interventions: InterventionRecord[] = [
   {
     record_id: "int-demo-041",
     classroom_id: CLASSROOM,
-    student_refs: ["Gabriel", "Violet"],
+    student_refs: ["Gabriel"],
     observation:
-      "Both Gabriel and Violet requested the quiet workspace during the same math test period. Gabriel because the classroom pencil-scratching noise was amplified by his hearing aids, Violet because of general noise sensitivity. There is only one quiet workspace desk.",
+      "Math test period. Gabriel requested the quiet workspace because the classroom pencil-scratching noise was amplified by his hearing aids. The single bookshelf desk was already in use for another student's reading conference.",
     action_taken:
-      "Set up a second quiet workspace using the reading nook with a portable desk. Gabriel took the bookshelf desk (closer to the front, per his preferential seating needs), Violet took the reading nook (which she prefers anyway — it's enclosed). Both had their full test materials and the same time.",
+      "Set up a temporary second quiet workspace at the reading nook with a portable desk. Gave Gabriel the bookshelf desk (preferential seating near the front, per his accommodation), kept his test materials and full timing.",
     outcome:
-      "Both completed their math tests comfortably. Gabriel scored 92%, Violet scored 88% — both above their typical range, suggesting the noise was impacting their performance in the main room. Need to make the two-workspace setup standard for test days. Will request a second desk from the resource room.",
+      "Gabriel completed the test comfortably and scored 92% — above his typical range. Noise level in the main room was clearly impacting his performance. Will request a second permanent quiet desk from the resource room for test days going forward.",
     follow_up_needed: false,
     created_at: "2026-04-12T13:30:00.000Z",
     schema_version: SCHEMA_V,
@@ -1070,9 +1039,14 @@ for (const { plan, reflection } of plans) {
   savePlan(CLASSROOM, plan, reflection, MODEL);
   console.log(`  ✓ ${plan.plan_id}`);
 }
+stampPlanCreatedAt(plan1.plan_id, currentSchoolDayIso(8, 10));
+stampPlanCreatedAt(plan2.plan_id, currentSchoolDayIso(8, 11));
+stampPlanCreatedAt(plan3.plan_id, currentSchoolDayIso(8, 12));
+console.log(`  ✓ latest plan pointer fixed at ${plan3.plan_id}`);
 
 console.log("\nSaving pattern report...");
 savePatternReport(CLASSROOM, patternReport, MODEL);
+stampPatternReportCreatedAt(patternReport.report_id, currentSchoolDayIso(8, 9));
 console.log(`  ✓ ${patternReport.report_id} (${patternReport.recurring_themes.length} themes, ${patternReport.follow_up_gaps.length} gaps, ${patternReport.positive_trends.length} positive trends)`);
 
 console.log("\nSaving family message...");
@@ -1081,6 +1055,7 @@ console.log(`  ✓ ${familyMessage.draft_id} — draft saved`);
 
 console.log("\nApproving family message...");
 approveFamilyMessage(CLASSROOM, familyMessage.draft_id);
+stampFamilyMessageCreatedAt(familyMessage.draft_id, currentSchoolDayIso(8, 14));
 console.log(`  ✓ ${familyMessage.draft_id} — approved`);
 
 // ─── SESSION USAGE (drives Review → Usage Insights + Today workflow nudge) ──
@@ -1089,9 +1064,9 @@ console.log(`  ✓ ${familyMessage.draft_id} — approved`);
 // single-panel visits). The same records now feed the top-of-Today workflow
 // nudge by looking for the most common repeated sequence that starts on
 // `today`. Repeating a sequence boosts both summaries. Session timestamps are
-// anchored inside the current ISO week and clamped to the current school day,
-// so a fresh reseed stays on the literal "this week" path without creating
-// future-dated demo records.
+// anchored inside the local ISO week and clamped to the latest completed
+// school-day timestamp, so a fresh reseed stays on the literal "this week"
+// path without creating future-dated demo records.
 const sessions = [
   // Morning triage flow — seeded 2x so it wins the #1 slot.
   {

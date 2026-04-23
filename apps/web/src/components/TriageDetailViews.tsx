@@ -1,11 +1,11 @@
 import { ActionButton } from "./shared";
-import type { ActiveTab } from "../appReducer";
+import type { ActiveTool, NavTarget } from "../appReducer";
 import type { PanelStatus, StudentThread } from "../types";
 import "./TriageDetailViews.css";
 
 interface PanelStatusViewProps {
   status: PanelStatus;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
 }
 
 export function PanelStatusView({ status, onNavigate }: PanelStatusViewProps) {
@@ -36,10 +36,10 @@ export function PanelStatusView({ status, onNavigate }: PanelStatusViewProps) {
         </div>
       </dl>
 
-      {(status.panel_id as ActiveTab) ? (
+      {status.panel_id ? (
         <ActionButton
           variant="primary"
-          onClick={() => onNavigate(status.panel_id as ActiveTab)}
+          onClick={() => onNavigate(status.panel_id as NavTarget)}
         >
           Open {status.label}
         </ActionButton>
@@ -50,7 +50,7 @@ export function PanelStatusView({ status, onNavigate }: PanelStatusViewProps) {
 
 interface StudentThreadViewProps {
   thread: StudentThread;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   onInterventionPrefill?: (prefill: {
     student_ref: string;
     suggested_action: string;
@@ -63,7 +63,7 @@ interface StudentThreadViewProps {
   }) => void;
 }
 
-function normalizeTargetTab(raw: string): ActiveTab | null {
+function normalizeTargetTab(raw: string): ActiveTool | null {
   switch (raw) {
     case "family-message":
     case "log-intervention":

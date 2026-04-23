@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import type { ClassroomProfile } from "../types";
 
@@ -179,6 +179,19 @@ describe("App shell — classroom pill trigger", () => {
     // jsdom does not implement Element.scrollTo; OPS sub-tab scroll-into-view path uses it.
     (Element.prototype as { scrollTo?: unknown }).scrollTo = vi.fn();
     window.scrollTo = vi.fn() as unknown as typeof window.scrollTo;
+    // jsdom does not implement matchMedia; useAmbientCursorGlow reads it.
+    if (!("matchMedia" in window) || typeof window.matchMedia !== "function") {
+      vi.stubGlobal("matchMedia", (query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn(),
+      }));
+    }
   });
 
   afterEach(() => {
@@ -208,21 +221,63 @@ describe("App shell — classroom pill trigger", () => {
     expect(btn.textContent?.trim()).toBe("?");
   });
 
-  it("renders the LOG INTERVENTION badge in the corner with alert tone", async () => {
+  it("rolls stale follow-up debt up to the Ops top-level nav button with alert tone", async () => {
     await renderShellWithDemo({ debtCounts: { stale_followup: 8 } });
-    // Switch to OPS group so the sub-tab is in the DOM
-    fireEvent.click(screen.getByTestId("shell-nav-group-ops"));
-    const tab = await screen.findByRole("tab", { name: /Log Intervention/i });
+    // Seven-view shell: the stale_followup counter now lives on the Ops
+    // top-level nav tab; the old secondary sub-tab row is gone.
+    const tab = screen.getByTestId("shell-nav-group-ops");
     const badge = tab.querySelector(".shell-nav__badge");
     expect(badge).not.toBeNull();
     expect(badge?.classList.contains("shell-nav__badge--alert")).toBe(true);
+    expect(badge?.textContent).toContain("8");
   });
 
-  it("renders the actions divider as a real element between role pill and utilities", async () => {
+  it("renders the brand unboxed and the primary rail as a full segmented tablist", async () => {
     await renderShellWithDemo();
-    const divider = document.querySelector(".shell-bar__divider");
-    expect(divider).not.toBeNull();
-    expect(divider?.previousElementSibling?.classList.contains("role-pill-anchor")).toBe(true);
+
+    const brand = document.querySelector(".shell-brand");
+    expect(brand).not.toBeNull();
+    expect(brand?.querySelector(".brand-mark__wordmark")?.textContent).toBe("PrairieClassroom");
+    expect(brand?.querySelector(".brand-mark__badge")?.textContent).toBe("OS");
+    expect(brand?.querySelector("button, [role='button']")).toBeNull();
+
+    const rail = screen.getByRole("tablist", { name: /primary navigation/i });
+    expect(rail.classList.contains("shell-nav__groups")).toBe(true);
+    expect(within(rail).getAllByRole("tab")).toHaveLength(7);
+    expect(rail.querySelector(".shell-nav__group-indicator")).toBeNull();
+    expect(rail.querySelector(".shell-nav__kbd")).toBeNull();
+  });
+
+  it("mounts the collapsible page drawer across every main page", async () => {
+    await renderShellWithDemo();
+
+    const pages = [
+      ["classroom", "Classroom sections", /01.*Temporal Lens/i],
+      ["today", "Today sections", /01.*Command Center/i],
+      ["tomorrow", "Tomorrow sections", /01.*Planning Tools/i],
+      ["week", "Week sections", /01.*Commit a Day/i],
+      ["prep", "Prep sections", /01.*Prep Tools/i],
+      ["ops", "Ops sections", /01.*Ops Tools/i],
+      ["review", "Review sections", /01.*Review Tools/i],
+    ] as const;
+
+    for (const [tab, label, firstAnchor] of pages) {
+      fireEvent.click(screen.getByTestId(`shell-nav-group-${tab}`));
+      await waitFor(() => {
+        expect(screen.getByRole("navigation", { name: label })).toBeInTheDocument();
+      });
+      expect(screen.getByRole("link", { name: firstAnchor })).toBeInTheDocument();
+    }
+
+    const collapse = screen.getByRole("button", { name: /collapse review sections navigation/i });
+    fireEvent.click(collapse);
+
+    expect(screen.getByRole("button", { name: /expand review sections navigation/i })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+    expect(localStorage.getItem("prairie:page-rail-collapsed")).toBe("1");
+    expect(screen.queryByRole("link", { name: /01.*Review Tools/i })).not.toBeInTheDocument();
   });
 
   it("feeds Today debt into the command palette for per-student actions", async () => {
@@ -240,7 +295,7 @@ describe("App shell — classroom pill trigger", () => {
     expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();
   });
 
-  it("keeps the global Action Atlas out of the Today first-open flow", async () => {
+  it("keeps the global Action Atlas out of the Today and Classroom first-open flows", async () => {
     await renderShellWithDemo({
       debtCounts: { stale_followup: 1 },
       debtItems: [
@@ -248,6 +303,8 @@ describe("App shell — classroom pill trigger", () => {
       ],
     });
 
+    // Initial landing is Classroom (the new seven-view default); the Atlas
+    // is also suppressed for Today.
     expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId("shell-nav-group-prep"));
@@ -256,6 +313,7 @@ describe("App shell — classroom pill trigger", () => {
   });
 
   it("saves the current panel scroll before the previous tab is hidden", async () => {
+    window.history.replaceState({}, "", "/?tab=today");
     await renderShellWithDemo();
 
     const todayPanel = document.querySelector(
@@ -283,6 +341,7 @@ describe("App shell — classroom pill trigger", () => {
   });
 
   it("uses app-main as the scroll container when panels relinquish scrolling", async () => {
+    window.history.replaceState({}, "", "/?tab=today");
     await renderShellWithDemo();
 
     const todayPanel = document.querySelector(
@@ -310,5 +369,49 @@ describe("App shell — classroom pill trigger", () => {
     await waitFor(() => {
       expect(mainScrollState.read()).toBe(77);
     });
+  });
+
+  it("redirects legacy ?tab=<old-panel> links to their new canonical destinations", async () => {
+    window.history.replaceState({}, "", "/?tab=tomorrow-plan");
+    await renderShellWithDemo();
+    await waitFor(() => {
+      expect(window.location.search).toContain("tab=tomorrow");
+      expect(window.location.search).toContain("tool=tomorrow-plan");
+    });
+  });
+
+  it("moves queued Tomorrow actions out of the header and into the Tomorrow page", async () => {
+    const note = {
+      id: "shell-chip-note-1",
+      sourcePanel: "differentiate",
+      sourceType: "differentiate_material",
+      summary: "Queued from shell test",
+      createdAt: "2026-04-23T10:00:00Z",
+    };
+    localStorage.setItem("prairie-tomorrow-notes", JSON.stringify([note]));
+    localStorage.setItem("prairie-onboarding-done", "true");
+
+    await renderShellWithDemo();
+
+    const header = document.querySelector(".app-header");
+    expect(header?.querySelector(".tomorrow-chip")).toBeNull();
+
+    const tomorrowTab = screen.getByTestId("shell-nav-group-tomorrow");
+    expect(within(tomorrowTab).getByText("1")).toBeInTheDocument();
+
+    fireEvent.click(tomorrowTab);
+    await waitFor(() => {
+      expect(window.location.search).toContain("tab=tomorrow");
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /tomorrow plan has 1 queued item/i }));
+    fireEvent.click(screen.getByRole("button", { name: /review all/i }));
+
+    await waitFor(() => {
+      expect(window.location.search).toContain("tab=tomorrow");
+      expect(window.location.search).toContain("tool=tomorrow-plan");
+    });
+
+    expect(screen.getByTestId("shell-nav-group-tomorrow").getAttribute("aria-selected")).toBe("true");
   });
 });

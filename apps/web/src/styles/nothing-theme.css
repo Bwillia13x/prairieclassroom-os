@@ -188,6 +188,25 @@
   }
 }
 
+/* Today starts with its purpose-built command center hero. The global
+   PageIntro treatment above is still useful for the other workflow
+   panels, but on Today it creates a second competing header before the
+   morning brief and pushes the real first-open task below the fold. */
+.app-main[data-section="today"] .today-panel > .page-intro,
+.app-main[data-section="today"] .today-panel > .page-intro.page-intro--sun,
+.app-main[data-section="today"] .today-panel > .page-intro.page-intro--sage,
+.app-main[data-section="today"] .today-panel > .page-intro.page-intro--slate,
+.app-main[data-section="today"] .today-panel > .page-intro.page-intro--forest,
+.app-main[data-section="today"] .today-panel > .page-intro.page-intro--muted {
+  display: none !important;
+}
+
+.app-main[data-section="today"] .today-panel #command-center { order: 1; }
+.app-main[data-section="today"] .today-panel .student-coverage { order: 2; }
+.app-main[data-section="today"] .today-panel .today-workflow-nudge { order: 3; }
+.app-main[data-section="today"] .today-panel .today-pulse { order: 4; }
+.app-main[data-section="today"] .today-panel .today-end-marker { order: 5; }
+
 /* ---------- StatusChip — flat mono-caps token, tone-as-event ---------- */
 
 .workspace-page .status-chip,
@@ -539,23 +558,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
-}
-
-/* Today owns a sticky section rail on desktop. This late-layer override
-   intentionally beats the shared `.workspace-page` rhythm above without
-   changing other panels. */
-.workspace-page.today-panel--with-rail {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-4);
-}
-
-@media (min-width: 961px) {
-  .workspace-page.today-panel--with-rail {
-    grid-template-columns: var(--today-rail-width, 180px) minmax(0, 1fr);
-    column-gap: var(--space-6);
-    align-items: start;
-  }
 }
 
 /* ---------- Viz internal polish (applies everywhere) ---------- */
@@ -1261,7 +1263,9 @@
 
 .app-header {
   background: var(--color-surface);
-  border-bottom: 1px solid var(--color-border);
+  /* 2026-04-22 shell-continuity: bottom border removed — the
+     section-accent rail painted by `.app-main::before` is the single
+     authoritative seam between nav and workspace. */
   box-shadow: none;
   border-radius: 0;
 }
@@ -1788,16 +1792,24 @@
   -webkit-backdrop-filter: none !important;
 }
 
+/* 2026-04-22 shell-continuity pass: the header card and the workspace
+   below it merge into one silhouette so the left rail, top nav, and
+   central canvas stop reading as three floating slabs. The seam
+   between them is carried by `.app-main::before` (a 2px section-toned
+   accent painted in shell.css), so neither surface needs its own
+   border on the shared edge. */
 .app-header__inner {
   background: var(--color-surface) !important;
   border: 1px solid var(--color-border) !important;
-  border-radius: 2px !important;
+  border-bottom: 0 !important;
+  border-radius: 2px 2px 0 0 !important;
 }
 
 .app-main {
   background: var(--color-workspace) !important;
   border: 1px solid var(--color-border) !important;
-  border-radius: 8px !important;
+  border-top: 0 !important;
+  border-radius: 0 0 2px 2px !important;
 }
 
 /* Classroom switcher popover anchoring — pinned to its trigger pill,
@@ -2248,7 +2260,9 @@ textarea {
   }
 
   .app-main {
-    border-radius: 2px !important;
+    /* Mobile still holds the flush shell silhouette — no top rounding,
+       bottom corners carry the 2px technical rectangle of the theme. */
+    border-radius: 0 0 2px 2px !important;
   }
 }
 
@@ -2358,7 +2372,7 @@ textarea {
   width: 1px;
   height: 5px;
   background: var(--nothing-button-signal-color);
-  opacity: 0.58;
+  opacity: 0;
   transform: translateX(-50%);
   pointer-events: none;
   transition: opacity var(--motion-fast) var(--ease-standard),
@@ -2737,7 +2751,7 @@ textarea {
   width: 1px;
   height: 4px;
   background: var(--nothing-button-signal-color);
-  opacity: 0.6;
+  opacity: 0;
   transform: translateX(-50%);
   pointer-events: none;
   transition: opacity var(--motion-fast) var(--ease-standard),
@@ -2803,7 +2817,7 @@ textarea {
 ):hover:not(:disabled)::after,
 .page-intro-info__trigger[aria-expanded="true"]::before,
 .page-intro-info__trigger[aria-expanded="true"]::after {
-  opacity: 1;
+  opacity: 0.72;
 }
 
 :is(
@@ -3443,7 +3457,7 @@ textarea {
   width: 1px;
   height: 5px;
   background: var(--nothing-button-signal-color);
-  opacity: 0.58;
+  opacity: 0;
   transform: translateX(-50%);
   pointer-events: none;
   transition: opacity var(--motion-fast) var(--ease-standard),
@@ -3482,7 +3496,12 @@ textarea {
 .mobile-nav-group--active::after,
 .mobile-nav-subtab--active::before,
 .mobile-nav-subtab--active::after {
-  opacity: 1;
+  opacity: 0.72;
+}
+
+.mobile-nav-group--active::before,
+.mobile-nav-group--active::after {
+  opacity: 0;
 }
 
 .mobile-nav-group--active,
@@ -3530,7 +3549,7 @@ textarea {
   width: 1px;
   height: 4px;
   background: var(--nothing-button-signal-color);
-  opacity: 0.6;
+  opacity: 0;
   transform: translateX(-50%);
   pointer-events: none;
   transition: opacity var(--motion-fast) var(--ease-standard),

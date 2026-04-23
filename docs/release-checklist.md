@@ -9,7 +9,7 @@ nvm use
 npm install
 python3.11 -m venv services/inference/.venv
 services/inference/.venv/bin/pip install -r services/inference/requirements.txt
-npx tsx data/demo/seed.ts
+npm run pilot:reset
 npm run release:gate
 ```
 
@@ -18,6 +18,7 @@ If you use a different prepared interpreter, export `PRAIRIE_PYTHON=/abs/path/to
 ## What the gate does
 
 - Verifies the local Node version matches `.nvmrc`
+- Checks the demo fixture contract with `npm run demo:fixture:check`
 - Starts mock inference on `:3200`
 - Starts the orchestrator on `:3100`
 - Starts the Vite web app on `:5173`
@@ -35,8 +36,9 @@ If you use a different prepared interpreter, export `PRAIRIE_PYTHON=/abs/path/to
 
 The browser smoke now covers:
 
-- grouped `Today / Prep / Ops / Review` shell navigation
-- `tab` and `classroom` query-param restore on refresh
+- seven-view top-level shell navigation (`classroom / today / tomorrow / week / prep / ops / review`)
+- canonical `tab` + optional `tool` query-param restore on refresh and legacy `?tab=<old-panel>` migration
+- `classroom` query-param restore on refresh
 - demo classroom panel handoffs
 - protected classroom auth prompt, invalid-code recovery, and retry success
 

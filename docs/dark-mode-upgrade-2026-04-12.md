@@ -109,7 +109,7 @@ After all changes:
 - `npm run lint`
 - `npm run check:contrast` — must pass with zero AA failures
 - `npm run test` — catches any CSS module regressions
-- Manual: `npm run dev`, toggle all three modes (`system`, `light`, `dark`), walk Today / Prep / Ops / Review tabs, verify nothing visually regressed
+- Manual: `npm run dev`, toggle all three modes (`system`, `light`, `dark`), walk the seven top-level views (Classroom · Today · Tomorrow · Week · Prep · Ops · Review), verify nothing visually regressed
 
 ## Risk Assessment
 

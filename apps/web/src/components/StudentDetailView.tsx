@@ -9,7 +9,7 @@ import type {
   InterventionRecord,
   FamilyMessageDraft,
 } from "../types";
-import type { ActiveTab } from "../appReducer";
+import type { NavTarget } from "../appReducer";
 import SkeletonLoader from "./SkeletonLoader";
 import StatusChip from "./StatusChip";
 import { InterventionTimeline, FollowUpSuccessRate } from "./DataVisualizations";
@@ -27,7 +27,7 @@ interface Props {
     reason: string;
     message_type: string;
   }) => void;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
 }
 
 export default function StudentDetailView({

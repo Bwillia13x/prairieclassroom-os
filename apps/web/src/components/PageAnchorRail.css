@@ -1,0 +1,361 @@
+/* ================================================================
+   Page anchor rail — shared collapsible page drawer.
+
+   The rail is fixed to the live workspace edge, not the viewport edge.
+   PageAnchorRail.tsx measures `.app-main` and publishes:
+     --page-rail-top-edge
+     --page-rail-left-edge
+
+   This keeps the drawer under the full shell chrome and aligned with
+   the workspace border across desktop widths.
+   ================================================================ */
+
+.page-anchor-rail {
+  --page-rail-width: var(--shell-page-rail-width, 9.25rem);
+  --page-rail-collapsed-width: var(--shell-page-rail-collapsed-width, 2.5rem);
+  --page-rail-top-edge: calc(var(--shell-sticky-offset, 15rem) + var(--space-4));
+  --page-rail-left-edge: var(--space-5);
+  --page-rail-bottom-edge: var(--space-5);
+  --page-rail-toggle-h: 2.75rem;
+  --page-rail-accent: var(--shell-control-accent, var(--color-accent));
+
+  position: fixed;
+  top: var(--page-rail-top-edge);
+  bottom: var(--page-rail-bottom-edge);
+  left: var(--page-rail-left-edge);
+  z-index: 45;
+  width: var(--page-rail-width);
+  padding: calc(var(--page-rail-toggle-h) + var(--space-3)) var(--space-3)
+    var(--space-4);
+  overflow-x: visible;
+  overflow-y: auto;
+  scrollbar-width: none;
+  background:
+    linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--color-surface) 76%, transparent) 0%,
+      color-mix(in srgb, var(--color-surface) 46%, transparent) 72%,
+      transparent 100%
+    );
+  border: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent);
+  border-left: 0;
+  border-radius: 0 var(--shell-control-radius, var(--radius-md))
+    var(--shell-control-radius, var(--radius-md)) 0;
+  box-shadow:
+    8px 0 20px color-mix(in srgb, black 7%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--page-rail-accent) 12%, transparent);
+  transition:
+    left 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms ease-out,
+    border-color 220ms ease-out,
+    box-shadow 220ms ease-out,
+    padding 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-anchor-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.page-anchor-rail--collapsed {
+  left: calc(
+    var(--page-rail-left-edge) -
+    (var(--page-rail-width) - var(--page-rail-collapsed-width))
+  );
+  padding-right: 0;
+  padding-left: 0;
+  pointer-events: none;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.page-anchor-rail::before {
+  content: "";
+  position: fixed;
+  top: var(--page-rail-top-edge);
+  bottom: var(--page-rail-bottom-edge);
+  left: var(--page-rail-left-edge);
+  width: 2px;
+  z-index: 5;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0%,
+      color-mix(in srgb, var(--page-rail-accent) 92%, white 10%) 20%,
+      color-mix(in srgb, var(--page-rail-accent) 100%, white 22%) 50%,
+      color-mix(in srgb, var(--page-rail-accent) 92%, white 10%) 80%,
+      transparent 100%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--page-rail-accent) 16%, transparent) 0%,
+      color-mix(in srgb, var(--page-rail-accent) 34%, transparent) 50%,
+      color-mix(in srgb, var(--page-rail-accent) 16%, transparent) 100%
+    );
+  background-size: 100% 30%, 100% 100%;
+  background-position: 0% -35%, 0% 0%;
+  background-repeat: no-repeat, no-repeat;
+  box-shadow:
+    0 0 0 0.5px color-mix(in srgb, var(--page-rail-accent) 42%, transparent),
+    0 0 10px 1px color-mix(in srgb, var(--page-rail-accent) 22%, transparent);
+  opacity: 0;
+  transition: opacity 220ms ease-out 50ms;
+}
+
+.page-anchor-rail--collapsed::before {
+  opacity: 1;
+  animation: page-rail-led-sweep 6.4s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+}
+
+@keyframes page-rail-led-sweep {
+  0%,
+  6% {
+    background-position: 0% -35%, 0% 0%;
+  }
+  54%,
+  60% {
+    background-position: 0% 135%, 0% 0%;
+  }
+  100% {
+    background-position: 0% -35%, 0% 0%;
+  }
+}
+
+.page-anchor-rail__toggle {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  height: var(--page-rail-toggle-h);
+  min-width: var(--page-rail-toggle-h);
+  padding: 0 var(--space-3);
+  border: var(--shell-control-border, 1px solid var(--color-border));
+  border-radius: var(--shell-control-radius, var(--radius-md));
+  background: var(--shell-control-bg, var(--color-surface));
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  line-height: 1;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--page-rail-accent) 12%, transparent),
+    0 8px 18px color-mix(in srgb, black 12%, transparent);
+  transition:
+    left 360ms cubic-bezier(0.22, 1, 0.36, 1),
+    width 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    padding 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 160ms ease-out,
+    background 160ms ease-out,
+    border-color 160ms ease-out,
+    box-shadow 220ms ease-out;
+}
+
+.page-anchor-rail__toggle:hover {
+  background: var(--shell-control-bg-hover, var(--color-surface-elevated));
+  border-color: color-mix(in srgb, var(--color-border-accent) 58%, transparent);
+  color: var(--page-rail-accent);
+}
+
+.page-anchor-rail__toggle:focus-visible {
+  outline: 2px solid var(--page-rail-accent);
+  outline-offset: 2px;
+}
+
+.page-anchor-rail--collapsed .page-anchor-rail__toggle {
+  left: calc(var(--page-rail-width) - var(--page-rail-collapsed-width));
+  width: var(--page-rail-collapsed-width);
+  padding: 0;
+  gap: 0;
+  border-left: 0;
+  border-radius: 0 var(--shell-control-radius, var(--radius-md))
+    var(--shell-control-radius, var(--radius-md)) 0;
+  box-shadow:
+    inset 2px 0 0 var(--page-rail-accent),
+    0 0 0 1px color-mix(in srgb, var(--page-rail-accent) 16%, transparent),
+    0 0 14px color-mix(in srgb, var(--page-rail-accent) 22%, transparent);
+}
+
+.page-anchor-rail__toggle-icon {
+  display: block;
+  flex: 0 0 auto;
+  width: 12px;
+  height: 12px;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-anchor-rail--collapsed .page-anchor-rail__toggle-icon {
+  transform: scaleX(-1);
+}
+
+.page-anchor-rail__toggle-text {
+  display: inline-block;
+  max-width: 10ch;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 1;
+  transition:
+    max-width 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 160ms ease-out 60ms;
+}
+
+.page-anchor-rail--collapsed .page-anchor-rail__toggle-text {
+  max-width: 0;
+  opacity: 0;
+  transition:
+    max-width 280ms cubic-bezier(0.32, 0, 0.67, 0),
+    opacity 120ms ease-out;
+}
+
+.page-anchor-rail__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 200ms ease-out 80ms,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-anchor-rail__list[aria-hidden="true"] {
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
+  transition:
+    opacity 160ms ease-out,
+    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.page-anchor-rail__link,
+.page-anchor-rail__back-to-top {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding: 0.42rem var(--space-2);
+  color: var(--color-text-tertiary);
+  font-size: clamp(0.66rem, 0.72vw, 0.76rem);
+  line-height: 1.35;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  transition:
+    color 160ms ease-out,
+    transform 160ms ease-out;
+}
+
+.page-anchor-rail__link::before,
+.page-anchor-rail__back-to-top::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  background: color-mix(in srgb, var(--color-border) 70%, transparent);
+  opacity: 0.55;
+  transform: scaleY(0.35);
+  transform-origin: center;
+  transition:
+    background 180ms ease-out,
+    opacity 180ms ease-out,
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 220ms ease-out;
+}
+
+.page-anchor-rail__link:hover,
+.page-anchor-rail__back-to-top:hover {
+  color: var(--color-text-secondary);
+}
+
+.page-anchor-rail__link:hover::before,
+.page-anchor-rail__back-to-top:hover::before,
+.page-anchor-rail__link--active::before,
+.page-anchor-rail__back-to-top--active::before,
+.page-anchor-rail__link:focus-visible::before,
+.page-anchor-rail__back-to-top:focus-visible::before {
+  background: var(--page-rail-accent);
+  opacity: 1;
+  transform: scaleY(1);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--page-rail-accent) 30%, transparent),
+    0 0 10px color-mix(in srgb, var(--page-rail-accent) 45%, transparent);
+}
+
+.page-anchor-rail__link--active,
+.page-anchor-rail__back-to-top--active {
+  color: var(--color-text);
+}
+
+.page-anchor-rail__link:focus-visible,
+.page-anchor-rail__back-to-top:focus-visible {
+  outline: none;
+}
+
+.page-anchor-rail__number {
+  flex: 0 0 auto;
+  color: var(--color-text-secondary);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.page-anchor-rail__label,
+.page-anchor-rail__back-to-top {
+  text-transform: uppercase;
+}
+
+.page-anchor-rail__back-to-top {
+  margin-top: var(--space-3);
+}
+
+@media (min-width: 961px) {
+  .app-main[data-page-rail] > [role="tabpanel"]:not([hidden]),
+  .app-main[data-page-rail] > .action-atlas,
+  .app-main[data-page-rail] > .role-escape-banner,
+  .app-main[data-page-rail] > .app-footer {
+    box-sizing: border-box;
+    width: 100%;
+    padding-left: calc(var(--shell-page-rail-width, 10.25rem) + var(--space-5));
+    transition: padding-left 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .app-main[data-page-rail-state="collapsed"] > [role="tabpanel"]:not([hidden]),
+  .app-main[data-page-rail-state="collapsed"] > .action-atlas,
+  .app-main[data-page-rail-state="collapsed"] > .role-escape-banner,
+  .app-main[data-page-rail-state="collapsed"] > .app-footer {
+    padding-left: calc(var(--shell-page-rail-collapsed-width, 2.5rem) + var(--space-4));
+  }
+}
+
+@media (max-width: 960px) {
+  .page-anchor-rail {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-anchor-rail,
+  .page-anchor-rail::before,
+  .page-anchor-rail__list,
+  .page-anchor-rail__toggle,
+  .page-anchor-rail__toggle-icon,
+  .page-anchor-rail__toggle-text,
+  .page-anchor-rail__link,
+  .page-anchor-rail__link::before,
+  .page-anchor-rail__back-to-top,
+  .page-anchor-rail__back-to-top::before {
+    animation: none;
+    transition-duration: 120ms;
+  }
+}

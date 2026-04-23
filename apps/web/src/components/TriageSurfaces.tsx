@@ -1,6 +1,14 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { DrillDownContext, EALoadBlock, PanelStatus, PanelStatusState, ScheduleBlockInput, StudentThread, TodaySnapshot, TransitionWatchpoint, ComplexityBlock } from "../types";
-import { TAB_META, type ActiveTab, type ClassroomRole, isTabVisibleForRole } from "../appReducer";
+import {
+  isActiveTab as isAppActiveTab,
+  isActiveTool,
+  isTabVisibleForRole,
+  resolveLegacyPanel,
+  type ActiveTool,
+  type ClassroomRole,
+  type NavTarget,
+} from "../appReducer";
 import { roleCapabilities } from "../hooks/useRole";
 import SectionIcon from "./SectionIcon";
 import "./TriageSurfaces.css";
@@ -12,7 +20,7 @@ interface AtlasCell {
   state: AtlasCellState;
   detail: string;
   count: number;
-  targetTab: ActiveTab | null;
+  targetTab: NavTarget | null;
   panelStatus?: PanelStatus;
 }
 
@@ -30,7 +38,7 @@ const ACTION_COLUMNS: Array<{
   { id: "sub", label: "Sub", panelIds: ["survival-packet"], icon: "check" },
 ];
 
-const TARGET_TAB_BY_CATEGORY: Record<string, ActiveTab> = {
+const TARGET_TAB_BY_CATEGORY: Record<string, ActiveTool> = {
   unapproved_message: "family-message",
   family_followup: "family-message",
   stale_followup: "log-intervention",
@@ -55,12 +63,17 @@ function panelStateRank(state: AtlasCellState): number {
   }
 }
 
-function isActiveTab(value: string | null | undefined): value is ActiveTab {
-  return typeof value === "string" && value in TAB_META;
+function isNavTargetValue(value: string | null | undefined): value is NavTarget {
+  return typeof value === "string" && (isAppActiveTab(value) || isActiveTool(value));
 }
 
-function tabFromPanelId(panelId: string | null | undefined): ActiveTab | null {
-  return isActiveTab(panelId) ? panelId : null;
+function targetFromPanelId(panelId: string | null | undefined): NavTarget | null {
+  return isNavTargetValue(panelId) ? panelId : null;
+}
+
+function hostTabForTarget(target: NavTarget | null): NavTarget | null {
+  if (!target) return null;
+  return resolveLegacyPanel(target).tab;
 }
 
 function combinePanelStatuses(
@@ -77,8 +90,9 @@ function combinePanelStatuses(
   }
 
   const visible = statuses.filter((status) => {
-    const tab = tabFromPanelId(status.panel_id);
-    return tab ? isTabVisibleForRole(tab, role) : false;
+    const target = targetFromPanelId(status.panel_id);
+    const hostTab = hostTabForTarget(target);
+    return isAppActiveTab(hostTab) ? isTabVisibleForRole(hostTab, role) : false;
   });
   if (visible.length === 0) {
     return {
@@ -102,14 +116,14 @@ function combinePanelStatuses(
       ? visible.map((status) => `${status.label}: ${status.detail}`).join(" · ")
       : chosen.detail,
     count: visible.reduce((total, status) => total + status.pending_count, 0),
-    targetTab: tabFromPanelId(chosen.panel_id),
+    targetTab: targetFromPanelId(chosen.panel_id),
     panelStatus: chosen,
   };
 }
 
 function threadCellForColumn(thread: StudentThread, column: AtlasColumnId): AtlasCell {
   const matchingActions = thread.actions.filter((action) => {
-    const target = TARGET_TAB_BY_CATEGORY[action.category] ?? tabFromPanelId(action.target_tab);
+    const target = TARGET_TAB_BY_CATEGORY[action.category] ?? targetFromPanelId(action.target_tab);
     switch (column) {
       case "message":
         return target === "family-message";
@@ -140,7 +154,7 @@ function threadCellForColumn(thread: StudentThread, column: AtlasColumnId): Atla
     if (rankDiff !== 0) return rankDiff;
     return b.count - a.count;
   })[0];
-  const target = TARGET_TAB_BY_CATEGORY[chosen.category] ?? tabFromPanelId(chosen.target_tab);
+  const target = TARGET_TAB_BY_CATEGORY[chosen.category] ?? targetFromPanelId(chosen.target_tab);
 
   return {
     state: chosen.state,
@@ -155,8 +169,9 @@ export function pickRecommendedPanelStatus(
   role: ClassroomRole,
 ): PanelStatus | null {
   const visible = statuses.filter((status) => {
-    const tab = tabFromPanelId(status.panel_id);
-    return tab ? isTabVisibleForRole(tab, role) : false;
+    const target = targetFromPanelId(status.panel_id);
+    const hostTab = hostTabForTarget(target);
+    return isAppActiveTab(hostTab) ? isTabVisibleForRole(hostTab, role) : false;
   });
   if (visible.length === 0) return null;
 
@@ -171,7 +186,7 @@ export function pickRecommendedPanelStatus(
 interface ActionAtlasProps {
   snapshot: TodaySnapshot | null;
   activeRole: ClassroomRole;
-  onTabChange: (tab: ActiveTab) => void;
+  onTabChange: (target: NavTarget) => void;
   onOpenContext?: (context: DrillDownContext) => void;
   onInterventionPrefill?: (prefill: {
     student_ref: string;
@@ -338,7 +353,7 @@ export function ActionAtlas({
     );
   }
 
-  const recommendedTab = recommended ? tabFromPanelId(recommended.panel_id) : null;
+  const recommendedTab = recommended ? targetFromPanelId(recommended.panel_id) : null;
 
   return (
     <section className="action-atlas" aria-label="Action Atlas">
@@ -499,7 +514,10 @@ export function ActionAtlas({
               </button>
               {ACTION_COLUMNS.map((column) => {
                 const cell = threadCellForColumn(thread, column.id);
-                const tabVisible = cell.targetTab ? isTabVisibleForRole(cell.targetTab, activeRole) : true;
+                const hostTab = hostTabForTarget(cell.targetTab);
+                const tabVisible = cell.targetTab
+                  ? (isAppActiveTab(hostTab) ? isTabVisibleForRole(hostTab, activeRole) : true)
+                  : true;
                 const effectiveCell = !tabVisible
                   ? { ...cell, state: "blocked" as const, targetTab: null, detail: "This workflow is hidden for the current role" }
                   : cell;
@@ -549,11 +567,28 @@ function filterThread(thread: StudentThread, filter: CoverageFilter): boolean {
       return Boolean(thread.support_tags?.length);
     case "family":
       return thread.actions.some((action) => {
-        const target = TARGET_TAB_BY_CATEGORY[action.category] ?? tabFromPanelId(action.target_tab);
+        const target = TARGET_TAB_BY_CATEGORY[action.category] ?? targetFromPanelId(action.target_tab);
         return target === "family-message";
       });
   }
 }
+
+// Primary filters always render as a segmented control; secondary filters
+// collapse into a disclosure menu so the strip stays one row when pinned.
+// 2026-04-22 sticky-coverage redesign.
+const PRIMARY_FILTERS: Array<[CoverageFilter, string]> = [
+  ["all", "All"],
+  ["urgent", "Urgent"],
+  ["stale", "Stale"],
+];
+const SECONDARY_FILTERS: Array<[CoverageFilter, string]> = [
+  ["eal", "EAL"],
+  ["support", "Support cluster"],
+  ["family", "Family follow-up"],
+];
+const SECONDARY_KEYS = SECONDARY_FILTERS.map(([value]) => value);
+
+const MAX_VISIBLE_CHIPS = 24;
 
 export function StudentCoverageStrip({
   threads,
@@ -562,6 +597,16 @@ export function StudentCoverageStrip({
   onSelectThread,
 }: StudentCoverageStripProps) {
   const [filter, setFilter] = useState<CoverageFilter>("all");
+  const [pinned, setPinned] = useState(false);
+  const [overflowStart, setOverflowStart] = useState(false);
+  const [overflowEnd, setOverflowEnd] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const chipRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
+  const moreRef = useRef<HTMLDivElement | null>(null);
 
   const filterCounts = useMemo(
     () => ({
@@ -575,65 +620,297 @@ export function StudentCoverageStrip({
     [threads],
   );
   const visible = useMemo(
-    () => threads.filter((thread) => filterThread(thread, filter)).slice(0, 18),
+    () => threads.filter((thread) => filterThread(thread, filter)).slice(0, MAX_VISIBLE_CHIPS),
     [threads, filter],
+  );
+
+  // Pinned detection: compare the sentinel's top against the section's
+  // computed sticky offset. The sentinel sits just above the section so
+  // when it scrolls above the sticky line we know the section is pinned.
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    const section = sectionRef.current;
+    if (!sentinel || !section) return;
+
+    let rafId: number | null = null;
+    const measure = () => {
+      rafId = null;
+      const sectionTop = parseFloat(getComputedStyle(section).top) || 0;
+      setPinned(sentinel.getBoundingClientRect().top < sectionTop - 1);
+    };
+    const schedule = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, []);
+
+  // Horizontal-scroll overflow detection for fade masks and arrow buttons.
+  const syncOverflow = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) {
+      setOverflowStart(false);
+      setOverflowEnd(false);
+      return;
+    }
+    const start = el.scrollLeft > 4;
+    const end = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+    setOverflowStart(start);
+    setOverflowEnd(end);
+  }, []);
+
+  useEffect(() => {
+    syncOverflow();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", syncOverflow, { passive: true });
+    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(syncOverflow) : null;
+    ro?.observe(el);
+    return () => {
+      el.removeEventListener("scroll", syncOverflow);
+      ro?.disconnect();
+    };
+  }, [syncOverflow, visible.length]);
+
+  // Keep the selected chip visible as the selection changes from outside
+  // (e.g. drill-down drawer, prefill flows).
+  useEffect(() => {
+    if (!selectedAlias) return;
+    const chip = chipRefs.current.get(selectedAlias);
+    chip?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+  }, [selectedAlias]);
+
+  // Dismiss the "more filters" menu on outside click / Escape.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handleMouse = (event: MouseEvent) => {
+      if (!moreRef.current?.contains(event.target as Node)) setMenuOpen(false);
+    };
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", handleMouse);
+    document.addEventListener("keydown", handleKey);
+    return () => {
+      document.removeEventListener("mousedown", handleMouse);
+      document.removeEventListener("keydown", handleKey);
+    };
+  }, [menuOpen]);
+
+  const scrollByDir = useCallback((dir: -1 | 1) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * Math.max(el.clientWidth * 0.75, 160), behavior: "smooth" });
+  }, []);
+
+  const handleChipKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft" && event.key !== "Home" && event.key !== "End") return;
+      event.preventDefault();
+      if (visible.length === 0) return;
+      let nextIndex = index;
+      if (event.key === "ArrowRight") nextIndex = (index + 1) % visible.length;
+      else if (event.key === "ArrowLeft") nextIndex = (index - 1 + visible.length) % visible.length;
+      else if (event.key === "Home") nextIndex = 0;
+      else if (event.key === "End") nextIndex = visible.length - 1;
+      const target = chipRefs.current.get(visible[nextIndex].alias);
+      target?.focus();
+    },
+    [visible],
   );
 
   if (threads.length === 0) return null;
 
+  const secondaryActive = SECONDARY_KEYS.includes(filter);
+  const secondaryLabel = secondaryActive
+    ? (SECONDARY_FILTERS.find(([value]) => value === filter)?.[1] ?? "More")
+    : "More";
+
   return (
-    <section className="student-coverage" aria-label={title}>
-      <div className="student-coverage__header">
-        <div>
-          <span className="student-coverage__eyebrow">Sticky coverage</span>
-          <h3 className="student-coverage__title">{title}</h3>
+    <>
+      <div ref={sentinelRef} className="student-coverage__sentinel" aria-hidden="true" />
+      <section
+        ref={sectionRef}
+        className="student-coverage"
+        data-pinned={pinned ? "true" : "false"}
+        aria-label={title}
+      >
+        <div className="student-coverage__header">
+          <div className="student-coverage__titleblock">
+            <span className="student-coverage__eyebrow">Roster</span>
+            <h3 className="student-coverage__title">{title}</h3>
+          </div>
+          <span className="student-coverage__meta" aria-live="polite">
+            <strong>{filterCounts.urgent}</strong> active · {filterCounts.all} total
+          </span>
         </div>
-        <span className="student-coverage__meta">{filterCounts.urgent} active threads</span>
-      </div>
 
-      <div className="student-coverage__filters" role="toolbar" aria-label="Student coverage filters">
-        {([
-          ["all", "All"],
-          ["urgent", "Urgent"],
-          ["stale", "No recent touch"],
-          ["eal", "EAL"],
-          ["support", "Support cluster"],
-          ["family", "Family follow-up"],
-        ] as Array<[CoverageFilter, string]>).map(([value, label]) => (
-          <button
-            key={value}
-            type="button"
-            className={`student-coverage__filter${filter === value ? " student-coverage__filter--active" : ""}`}
-            onClick={() => setFilter(value)}
-          >
-            {label}
-            <span>{filterCounts[value]}</span>
-          </button>
-        ))}
-      </div>
+        <div className="student-coverage__filters" role="toolbar" aria-label="Student coverage filters">
+          <div className="student-coverage__segment" role="group" aria-label="Primary filters">
+            {PRIMARY_FILTERS.map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className="student-coverage__segment-btn"
+                aria-pressed={filter === value}
+                onClick={() => setFilter(value)}
+              >
+                <span>{label}</span>
+                <span className="student-coverage__segment-count">{filterCounts[value]}</span>
+              </button>
+            ))}
+          </div>
 
-      <div className="student-coverage__scroll">
-        {visible.map((thread) => (
+          <div ref={moreRef} className="student-coverage__more">
+            <button
+              type="button"
+              className="student-coverage__more-toggle"
+              data-has-active={secondaryActive ? "true" : "false"}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((open) => !open)}
+            >
+              <span>{secondaryLabel}</span>
+              <span aria-hidden="true" className="student-coverage__caret">▾</span>
+            </button>
+            {menuOpen ? (
+              <div className="student-coverage__more-menu" role="menu">
+                {SECONDARY_FILTERS.map(([value, label]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    role="menuitemradio"
+                    aria-checked={filter === value}
+                    onClick={() => {
+                      setFilter(value);
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <span>{label}</span>
+                    <span>{filterCounts[value]}</span>
+                  </button>
+                ))}
+                {secondaryActive ? (
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="student-coverage__more-clear"
+                    onClick={() => {
+                      setFilter("all");
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <span>Clear filter</span>
+                    <span aria-hidden="true">×</span>
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <div
+          className="student-coverage__rail"
+          data-overflow-start={overflowStart ? "true" : "false"}
+          data-overflow-end={overflowEnd ? "true" : "false"}
+        >
           <button
-            key={thread.alias}
             type="button"
-            className={`student-coverage__chip${selectedAlias === thread.alias ? " student-coverage__chip--active" : ""}`}
-            onClick={() => onSelectThread(thread)}
-            aria-label={`${thread.alias}: ${thread.thread_count} active thread${thread.thread_count === 1 ? "" : "s"}`}
+            className="student-coverage__scroll-btn student-coverage__scroll-btn--left"
+            data-visible={overflowStart ? "true" : "false"}
+            tabIndex={overflowStart ? 0 : -1}
+            aria-hidden={overflowStart ? undefined : "true"}
+            aria-label="Scroll roster left"
+            onClick={() => scrollByDir(-1)}
           >
-            <span className="student-coverage__chip-name">{thread.alias}</span>
-            <span className="student-coverage__chip-meta">
-              {thread.thread_count > 0 ? `${thread.thread_count} threads` : "stable"}
-            </span>
-            <span className="student-coverage__chip-flags">
-              {thread.eal_flag ? <span>EAL</span> : null}
-              {thread.support_tags?.length ? <span>{thread.support_tags[0]}</span> : null}
-              {thread.family_language ? <span>{thread.family_language}</span> : null}
-            </span>
+            ‹
           </button>
-        ))}
-      </div>
-    </section>
+
+          <div className="student-coverage__scroll" ref={scrollRef}>
+            {visible.length === 0 ? (
+              <div className="student-coverage__empty" role="status">
+                <span>No students match this filter.</span>
+                <button type="button" onClick={() => setFilter("all")}>
+                  Show all
+                </button>
+              </div>
+            ) : (
+              visible.map((thread, index) => {
+                const isUrgent = thread.thread_count > 0 || thread.pending_action_count > 0;
+                const isSelected = selectedAlias === thread.alias;
+                return (
+                  <button
+                    key={thread.alias}
+                    type="button"
+                    ref={(el) => {
+                      if (el) chipRefs.current.set(thread.alias, el);
+                      else chipRefs.current.delete(thread.alias);
+                    }}
+                    className="student-coverage__chip"
+                    data-urgent={isUrgent ? "true" : undefined}
+                    aria-current={isSelected ? "true" : undefined}
+                    onClick={() => onSelectThread(thread)}
+                    onKeyDown={(event) => handleChipKeyDown(event, index)}
+                    aria-label={`${thread.alias}: ${thread.thread_count} active thread${thread.thread_count === 1 ? "" : "s"}`}
+                  >
+                    <span className="student-coverage__chip-top">
+                      <strong className="student-coverage__chip-name">{thread.alias}</strong>
+                      <span className="student-coverage__chip-badge">
+                        {thread.thread_count > 0 ? thread.thread_count : "—"}
+                      </span>
+                    </span>
+                    <span className="student-coverage__chip-meta">
+                      <span className="student-coverage__chip-dots" aria-hidden="true">
+                        {thread.eal_flag ? (
+                          <span className="student-coverage__chip-dot student-coverage__chip-dot--eal" title="EAL" />
+                        ) : null}
+                        {thread.support_tags?.length ? (
+                          <span
+                            className="student-coverage__chip-dot student-coverage__chip-dot--support"
+                            title={thread.support_tags[0]}
+                          />
+                        ) : null}
+                        {thread.family_language ? (
+                          <span
+                            className="student-coverage__chip-dot student-coverage__chip-dot--family"
+                            title={thread.family_language}
+                          />
+                        ) : null}
+                      </span>
+                      <span className="student-coverage__chip-meta-text">
+                        {thread.thread_count > 0
+                          ? `${thread.thread_count} thread${thread.thread_count === 1 ? "" : "s"}`
+                          : "stable"}
+                      </span>
+                    </span>
+                  </button>
+                );
+              })
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="student-coverage__scroll-btn student-coverage__scroll-btn--right"
+            data-visible={overflowEnd ? "true" : "false"}
+            tabIndex={overflowEnd ? 0 : -1}
+            aria-hidden={overflowEnd ? undefined : "true"}
+            aria-label="Scroll roster right"
+            onClick={() => scrollByDir(1)}
+          >
+            ›
+          </button>
+        </div>
+      </section>
+    </>
   );
 }
 

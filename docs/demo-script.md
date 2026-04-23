@@ -42,10 +42,12 @@ The demo classroom (`demo-okafor-grade34`) bypasses classroom-code auth for judg
 ### Reset demo data
 
 ```bash
-npx tsx data/demo/seed.ts
+npm run pilot:reset
 ```
 
-The current seed gives the demo classroom a 26-student roster, 42 intervention records, 3 plans, 1 pattern report, 1 approved family message, and session/feedback surfaces for Usage Insights.
+`npm run pilot:reset` is the canonical clean reset: it purges the demo SQLite DB and reseeds the classroom. Direct `npx tsx data/demo/seed.ts` is upsert-only and should be treated as additive on a dirty DB.
+
+The current clean seed gives the demo classroom a tiered 26-student roster, 36 intervention records, 3 plans, 1 pattern report, 1 approved family message, and 5 synthetic session records for Usage Insights. It does not seed human feedback, forecasts, scaffold reviews, survival packets, generated variants, or run history.
 
 ### Refresh evidence
 
@@ -77,12 +79,12 @@ http://localhost:5173/?demo=true
 
 > "PrairieClassroom OS turns classroom signal into teacher action across four adult jobs: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families. A quick note becomes structured memory, but memory capture is supporting infrastructure, not the headline."
 
-**Show quickly:**
+**Show quickly** (the post-reorg shell opens on **Classroom** by default):
 
-1. **Today:** the system recommends the first move.
-2. **Differentiate:** one fractions worksheet becomes multiple variants.
-3. **Tomorrow Plan:** recent memory becomes specific next-day actions.
-4. **Family Message or EA Briefing:** the same context becomes coordinated communication.
+1. **Classroom / Today:** Classroom gives the bird's-eye operating view; Today narrows to the live-day triage with a recommended first move.
+2. **Prep → Differentiate:** one fractions worksheet becomes multiple variants.
+3. **Tomorrow → Tomorrow Plan:** recent memory becomes specific next-day actions (with Forecast on the same page for block-by-block risk).
+4. **Review → Family Message** or **Ops → EA Briefing:** the same context becomes coordinated communication.
 
 ## A3. Gemma 4 Proof (60 seconds)
 
@@ -115,13 +117,13 @@ This walkthrough should be framed as a 4-workflow teacher story, not a 12-panel 
 **Show:**
 
 - Classroom selector with `demo-okafor-grade34`.
-- Today panel.
+- Classroom page (the default landing surface) → Today panel.
 - Student roster or classroom profile view.
 
 **Narration:**
 
-> "This is a synthetic Grade 3/4 split with 26 students. Eight are EAL learners across several home languages. Brody has transition and sensory supports. Gabriel uses hearing aids. Hannah has fine-motor supports. The EA, Ms. Fehr, is here mornings only. The system has seeded classroom memory so it does not start from zero."
-> "The first workflow is opening the day and deciding where to start. The point of Today is not generic dashboarding. It is giving the teacher one clear first move."
+> "This is a synthetic Grade 3/4 split with 26 students. Eight are EAL learners across several home languages. The roster is deliberately tiered: a handful of active support threads, a lighter watchlist, and ordinary, light-touch, or strength-only classmates. Brody has transition and sensory supports. Gabriel uses hearing aids. Hannah has fine-motor supports. The EA, Ms. Fehr, is here mornings only. The system has seeded classroom memory so it does not start from zero."
+> "The shell opens on Classroom — the bird's-eye operating view. The teacher walks into Today for the live-day triage: one clear first move, the immediate risk list, and the carry-forward they queued the night before."
 
 ## B2. Adapt Instruction (2 minutes)
 
@@ -152,7 +154,7 @@ Differentiate for mixed readiness: support for Elena, EAL adaptations for Amira 
 
 ## B3. Supporting Workflow: Capture A Classroom Event (2 minutes)
 
-Open **Ops -> Log Intervention** and use the quick-capture flow or full form:
+Open **Ops -> Log Intervention** (the Ops page defaults to this tool) and use the quick-capture flow or full form:
 
 ```text
 Brody used his visual timer independently during the math center rotation today. He set it for 10 minutes, watched it count down, and transitioned to the next station without adult prompting.
@@ -166,7 +168,7 @@ Brody used his visual timer independently during the math center rotation today.
 
 ## B4. Prepare Tomorrow (3 minutes)
 
-Open **Ops -> Tomorrow Plan** and enter:
+Open **Tomorrow -> Tomorrow Plan** and enter:
 
 ```text
 This week has been a breakthrough for Brody. The visual timer is working. Elena had a confidence moment solving fractions with manipulatives. Tomorrow's math block comes after lunch and Ms. Fehr is only available in the morning.

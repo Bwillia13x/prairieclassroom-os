@@ -301,7 +301,7 @@ export default function EALoadPanel() {
         }}
       />
 
-      <OpsWorkflowStepper activeTab="ea-load" />
+      <OpsWorkflowStepper activeTool="ea-load" />
 
       <CoverageTimeline
         title="EA load timeline"

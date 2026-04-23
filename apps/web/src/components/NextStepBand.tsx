@@ -1,12 +1,15 @@
 import { useApp } from "../AppContext";
-import type { ActiveTab } from "../appReducer";
+import type { NavTarget } from "../appReducer";
 import "./NextStepBand.css";
 
 interface Props {
   /** Display label for the action, e.g. "Open Forecast" */
   label: string;
-  /** Tab to navigate to when clicked. */
-  targetTab: ActiveTab;
+  /**
+   * Target for the navigation. Accepts a top-level tab, an embedded
+   * tool id, or any legacy panel id — `setActiveTab` resolves the pair.
+   */
+  targetTab: NavTarget;
 }
 
 /**

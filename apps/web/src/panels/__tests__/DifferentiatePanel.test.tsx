@@ -50,7 +50,8 @@ function makeContext(streamingOverride?: Partial<StreamingState>): AppContextVal
       },
     ] as never,
     activeClassroom: "demo",
-    activeTab: "differentiate",
+    activeTab: "prep",
+    activeTool: "differentiate",
     setActiveClassroom: vi.fn(),
     setActiveTab: vi.fn(),
     profile: {
@@ -79,6 +80,9 @@ function makeContext(streamingOverride?: Partial<StreamingState>): AppContextVal
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
   };
 }
 

@@ -8,7 +8,16 @@
  */
 
 import type { SessionSummary } from "../api";
-import { TAB_META, isTabVisibleForRole, type ActiveTab, type ClassroomRole } from "../appReducer";
+import {
+  TAB_META,
+  TOOL_META,
+  isActiveTab,
+  isActiveTool,
+  isTabVisibleForRole,
+  resolveLegacyPanel,
+  type ClassroomRole,
+  type NavTarget,
+} from "../appReducer";
 import type { TodayHeroAction } from "../components/TodayHero";
 import { getContextualSuggestion, type Suggestion } from "../components/TimeSuggestion";
 import type {
@@ -21,7 +30,7 @@ import type {
 export interface TodayWorkflowNudge {
   kicker: string;
   message: string;
-  targetTab: ActiveTab;
+  targetTab: NavTarget;
   cta: string;
   sequenceLabel: string;
   countLabel: string;
@@ -46,7 +55,7 @@ export function getTodayPrimaryAction(
 ): TodayHeroAction {
   const makeAction = (
     description: string,
-    tab: ActiveTab,
+    tab: NavTarget,
     cta: string,
     label: string,
     tone: TodayHeroAction["tone"],
@@ -128,15 +137,14 @@ export function getTodayContextualSuggestion(input: {
   return getContextualSuggestion(input);
 }
 
-function asActiveTab(tabId: string): ActiveTab | null {
-  return Object.prototype.hasOwnProperty.call(TAB_META, tabId)
-    ? (tabId as ActiveTab)
-    : null;
+function asNavTarget(tabId: string): NavTarget | null {
+  if (isActiveTab(tabId) || isActiveTool(tabId)) return tabId;
+  return null;
 }
 
 function formatWorkflowTabLabel(tabId: string): string {
-  const tab = asActiveTab(tabId);
-  if (tab) return TAB_META[tab].label;
+  if (isActiveTab(tabId)) return TAB_META[tabId].label;
+  if (isActiveTool(tabId)) return TOOL_META[tabId].label;
   return tabId
     .replace(/-/g, " ")
     .replace(/\b\w/g, (c) => c.toUpperCase());
@@ -173,10 +181,12 @@ export function getTodayWorkflowNudge(
   if (!sequence) return null;
 
   const [, nextStep, ...remainingSteps] = sequence;
-  const targetTab = asActiveTab(nextStep);
-  if (!targetTab || !isTabVisibleForRole(targetTab, role)) return null;
+  const targetTab = asNavTarget(nextStep);
+  if (!targetTab) return null;
+  const hostTab = resolveLegacyPanel(targetTab).tab;
+  if (!isTabVisibleForRole(hostTab, role)) return null;
 
-  const targetLabel = TAB_META[targetTab].label;
+  const targetLabel = formatWorkflowTabLabel(nextStep);
   const remainingLabels = remainingSteps.map(formatWorkflowTabLabel);
   const message = remainingLabels.length > 0
     ? `You usually open ${targetLabel} right after this check-in, then move to ${remainingLabels.join(" then ")}.`

@@ -10,7 +10,8 @@ interface Props {
 }
 
 const KIND_HEADER: Record<PaletteEntry["kind"], string> = {
-  panel: "PANELS",
+  panel: "PAGES",
+  tool: "TOOLS",
   classroom: "CLASSROOMS",
   action: "ACTIONS",
 };

@@ -43,15 +43,42 @@ function extractConstObject(source, constName) {
 }
 
 function parseTabMeta(source) {
-  const body = extractConstObject(source, "TAB_META");
+  // Post-2026-04-23 reorg: the shell exposes seven standalone pages
+  // (classroom, today, tomorrow, week, prep, ops, review); the familiar
+  // teacher-facing workflow surfaces live inside the page-hosted tools.
+  // For canonical-doc panel counts we want the working-surface list —
+  // Today plus the eleven embedded tools — so the docs continue to say
+  // "12 teacher-facing panels" without re-architecting the doc chain.
+  const tabMetaBody = extractConstObject(source, "TAB_META");
   const tabs = [];
-  const pattern = /^\s*(?:"([^"]+)"|([a-zA-Z0-9_-]+)):\s*\{\s*label:\s*"([^"]+)",\s*shortLabel:\s*"[^"]+",\s*group:\s*"([^"]+)"/gm;
+  const tabPattern = /^\s*(?:"([^"]+)"|([a-zA-Z0-9_-]+)):\s*\{\s*label:\s*"([^"]+)",\s*shortLabel:\s*"[^"]+",\s*icon:\s*"[^"]+",\s*sectionTone:\s*"[^"]+",/gm;
+  for (const match of tabMetaBody.matchAll(tabPattern)) {
+    const id = match[1] ?? match[2];
+    if (id !== "today") continue;
+    tabs.push({ id, label: match[3], group: id });
+  }
 
-  for (const match of body.matchAll(pattern)) {
+  const toolMetaBody = extractConstObject(source, "TOOL_META");
+  const toolPattern = /^\s*(?:"([^"]+)"|([a-zA-Z0-9_-]+)):\s*\{\s*label:\s*"([^"]+)"/gm;
+  const toolGroupByTab = {
+    differentiate: "prep",
+    "language-tools": "prep",
+    "tomorrow-plan": "tomorrow",
+    "complexity-forecast": "tomorrow",
+    "log-intervention": "ops",
+    "ea-briefing": "ops",
+    "ea-load": "ops",
+    "survival-packet": "ops",
+    "family-message": "review",
+    "support-patterns": "review",
+    "usage-insights": "review",
+  };
+  for (const match of toolMetaBody.matchAll(toolPattern)) {
+    const id = match[1] ?? match[2];
     tabs.push({
-      id: match[1] ?? match[2],
+      id,
       label: match[3],
-      group: match[4],
+      group: toolGroupByTab[id] ?? id,
     });
   }
 

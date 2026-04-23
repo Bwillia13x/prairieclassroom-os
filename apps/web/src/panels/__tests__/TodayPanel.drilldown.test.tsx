@@ -12,6 +12,7 @@ import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import TodayPanel from "../TodayPanel";
+import ClassroomPanel from "../ClassroomPanel";
 import type { ClassroomHealth, TodaySnapshot } from "../../types";
 
 vi.mock("../../api", async (importOriginal) => {
@@ -142,10 +143,20 @@ function makeAppContext(): AppContextValue {
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    activeTool: null,
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
   };
 }
 
-function renderPanel(snapshot: TodaySnapshot, health = makeHealth()) {
+type PanelComponent = typeof TodayPanel | typeof ClassroomPanel;
+
+function renderPanel(
+  snapshot: TodaySnapshot,
+  health = makeHealth(),
+  Panel: PanelComponent = TodayPanel,
+) {
   mockedFetchTodaySnapshot.mockResolvedValue(snapshot);
   mockedFetchClassroomHealth.mockResolvedValue(health);
   mockedFetchStudentSummary.mockResolvedValue([]);
@@ -158,7 +169,7 @@ function renderPanel(snapshot: TodaySnapshot, health = makeHealth()) {
 
   render(
     <AppContext.Provider value={appContext}>
-      <TodayPanel onTabChange={onTabChange} />
+      <Panel onTabChange={onTabChange} />
     </AppContext.Provider>,
   );
 
@@ -191,10 +202,9 @@ describe("TodayPanel drill-down integration", () => {
     ).toBeInTheDocument();
   });
 
-  it("clicking an EAL segment on ClassroomCompositionRings opens the student-tag-group drawer", async () => {
-    const { user } = renderPanel(makeSnapshot());
+  it("clicking an EAL segment on ClassroomCompositionRings (now on the Classroom page) opens the student-tag-group drawer", async () => {
+    const { user } = renderPanel(makeSnapshot(), makeHealth(), ClassroomPanel);
 
-    // Wait for composition rings to render (profile students are present at mount)
     await waitFor(() => {
       expect(
         screen.getByTestId("viz-composition-segment-eal-eal_level_1"),
@@ -203,17 +213,14 @@ describe("TodayPanel drill-down integration", () => {
 
     await user.click(screen.getByTestId("viz-composition-segment-eal-eal_level_1"));
 
-    // computeTitle for type:"student-tag-group" → "${label} — ${count} students"
-    // label = "EAL Level 1", students = [Amira, Brody] → count = 2
     expect(
       await screen.findByRole("dialog", { name: /EAL Level 1 — 2 students/i }),
     ).toBeInTheDocument();
   });
 
   it("clicking a student inside the tag-group view replaces drawer content with StudentDetailView without closing", async () => {
-    const { user } = renderPanel(makeSnapshot());
+    const { user } = renderPanel(makeSnapshot(), makeHealth(), ClassroomPanel);
 
-    // Open the tag-group drawer first
     await waitFor(() => {
       expect(
         screen.getByTestId("viz-composition-segment-eal-eal_level_1"),
@@ -222,24 +229,19 @@ describe("TodayPanel drill-down integration", () => {
 
     await user.click(screen.getByTestId("viz-composition-segment-eal-eal_level_1"));
 
-    // Confirm tag-group view is showing
     const tagGroupDialog = await screen.findByRole("dialog", { name: /EAL Level 1 — 2 students/i });
     expect(tagGroupDialog).toBeInTheDocument();
 
-    // Click the student button *inside the drawer* (there may be other "Amira" buttons elsewhere)
     const drawerAmiraBtn = Array.from(tagGroupDialog.querySelectorAll("button")).find(
       (btn) => btn.textContent?.trim() === "Amira",
     );
     expect(drawerAmiraBtn).toBeTruthy();
     await user.click(drawerAmiraBtn!);
 
-    // The drawer should now show the StudentDetailView for Amira
-    // computeTitle for type:"student" → "${alias} — Student Detail"
     expect(
       await screen.findByRole("dialog", { name: /Amira — Student Detail/i }),
     ).toBeInTheDocument();
 
-    // Confirm we didn't navigate away — the drawer is still open
     expect(screen.getByRole("dialog")).toBeInTheDocument();
   });
 });

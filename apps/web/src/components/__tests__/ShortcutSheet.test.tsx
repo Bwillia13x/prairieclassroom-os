@@ -36,6 +36,10 @@ function makeContext(overrides: Partial<AppContextValue> = {}): AppContextValue 
     tomorrowNotes: [],
     appendTomorrowNote: vi.fn(),
     removeTomorrowNote: vi.fn(),
+    activeTool: null,
+    setActiveTool: vi.fn(),
+    messagePrefill: null,
+    interventionPrefill: null,
     ...overrides,
   };
 }
@@ -54,14 +58,15 @@ describe("ShortcutSheet", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
-  it("renders global shortcuts and the per-panel map when open", () => {
+  it("renders global shortcuts and the per-page map when open", () => {
     renderWith(true, () => {});
     expect(screen.getByRole("dialog", { name: /keyboard shortcuts/i })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: /^global$/i })).toBeInTheDocument();
-    expect(screen.getByRole("heading", { name: /jump to panel/i })).toBeInTheDocument();
-    // Panel rows include Today (1) and Family Message (10 → "0")
-    expect(screen.getByText("Today")).toBeInTheDocument();
-    expect(screen.getByText("Family Message")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /jump to page/i })).toBeInTheDocument();
+    // The new seven-view shell lists Classroom (1) through Review (7).
+    expect(screen.getByText("Classroom")).toBeInTheDocument();
+    expect(screen.getByText("Tomorrow")).toBeInTheDocument();
+    expect(screen.getByText("Review")).toBeInTheDocument();
   });
 
   it("disables reset-tips when no hints have been dismissed", () => {

@@ -133,7 +133,7 @@ export default function EABriefingPanel() {
         }}
       />
 
-      <OpsWorkflowStepper activeTab="ea-briefing" />
+      <OpsWorkflowStepper activeTool="ea-briefing" />
 
       <WorkspaceLayout
         splitState={result ? "output" : "input"}

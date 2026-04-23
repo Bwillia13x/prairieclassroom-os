@@ -11,12 +11,15 @@ const CLASSROOM: ClassroomProfile = {
 } as unknown as ClassroomProfile;
 
 describe("usePaletteEntries", () => {
-  it("produces a panel entry for every TAB_ORDER entry", () => {
+  it("produces a panel entry for every TAB_ORDER entry and a tool entry for each embedded tool", () => {
     const { result } = renderHook(() =>
       usePaletteEntries({ classrooms: [CLASSROOM], activeClassroom: CLASSROOM.classroom_id, debtRegister: null }),
     );
     const panelEntries = result.current.filter((e) => e.kind === "panel");
-    expect(panelEntries.length).toBeGreaterThanOrEqual(12);
+    const toolEntries = result.current.filter((e) => e.kind === "tool");
+    // Seven top-level pages plus the eleven hosted tools.
+    expect(panelEntries).toHaveLength(7);
+    expect(toolEntries.length).toBeGreaterThanOrEqual(11);
   });
 
   it("produces a classroom entry for every non-active classroom", () => {

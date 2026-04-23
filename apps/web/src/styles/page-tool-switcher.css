@@ -1,0 +1,273 @@
+/*
+ * page-tool-switcher.css — styles the local tool switcher used by the
+ * Prep, Tomorrow, Ops, and Review pages introduced in the
+ * 2026-04-23 seven-view navigation reorg.
+ *
+ * Each multi-tool page renders a horizontal row of buttons so the
+ * teacher can swap between the tools that page hosts without leaving
+ * the top-level shell context.
+ */
+
+.page-tool-switcher {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  width: 100%;
+  gap: 0;
+  padding: 0;
+  margin: 0 0 var(--space-3);
+  border: var(--shell-control-border, 1px solid color-mix(in srgb, var(--color-border) 45%, transparent));
+  border-radius: var(--shell-control-radius, var(--radius-md));
+  background: color-mix(in srgb, var(--color-surface-elevated) 40%, transparent);
+  overflow: hidden;
+}
+
+.page-tool-switcher__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  min-width: 0;
+  min-height: var(--shell-control-h, var(--control-h-md));
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
+}
+
+.page-tool-switcher__btn + .page-tool-switcher__btn {
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.page-tool-switcher__btn:hover {
+  background: color-mix(in srgb, var(--color-surface-elevated) 54%, transparent);
+  color: var(--color-text);
+}
+
+.page-tool-switcher__btn:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.page-tool-switcher__btn--active {
+  background: color-mix(in srgb, var(--color-surface-elevated) 64%, transparent);
+  color: var(--shell-control-accent, var(--color-text));
+}
+
+.page-tool-switcher__btn--active::after {
+  content: "";
+  position: absolute;
+  left: var(--space-3);
+  right: var(--space-3);
+  bottom: 0;
+  height: 2px;
+  border-radius: var(--radius-pill) var(--radius-pill) 0 0;
+  background: var(--shell-control-accent, var(--color-accent));
+}
+
+.page-tool-surface {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.tomorrow-queue-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--shell-control-h, var(--control-h-md));
+  padding: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-3);
+  border: var(--shell-control-border, 1px solid color-mix(in srgb, var(--color-border) 45%, transparent));
+  border-radius: var(--shell-control-radius, var(--radius-md));
+  background: color-mix(in srgb, var(--color-surface-elevated) 38%, transparent);
+}
+
+.tomorrow-queue-strip__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.tomorrow-queue-strip__copy span {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.tomorrow-queue-strip__copy strong {
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+}
+
+.ops-page .ops-stepper {
+  display: none;
+}
+
+/* Classroom / Week jump-action callout: a short row of context buttons
+   that appears on the Classroom and Week pages so teachers can hop into
+   the adjacent temporal surfaces (Today, Tomorrow, Week) without going
+   through the top-level nav. */
+.classroom-jump-actions,
+.today-planning-jump,
+.week-panel__jump {
+  margin: 0 0 var(--space-3);
+}
+
+.classroom-jump-actions__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.classroom-jump-actions__copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.classroom-jump-actions__copy strong {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text);
+}
+
+.classroom-jump-actions__copy span {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.classroom-jump-actions__buttons {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+/* Week panel — upcoming events + pressure lists. */
+.upcoming-events-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.upcoming-event {
+  display: grid;
+  grid-template-columns: 9ch 1fr;
+  gap: var(--space-3);
+  align-items: baseline;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-elevated) 40%, transparent);
+}
+
+.upcoming-event--thisweek {
+  background: color-mix(in srgb, var(--color-surface-elevated) 65%, transparent);
+  border-left: 3px solid color-mix(in srgb, var(--color-border-accent) 75%, transparent);
+}
+
+.upcoming-event__date {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+.upcoming-event__title {
+  color: var(--color-text);
+}
+
+.upcoming-event__impacts {
+  grid-column: 2;
+  display: block;
+  margin-top: 0.2rem;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.week-pressure-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+}
+
+.week-pressure-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-elevated) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 35%, transparent);
+}
+
+.week-pressure-list li strong {
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+  letter-spacing: -0.02em;
+}
+
+.week-pressure-list li span {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+/* Narrow viewports — stack the jump action copy above the buttons. */
+@media (max-width: 720px) {
+  .page-tool-switcher {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  }
+
+  .page-tool-switcher__btn + .page-tool-switcher__btn {
+    border-left: 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+  }
+
+  .tomorrow-queue-strip {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .tomorrow-queue-strip .tomorrow-chip,
+  .tomorrow-queue-strip .tomorrow-chip__trigger {
+    width: 100%;
+  }
+
+  .classroom-jump-actions__row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .classroom-jump-actions__buttons {
+    width: 100%;
+  }
+}

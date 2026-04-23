@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import userEvent from "@testing-library/user-event";
+import { describe, it, expect, vi } from "vitest";
 import TodayAnchorRail, { type Anchor } from "../TodayAnchorRail";
 
 const anchors: Anchor[] = [
@@ -50,5 +51,28 @@ describe("TodayAnchorRail", () => {
       name: /03.*Today's Shape/,
     });
     expect(link.getAttribute("href")).toBe("#day-arc");
+  });
+
+  it("exposes the collapse/expand control when the parent owns drawer state", async () => {
+    const user = userEvent.setup();
+    const onToggleCollapsed = vi.fn();
+
+    const { rerender } = render(
+      <TodayAnchorRail anchors={anchors} collapsed={false} onToggleCollapsed={onToggleCollapsed} />,
+    );
+
+    const collapse = screen.getByRole("button", { name: /collapse today sections navigation/i });
+    expect(collapse).toHaveAttribute("aria-expanded", "true");
+
+    await user.click(collapse);
+    expect(onToggleCollapsed).toHaveBeenCalledTimes(1);
+
+    rerender(
+      <TodayAnchorRail anchors={anchors} collapsed onToggleCollapsed={onToggleCollapsed} />,
+    );
+
+    const expand = screen.getByRole("button", { name: /expand today sections navigation/i });
+    expect(expand).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("link", { name: /01.*Command Center/ })).not.toBeInTheDocument();
   });
 });

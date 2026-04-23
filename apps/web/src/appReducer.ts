@@ -1,165 +1,279 @@
 /**
  * appReducer.ts — Central state management for PrairieClassroom OS.
  *
- * Replaces 14 individual useState hooks in App.tsx with a single, testable reducer.
- * Enables undo toasts, streaming state, contextual onboarding, and time-aware nav.
+ * As of the 2026-04-23 seven-view navigation reorg, the shell no longer
+ * uses the grouped `Today / Prep / Ops / Review` model. The teacher-facing
+ * top-level navigation is a flat row of seven standalone views:
+ *
+ *   classroom · today · tomorrow · week · prep · ops · review
+ *
+ * A page may host multiple embedded tools (Prep hosts Differentiate +
+ * Language Tools, Tomorrow hosts Plan + Forecast, Ops hosts the four
+ * adult-facing ops tools, Review hosts Family Message + Support Patterns
+ * + Usage Insights). Tool selection lives in a separate `activeTool`
+ * state field and is mirrored onto the URL as an optional `?tool=`
+ * parameter. Canonical writes always emit `?tab=<top-level>[&tool=<tool>]`.
+ *
+ * Legacy deep links (`?tab=tomorrow-plan`, `?tab=differentiate`, etc.)
+ * are resolved on load via `resolveLegacyPanel` and redirected to their
+ * canonical destinations on the next URL write.
  */
 
 import type { ClassroomProfile, ComplexityDebtRegister, FamilyMessagePrefill, InterventionPrefill, TodaySnapshot, TomorrowNote } from "./types";
 import type { SectionIconName } from "./components/SectionIcon";
 
-// ─── Active Tab ───
+// ─── Active Tab (top-level) ───
 
 export type ActiveTab =
+  | "classroom"
   | "today"
-  | "differentiate"
-  | "tomorrow-plan"
-  | "family-message"
-  | "log-intervention"
-  | "language-tools"
-  | "support-patterns"
-  | "ea-briefing"
-  | "ea-load"
-  | "complexity-forecast"
-  | "survival-packet"
-  | "usage-insights";
+  | "tomorrow"
+  | "week"
+  | "prep"
+  | "ops"
+  | "review";
 
+/**
+ * Fixed top-level ordering used by the shell nav, mobile nav, command
+ * palette, and `1…9` keyboard shortcuts. Do not reorder without updating
+ * the corresponding tests and docs.
+ */
 export const TAB_ORDER: ActiveTab[] = [
+  "classroom",
   "today",
-  "differentiate", "language-tools",
-  // OPS order (2026-04-19 OPS audit): daily-capture first → future-plan → forecast →
-  // EA-facing outputs → substitute fallback. See docs/decision-log.md.
-  "log-intervention", "tomorrow-plan", "complexity-forecast", "ea-briefing", "ea-load", "survival-packet",
-  "family-message", "support-patterns", "usage-insights",
+  "tomorrow",
+  "week",
+  "prep",
+  "ops",
+  "review",
 ];
 
-export type NavGroup = "today" | "prep" | "ops" | "review";
+// ─── Embedded Tools (per page) ───
+
+/**
+ * Tool IDs that live inside a standalone page. These are intentionally
+ * the same strings as the prior top-level tab IDs so that backend
+ * `panel_id` values (`tomorrow-plan`, `log-intervention`, etc.) continue
+ * to map one-to-one onto a concrete UI surface. The teacher-facing
+ * top-level navigation never exposes these strings directly.
+ */
+export type ActiveTool =
+  | "differentiate"
+  | "language-tools"
+  | "tomorrow-plan"
+  | "complexity-forecast"
+  | "log-intervention"
+  | "ea-briefing"
+  | "ea-load"
+  | "survival-packet"
+  | "family-message"
+  | "support-patterns"
+  | "usage-insights";
+
+/** Alias exported for components that accept either a top-level tab or an embedded tool. */
+export type NavTarget = ActiveTab | ActiveTool;
+
+/**
+ * Legacy panel/tool ids used by the backend (`panel_id` on
+ * `PanelStatus`, `debt_register` targets, saved deep links) and by the
+ * pre-reorg UI. They all resolve to exactly one (tab, tool) pair.
+ */
+export type LegacyPanelId = ActiveTool | "today";
+
+export const ALL_TOOLS: ActiveTool[] = [
+  "differentiate",
+  "language-tools",
+  "tomorrow-plan",
+  "complexity-forecast",
+  "log-intervention",
+  "ea-briefing",
+  "ea-load",
+  "survival-packet",
+  "family-message",
+  "support-patterns",
+  "usage-insights",
+];
+
+/** Ordered tools hosted by each page. First entry = default. */
+export const TOOLS_BY_TAB: Partial<Record<ActiveTab, ActiveTool[]>> = {
+  prep: ["differentiate", "language-tools"],
+  tomorrow: ["tomorrow-plan", "complexity-forecast"],
+  ops: ["log-intervention", "ea-briefing", "ea-load", "survival-packet"],
+  review: ["family-message", "support-patterns", "usage-insights"],
+};
+
+/** First tool for a page, or `null` if the page is single-surface. */
+export function defaultToolForTab(tab: ActiveTab): ActiveTool | null {
+  const tools = TOOLS_BY_TAB[tab];
+  return tools?.[0] ?? null;
+}
+
+export function isActiveTab(value: unknown): value is ActiveTab {
+  return typeof value === "string" && TAB_ORDER.includes(value as ActiveTab);
+}
+
+export function isActiveTool(value: unknown): value is ActiveTool {
+  return typeof value === "string" && ALL_TOOLS.includes(value as ActiveTool);
+}
+
+/**
+ * Parent tab for a given embedded tool. Keeps the legacy panel-id ->
+ * navigation mapping in one place so shell / palette / drill-down / etc.
+ * can stay consistent.
+ */
+export function tabForTool(tool: ActiveTool): ActiveTab {
+  for (const [tab, tools] of Object.entries(TOOLS_BY_TAB) as [ActiveTab, ActiveTool[]][]) {
+    if (tools.includes(tool)) return tab;
+  }
+  // Defensive fallback — every tool must be hosted somewhere.
+  return "today";
+}
+
+export interface ResolvedTarget {
+  tab: ActiveTab;
+  tool: ActiveTool | null;
+}
+
+/**
+ * Translate any known panel/tool/tab id into its canonical (tab, tool)
+ * pair. Accepts:
+ *   - a new top-level tab id ("classroom", "today", …)
+ *   - a legacy top-level tab id that still names a page ("today")
+ *   - an embedded tool id ("tomorrow-plan", "log-intervention", …)
+ *
+ * Unknown strings fall back to the `today` page with no tool override.
+ */
+export function resolveLegacyPanel(id: string | null | undefined): ResolvedTarget {
+  if (!id) return { tab: "today", tool: null };
+  if (isActiveTab(id)) return { tab: id, tool: null };
+  if (isActiveTool(id)) return { tab: tabForTool(id), tool: id };
+  return { tab: "today", tool: null };
+}
+
+/**
+ * Variant of `resolveLegacyPanel` used by `setActiveTab`-style
+ * navigators: callers may pass an explicit `tool` alongside a top-level
+ * tab. The explicit tool wins so long as it is actually hosted by the
+ * resolved tab; otherwise the page's default tool is used.
+ */
+export function resolveNavTarget(target: NavTarget | string, tool?: ActiveTool | null): ResolvedTarget {
+  const resolved = resolveLegacyPanel(target);
+  if (tool === null) {
+    return { tab: resolved.tab, tool: null };
+  }
+  if (tool && TOOLS_BY_TAB[resolved.tab]?.includes(tool)) {
+    return { tab: resolved.tab, tool };
+  }
+  if (resolved.tool) return resolved;
+  return { tab: resolved.tab, tool: defaultToolForTab(resolved.tab) };
+}
+
+// ─── TAB_META — shell-level metadata ───
 
 export type SectionTone = "sun" | "sage" | "slate" | "forest" | "muted";
 
-export interface NavGroupMeta {
-  label: string;
-  icon: SectionIconName;
-  sectionTone: SectionTone;
-}
-
-export const NAV_GROUP_ORDER: NavGroup[] = ["today", "prep", "ops", "review"];
-
-export const NAV_GROUP_META: Record<NavGroup, NavGroupMeta> = {
-  today: { label: "Today", icon: "sun", sectionTone: "sun" },
-  prep: { label: "Prep", icon: "pencil", sectionTone: "sage" },
-  ops: { label: "Ops", icon: "grid", sectionTone: "slate" },
-  review: { label: "Review", icon: "check", sectionTone: "forest" },
-};
-
-/**
- * Per-tab role visibility.
- *
- * A tab is rendered in the nav iff the active role has at least one
- * meaningful action available on that panel. When a role lands on a tab it
- * can see, individual controls (generate, approve, log) are further gated
- * by `roleCapabilities()` (see `apps/web/src/hooks/useRole.ts`).
- *
- * Keep aligned with `SCOPE_MATRIX` in
- * `services/orchestrator/__tests__/auth.test.ts` — this is the UI side of
- * the same contract.
- */
 export interface TabMeta {
   label: string;
   shortLabel: string;
-  group: NavGroup;
+  icon: SectionIconName;
+  sectionTone: SectionTone;
   /** Roles that should see this tab in the nav. */
   roles: readonly ClassroomRole[];
+  /** Short human-readable purpose for command palette + docs. */
+  purpose: string;
 }
 
+/**
+ * Per-tab role visibility. Action-level capability gating inside each
+ * embedded tool still runs through `roleCapabilities()` / the
+ * orchestrator scope matrix; this only controls whether the tab button
+ * appears in the shell.
+ *
+ * Keep aligned with `SCOPE_MATRIX` in
+ * `services/orchestrator/__tests__/auth.test.ts` — this is the UI side
+ * of the same contract.
+ */
 export const TAB_META: Record<ActiveTab, TabMeta> = {
+  classroom: {
+    label: "Classroom",
+    shortLabel: "Classroom",
+    icon: "grid",
+    sectionTone: "sun",
+    roles: ["teacher", "ea", "substitute"],
+    purpose: "Bird's-eye dashboard — health, coverage, queues, student watch.",
+  },
   today: {
     label: "Today",
     shortLabel: "Today",
-    group: "today",
+    icon: "sun",
+    sectionTone: "sun",
     roles: ["teacher", "ea", "substitute"],
+    purpose: "Live-day triage — recommended next move, immediate risks, carry-forward.",
   },
-  differentiate: {
-    label: "Differentiate",
-    shortLabel: "Differentiate",
-    group: "prep",
-    roles: ["teacher"],
-  },
-  "language-tools": {
-    label: "Language Tools",
-    shortLabel: "Language",
-    group: "prep",
-    roles: ["teacher"],
-  },
-  "tomorrow-plan": {
-    label: "Tomorrow Plan",
-    shortLabel: "Plan",
-    group: "ops",
-    // Reviewer can read plan history (canViewPlanning) but not generate.
-    roles: ["teacher", "reviewer"],
-  },
-  "ea-briefing": {
-    label: "EA Briefing",
-    shortLabel: "EA Brief",
-    group: "ops",
-    roles: ["teacher", "ea", "substitute"],
-  },
-  "ea-load": {
-    label: "EA Load Balance",
-    shortLabel: "EA Load",
-    group: "ops",
-    roles: ["teacher", "ea"],
-  },
-  "complexity-forecast": {
-    label: "Forecast",
-    shortLabel: "Forecast",
-    group: "ops",
-    // Reviewer and substitute read latest; only teacher regenerates.
+  tomorrow: {
+    label: "Tomorrow",
+    shortLabel: "Tomorrow",
+    icon: "calendar",
+    sectionTone: "slate",
     roles: ["teacher", "substitute", "reviewer"],
+    purpose: "Next-day plan, complexity forecast, and queued carry-forward.",
   },
-  "log-intervention": {
-    label: "Log Intervention",
-    shortLabel: "Log",
-    group: "ops",
-    // Reviewer reads intervention history; teacher/EA/substitute write.
-    roles: ["teacher", "ea", "substitute", "reviewer"],
+  week: {
+    label: "Week",
+    shortLabel: "Week",
+    icon: "grid",
+    sectionTone: "slate",
+    roles: ["teacher", "substitute", "reviewer"],
+    purpose: "Multi-day coverage, upcoming events, planning rhythm, pattern pressure.",
   },
-  "survival-packet": {
-    label: "Sub Packet",
-    shortLabel: "Substitute",
-    group: "ops",
-    // Only the teacher generates the sub packet. Substitutes conceptually
-    // consume it, but the read surface isn't built yet; hide until then.
+  prep: {
+    label: "Prep",
+    shortLabel: "Prep",
+    icon: "pencil",
+    sectionTone: "sage",
     roles: ["teacher"],
+    purpose: "Lesson adaptation and language supports — differentiate and language tools.",
   },
-  "family-message": {
-    label: "Family Message",
-    shortLabel: "Message",
-    group: "review",
-    // Reviewer reads message history; only teacher drafts / approves.
-    roles: ["teacher", "reviewer"],
+  ops: {
+    label: "Ops",
+    shortLabel: "Ops",
+    icon: "grid",
+    sectionTone: "slate",
+    roles: ["teacher", "ea", "substitute"],
+    purpose: "Adult coordination — log intervention, EA briefing, EA load, substitute packet.",
   },
-  "support-patterns": {
-    label: "Support Patterns",
-    shortLabel: "Patterns",
-    group: "review",
-    roles: ["teacher", "reviewer"],
-  },
-  "usage-insights": {
-    label: "Usage Insights",
-    shortLabel: "Insights",
-    group: "review",
+  review: {
+    label: "Review",
+    shortLabel: "Review",
+    icon: "bars",
+    sectionTone: "forest",
     roles: ["teacher", "ea", "reviewer"],
+    purpose: "Family message, support patterns, and usage insights.",
   },
 };
 
-export function getGroupForTab(tab: ActiveTab): NavGroup {
-  return TAB_META[tab].group;
+export interface ToolMeta {
+  label: string;
+  shortLabel: string;
 }
 
-export function getTabsForGroup(group: NavGroup): ActiveTab[] {
-  return TAB_ORDER.filter((tab) => TAB_META[tab].group === group);
-}
+/**
+ * Labels for embedded tools. Used by the Prep / Tomorrow / Ops / Review
+ * local tool switchers, the command palette, and the URL restore logic.
+ */
+export const TOOL_META: Record<ActiveTool, ToolMeta> = {
+  differentiate: { label: "Differentiate", shortLabel: "Differentiate" },
+  "language-tools": { label: "Language Tools", shortLabel: "Language" },
+  "tomorrow-plan": { label: "Tomorrow Plan", shortLabel: "Plan" },
+  "complexity-forecast": { label: "Forecast", shortLabel: "Forecast" },
+  "log-intervention": { label: "Log Intervention", shortLabel: "Log" },
+  "ea-briefing": { label: "EA Briefing", shortLabel: "EA Brief" },
+  "ea-load": { label: "EA Load Balance", shortLabel: "EA Load" },
+  "survival-packet": { label: "Sub Packet", shortLabel: "Substitute" },
+  "family-message": { label: "Family Message", shortLabel: "Message" },
+  "support-patterns": { label: "Support Patterns", shortLabel: "Patterns" },
+  "usage-insights": { label: "Usage Insights", shortLabel: "Insights" },
+};
 
 /**
  * Tabs a given role may see in the nav. If a role ends up with an empty
@@ -171,33 +285,30 @@ export function getVisibleTabs(role: ClassroomRole): ActiveTab[] {
   return visible.length > 0 ? visible : ["today"];
 }
 
-export function getVisibleTabsForGroup(group: NavGroup, role: ClassroomRole): ActiveTab[] {
-  return getTabsForGroup(group).filter((tab) => TAB_META[tab].roles.includes(role));
-}
-
 export function isTabVisibleForRole(tab: ActiveTab, role: ClassroomRole): boolean {
   return TAB_META[tab].roles.includes(role);
 }
 
 /**
- * Nav groups that have at least one visible tab for the role. Used by the
- * primary nav so an empty group (e.g. Prep for reviewer) doesn't render a
- * clickable button that lands on nothing.
+ * Debt-count badge value for the top-level tabs that aggregate over
+ * embedded tools. The Review page rolls up message/pattern counts; the
+ * Ops page rolls up stale follow-ups; Today still shows its own debt
+ * gauge on-page so the nav does not double-count.
  */
-export function getVisibleNavGroups(role: ClassroomRole): NavGroup[] {
-  return NAV_GROUP_ORDER.filter(
-    (group) => getVisibleTabsForGroup(group, role).length > 0,
-  );
-}
-
-export function getTabBadgeCount(tab: ActiveTab, debtCounts: Record<string, number>): number {
+export function getTabBadgeCount(
+  tab: ActiveTab,
+  debtCounts: Record<string, number>,
+  tomorrowNoteCount = 0,
+): number {
   switch (tab) {
-    case "family-message":
-      return debtCounts.unapproved_message ?? 0;
-    case "log-intervention":
+    case "tomorrow":
+      return tomorrowNoteCount;
+    case "review":
+      return (debtCounts.unapproved_message ?? 0)
+        + (debtCounts.unaddressed_pattern ?? 0)
+        + (debtCounts.approaching_review ?? 0);
+    case "ops":
       return debtCounts.stale_followup ?? 0;
-    case "support-patterns":
-      return (debtCounts.unaddressed_pattern ?? 0) + (debtCounts.approaching_review ?? 0);
     default:
       return 0;
   }
@@ -207,10 +318,9 @@ export type TabBadgeTone = "alert" | "count";
 
 export function getTabBadgeTone(tab: ActiveTab): TabBadgeTone {
   switch (tab) {
-    case "family-message":
-    case "log-intervention":
+    case "ops":
       return "alert";
-    case "support-patterns":
+    case "review":
       return "count";
     default:
       return "count";
@@ -294,6 +404,8 @@ export function isClassroomRole(value: unknown): value is ClassroomRole {
 export interface AppState {
   classrooms: ClassroomProfile[];
   activeTab: ActiveTab;
+  /** Optional embedded tool for pages that host multiple surfaces. */
+  activeTool: ActiveTool | null;
   activeClassroom: string;
   messagePrefill: FamilyMessagePrefill | null;
   interventionPrefill: InterventionPrefill | null;
@@ -303,16 +415,16 @@ export interface AppState {
   latestTodaySnapshot: TodaySnapshot | null;
   showOnboarding: boolean;
 
-  // New: toast queue (replaces single successMsg)
+  // Toast queue (replaces single successMsg)
   toasts: ToastItem[];
 
-  // New: streaming state for planning-tier requests
+  // Streaming state for planning-tier requests
   streaming: StreamingState;
 
-  // New: contextual onboarding — tracks which features teacher has used
+  // Contextual onboarding — tracks which features teacher has used
   featuresSeen: Record<string, boolean>;
 
-  // New: feedback store (persisted to localStorage)
+  // Feedback store (persisted to localStorage)
   feedbackQueue: OutputFeedback[];
 
   // Protected classroom access codes (persisted locally)
@@ -336,7 +448,8 @@ export interface AppState {
 export type AppAction =
   | { type: "SET_CLASSROOMS"; classrooms: ClassroomProfile[] }
   | { type: "SET_ACTIVE_CLASSROOM"; classroomId: string }
-  | { type: "SET_ACTIVE_TAB"; tab: ActiveTab }
+  | { type: "SET_ACTIVE_TAB"; tab: ActiveTab; tool?: ActiveTool | null }
+  | { type: "SET_ACTIVE_TOOL"; tool: ActiveTool | null }
   | { type: "SET_INIT_ERROR"; error: string }
   | { type: "SET_TODAY_SNAPSHOT"; snapshot: TodaySnapshot }
   | { type: "SET_DEBT_REGISTER"; register: ComplexityDebtRegister }
@@ -451,15 +564,44 @@ function loadTomorrowNotes(): TomorrowNote[] {
   }
 }
 
-function loadActiveTabFromUrl(): ActiveTab {
-  if (typeof window === "undefined") return "today";
-  try {
-    const requested = new URLSearchParams(window.location.search).get("tab");
-    if (requested && requested in TAB_META) return requested as ActiveTab;
-  } catch {
-    // window.location may be unavailable in some test environments
+/**
+ * Restore the active tab + optional embedded tool from the URL.
+ *
+ * - Missing `?tab=` lands on `classroom` (teacher default).
+ * - Top-level new-world tab ids (classroom/today/tomorrow/…) land
+ *   directly on that page.
+ * - Legacy panel ids (tomorrow-plan, log-intervention, differentiate, …)
+ *   are redirected to their host page and the tool id is captured as
+ *   `activeTool` so the page opens already pointing at the intended
+ *   surface.
+ * - An explicit `?tool=` refines the embedded tool when it is valid for
+ *   the resolved page.
+ */
+export function restoreNavFromUrl(): { tab: ActiveTab; tool: ActiveTool | null } {
+  if (typeof window === "undefined") {
+    return { tab: "classroom", tool: null };
   }
-  return "today";
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get("tab");
+    const toolParam = params.get("tool");
+
+    if (!tabParam) {
+      return { tab: "classroom", tool: null };
+    }
+
+    const resolvedFromTab = resolveLegacyPanel(tabParam);
+    const resolved: ResolvedTarget = isActiveTool(toolParam) && TOOLS_BY_TAB[resolvedFromTab.tab]?.includes(toolParam)
+      ? { tab: resolvedFromTab.tab, tool: toolParam }
+      : resolvedFromTab;
+
+    if (resolved.tool) return resolved;
+    // If the top-level page declares embedded tools, default to the first
+    // so panels that key off `activeTool` render their landing surface.
+    return { tab: resolved.tab, tool: defaultToolForTab(resolved.tab) };
+  } catch {
+    return { tab: "classroom", tool: null };
+  }
 }
 
 export function shouldSuppressFirstRunModalsFromUrl(): boolean {
@@ -474,9 +616,11 @@ export function shouldSuppressFirstRunModalsFromUrl(): boolean {
 }
 
 export function createInitialState(): AppState {
+  const nav = restoreNavFromUrl();
   return {
     classrooms: [],
-    activeTab: loadActiveTabFromUrl(),
+    activeTab: nav.tab,
+    activeTool: nav.tool,
     activeClassroom: "",
     messagePrefill: null,
     interventionPrefill: null,
@@ -528,8 +672,36 @@ export function appReducer(state: AppState, action: AppAction): AppState {
         debtCounts: action.snapshot.debt_register.item_count_by_category,
       };
 
-    case "SET_ACTIVE_TAB":
-      return { ...state, activeTab: action.tab };
+    case "SET_ACTIVE_TAB": {
+      const nextTab = action.tab;
+      const explicitTool = action.tool;
+      // When crossing to a new page we refresh the embedded tool to the
+      // caller-provided value (if valid) or the page default so the
+      // panel renders its landing surface instead of an empty shell.
+      if (nextTab === state.activeTab) {
+        if (explicitTool === undefined) return state;
+        return { ...state, activeTool: explicitTool };
+      }
+      let nextTool: ActiveTool | null;
+      if (explicitTool === undefined) {
+        nextTool = defaultToolForTab(nextTab);
+      } else if (explicitTool === null) {
+        nextTool = defaultToolForTab(nextTab);
+      } else if (TOOLS_BY_TAB[nextTab]?.includes(explicitTool)) {
+        nextTool = explicitTool;
+      } else {
+        nextTool = defaultToolForTab(nextTab);
+      }
+      return { ...state, activeTab: nextTab, activeTool: nextTool };
+    }
+
+    case "SET_ACTIVE_TOOL": {
+      const nextTool = action.tool;
+      if (nextTool && !TOOLS_BY_TAB[state.activeTab]?.includes(nextTool)) {
+        return state;
+      }
+      return { ...state, activeTool: nextTool };
+    }
 
     case "SET_INIT_ERROR":
       return { ...state, initError: action.error };

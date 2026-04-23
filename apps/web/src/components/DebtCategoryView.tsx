@@ -1,5 +1,5 @@
 import type { DebtItem } from "../types";
-import type { ActiveTab } from "../appReducer";
+import type { NavTarget } from "../appReducer";
 
 interface Props {
   items: DebtItem[];
@@ -8,7 +8,7 @@ interface Props {
     suggested_action: string;
     reason: string;
   }) => void;
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
 }
 
 export default function DebtCategoryView({

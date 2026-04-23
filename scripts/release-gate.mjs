@@ -1482,6 +1482,7 @@ async function main() {
 
   await verifyNodeVersion();
   await verifyPlaywrightBrowser();
+  await runStep("07-demo-fixture-check", bin("npm"), ["run", "demo:fixture:check"]);
 
   let realPreflight = null;
   let ollamaPreflight = null;

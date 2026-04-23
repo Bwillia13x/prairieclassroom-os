@@ -12,14 +12,27 @@
  * 2026-04-19 OPS audit — part of the overflow-safe sub-tab row.
  */
 import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { TAB_META, type ActiveTab } from "../appReducer";
+import {
+  TAB_META,
+  TOOL_META,
+  isActiveTab,
+  isActiveTool,
+  type ActiveTab,
+  type NavTarget,
+} from "../appReducer";
 
 interface Props {
-  tabs: ActiveTab[];
-  activeTab: ActiveTab;
-  onSelect: (tab: ActiveTab) => void;
+  tabs: NavTarget[];
+  activeTab: NavTarget;
+  onSelect: (target: NavTarget) => void;
   /** Optional per-tab badge count (so hidden alerts still surface on the trigger). */
-  getBadgeCount?: (tab: ActiveTab) => number;
+  getBadgeCount?: (target: NavTarget) => number;
+}
+
+function labelFor(target: NavTarget): string {
+  if (isActiveTab(target)) return TAB_META[target as ActiveTab].label;
+  if (isActiveTool(target)) return TOOL_META[target].label;
+  return String(target);
 }
 
 export default function TabOverflowMenu({ tabs, activeTab, onSelect, getBadgeCount }: Props) {
@@ -103,7 +116,7 @@ export default function TabOverflowMenu({ tabs, activeTab, onSelect, getBadgeCou
     }
   }
 
-  function choose(tab: ActiveTab) {
+  function choose(tab: NavTarget) {
     onSelect(tab);
     setOpen(false);
     triggerRef.current?.focus();
@@ -161,7 +174,7 @@ export default function TabOverflowMenu({ tabs, activeTab, onSelect, getBadgeCou
                 }`}
                 onClick={() => choose(tab)}
               >
-                <span>{TAB_META[tab].label}</span>
+                <span>{labelFor(tab)}</span>
                 {count > 0 ? (
                   <span
                     className="shell-nav__badge shell-nav__badge--alert"

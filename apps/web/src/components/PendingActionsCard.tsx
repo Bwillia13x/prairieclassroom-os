@@ -1,4 +1,4 @@
-import type { ActiveTab } from "../appReducer";
+import type { NavTarget } from "../appReducer";
 import StatusChip from "./StatusChip";
 import NumberTicker from "./NumberTicker";
 import SourceTag from "./SourceTag";
@@ -10,7 +10,7 @@ interface ActionItem {
   key: string;
   label: string;
   count: number;
-  targetTab: ActiveTab;
+  targetTab: NavTarget;
   icon: ReactNode;
 }
 

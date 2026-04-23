@@ -1,4 +1,9 @@
-import { isTabVisibleForRole, type ActiveTab, type ClassroomRole } from "../appReducer";
+import {
+  isTabVisibleForRole,
+  resolveLegacyPanel,
+  type ClassroomRole,
+  type NavTarget,
+} from "../appReducer";
 import type { ClassroomHealth, TodaySnapshot } from "../types";
 import "./TimeSuggestion.css";
 
@@ -14,7 +19,7 @@ import "./TimeSuggestion.css";
  */
 
 interface Props {
-  onNavigate: (tab: ActiveTab) => void;
+  onNavigate: (target: NavTarget) => void;
   compact?: boolean;
   suggestion?: Suggestion | null;
 }
@@ -23,8 +28,8 @@ export interface Suggestion {
   kind: "morning" | "midday" | "afternoon" | "evening";
   label: string;
   message: string;
-  primaryAction: { label: string; tab: ActiveTab };
-  secondaryAction?: { label: string; tab: ActiveTab };
+  primaryAction: { label: string; tab: NavTarget };
+  secondaryAction?: { label: string; tab: NavTarget };
 }
 
 interface ContextualSuggestionInput {
@@ -74,8 +79,9 @@ export function getSuggestion(hour: number): Suggestion | null {
   return null;
 }
 
-function canUse(tab: ActiveTab, role: ClassroomRole): boolean {
-  return isTabVisibleForRole(tab, role);
+function canUse(tab: NavTarget, role: ClassroomRole): boolean {
+  const hostTab = resolveLegacyPanel(tab).tab;
+  return isTabVisibleForRole(hostTab, role);
 }
 
 function buildSuggestion(

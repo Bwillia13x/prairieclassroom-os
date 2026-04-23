@@ -926,9 +926,14 @@ label.form-label {
 }
 
 @media (min-width: 960px) {
-  /* Default split state ("input"): rail biased wider for form intake. */
+  /* Default split state ("input"): rail biased wider for form intake.
+     2026-04-22 shell-continuity pass: the rail/canvas gap collapses to
+     0 because the rail now carries its own right-edge hairline and a
+     faint section wash — the two columns read as halves of one
+     workspace rather than two floating card stacks. */
   .workspace-layout[data-layout="split"] {
     grid-template-columns: clamp(340px, 42%, 480px) minmax(0, 1fr);
+    gap: 0;
     /* Fill remaining height after page intro so both columns scroll
        independently inside their own constrained region. */
     flex: 1 1 0%;
@@ -936,9 +941,11 @@ label.form-label {
     align-items: stretch;
   }
 
-  /* Output state: canvas dominates once a result is rendered. */
+  /* Output state: canvas dominates once a result is rendered. The
+     "step back" from 42→34% is softer than the previous 42→30% jump so
+     the rail doesn't feel like it's collapsing under the output. */
   .workspace-layout[data-layout="split"][data-split-state="output"] {
-    grid-template-columns: clamp(280px, 30%, 360px) minmax(0, 1fr);
+    grid-template-columns: clamp(300px, 34%, 400px) minmax(0, 1fr);
   }
 
   /* Single-column override: force one column at every width. */
@@ -958,6 +965,13 @@ label.form-label {
   gap: var(--space-4);
 }
 
+/* Rail container contract — 2026-04-22 shell-continuity pass.
+   --------------------------------------------------------------
+   At ≥960px the rail becomes a quiet, explicitly-contained intake
+   column. A very light section wash (~4%) and a right-edge hairline
+   separate it from the canvas; inside padding gives form children a
+   breathing gutter. Below 960px the rail is an ordinary stacked
+   document flow and inherits neither the wash nor the hairline. */
 @media (min-width: 960px) {
   .workspace-layout[data-layout="split"] > .workspace-rail {
     /* Independent scroll region — no position:sticky, no max-height
@@ -965,12 +979,57 @@ label.form-label {
     overflow-y: auto;
     scrollbar-width: thin;
     min-height: 0;
+    padding: var(--space-3) var(--space-4) var(--space-5) 0;
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-muted) 55%, transparent) 0%,
+      transparent 60%
+    );
   }
 
   .workspace-layout[data-layout="split"] > .workspace-canvas {
     overflow-y: auto;
     scrollbar-width: thin;
     min-height: 0;
+    padding: var(--space-3) 0 var(--space-5) var(--space-4);
+  }
+
+  /* Section-toned rail tint — echoes the active tab into the intake
+     column so the color story carries from the nav, through
+     `.app-main::before`, into the rail. Very faint (`~5%`) so text
+     contrast is unaffected and the canvas remains the visual anchor. */
+  .app-main[data-section="today"] .workspace-layout[data-layout="split"] > .workspace-rail {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg-sun) 55%, transparent) 0%,
+      transparent 55%
+    );
+    border-right-color: color-mix(in srgb, var(--color-border-sun) 42%, var(--color-border));
+  }
+  .app-main[data-section="prep"] .workspace-layout[data-layout="split"] > .workspace-rail {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg-sage) 55%, transparent) 0%,
+      transparent 55%
+    );
+    border-right-color: color-mix(in srgb, var(--color-border-sage) 42%, var(--color-border));
+  }
+  .app-main[data-section="ops"] .workspace-layout[data-layout="split"] > .workspace-rail {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg-slate) 55%, transparent) 0%,
+      transparent 55%
+    );
+    border-right-color: color-mix(in srgb, var(--color-border-slate) 42%, var(--color-border));
+  }
+  .app-main[data-section="review"] .workspace-layout[data-layout="split"] > .workspace-rail {
+    background: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-bg-forest) 55%, transparent) 0%,
+      transparent 55%
+    );
+    border-right-color: color-mix(in srgb, var(--color-border-forest) 42%, var(--color-border));
   }
 }
 

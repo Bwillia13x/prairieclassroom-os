@@ -20,46 +20,50 @@
   /* The canvas runs wide on desktop; internal components hold their
      own measure. Let the page breathe. */
   max-width: min(100%, 1240px);
-  gap: var(--space-4);
+  gap: var(--space-2-5);
 }
 
-/* Audit #31-#33: sticky anchor-rail variant. On wide viewports the
-   rail lives in the left column; on narrow viewports it collapses so
-   the content gets full width. */
-.today-panel--with-rail {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-4);
+.app-main[data-section="today"] {
+  padding-top: var(--space-4);
+}
+
+.today-panel #command-center {
+  order: 1;
+}
+
+.today-panel .student-coverage {
+  order: 2;
+}
+
+.today-panel .today-workflow-nudge {
+  order: 3;
+}
+
+.today-panel .today-pulse {
+  order: 4;
+}
+
+.today-panel .today-end-marker {
+  order: 5;
 }
 
 /* Scroll-padding belongs on the scroll container (.app-main), which
    is set in shell.css.  Nothing panel-specific needed here. */
-
-@media (min-width: 961px) {
-  .today-panel--with-rail {
-    grid-template-columns: var(--today-rail-width, 180px) minmax(0, 1fr);
-    column-gap: var(--space-6);
-    align-items: start;
-  }
-}
-
-.today-panel__content {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
 
 .today-workflow-nudge {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
-  border-left: 3px solid var(--color-border-forest);
-  border-radius: 2px;
-  background: color-mix(in srgb, var(--color-bg-analysis) 18%, var(--color-surface) 82%);
+  padding: var(--space-2-5) var(--space-3);
+  /* Demoted to a quiet hairline strip. The original tinted background
+     and 3px forest-green left rule competed with the hero for attention;
+     the nudge is secondary information, not a peer to the lede. */
+  border: 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  border-radius: 0;
+  background: transparent;
 }
 
 .today-workflow-nudge__copy {
@@ -89,8 +93,8 @@
 
 .today-workflow-nudge__text {
   color: var(--color-text);
-  font-size: var(--text-sm);
-  line-height: 1.5;
+  font-size: var(--text-xs);
+  line-height: 1.4;
 }
 
 .today-workflow-nudge__meta {
@@ -111,19 +115,21 @@
   scroll-margin-top: calc(var(--shell-sticky-offset, 0px) + 12rem);
 }
 
-/* Audit #33: end-of-Today stamp. Mono caption + fresh timestamp so the
-   10-section scroll has a clear terminus. */
+/* Audit #33: end-of-Today stamp. One inline mono caption so the
+   10-section scroll has a single decisive terminus — stamp · separator
+   · freshness, all on one line at desktop, stacked on narrow viewports. */
 .today-end-marker {
   display: flex;
-  flex-direction: column;
+  flex-flow: row wrap;
   align-items: center;
-  gap: var(--space-2);
-  padding: var(--space-8) 0 var(--space-4);
-  margin-top: var(--space-8);
+  justify-content: center;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-7) 0 var(--space-3);
+  margin-top: var(--space-7);
   border-top: 1px solid var(--color-border);
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  letter-spacing: 0.08em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
@@ -131,6 +137,25 @@
 .today-end-marker__stamp {
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-secondary);
+  /* A right hairline divider visually separates the stamp from the
+     freshness caption when both live on one row. */
+  padding-right: var(--space-3);
+  border-right: 1px solid var(--color-border);
+}
+
+@media (max-width: 760px) {
+  .app-main[data-section="today"] {
+    padding-top: var(--space-2);
+  }
+
+  .today-end-marker {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .today-end-marker__stamp {
+    border-right: 0;
+    padding-right: 0;
+  }
 }
 
 /* -----------------------------------------------------------------
@@ -139,36 +164,55 @@
 .today-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 .today-grid__hero-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-5);
+  gap: var(--space-4);
+  order: 1;
 }
 
 .today-grid__hero-row > * { min-width: 0; }
+.today-grid__hero-row > .today-anchor-target--pending-actions { order: 1; }
+.today-grid__hero-row > #complexity-debt { order: 2; }
+.today-grid__hero-row > .today-anchor-target--day-arc { order: 3; }
+.today-grid > .time-suggestion { order: 2; }
+.today-grid > #carry-forward { order: 3; }
+.today-grid > #planning-health { order: 4; }
 
-@media (min-width: 1100px) {
+/* Tablet/landscape (1024-1280px): 2 columns. PendingActions and
+   ComplexityDebt lead the row; DayArc spans below as the explanatory
+   map instead of monopolizing the first screen. */
+@media (min-width: 1024px) and (max-width: 1279.98px) {
   .today-grid__hero-row {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto auto;
+    align-items: stretch;
+  }
+
+  .today-grid__hero-row > #day-arc {
+    grid-column: 1 / -1;
+    grid-row: auto;
+  }
+}
+
+/* Wide desktop (≥1280px): 3 columns side-by-side. The visual order is
+   action queue → debt shape → day map, matching the teacher's first
+   decision path on opening the app. */
+@media (min-width: 1280px) {
+  .today-grid__hero-row {
+    grid-template-columns: minmax(18rem, 1.05fr) minmax(18rem, 1fr) minmax(16rem, 0.9fr);
     align-items: stretch;
   }
 }
 
+/* The viz-row container is retired — ComplexityDebtGauge now lives in
+   the hero-row. The class is kept for legacy DOM hooks but renders
+   nothing on its own. */
 .today-grid__viz-row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-5);
-}
-
-.today-grid__viz-row > * { min-width: 0; }
-
-@media (min-width: 1100px) {
-  .today-grid__viz-row {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  display: contents;
 }
 
 .today-grid--secondary {
@@ -180,6 +224,10 @@
 @media (min-width: 860px) {
   .today-grid--secondary {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .today-grid--secondary--single {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -193,6 +241,102 @@
   .today-workflow-nudge .btn {
     width: 100%;
   }
+}
+
+/* The touchpoint strip is useful as quick triage, but on Today it must not
+   become a second persistent navigation layer. app-main already owns the
+   scroll context, the page anchor rail owns desktop orientation, and mobile
+   has a fixed nav. Keep this strip in-flow so it never covers risk cards,
+   carry-forward copy, or checklist rows while teachers scroll. */
+.today-panel .student-coverage,
+.today-panel .student-coverage[data-pinned="true"] {
+  position: relative;
+  top: auto;
+  z-index: 2;
+  margin: 0;
+  padding: var(--space-3);
+  background: color-mix(in srgb, var(--color-surface-elevated) 94%, transparent);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.today-panel .student-coverage > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.today-panel .student-coverage__header {
+  align-items: flex-end;
+  gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+}
+
+.today-panel .student-coverage__filters {
+  margin-top: var(--space-2);
+}
+
+.today-panel .student-coverage__rail::before,
+.today-panel .student-coverage__rail::after {
+  content: none;
+}
+
+.today-panel .student-coverage__rail {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.today-panel .student-coverage__scroll-btn {
+  display: none;
+}
+
+.today-panel .student-coverage__scroll {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+  max-width: 100%;
+  overflow: visible;
+  padding: 0;
+  scroll-snap-type: none;
+}
+
+.today-panel .student-coverage__chip {
+  min-width: 0;
+  max-width: none;
+  scroll-snap-align: none;
+  padding: 0.5rem 0.65rem;
+  border-radius: 2px;
+}
+
+@media (max-width: 760px) {
+  .today-panel .student-coverage__header {
+    align-items: flex-start;
+  }
+
+  .today-panel .student-coverage__scroll {
+    display: flex;
+    overflow-x: auto;
+    padding: 0.1rem 0 0.2rem;
+    scroll-snap-type: x proximity;
+  }
+
+  .today-panel .student-coverage__chip {
+    flex: 0 0 8.75rem;
+  }
+}
+
+.today-panel .student-coverage[data-pinned="true"] .student-coverage__eyebrow {
+  display: block;
+}
+
+.today-panel .student-coverage[data-pinned="true"] .student-coverage__title {
+  font-size: var(--text-lg);
+}
+
+.today-panel .student-coverage[data-pinned="true"] .student-coverage__meta {
+  display: inline;
 }
 
 /* -----------------------------------------------------------------
@@ -923,39 +1067,48 @@
 .today-pulse {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
   margin-top: var(--space-4);
 }
 
 .today-pulse__header {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  /* "02" gutter on desktop is a moment of surprise — a large mono
+     numeral that anchors the section break. The gutter collapses to a
+     single column on narrow viewports via the responsive override. */
+  grid-template-columns: 3rem minmax(0, 1fr);
   align-items: baseline;
-  column-gap: var(--space-6);
+  column-gap: var(--space-4);
   row-gap: var(--space-2);
-  padding-top: var(--space-5);
+  padding-top: var(--space-4);
   padding-bottom: var(--space-3);
-  border-top: 0;
-  /* Hairline is drawn via ::before so we can keep the band tall
-     and still anchor the rule to the top edge without affecting
-     padding. */
+  /* Two hairlines bracket the empty band — the skill's "confidence
+     through emptiness" beat. Borders avoid the ::before/::after
+     overload so the gutter pseudo-element can carry the numeral. */
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   position: relative;
 }
 
+/* Section number stamp — large mono numeral in the gutter column.
+   Sits inside the grid as a real cell; aligns to the title baseline. */
 .today-pulse__header::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: var(--color-border);
+  content: "02";
+  font-family: var(--font-mono);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-xl);
+  font-weight: 500;
+  line-height: 1;
+  color: var(--color-text-tertiary);
+  letter-spacing: -0.02em;
+  align-self: baseline;
 }
 
 .today-pulse__title {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
+  font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -963,21 +1116,32 @@
   white-space: nowrap;
 }
 
-.today-pulse__title::before {
-  content: "02 — ";
-  color: var(--color-text-tertiary);
-  font-weight: 600;
-}
-
 .today-pulse__subtitle {
   margin: 0;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.4;
+  letter-spacing: 0.1em;
+  line-height: 1.5;
   color: var(--color-text-tertiary);
   max-width: 60ch;
+  /* Subtitle spans the second column on the grid so it lines up under
+     the title rather than wrapping under the gutter. */
+  grid-column: 2;
+}
+
+@media (max-width: 760px) {
+  .today-pulse__header {
+    grid-template-columns: 1fr;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+  }
+  .today-pulse__header::before {
+    display: none;
+  }
+  .today-pulse__subtitle {
+    grid-column: auto;
+  }
 }
 
 /* -----------------------------------------------------------------
@@ -1088,17 +1252,7 @@
 .today-panel .page-intro.page-intro--slate,
 .today-panel .page-intro.page-intro--forest,
 .today-panel .page-intro.page-intro--muted {
-  background: transparent;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  /* Tight rhythm into the hero — bottom padding collapses into
-     the hero's natural flow so the two feel like a single band. */
-  padding: var(--space-4) 0 var(--space-2);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  row-gap: var(--space-2);
-  position: relative;
+  display: none;
 }
 
 .today-panel .page-intro::before,
@@ -1171,7 +1325,7 @@
    page title, just not at hero scale. */
 .today-panel .page-intro__title {
   font-family: var(--font-display);
-  font-size: var(--text-xl);
+  font-size: var(--text-lg);
   font-weight: 500;
   letter-spacing: -0.01em;
   line-height: 1.1;
@@ -1185,13 +1339,19 @@
    just the bookkeeping. */
 .today-panel .page-intro__description {
   margin: 0;
-  max-width: none;
+  max-width: 74ch;
   color: var(--color-text-tertiary);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 1.4;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+}
+
+.today-panel .page-intro__visual {
+  width: 3.25rem;
+  height: 3.25rem;
+  opacity: 0.72;
 }
 
 /* Badges rendered as flat mono-caps tokens with a tone-colored left rule. */
@@ -1199,7 +1359,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: var(--space-3);
+  margin-top: var(--space-1);
 }
 
 .today-panel .page-intro .status-chip-row .status-chip,
@@ -1237,38 +1397,25 @@
 .today-panel .page-intro .status-chip--danger  { border-left: 2px solid var(--color-text-danger); }
 
 @media (max-width: 640px) {
-  /* On phones the first-open teacher task is the morning command center,
-     not the utility header/nudge stack. Keep desktop ordering intact. */
-  .today-panel #command-center {
-    order: -1;
-  }
-
+  /* On phones the first-open teacher task is the morning command center.
+     Hide utility context instead of reordering it below the hero, which
+     made the page feel like it was scrolling out of sequence. */
   .today-panel .page-intro,
   .today-panel .page-intro.page-intro--sun,
   .today-panel .page-intro.page-intro--sage,
   .today-panel .page-intro.page-intro--slate,
   .today-panel .page-intro.page-intro--forest,
   .today-panel .page-intro.page-intro--muted {
-    padding: var(--space-2) 0 0;
-    row-gap: var(--space-1);
-  }
-
-  .today-panel .page-intro__eyebrow,
-  .today-panel .page-intro--sun .page-intro__eyebrow,
-  .today-panel .page-intro--sage .page-intro__eyebrow,
-  .today-panel .page-intro--slate .page-intro__eyebrow,
-  .today-panel .page-intro--forest .page-intro__eyebrow,
-  .today-panel .page-intro--muted .page-intro__eyebrow {
-    letter-spacing: 0.08em;
-  }
-
-  .today-panel .page-intro__title {
-    font-size: var(--text-lg);
-  }
-
-  .today-panel .page-intro__description,
-  .today-panel .page-intro .status-chip-row {
     display: none;
+  }
+
+  .today-workflow-nudge {
+    display: none;
+  }
+
+  .today-panel .student-coverage,
+  .today-panel .student-coverage[data-pinned="true"] {
+    z-index: 1;
   }
 }
 
@@ -1352,6 +1499,23 @@
   border: 1px solid var(--color-border);
   border-radius: 2px;
   box-shadow: none;
+  /* Anchor the card height even when forecast data hasn't arrived so
+     the 3-column hero row holds its rhythm instead of collapsing the
+     left column to a 100-px placeholder. */
+  min-height: 16rem;
+}
+
+.today-panel .day-arc--empty {
+  /* Keep the card silent but present — same height as the filled
+     state so the row composition reads consistently. */
+  min-height: 12rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.today-panel .today-anchor-target--compact-arc .day-arc {
+  min-height: 12rem;
 }
 
 .today-panel .day-arc::before { content: none; }
