@@ -50,6 +50,8 @@ The dark accent is deliberately darker than the previous sky-blue `#7aa7d9`. It 
 
 **Brand-highlight extensions scope (2026-04-22).** The `--color-brand-highlight-*` and `--color-brand-green*` tokens are **brand-affordance tokens**, not material tokens. Allowed placements: decorative rules (`.brand-rule` utility), section eyebrows with opt-in brand emphasis, brand-mark reinforcement, hero underlines, and hover-state warmth on brand-emphasis links. Prohibited: page/workspace/card backgrounds (the neutral material stack still owns these), primary CTA fills (the navy `--color-accent` still owns these), and broad semantic washes. The `prairie-green` tokens in particular are a second brand color — not a general-purpose alias for the sage/forest semantic family, which has its own WCAG-tuned values (`--color-section-family`, `--color-text-sage`, etc.) that must not be displaced.
 
+**Atmospheric hero token (2026-04-22 Tier C).** `--gradient-prairie-horizon` is a two-radial-gradient backdrop built from `--color-brand-highlight` (bottom 12%) and `--color-brand-green` (upper-left 8%). Scope is **exactly one consumer — `.today-hero` in TodayHero.css** — as the single sanctioned atmospheric moment in the product. Do not apply to other heroes, marketing surfaces, or card backgrounds without a new decision-log entry; the token's singular-consumer status is the guardrail that prevents the Prairie identity from bleeding into the institutional material stack. The percentages sit at or below the pre-existing `.surface-panel--atmospheric` standard (accent 8%, analysis 6%), so hue shift carries brand recognition without breaking the institutional register.
+
 ### Dark semantic backgrounds
 
 Semantic dark backgrounds are rebased to black with only a trace of hue:

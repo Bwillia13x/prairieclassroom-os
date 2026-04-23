@@ -1,11 +1,23 @@
 /* ================================================================
    TodayHero.css — Nothing-inspired hero band above the Today grid.
    ================================================================
-   Design system: monochromatic, typographically driven, flat. No
-   gradients, no shadows, no decorative washes. The hero is a naked
-   composition on the workspace background — structure IS the ornament.
+   Design system: monochromatic, typographically driven, flat. The
+   composition itself — lede, CTA rail, morning brief — stays flat
+   and structural. Shadows remain off; borders remain hairline.
 
-   Three-layer hierarchy:
+   Single atmospheric moment (2026-04-22 Tier C): a prairie-horizon
+   backdrop renders *beneath* the composition via
+   `--gradient-prairie-horizon` — a warm cognac glow from the bottom
+   and a cool prairie-green wash from the upper-left. The hero reads
+   atmospheric but not editorial because the composition on top is
+   unchanged and the wash sits at ≤12% opacity. This is the one place
+   in the product where atmospheric treatment is sanctioned; see the
+   token definition comment in tokens.css and the 2026-04-22 Tier C
+   decision-log entry. If you feel pressure to replicate the backdrop
+   on other hero panels, push back — the hero moment is singular by
+   design.
+
+   Three-layer hierarchy (inside the composition, above the backdrop):
      Primary    → the narrative lede (Instrument Sans, display-lg)
      Secondary  → the sub-narrative and CTA rationale
      Tertiary   → the status chip, scope marker, and meta labels
@@ -27,7 +39,10 @@
   align-items: stretch;
   gap: var(--space-7);
   padding: var(--space-6) var(--space-6) var(--space-6) 0;
-  background: transparent;
+  /* Atmospheric prairie-horizon backdrop — the one sanctioned
+     decorative moment in the product. The gradient wraps a transparent
+     base so the workspace surface shows through beneath the wash. */
+  background: var(--gradient-prairie-horizon), transparent;
   border: 0;
   /* Single hairline at the bottom. The PageIntro collapses its own
      bottom border upstream so the top of the hero inherits the
@@ -36,7 +51,9 @@
   border-bottom: 1px solid var(--color-border);
   border-radius: 0;
   box-shadow: none;
-  overflow: visible;
+  /* overflow clipped so the radial washes don't bleed past the hero's
+     bottom hairline into the next section (retired classroom pulse). */
+  overflow: hidden;
 }
 
 /* Hero stamp is retired — the PageIntro already provides the

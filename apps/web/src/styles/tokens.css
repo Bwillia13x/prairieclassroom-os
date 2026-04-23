@@ -73,6 +73,41 @@
   --color-brand-green: light-dark(#184030, #6d9481);
   --color-brand-green-soft: light-dark(#e6ede8, #0e1a14);
 
+  /* ------------------------------------------------------------
+     Prairie-horizon atmospheric backdrop (2026-04-22 Tier C).
+     Dual-radial-gradient hero backdrop for the single atmospheric
+     moment in the product — the TodayHero. A warm cognac glow rises
+     from the bottom (12% opacity) paired with a cooler prairie-green
+     sky wash from the upper-left corner (8% opacity). The percentages
+     sit at or below the existing .surface-panel--atmospheric standard
+     (accent 8%, analysis 6%), so the hue shift carries the Prairie
+     identity without breaking the institutional register.
+
+     Because --color-brand-highlight and --color-brand-green are each
+     defined with light-dark() values, the color-mix() calls below
+     automatically produce mode-appropriate output — no explicit
+     light-dark() wrapper needed on the gradient itself. On dark-mode
+     black-first surfaces the mode-appropriate dark cognac (#d4a15c)
+     and lifted green (#6d9481) still read as sparse affordances over
+     the near-black canvas, not ambient washes.
+
+     Consumers: exactly one — `.today-hero` in TodayHero.css. Do not
+     reuse for cards, panels, or other surfaces; the decision-log
+     entry for this token is explicit that atmospheric treatment is
+     limited to the single hero moment.
+     ------------------------------------------------------------ */
+  --gradient-prairie-horizon:
+    radial-gradient(
+      ellipse 120% 60% at 50% 110%,
+      color-mix(in srgb, var(--color-brand-highlight) 12%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 100% 55% at 18% -8%,
+      color-mix(in srgb, var(--color-brand-green) 8%, transparent),
+      transparent 55%
+    );
+
   /* Semantic status family — conservative education-sector palette */
   --color-success: light-dark(#1f7a44, #6cc38f);
   --color-warning: light-dark(#a66a00, #e7b35c);
