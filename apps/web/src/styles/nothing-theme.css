@@ -75,6 +75,36 @@
   box-shadow: none;
 }
 
+/* Brand-emphasis override (2026-04-22 Tier-B expansion). Specificity
+   0,3,0 to beat the workspace eyebrow rule above and any per-panel
+   overrides that match its specificity. The padding-bottom and
+   position are re-applied here because the workspace rule zeroes
+   padding; a short wheat-to-cognac decorative underline sits in the
+   new padded space as a brand mark. Today-panel suppresses the
+   decorative underline because its eyebrow is a tight inline-flex
+   row with a "01 — " prefix (see TodayPanel.css). */
+.workspace-page .page-intro--brand .page-intro__eyebrow {
+  color: var(--color-brand-highlight);
+  padding-bottom: var(--space-2);
+  position: relative;
+}
+
+.workspace-page .page-intro--brand .page-intro__eyebrow::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 1px;
+  width: 40px;
+  background: linear-gradient(
+    90deg,
+    var(--color-brand-highlight) 0%,
+    var(--color-brand-highlight-soft) 65%,
+    transparent 100%
+  );
+  opacity: 0.75;
+}
+
 .workspace-page .page-intro__title {
   font-family: var(--font-display);
   font-size: var(--text-display-md);

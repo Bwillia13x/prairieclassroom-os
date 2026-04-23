@@ -1151,6 +1151,21 @@
   color: var(--color-text-tertiary);
 }
 
+/* Brand-emphasis override (2026-04-22 Tier-B expansion). Specificity
+   0,3,0 matches `.today-panel .page-intro__eyebrow` (0,2,0 + the
+   `--brand` selector) so the brand color wins. The decorative
+   underline seeded by nothing-theme.css is suppressed here because
+   the today-panel eyebrow is a tight inline-flex row with a "01 — "
+   prefix — an underline fights the utility format. */
+.today-panel .page-intro--brand .page-intro__eyebrow,
+.today-panel .page-intro--brand .page-intro__eyebrow::before {
+  color: var(--color-brand-highlight);
+}
+
+.today-panel .page-intro--brand .page-intro__eyebrow::after {
+  display: none;
+}
+
 /* Title is demoted from display to sub-display so it doesn't compete
    with the hero lede. Still sans (not mono) so it reads as a proper
    page title, just not at hero scale. */

@@ -782,9 +782,14 @@ label.form-label {
 /* Brand-emphasis variant — opt-in per Tier-B brand-affordance expansion
    (2026-04-22). The eyebrow picks up the retained Prairie cognac
    instead of the neutral --color-text-secondary. Pairable with any
-   section tone; the brand color wins because it sits at a higher
-   specificity. Not for default use — only surfaces where brand
-   recognition earns the emphasis. */
+   section tone. Not for default use — only surfaces where brand
+   recognition earns the emphasis.
+
+   Specificity note: workspace-wide eyebrow overrides live in
+   nothing-theme.css and TodayPanel.css at 0,3,0. Higher-specificity
+   brand overrides live alongside those rules (see the 2026-04-22
+   expansion block in nothing-theme.css); the base rule below only
+   fires in contexts without those overrides. */
 .page-intro--brand .page-intro__eyebrow {
   color: var(--color-brand-highlight);
 }
