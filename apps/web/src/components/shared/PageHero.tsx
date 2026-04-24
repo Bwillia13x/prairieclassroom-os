@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import SectionIcon from "../SectionIcon";
 import "./PageHero.css";
 
@@ -57,6 +57,20 @@ export default function PageHero({
 }: Props) {
   const className = `page-hero${variant ? ` page-hero--${variant}` : ""}`;
 
+  // Re-key the pulse dot on state change so the 3-iteration ring restarts.
+  // Without this, a state change (e.g. "Ready" → "Needs attention") would
+  // not trigger a new ring animation — the dwell-then-settle intent only
+  // fires on transitions the component observes.
+  const pulseStateRef = useRef(pulse?.state);
+  const [pulseKey, setPulseKey] = useState(0);
+
+  useEffect(() => {
+    if (pulse?.state && pulse.state !== pulseStateRef.current) {
+      pulseStateRef.current = pulse.state;
+      setPulseKey((k) => k + 1);
+    }
+  }, [pulse?.state]);
+
   return (
     <section className={className} id={id} aria-label={ariaLabel}>
       <div className="page-hero__lede">
@@ -95,6 +109,7 @@ export default function PageHero({
           {pulse ? (
             <div className="page-hero__pulse-row">
               <span
+                key={pulseKey}
                 className={`page-hero__pulse-dot${pulse.live ? " page-hero__pulse-dot--live" : ""}`}
                 aria-hidden="true"
               />
