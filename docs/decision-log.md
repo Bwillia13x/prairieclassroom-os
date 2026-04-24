@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-24 — Verification-triggered completion of 2026-04-23 polish sprint's Phase 1 token cleanup
+
+- **Decision:** Close the one concrete gap surfaced by the 2026-04-24 verification pass: 4 stale `var(--shell-control-h, var(--control-h-md))` fallback references in `page-tool-switcher.css` (2 sites), `RoleContextPill.css`, and `TomorrowChip.css`. All other Phase 1-6 deliverables verified intact.
+- **Why:** The original 2026-04-23 Phase 1 Task 1.2 grep-check was scoped only to `shell.css` and missed these four call sites that relied on CSS `var()` fallback syntax. The tokens `--shell-control-h` and `--shell-nav-h` were retired in that phase; the fallbacks silently resolved to `--control-h-md` at runtime, so the visible behavior was already 44px — but the textual source was misleading and represented fragile tech debt.
+- **Alternatives considered:** Leave the fallbacks (rejected — the fallback pattern masks the original intent and violates the Phase 1 retirement contract); retire the adjacent `--shell-control-bg/-border/-radius` fallbacks at the same time (rejected — those tokens still resolve to real values and are not part of the Phase 1 retirement scope).
+- **Consequences:** `grep -rn "shell-control-h\|shell-nav-h" apps/web/src` is now empty, retroactively completing the Phase 1 grep-check. No user-visible behavioral change.
+- **What would change this:** A future requirement to expose a shell-specific canonical height different from `--control-h-md` — at which point new tokens should be introduced, not resurrected from the retired set.
+
+---
+
 ### 2026-04-23 — Motion prune + floating workspace at wide viewports
 
 - **Decision:** (1) Collapse `.btn` transition list from 7 properties to single `all`. (2) Alias 11 motion eases and 5 durations to canonical 4 eases + 3 durations. (3) At ≥1280px viewports, float the workspace with a 16px gutter, rounded corners, and subtle shadow.
