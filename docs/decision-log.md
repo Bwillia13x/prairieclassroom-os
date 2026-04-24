@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-24 — Chart drill-down wiring closure (G-16)
+
+- **Decision:** Close G-16 by wiring the remaining parent-panel chart interactions into the existing `DrillDownDrawer`: `PlanCoverageRadar` on Tomorrow Plan, `VariantSummaryStrip` on Differentiate, `SupportPatternRadar` on Support Patterns, and both `FollowUpSuccessRate` / `InterventionTimeline` on Log Intervention.
+- **Why:** The chart components already exposed accessible click/keyboard callbacks, but several parent panels still rendered them as dead-end summaries. Teachers needed the same "summary → evidence drawer → student/detail action" path outside TodayPanel and HealthBar.
+- **Alternatives considered:** Leave the charts as passive previews (rejected — G-16 stayed visibly open); add bespoke drawers per panel (rejected — the shared type-discriminated drawer already carries the navigation and focus-trap contract); create new data endpoints for these drill-downs (rejected — each panel already has enough local result/history data for the first-level drill-down).
+- **Consequences:** Chart drill-down behavior is now consistent across Today, Classroom, Tomorrow, Prep, Review, and Ops surfaces. Intervention follow-up records are mapped client-side into `DebtItem` objects for the existing debt drawer view; support-pattern radar axes derive grouped students from recurring-theme references and enrich them from the active roster when available.
+- **What would change this:** Teacher testing showing the first-level drawer needs richer evidence than the panel result already holds, or a future analytics endpoint that returns canonical chart segment evidence directly.
+
+---
+
 ### 2026-04-23 — Page composition pass (zone disclosure, tool-switcher stepper, pulse transition gating)
 
 - **Decision:** (1) Collapse ClassroomPanel's Intel (2x2 viz grid) and Roster zones behind native `<details>` by default, persisted per-classroom via `useZoneDisclosure`. (2) Mount `ToolSwitcherStepper` between the tool switcher and active workspace on Prep / Ops / Review. (3) Gate hero pulse-dot animation to React state changes (3 iterations on change, idle otherwise).
