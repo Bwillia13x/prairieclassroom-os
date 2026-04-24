@@ -439,6 +439,13 @@
      the horizontal/bottom sides — see audit fix B2 / shell.css. */
   --page-content-padding-top: var(--space-5);
 
+  /* Stacking — only sticky affordances are tokenized today. Overlays
+     (DrillDownDrawer 90/91, ShortcutSheet 1000, CommandPalette 1100,
+     toast 9999) still use raw literals by design because they are
+     tightly coupled to their own layering. If that changes, expand
+     this layer list before migrating call sites. */
+  --z-sticky: 10;
+
   /* Motion — canonical four eases + three durations (2026-04-23 Phase 6).
      All other motion tokens alias into this canonical set so call sites
      can migrate opportunistically. See decision-log.md. */

@@ -18,6 +18,13 @@
   --page-rail-bottom-edge: var(--space-5);
   --page-rail-toggle-h: 2.75rem;
   --page-rail-accent: var(--shell-control-accent, var(--color-accent));
+  /* Direction-aware motion. The base curve (ease-out-quint) reads when
+     transitioning *away* from collapsed (expanding), and --collapsed below
+     overrides with an ease-in-quart curve so collapsing feels decisive.
+     One variable, two directions — no JS needed. */
+  --rail-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --rail-duration: 380ms;
+  --rail-fade-duration: 260ms;
 
   position: fixed;
   top: var(--page-rail-top-edge);
@@ -44,12 +51,16 @@
   box-shadow:
     8px 0 20px color-mix(in srgb, black 7%, transparent),
     inset -1px 0 0 color-mix(in srgb, var(--page-rail-accent) 12%, transparent);
+  /* Compositor-driven slide via transform instead of left — avoids per-frame
+     layout and keeps the motion GPU-smooth even on mid-range hardware. */
+  transform: translateX(0);
+  will-change: transform;
   transition:
-    left 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    background 220ms ease-out,
-    border-color 220ms ease-out,
-    box-shadow 220ms ease-out,
-    padding 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    transform var(--rail-duration) var(--rail-ease),
+    background var(--rail-fade-duration) var(--rail-ease),
+    border-color var(--rail-fade-duration) var(--rail-ease),
+    box-shadow var(--rail-fade-duration) var(--rail-ease),
+    padding var(--rail-duration) var(--rail-ease);
 }
 
 .page-anchor-rail::-webkit-scrollbar {
@@ -57,9 +68,12 @@
 }
 
 .page-anchor-rail--collapsed {
-  left: calc(
-    var(--page-rail-left-edge) -
-    (var(--page-rail-width) - var(--page-rail-collapsed-width))
+  /* Ease-in-quart for the exit: the rail "commits" to leaving the stage
+     rather than drifting out. Pairs with the expo-out on the base for a
+     welcoming re-entry when the user expands again. */
+  --rail-ease: cubic-bezier(0.7, 0, 0.84, 0);
+  transform: translateX(
+    calc(var(--page-rail-collapsed-width) - var(--page-rail-width))
   );
   padding-right: 0;
   padding-left: 0;
@@ -67,6 +81,11 @@
   background: transparent;
   border-color: transparent;
   box-shadow: none;
+  /* When collapsed the anchor list is aria-hidden + opacity:0, so nothing is
+     scrollable. Lifting overflow lets the toggle's right edge + accent glow
+     render past the 2.5rem collapsed strip (otherwise the browser promotes
+     overflow-x to auto because overflow-y is auto, clipping the toggle). */
+  overflow: visible;
 }
 
 .page-anchor-rail::before {
@@ -149,13 +168,13 @@
     0 0 0 1px color-mix(in srgb, var(--page-rail-accent) 12%, transparent),
     0 8px 18px color-mix(in srgb, black 12%, transparent);
   transition:
-    left 360ms cubic-bezier(0.22, 1, 0.36, 1),
-    width 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    padding 320ms cubic-bezier(0.22, 1, 0.36, 1),
+    left var(--rail-duration) var(--rail-ease),
+    width var(--rail-duration) var(--rail-ease),
+    padding var(--rail-duration) var(--rail-ease),
     color 160ms ease-out,
     background 160ms ease-out,
     border-color 160ms ease-out,
-    box-shadow 220ms ease-out;
+    box-shadow var(--rail-fade-duration) var(--rail-ease);
 }
 
 .page-anchor-rail__toggle:hover {
@@ -188,11 +207,13 @@
   flex: 0 0 auto;
   width: 12px;
   height: 12px;
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  /* rotate(180deg), not scaleX(-1): avoids the mid-animation zero-width
+     squish and keeps the chevron readable through the full flip. */
+  transition: transform var(--rail-duration) var(--rail-ease);
 }
 
 .page-anchor-rail--collapsed .page-anchor-rail__toggle-icon {
-  transform: scaleX(-1);
+  transform: rotate(180deg);
 }
 
 .page-anchor-rail__toggle-text {
@@ -201,17 +222,21 @@
   overflow: hidden;
   white-space: nowrap;
   opacity: 1;
+  /* Text fades in *after* the rail starts expanding (60ms delay) so the
+     reveal feels layered, not simultaneous. */
   transition:
-    max-width 320ms cubic-bezier(0.22, 1, 0.36, 1),
-    opacity 160ms ease-out 60ms;
+    max-width var(--rail-duration) var(--rail-ease),
+    opacity 200ms ease-out 80ms;
 }
 
 .page-anchor-rail--collapsed .page-anchor-rail__toggle-text {
   max-width: 0;
   opacity: 0;
+  /* Fade out before the slide so we don't see text squeezing into the
+     collapsed strip. */
   transition:
-    max-width 280ms cubic-bezier(0.32, 0, 0.67, 0),
-    opacity 120ms ease-out;
+    max-width var(--rail-duration) var(--rail-ease),
+    opacity 140ms ease-in;
 }
 
 .page-anchor-rail__list {
@@ -223,18 +248,22 @@
   gap: var(--space-1);
   opacity: 1;
   transform: translateX(0);
+  /* Delayed fade-in on expand: the rail settles first, then the anchors
+     "land" — layered motion reads as intentional, not chaotic. */
   transition:
-    opacity 200ms ease-out 80ms,
-    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 220ms ease-out 120ms,
+    transform var(--rail-duration) var(--rail-ease);
 }
 
 .page-anchor-rail__list[aria-hidden="true"] {
   opacity: 0;
   transform: translateX(-8px);
   pointer-events: none;
+  /* On collapse the list vanishes first so the rail slides into an empty
+     strip instead of squeezing labels through the toggle. */
   transition:
-    opacity 160ms ease-out,
-    transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 140ms ease-in,
+    transform var(--rail-duration) var(--rail-ease);
 }
 
 .page-anchor-rail__link,
@@ -327,7 +356,9 @@
     box-sizing: border-box;
     width: 100%;
     padding-left: calc(var(--shell-page-rail-width, 10.25rem) + var(--space-5));
-    transition: padding-left 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    /* Duration + curve match the rail transform so the content gutter and
+       the rail slide travel as one unit rather than desynchronizing. */
+    transition: padding-left 380ms cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .app-main[data-page-rail-state="collapsed"] > [role="tabpanel"]:not([hidden]),
@@ -335,6 +366,9 @@
   .app-main[data-page-rail-state="collapsed"] > .role-escape-banner,
   .app-main[data-page-rail-state="collapsed"] > .app-footer {
     padding-left: calc(var(--shell-page-rail-collapsed-width, 2.5rem) + var(--space-4));
+    /* Ease-in on collapse so the content closes in briskly as the rail
+       exits; pairs with the rail's ease-in-quart for a unified retreat. */
+    transition: padding-left 380ms cubic-bezier(0.7, 0, 0.84, 0);
   }
 }
 
@@ -345,6 +379,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .page-anchor-rail {
+    /* Override the shared duration var so every transition inside the rail
+       inherits the clamp, not just the ones listed below. */
+    --rail-duration: 120ms;
+    --rail-fade-duration: 120ms;
+  }
   .page-anchor-rail,
   .page-anchor-rail::before,
   .page-anchor-rail__list,

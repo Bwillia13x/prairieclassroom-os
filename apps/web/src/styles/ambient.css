@@ -613,8 +613,12 @@
   width: var(--control-h-md) !important;
   height: auto !important;
   margin-right: var(--space-3) !important;
-  border-right: var(--shell-control-border) !important;
-  border-radius: 0 !important;
+  /* Divider is now a pseudo-element (see shell.css) so it can span the
+     pill's full border-box height and stay color-synced with the outer
+     border across hover/open states. Rounded left corners let the
+     switcher's hit-area follow the pill's outer radius. */
+  border-right: 0 !important;
+  border-radius: var(--shell-control-radius) 0 0 var(--shell-control-radius) !important;
 }
 
 .shell-classroom-pill__copy {

@@ -169,7 +169,11 @@ async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfil
   return utils;
 }
 
-describe("App shell — classroom pill trigger", () => {
+// App-shell tests mount the full 7-page shell + all panels; under parallel
+// load from 170 test files they can exceed the 5s default. Raise the timeout
+// so the heaviest multi-click flows (tab drawer, scroll preservation,
+// region scoping) don't flake under CPU contention. Fast in isolation.
+describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
   beforeEach(() => {
     vi.stubGlobal("localStorage", makeStorageMock());
     vi.stubGlobal("sessionStorage", makeStorageMock());

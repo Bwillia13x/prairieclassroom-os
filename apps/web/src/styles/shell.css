@@ -167,6 +167,12 @@
 }
 
 .shell-classroom-pill {
+  /* State-reactive divider color. Must track the *actually rendered* outer
+     border, which nothing-theme.css paints from --nothing-button-border
+     (resting) and --nothing-button-border-hover (:hover/--open) — not the
+     --shell-control-border chain this file defines. Using the same source
+     variables guarantees the divider and the border are the same thread. */
+  --pill-divider: var(--nothing-button-border);
   display: inline-flex;
   align-items: center;
   gap: 0;
@@ -186,6 +192,11 @@
 }
 
 .shell-classroom-pill:hover:not(:disabled) {
+  /* Divider stays tied to --nothing-button-border (set on the base) because
+     nothing-theme's cascade keeps the *actual rendered* pill border at the
+     resting color across hover and --open — the theoretical border-color
+     overrides elsewhere in the stack don't reach the painted border. Keep
+     the divider in lockstep with what the user sees, not what's declared. */
   border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
   background: var(--shell-control-bg-hover);
   transform: translateY(-0.5px);
@@ -197,12 +208,15 @@
 }
 
 .shell-classroom-pill--open {
+  /* See note on :hover above — divider tracks the rendered border, which
+     stays at --nothing-button-border even in --open. */
   border-color: color-mix(in srgb, var(--color-border-accent) 65%, transparent);
   background: var(--shell-control-bg-hover);
   box-shadow: inset 0 -2px 0 var(--shell-control-accent);
 }
 
 .shell-classroom-pill__switcher {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -210,9 +224,30 @@
   width: var(--control-h-md);
   height: auto;
   margin-right: var(--space-3);
-  border-right: var(--shell-control-border);
-  border-radius: 0;
+  /* Rounded left corners match the pill's outer radius so any future
+     switcher background (hover highlight, focus ring, etc.) reads as
+     part of the pill instead of a rectangle pasted inside a rounded box. */
+  border-radius: var(--shell-control-radius) 0 0 var(--shell-control-radius);
   flex-shrink: 0;
+}
+
+/* Internal divider. Implemented as an absolutely-positioned pseudo-element
+   rather than the old `border-right`, because a flex child with
+   `align-self: stretch` only fills the parent's *content box* — a
+   border-right ends up 1px short of the pill's top/bottom borders,
+   creating a disconnected seam. `top: -1px; bottom: -1px` extends the
+   divider 1px into the parent's border area so it joins the outer ring
+   cleanly at both ends. */
+.shell-classroom-pill__switcher::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 0;
+  bottom: -1px;
+  width: 1px;
+  background: var(--pill-divider);
+  pointer-events: none;
+  transition: background-color var(--motion-fast) var(--ease-standard);
 }
 
 .shell-classroom-pill__copy {

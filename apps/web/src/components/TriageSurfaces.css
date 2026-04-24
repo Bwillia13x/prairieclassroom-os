@@ -458,7 +458,7 @@ button.action-atlas__compact-card:disabled {
 
 .student-coverage__segment-count {
   color: var(--color-text-tertiary);
-  font-weight: var(--font-weight-regular);
+  font-weight: var(--font-weight-normal);
   font-variant-numeric: tabular-nums;
 }
 

@@ -116,3 +116,20 @@
   justify-content: flex-end;
   margin-top: var(--space-2);
 }
+
+.role-prompt-dialog__actions .btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .role-prompt-dialog__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-2);
+  }
+
+  .role-prompt-dialog__actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

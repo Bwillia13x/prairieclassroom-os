@@ -1,11 +1,18 @@
 /**
  * validate-today-layout.mjs — Playwright check for Today desktop/mobile layouts.
  *
+ * Architecture note: the Today rail is `<nav class="page-anchor-rail"
+ * aria-label="Today sections">`, rendered as a sibling of the tabpanel
+ * (not a child of `.today-panel`). Layout clearance is handled via
+ * `.app-main[data-page-rail]` left-padding on its tabpanel children above
+ * `min-width: 961px`; the rail is `display:none` at `max-width: 960px`.
+ *
  * Assertions:
  *   Desktop (1440×1100):
- *     - `.today-panel--with-rail` is display:grid
- *     - the anchor rail is visible
- *     - `.today-panel__content` is horizontally beside the rail
+ *     - `.workspace-page.today-panel` tabpanel is rendered
+ *     - `.app-main[data-page-rail]` wiring is present
+ *     - the anchor rail (`nav[aria-label="Today sections"]`) is visible
+ *     - the Today hero content sits right of the rail (no overlap)
  *   Mobile (393×852):
  *     - rail is hidden
  *     - `.today-hero__brief` is visible above `.mobile-nav`
@@ -55,18 +62,25 @@ async function validateDesktop(browser) {
   });
 
   await page.goto(DEMO_URL, { waitUntil: "networkidle" });
-  await page.waitForSelector(".today-panel--with-rail", { timeout: 10_000 });
+  await page.waitForSelector(".workspace-page.today-panel", { timeout: 10_000 });
 
-  // 1. display: grid on .today-panel--with-rail
-  const panelDisplay = await page.$eval(
-    ".today-panel--with-rail",
-    (el) => globalThis.getComputedStyle(el).display,
+  // 1. Today tabpanel is rendered and visible
+  const panelVisible = await page.locator(".workspace-page.today-panel").evaluate(
+    (el) => {
+      const style = globalThis.getComputedStyle(el);
+      return style.display !== "none" && style.visibility !== "hidden";
+    },
   );
-  assert.equal(panelDisplay, "grid", "Desktop: .today-panel--with-rail must be display:grid");
+  assert.ok(panelVisible, "Desktop: .workspace-page.today-panel must be visible");
 
-  // 2. Rail is visible
-  const railVisible = await page.$eval(
-    ".today-anchor-rail",
+  // 2. App-main has page-rail wiring that offsets tabpanel content
+  const hasPageRailAttr = await page.locator(".app-main").evaluate(
+    (el) => el.hasAttribute("data-page-rail"),
+  );
+  assert.ok(hasPageRailAttr, "Desktop: .app-main must have data-page-rail attribute for rail offset");
+
+  // 3. Rail is visible
+  const railVisible = await page.locator('nav[aria-label="Today sections"].page-anchor-rail').evaluate(
     (el) => {
       const style = globalThis.getComputedStyle(el);
       return style.display !== "none" && style.visibility !== "hidden";
@@ -74,18 +88,20 @@ async function validateDesktop(browser) {
   );
   assert.ok(railVisible, "Desktop: anchor rail must be visible");
 
-  // 3. Content is beside the rail (content left > rail left)
-  const railBox = await page.$eval(".today-anchor-rail", (el) => {
-    const r = el.getBoundingClientRect();
-    return { left: r.left, right: r.right };
-  });
-  const contentBox = await page.$eval(".today-panel__content", (el) => {
+  // 4. Hero content sits right of the rail (no overlap)
+  const railBox = await page.locator('nav[aria-label="Today sections"].page-anchor-rail').evaluate(
+    (el) => {
+      const r = el.getBoundingClientRect();
+      return { left: r.left, right: r.right };
+    },
+  );
+  const heroBox = await page.locator(".today-hero").evaluate((el) => {
     const r = el.getBoundingClientRect();
     return { left: r.left };
   });
   assert.ok(
-    contentBox.left > railBox.left,
-    `Desktop: .today-panel__content left (${contentBox.left}) must be right of rail left (${railBox.left})`,
+    heroBox.left >= railBox.right,
+    `Desktop: .today-hero left (${heroBox.left}) must be at or right of rail right (${railBox.right})`,
   );
 
   await page.screenshot({
@@ -113,8 +129,7 @@ async function validateMobile(browser) {
   await page.waitForSelector(".today-hero", { timeout: 10_000 });
 
   // 1. Rail is hidden on mobile
-  const railHidden = await page.$eval(
-    ".today-anchor-rail",
+  const railHidden = await page.locator('nav[aria-label="Today sections"].page-anchor-rail').evaluate(
     (el) => {
       const style = globalThis.getComputedStyle(el);
       return style.display === "none" || style.visibility === "hidden";
@@ -123,11 +138,11 @@ async function validateMobile(browser) {
   assert.ok(railHidden, "Mobile: anchor rail must be hidden");
 
   // 2. .today-hero__brief is visible above .mobile-nav
-  const briefBox = await page.$eval(".today-hero__brief", (el) => {
+  const briefBox = await page.locator(".today-hero__brief").evaluate((el) => {
     const r = el.getBoundingClientRect();
     return { bottom: r.bottom };
   });
-  const mobileNavBox = await page.$eval(".mobile-nav", (el) => {
+  const mobileNavBox = await page.locator(".mobile-nav").evaluate((el) => {
     const r = el.getBoundingClientRect();
     return { top: r.top };
   });
@@ -137,7 +152,7 @@ async function validateMobile(browser) {
   );
 
   // 3. Primary hero CTA is above .mobile-nav
-  const ctaBox = await page.$eval(".today-hero__cta", (el) => {
+  const ctaBox = await page.locator(".today-hero__cta").evaluate((el) => {
     const r = el.getBoundingClientRect();
     return { bottom: r.bottom };
   });
