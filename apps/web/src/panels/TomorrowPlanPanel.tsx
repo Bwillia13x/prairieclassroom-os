@@ -272,6 +272,27 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   eaActions={displayResult.plan.ea_actions.length}
                   prepItems={displayResult.plan.prep_checklist.length}
                   familyFollowups={displayResult.plan.family_followups.length}
+                  onSegmentClick={({ section, label }) => {
+                    const plan = displayResult.plan;
+                    const items =
+                      section === "watchpoints"
+                        ? plan.transition_watchpoints.map((w) => `${w.time_or_activity} — ${w.risk_description}`)
+                        : section === "priorities"
+                          ? plan.support_priorities.map((p) => `${p.student_ref}: ${p.reason}`)
+                          : section === "eaActions"
+                            ? plan.ea_actions.map((a) => `${a.timing} — ${a.description}`)
+                            : section === "prepItems"
+                              ? plan.prep_checklist
+                              : plan.family_followups.map((f) => `${f.student_ref}: ${f.reason}`);
+                    const sectionMap: Record<typeof section, "watchpoints" | "priorities" | "ea_actions" | "prep_items" | "family_followups"> = {
+                      watchpoints: "watchpoints",
+                      priorities: "priorities",
+                      eaActions: "ea_actions",
+                      prepItems: "prep_items",
+                      familyFollowups: "family_followups",
+                    };
+                    setDrillDown({ type: "plan-coverage-section", section: sectionMap[section], label, items });
+                  }}
                 />
                 <PlanViewer
                   plan={displayResult.plan}
