@@ -35,7 +35,7 @@ export default function PlanViewer({ plan, thinkingSummary, patternInformed, met
       {thinkingSummary && (
         <details className="plan-thinking">
           <summary>Reasoning notes</summary>
-          <pre>{thinkingSummary}</pre>
+          <pre className="editorial">{thinkingSummary}</pre>
         </details>
       )}
 

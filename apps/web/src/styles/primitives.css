@@ -259,6 +259,34 @@
   visibility: hidden;
 }
 
+/* Editorial register — narrowly scoped to AI-generated long-form content.
+   See docs/decision-log.md 2026-04-23 ("editorial register introduction").
+   Do not apply to UI chrome or short copy. */
+.editorial {
+  font-family: var(--font-editorial);
+  font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
+  font-size: var(--text-md);
+  line-height: var(--leading-loose);
+  letter-spacing: -0.003em;
+  color: var(--color-text);
+}
+
+.editorial p {
+  margin: 0 0 var(--space-3);
+}
+
+.editorial p:last-child {
+  margin-bottom: 0;
+}
+
+.editorial strong {
+  font-weight: 600;
+}
+
+.editorial em {
+  font-style: italic;
+}
+
 .btn__spinner {
   position: absolute;
   width: 1.1em;

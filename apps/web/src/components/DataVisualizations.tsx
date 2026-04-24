@@ -1169,7 +1169,7 @@ function tagToCluster(tag: string): string {
    4. COMPLEXITY HEATMAP (Week View)
    ================================================================
    5-row × N-column grid: rows = weekdays, columns = time blocks.
-   Cell color = risk level (green/amber/red).
+  Cell color = risk level (navy/amber/rust).
    Answers: "When is it hard?"
    ================================================================ */
 
@@ -1178,9 +1178,9 @@ interface ComplexityHeatmapProps {
 }
 
 const LEVEL_COLORS = {
-  low: "var(--color-forecast-low-bg, var(--color-success))",
-  medium: "var(--color-forecast-medium-bg, var(--color-warning))",
-  high: "var(--color-forecast-high-bg, var(--color-danger))",
+  low: "var(--chart-tone-low-bg, var(--color-forecast-low-bg))",
+  medium: "var(--chart-tone-medium-bg, var(--color-forecast-medium-bg))",
+  high: "var(--chart-tone-high-bg, var(--color-forecast-high-bg))",
 };
 
 export function ComplexityHeatmap({ blocks }: ComplexityHeatmapProps) {

@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-23 — Editorial register introduction, chart tonal retune, branded skeleton, Monday reset moment
+
+- **Decision:** (1) Add Source Serif 4 Variable as a third self-hosted font family under `--font-editorial`, exposed through a narrowly scoped `.editorial` utility for AI-generated long-form copy. (2) Introduce `--chart-tone-low / medium / high` as the canonical calm scalar chart palette and remap legacy `--color-forecast-*` tokens to that scale for compatibility. (3) Add a 3.5%-opacity PrairieClassroom brand-mark watermark behind `SectionSkeleton`. (4) Add a Monday-only first-visit reset strip on Today, dismissible and persisted per classroom + ISO week via `localStorage`.
+- **Why:** Family messages, planning summaries, and substitute-facing generated copy benefit from a slower editorial reading cadence without pulling the rest of the UI away from its institutional sans register. Forecast/heatmap visuals were over-signaling with green/amber/red on ordinary ordinal data, which made routine "high" blocks read like alerts instead of relative peaks. Loading states were visually anonymous. Monday is the clearest weekly rhythm boundary in the teacher workflow, so one quiet branded reset moment earns attention without introducing ambient motion.
+- **Alternatives considered:** Keep the UI sans-only (rejected — generated long-form review points stayed flat); leave scalar charts on green/amber/red (rejected — too alarm-like for routine ordinal data); keep skeletons generic gray (rejected — missed brand moment); add daily reset moments (rejected — ambient delight becomes ambient noise). The original Phase-5 plan referenced a dedicated TomorrowPlan narrative field; the current branch has no such schema field, so the serif was applied to the existing long-form planning surface instead of inventing new content.
+- **Consequences:** `apps/web/public/fonts/` now ships Source Serif 4 (~50 KB woff2). The editorial register is available but intentionally narrow: family-message draft body, planning reasoning summary, and substitute-packet heads-up copy. Scalar chart consumers now read navy -> amber -> rust while real alert/success states still use semantic red/green. SectionSkeleton loads with a subtle brand watermark and suppresses it under `prefers-reduced-motion`. TodayPanel now renders a Monday strip that dismisses for the current classroom and ISO week only.
+- **What would change this:** Bundle review showing the serif is not pulling its weight; contrast or usability regressions on the retuned forecast text pairings; teacher feedback that the Monday strip feels promotional rather than grounding; or a future schema change that introduces a real TomorrowPlan narrative field, in which case the editorial class should move from the reasoning summary to that canonical narrative output.
+
+---
+
 ### 2026-04-24 — Chart drill-down wiring closure (G-16)
 
 - **Decision:** Close G-16 by wiring the remaining parent-panel chart interactions into the existing `DrillDownDrawer`: `PlanCoverageRadar` on Tomorrow Plan, `VariantSummaryStrip` on Differentiate, `SupportPatternRadar` on Support Patterns, and both `FollowUpSuccessRate` / `InterventionTimeline` on Log Intervention.

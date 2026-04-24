@@ -14,6 +14,7 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import ErrorBanner from "../components/ErrorBanner";
 import SectionIcon from "../components/SectionIcon";
 import DrillDownDrawer from "../components/DrillDownDrawer";
+import MondayResetMoment from "../components/MondayResetMoment";
 import TimeSuggestion from "../components/TimeSuggestion";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { Card, ActionButton } from "../components/shared";
@@ -151,6 +152,8 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           { label: `${profile.students.length} students`, tone: "sun" },
         ]}
       />
+
+      {activeClassroom ? <MondayResetMoment classroomId={activeClassroom} /> : null}
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 

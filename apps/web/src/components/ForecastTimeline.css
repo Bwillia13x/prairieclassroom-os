@@ -46,17 +46,17 @@
 }
 
 .forecast-timeline-segment--low {
-  background: color-mix(in srgb, var(--color-forecast-low) 18%, var(--color-surface) 82%);
+  background: color-mix(in srgb, var(--chart-tone-low) 18%, var(--color-surface) 82%);
   color: var(--color-forecast-low-text);
 }
 
 .forecast-timeline-segment--medium {
-  background: color-mix(in srgb, var(--color-forecast-medium) 20%, var(--color-surface) 80%);
+  background: color-mix(in srgb, var(--chart-tone-medium) 20%, var(--color-surface) 80%);
   color: var(--color-forecast-medium-text);
 }
 
 .forecast-timeline-segment--high {
-  background: color-mix(in srgb, var(--color-forecast-high) 24%, var(--color-surface) 76%);
+  background: color-mix(in srgb, var(--chart-tone-high) 24%, var(--color-surface) 76%);
   color: var(--color-forecast-high-text);
 }
 

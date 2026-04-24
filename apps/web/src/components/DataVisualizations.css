@@ -1021,17 +1021,17 @@ button.viz-composition__row:focus-visible {
 }
 
 .viz-heatmap__legend-item--low {
-  background: var(--color-forecast-low-bg, var(--color-success));
+  background: var(--chart-tone-low-bg, var(--color-forecast-low-bg));
   opacity: 0.7;
 }
 
 .viz-heatmap__legend-item--medium {
-  background: var(--color-forecast-medium-bg, var(--color-warning));
+  background: var(--chart-tone-medium-bg, var(--color-forecast-medium-bg));
   opacity: 0.7;
 }
 
 .viz-heatmap__legend-item--high {
-  background: var(--color-forecast-high-bg, var(--color-danger));
+  background: var(--chart-tone-high-bg, var(--color-forecast-high-bg));
   opacity: 0.7;
 }
 

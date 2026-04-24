@@ -56,7 +56,7 @@ export default function MessageDraft({ draft, meta }: Props) {
             sent to the family. Show that here (with a small "edited" tag),
             falling back to the AI draft when no edits exist. */}
         <p
-          className="draft-text"
+          className="draft-text editorial"
           dir={isRtlLanguage(draft.target_language) ? "rtl" : undefined}
           lang={draft.target_language || undefined}
         >

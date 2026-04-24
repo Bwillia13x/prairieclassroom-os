@@ -209,16 +209,29 @@
   --color-variant-ea-group: light-dark(#2a5a3a, #7fc090);
   --color-variant-extension: light-dark(#8a3630, #c97b73);
 
-  /* Forecast colors — green / amber / red, institutional conservative */
-  --color-forecast-low: light-dark(#1f7a44, #6cc38f);
-  --color-forecast-low-bg: light-dark(#e9f3ec, #0a100d);
-  --color-forecast-low-text: light-dark(#18583a, #b4d6c1);
-  --color-forecast-medium: light-dark(#a66a00, #e7b35c);
-  --color-forecast-medium-bg: light-dark(#faf0dc, #100d07);
+  /* Chart tonal palette (2026-04-23 Phase 5).
+     Calm gradient for data visualization — used where chart color is
+     encoding a scalar, not an alert. Low -> medium -> high runs
+     navy -> amber -> rust. For true alerts, continue to use
+     --color-danger / --color-success. */
+  --chart-tone-low: light-dark(#3f5a7a, #8f98a8);
+  --chart-tone-low-bg: light-dark(#eaeef5, #0b0d12);
+  --chart-tone-medium: light-dark(#a66a00, #d4a15c);
+  --chart-tone-medium-bg: light-dark(#faf0dc, #100d07);
+  --chart-tone-high: light-dark(#8a3630, #c97b73);
+  --chart-tone-high-bg: light-dark(#f7e8e5, #120909);
+
+  /* Forecast colors — compatibility aliases mapped to the chart-tone
+     scale so existing consumers inherit the calmer ordinal palette. */
+  --color-forecast-low: var(--chart-tone-low);
+  --color-forecast-low-bg: var(--chart-tone-low-bg);
+  --color-forecast-low-text: light-dark(#35486a, #c2cad9);
+  --color-forecast-medium: var(--chart-tone-medium);
+  --color-forecast-medium-bg: var(--chart-tone-medium-bg);
   --color-forecast-medium-text: light-dark(#7a4e02, #e2bf7f);
-  --color-forecast-high: light-dark(#a62f26, #ef8a81);
-  --color-forecast-high-bg: light-dark(#f7e8e5, #120909);
-  --color-forecast-high-text: light-dark(#7a241d, #efaaa3);
+  --color-forecast-high: var(--chart-tone-high);
+  --color-forecast-high-bg: var(--chart-tone-high-bg);
+  --color-forecast-high-text: light-dark(#6a2a24, #d9a098);
 
   --color-approve: light-dark(#1f7a44, #6cc38f);
   --color-approve-hover: light-dark(#18583a, #8fd3ab);
@@ -357,11 +370,13 @@
      --font-serif is retained as a compatibility alias so the 18+ files
      that still reference it (TodayStory, DayArc, PageIntro titles, etc.)
      automatically inherit the display upgrade without per-file edits.
-     Do not introduce a real serif here without a new decision entry.
+     --font-editorial is the narrow opt-in editorial serif for generated
+     long-form content only. Decision-log 2026-04-23.
      ------------------------------------------------------------ */
   --font-sans: "Inter", "Inter Variable", "Public Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-display: "Instrument Sans", "Inter", "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: var(--font-display);
+  --font-editorial: "Source Serif 4", Georgia, "Times New Roman", serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
 
   /* OpenType feature sets. Applied globally in base.css for kern+liga;

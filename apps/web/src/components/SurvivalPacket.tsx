@@ -105,7 +105,7 @@ export default function SurvivalPacket({ packet, meta }: { packet: SurvivalPacke
             >
               Heads Up
             </h3>
-            <ul className="survival-packet-heads-up-list">
+            <ul className="survival-packet-heads-up-list editorial">
               {packet.heads_up.map((item, i) => (
                 <li key={i} className="survival-packet-heads-up-item">
                   <span aria-hidden="true">&bull;</span>
