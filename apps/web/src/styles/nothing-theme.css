@@ -1812,6 +1812,23 @@
   border-radius: 0 0 2px 2px !important;
 }
 
+@media (min-width: 1280px) {
+  /* Floating workspace override (2026-04-23 Phase 6). Beats the base
+     !important rules above so shell.css's `@media (min-width: 1280px)`
+     intent can take effect: four-sided border so the workspace reads as
+     a floating card separated from the header by the gutter. Uses the
+     theme's own --radius-lg and --shadow-sm tokens — under the Nothing
+     theme those flatten to --radius-sm and none, preserving the flat
+     rectangle aesthetic while still communicating the float via the
+     gutter + full border. Narrower viewports keep the flush-docked
+     silhouette from the base rule. */
+  .app-main {
+    border-top: 1px solid var(--color-border) !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+}
+
 /* Classroom switcher popover anchoring — pinned to its trigger pill,
    not the viewport. Canonical positioning lives here so the panel
    never drifts mid-page across viewport widths. */
