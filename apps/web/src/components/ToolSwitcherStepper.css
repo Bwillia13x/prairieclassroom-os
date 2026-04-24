@@ -1,0 +1,47 @@
+.tool-switcher-stepper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  margin-top: calc(-1 * var(--space-2));
+  margin-bottom: var(--space-3);
+}
+
+.tool-switcher-stepper__rail {
+  position: absolute;
+  left: var(--space-4);
+  right: var(--space-4);
+  top: 50%;
+  height: 1px;
+  background: color-mix(in srgb, var(--color-border) 60%, transparent);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.tool-switcher-stepper__dot {
+  position: relative;
+  z-index: 1;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-surface);
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  transition: background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-spring);
+}
+
+.tool-switcher-stepper__dot--complete {
+  background: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+  border-color: transparent;
+}
+
+.tool-switcher-stepper__dot--active {
+  width: 12px;
+  height: 12px;
+  background: var(--color-accent);
+  border-color: transparent;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
