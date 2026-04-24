@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
@@ -10,6 +10,8 @@ vi.mock("../../api", () => ({
   logIntervention: vi.fn(),
   logInterventionQuick: vi.fn(),
   fetchInterventionHistory: vi.fn(),
+  fetchInterventionHistoryForStudent: vi.fn().mockResolvedValue([]),
+  fetchMessageHistoryForStudent: vi.fn().mockResolvedValue([]),
   submitFeedbackApi: vi.fn(),
   submitSessionApi: vi.fn(),
 }));
@@ -205,5 +207,45 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     expect(payload.classroom_id).toBe("demo-classroom");
     expect(appContext.showSuccess).toHaveBeenCalledWith("Intervention logged");
     expect(appContext.showUndo).not.toHaveBeenCalled();
+  });
+
+  it("opens debt-category and student drill-downs from the intervention history charts", async () => {
+    mockedFetchInterventionHistory.mockResolvedValue([
+      {
+        record_id: "rec-pending",
+        classroom_id: "demo-classroom",
+        student_refs: ["Amira"],
+        observation: "Needs math check-in after the small-group task.",
+        action_taken: "Schedule follow-up",
+        follow_up_needed: true,
+        created_at: "2026-04-10T09:00:00.000Z",
+        schema_version: "1",
+      },
+      {
+        record_id: "rec-resolved",
+        classroom_id: "demo-classroom",
+        student_refs: ["Brody"],
+        observation: "Settled with visual timer.",
+        action_taken: "Used visual timer",
+        follow_up_needed: false,
+        created_at: "2026-04-11T09:00:00.000Z",
+        schema_version: "1",
+      },
+    ]);
+    const { user } = renderPanel();
+
+    await user.click(await screen.findByTestId("viz-followup-rate-hit"));
+    expect(
+      await screen.findByRole("dialog", { name: /1 open follow-ups/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/Needs math check-in/i)).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /close drawer/i }));
+    await waitForElementToBeRemoved(() => screen.queryByRole("dialog"));
+    await user.click(await screen.findByTestId("viz-int-timeline-dot-rec-pending"));
+
+    expect(
+      await screen.findByRole("dialog", { name: /Amira — Student Detail/i }),
+    ).toBeInTheDocument();
   });
 });

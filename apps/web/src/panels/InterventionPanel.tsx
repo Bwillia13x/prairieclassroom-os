@@ -17,13 +17,14 @@ import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
+import DrillDownDrawer from "../components/DrillDownDrawer";
 import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import { useRole } from "../hooks/useRole";
 import QuickCaptureTray from "../components/quickCapture/QuickCaptureTray";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
-import type { InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
+import type { DebtItem, DrillDownContext, InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
 
 interface Props {
   prefill: InterventionPrefill | null;
@@ -37,14 +38,17 @@ interface Props {
  *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, latestTodaySnapshot } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, latestTodaySnapshot, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
+  const [drawerPrefill, setDrawerPrefill] = useState<InterventionPrefill | null>(null);
   const [selectedAlias, setSelectedAlias] = useState<string | null>(prefill?.student_ref ?? null);
+  const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const role = useRole();
+  const detailsRef = useRef<HTMLDetailsElement | null>(null);
 
   useEffect(() => {
     session.recordPanelVisit("log-intervention");
@@ -60,6 +64,7 @@ export default function InterventionPanel({ prefill }: Props) {
   );
 
   const displayResult = result ?? historicalResult;
+  const activePrefill = prefill ?? drawerPrefill;
 
   // 2026-04-19 OPS audit phase 7.1: derive per-student follow-up flags
   // from intervention history so the avatar row surfaces who still needs
@@ -93,17 +98,16 @@ export default function InterventionPanel({ prefill }: Props) {
     if (prefill) {
       reset();
       setHistoricalResult(null);
+      setDrawerPrefill(null);
       setSelectedAlias(prefill.student_ref);
     }
   }, [prefill, reset]);
 
-  const detailsRef = useRef<HTMLDetailsElement | null>(null);
-
   useEffect(() => {
-    if (prefill && detailsRef.current) {
+    if (activePrefill && detailsRef.current) {
       detailsRef.current.open = true;
     }
-  }, [prefill]);
+  }, [activePrefill]);
 
   if (classrooms.length === 0) return null;
 
@@ -120,6 +124,7 @@ export default function InterventionPanel({ prefill }: Props) {
     if (resp) {
       showSuccess("Intervention logged");
       session.recordGeneration("log-intervention", "log_intervention");
+      setDrawerPrefill(null);
       history.refresh();
       return true;
     }
@@ -149,6 +154,21 @@ export default function InterventionPanel({ prefill }: Props) {
 
   function handleHistorySelect(record: InterventionRecord) {
     setHistoricalResult({ record, model_id: "", latency_ms: 0 });
+  }
+
+  function handleDrawerInterventionPrefill(nextPrefill: InterventionPrefill) {
+    setDrawerPrefill(nextPrefill);
+    setSelectedAlias(nextPrefill.student_ref);
+    if (detailsRef.current) {
+      detailsRef.current.open = true;
+    }
+  }
+
+  function handleTimelineDotClick(record: InterventionRecord) {
+    const alias = record.student_refs[0];
+    if (alias) {
+      setDrillDown({ type: "student", alias });
+    }
   }
 
   return (
@@ -211,8 +231,20 @@ export default function InterventionPanel({ prefill }: Props) {
             />
             {history.items.length > 0 && (
               <>
-                <InterventionTimeline records={history.items} />
-                <FollowUpSuccessRate records={history.items} />
+                <InterventionTimeline
+                  records={history.items}
+                  onDotClick={handleTimelineDotClick}
+                />
+                <FollowUpSuccessRate
+                  records={history.items}
+                  onSegmentClick={({ category, items }) =>
+                    setDrillDown({
+                      type: "debt-category",
+                      category,
+                      items: mapInterventionsToDebtItems(items, category),
+                    })
+                  }
+                />
               </>
             )}
             {/* 2026-04-19 OPS audit phase 7.4: always render the structured
@@ -229,7 +261,7 @@ export default function InterventionPanel({ prefill }: Props) {
                 selectedClassroom={activeClassroom}
                 onSubmit={handleSubmit}
                 loading={loading}
-                prefill={prefill}
+                prefill={activePrefill}
                 canSubmit={role.canLogInterventions}
               />
             </details>
@@ -270,6 +302,39 @@ export default function InterventionPanel({ prefill }: Props) {
           </div>
         )}
       />
+      <DrillDownDrawer
+        context={drillDown}
+        onClose={() => setDrillDown(null)}
+        onNavigate={(tab) => {
+          setDrillDown(null);
+          setActiveTab(tab);
+        }}
+        onContextChange={setDrillDown}
+        onInterventionPrefill={handleDrawerInterventionPrefill}
+      />
     </section>
   );
+}
+
+function mapInterventionsToDebtItems(
+  records: InterventionRecord[],
+  category: DebtItem["category"],
+): DebtItem[] {
+  const now = Date.now();
+  const dayMs = 86_400_000;
+  return records.map((record) => {
+    const createdAt = new Date(record.created_at).getTime();
+    const ageDays = Number.isFinite(createdAt)
+      ? Math.max(0, Math.floor((now - createdAt) / dayMs))
+      : 0;
+
+    return {
+      category,
+      student_refs: record.student_refs,
+      description: record.observation || record.action_taken || "Follow-up needed",
+      source_record_id: record.record_id,
+      age_days: ageDays,
+      suggested_action: record.action_taken || "Log follow-up",
+    };
+  });
 }
