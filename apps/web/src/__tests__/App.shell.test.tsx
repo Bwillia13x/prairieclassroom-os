@@ -207,17 +207,17 @@ describe("App shell — classroom pill trigger", () => {
     expect(trigger.innerHTML).not.toMatch(/M5\.5 8V5\.9/);
   });
 
-  it("renders the command-palette trigger with a visible 'Jump to' label and ⌘K hint", async () => {
+  it("renders the command-palette trigger with a visible 'Search' label and ⌘K hint", async () => {
     await renderShellWithDemo();
-    const btn = screen.getByRole("button", { name: /open command palette/i });
-    expect(btn.textContent).toMatch(/jump to/i);
+    const btn = screen.getByTestId("shell-search-trigger");
+    expect(btn.textContent).toMatch(/search/i);
     expect(btn.textContent).toMatch(/⌘K/);
   });
 
   it("renders the help button as an icon-only `?` control with contextual aria-label", async () => {
     await renderShellWithDemo();
-    const btn = screen.getByRole("button", { name: /open onboarding tour|restore panel tip/i });
-    expect(btn.classList.contains("app-help-btn")).toBe(true);
+    const btn = screen.getByTestId("shell-help-trigger");
+    expect(btn.getAttribute("aria-label")).toMatch(/open onboarding tour|restore panel tip/i);
     expect(btn.textContent?.trim()).toBe("?");
   });
 
@@ -289,7 +289,7 @@ describe("App shell — classroom pill trigger", () => {
       ],
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /open command palette/i }));
+    fireEvent.click(screen.getByTestId("shell-search-trigger"));
 
     expect(await screen.findByText("Log follow-up for Brody")).toBeInTheDocument();
     expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();

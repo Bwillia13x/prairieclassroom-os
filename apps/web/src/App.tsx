@@ -41,6 +41,7 @@ import BrandMark from "./components/BrandMark";
 import MobileNav from "./components/MobileNav";
 import OnboardingOverlay from "./components/OnboardingOverlay";
 import ThemeToggle from "./components/ThemeToggle";
+import HeaderAction from "./components/shared/HeaderAction";
 import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
 import PageAnchorRail from "./components/PageAnchorRail";
@@ -897,34 +898,25 @@ export default function App() {
 
               <div className="shell-bar__actions">
                 <RoleContextPill />
-                <button
-                  type="button"
-                  className="shell-bar__palette-btn"
+                <HeaderAction
+                  label="Search"
+                  kbd="⌘K"
                   onClick={() => setPaletteOpen(true)}
-                  aria-label="Jump to command palette. Open command palette."
-                  title="Command palette (⌘K)"
-                >
-                  <span className="shell-bar__palette-btn-label">Jump to</span>
-                  <kbd className="shell-bar__palette-btn-kbd" aria-hidden="true">⌘K</kbd>
-                </button>
+                  data-testid="shell-search-trigger"
+                />
                 <ThemeToggle />
-                <button
-                  className="btn btn--ghost btn--sm btn--icon-only app-help-btn app-help-btn--icon"
-                  onClick={handleQuickHelpClick}
-                  type="button"
-                  aria-label={
+                <HeaderAction
+                  label={
                     state.activeTool && TOOLS_WITH_HINT.has(state.activeTool) && state.featuresSeen[state.activeTool]
-                      ? "Restore panel tip for the current page"
+                      ? "Restore panel tip"
                       : "Open onboarding tour"
                   }
-                  title={
-                    state.activeTool && TOOLS_WITH_HINT.has(state.activeTool) && state.featuresSeen[state.activeTool]
-                      ? "Restore tip for this panel"
-                      : "Replay onboarding tour"
-                  }
+                  iconOnly
+                  onClick={handleQuickHelpClick}
+                  data-testid="shell-help-trigger"
                 >
-                  <span aria-hidden="true">?</span>
-                </button>
+                  ?
+                </HeaderAction>
               </div>
             </div>
 
