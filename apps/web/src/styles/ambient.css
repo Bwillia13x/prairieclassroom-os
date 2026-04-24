@@ -485,8 +485,6 @@
    ================================================================ */
 
 .app-shell {
-  --shell-control-h: 3.1rem;
-  --shell-nav-h: 3.95rem;
   --shell-control-radius: var(--radius-md);
   --shell-control-border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
   --shell-control-bg: color-mix(in srgb, var(--color-surface-elevated) 48%, transparent);
@@ -586,8 +584,8 @@
 .theme-toggle-instrument.nothing-btn,
 .app-help-btn,
 .tomorrow-chip__trigger {
-  min-height: var(--shell-control-h) !important;
-  height: var(--shell-control-h) !important;
+  min-height: var(--control-h-md) !important;
+  height: var(--control-h-md) !important;
   border: var(--shell-control-border) !important;
   border-radius: var(--shell-control-radius) !important;
   background: var(--shell-control-bg) !important;
@@ -612,7 +610,7 @@
 
 .shell-classroom-pill__switcher {
   align-self: stretch !important;
-  width: var(--shell-control-h) !important;
+  width: var(--control-h-md) !important;
   height: auto !important;
   margin-right: var(--space-3) !important;
   border-right: var(--shell-control-border) !important;
@@ -643,8 +641,8 @@
 }
 
 .theme-toggle-instrument.nothing-btn {
-  width: var(--shell-control-h) !important;
-  min-width: var(--shell-control-h) !important;
+  width: var(--control-h-md) !important;
+  min-width: var(--control-h-md) !important;
   padding: 0 !important;
 }
 
@@ -654,15 +652,15 @@
 }
 
 .app-help-btn {
-  width: var(--shell-control-h) !important;
-  min-width: var(--shell-control-h) !important;
+  width: var(--control-h-md) !important;
+  min-width: var(--control-h-md) !important;
   padding: 0 !important;
 }
 
 .shell-nav,
 .shell-nav--solo {
   display: block !important;
-  min-height: var(--shell-nav-h) !important;
+  min-height: var(--control-h-lg) !important;
   padding: 0 !important;
   background: transparent !important;
   border: 0 !important;
@@ -673,7 +671,7 @@
   display: grid !important;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr)) !important;
   width: 100% !important;
-  min-height: var(--shell-nav-h) !important;
+  min-height: var(--control-h-lg) !important;
   gap: 0 !important;
   padding: 0 !important;
   border: var(--shell-control-border) !important;
@@ -690,7 +688,7 @@
 .shell-nav__group {
   width: 100% !important;
   min-width: 0 !important;
-  min-height: var(--shell-nav-h) !important;
+  min-height: var(--control-h-lg) !important;
   padding: 0 var(--space-2) !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -788,7 +786,7 @@
 }
 
 .page-tool-switcher__btn {
-  min-height: var(--shell-control-h) !important;
+  min-height: var(--control-h-md) !important;
   padding: 0 var(--space-3) !important;
   border: 0 !important;
   border-radius: 0 !important;
@@ -911,9 +909,13 @@
 
 @media (max-width: 600px) {
   .app-shell {
-    --shell-control-h: 2.75rem;
-    --shell-nav-h: 0rem;
     padding: var(--space-2) var(--space-2) 0 !important;
+  }
+
+  .shell-nav,
+  .shell-nav__groups,
+  .shell-nav__group {
+    min-height: 0 !important;
   }
 
   .app-header__inner {

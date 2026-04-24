@@ -3,8 +3,6 @@
      the top, app-main fills the remainder, footer hugs the bottom.
      No outer document scroll — each content pane manages its own. */
   --shell-sticky-offset: 0px;
-  --shell-control-h: 3.1rem;
-  --shell-nav-h: 3.95rem;
   --shell-control-radius: var(--radius-sm);
   --shell-control-border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
   --shell-control-bg: color-mix(in srgb, var(--color-surface-elevated) 56%, transparent);
@@ -50,7 +48,7 @@
   grid-template-columns: auto minmax(180px, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
-  min-height: var(--shell-control-h);
+  min-height: var(--control-h-md);
 }
 
 .shell-brand {
@@ -139,7 +137,7 @@
   align-items: center;
   gap: 0;
   width: 100%;
-  min-height: var(--shell-control-h);
+  min-height: var(--control-h-md);
   padding: 0 var(--space-3) 0 0;
   border: var(--shell-control-border);
   border-radius: var(--shell-control-radius);
@@ -175,7 +173,7 @@
   align-items: center;
   justify-content: center;
   align-self: stretch;
-  width: var(--shell-control-h);
+  width: var(--control-h-md);
   height: auto;
   margin-right: var(--space-3);
   border-right: var(--shell-control-border);
@@ -351,8 +349,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: var(--shell-control-h);
-  min-width: var(--shell-control-h);
+  min-height: var(--control-h-md);
+  min-width: var(--control-h-md);
   padding: 0 var(--space-3);
   border: var(--shell-control-border);
   border-radius: var(--shell-control-radius);
@@ -385,12 +383,12 @@
 .theme-toggle,
 .theme-toggle-instrument,
 .app-help-btn {
-  min-width: var(--shell-control-h);
-  min-height: var(--shell-control-h);
+  min-width: var(--control-h-md);
+  min-height: var(--control-h-md);
 }
 
 .theme-toggle-instrument.nothing-btn {
-  --nib-size: var(--shell-control-h);
+  --nib-size: var(--control-h-md);
   border: var(--shell-control-border);
   border-radius: var(--shell-control-radius);
   background: var(--shell-control-bg);
@@ -423,7 +421,7 @@
   display: block;
   padding: 0;
   border-top: 0;
-  min-height: var(--shell-nav-h);
+  min-height: var(--control-h-lg);
 }
 
 /* When no sub-tabs, groups take the full width — left-aligned, calmer.
@@ -438,7 +436,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
   width: 100%;
-  min-height: var(--shell-nav-h);
+  min-height: var(--control-h-lg);
   gap: 0;
   padding: 0;
   border: var(--shell-control-border);
@@ -491,7 +489,7 @@
   position: relative;
   z-index: 1;
   width: 100%;
-  min-height: var(--shell-nav-h);
+  min-height: var(--control-h-lg);
   padding: 0 var(--space-2);
   border-radius: 0;
   color: var(--color-text-secondary);
@@ -1013,9 +1011,10 @@
 }
 
 @media (max-width: 600px) {
-  .app-shell {
-    --shell-control-h: 2.75rem;
-    --shell-nav-h: 0rem;
+  .shell-nav,
+  .shell-nav__groups,
+  .shell-nav__group {
+    min-height: 0;
   }
 
   .app-main {
