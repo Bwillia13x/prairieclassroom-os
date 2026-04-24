@@ -1155,3 +1155,20 @@
     transition-duration: 0ms;
   }
 }
+
+@media (min-width: 1280px) {
+  .app-main {
+    /* Floating workspace — 16px gutter from viewport edge; rounded both
+       top and bottom since the header is now a single row that does not
+       need to dock visually. Maintains the material hierarchy: the
+       canvas breathes around the floating workspace card. */
+    margin: 0 var(--space-4) var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .app-header {
+    padding-bottom: var(--space-3);
+  }
+}
