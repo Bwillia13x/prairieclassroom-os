@@ -18,6 +18,7 @@ import OperatingDashboard from "../components/OperatingDashboard";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import PageHero from "../components/shared/PageHero";
+import { useZoneDisclosure } from "../hooks/useZoneDisclosure";
 import {
   ClassroomCompositionRings,
   InterventionRecencyTimeline,
@@ -110,6 +111,12 @@ export default function ClassroomPanel({
   const studentSummaries = useAsyncAction<StudentSummary[]>();
   const sessionSummary = useAsyncAction<SessionSummary>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
+  const intelDisclosure = useZoneDisclosure(`classroom-${activeClassroom}`, "intel", {
+    defaultOpen: false,
+  });
+  const rosterDisclosure = useZoneDisclosure(`classroom-${activeClassroom}`, "roster", {
+    defaultOpen: false,
+  });
 
   useEffect(() => {
     session.recordPanelVisit("classroom");
@@ -297,16 +304,18 @@ export default function ClassroomPanel({
           Now a real CSS grid: 2x2 at >=1180px, 1-col below.
           Each viz is height-capped so no single chart can dominate.
           ============================================================ */}
-      <section className="classroom-section" id="classroom-intelligence" aria-label="Classroom intelligence">
-        <div className="classroom-section__header">
-          <div className="classroom-section__header-text">
-            <span className="classroom-section__eyebrow">Intelligence</span>
-            <h3 className="classroom-section__title">Patterns &amp; composition</h3>
-          </div>
-          <p className="classroom-section__caption">
-            Click a segment to drill into the underlying students and history.
-          </p>
-        </div>
+      <details
+        className="classroom-section classroom-zone--collapsible"
+        id="classroom-intelligence"
+        aria-label="Classroom intelligence"
+        open={intelDisclosure.open}
+        onToggle={(e) => intelDisclosure.setOpen(e.currentTarget.open)}
+      >
+        <summary className="classroom-zone__summary">
+          <span className="classroom-zone__summary-eyebrow">Intelligence</span>
+          <span className="classroom-zone__summary-title">Patterns &amp; composition</span>
+          <span className="classroom-zone__summary-hint">{intelDisclosure.open ? "Collapse" : "Expand"}</span>
+        </summary>
         <div className="classroom-intelligence__grid">
           {result && result.debt_register.items.length > 0 ? (
             <ComplexityDebtGauge
@@ -352,26 +361,31 @@ export default function ClassroomPanel({
             />
           ) : null}
         </div>
-      </section>
+      </details>
 
       {/* ============================================================
           ZONE 6 — ROSTER
           ============================================================ */}
-      <section className="classroom-section" id="classroom-roster" aria-label="Full student roster">
-        <div className="classroom-section__header">
-          <div className="classroom-section__header-text">
-            <span className="classroom-section__eyebrow">Roster</span>
-            <h3 className="classroom-section__title">All students</h3>
-          </div>
-          <div className="classroom-section__chips">
+      <details
+        className="classroom-section classroom-zone--collapsible"
+        id="classroom-roster"
+        aria-label="Full student roster"
+        open={rosterDisclosure.open}
+        onToggle={(e) => rosterDisclosure.setOpen(e.currentTarget.open)}
+      >
+        <summary className="classroom-zone__summary">
+          <span className="classroom-zone__summary-eyebrow">Roster</span>
+          <span className="classroom-zone__summary-title">All students</span>
+          <span className="classroom-zone__summary-chips">
             <span className="classroom-section__chip classroom-section__chip--warning">
               <strong>{attentionStudents.size}</strong> need attention
             </span>
             <span className="classroom-section__chip">
               <strong>{profile.students.length}</strong> total
             </span>
-          </div>
-        </div>
+          </span>
+          <span className="classroom-zone__summary-hint">{rosterDisclosure.open ? "Collapse" : "Expand"}</span>
+        </summary>
         <div className="classroom-roster__body">
           {result ? (
             <StudentRoster
@@ -380,7 +394,7 @@ export default function ClassroomPanel({
             />
           ) : null}
         </div>
-      </section>
+      </details>
 
       <DrillDownDrawer
         context={drillDown}

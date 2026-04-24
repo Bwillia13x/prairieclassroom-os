@@ -171,3 +171,74 @@
      intentionally empty so we don't double-frame. */
 }
 
+
+/* ----------------------------------------------------------------
+   7. Collapsible zone disclosure (Intel, Roster)
+   Uses native <details> + <summary> for accessibility (keyboard,
+   screen reader, Ctrl+F find-in-text all work for free).
+   ---------------------------------------------------------------- */
+
+.classroom-zone--collapsible {
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+
+.classroom-zone--collapsible[open] {
+  background: color-mix(in srgb, var(--color-surface-elevated) 92%, transparent);
+}
+
+.classroom-zone__summary {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  cursor: pointer;
+  list-style: none;
+  user-select: none;
+  transition: background-color var(--motion-fast) var(--ease-standard);
+}
+
+.classroom-zone__summary::-webkit-details-marker {
+  display: none;
+}
+
+.classroom-zone__summary:hover {
+  background: color-mix(in srgb, var(--color-bg-muted) 40%, transparent);
+}
+
+.classroom-zone__summary-eyebrow {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.classroom-zone__summary-title {
+  flex: 1;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+}
+
+.classroom-zone__summary-chips {
+  display: inline-flex;
+  gap: var(--space-2);
+}
+
+.classroom-zone__summary-hint {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.classroom-zone--collapsible[open] > :not(.classroom-zone__summary) {
+  padding: 0 var(--space-5) var(--space-5);
+}
