@@ -1013,7 +1013,7 @@ export default function App() {
           ) : null}
 
           {state.classrooms.length > 0 && !initError ? <RoleEscapeBanner /> : null}
-          {state.classrooms.length > 0 && !initError && activeRole !== "reviewer" && activeTab !== "today" && activeTab !== "tomorrow" && activeTab !== "classroom" ? (
+          {state.classrooms.length > 0 && !initError && activeRole !== "reviewer" && activeTab !== "today" && activeTab !== "tomorrow" && activeTab !== "week" && activeTab !== "classroom" ? (
             <ActionAtlas
               snapshot={state.latestTodaySnapshot}
               activeRole={activeRole}

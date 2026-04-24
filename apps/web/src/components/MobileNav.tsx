@@ -34,7 +34,7 @@ export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props)
   const recommended = pickRecommendedPanelStatus(latestTodaySnapshot?.panel_statuses ?? [], role);
   const recommendedTarget = recommended ? resolveLegacyPanel(recommended.panel_id) : null;
   const recommendedVisible = recommendedTarget && isTabVisibleForRole(recommendedTarget.tab, role);
-  const showRecommended = activeTab !== "today" && activeTab !== "tomorrow" && Boolean(recommended && recommendedVisible);
+  const showRecommended = activeTab !== "today" && activeTab !== "tomorrow" && activeTab !== "week" && Boolean(recommended && recommendedVisible);
 
   return (
     <nav className="mobile-nav" aria-label="Mobile navigation">

@@ -255,7 +255,7 @@ describe("App shell — classroom pill trigger", () => {
       ["classroom", "Classroom sections", /01.*Temporal Lens/i],
       ["today", "Today sections", /01.*Command Center/i],
       ["tomorrow", "Tomorrow sections", /01.*Planning Hub/i],
-      ["week", "Week sections", /01.*Commit a Day/i],
+      ["week", "Week sections", /01.*Week Command/i],
       ["prep", "Prep sections", /01.*Prep Tools/i],
       ["ops", "Ops sections", /01.*Ops Tools/i],
       ["review", "Review sections", /01.*Review Tools/i],
@@ -295,7 +295,7 @@ describe("App shell — classroom pill trigger", () => {
     expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();
   });
 
-  it("keeps the global Action Atlas out of the Today and Classroom first-open flows", async () => {
+  it("keeps the global Action Atlas out of the page-owned temporal flows", async () => {
     await renderShellWithDemo({
       debtCounts: { stale_followup: 1 },
       debtItems: [
@@ -303,8 +303,17 @@ describe("App shell — classroom pill trigger", () => {
       ],
     });
 
-    // Initial landing is Classroom (the new seven-view default); the Atlas
-    // is also suppressed for Today.
+    // Initial landing is Classroom (the seven-view default); Today,
+    // Tomorrow, and Week own their first viewport instead of shell triage.
+    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-today"));
+    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-tomorrow"));
+    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByTestId("shell-nav-group-week"));
     expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId("shell-nav-group-prep"));

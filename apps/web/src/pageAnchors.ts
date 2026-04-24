@@ -46,7 +46,7 @@ export const PAGE_ANCHORS: Record<ActiveTab, PageAnchorConfig> = {
     label: "Week sections",
     topAnchorId: "week-top",
     anchors: [
-      { id: "week-jump", number: "01", label: "Commit a Day" },
+      { id: "week-hub", number: "01", label: "Week Command" },
       { id: "week-overview", number: "02", label: "This Week" },
       { id: "week-events", number: "03", label: "Upcoming Events" },
       { id: "week-pressure", number: "04", label: "Pattern Pressure" },

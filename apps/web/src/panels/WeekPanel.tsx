@@ -9,7 +9,6 @@ import {
   type SessionSummary,
 } from "../api";
 import type { NavTarget } from "../appReducer";
-import PageIntro from "../components/PageIntro";
 import SectionSkeleton from "../components/SectionSkeleton";
 import ErrorBanner from "../components/ErrorBanner";
 import { buildOperatingDashboardSnapshot } from "../components/OperatingDashboard";
@@ -76,50 +75,79 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
 
   const debtTrend = health.result?.trends?.debt_total_14d ?? [];
   const trendWindow = debtTrend.slice(-7);
+  const weekDays = dashboard?.week_overview ?? [];
+  const highRiskBlockCount = weekDays.reduce(
+    (total, day) => total + day.blocks.filter((block) => block.level === "high").length,
+    0,
+  );
+  const forecastDayCount = weekDays.filter((day) => day.blocks.some((block) => block.source === "forecast")).length;
+  const eventsThisWeek = upcomingEvents.filter((event) => weekDays.some((day) => eventMatchesDay(event, day.id))).length;
+  const unaddressedPatterns = result?.debt_register.item_count_by_category.unaddressed_pattern ?? 0;
+  const staleFollowups = result?.debt_register.item_count_by_category.stale_followup ?? 0;
+  const pressureTotal = unaddressedPatterns + staleFollowups;
+  const nextHighRiskDay = weekDays.find((day) => day.blocks.some((block) => block.level === "high"));
+  const commandDetail = nextHighRiskDay
+    ? `${nextHighRiskDay.label} ${nextHighRiskDay.date_label} carries the next high-risk block.`
+    : "Use the weekly pattern before locking tomorrow's coverage.";
 
   if (!profile) return null;
 
   return (
     <section className="workspace-page week-panel" id="week-top">
-      <PageIntro
-        eyebrow="Week"
-        title="Week at a glance"
-        sectionTone="slate"
-        description={`Multi-day coverage and planning rhythm for Grade ${profile.grade_band}. Walk forecasted days, upcoming events, and pattern pressure before committing to tomorrow.`}
-        visual={{ src: "/brand/workflow-ops.png" }}
-      />
+      <section
+        className="week-command-hub"
+        id="week-hub"
+        aria-label="Week command, multi-day forecast, events, and pressure"
+      >
+        <div className="week-command-hub__copy">
+          <span className="week-command-hub__eyebrow">Week command</span>
+          <h2>Shape the week before it shapes tomorrow</h2>
+          <p>
+            {commandDetail} Read the forecasted days, event load, and open pressure signal before committing the next plan.
+          </p>
+          <div className="week-command-hub__actions" aria-label="Week actions">
+            <ActionButton size="sm" variant="soft" onClick={() => onTabChange("tomorrow")}>
+              <SectionIcon name="clock" className="shell-nav__group-icon" />
+              Plan Tomorrow
+            </ActionButton>
+            <ActionButton size="sm" variant="soft" onClick={() => onTabChange("today")}>
+              <SectionIcon name="sun" className="shell-nav__group-icon" />
+              Review Today
+            </ActionButton>
+          </div>
+        </div>
+        <div className="week-command-hub__metrics" aria-label="Week readiness summary">
+          <span className="week-command-hub__metric">
+            <strong>{dashboard ? weekDays.length : "..."}</strong>
+            <span>Days mapped</span>
+          </span>
+          <span className="week-command-hub__metric">
+            <strong>{dashboard ? forecastDayCount : "..."}</strong>
+            <span>Forecast days</span>
+          </span>
+          <span className="week-command-hub__metric">
+            <strong>{dashboard ? highRiskBlockCount : "..."}</strong>
+            <span>High blocks</span>
+          </span>
+          <span className="week-command-hub__metric">
+            <strong>{dashboard ? eventsThisWeek : "..."}</strong>
+            <span>Events</span>
+          </span>
+          <span className="week-command-hub__metric">
+            <strong>{result ? pressureTotal : "..."}</strong>
+            <span>Pressure items</span>
+          </span>
+        </div>
+      </section>
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
-
-      <div id="week-jump" className="week-panel__anchor-target">
-        <Card variant="flat" className="week-panel__jump" aria-label="Week jump actions">
-          <Card.Body>
-            <div className="classroom-jump-actions__row">
-              <div className="classroom-jump-actions__copy">
-                <strong>Ready to commit a day?</strong>
-                <span>Open a specific day, then jump into Tomorrow Plan to lock in coverage.</span>
-              </div>
-              <div className="classroom-jump-actions__buttons">
-                <ActionButton size="sm" variant="soft" onClick={() => onTabChange("tomorrow")}>
-                  <SectionIcon name="clock" className="shell-nav__group-icon" />
-                  Plan Tomorrow
-                </ActionButton>
-                <ActionButton size="sm" variant="soft" onClick={() => onTabChange("today")}>
-                  <SectionIcon name="sun" className="shell-nav__group-icon" />
-                  Back to Today
-                </ActionButton>
-              </div>
-            </div>
-          </Card.Body>
-        </Card>
-      </div>
 
       <div id="week-overview" className="week-panel__anchor-target">
         <Card variant="flat" className="week-panel__overview" aria-labelledby="week-overview-heading">
           <Card.Body>
             <header className="operating-dashboard__band-header">
               <h2 id="week-overview-heading">This Week</h2>
-              <p>Forecasted days use AI risk levels; the rest stays schedule- or event-seeded. Click a day to open its drilldown.</p>
+              <p>Forecasted days use AI risk levels; schedule- and event-seeded days stay visible for handoff planning.</p>
             </header>
             {dashboard ? (
               <div

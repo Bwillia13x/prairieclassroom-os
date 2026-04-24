@@ -285,13 +285,11 @@
   display: none;
 }
 
-/* Classroom / Week jump-action callout: a short row of context buttons
-   that appears on the Classroom and Week pages so teachers can hop into
-   the adjacent temporal surfaces (Today, Tomorrow, Week) without going
+/* Classroom / Today jump-action callout: a short row of context buttons
+   so teachers can hop into adjacent temporal surfaces without going
    through the top-level nav. */
 .classroom-jump-actions,
-.today-planning-jump,
-.week-panel__jump {
+.today-planning-jump {
   margin: 0 0 var(--space-3);
 }
 
@@ -326,7 +324,99 @@
   gap: 0.4rem;
 }
 
-/* Week panel — upcoming events + pressure lists. */
+/* Week panel — command surface, upcoming events, and pressure lists. */
+.week-panel {
+  gap: var(--space-3);
+}
+
+.week-command-hub {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(22rem, 0.8fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  margin: 0 0 var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--color-border-sun) 74%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent);
+}
+
+.week-command-hub__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.week-command-hub__eyebrow {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.week-command-hub h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: 0;
+}
+
+.week-command-hub p {
+  max-width: 60rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.week-command-hub__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: var(--space-1);
+}
+
+.week-command-hub__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  gap: var(--space-2);
+}
+
+.week-command-hub__metric {
+  display: flex;
+  min-width: 0;
+  min-height: 5.2rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.week-command-hub__metric strong {
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.week-command-hub__metric span {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
 .upcoming-events-list {
   list-style: none;
   margin: 0;
@@ -467,6 +557,39 @@
 
   .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn-description {
     display: none;
+  }
+
+  .week-command-hub {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .week-command-hub h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .week-command-hub__actions .btn {
+    flex: 1 1 9rem;
+  }
+
+  .week-command-hub__metrics {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.35rem;
+  }
+
+  .week-command-hub__metric {
+    min-height: 4.3rem;
+    padding: var(--space-2);
+  }
+
+  .week-command-hub__metric strong {
+    font-size: var(--text-lg);
+  }
+
+  .week-command-hub__metric span {
+    font-size: var(--text-2xs);
   }
 
   .tomorrow-queue-strip .tomorrow-chip,
