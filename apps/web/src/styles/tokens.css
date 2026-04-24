@@ -439,36 +439,36 @@
      the horizontal/bottom sides — see audit fix B2 / shell.css. */
   --page-content-padding-top: var(--space-5);
 
-  /* Motion — unchanged; institutional tone is compatible with
-     the existing restrained animation character. */
+  /* Motion — canonical four eases + three durations (2026-04-23 Phase 6).
+     All other motion tokens alias into this canonical set so call sites
+     can migrate opportunistically. See decision-log.md. */
   --motion-fast: 150ms;
   --motion-base: 260ms;
   --motion-slow: 420ms;
-  --motion-slower: 640ms;
+
   --ease-standard: cubic-bezier(0.2, 0, 0.38, 0.9);
   --ease-emphasis: cubic-bezier(0.34, 1.08, 0.64, 1);
-
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.1);
-  --ease-spring-heavy: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out-circ: cubic-bezier(0.785, 0.135, 0.15, 0.86);
 
-  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
-  --ease-accelerate: cubic-bezier(0.4, 0, 1, 1);
+  /* Retired motion eases — aliased to canonical four (2026-04-23 Phase 6). */
+  --ease-spring-heavy: var(--ease-spring);
+  --ease-in-out-circ: var(--ease-standard);
+  --ease-decelerate: var(--ease-out-expo);
+  --ease-accelerate: var(--ease-standard);
+  --ease-elastic: var(--ease-emphasis);
+  --ease-bounce: var(--ease-emphasis);
+  --ease-snap: var(--ease-standard);
+  --ease-out-back: var(--ease-emphasis);
+  --ease-letterpress: var(--ease-standard);
+  --ease-press: var(--ease-spring);
 
-  /* Elastic / bounce — premium micro-interaction curves */
-  --ease-elastic: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-snap: cubic-bezier(0.5, 0, 0, 1);
-  --ease-out-back: cubic-bezier(0.34, 1.3, 0.64, 1);
-
-  --motion-letterpress: 200ms;
-  --ease-letterpress: cubic-bezier(0.25, 0.1, 0.25, 1);
-  --ease-press: cubic-bezier(0.3, 0.7, 0.4, 1);
-
-  --motion-micro: 100ms;
-  --motion-hover: 180ms;
-  --motion-stagger-step: 40ms;
+  /* Retired durations — aliased to canonical three (2026-04-23 Phase 6). */
+  --motion-slower: var(--motion-slow);
+  --motion-letterpress: var(--motion-fast);
+  --motion-micro: var(--motion-fast);
+  --motion-hover: var(--motion-fast);
+  --motion-stagger-step: 40ms; /* unique use case; keep */
   --duration-fast: var(--motion-fast);
 
   --shadow-press: 0 0.5px 1px var(--_shadow-sm-a);
