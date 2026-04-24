@@ -17,6 +17,7 @@ import StudentRoster from "../components/StudentRoster";
 import OperatingDashboard from "../components/OperatingDashboard";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
+import PageHero from "../components/shared/PageHero";
 import {
   ClassroomCompositionRings,
   InterventionRecencyTimeline,
@@ -79,53 +80,6 @@ function derivePulse(
   };
 }
 
-interface PivotProps {
-  eyebrow: string;
-  label: string;
-  icon: "sun" | "clock" | "grid";
-  onClick: () => void;
-}
-
-function ClassroomPivot({ eyebrow, label, icon, onClick }: PivotProps) {
-  return (
-    <button
-      type="button"
-      className="classroom-pivot"
-      onClick={onClick}
-      aria-label={`${eyebrow}: ${label}`}
-    >
-      <span className="classroom-pivot__icon" aria-hidden="true">
-        {icon === "sun" ? (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M5.6 18.4l1.4-1.4M17 7l1.4-1.4" />
-          </svg>
-        ) : icon === "clock" ? (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 7v5l3 2" />
-          </svg>
-        ) : (
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round">
-            <rect x="3" y="3" width="7" height="7" rx="1" />
-            <rect x="14" y="3" width="7" height="7" rx="1" />
-            <rect x="3" y="14" width="7" height="7" rx="1" />
-            <rect x="14" y="14" width="7" height="7" rx="1" />
-          </svg>
-        )}
-      </span>
-      <span className="classroom-pivot__body">
-        <span className="classroom-pivot__eyebrow">{eyebrow}</span>
-        <span className="classroom-pivot__label">{label}</span>
-      </span>
-      <span className="classroom-pivot__chevron" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
-          <path d="M9 6l6 6-6 6" />
-        </svg>
-      </span>
-    </button>
-  );
-}
 
 /**
  * ClassroomPanel — bird's-eye operating console for the classroom.
@@ -203,66 +157,49 @@ export default function ClassroomPanel({
           ZONE 1 — HERO
           Command + status pulse + temporal pivots + metrics row.
           ============================================================ */}
-      <header
-        className="classroom-hero"
+      <PageHero
         id="classroom-command"
-        aria-label="Classroom command, status pulse, and temporal lens"
-      >
-        <div className="classroom-hero__lede">
-          <span className="classroom-hero__eyebrow">Classroom command</span>
-          <h2 className="classroom-hero__title">
-            Read the room before choosing the lens.
-          </h2>
-          <p className="classroom-hero__caption">
-            Bird's-eye health, coverage, and queue signal for{" "}
+        ariaLabel="Classroom command and temporal pivots"
+        eyebrow="Classroom command"
+        title="Read the room before choosing the lens."
+        description={
+          <>
+            Bird&apos;s-eye health, coverage, and queue signal for{" "}
             <strong>Grade {profile.grade_band}</strong>. Pivot into{" "}
             <strong>Today</strong> for live triage,{" "}
             <strong>Tomorrow</strong> to stage the next block, or{" "}
             <strong>Week</strong> to forecast pressure.
-          </p>
-          <div className="classroom-hero__pivots" aria-label="Temporal lens">
-            <ClassroomPivot
-              eyebrow="Live"
-              label="Today"
-              icon="sun"
-              onClick={() => onTabChange("today")}
-            />
-            <ClassroomPivot
-              eyebrow="Stage"
-              label="Tomorrow"
-              icon="clock"
-              onClick={() => onTabChange("tomorrow")}
-            />
-            <ClassroomPivot
-              eyebrow="Forecast"
-              label="Week"
-              icon="grid"
-              onClick={() => onTabChange("week")}
-            />
-          </div>
-        </div>
-
-        <aside className="classroom-hero__pulse" aria-label="Classroom status pulse">
-          <div className={`classroom-hero__pulse-row classroom-hero__pulse--${pulse.tone}`}>
-            <span
-              className={`classroom-hero__pulse-dot${pulse.tone === "neutral" ? "" : " classroom-hero__pulse-dot--live"}`}
-              aria-hidden="true"
-            />
-            <span className="classroom-hero__pulse-label">
-              <span className="classroom-hero__pulse-state">{pulse.label}</span>
-              <span className="classroom-hero__pulse-meta">{pulse.meta}</span>
-            </span>
-          </div>
-          <div className="classroom-hero__pulse-metrics">
-            {heroMetrics.map((metric) => (
-              <span className="classroom-hero__pulse-metric" key={metric.label}>
-                <strong>{metric.value}</strong>
-                <span>{metric.label}</span>
-              </span>
-            ))}
-          </div>
-        </aside>
-      </header>
+          </>
+        }
+        pulse={{
+          tone: pulse.tone,
+          state: pulse.label,
+          meta: pulse.meta,
+          live: pulse.tone !== "neutral",
+        }}
+        metrics={heroMetrics}
+        pivots={[
+          {
+            eyebrow: "Live",
+            label: "Today",
+            icon: "sun",
+            onClick: () => onTabChange("today"),
+          },
+          {
+            eyebrow: "Stage",
+            label: "Tomorrow",
+            icon: "clock",
+            onClick: () => onTabChange("tomorrow"),
+          },
+          {
+            eyebrow: "Forecast",
+            label: "Week",
+            icon: "grid",
+            onClick: () => onTabChange("week"),
+          },
+        ]}
+        variant="classroom"
+      />
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 
