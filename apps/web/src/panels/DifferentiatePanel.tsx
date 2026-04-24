@@ -28,7 +28,8 @@ import {
   serializeVariantsToMarkdown,
   summarizeVariantsForTomorrow,
 } from "./DifferentiatePanel.helpers";
-import type { CurriculumSelection, LessonArtifact, DifferentiateResponse } from "../types";
+import DrillDownDrawer from "../components/DrillDownDrawer";
+import type { CurriculumSelection, LessonArtifact, DifferentiateResponse, DrillDownContext } from "../types";
 
 export default function DifferentiatePanel() {
   const {
@@ -38,7 +39,9 @@ export default function DifferentiatePanel() {
     showSuccess,
     streaming,
     appendTomorrowNote,
+    setActiveTab,
   } = useApp();
+  const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<DifferentiateResponse>();
   const [artifactTitle, setArtifactTitle] = useState("");
@@ -239,7 +242,12 @@ export default function DifferentiatePanel() {
                     />
                   </Card.Body>
                 </Card>
-                <VariantSummaryStrip variants={result.variants} />
+                <VariantSummaryStrip
+                  variants={result.variants}
+                  onSegmentClick={({ variantType, label, variants }) =>
+                    setDrillDown({ type: "variant-lane", variantType, label, variants })
+                  }
+                />
                 <VariantGrid artifactTitle={artifactTitle} variants={result.variants} />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
@@ -251,6 +259,15 @@ export default function DifferentiatePanel() {
             ) : null}
           </div>
         )}
+      />
+      <DrillDownDrawer
+        context={drillDown}
+        onClose={() => setDrillDown(null)}
+        onNavigate={(tab) => {
+          setDrillDown(null);
+          setActiveTab(tab);
+        }}
+        onContextChange={setDrillDown}
       />
     </section>
   );
