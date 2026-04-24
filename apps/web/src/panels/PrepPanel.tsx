@@ -7,6 +7,7 @@ import {
   type ActiveTool,
 } from "../appReducer";
 import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
+import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
 
@@ -113,6 +114,12 @@ export default function PrepPanel() {
           );
         })}
       </div>
+
+      <ToolSwitcherStepper
+        total={PREP_TOOLS.length}
+        activeIndex={PREP_TOOLS.indexOf(currentTool)}
+        label="Prep tool progress"
+      />
 
       <section className="multi-tool-workspace-section" aria-label="Active workspace">
         <header className="multi-tool-workspace-section__header">

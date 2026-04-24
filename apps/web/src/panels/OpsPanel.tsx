@@ -7,6 +7,7 @@ import {
   type ActiveTool,
 } from "../appReducer";
 import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
+import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import InterventionPanel from "./InterventionPanel";
 import EABriefingPanel from "./EABriefingPanel";
 import EALoadPanel from "./EALoadPanel";
@@ -152,6 +153,12 @@ export default function OpsPanel({ prefillIntervention }: Props) {
           );
         })}
       </div>
+
+      <ToolSwitcherStepper
+        total={OPS_TOOLS.length}
+        activeIndex={OPS_TOOLS.indexOf(currentTool)}
+        label="Ops tool progress"
+      />
 
       <section className="multi-tool-workspace-section" aria-label="Active workspace">
         <header className="multi-tool-workspace-section__header">

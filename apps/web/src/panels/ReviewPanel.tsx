@@ -7,6 +7,7 @@ import {
   type ActiveTool,
 } from "../appReducer";
 import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
+import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import FamilyMessagePanel from "./FamilyMessagePanel";
 import SupportPatternsPanel from "./SupportPatternsPanel";
 import UsageInsightsPanel from "./UsageInsightsPanel";
@@ -146,6 +147,12 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
           );
         })}
       </div>
+
+      <ToolSwitcherStepper
+        total={REVIEW_TOOLS.length}
+        activeIndex={REVIEW_TOOLS.indexOf(currentTool)}
+        label="Review tool progress"
+      />
 
       <section className="multi-tool-workspace-section" aria-label="Active workspace">
         <header className="multi-tool-workspace-section__header">
