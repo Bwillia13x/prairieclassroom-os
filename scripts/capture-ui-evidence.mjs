@@ -202,28 +202,32 @@ async function main() {
 
     // ─── Layout assertions ───
 
-    // Desktop Today: grid layout with visible rail
-    const desktopTodayIsGrid = await desktopPage.evaluate(() => {
-      const panel = globalThis.document.querySelector(".today-panel--with-rail");
+    // Desktop Today: panel renders with a fixed-position anchor rail beside it
+    // (post-`471ae66 Consolidate seven-view teacher shell`, the panel is flex
+    // and the rail is `.page-anchor-rail` with `position: fixed` — see
+    // TodayPanel.test.tsx line 569 for the contract).
+    const desktopPanelRenders = await desktopPage.evaluate(() => {
+      const panel = globalThis.document.querySelector(".today-panel");
       if (!panel) return false;
-      return globalThis.getComputedStyle(panel).display === "grid";
+      const targets = panel.querySelectorAll(".today-anchor-target");
+      return targets.length >= 3;
     });
-    assert.ok(desktopTodayIsGrid, "Desktop Today should use grid layout");
+    assert.ok(desktopPanelRenders, "Desktop Today panel should render with multiple anchor targets");
 
     const railVisible = await desktopPage.evaluate(() => {
-      const rail = globalThis.document.querySelector(".today-anchor-rail");
+      const rail = globalThis.document.querySelector(".page-anchor-rail");
       if (!rail) return false;
       return globalThis.getComputedStyle(rail).display !== "none";
     });
-    assert.ok(railVisible, "Desktop Today anchor rail should be visible");
+    assert.ok(railVisible, "Desktop Today page anchor rail should be visible");
 
     // Mobile Today: rail hidden, hero brief visible above mobile nav, CTA above mobile nav
     const mobileRailHidden = await mobilePage.evaluate(() => {
-      const rail = globalThis.document.querySelector(".today-anchor-rail");
+      const rail = globalThis.document.querySelector(".page-anchor-rail");
       if (!rail) return true; // absent counts as hidden
       return globalThis.getComputedStyle(rail).display === "none";
     });
-    assert.ok(mobileRailHidden, "Mobile Today anchor rail should be hidden");
+    assert.ok(mobileRailHidden, "Mobile Today page anchor rail should be hidden");
 
     const mobileBriefAboveNav = await mobilePage.evaluate(() => {
       const brief = globalThis.document.querySelector(".today-hero__brief");
