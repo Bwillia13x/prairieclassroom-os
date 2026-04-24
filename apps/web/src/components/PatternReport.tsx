@@ -3,6 +3,7 @@ import type {
   SupportPatternsResponse,
   InterventionPrefill,
   FamilyMessagePrefill,
+  RecurringTheme,
 } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
@@ -102,12 +103,14 @@ interface ResultProps {
   result: SupportPatternsResponse;
   onInterventionClick?: (prefill: InterventionPrefill) => void;
   onFollowupClick?: (prefill: FamilyMessagePrefill) => void;
+  onPatternSegmentClick?: (payload: { axis: string; label: string; themes: RecurringTheme[] }) => void;
 }
 
 export function PatternReportResult({
   result,
   onInterventionClick,
   onFollowupClick,
+  onPatternSegmentClick,
 }: ResultProps) {
   const report = result.report;
 
@@ -140,7 +143,10 @@ export function PatternReportResult({
 
       {/* Visual overview: radar + heatmap + decay */}
       {report.recurring_themes.length > 0 && (
-        <SupportPatternRadar themes={report.recurring_themes} />
+        <SupportPatternRadar
+          themes={report.recurring_themes}
+          onSegmentClick={onPatternSegmentClick}
+        />
       )}
 
       {report.recurring_themes.length > 1 && (
@@ -301,6 +307,7 @@ interface Props {
   result: SupportPatternsResponse | null;
   onInterventionClick?: (prefill: InterventionPrefill) => void;
   onFollowupClick?: (prefill: FamilyMessagePrefill) => void;
+  onPatternSegmentClick?: (payload: { axis: string; label: string; themes: RecurringTheme[] }) => void;
 }
 
 export default function PatternReport({
@@ -311,6 +318,7 @@ export default function PatternReport({
   result,
   onInterventionClick,
   onFollowupClick,
+  onPatternSegmentClick,
 }: Props) {
   return (
     <div className={`pattern-report${result ? " pattern-report--split" : ""}`}>
@@ -325,6 +333,7 @@ export default function PatternReport({
           result={result}
           onInterventionClick={onInterventionClick}
           onFollowupClick={onFollowupClick}
+          onPatternSegmentClick={onPatternSegmentClick}
         />
       )}
     </div>

@@ -15,6 +15,7 @@ import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
 import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
+import DrillDownDrawer from "../components/DrillDownDrawer";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
@@ -22,7 +23,7 @@ import { useRole } from "../hooks/useRole";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
 import { serializeSupportPatternsToPlainText } from "./outputActionBarHelpers";
-import type { SupportPatternsResponse, FamilyMessagePrefill, InterventionPrefill } from "../types";
+import type { DrillDownContext, SupportPatternsResponse, FamilyMessagePrefill, InterventionPrefill, RecurringTheme } from "../types";
 
 interface Props {
   onFollowupClick: (prefill: FamilyMessagePrefill) => void;
@@ -30,7 +31,7 @@ interface Props {
 }
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, appendTomorrowNote, streaming, latestTodaySnapshot } = useApp();
+  const { classrooms, activeClassroom, profile, students, showSuccess, appendTomorrowNote, streaming, latestTodaySnapshot, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<SupportPatternsResponse>();
   const streamer = useStreamingRequest({
@@ -38,6 +39,7 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
   });
   const [resultKey, setResultKey] = useState(0);
   const [selectedAlias, setSelectedAlias] = useState<string | null>(null);
+  const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
   const role = useRole();
@@ -116,6 +118,37 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
       session.recordGeneration("support-patterns", "detect_support_patterns");
       setResultKey((k) => k + 1);
     }
+  }
+
+  function handlePatternSegmentClick(payload: { axis: string; label: string; themes: RecurringTheme[] }) {
+    const aliases = new Set<string>();
+    for (const theme of payload.themes) {
+      for (const alias of theme.student_refs) {
+        aliases.add(alias);
+      }
+    }
+    const roster: Array<{
+      alias: string;
+      eal_flag?: boolean;
+      support_tags?: string[];
+      family_language?: string;
+    }> = profile?.students ?? students;
+    const studentsInGroup = [...aliases].sort().map((alias) => {
+      const rosterMatch = roster.find((student) => student.alias === alias);
+      return {
+        alias,
+        eal_flag: rosterMatch?.eal_flag,
+        support_tags: rosterMatch?.support_tags,
+        family_language: rosterMatch?.family_language,
+      };
+    });
+    setDrillDown({
+      type: "student-tag-group",
+      groupKind: "support_cluster",
+      tag: payload.axis,
+      label: payload.label,
+      students: studentsInGroup,
+    });
   }
 
   return (
@@ -210,6 +243,7 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
                   result={result}
                   onInterventionClick={onInterventionClick}
                   onFollowupClick={onFollowupClick}
+                  onPatternSegmentClick={handlePatternSegmentClick}
                 />
                 <RetrievalTraceCard trace={result.retrieval_trace} />
                 <FeedbackCollector
@@ -222,6 +256,17 @@ export default function SupportPatternsPanel({ onFollowupClick, onInterventionCl
             ) : null}
           </div>
         )}
+      />
+      <DrillDownDrawer
+        context={drillDown}
+        onClose={() => setDrillDown(null)}
+        onNavigate={(tab) => {
+          setDrillDown(null);
+          setActiveTab(tab);
+        }}
+        onContextChange={setDrillDown}
+        onInterventionPrefill={onInterventionClick}
+        onMessagePrefill={onFollowupClick}
       />
     </section>
   );
