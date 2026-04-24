@@ -2351,7 +2351,6 @@ textarea {
    elements (tomorrow-chip, output-action-bar, etc.) keep the default. */
 .shell-classroom-pill,
 .shell-classroom-pill--open,
-.shell-bar__palette-btn,
 .role-pill {
   --nothing-pill-radius: var(--shell-control-radius);
 }

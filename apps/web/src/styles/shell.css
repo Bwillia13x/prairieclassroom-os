@@ -37,38 +37,6 @@
   -webkit-backdrop-filter: none;
 }
 
-@media (min-width: 1280px) {
-  .app-header__inner {
-    /* Single-row chrome at wide viewports: brand + classroom pill + nav
-       + actions all align horizontally, reducing vertical chrome from
-       ~7rem to ~3.5rem. Tablet and below continue to stack in two rows
-       (see @media (max-width: 1100px) block below). */
-    flex-direction: row;
-    align-items: center;
-    gap: var(--space-4);
-  }
-
-  .shell-bar {
-    display: contents;
-  }
-
-  .shell-nav {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .shell-nav__groups {
-    /* Absorb the nav into the single row. Narrower columns OK here because
-       the nav only has 7 tabs and wide viewports have room. */
-    min-height: var(--control-h-md);
-  }
-
-  .shell-nav__group {
-    min-height: var(--control-h-md);
-    font-size: var(--text-sm);
-  }
-}
-
 /* ─── Row 1 — brand, classroom, actions ──────────────────────────── */
 
 /* 3 columns: brand · classroom (flex centered) · actions (role+palette+tomorrow+theme+help).
@@ -81,6 +49,40 @@
   align-items: center;
   gap: var(--space-3);
   min-height: var(--control-h-md);
+}
+
+@media (min-width: 1280px) {
+  .app-header__inner {
+    /* Single-row chrome at wide viewports: shell-bar (brand + classroom
+       + actions as grid) sits on the same line as shell-nav. Reduces
+       vertical chrome from ~7rem to ~3.5rem. Tablet and below continue
+       to stack in two rows. */
+    flex-direction: row;
+    align-items: center;
+    gap: var(--space-4);
+  }
+
+  .shell-bar {
+    /* Constrain classroom column so the nav can claim remaining space.
+       Without an upper bound, the classroom anchor's intrinsic content
+       stretches to ~520px and crushes the nav at 1280-1440px. */
+    grid-template-columns: auto minmax(180px, 280px) auto;
+    flex-shrink: 0;
+  }
+
+  .shell-nav {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .shell-nav__groups {
+    min-height: var(--control-h-md);
+  }
+
+  .shell-nav__group {
+    min-height: var(--control-h-md);
+    font-size: var(--text-sm);
+  }
 }
 
 .shell-brand {
