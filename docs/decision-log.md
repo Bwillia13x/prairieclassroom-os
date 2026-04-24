@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-23 — PageHero primitive extraction
+
+- **Decision:** Consolidate `.classroom-hero` (ClassroomPanel.css) and `.multi-tool-hero` (multi-tool-page.css) into a single `PageHero` component (`apps/web/src/components/shared/PageHero.{tsx,css}`) supporting variants: classroom, prep, ops, review, week.
+- **Why:** The two hero scaffolds had drifted into near-identical shapes (eyebrow + title + caption + pulse + metrics + pivots) across two CSS files, requiring every future hero tweak to be made twice. Consolidation removes ~572 lines of duplicated CSS across `.classroom-hero*` + `.classroom-pivot*` (~350 lines from ClassroomPanel.css) and `.multi-tool-hero*` (~222 lines from multi-tool-page.css) while locking a shared API for future pages.
+- **Alternatives considered:** Keep both and document the intentional divergence (rejected — no intentional divergence existed); copy the Classroom markup into MultiToolHero and delete the latter (rejected — ClassroomPanel's inline pivots were not exposed on MultiToolHero's Props).
+- **Consequences:** All five hero-carrying pages (Classroom, Prep, Ops, Review, and any future additions) render from a single component; variants recolor the left-rule and eyebrow only. ClassroomPanel's pivots preserved their original `Live` / `Stage` / `Forecast` eyebrows rather than switching to the plan's proposed `Now` / `Next` / `Week` — original copy was deemed product-owned.
+- **What would change this:** A page-specific hero requirement that PageHero's variants cannot satisfy (e.g. a marketing hero with a big illustration) — but that should be solved with a new primitive, not by forking PageHero.
+
+---
+
 ### 2026-04-23 — Shell coherence pass (canonical control heights, HeaderAction primitive, single-row wide-viewport header)
 
 - **Decision:** Retire shell-specific control heights in favor of canonical `--control-h-md` / `--control-h-lg`; extract shared `HeaderAction` chip primitive; rename "Jump to" label to "Search"; collapse header to single row at ≥1280px.
