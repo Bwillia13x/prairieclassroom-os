@@ -6,7 +6,7 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import PageCommandHub from "../components/PageCommandHub";
+import MultiToolHero, { type MultiToolHeroPulse } from "../components/MultiToolHero";
 import FamilyMessagePanel from "./FamilyMessagePanel";
 import SupportPatternsPanel from "./SupportPatternsPanel";
 import UsageInsightsPanel from "./UsageInsightsPanel";
@@ -32,15 +32,53 @@ const REVIEW_TOOL_COPY: Partial<Record<ActiveTool, { kicker: string; description
   },
 };
 
+const REVIEW_TOOL_TITLE: Partial<Record<ActiveTool, string>> = {
+  "family-message": "Draft family messages",
+  "support-patterns": "Inspect support patterns",
+  "usage-insights": "Review usage signals",
+};
+
 interface Props {
   onFollowupClick: (prefill: FamilyMessagePrefill) => void;
   onInterventionClick: (prefill: InterventionPrefill) => void;
 }
 
+function derivePulse(
+  unapprovedMessages: number,
+  unaddressedPatterns: number,
+  approachingReview: number,
+): MultiToolHeroPulse {
+  if (unapprovedMessages > 3) {
+    return {
+      tone: "danger",
+      state: "Approvals stacked",
+      meta: `${unapprovedMessages} awaiting · ${unaddressedPatterns} pattern signals`,
+    };
+  }
+  if (unapprovedMessages > 0 || unaddressedPatterns > 2) {
+    return {
+      tone: "warning",
+      state: "Review pending",
+      meta: `${unapprovedMessages} approval${unapprovedMessages === 1 ? "" : "s"} · ${unaddressedPatterns} signals`,
+    };
+  }
+  if (approachingReview > 0) {
+    return {
+      tone: "neutral",
+      state: "Reviews due soon",
+      meta: `${approachingReview} approaching review`,
+    };
+  }
+  return {
+    tone: "success",
+    state: "All reviewed",
+    meta: "0 approvals · 0 unread signals",
+  };
+}
+
 /**
  * ReviewPanel — standalone Review page that hosts Family Message,
- * Support Patterns, and Usage Insights inside one page shell. Tool
- * selection persists via `?tool=` and defaults to Family Message.
+ * Support Patterns, and Usage Insights inside one page shell.
  */
 export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Props) {
   const { activeTool, setActiveTool, messagePrefill, latestTodaySnapshot } = useApp();
@@ -60,14 +98,23 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
     return "Ready";
   }
 
+  const pulse = derivePulse(unapprovedMessages, unaddressedPatterns, approachingReview);
+  const activeTitle = REVIEW_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
+
   return (
     <section className="workspace-page multi-tool-page review-page" id="review-top" data-active-tool={currentTool}>
-      <PageCommandHub
+      <MultiToolHero
         id="review-command"
         ariaLabel="Review command, family communication, patterns, and usage insights"
         eyebrow="Review command"
-        title="Turn classroom memory into accountable follow-through"
-        description="Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable."
+        title="Turn classroom memory into accountable follow-through."
+        description={
+          <>
+            Move from open communication, recurring patterns, and session
+            evidence into a review workflow that stays human-approved and
+            auditable.
+          </>
+        }
         metrics={[
           { value: REVIEW_TOOLS.length, label: "Tools" },
           { value: unapprovedMessages, label: "Approvals" },
@@ -75,11 +122,8 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
           { value: approachingReview, label: "Due" },
           { value: activeThreads, label: "Threads" },
         ]}
-        actions={[
-          { label: "Family Message", icon: "mail", onClick: () => setActiveTool("family-message") },
-          { label: "Patterns", icon: "bars", onClick: () => setActiveTool("support-patterns") },
-          { label: "Usage", icon: "star", onClick: () => setActiveTool("usage-insights") },
-        ]}
+        pulse={pulse}
+        variant="review"
       />
 
       <div id="review-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Review tool">
@@ -103,18 +147,24 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
         })}
       </div>
 
-      <div id="review-workspace" className="page-tool-surface">
-        {currentTool === "family-message" ? (
-          <FamilyMessagePanel prefill={messagePrefill} />
-        ) : null}
-        {currentTool === "support-patterns" ? (
-          <SupportPatternsPanel
-            onFollowupClick={onFollowupClick}
-            onInterventionClick={onInterventionClick}
-          />
-        ) : null}
-        {currentTool === "usage-insights" ? <UsageInsightsPanel /> : null}
-      </div>
+      <section className="multi-tool-workspace-section" aria-label="Active workspace">
+        <header className="multi-tool-workspace-section__header">
+          <span className="multi-tool-workspace-section__eyebrow">Active workspace</span>
+          <span className="multi-tool-workspace-section__title">{activeTitle}</span>
+        </header>
+        <div id="review-workspace" className="page-tool-surface">
+          {currentTool === "family-message" ? (
+            <FamilyMessagePanel prefill={messagePrefill} />
+          ) : null}
+          {currentTool === "support-patterns" ? (
+            <SupportPatternsPanel
+              onFollowupClick={onFollowupClick}
+              onInterventionClick={onInterventionClick}
+            />
+          ) : null}
+          {currentTool === "usage-insights" ? <UsageInsightsPanel /> : null}
+        </div>
+      </section>
     </section>
   );
 }
