@@ -15,14 +15,7 @@
   cursor: pointer;
   overflow: hidden;
   -webkit-tap-highlight-color: transparent;
-  transition:
-    background-color var(--motion-letterpress) var(--ease-letterpress),
-    color var(--motion-letterpress) var(--ease-letterpress),
-    border-color var(--motion-letterpress) var(--ease-letterpress),
-    box-shadow var(--motion-letterpress) var(--ease-spring),
-    transform var(--motion-letterpress) var(--ease-spring),
-    opacity var(--motion-letterpress) var(--ease-letterpress),
-    filter var(--motion-letterpress) var(--ease-letterpress);
+  transition: all var(--motion-letterpress) var(--ease-letterpress);
 }
 
 .btn:disabled {
