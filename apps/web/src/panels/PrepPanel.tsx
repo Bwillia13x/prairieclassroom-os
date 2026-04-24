@@ -6,7 +6,7 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import MultiToolHero, { type MultiToolHeroPulse } from "../components/MultiToolHero";
+import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
 
@@ -29,7 +29,7 @@ const PREP_TOOL_TITLE: Partial<Record<ActiveTool, string>> = {
   "language-tools": "Prepare language supports",
 };
 
-function derivePulse(ealCount: number, languageCount: number): MultiToolHeroPulse {
+function derivePulse(ealCount: number, languageCount: number): PageHeroPulse {
   if (ealCount > 6) {
     return {
       tone: "warning",
@@ -71,7 +71,7 @@ export default function PrepPanel() {
 
   return (
     <section className="workspace-page multi-tool-page prep-page" id="prep-top" data-active-tool={currentTool}>
-      <MultiToolHero
+      <PageHero
         id="prep-command"
         ariaLabel="Prep command, lesson adaptation, and language supports"
         eyebrow="Prep command"

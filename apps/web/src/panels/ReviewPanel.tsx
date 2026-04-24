@@ -6,7 +6,7 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import MultiToolHero, { type MultiToolHeroPulse } from "../components/MultiToolHero";
+import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
 import FamilyMessagePanel from "./FamilyMessagePanel";
 import SupportPatternsPanel from "./SupportPatternsPanel";
 import UsageInsightsPanel from "./UsageInsightsPanel";
@@ -47,7 +47,7 @@ function derivePulse(
   unapprovedMessages: number,
   unaddressedPatterns: number,
   approachingReview: number,
-): MultiToolHeroPulse {
+): PageHeroPulse {
   if (unapprovedMessages > 3) {
     return {
       tone: "danger",
@@ -103,7 +103,7 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
 
   return (
     <section className="workspace-page multi-tool-page review-page" id="review-top" data-active-tool={currentTool}>
-      <MultiToolHero
+      <PageHero
         id="review-command"
         ariaLabel="Review command, family communication, patterns, and usage insights"
         eyebrow="Review command"
