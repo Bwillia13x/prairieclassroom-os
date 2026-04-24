@@ -25,3 +25,10 @@ export { default as SessionBanner } from "./SessionBanner";
 export { default as FeedbackCollector } from "./FeedbackCollector";
 export { default as OutputActionBar } from "./OutputActionBar";
 export type { OutputAction, OutputActionKey, OutputActionVariant, OutputActionBarProps } from "./OutputActionBar";
+export { default as OperationalPreview } from "./OperationalPreview";
+export type {
+  OperationalPreviewChip,
+  OperationalPreviewChipTone,
+  OperationalPreviewEvidence,
+  OperationalPreviewGroup,
+} from "./OperationalPreview";

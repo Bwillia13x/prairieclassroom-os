@@ -7,20 +7,16 @@
    identical across Classroom, Prep, Ops, Review, Week. */
 
 .page-hero {
-  --page-hero-rule: color-mix(
-    in srgb,
-    var(--color-brand-highlight) 64%,
-    var(--color-border-strong)
-  );
-  --page-hero-eyebrow: var(--color-brand-highlight-strong);
+  --page-hero-rule: var(--color-command-rule);
+  --page-hero-eyebrow: var(--color-command-eyebrow);
   --page-hero-glow: var(--color-brand-highlight);
 
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--space-5);
-  padding: var(--space-5) var(--space-5) var(--space-5) var(--space-6);
-  border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  gap: var(--space-4);
+  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--color-command-border) 75%, transparent);
   border-left: 3px solid var(--page-hero-rule);
   border-radius: var(--radius-md);
   background:
@@ -29,7 +25,7 @@
       color-mix(in srgb, var(--page-hero-glow) 4%, transparent),
       transparent 65%
     ),
-    color-mix(in srgb, var(--color-surface-elevated) 86%, transparent);
+    var(--color-command-surface);
   box-shadow: var(--shadow-sm);
 }
 
@@ -294,22 +290,173 @@
   text-transform: uppercase;
 }
 
+.page-hero__metric-meta {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-style: normal;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Metric tone variants — recolor the figure only. Labels stay in
+   the canonical tertiary so the palette doesn't fragment. */
+.page-hero__pulse-metric.page-hero__metric--success strong,
+.page-hero__metric.page-hero__metric--success strong { color: var(--color-text-success); }
+.page-hero__pulse-metric.page-hero__metric--warning strong,
+.page-hero__metric.page-hero__metric--warning strong { color: var(--color-text-warning); }
+.page-hero__pulse-metric.page-hero__metric--danger strong,
+.page-hero__metric.page-hero__metric--danger strong  { color: var(--color-text-danger); }
+.page-hero__pulse-metric.page-hero__metric--neutral strong,
+.page-hero__metric.page-hero__metric--neutral strong { color: var(--color-text-secondary); }
+
+/* ----- Status rows (pulse extension) ----- */
+
+.page-hero__status-rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px dashed color-mix(in srgb, var(--color-border) 55%, transparent);
+}
+
+.page-hero__status-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: baseline;
+  font-size: var(--text-xs);
+}
+
+.page-hero__status-label {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.page-hero__status-value {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+  font-weight: var(--font-weight-semibold);
+}
+
+.page-hero__status-row--success .page-hero__status-value { color: var(--color-text-success); }
+.page-hero__status-row--warning .page-hero__status-value { color: var(--color-text-warning); }
+.page-hero__status-row--danger  .page-hero__status-value { color: var(--color-text-danger); }
+
+/* ----- Metric groups (labeled metric tile clusters) ----- */
+
+.page-hero__metric-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding-top: var(--space-2-5);
+  border-top: 1px dashed color-mix(in srgb, var(--color-border) 55%, transparent);
+}
+
+.page-hero__metric-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1-5, 0.375rem);
+  min-width: 0;
+}
+
+.page-hero__metric-group-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.page-hero__metric-group-eyebrow::before {
+  content: "";
+  width: 12px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+.page-hero__metric-group-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.6rem, 1fr));
+  gap: var(--space-2);
+}
+
+.page-hero__metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-2-5);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--color-preview-tile) 80%, transparent);
+  min-width: 0;
+}
+
+.page-hero__metric strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+}
+
+.page-hero__metric span {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
 /* ----- Actions ----- */
 
 .page-hero__actions {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
-  margin-top: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 /* ----- Narrow ----- */
 
 @media (max-width: 720px) {
   .page-hero {
-    padding: var(--space-4);
+    padding: var(--space-3) var(--space-4);
     gap: var(--space-3);
   }
   .page-hero__title {
     font-size: var(--text-display-sm);
+  }
+  .page-hero__pulse {
+    padding: var(--space-2-5) var(--space-3);
+  }
+  .page-hero__pulse-metrics,
+  .page-hero__metric-group-tiles {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .page-hero__metric-groups {
+    gap: var(--space-2-5);
+  }
+}
+
+@media (max-width: 480px) {
+  .page-hero__pivots {
+    grid-template-columns: 1fr;
+  }
+  .page-hero__pulse-metrics,
+  .page-hero__metric-group-tiles {
+    grid-template-columns: 1fr 1fr;
   }
 }

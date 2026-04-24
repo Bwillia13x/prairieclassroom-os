@@ -45,8 +45,13 @@ export default function PageCommandHub({
         <p>{description}</p>
         {actions.length ? (
           <div className="page-command-hub__actions" aria-label={`${eyebrow} actions`}>
-            {actions.map((action) => (
-              <ActionButton key={action.label} size="sm" variant="soft" onClick={action.onClick}>
+            {actions.map((action, idx) => (
+              <ActionButton
+                key={`${action.label}-${idx}`}
+                size="sm"
+                variant="soft"
+                onClick={action.onClick}
+              >
                 <SectionIcon name={action.icon} className="shell-nav__group-icon" />
                 {action.label}
               </ActionButton>
@@ -55,8 +60,8 @@ export default function PageCommandHub({
         ) : null}
       </div>
       <div className="page-command-hub__metrics" aria-label={`${eyebrow} summary`}>
-        {metrics.map((metric) => (
-          <span className="page-command-hub__metric" key={metric.label}>
+        {metrics.map((metric, idx) => (
+          <span className="page-command-hub__metric" key={`${metric.label}-${idx}`}>
             <strong>{metric.value}</strong>
             <span>{metric.label}</span>
           </span>

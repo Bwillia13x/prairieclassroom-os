@@ -1556,3 +1556,185 @@ label.form-label {
   height: 1px;
   opacity: 0.5;
 }
+
+/* ------------------------------------------------------------
+   Operational-preview strip (2026-04-24).
+   Dense below-hero strip primitive: lays out grouped sub-blocks
+   (chip rows, queue previews, mini timelines, coverage rings,
+   evidence rows) inside a single framed surface so a page's first
+   screen can carry both command-block and dense-preview content
+   without the surface stack devolving into card soup.
+
+   Composition:
+     <section class="operational-preview" aria-label="Today operational preview">
+       <header class="section-header">…</header>
+       <div class="operational-preview__body">
+         <div class="operational-preview__group">
+           <span class="operational-preview__eyebrow">Triage queue</span>
+           …
+         </div>
+         <div class="operational-preview__group">…</div>
+       </div>
+     </section>
+
+   On wide screens groups split horizontally; below 720px the body
+   stacks vertically. Each group keeps its own eyebrow so context
+   is preserved as the layout collapses.
+   ------------------------------------------------------------ */
+.operational-preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-preview-border) 75%, transparent);
+  border-radius: var(--radius-md);
+  background: var(--color-preview-surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.operational-preview__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: var(--space-3) var(--space-4);
+}
+
+.operational-preview__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.operational-preview__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-text-tertiary);
+}
+
+.operational-preview__eyebrow::before {
+  content: "";
+  width: 12px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.operational-preview__chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+}
+
+/* Compact chip used inside operational-preview groups. Mirrors
+   .status-chip cadence but pinned to the dense-preview density:
+   no background lift, only border + tinted label. */
+.preview-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: var(--control-h-xs);
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-border) 65%, transparent);
+  border-radius: var(--radius-pill);
+  background: var(--color-preview-tile);
+  color: var(--color-text-secondary);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.preview-chip__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.85;
+}
+
+.preview-chip__meta {
+  margin-left: 2px;
+  color: var(--color-text-tertiary);
+  font-weight: var(--font-weight-medium);
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.preview-chip--watch    { color: var(--color-text-warning); border-color: var(--color-border-warning); }
+.preview-chip--danger   { color: var(--color-text-danger);  border-color: var(--color-border-danger); }
+.preview-chip--success  { color: var(--color-text-success); border-color: var(--color-border-success); }
+.preview-chip--accent   { color: var(--color-text-accent);  border-color: var(--color-border-accent); }
+.preview-chip--neutral  { color: var(--color-text-secondary); border-color: var(--color-border); }
+
+/* Evidence row — terminal list row inside an operational-preview
+   group. Two columns: label + meta. Hairline separator between
+   rows; no padding on outer container so the preview surface owns
+   the rhythm. */
+.preview-evidence-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: var(--space-1-5, 0.375rem) 0;
+  border-bottom: 1px dashed color-mix(in srgb, var(--color-border) 50%, transparent);
+  font-size: var(--text-xs);
+}
+
+.preview-evidence-row:last-child {
+  border-bottom: 0;
+}
+
+.preview-evidence-row__label {
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.preview-evidence-row__meta {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.operational-preview__group-meta {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.02em;
+}
+
+.operational-preview__evidence {
+  display: flex;
+  flex-direction: column;
+}
+
+.operational-preview__footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  padding-top: var(--space-2);
+  border-top: 1px dashed color-mix(in srgb, var(--color-border) 50%, transparent);
+}
+
+@media (max-width: 720px) {
+  .operational-preview {
+    padding: var(--space-3);
+  }
+  .operational-preview__body {
+    grid-template-columns: 1fr;
+  }
+}

@@ -139,4 +139,22 @@ describe("buildPaletteRows", () => {
   it("returns an empty array for empty input", () => {
     expect(buildPaletteRows([])).toEqual([]);
   });
+
+  it("emits unique header keys when a kind appears more than once", () => {
+    // Recents-driven sorting can produce kind sequences like
+    // panel → tool → panel → action where the same kind shows up twice.
+    // The buildPaletteRows contract is that every header key is unique
+    // among siblings; React 19 surfaces duplicates as console errors.
+    const entries: PaletteEntry[] = [
+      { id: "a", kind: "panel", label: "Today", keywords: "today", onSelect: vi.fn() },
+      { id: "b", kind: "tool", label: "Differentiate", keywords: "diff", onSelect: vi.fn() },
+      { id: "c", kind: "panel", label: "Tomorrow", keywords: "tomorrow", onSelect: vi.fn() },
+      { id: "d", kind: "action", label: "Recommended", keywords: "rec", onSelect: vi.fn() },
+    ];
+    const rows = buildPaletteRows(entries);
+    const headerKeys = rows
+      .filter((r): r is { type: "header"; key: string; label: string } => r.type === "header")
+      .map((r) => r.key);
+    expect(new Set(headerKeys).size).toBe(headerKeys.length);
+  });
 });

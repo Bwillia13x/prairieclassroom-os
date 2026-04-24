@@ -25,7 +25,16 @@ export function buildPaletteRows(entries: PaletteEntry[]): RenderableRow[] {
   let lastKind: PaletteEntry["kind"] | null = null;
   entries.forEach((entry, index) => {
     if (entry.kind !== lastKind) {
-      rows.push({ type: "header", key: `hdr-${entry.kind}`, label: KIND_HEADER[entry.kind] });
+      // Include the entry index so the header key stays unique even when
+      // a kind appears more than once in the list (e.g. recents → other
+      // panels can produce panel→tool→panel groupings). React 19 surfaces
+      // duplicates as console errors and the warning shows up the first
+      // time the palette renders with a recents-driven sort.
+      rows.push({
+        type: "header",
+        key: `hdr-${entry.kind}-${index}`,
+        label: KIND_HEADER[entry.kind],
+      });
       lastKind = entry.kind;
     }
     rows.push({ type: "entry", entry, index });

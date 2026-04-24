@@ -15,6 +15,10 @@ import { buildOperatingDashboardSnapshot } from "../components/OperatingDashboar
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { Card, ActionButton } from "../components/shared";
 import SectionIcon from "../components/SectionIcon";
+import PageHero, {
+  type PageHeroMetricGroup,
+  type PageHeroStatusRow,
+} from "../components/shared/PageHero";
 import type {
   ClassroomHealth,
   DrillDownContext,
@@ -92,20 +96,76 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
 
   if (!profile) return null;
 
+  // Metric groups frame the week as three lenses — Forecast (block-level
+  // risk), Events (dates with student impact), Pressure (open pattern +
+  // followup signal). Each group keeps its own eyebrow.
+  const heroMetricGroups: PageHeroMetricGroup[] = [
+    {
+      label: "Forecast",
+      metrics: [
+        { value: dashboard ? weekDays.length : "—", label: "Days mapped" },
+        { value: dashboard ? forecastDayCount : "—", label: "Forecast days" },
+        {
+          value: dashboard ? highRiskBlockCount : "—",
+          label: "High blocks",
+          tone: highRiskBlockCount > 0 ? "warning" : undefined,
+        },
+      ],
+    },
+    {
+      label: "Events",
+      metrics: [
+        {
+          value: dashboard ? eventsThisWeek : "—",
+          label: "This week",
+          tone: eventsThisWeek > 1 ? "warning" : undefined,
+        },
+      ],
+    },
+    {
+      label: "Pressure",
+      metrics: [
+        {
+          value: result ? pressureTotal : "—",
+          label: "Open items",
+          tone: pressureTotal > 4 ? "danger" : pressureTotal > 0 ? "warning" : undefined,
+        },
+        {
+          value: result?.debt_register.item_count_by_category.stale_followup ?? "—",
+          label: "Stale follow-ups",
+        },
+      ],
+    },
+  ];
+
+  const heroStatusRows: PageHeroStatusRow[] = nextHighRiskDay
+    ? [
+        {
+          label: "Next high-risk",
+          value: `${nextHighRiskDay.label} ${nextHighRiskDay.date_label}`,
+          tone: "warning",
+        },
+      ]
+    : [];
+
   return (
     <section className="workspace-page week-panel" id="week-top">
-      <section
-        className="week-command-hub"
+      <PageHero
         id="week-hub"
-        aria-label="Week command, multi-day forecast, events, and pressure"
-      >
-        <div className="week-command-hub__copy">
-          <span className="week-command-hub__eyebrow">Week command</span>
-          <h2>Shape the week before it shapes tomorrow</h2>
-          <p>
-            {commandDetail} Read the forecasted days, event load, and open pressure signal before committing the next plan.
-          </p>
-          <div className="week-command-hub__actions" aria-label="Week actions">
+        ariaLabel="Week command and multi-day forecast"
+        eyebrow="Week command"
+        title="Shape the week before it shapes tomorrow"
+        description={
+          <>
+            {commandDetail} Read the forecasted days, event load, and open pressure signal
+            before committing the next plan.
+          </>
+        }
+        metricGroups={heroMetricGroups}
+        statusRows={heroStatusRows}
+        variant="week"
+        actions={
+          <>
             <ActionButton size="sm" variant="soft" onClick={() => onTabChange("tomorrow")}>
               <SectionIcon name="clock" className="shell-nav__group-icon" />
               Plan Tomorrow
@@ -114,31 +174,9 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
               <SectionIcon name="sun" className="shell-nav__group-icon" />
               Review Today
             </ActionButton>
-          </div>
-        </div>
-        <div className="week-command-hub__metrics" aria-label="Week readiness summary">
-          <span className="week-command-hub__metric">
-            <strong>{dashboard ? weekDays.length : "..."}</strong>
-            <span>Days mapped</span>
-          </span>
-          <span className="week-command-hub__metric">
-            <strong>{dashboard ? forecastDayCount : "..."}</strong>
-            <span>Forecast days</span>
-          </span>
-          <span className="week-command-hub__metric">
-            <strong>{dashboard ? highRiskBlockCount : "..."}</strong>
-            <span>High blocks</span>
-          </span>
-          <span className="week-command-hub__metric">
-            <strong>{dashboard ? eventsThisWeek : "..."}</strong>
-            <span>Events</span>
-          </span>
-          <span className="week-command-hub__metric">
-            <strong>{result ? pressureTotal : "..."}</strong>
-            <span>Pressure items</span>
-          </span>
-        </div>
-      </section>
+          </>
+        }
+      />
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 

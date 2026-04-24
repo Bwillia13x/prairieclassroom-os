@@ -6,7 +6,14 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
+import PageHero, {
+  type PageHeroPulse,
+  type PageHeroMetricGroup,
+  type PageHeroStatusRow,
+} from "../components/shared/PageHero";
+import OperationalPreview, {
+  type OperationalPreviewGroup,
+} from "../components/shared/OperationalPreview";
 import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import InterventionPanel from "./InterventionPanel";
 import EABriefingPanel from "./EABriefingPanel";
@@ -109,6 +116,156 @@ export default function OpsPanel({ prefillIntervention }: Props) {
   const pulse = derivePulse(staleFollowups, eaActions, forecastBlocks);
   const activeTitle = OPS_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
 
+  // Group metrics by ops lens — Capture (followups, watch threads),
+  // Coordinate (EA moves, blocks). Each group keeps its own eyebrow.
+  const heroMetricGroups: PageHeroMetricGroup[] = [
+    {
+      label: "Capture",
+      metrics: [
+        {
+          value: staleFollowups,
+          label: "Follow-ups",
+          tone: staleFollowups > 5 ? "danger" : staleFollowups > 0 ? "warning" : undefined,
+        },
+        { value: watchThreads, label: "Threads" },
+      ],
+    },
+    {
+      label: "Coordinate",
+      metrics: [
+        {
+          value: eaActions || "—",
+          label: "EA moves",
+          tone: eaActions === 0 ? "warning" : undefined,
+        },
+        { value: forecastBlocks || "—", label: "Blocks" },
+      ],
+    },
+  ];
+
+  const heroStatusRows: PageHeroStatusRow[] = [
+    {
+      label: "Active tool",
+      value: TOOL_META[currentTool]?.label ?? "—",
+    },
+  ];
+
+  // Tool-aware operational preview — different lens per tool so each
+  // ops surface lands on its own evidence shape:
+  //   Log Intervention → recent touchpoints
+  //   EA Briefing → priority students + watch sections
+  //   EA Load → overloaded blocks + recommended moves
+  //   Sub Packet → readiness + privacy badges
+  const opsPreviewGroups: OperationalPreviewGroup[] = (() => {
+    if (currentTool === "log-intervention") {
+      return [
+        {
+          eyebrow: "Recent touchpoints",
+          chips: (latestTodaySnapshot?.student_threads ?? [])
+            .slice(0, 6)
+            .map((thread) => ({
+              label: thread.alias,
+              tone: thread.pending_action_count > 0 ? "watch" : "neutral",
+              meta:
+                thread.last_intervention_days !== null
+                  ? `${thread.last_intervention_days}d ago`
+                  : "no log",
+            })),
+        },
+        {
+          eyebrow: "Capture queue",
+          evidence: [
+            { label: "Stale follow-ups", meta: String(staleFollowups) },
+            { label: "Open threads", meta: String(watchThreads) },
+          ],
+        },
+      ];
+    }
+    if (currentTool === "ea-briefing") {
+      return [
+        {
+          eyebrow: "Priority students",
+          chips: (latestTodaySnapshot?.latest_plan?.support_priorities ?? [])
+            .slice(0, 6)
+            .map((priority) => ({
+              label: priority.student_ref,
+              tone: "watch" as const,
+              meta: priority.suggested_action.split(" ").slice(0, 3).join(" "),
+              title: priority.reason,
+            })),
+        },
+        {
+          eyebrow: "EA actions staged",
+          evidence: (latestTodaySnapshot?.latest_plan?.ea_actions ?? [])
+            .slice(0, 4)
+            .map((action) => ({
+              label: action.description.split(" ").slice(0, 6).join(" "),
+              meta: action.timing,
+            })),
+        },
+      ];
+    }
+    if (currentTool === "ea-load") {
+      const blocks = latestTodaySnapshot?.latest_forecast?.blocks ?? [];
+      return [
+        {
+          eyebrow: "Block load",
+          evidence: blocks
+            .filter((b) => b.level === "high" || b.level === "medium")
+            .slice(0, 4)
+            .map((block) => ({
+              label: block.activity || block.time_slot,
+              meta: block.level.toUpperCase(),
+            })),
+        },
+        {
+          eyebrow: "Recommended moves",
+          chips: blocks
+            .filter((b) => b.level === "high")
+            .slice(0, 4)
+            .map((block) => ({
+              label: block.suggested_mitigation
+                ? block.suggested_mitigation.split(" ").slice(0, 4).join(" ")
+                : block.activity || "Move",
+              tone: "danger" as const,
+              meta: block.time_slot,
+            })),
+        },
+      ];
+    }
+    // survival-packet
+    return [
+      {
+        eyebrow: "Handoff readiness",
+        evidence: [
+          {
+            label: "Plan filed",
+            meta: latestTodaySnapshot?.latest_plan ? "yes" : "no",
+          },
+          {
+            label: "Forecast filed",
+            meta: latestTodaySnapshot?.latest_forecast ? "yes" : "no",
+          },
+          {
+            label: "Watch threads",
+            meta: String(watchThreads),
+          },
+        ],
+      },
+      {
+        eyebrow: "Privacy",
+        chips: [
+          { label: "Aliases only", tone: "success", meta: "no real names" },
+          { label: "Safe-to-share", tone: "success", meta: "redaction on" },
+        ],
+      },
+    ];
+  })();
+
+  const opsHasPreview = opsPreviewGroups.some(
+    (g) => (g.chips && g.chips.length > 0) || (g.evidence && g.evidence.length > 0),
+  );
+
   return (
     <section className="workspace-page multi-tool-page ops-page" id="ops-top" data-active-tool={currentTool}>
       <PageHero
@@ -122,16 +279,19 @@ export default function OpsPanel({ prefillIntervention }: Props) {
             coverage, and package the handoff from one operational surface.
           </>
         }
-        metrics={[
-          { value: OPS_TOOLS.length, label: "Tools" },
-          { value: staleFollowups, label: "Follow-ups" },
-          { value: watchThreads, label: "Threads" },
-          { value: eaActions || "—", label: "EA moves" },
-          { value: forecastBlocks || "—", label: "Blocks" },
-        ]}
+        metricGroups={heroMetricGroups}
+        statusRows={heroStatusRows}
         pulse={pulse}
         variant="ops"
       />
+
+      {opsHasPreview ? (
+        <OperationalPreview
+          ariaLabel="Ops operational preview"
+          id="ops-preview"
+          groups={opsPreviewGroups}
+        />
+      ) : null}
 
       <div id="ops-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Ops tool">
         {OPS_TOOLS.map((tool) => {

@@ -6,7 +6,11 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
+import PageHero, {
+  type PageHeroPulse,
+  type PageHeroMetricGroup,
+  type PageHeroStatusRow,
+} from "../components/shared/PageHero";
 import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
@@ -70,6 +74,45 @@ export default function PrepPanel() {
   const pulse = derivePulse(ealCount, languageCount);
   const activeTitle = PREP_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
 
+  // Group metrics into "Roster" and "Toolset" so the prep header reads
+  // as a tool inventory plus the student demographics that drive prep
+  // decisions, instead of a flat list.
+  const heroMetricGroups: PageHeroMetricGroup[] = [
+    {
+      label: "Roster",
+      metrics: [
+        { value: profile?.students.length ?? "—", label: "Students" },
+        {
+          value: ealCount || "—",
+          label: "EAL",
+          tone: ealCount > 6 ? "warning" : undefined,
+        },
+        {
+          value: languageCount || "—",
+          label: "Languages",
+        },
+      ],
+    },
+    {
+      label: "Toolset",
+      metrics: [
+        { value: PREP_TOOLS.length, label: "Tools" },
+        {
+          value: currentTool === "differentiate" ? "Lesson" : "Language",
+          label: "Active lane",
+          tone: "neutral",
+        },
+      ],
+    },
+  ];
+
+  const heroStatusRows: PageHeroStatusRow[] = [
+    {
+      label: "Active tool",
+      value: TOOL_META[currentTool]?.label ?? "—",
+    },
+  ];
+
   return (
     <section className="workspace-page multi-tool-page prep-page" id="prep-top" data-active-tool={currentTool}>
       <PageHero
@@ -84,12 +127,8 @@ export default function PrepPanel() {
             not fragment across tools.
           </>
         }
-        metrics={[
-          { value: PREP_TOOLS.length, label: "Tools" },
-          { value: ealCount || "—", label: "EAL" },
-          { value: languageCount || "—", label: "Languages" },
-          { value: profile?.students.length ?? "—", label: "Students" },
-        ]}
+        metricGroups={heroMetricGroups}
+        statusRows={heroStatusRows}
         pulse={pulse}
         variant="prep"
       />

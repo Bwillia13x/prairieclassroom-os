@@ -484,6 +484,33 @@
   --focus-ring-outline: 3px solid color-mix(in srgb, var(--color-accent) 72%, white);
   --focus-ring-offset: 2px;
   --focus-ring-halo: 0 0 0 4px color-mix(in srgb, var(--color-accent) 10%, transparent);
+
+  /* ------------------------------------------------------------
+     Command-block surface tokens (2026-04-24).
+     Tighter framed surface for hero-tier "command headers" — the
+     bird's-eye context blocks that anchor each top-level page (Classroom,
+     Today, Tomorrow, Week, Prep, Ops, Review). Sits one elevation step
+     above .surface-panel--atmospheric: more presence on the page, but
+     never a wash. The wheat-soft accent is the warm brand affordance,
+     used on the left rail and the eyebrow only. Body remains
+     graphite/black-first in dark mode per the dark-mode contract.
+     Consumers: PageHero, Operational Preview strip. Do not use for
+     ordinary cards — the command-block aesthetic is reserved for the
+     page-anchoring header surfaces.
+     ------------------------------------------------------------ */
+  --color-command-surface: light-dark(#ffffff, #0d0e12);
+  --color-command-rule: light-dark(
+    color-mix(in srgb, #ae671a 60%, #a8b2c0),
+    color-mix(in srgb, #d4a15c 50%, #3b4048)
+  );
+  --color-command-eyebrow: light-dark(#8a4f12, #d4a15c);
+  --color-command-border: light-dark(#cdd5e2, #1f222a);
+
+  /* Operational-preview strip — dense below-hero metric/chip tiles.
+     Quieter than command-block but strongly framed on dark mode. */
+  --color-preview-surface: light-dark(#fafbfd, #0a0b0f);
+  --color-preview-tile: light-dark(#ffffff, #14161b);
+  --color-preview-border: light-dark(#dde2eb, #1d2026);
 }
 
 :root[data-theme="light"] {

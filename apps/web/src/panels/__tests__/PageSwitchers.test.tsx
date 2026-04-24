@@ -80,8 +80,17 @@ describe("multi-tool page switchers", () => {
       { activeTab: "tomorrow", activeTool: "tomorrow-plan" },
     );
 
-    expect(screen.getByRole("region", { name: /morning-ready plan, forecast, and carry-forward queue/i })).toBeInTheDocument();
-    expect(screen.getByText("Queued notes")).toBeInTheDocument();
+    // Hub now uses the shared PageHero primitive — the region label is
+    // "Tomorrow planning hub" rather than the prior bespoke phrase.
+    expect(
+      screen.getByRole("region", { name: /tomorrow planning hub/i }),
+    ).toBeInTheDocument();
+    // Plan / Forecast / Carry-forward are the three labeled metric
+    // groups inside the PageHero. We verify the label rendered at
+    // least once in the heading region.
+    expect(
+      screen.getByRole("heading", { name: /plan, forecast, and carry-forward queue/i }),
+    ).toBeInTheDocument();
 
     const switcher = screen.getByRole("tablist", { name: /tomorrow tool/i });
     expect(within(switcher).getByRole("tab", { name: /01 planning order/i })).toHaveTextContent("Plan not generated");

@@ -22,6 +22,19 @@ export interface PageHeroPivot {
 export interface PageHeroMetric {
   value: number | string;
   label: string;
+  tone?: PageHeroPulseTone;
+  meta?: string;
+}
+
+export interface PageHeroMetricGroup {
+  label: string;
+  metrics: PageHeroMetric[];
+}
+
+export interface PageHeroStatusRow {
+  label: string;
+  value: string;
+  tone?: PageHeroPulseTone;
 }
 
 interface Props {
@@ -30,6 +43,8 @@ interface Props {
   description?: ReactNode;
   pulse?: PageHeroPulse;
   metrics?: PageHeroMetric[];
+  metricGroups?: PageHeroMetricGroup[];
+  statusRows?: PageHeroStatusRow[];
   pivots?: PageHeroPivot[];
   actions?: ReactNode;
   variant?: PageHeroVariant;
@@ -43,12 +58,19 @@ const PIVOT_ICON: Record<PageHeroPivot["icon"], "sun" | "clock" | "grid"> = {
   grid: "grid",
 };
 
+function metricToneClass(tone?: PageHeroPulseTone): string {
+  if (!tone || tone === "neutral") return "";
+  return ` page-hero__metric--${tone}`;
+}
+
 export default function PageHero({
   eyebrow,
   title,
   description,
   pulse,
   metrics,
+  metricGroups,
+  statusRows,
   pivots,
   actions,
   variant,
@@ -71,6 +93,11 @@ export default function PageHero({
     }
   }, [pulse?.state]);
 
+  const hasFlatMetrics = !!(metrics && metrics.length > 0);
+  const hasGroupedMetrics = !!(metricGroups && metricGroups.length > 0);
+  const hasStatusRows = !!(statusRows && statusRows.length > 0);
+  const showAside = !!pulse || hasFlatMetrics || hasGroupedMetrics || hasStatusRows;
+
   return (
     <section className={className} id={id} aria-label={ariaLabel}>
       <div className="page-hero__lede">
@@ -79,9 +106,9 @@ export default function PageHero({
         {description ? <p className="page-hero__caption">{description}</p> : null}
         {pivots && pivots.length > 0 ? (
           <div className="page-hero__pivots" role="group" aria-label="Temporal pivots">
-            {pivots.map((pivot) => (
+            {pivots.map((pivot, idx) => (
               <button
-                key={pivot.label}
+                key={`${pivot.eyebrow}-${pivot.label}-${idx}`}
                 type="button"
                 className="page-hero__pivot"
                 onClick={pivot.onClick}
@@ -101,10 +128,10 @@ export default function PageHero({
         {actions ? <div className="page-hero__actions">{actions}</div> : null}
       </div>
 
-      {pulse || metrics ? (
+      {showAside ? (
         <aside
           className={`page-hero__pulse${pulse ? ` page-hero__pulse--${pulse.tone}` : ""}`}
-          aria-label="Classroom pulse"
+          aria-label="Page pulse"
         >
           {pulse ? (
             <div className="page-hero__pulse-row">
@@ -119,12 +146,57 @@ export default function PageHero({
               </div>
             </div>
           ) : null}
-          {metrics && metrics.length > 0 ? (
+          {hasStatusRows ? (
+            <div className="page-hero__status-rows">
+              {statusRows!.map((row, idx) => (
+                <div
+                  key={`${row.label}-${idx}`}
+                  className={`page-hero__status-row${row.tone ? ` page-hero__status-row--${row.tone}` : ""}`}
+                >
+                  <span className="page-hero__status-label">{row.label}</span>
+                  <span className="page-hero__status-value">{row.value}</span>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {hasGroupedMetrics ? (
+            <div className="page-hero__metric-groups">
+              {metricGroups!.map((group, groupIdx) => (
+                <div
+                  key={`${group.label}-${groupIdx}`}
+                  className="page-hero__metric-group"
+                >
+                  <span className="page-hero__metric-group-eyebrow">{group.label}</span>
+                  <div className="page-hero__metric-group-tiles">
+                    {group.metrics.map((metric, idx) => (
+                      <div
+                        key={`${metric.label}-${idx}`}
+                        className={`page-hero__metric${metricToneClass(metric.tone)}`}
+                      >
+                        <strong>{metric.value}</strong>
+                        <span>{metric.label}</span>
+                        {metric.meta ? (
+                          <em className="page-hero__metric-meta">{metric.meta}</em>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : null}
+          {hasFlatMetrics ? (
             <div className="page-hero__pulse-metrics">
-              {metrics.map((metric) => (
-                <div key={metric.label} className="page-hero__pulse-metric">
+              {metrics!.map((metric, idx) => (
+                <div
+                  key={`${metric.label}-${idx}`}
+                  className={`page-hero__pulse-metric${metricToneClass(metric.tone)}`}
+                >
                   <strong>{metric.value}</strong>
                   <span>{metric.label}</span>
+                  {metric.meta ? (
+                    <em className="page-hero__metric-meta">{metric.meta}</em>
+                  ) : null}
                 </div>
               ))}
             </div>

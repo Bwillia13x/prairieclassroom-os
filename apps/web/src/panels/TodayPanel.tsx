@@ -18,6 +18,10 @@ import MondayResetMoment from "../components/MondayResetMoment";
 import TimeSuggestion from "../components/TimeSuggestion";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { Card, ActionButton } from "../components/shared";
+import OperationalPreview, {
+  type OperationalPreviewChip,
+  type OperationalPreviewGroup,
+} from "../components/shared/OperationalPreview";
 import { ComplexityDebtGauge } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
 import TodayHero from "../components/TodayHero";
@@ -137,6 +141,97 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     return totalActionCount === 0 || suggestion.primaryAction.tab !== recommendedAction.tab;
   }, [recommendedAction, suggestion, totalActionCount]);
 
+  // OperationalPreview groups for the today triage cockpit. All data
+  // pulled from the existing snapshot/health/forecast results — no new
+  // backend fields. Falls back to empty groups while loading.
+  const TODAY_DEBT_LABELS: Record<string, string> = {
+    stale_followup: "Stale follow-up",
+    unapproved_message: "Unapproved message",
+    unaddressed_pattern: "Unaddressed pattern",
+    recurring_plan_item: "Recurring plan item",
+    approaching_review: "Approaching review",
+  };
+  const triageQueueEvidence = (result?.debt_register?.items ?? [])
+    .slice(0, 4)
+    .map((item) => ({
+      label: TODAY_DEBT_LABELS[item.category] ?? item.category,
+      meta: `${item.age_days}d · ${item.student_refs.length}`,
+    }));
+
+  const riskEvidence: { label: string; meta: string }[] = [];
+  if (peakBlock) {
+    riskEvidence.push({
+      label: peakBlock.activity || "Peak block",
+      meta: peakBlock.level
+        ? peakBlock.level.toUpperCase()
+        : peakBlock.time_slot ?? "—",
+    });
+  }
+  if (totalActionCount > 0) {
+    riskEvidence.push({
+      label: "Open items",
+      meta: String(totalActionCount),
+    });
+  }
+  if (health.result?.streak_days) {
+    riskEvidence.push({
+      label: "Plan streak",
+      meta: `${health.result.streak_days}d`,
+    });
+  }
+
+  const touchpointChips: OperationalPreviewChip[] = (
+    result?.student_threads ?? []
+  )
+    .slice(0, 6)
+    .map((thread) => {
+      const tone =
+        thread.pending_action_count > 2
+          ? "danger"
+          : thread.pending_action_count > 0
+            ? "watch"
+            : thread.eal_flag
+              ? "accent"
+              : "neutral";
+      return {
+        label: thread.alias,
+        tone,
+        meta:
+          thread.pending_action_count > 0
+            ? `${thread.pending_action_count} open`
+            : thread.last_intervention_days !== null
+              ? `${thread.last_intervention_days}d ago`
+              : undefined,
+        title: thread.priority_reason ?? undefined,
+      };
+    });
+
+  const todayPreviewGroups: OperationalPreviewGroup[] = [
+    {
+      eyebrow: "Triage queue",
+      meta: totalActionCount > 0 ? `${totalActionCount} pending` : "Clear",
+      evidence: triageQueueEvidence.length > 0 ? triageQueueEvidence : undefined,
+    },
+    {
+      eyebrow: "Risk signal",
+      meta: peakBlock?.time_slot ?? undefined,
+      evidence: riskEvidence.length > 0 ? riskEvidence : undefined,
+    },
+    {
+      eyebrow: "Touchpoints",
+      meta:
+        result?.student_threads && result.student_threads.length > 0
+          ? `${result.student_threads.length} watching`
+          : undefined,
+      chips: touchpointChips.length > 0 ? touchpointChips : undefined,
+    },
+  ];
+
+  const hasPreviewContent =
+    triageQueueEvidence.length > 0 ||
+    riskEvidence.length > 0 ||
+    touchpointChips.length > 0;
+
   if (!profile) return null;
 
   return (
@@ -177,6 +272,14 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           <SectionSkeleton label="Loading today story" variant="story" lines={2} />
         )}
       </div>
+
+      {hasPreviewContent ? (
+        <OperationalPreview
+          ariaLabel="Today operational preview"
+          id="today-preview"
+          groups={todayPreviewGroups}
+        />
+      ) : null}
 
       {result?.student_threads?.length ? (
         <StudentCoverageStrip

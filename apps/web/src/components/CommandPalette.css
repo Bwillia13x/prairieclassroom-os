@@ -1,8 +1,9 @@
 .command-palette__backdrop {
   position: fixed;
   inset: 0;
-  background: color-mix(in srgb, var(--color-bg) 65%, transparent);
-  backdrop-filter: blur(6px);
+  background: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  backdrop-filter: blur(8px) saturate(1.1);
+  -webkit-backdrop-filter: blur(8px) saturate(1.1);
   display: flex;
   justify-content: center;
   padding-top: 12vh;
@@ -11,10 +12,12 @@
 }
 
 .command-palette__card {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--color-command-surface);
+  border: 1px solid color-mix(in srgb, var(--color-command-border) 80%, transparent);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-lg);
+  box-shadow:
+    var(--shadow-lg),
+    var(--inner-stroke);
   width: min(580px, 92vw);
   max-height: 70vh;
   display: flex;

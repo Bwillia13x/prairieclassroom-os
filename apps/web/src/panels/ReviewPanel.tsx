@@ -6,7 +6,14 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
+import PageHero, {
+  type PageHeroPulse,
+  type PageHeroMetricGroup,
+  type PageHeroStatusRow,
+} from "../components/shared/PageHero";
+import OperationalPreview, {
+  type OperationalPreviewGroup,
+} from "../components/shared/OperationalPreview";
 import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import FamilyMessagePanel from "./FamilyMessagePanel";
 import SupportPatternsPanel from "./SupportPatternsPanel";
@@ -102,6 +109,115 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
   const pulse = derivePulse(unapprovedMessages, unaddressedPatterns, approachingReview);
   const activeTitle = REVIEW_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
 
+  // Group metrics by review lens — Approvals (human-in-the-loop work),
+  // Patterns (signal observation), Reviews (cadence). Each group keeps
+  // its own eyebrow.
+  const heroMetricGroups: PageHeroMetricGroup[] = [
+    {
+      label: "Approvals",
+      metrics: [
+        {
+          value: unapprovedMessages,
+          label: "Awaiting",
+          tone: unapprovedMessages > 3 ? "danger" : unapprovedMessages > 0 ? "warning" : undefined,
+        },
+      ],
+    },
+    {
+      label: "Signals",
+      metrics: [
+        {
+          value: unaddressedPatterns,
+          label: "Patterns",
+          tone: unaddressedPatterns > 2 ? "warning" : undefined,
+        },
+        { value: activeThreads, label: "Threads" },
+      ],
+    },
+    {
+      label: "Cadence",
+      metrics: [
+        {
+          value: approachingReview,
+          label: "Reviews due",
+          tone: approachingReview > 0 ? "warning" : undefined,
+        },
+      ],
+    },
+  ];
+
+  const heroStatusRows: PageHeroStatusRow[] = [
+    {
+      label: "Active tool",
+      value: TOOL_META[currentTool]?.label ?? "—",
+    },
+  ];
+
+  // Tool-aware operational preview — different lens per tool:
+  //   Family Message → draft + language + approval status
+  //   Support Patterns → recency timeline + confidence
+  //   Usage Insights → workflow analytics + sequence rows
+  const reviewPreviewGroups: OperationalPreviewGroup[] = (() => {
+    if (currentTool === "family-message") {
+      return [
+        {
+          eyebrow: "Approval queue",
+          evidence: [
+            { label: "Awaiting approval", meta: String(unapprovedMessages) },
+            {
+              label: "Active threads",
+              meta: String(activeThreads),
+            },
+          ],
+        },
+        {
+          eyebrow: "Human-in-the-loop",
+          chips: [
+            { label: "Always editable", tone: "success", meta: "teacher edits persist" },
+            { label: "No autonomous send", tone: "success", meta: "approval required" },
+          ],
+        },
+      ];
+    }
+    if (currentTool === "support-patterns") {
+      return [
+        {
+          eyebrow: "Pattern signal",
+          evidence: [
+            { label: "Unaddressed patterns", meta: String(unaddressedPatterns) },
+            { label: "Approaching review", meta: String(approachingReview) },
+          ],
+        },
+        {
+          eyebrow: "Active threads",
+          chips: (latestTodaySnapshot?.student_threads ?? [])
+            .filter((t) => t.active_pattern_count > 0)
+            .slice(0, 6)
+            .map((thread) => ({
+              label: thread.alias,
+              tone: thread.active_pattern_count > 1 ? "watch" : "neutral",
+              meta: `${thread.active_pattern_count} pattern${thread.active_pattern_count === 1 ? "" : "s"}`,
+            })),
+        },
+      ];
+    }
+    // usage-insights
+    return [
+      {
+        eyebrow: "Workflow signal",
+        evidence: [
+          { label: "Approaching review", meta: String(approachingReview) },
+          { label: "Active threads", meta: String(activeThreads) },
+          { label: "Open patterns", meta: String(unaddressedPatterns) },
+        ],
+      },
+    ];
+  })();
+
+  const reviewHasPreview = reviewPreviewGroups.some(
+    (g) => (g.chips && g.chips.length > 0) || (g.evidence && g.evidence.length > 0),
+  );
+
   return (
     <section className="workspace-page multi-tool-page review-page" id="review-top" data-active-tool={currentTool}>
       <PageHero
@@ -116,16 +232,19 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
             auditable.
           </>
         }
-        metrics={[
-          { value: REVIEW_TOOLS.length, label: "Tools" },
-          { value: unapprovedMessages, label: "Approvals" },
-          { value: unaddressedPatterns, label: "Patterns" },
-          { value: approachingReview, label: "Due" },
-          { value: activeThreads, label: "Threads" },
-        ]}
+        metricGroups={heroMetricGroups}
+        statusRows={heroStatusRows}
         pulse={pulse}
         variant="review"
       />
+
+      {reviewHasPreview ? (
+        <OperationalPreview
+          ariaLabel="Review operational preview"
+          id="review-preview"
+          groups={reviewPreviewGroups}
+        />
+      ) : null}
 
       <div id="review-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Review tool">
         {REVIEW_TOOLS.map((tool) => {
