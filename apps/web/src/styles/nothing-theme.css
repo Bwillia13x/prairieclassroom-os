@@ -1295,7 +1295,7 @@
 .shell-classroom-pill--open {
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 2px;
+  border-radius: var(--shell-control-radius);
   padding: 6px 12px;
   box-shadow: none;
   color: var(--color-text);
@@ -1355,7 +1355,7 @@
 .app-help-btn {
   background: transparent;
   border: 1px solid var(--color-border);
-  border-radius: 2px;
+  border-radius: var(--shell-control-radius);
   box-shadow: none;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
@@ -2325,7 +2325,10 @@ textarea {
   --nothing-button-signal-color: var(--nothing-button-signal);
   position: relative;
   overflow: visible !important;
-  border-radius: 999px !important;
+  /* Pill radius is locally overridable via --nothing-pill-radius so shell
+     chrome renders as softened rectangles while tomorrow-chip and other
+     interactive pills keep the full Nothing-design oval. */
+  border-radius: var(--nothing-pill-radius, 999px) !important;
   border: 1px solid var(--nothing-button-border) !important;
   background: transparent !important;
   color: var(--color-text) !important;
@@ -2340,6 +2343,17 @@ textarea {
     background-color var(--motion-fast) var(--ease-standard),
     color var(--motion-fast) var(--ease-standard),
     opacity var(--motion-fast) var(--ease-standard) !important;
+}
+
+/* Shell chrome controls opt out of the full 999px oval in favour of the
+   shell's own softened-rectangle radius, so the top row reads as a stable
+   instrument rail rather than five floating pills. Non-shell pill
+   elements (tomorrow-chip, output-action-bar, etc.) keep the default. */
+.shell-classroom-pill,
+.shell-classroom-pill--open,
+.shell-bar__palette-btn,
+.role-pill {
+  --nothing-pill-radius: var(--shell-control-radius);
 }
 
 :is(

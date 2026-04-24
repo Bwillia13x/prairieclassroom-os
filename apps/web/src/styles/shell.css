@@ -5,7 +5,7 @@
   --shell-sticky-offset: 0px;
   --shell-control-h: 3.1rem;
   --shell-nav-h: 3.95rem;
-  --shell-control-radius: var(--radius-md);
+  --shell-control-radius: var(--radius-sm);
   --shell-control-border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
   --shell-control-bg: color-mix(in srgb, var(--color-surface-elevated) 56%, transparent);
   --shell-control-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 86%, transparent);
