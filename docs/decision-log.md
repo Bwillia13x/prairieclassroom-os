@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-23 — Page composition pass (zone disclosure, tool-switcher stepper, pulse transition gating)
+
+- **Decision:** (1) Collapse ClassroomPanel's Intel (2x2 viz grid) and Roster zones behind native `<details>` by default, persisted per-classroom via `useZoneDisclosure`. (2) Mount `ToolSwitcherStepper` between the tool switcher and active workspace on Prep / Ops / Review. (3) Gate hero pulse-dot animation to React state changes (3 iterations on change, idle otherwise).
+- **Why:** Classroom default rendered ~2000px of content on first paint with no hierarchy cue separating above-the-fold from peripheral; tool-switcher's 01→04 kickers communicated progression in copy only; infinite pulse-dot motion pulled eye attention continuously in the corner of the viewport.
+- **Alternatives considered:** Hide Intel + Roster entirely (rejected — needed on demand); build a custom collapsible component (rejected — native `<details>` gets keyboard navigation, screen-reader announcement, and `Ctrl+F` find-in-text expansion for free); render stepper above the switcher row (rejected — visually crowded with the hero); keep infinite pulse (rejected — ambient motion is a cost most of the time).
+- **Consequences:** ClassroomPanel first-paint height drops ~50% on new classrooms; teachers get a progressive disclosure language that extends to other high-density pages; pulse reads as intentional state change rather than ambient decoration. Persistence key scoped to `prairie:disclosure:classroom-{id}:{zone}` — per-classroom preferences don't cross-contaminate.
+- **What would change this:** Teacher feedback that Intel / Roster by-default-closed loses important first-look context; a11y audit flagging the disclosure pattern as too-subtle.
+
+---
+
 ### 2026-04-23 — PageHero primitive extraction
 
 - **Decision:** Consolidate `.classroom-hero` (ClassroomPanel.css) and `.multi-tool-hero` (multi-tool-page.css) into a single `PageHero` component (`apps/web/src/components/shared/PageHero.{tsx,css}`) supporting variants: classroom, prep, ops, review, week.
