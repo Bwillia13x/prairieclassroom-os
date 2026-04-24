@@ -6,7 +6,7 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import PageCommandHub from "../components/PageCommandHub";
+import MultiToolHero, { type MultiToolHeroPulse } from "../components/MultiToolHero";
 import InterventionPanel from "./InterventionPanel";
 import EABriefingPanel from "./EABriefingPanel";
 import EALoadPanel from "./EALoadPanel";
@@ -38,14 +38,53 @@ const OPS_TOOL_COPY: Partial<Record<ActiveTool, { kicker: string; description: s
   },
 };
 
+const OPS_TOOL_TITLE: Partial<Record<ActiveTool, string>> = {
+  "log-intervention": "Capture intervention notes",
+  "ea-briefing": "Brief the EAs in the room",
+  "ea-load": "Balance EA load across the day",
+  "survival-packet": "Stage the substitute handoff",
+};
+
 interface Props {
   prefillIntervention?: InterventionPrefill | null;
 }
 
+function derivePulse(
+  staleFollowups: number,
+  eaActions: number,
+  forecastBlocks: number,
+): MultiToolHeroPulse {
+  if (staleFollowups > 5) {
+    return {
+      tone: "danger",
+      state: "Needs attention",
+      meta: `${staleFollowups} stale follow-ups · ${eaActions} EA moves`,
+    };
+  }
+  if (staleFollowups > 0 || eaActions === 0) {
+    return {
+      tone: "warning",
+      state: "Catching up",
+      meta: `${staleFollowups} stale · ${eaActions || "no"} EA moves`,
+    };
+  }
+  if (forecastBlocks === 0) {
+    return {
+      tone: "neutral",
+      state: "Plan pending",
+      meta: `${eaActions} EA moves staged · forecast empty`,
+    };
+  }
+  return {
+    tone: "success",
+    state: "Coordinated",
+    meta: `${eaActions} EA moves · ${forecastBlocks} blocks staged`,
+  };
+}
+
 /**
  * OpsPanel — standalone Ops page that hosts the four adult-coordination
- * tools on one surface. Tomorrow Plan and Complexity Forecast moved to
- * the Tomorrow page as part of the 2026-04-23 navigation reorg.
+ * tools on one surface.
  */
 export default function OpsPanel({ prefillIntervention }: Props) {
   const { activeTool, setActiveTool, latestTodaySnapshot } = useApp();
@@ -66,26 +105,31 @@ export default function OpsPanel({ prefillIntervention }: Props) {
     return "Ready";
   }
 
+  const pulse = derivePulse(staleFollowups, eaActions, forecastBlocks);
+  const activeTitle = OPS_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
+
   return (
     <section className="workspace-page multi-tool-page ops-page" id="ops-top" data-active-tool={currentTool}>
-      <PageCommandHub
+      <MultiToolHero
         id="ops-command"
         ariaLabel="Ops command, intervention capture, adult briefing, and coverage handoff"
         eyebrow="Ops command"
-        title="Coordinate the adults without losing the thread"
-        description="Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface."
+        title="Coordinate the adults without losing the thread."
+        description={
+          <>
+            Capture today's evidence, brief the adults in the room, balance
+            coverage, and package the handoff from one operational surface.
+          </>
+        }
         metrics={[
           { value: OPS_TOOLS.length, label: "Tools" },
           { value: staleFollowups, label: "Follow-ups" },
           { value: watchThreads, label: "Threads" },
-          { value: eaActions || "...", label: "EA moves" },
-          { value: forecastBlocks || "...", label: "Blocks" },
+          { value: eaActions || "—", label: "EA moves" },
+          { value: forecastBlocks || "—", label: "Blocks" },
         ]}
-        actions={[
-          { label: "Log Now", icon: "check", onClick: () => setActiveTool("log-intervention") },
-          { label: "EA Brief", icon: "info", onClick: () => setActiveTool("ea-briefing") },
-          { label: "Sub Packet", icon: "grid", onClick: () => setActiveTool("survival-packet") },
-        ]}
+        pulse={pulse}
+        variant="ops"
       />
 
       <div id="ops-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Ops tool">
@@ -109,14 +153,20 @@ export default function OpsPanel({ prefillIntervention }: Props) {
         })}
       </div>
 
-      <div id="ops-workspace" className="page-tool-surface">
-        {currentTool === "log-intervention" ? (
-          <InterventionPanel prefill={prefillIntervention ?? null} />
-        ) : null}
-        {currentTool === "ea-briefing" ? <EABriefingPanel /> : null}
-        {currentTool === "ea-load" ? <EALoadPanel /> : null}
-        {currentTool === "survival-packet" ? <SurvivalPacketPanel /> : null}
-      </div>
+      <section className="multi-tool-workspace-section" aria-label="Active workspace">
+        <header className="multi-tool-workspace-section__header">
+          <span className="multi-tool-workspace-section__eyebrow">Active workspace</span>
+          <span className="multi-tool-workspace-section__title">{activeTitle}</span>
+        </header>
+        <div id="ops-workspace" className="page-tool-surface">
+          {currentTool === "log-intervention" ? (
+            <InterventionPanel prefill={prefillIntervention ?? null} />
+          ) : null}
+          {currentTool === "ea-briefing" ? <EABriefingPanel /> : null}
+          {currentTool === "ea-load" ? <EALoadPanel /> : null}
+          {currentTool === "survival-packet" ? <SurvivalPacketPanel /> : null}
+        </div>
+      </section>
     </section>
   );
 }

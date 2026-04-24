@@ -6,7 +6,7 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import PageCommandHub from "../components/PageCommandHub";
+import MultiToolHero, { type MultiToolHeroPulse } from "../components/MultiToolHero";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
 
@@ -24,11 +24,36 @@ const PREP_TOOL_COPY: Partial<Record<ActiveTool, { kicker: string; description: 
   },
 };
 
+const PREP_TOOL_TITLE: Partial<Record<ActiveTool, string>> = {
+  differentiate: "Build lesson variants",
+  "language-tools": "Prepare language supports",
+};
+
+function derivePulse(ealCount: number, languageCount: number): MultiToolHeroPulse {
+  if (ealCount > 6) {
+    return {
+      tone: "warning",
+      state: "Heavy EAL load",
+      meta: `${ealCount} EAL · ${languageCount} languages`,
+    };
+  }
+  if (ealCount > 0) {
+    return {
+      tone: "neutral",
+      state: "Prep ready",
+      meta: `${ealCount} EAL · ${languageCount} languages`,
+    };
+  }
+  return {
+    tone: "success",
+    state: "Prep ready",
+    meta: "No EAL flags · open canvas",
+  };
+}
+
 /**
  * PrepPanel — standalone Prep page that hosts the Differentiate and
- * Language Tools workspaces inside one page shell. The teacher switches
- * between the two tools through a local switcher; the top-level nav
- * keeps pointing at a single `Prep` tab.
+ * Language Tools workspaces inside one page shell.
  */
 export default function PrepPanel() {
   const { activeTool, setActiveTool, profile } = useApp();
@@ -41,24 +66,31 @@ export default function PrepPanel() {
     (profile?.students ?? []).map((student) => student.family_language).filter(Boolean),
   ).size;
 
+  const pulse = derivePulse(ealCount, languageCount);
+  const activeTitle = PREP_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
+
   return (
     <section className="workspace-page multi-tool-page prep-page" id="prep-top" data-active-tool={currentTool}>
-      <PageCommandHub
+      <MultiToolHero
         id="prep-command"
         ariaLabel="Prep command, lesson adaptation, and language supports"
         eyebrow="Prep command"
-        title="Prepare the material before it reaches the room"
-        description="Choose the right prep lane, then work from one active canvas. Lesson variants and language supports stay grouped here so planning does not fragment across tools."
+        title="Prepare the material before it reaches the room."
+        description={
+          <>
+            Choose the right prep lane, then work from one active canvas. Lesson
+            variants and language supports stay grouped here so planning does
+            not fragment across tools.
+          </>
+        }
         metrics={[
           { value: PREP_TOOLS.length, label: "Tools" },
-          { value: ealCount || "...", label: "EAL" },
-          { value: languageCount || "...", label: "Languages" },
-          { value: profile?.students.length ?? "...", label: "Students" },
+          { value: ealCount || "—", label: "EAL" },
+          { value: languageCount || "—", label: "Languages" },
+          { value: profile?.students.length ?? "—", label: "Students" },
         ]}
-        actions={[
-          { label: "Differentiate", icon: "pencil", onClick: () => setActiveTool("differentiate") },
-          { label: "Language Tools", icon: "star", onClick: () => setActiveTool("language-tools") },
-        ]}
+        pulse={pulse}
+        variant="prep"
       />
 
       <div id="prep-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Prep tool">
@@ -82,10 +114,16 @@ export default function PrepPanel() {
         })}
       </div>
 
-      <div id="prep-workspace" className="page-tool-surface">
-        {currentTool === "differentiate" ? <DifferentiatePanel /> : null}
-        {currentTool === "language-tools" ? <LanguageToolsPanel /> : null}
-      </div>
+      <section className="multi-tool-workspace-section" aria-label="Active workspace">
+        <header className="multi-tool-workspace-section__header">
+          <span className="multi-tool-workspace-section__eyebrow">Active workspace</span>
+          <span className="multi-tool-workspace-section__title">{activeTitle}</span>
+        </header>
+        <div id="prep-workspace" className="page-tool-surface">
+          {currentTool === "differentiate" ? <DifferentiatePanel /> : null}
+          {currentTool === "language-tools" ? <LanguageToolsPanel /> : null}
+        </div>
+      </section>
     </section>
   );
 }
