@@ -13,6 +13,16 @@ Use this file as a lightweight ADR register.
 
 ---
 
+### 2026-04-23 — Motion prune + floating workspace at wide viewports
+
+- **Decision:** (1) Collapse `.btn` transition list from 7 properties to single `all`. (2) Alias 11 motion eases and 5 durations to canonical 4 eases + 3 durations. (3) At ≥1280px viewports, float the workspace with a 16px gutter, rounded corners, and subtle shadow.
+- **Why:** Button transitions had drifted to 7 properties — CSS engine recomputes each on every state change. Motion token sprawl (15+ eases, 7 durations) made it unclear which to use. Wide-viewport workspace docked flush to the header felt like a 2010s enterprise app; floating it matches the material hierarchy's intent (workspace is a layer *above* the canvas, not an edge-to-edge pane).
+- **Alternatives considered:** Keep the full motion palette (rejected — cognitive overhead); delete the orphan names outright (rejected — big-bang rename risk); float the workspace at all widths (rejected — narrow viewports need every pixel).
+- **Consequences:** Button state changes animate all properties uniformly; motion tokens converge to a canonical four eases and three durations over time as future edits switch away from aliased names; wide-viewport workspace gains a floating card silhouette.
+- **What would change this:** Motion audit flagging a property that should not animate (e.g. if `all` causes filter-computation regressions on lower-end hardware); teacher feedback that the floating workspace feels "disconnected" at 1280-1440px.
+
+---
+
 ### 2026-04-23 — Editorial register introduction, chart tonal retune, branded skeleton, Monday reset moment
 
 - **Decision:** (1) Add Source Serif 4 Variable as a third self-hosted font family under `--font-editorial`, exposed through a narrowly scoped `.editorial` utility for AI-generated long-form copy. (2) Introduce `--chart-tone-low / medium / high` as the canonical calm scalar chart palette and remap legacy `--color-forecast-*` tokens to that scale for compatibility. (3) Add a 3.5%-opacity PrairieClassroom brand-mark watermark behind `SectionSkeleton`. (4) Add a Monday-only first-visit reset strip on Today, dismissible and persisted per classroom + ISO week via `localStorage`.
