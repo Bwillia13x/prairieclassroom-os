@@ -59,7 +59,7 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
   }
 
   return (
-    <div className="tomorrow-page" id="tomorrow-top" data-active-tool={currentTool}>
+    <div className="multi-tool-page tomorrow-page" id="tomorrow-top" data-active-tool={currentTool}>
       <section
         className="tomorrow-planning-hub"
         id="tomorrow-hub"

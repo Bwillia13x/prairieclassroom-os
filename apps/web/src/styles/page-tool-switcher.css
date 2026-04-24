@@ -85,12 +85,126 @@
   min-height: 0;
 }
 
-.tomorrow-page {
+.multi-tool-page {
   display: flex;
   flex: 1 1 auto;
   min-height: 0;
   flex-direction: column;
   gap: var(--space-3);
+}
+
+.classroom-panel,
+.tomorrow-page,
+.week-panel {
+  --page-command-bg: var(--color-bg-sun);
+  --page-command-border: var(--color-border-sun);
+  --page-command-text: var(--color-text-sun);
+}
+
+.prep-page {
+  --page-command-bg: var(--color-bg-sage);
+  --page-command-border: var(--color-border-sage);
+  --page-command-text: var(--color-text-sage);
+}
+
+.ops-page {
+  --page-command-bg: var(--color-bg-slate);
+  --page-command-border: var(--color-border-slate);
+  --page-command-text: var(--color-text-slate);
+}
+
+.review-page {
+  --page-command-bg: var(--color-bg-forest);
+  --page-command-border: var(--color-border-forest);
+  --page-command-text: var(--color-text-forest);
+}
+
+.page-command-hub {
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(20rem, 0.82fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  margin: 0 0 var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 74%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent);
+}
+
+.page-command-hub__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.page-command-hub__eyebrow {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.page-command-hub h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: var(--text-3xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: 0;
+}
+
+.page-command-hub p {
+  max-width: 60rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+}
+
+.page-command-hub__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: var(--space-1);
+}
+
+.page-command-hub__metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(6.4rem, 1fr));
+  gap: var(--space-2);
+}
+
+.page-command-hub__metric {
+  display: flex;
+  min-width: 0;
+  min-height: 5.2rem;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.page-command-hub__metric strong {
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.page-command-hub__metric span {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
 }
 
 .tomorrow-planning-hub {
@@ -180,8 +294,8 @@
 }
 
 /* Ambient theme restates the base switcher with !important later in the
-   cascade. These Tomorrow-specific cards intentionally opt out. */
-.tomorrow-page .page-tool-switcher.page-tool-switcher--cards {
+   cascade. Page-level cards intentionally opt out. */
+.multi-tool-page .page-tool-switcher.page-tool-switcher--cards {
   grid-auto-flow: column !important;
   grid-auto-columns: minmax(0, 1fr) !important;
   gap: var(--space-2) !important;
@@ -192,7 +306,7 @@
   overflow: visible !important;
 }
 
-.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn {
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
@@ -208,18 +322,18 @@
   overflow: visible;
 }
 
-.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
   border-left: 2px solid transparent !important;
   border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent) !important;
 }
 
-.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn--active {
-  border-left-color: color-mix(in srgb, var(--color-border-sun) 80%, var(--color-border)) !important;
-  background: color-mix(in srgb, var(--color-bg-sun) 26%, var(--color-surface)) !important;
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn--active {
+  border-left-color: color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 80%, var(--color-border)) !important;
+  background: color-mix(in srgb, var(--page-command-bg, var(--color-bg-sun)) 26%, var(--color-surface)) !important;
   color: var(--color-text) !important;
 }
 
-.tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn--active::after {
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn--active::after {
   content: none;
 }
 
@@ -243,7 +357,7 @@
 
 .page-tool-switcher--cards .page-tool-switcher__btn-status {
   margin-top: auto;
-  color: var(--color-text-sage);
+  color: var(--page-command-text, var(--color-text-sage));
 }
 
 .tomorrow-queue-strip {
@@ -509,8 +623,45 @@
     flex-direction: column;
   }
 
-  .tomorrow-page {
+  .multi-tool-page {
     gap: var(--space-2);
+  }
+
+  .page-command-hub {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    margin-bottom: var(--space-2);
+    padding: var(--space-3);
+  }
+
+  .page-command-hub h2 {
+    font-size: var(--text-2xl);
+  }
+
+  .page-command-hub__actions .btn {
+    flex: 1 1 9rem;
+  }
+
+  .page-command-hub__metrics {
+    grid-template-columns: repeat(auto-fit, minmax(3.8rem, 1fr));
+    gap: 0.35rem;
+  }
+
+  .page-command-hub__metric {
+    min-height: 4.05rem;
+    padding: var(--space-2);
+  }
+
+  .page-command-hub__metric strong {
+    font-size: var(--text-lg);
+  }
+
+  .page-command-hub__metric span {
+    font-size: var(--text-2xs);
+  }
+
+  .multi-tool-page .page-command-hub__actions {
+    display: none;
   }
 
   .tomorrow-planning-hub {
@@ -533,29 +684,29 @@
     font-size: var(--text-2xl);
   }
 
-  .tomorrow-page .page-tool-switcher--cards {
+  .multi-tool-page .page-tool-switcher--cards {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .tomorrow-page .page-tool-switcher.page-tool-switcher--cards {
+  .multi-tool-page .page-tool-switcher.page-tool-switcher--cards {
     grid-auto-flow: column !important;
     grid-auto-columns: minmax(0, 1fr) !important;
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     margin-bottom: var(--space-2) !important;
   }
 
-  .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn {
+  .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn {
     min-height: 7rem !important;
     gap: var(--space-1);
     padding: var(--space-2) !important;
   }
 
-  .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
+  .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
     border-left: 2px solid transparent !important;
     border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
   }
 
-  .tomorrow-page .page-tool-switcher--cards .page-tool-switcher__btn-description {
+  .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn-description {
     display: none;
   }
 

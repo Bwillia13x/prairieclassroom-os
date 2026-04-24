@@ -12,7 +12,7 @@ export const PAGE_ANCHORS: Record<ActiveTab, PageAnchorConfig> = {
     label: "Classroom sections",
     topAnchorId: "classroom-top",
     anchors: [
-      { id: "classroom-lenses", number: "01", label: "Temporal Lens" },
+      { id: "classroom-command", number: "01", label: "Classroom Command" },
       { id: "classroom-watchlist", number: "02", label: "Watchlist" },
       { id: "classroom-dashboard", number: "03", label: "Operating Board" },
       { id: "classroom-intelligence", number: "04", label: "Classroom Signal" },
@@ -56,24 +56,27 @@ export const PAGE_ANCHORS: Record<ActiveTab, PageAnchorConfig> = {
     label: "Prep sections",
     topAnchorId: "prep-top",
     anchors: [
-      { id: "prep-tools", number: "01", label: "Prep Tools" },
-      { id: "prep-workspace", number: "02", label: "Active Workspace" },
+      { id: "prep-command", number: "01", label: "Prep Command" },
+      { id: "prep-tools", number: "02", label: "Prep Tools" },
+      { id: "prep-workspace", number: "03", label: "Active Workspace" },
     ],
   },
   ops: {
     label: "Ops sections",
     topAnchorId: "ops-top",
     anchors: [
-      { id: "ops-tools", number: "01", label: "Ops Tools" },
-      { id: "ops-workspace", number: "02", label: "Active Workspace" },
+      { id: "ops-command", number: "01", label: "Ops Command" },
+      { id: "ops-tools", number: "02", label: "Ops Tools" },
+      { id: "ops-workspace", number: "03", label: "Active Workspace" },
     ],
   },
   review: {
     label: "Review sections",
     topAnchorId: "review-top",
     anchors: [
-      { id: "review-tools", number: "01", label: "Review Tools" },
-      { id: "review-workspace", number: "02", label: "Active Workspace" },
+      { id: "review-command", number: "01", label: "Review Command" },
+      { id: "review-tools", number: "02", label: "Review Tools" },
+      { id: "review-workspace", number: "03", label: "Active Workspace" },
     ],
   },
 };

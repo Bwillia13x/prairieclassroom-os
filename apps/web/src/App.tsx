@@ -49,13 +49,11 @@ import CommandPalette from "./components/CommandPalette";
 import { usePaletteEntries } from "./hooks/usePaletteEntries";
 import { useNothingButtonPressAnimation } from "./hooks/useNothingButtonPressAnimation";
 import { useAmbientCursorGlow } from "./hooks/useAmbientCursorGlow";
-import DrillDownDrawer from "./components/DrillDownDrawer";
-import { ActionAtlas } from "./components/TriageSurfaces";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
 import { PAGE_ANCHORS } from "./pageAnchors";
-import type { ClassroomProfile, DrillDownContext, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
+import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 const PAGE_RAIL_COLLAPSED_KEY = "prairie:page-rail-collapsed";
@@ -106,7 +104,6 @@ export default function App() {
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
   const [shortcutSheetOpen, setShortcutSheetOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [shellDrillDown, setShellDrillDown] = useState<DrillDownContext | null>(null);
   const [pageRailCollapsed, setPageRailCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     try {
@@ -1013,16 +1010,6 @@ export default function App() {
           ) : null}
 
           {state.classrooms.length > 0 && !initError ? <RoleEscapeBanner /> : null}
-          {state.classrooms.length > 0 && !initError && activeRole !== "reviewer" && activeTab !== "today" && activeTab !== "tomorrow" && activeTab !== "week" && activeTab !== "classroom" ? (
-            <ActionAtlas
-              snapshot={state.latestTodaySnapshot}
-              activeRole={activeRole}
-              onTabChange={setActiveTab}
-              onOpenContext={setShellDrillDown}
-              onInterventionPrefill={handleInterventionClick}
-              onMessagePrefill={handleFollowupClick}
-            />
-          ) : null}
           {renderPanel(
             activeTab,
             "classroom",
@@ -1075,17 +1062,6 @@ export default function App() {
 
         <ShortcutSheet open={shortcutSheetOpen} onClose={() => setShortcutSheetOpen(false)} />
         <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} entries={paletteEntries} />
-        <DrillDownDrawer
-          context={shellDrillDown}
-          onClose={() => setShellDrillDown(null)}
-          onNavigate={(tab) => {
-            setShellDrillDown(null);
-            setActiveTab(tab);
-          }}
-          onContextChange={setShellDrillDown}
-          onInterventionPrefill={handleInterventionClick}
-          onMessagePrefill={handleFollowupClick}
-        />
 
         {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
         {state.rolePrompt ? (

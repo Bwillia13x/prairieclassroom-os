@@ -252,13 +252,13 @@ describe("App shell — classroom pill trigger", () => {
     await renderShellWithDemo();
 
     const pages = [
-      ["classroom", "Classroom sections", /01.*Temporal Lens/i],
+      ["classroom", "Classroom sections", /01.*Classroom Command/i],
       ["today", "Today sections", /01.*Command Center/i],
       ["tomorrow", "Tomorrow sections", /01.*Planning Hub/i],
       ["week", "Week sections", /01.*Week Command/i],
-      ["prep", "Prep sections", /01.*Prep Tools/i],
-      ["ops", "Ops sections", /01.*Ops Tools/i],
-      ["review", "Review sections", /01.*Review Tools/i],
+      ["prep", "Prep sections", /01.*Prep Command/i],
+      ["ops", "Ops sections", /01.*Ops Command/i],
+      ["review", "Review sections", /01.*Review Command/i],
     ] as const;
 
     for (const [tab, label, firstAnchor] of pages) {
@@ -277,7 +277,7 @@ describe("App shell — classroom pill trigger", () => {
       "false",
     );
     expect(localStorage.getItem("prairie:page-rail-collapsed")).toBe("1");
-    expect(screen.queryByRole("link", { name: /01.*Review Tools/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /01.*Review Command/i })).not.toBeInTheDocument();
   });
 
   it("feeds Today debt into the command palette for per-student actions", async () => {
@@ -295,7 +295,7 @@ describe("App shell — classroom pill trigger", () => {
     expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();
   });
 
-  it("keeps the global Action Atlas out of the page-owned temporal flows", async () => {
+  it("keeps the global Action Atlas out of the page-owned top-level workspaces", async () => {
     await renderShellWithDemo({
       debtCounts: { stale_followup: 1 },
       debtItems: [
@@ -303,22 +303,10 @@ describe("App shell — classroom pill trigger", () => {
       ],
     });
 
-    // Initial landing is Classroom (the seven-view default); Today,
-    // Tomorrow, and Week own their first viewport instead of shell triage.
-    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId("shell-nav-group-today"));
-    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId("shell-nav-group-tomorrow"));
-    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId("shell-nav-group-week"));
-    expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId("shell-nav-group-prep"));
-
-    expect(await screen.findByRole("region", { name: /action atlas/i })).toBeInTheDocument();
+    for (const tab of ["classroom", "today", "tomorrow", "week", "prep", "ops", "review"] as const) {
+      fireEvent.click(screen.getByTestId(`shell-nav-group-${tab}`));
+      expect(screen.queryByRole("region", { name: /action atlas/i })).not.toBeInTheDocument();
+    }
   });
 
   it("saves the current panel scroll before the previous tab is hidden", async () => {

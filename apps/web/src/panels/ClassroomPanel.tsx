@@ -10,7 +10,7 @@ import {
   type SessionSummary,
 } from "../api";
 import type { NavTarget } from "../appReducer";
-import PageIntro from "../components/PageIntro";
+import PageCommandHub from "../components/PageCommandHub";
 import SectionSkeleton from "../components/SectionSkeleton";
 import ErrorBanner from "../components/ErrorBanner";
 import HealthBar from "../components/HealthBar";
@@ -24,8 +24,6 @@ import {
   StudentPriorityMatrix,
   ComplexityDebtGauge,
 } from "../components/DataVisualizations";
-import { ActionButton, Card } from "../components/shared";
-import SectionIcon from "../components/SectionIcon";
 import type {
   ClassroomHealth,
   DrillDownContext,
@@ -87,51 +85,36 @@ export default function ClassroomPanel({
     if (!series || series.length < 2) return undefined;
     return series[series.length - 2];
   }, [health.result]);
+  const ealCount = profile?.students.filter((student) => student.eal_flag).length ?? 0;
+  const openThreadCount = result?.student_threads?.length ?? null;
+  const openItemCount = result?.debt_register.items.length ?? null;
+  const plannedDays = health.result?.plans_last_7.filter(Boolean).length ?? null;
 
   if (!profile) return null;
 
   return (
     <section className="workspace-page classroom-panel" id="classroom-top">
-      <PageIntro
-        eyebrow="Classroom"
-        title="Classroom operating view"
-        sectionTone="sun"
-        emphasis="brand"
-        description={`Bird's-eye health, coverage, and queue signal for Grade ${profile.grade_band}. Jump into Today, Tomorrow, or Week when a specific action calls.`}
-        visual={{ src: "/brand/workflow-today.png" }}
-        dynamicContext={[
-          { label: `${profile.students.length} students`, tone: "sun" },
+      <PageCommandHub
+        id="classroom-command"
+        ariaLabel="Classroom command, health, coverage, and temporal lens"
+        eyebrow="Classroom command"
+        title="Read the room before choosing the lens"
+        description={`Bird's-eye health, coverage, and queue signal for Grade ${profile.grade_band}. Use this view to decide whether the next move belongs in Today, Tomorrow, or Week.`}
+        metrics={[
+          { value: profile.students.length, label: "Students" },
+          { value: ealCount, label: "EAL" },
+          { value: openThreadCount ?? "...", label: "Threads" },
+          { value: openItemCount ?? "...", label: "Open" },
+          { value: plannedDays ?? "...", label: "Plans 7d" },
+        ]}
+        actions={[
+          { label: "Today", icon: "sun", onClick: () => onTabChange("today") },
+          { label: "Tomorrow", icon: "clock", onClick: () => onTabChange("tomorrow") },
+          { label: "Week", icon: "grid", onClick: () => onTabChange("week") },
         ]}
       />
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
-
-      <div id="classroom-lenses" className="classroom-panel__anchor-target">
-        <Card variant="flat" className="classroom-jump-actions" aria-label="Classroom jump actions">
-          <Card.Body>
-            <div className="classroom-jump-actions__row">
-              <div className="classroom-jump-actions__copy">
-                <strong>Pick the temporal lens</strong>
-                <span>Use Classroom for the bird's-eye view, Today for same-day triage, Tomorrow to plan ahead, Week for multi-day coverage.</span>
-              </div>
-              <div className="classroom-jump-actions__buttons">
-                <ActionButton size="sm" variant="soft" onClick={() => onTabChange("today")}>
-                  <SectionIcon name="sun" className="shell-nav__group-icon" />
-                  Today
-                </ActionButton>
-                <ActionButton size="sm" variant="soft" onClick={() => onTabChange("tomorrow")}>
-                  <SectionIcon name="clock" className="shell-nav__group-icon" />
-                  Tomorrow
-                </ActionButton>
-                <ActionButton size="sm" variant="soft" onClick={() => onTabChange("week")}>
-                  <SectionIcon name="grid" className="shell-nav__group-icon" />
-                  Week
-                </ActionButton>
-              </div>
-            </div>
-          </Card.Body>
-        </Card>
-      </div>
 
       <div id="classroom-watchlist" className="classroom-panel__anchor-target">
         {result?.student_threads?.length ? (

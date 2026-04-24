@@ -90,7 +90,7 @@ describe("MobileNav", () => {
     expect(onTabChange).toHaveBeenCalledWith("tomorrow");
   });
 
-  it("keeps the shell recommendation rail out of Today, Tomorrow, and Week page-owned workspaces", () => {
+  it("keeps the shell recommendation rail out of page-owned workspaces", () => {
     const snapshot = {
       panel_statuses: [{
         panel_id: "family-message",
@@ -109,30 +109,13 @@ describe("MobileNav", () => {
       </AppContext.Provider>,
     );
 
-    expect(screen.queryByText("Recommended now")).not.toBeInTheDocument();
-
-    rerender(
-      <AppContext.Provider value={makeContext({ latestTodaySnapshot: snapshot })}>
-        <MobileNav activeTab="tomorrow" onTabChange={vi.fn()} />
-      </AppContext.Provider>,
-    );
-
-    expect(screen.queryByText("Recommended now")).not.toBeInTheDocument();
-
-    rerender(
-      <AppContext.Provider value={makeContext({ latestTodaySnapshot: snapshot })}>
-        <MobileNav activeTab="week" onTabChange={vi.fn()} />
-      </AppContext.Provider>,
-    );
-
-    expect(screen.queryByText("Recommended now")).not.toBeInTheDocument();
-
-    rerender(
-      <AppContext.Provider value={makeContext({ latestTodaySnapshot: snapshot })}>
-        <MobileNav activeTab="prep" onTabChange={vi.fn()} />
-      </AppContext.Provider>,
-    );
-
-    expect(screen.getByText("Recommended now")).toBeInTheDocument();
+    for (const tab of ["today", "tomorrow", "week", "classroom", "prep", "ops", "review"] as const) {
+      rerender(
+        <AppContext.Provider value={makeContext({ latestTodaySnapshot: snapshot })}>
+          <MobileNav activeTab={tab} onTabChange={vi.fn()} />
+        </AppContext.Provider>,
+      );
+      expect(screen.queryByText("Recommended now")).not.toBeInTheDocument();
+    }
   });
 });
