@@ -1,0 +1,536 @@
+/* ================================================================
+   ClassroomPanel — bird's-eye operating console.
+   ----------------------------------------------------------------
+   The classroom view is the always-on lens for the room. It is the
+   first thing a teacher sees on landing, so its information density
+   matters more than its decorative range. The layout decomposes
+   into five intentional zones, each separated by --space-7 so the
+   page reads as a cadence of rooms rather than a single feed:
+
+     1. Hero     — command + status pulse + metrics + temporal pivots
+     2. Pulse    — HealthBar (planning streak, trend, debt)
+     3. Watchlist— top students to watch (single-row scroll)
+     4. Ops      — week / coverage / queues (OperatingDashboard)
+     5. Intel    — 2x2 viz grid (debt, priority, recency, composition)
+     6. Roster   — full student list, collapsible
+
+   Replaces the prior layout that incorrectly reused
+   `.today-grid__viz-row` (`display:contents`), causing each viz
+   card to inflate to ~6,200px. Documented at:
+     docs/decision-log.md (2026-04-23 classroom view polish).
+   ================================================================ */
+
+.classroom-panel {
+  --classroom-zone-gap: var(--space-7);
+  --classroom-rule-accent: color-mix(
+    in srgb,
+    var(--color-brand-highlight) 64%,
+    var(--color-border-strong)
+  );
+  gap: var(--classroom-zone-gap);
+}
+
+/* ----------------------------------------------------------------
+   1. Hero — command, pulse, metrics, temporal pivots.
+   ---------------------------------------------------------------- */
+
+.classroom-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+  padding: var(--space-5) var(--space-5) var(--space-5) var(--space-6);
+  border: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  border-left: 3px solid var(--classroom-rule-accent);
+  border-radius: var(--radius-md);
+  background:
+    radial-gradient(
+      ellipse 70% 60% at 6% -10%,
+      color-mix(in srgb, var(--color-brand-highlight) 4%, transparent),
+      transparent 65%
+    ),
+    color-mix(in srgb, var(--color-surface-elevated) 86%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+
+@media (min-width: 960px) {
+  .classroom-hero {
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    align-items: stretch;
+  }
+}
+
+.classroom-hero__lede {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.classroom-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-brand-highlight-strong);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.classroom-hero__eyebrow::before {
+  content: "";
+  width: 16px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.classroom-hero__title {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-display-md);
+  font-weight: var(--font-weight-semibold);
+  font-feature-settings: var(--font-feature-display);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+
+.classroom-hero__caption {
+  max-width: 56ch;
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.classroom-hero__caption strong {
+  color: var(--color-text);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Status pulse — a colored dot + state label that gives the room
+   "are we okay?" at a glance. Lives in the hero so the answer is
+   never below the fold. */
+.classroom-hero__pulse {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.classroom-hero__pulse-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+}
+
+.classroom-hero__pulse-dot {
+  position: relative;
+  flex: 0 0 auto;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--_pulse-tone, var(--color-text-tertiary));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--_pulse-tone, var(--color-text-tertiary)) 16%, transparent);
+}
+
+.classroom-hero__pulse-dot--live::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--_pulse-tone, var(--color-text-tertiary)) 60%, transparent);
+  animation: classroom-pulse-ring 2.4s var(--ease-out-expo) infinite;
+}
+
+@keyframes classroom-pulse-ring {
+  0% { transform: scale(0.8); opacity: 0.9; }
+  80% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .classroom-hero__pulse-dot--live::after { animation: none; }
+}
+
+.classroom-hero__pulse--success { --_pulse-tone: var(--color-success); }
+.classroom-hero__pulse--warning { --_pulse-tone: var(--color-warning); }
+.classroom-hero__pulse--danger  { --_pulse-tone: var(--color-danger); }
+.classroom-hero__pulse--neutral { --_pulse-tone: var(--color-accent); }
+
+.classroom-hero__pulse-label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.classroom-hero__pulse-state {
+  color: var(--color-text);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+}
+
+.classroom-hero__pulse-meta {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.classroom-hero__pulse-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(5.6rem, 1fr));
+  gap: var(--space-2);
+  padding-top: var(--space-2-5);
+  border-top: 1px dashed color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+.classroom-hero__pulse-metric {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.classroom-hero__pulse-metric strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+}
+
+.classroom-hero__pulse-metric span {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ----------------------------------------------------------------
+   Temporal pivot tiles — replace the trio of pill buttons.
+   These are the page's primary affordances (Today / Tomorrow /
+   Week), so they get full-touch tiles with eyebrow + label +
+   chevron, not pill outlines.
+   ---------------------------------------------------------------- */
+.classroom-hero__pivots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.classroom-pivot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2-5);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--motion-hover) var(--ease-standard),
+    background-color var(--motion-hover) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-press);
+}
+
+.classroom-pivot:hover {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent-soft) 70%, var(--color-surface));
+}
+
+.classroom-pivot:active {
+  transform: translateY(0.5px);
+}
+
+.classroom-pivot:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+  box-shadow: var(--focus-ring-halo);
+}
+
+.classroom-pivot__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--color-accent-soft) 60%, var(--color-surface-muted));
+  color: var(--color-accent);
+  flex: 0 0 auto;
+}
+
+.classroom-pivot__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.classroom-pivot__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.classroom-pivot__eyebrow {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.classroom-pivot__label {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.01em;
+  line-height: var(--leading-tight);
+}
+
+.classroom-pivot__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-tertiary);
+  flex: 0 0 auto;
+  transition: transform var(--motion-hover) var(--ease-out-back),
+    color var(--motion-hover) var(--ease-standard);
+}
+
+.classroom-pivot:hover .classroom-pivot__chevron {
+  transform: translateX(2px);
+  color: var(--color-accent);
+}
+
+@media (max-width: 720px) {
+  .classroom-hero__pivots {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Hero metric strip — the 5-tile row at the bottom of the hero.
+   Display-font figures, tabular-nums, no cards (rhythm rule),
+   only tiny dividers between cells so the strip reads as data. */
+.classroom-hero__metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: var(--space-3) 0 0;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+}
+
+.classroom-hero__metric {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: 0 var(--space-3);
+  min-width: 0;
+}
+
+.classroom-hero__metric + .classroom-hero__metric {
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
+}
+
+.classroom-hero__metric strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: var(--font-feature-numeric);
+  line-height: 1;
+  letter-spacing: var(--tracking-display);
+}
+
+.classroom-hero__metric span {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+  .classroom-hero__metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+  }
+  .classroom-hero__metric { padding: var(--space-2) var(--space-2-5); border-left: 0; }
+  .classroom-hero__metric + .classroom-hero__metric { border-left: 0; }
+  .classroom-hero__metric strong { font-size: var(--text-xl); }
+}
+
+/* ----------------------------------------------------------------
+   Section primitive — every classroom zone uses the same header
+   shape (eyebrow + title + caption) so the page reads as a series
+   of repeated frames rather than ad-hoc cards.
+   ---------------------------------------------------------------- */
+.classroom-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  scroll-margin-top: var(--space-7);
+}
+
+.classroom-section__header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: 0 var(--space-1) var(--space-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.classroom-section__header-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.classroom-section__eyebrow {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.classroom-section__title {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.012em;
+  line-height: var(--leading-tight);
+}
+
+.classroom-section__caption {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.classroom-section__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.classroom-section__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: var(--control-h-xs);
+  padding: 0 var(--space-2-5);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-surface-muted) 90%, transparent);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+}
+
+.classroom-section__chip strong {
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.classroom-section__chip--success { color: var(--color-text-success); border-color: var(--color-border-success); background: color-mix(in srgb, var(--color-bg-success) 80%, transparent); }
+.classroom-section__chip--warning { color: var(--color-text-warning); border-color: var(--color-border-warning); background: color-mix(in srgb, var(--color-bg-warning) 80%, transparent); }
+.classroom-section__chip--danger  { color: var(--color-text-danger);  border-color: var(--color-border-danger);  background: color-mix(in srgb, var(--color-bg-danger)  80%, transparent); }
+
+/* ----------------------------------------------------------------
+   2. Pulse — HealthBar lives in a slim card right under the hero
+   so the planning-streak + debt-trend + complexity calendar are
+   visible above the fold. (Replaces previous bottom-of-page placement.)
+   ---------------------------------------------------------------- */
+.classroom-pulse__body {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+/* ----------------------------------------------------------------
+   5. Intelligence — the bug-fix grid. Replaces the broken
+   .today-grid__viz-row that used display:contents and let each
+   viz inflate to 6,272px. This grid:
+     - is a real grid (not display:contents)
+     - paginates 2x2 at >=1180px and 1-col below
+     - constrains each viz to a sensible max-height so a single
+       viz can never dominate the page
+     - retains the data-viz components untouched
+   ---------------------------------------------------------------- */
+.classroom-intelligence__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+@media (min-width: 1180px) {
+  .classroom-intelligence__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Cap each viz to a reasonable visual budget. The internal grids
+   inside the viz components otherwise allow them to expand without
+   bound on a flex column parent. min-height prevents collapse to
+   zero, max-height prevents the bug we just fixed. */
+.classroom-intelligence__grid > * {
+  min-width: 0;
+  min-height: 320px;
+  max-height: 460px;
+}
+
+/* ----------------------------------------------------------------
+   6. Roster — header + scroll body. Roster keeps its own internal
+   styling; this section exists only to give it a clean header.
+   ---------------------------------------------------------------- */
+.classroom-roster__body {
+  /* StudentRoster owns its own card chrome — this wrapper is
+     intentionally empty so we don't double-frame. */
+}
+
+/* ----------------------------------------------------------------
+   Responsive collapse for the hero — at narrow widths the pulse
+   stacks under the lede and pivots compress to a single column.
+   ---------------------------------------------------------------- */
+@media (max-width: 720px) {
+  .classroom-hero {
+    padding: var(--space-4);
+    gap: var(--space-3);
+  }
+
+  .classroom-hero__title { font-size: var(--text-display-sm); }
+}
