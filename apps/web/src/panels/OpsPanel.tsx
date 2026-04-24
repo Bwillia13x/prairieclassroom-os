@@ -6,7 +6,7 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import MultiToolHero, { type MultiToolHeroPulse } from "../components/MultiToolHero";
+import PageHero, { type PageHeroPulse } from "../components/shared/PageHero";
 import InterventionPanel from "./InterventionPanel";
 import EABriefingPanel from "./EABriefingPanel";
 import EALoadPanel from "./EALoadPanel";
@@ -53,7 +53,7 @@ function derivePulse(
   staleFollowups: number,
   eaActions: number,
   forecastBlocks: number,
-): MultiToolHeroPulse {
+): PageHeroPulse {
   if (staleFollowups > 5) {
     return {
       tone: "danger",
@@ -110,7 +110,7 @@ export default function OpsPanel({ prefillIntervention }: Props) {
 
   return (
     <section className="workspace-page multi-tool-page ops-page" id="ops-top" data-active-tool={currentTool}>
-      <MultiToolHero
+      <PageHero
         id="ops-command"
         ariaLabel="Ops command, intervention capture, adult briefing, and coverage handoff"
         eyebrow="Ops command"
