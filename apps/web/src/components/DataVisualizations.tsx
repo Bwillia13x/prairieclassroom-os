@@ -756,10 +756,10 @@ function drawDonutRing(
 }
 
 const LANG_COLORS: Record<string, string> = {
-  en: "var(--color-section-slate)",
-  tl: "var(--color-section-sun)",
-  ar: "var(--color-section-forest)",
-  ur: "var(--color-section-sage)",
+  en: "var(--color-section-ea)",
+  tl: "var(--color-section-watchpoint)",
+  ar: "var(--color-section-trend)",
+  ur: "var(--color-section-family)",
   so: "var(--color-danger)",
   pa: "var(--color-analysis)",
   es: "var(--color-provenance)",
@@ -851,8 +851,8 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
     academic: "var(--color-analysis)",
     extension: "var(--color-success)",
     social: "var(--color-provenance)",
-    executive: "var(--color-section-sun)",
-    other: "var(--color-section-slate)",
+    executive: "var(--color-section-watchpoint)",
+    other: "var(--color-section-ea)",
   };
 
   const ealGroups: CompositionGroupItem[] = EAL_TAGS
@@ -934,7 +934,7 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
         tag: langName,
         label: langLabel,
         value: count,
-        color: LANG_COLORS[code] ?? "var(--color-section-slate)",
+        color: LANG_COLORS[code] ?? "var(--color-section-ea)",
         students: students.filter((s) => familyLanguageLabel(s) === langName),
       };
     });
@@ -1401,7 +1401,7 @@ const LOAD_FILL: Record<EALoadLevel, string> = {
   high: "var(--color-danger)",
   medium: "var(--color-warning)",
   low: "var(--color-success)",
-  break: "var(--color-section-slate)",
+  break: "var(--color-section-ea)",
 };
 
 export function EALoadStackedBars({ blocks }: EALoadStackedBarsProps) {
@@ -1788,7 +1788,7 @@ export function MessageApprovalFunnel({ messagesTotal, messagesApproved }: Messa
       <div className="viz-funnel__body">
         <div className="viz-funnel__stage">
           <span className="viz-funnel__stage-label">Generated</span>
-          <div className="viz-funnel__bar" style={{ width: genW, background: "var(--color-section-slate)" }}>
+          <div className="viz-funnel__bar" style={{ width: genW, background: "var(--color-section-ea)" }}>
             <span className="viz-funnel__bar-text">{messagesTotal}</span>
           </div>
         </div>
@@ -2327,10 +2327,10 @@ interface VariantSummaryStripProps {
 }
 
 const VARIANT_TONE: Record<string, string> = {
-  core: "var(--color-slate)",
+  core: "var(--color-section-ea)",
   eal_supported: "var(--color-accent)",
-  chunked: "var(--color-sage)",
-  ea_small_group: "var(--color-sun)",
+  chunked: "var(--color-section-family)",
+  ea_small_group: "var(--color-section-watchpoint)",
   extension: "var(--color-analysis)",
 };
 
@@ -2353,7 +2353,7 @@ export function VariantSummaryStrip({ variants, onSegmentClick }: VariantSummary
                 className="viz-variant-strip__bar"
                 style={{
                   width: `${Math.max(10, (v.estimated_minutes / maxMin) * 100)}%`,
-                  backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-slate)",
+                  backgroundColor: VARIANT_TONE[v.variant_type] ?? "var(--color-section-ea)",
                 }}
               />
             </div>
@@ -2483,11 +2483,15 @@ export function StudentThemeHeatmap({ themes }: StudentThemeHeatmapProps) {
 }
 
 /* ================================================================
-   20. PLAN COVERAGE RADAR
+   20. PLAN COVERAGE RADAR — "Plan Compass"
    ================================================================
-   Five-axis spider chart showing how "complete" a plan is across
-   watchpoints / priorities / EA actions / prep items / family followups.
-   Answers: "How comprehensive is this plan?"
+   Five-axis radar showing how "complete" a plan is across
+   watchpoints / priorities / EA actions / prep items / family
+   followups. Each axis carries its own --color-section-* tone, so
+   the five dimensions read as five distinct dimensions rather than
+   one collapsed accent. Center hosts a heroic tabular total and a
+   strength tier (`thin` / `balanced` / `ready`).
+   Answers: "How comprehensive is this plan, and where is it thin?"
    ================================================================ */
 
 type PlanRadarSection = "watchpoints" | "priorities" | "eaActions" | "prepItems" | "familyFollowups";
@@ -2502,20 +2506,59 @@ interface PlanCoverageRadarProps {
   sectionItems?: Partial<Record<PlanRadarSection, string[]>>;
 }
 
-const PLAN_RADAR_AXES: { key: PlanRadarSection; label: string; max: number }[] = [
-  { key: "watchpoints", label: "Watchpoints", max: 6 },
-  { key: "priorities", label: "Priorities", max: 8 },
-  { key: "eaActions", label: "EA Actions", max: 6 },
-  { key: "prepItems", label: "Prep Items", max: 8 },
-  { key: "familyFollowups", label: "Family", max: 5 },
+interface PlanRadarAxis {
+  key: PlanRadarSection;
+  label: string;
+  short: string;
+  max: number;
+  toneVar: string;
+}
+
+const PLAN_RADAR_AXES: PlanRadarAxis[] = [
+  { key: "watchpoints", label: "Watchpoints", short: "Watch", max: 6, toneVar: "var(--color-section-watchpoint)" },
+  { key: "priorities", label: "Priorities", short: "Priority", max: 8, toneVar: "var(--color-section-priority)" },
+  { key: "eaActions", label: "EA Actions", short: "EA", max: 6, toneVar: "var(--color-section-ea)" },
+  { key: "prepItems", label: "Prep Items", short: "Prep", max: 8, toneVar: "var(--color-text-tertiary)" },
+  { key: "familyFollowups", label: "Family", short: "Family", max: 5, toneVar: "var(--color-section-family)" },
 ];
+
+type PlanTier = "thin" | "balanced" | "ready";
+
+interface PlanTierResult {
+  tier: PlanTier;
+  caption: string;
+}
+
+/**
+ * computePlanTier — classify the overall plan strength.
+ *
+ * Lopsidedness wins. The plan is a five-axis instrument; if any one
+ * dimension is essentially empty (< 20% of its max), the plan reads
+ * "thin" no matter how full the others are. "Ready" requires both
+ * height (mean ≥ 70%) and breadth (no axis below 40%). Everything
+ * else is "balanced" with a caption naming the weakest axis so the
+ * teacher knows where to spend the next minute of attention.
+ */
+function computePlanTier(ratios: Record<PlanRadarSection, number>): PlanTierResult {
+  const entries = PLAN_RADAR_AXES.map((axis) => ({ axis, ratio: ratios[axis.key] }));
+  const weakest = entries.reduce((acc, e) => (e.ratio < acc.ratio ? e : acc), entries[0]);
+  const mean = entries.reduce((sum, e) => sum + e.ratio, 0) / entries.length;
+  const weakName = weakest.axis.short.toLowerCase();
+  if (weakest.ratio < 0.2) return { tier: "thin", caption: `Thin — add coverage to ${weakName}.` };
+  if (mean >= 0.7 && weakest.ratio >= 0.4) return { tier: "ready", caption: "Plan reads ready — every dimension covered." };
+  return { tier: "balanced", caption: `Forming — strengthen ${weakName} next.` };
+}
 
 export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
   const { onSegmentClick, sectionItems, ...countProps } = props;
-  const size = 160;
+
+  // Geometry — bumped from 160 to 240 to give labels real breathing
+  // room and the center readout room to feel heroic. Axis labels live
+  // OUTSIDE the SVG (HTML), so the chart radius can use the full size.
+  const size = 240;
   const cx = size / 2;
   const cy = size / 2;
-  const maxR = size / 2 - 24;
+  const maxR = size / 2 - 36; // leaves room for value dots + edge label tier marks
   const n = PLAN_RADAR_AXES.length;
   const step = (Math.PI * 2) / n;
 
@@ -2524,93 +2567,228 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
     return [cx + Math.cos(angle) * maxR * ratio, cy + Math.sin(angle) * maxR * ratio];
   }
 
-  // Background rings
-  const rings = [0.33, 0.66, 1];
-
-  // Shape points
-  const shapePoints = PLAN_RADAR_AXES.map((axis, i) => {
-    const val = Math.min(countProps[axis.key], axis.max);
-    return polarXY(i, val / axis.max);
+  // Per-axis values, ratios, and shape points.
+  const axisData = PLAN_RADAR_AXES.map((axis, i) => {
+    const raw = countProps[axis.key];
+    const clamped = Math.min(raw, axis.max);
+    const ratio = clamped / axis.max;
+    const [px, py] = polarXY(i, ratio);
+    return { axis, raw, clamped, ratio, px, py };
   });
-  const shapePath = shapePoints.map(([x, y], i) => `${i === 0 ? "M" : "L"}${x},${y}`).join(" ") + " Z";
+
+  const shapePath = axisData.map(({ px, py }, i) => `${i === 0 ? "M" : "L"}${px},${py}`).join(" ") + " Z";
+
+  // Aggregates for the center readout.
+  const totalFilled = axisData.reduce((sum, d) => sum + d.clamped, 0);
+  const totalMax = PLAN_RADAR_AXES.reduce((sum, a) => sum + a.max, 0);
+  const ratiosByKey = axisData.reduce((acc, d) => {
+    acc[d.axis.key] = d.ratio;
+    return acc;
+  }, {} as Record<PlanRadarSection, number>);
+  const { tier, caption } = computePlanTier(ratiosByKey);
+
+  // Three tier rings at 33% / 66% / 100% — drawn as dotted hairlines
+  // so the chart background reads as a measured field, not a heavy
+  // grid. Tick labels (1 / 2 / 3) sit on the north spoke for legibility.
+  const tiers: { ratio: number; mark: string }[] = [
+    { ratio: 0.33, mark: "1" },
+    { ratio: 0.66, mark: "2" },
+    { ratio: 1, mark: "3" },
+  ];
 
   return (
-    <div className="viz-plan-radar" role="img" aria-label="Plan coverage radar">
-      <svg viewBox={`0 0 ${size} ${size}`} width="100%" preserveAspectRatio="xMidYMid meet">
-        {/* Background rings */}
-        {rings.map((r) => (
-          <polygon
-            key={r}
-            points={Array.from({ length: n }, (_, i) => polarXY(i, r).join(",")).join(" ")}
-            fill="none"
-            stroke="var(--color-border)"
-            strokeWidth="0.5"
-            opacity="0.5"
-          />
-        ))}
+    <div className="viz-plan-radar viz-plan-radar--compass" role="img" aria-label="Plan coverage radar">
+      <header className="viz-plan-radar__head">
+        <div className="viz-plan-radar__head-copy">
+          <span className="viz-plan-radar__eyebrow t-eyebrow">Plan compass</span>
+          <span className="viz-plan-radar__caption">Coverage across the five plan dimensions.</span>
+        </div>
+        <div className="viz-plan-radar__readout" aria-label={`Total plan coverage ${totalFilled} of ${totalMax}, ${tier}`}>
+          <span className="viz-plan-radar__total">
+            <span className="viz-plan-radar__total-num">{totalFilled}</span>
+            <span className="viz-plan-radar__total-sep">/</span>
+            <span className="viz-plan-radar__total-max">{totalMax}</span>
+          </span>
+          <span className={`viz-plan-radar__tier viz-plan-radar__tier--${tier}`}>{tier}</span>
+        </div>
+      </header>
 
-        {/* Axis lines */}
-        {PLAN_RADAR_AXES.map((_, i) => {
-          const [x, y] = polarXY(i, 1);
-          return <line key={i} x1={cx} y1={cy} x2={x} y2={y} stroke="var(--color-border)" strokeWidth="0.5" opacity="0.4" />;
-        })}
-
-        {/* Data shape */}
-        <path d={shapePath} fill="var(--color-accent)" fillOpacity="0.18" stroke="var(--color-accent)" strokeWidth="1.5" />
-
-        {/* Axis labels */}
-        {PLAN_RADAR_AXES.map((axis, i) => {
-          const [x, y] = polarXY(i, 1.2);
-          return (
-            <text
-              key={axis.key}
-              x={x}
-              y={y}
-              textAnchor="middle"
-              dominantBaseline="central"
-              fontSize="8"
-              fill="var(--color-text-secondary)"
-              fontWeight="600"
-            >
-              {axis.label}
-            </text>
-          );
-        })}
-
-        {/* Value dots */}
-        {shapePoints.map(([x, y], i) => (
-          <circle key={i} cx={x} cy={y} r="3" fill="var(--color-accent)" />
-        ))}
-
-        {/* Axis hit targets — only rendered when onSegmentClick is provided */}
-        {onSegmentClick && PLAN_RADAR_AXES.map((axis, i) => {
-          const [x, y] = polarXY(i, 1);
-          const count = countProps[axis.key];
-          const items = sectionItems?.[axis.key] ?? [];
-          const ariaLabel = `${axis.label}: ${count}`;
-          return (
+      <div className="viz-plan-radar__stage">
+        <svg
+          viewBox={`0 0 ${size} ${size}`}
+          width="100%"
+          preserveAspectRatio="xMidYMid meet"
+          className="viz-plan-radar__svg"
+          aria-hidden="true"
+          focusable="false">
+          {/* Tier rings — concentric circles in dotted hairline */}
+          {tiers.map(({ ratio }) => (
             <circle
-              key={`hit-${axis.key}`}
-              cx={x}
-              cy={y}
-              r="8"
-              fill="transparent"
-              className="viz-plan-radar__axis-hit"
-              role="button"
-              tabIndex={0}
-              aria-label={ariaLabel}
-              data-testid={`viz-plan-radar-axis-${axis.key}`}
-              onClick={() => onSegmentClick({ section: axis.key, label: axis.label, items })}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.preventDefault();
-                  onSegmentClick({ section: axis.key, label: axis.label, items });
-                }
-              }}
+              key={`ring-${ratio}`}
+              cx={cx}
+              cy={cy}
+              r={maxR * ratio}
+              fill="none"
+              stroke="var(--color-border)"
+              strokeWidth="0.6"
+              strokeDasharray="1.5 3"
+              opacity="0.7"
             />
-          );
-        })}
-      </svg>
+          ))}
+
+          {/* Tier marks — small numeric ticks on the north spoke */}
+          {tiers.map(({ ratio, mark }) => {
+            const [x, y] = polarXY(0, ratio);
+            return (
+              <text
+                key={`tier-${ratio}`}
+                x={x + 6}
+                y={y + 1}
+                fontSize="7"
+                fill="var(--color-text-tertiary)"
+                fontFamily="var(--font-mono)"
+                opacity="0.7"
+                dominantBaseline="middle">
+                {mark}
+              </text>
+            );
+          })}
+
+          {/* Spoke guides — full-length axis lines, very faint */}
+          {PLAN_RADAR_AXES.map((_, i) => {
+            const [x, y] = polarXY(i, 1);
+            return (
+              <line
+                key={`spoke-${i}`}
+                x1={cx}
+                y1={cy}
+                x2={x}
+                y2={y}
+                stroke="var(--color-border)"
+                strokeWidth="0.5"
+                opacity="0.35"
+              />
+            );
+          })}
+
+          {/* Per-axis ribbons — thin colored segment from origin to data
+              point in each axis's tone. This is what gives each spoke
+              identity even before the polygon resolves. */}
+          {axisData.map(({ axis, px, py }, i) => (
+            <line
+              key={`ribbon-${axis.key}`}
+              x1={cx}
+              y1={cy}
+              x2={px}
+              y2={py}
+              stroke={axis.toneVar}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              opacity="0.85"
+              className="viz-plan-radar__ribbon"
+              style={{ "--ribbon-delay": `${i * 60}ms` } as CSSProperties}
+            />
+          ))}
+
+          {/* Polygon — hairline stroke with whisper-soft fill. The
+              shape draws on mount via stroke-dashoffset (CSS). */}
+          <path
+            d={shapePath}
+            className="viz-plan-radar__shape"
+            fill="var(--color-text)"
+            fillOpacity="0.05"
+            stroke="var(--color-text)"
+            strokeWidth="1.25"
+            strokeLinejoin="round"
+            opacity="0.9"
+          />
+
+          {/* Value dots — outer hairline ring + inner tone fill so each
+              point reads as a calibrated marker, not a generic dot. */}
+          {axisData.map(({ axis, px, py, ratio }, i) => (
+            <g
+              key={`dot-${axis.key}`}
+              className="viz-plan-radar__dot"
+              style={{ "--dot-delay": `${300 + i * 70}ms` } as CSSProperties}>
+              <circle cx={px} cy={py} r="4.5" fill="var(--color-bg)" stroke={axis.toneVar} strokeWidth="1.25" />
+              <circle cx={px} cy={py} r="2.25" fill={axis.toneVar} opacity={ratio === 0 ? 0.25 : 1} />
+            </g>
+          ))}
+
+          {/* Axis hit targets — preserved from the original API.
+              Enlarged from r=8 → r=12 for easier targeting; visual
+              affordance now lives in the surrounding label chip. */}
+          {onSegmentClick &&
+            axisData.map(({ axis, px, py, raw }) => {
+              const items = sectionItems?.[axis.key] ?? [];
+              const ariaLabel = `${axis.label}: ${raw}`;
+              return (
+                <circle
+                  key={`hit-${axis.key}`}
+                  cx={px}
+                  cy={py}
+                  r="12"
+                  fill="transparent"
+                  className="viz-plan-radar__axis-hit"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={ariaLabel}
+                  data-testid={`viz-plan-radar-axis-${axis.key}`}
+                  onClick={() => onSegmentClick({ section: axis.key, label: axis.label, items })}
+                  onKeyDown={(e: KeyboardEvent<SVGCircleElement>) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      onSegmentClick({ section: axis.key, label: axis.label, items });
+                    }
+                  }}
+                />
+              );
+            })}
+        </svg>
+
+        {/* Axis label chips — tone-rule chips arranged radially around
+            the SVG. Each chip mirrors viz-tone-badge: 2px left rule in
+            the section's tone, mono numerals for the count fraction. */}
+        <ul className="viz-plan-radar__labels" aria-hidden="true">
+          {axisData.map(({ axis, raw, ratio }, i) => {
+            const angle = -Math.PI / 2 + i * step;
+            // 44% radial offset places chips in the band between the
+            // SVG (which fills the inner 72% of the stage) and the
+            // card edge — close enough to feel attached to the spoke,
+            // far enough to never overlap the polygon points.
+            const lx = 50 + Math.cos(angle) * 44;
+            const ly = 50 + Math.sin(angle) * 44;
+            const empty = raw === 0;
+            return (
+              <li
+                key={axis.key}
+                className={`viz-plan-radar__label${empty ? " viz-plan-radar__label--empty" : ""}`}
+                style={{
+                  left: `${lx}%`,
+                  top: `${ly}%`,
+                  "--axis-tone": axis.toneVar,
+                  "--label-delay": `${500 + i * 60}ms`,
+                } as CSSProperties}>
+                <span className="viz-plan-radar__label-name">{axis.short}</span>
+                <span className="viz-plan-radar__label-count">
+                  {raw}/{axis.max}
+                </span>
+                <span className="viz-plan-radar__label-bar" aria-hidden="true">
+                  <span
+                    className="viz-plan-radar__label-bar-fill"
+                    style={{ width: `${Math.round(ratio * 100)}%` }}
+                  />
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+
+      <p className="viz-plan-radar__verdict">
+        <span className="viz-plan-radar__verdict-label t-eyebrow">Read</span>
+        <span className="viz-plan-radar__verdict-text">{caption}</span>
+      </p>
     </div>
   );
 }
@@ -2635,10 +2813,10 @@ interface WorkflowFlowStripProps {
 function flowColor(index: number): string {
   const palette = [
     "var(--color-accent)",
-    "var(--color-sage)",
-    "var(--color-sun)",
+    "var(--color-section-family)",
+    "var(--color-section-watchpoint)",
     "var(--color-analysis)",
-    "var(--color-alert)",
+    "var(--color-danger)",
   ];
   return palette[index % palette.length];
 }

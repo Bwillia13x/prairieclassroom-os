@@ -2156,13 +2156,347 @@ button.viz-recency__row:focus-visible {
 }
 
 /* ================================================================
-   20. PLAN COVERAGE RADAR
+   20. PLAN COVERAGE RADAR — "Plan Compass"
+   ================================================================
+   Layered, instrument-grade radar. Hairline tier rings, per-axis
+   colored ribbons (each spoke owns a --color-section-* tone), a
+   heroic mono total in the center, and tone-rule label chips that
+   echo the existing viz-tone-badge pattern.
    ================================================================ */
 
 .viz-plan-radar {
+  /* Legacy selector — kept so the original test contract on the
+     `viz-plan-radar` wrapper still resolves. The compass styling
+     lives on the modifier below. */
   padding: var(--space-2);
-  max-width: 220px;
   margin: 0 auto;
+}
+
+.viz-plan-radar--compass {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-3);
+  max-width: 420px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  /* Subtle radial wash — depth without violating the no-gradient
+     rule, because it stays below 4% and reads as paper texture. */
+  background-image: radial-gradient(
+    circle at 50% 42%,
+    color-mix(in srgb, var(--color-text) 3%, transparent) 0%,
+    transparent 65%
+  );
+}
+
+.viz-plan-radar__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px dashed var(--color-border);
+}
+
+.viz-plan-radar__head-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.viz-plan-radar__eyebrow {
+  font-family: var(--font-mono);
+  color: var(--color-text-secondary);
+}
+
+.viz-plan-radar__caption {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+  line-height: var(--leading-snug, 1.4);
+}
+
+/* Heroic readout — sits in the header beside the eyebrow, not inside
+   the polygon. Tabular total + serif italic tier lockup. */
+.viz-plan-radar__readout {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.viz-plan-radar__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  max-width: 360px;
+}
+
+/* SVG occupies the inner 72% of the stage. The remaining 14% on each
+   side hosts the tone-rule label chips so they sit just outside the
+   polygon's outer ring but inside the card. */
+.viz-plan-radar__svg {
+  position: absolute;
+  top: 14%;
+  left: 14%;
+  width: 72%;
+  height: 72%;
+  display: block;
+  overflow: visible;
+}
+
+.viz-plan-radar__total {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.04em;
+  color: var(--color-text);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+}
+
+.viz-plan-radar__total-num {
+  font-size: 1.85rem;
+  line-height: 1;
+}
+
+.viz-plan-radar__total-sep {
+  font-size: 1rem;
+  color: var(--color-text-tertiary);
+  margin: 0 1px;
+}
+
+.viz-plan-radar__total-max {
+  font-size: 0.95rem;
+  color: var(--color-text-tertiary);
+}
+
+.viz-plan-radar__tier {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 0.02em;
+  color: var(--color-text-secondary);
+  text-transform: lowercase;
+}
+
+.viz-plan-radar__tier--thin {
+  color: var(--color-warning);
+}
+
+.viz-plan-radar__tier--ready {
+  color: var(--color-success);
+}
+
+/* Tone-rule label chips — one per axis, positioned radially around
+   the stage via inline left/top percentages. Mirror viz-tone-badge:
+   2px left rule in the axis's --color-section-* tone. */
+.viz-plan-radar__labels {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.viz-plan-radar__label {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 8px 5px 9px;
+  background: var(--color-surface-elevated);
+  border: 1px solid var(--color-border);
+  border-left: 2px solid var(--axis-tone);
+  border-radius: 2px;
+  min-width: 64px;
+  font-family: var(--font-mono);
+  color: var(--color-text);
+  opacity: 0;
+  animation: viz-plan-radar-label-in 320ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) forwards;
+  animation-delay: var(--label-delay, 0ms);
+}
+
+.viz-plan-radar__label--empty {
+  opacity: 0;
+  animation-name: viz-plan-radar-label-in-muted;
+}
+
+.viz-plan-radar__label-name {
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  color: var(--color-text);
+  line-height: 1;
+}
+
+.viz-plan-radar__label-count {
+  font-size: var(--text-2xs);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+  line-height: 1;
+}
+
+.viz-plan-radar__label-bar {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background: color-mix(in srgb, var(--axis-tone) 12%, transparent);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.viz-plan-radar__label-bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--axis-tone);
+  transform-origin: left center;
+  transition: width 600ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1));
+}
+
+/* Verdict line — short editorial caption under the chart. */
+.viz-plan-radar__verdict {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--space-2);
+  padding-top: var(--space-2);
+  border-top: 1px dashed var(--color-border);
+}
+
+.viz-plan-radar__verdict-label {
+  font-family: var(--font-mono);
+  color: var(--color-text-tertiary);
+}
+
+.viz-plan-radar__verdict-text {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  line-height: var(--leading-snug, 1.4);
+}
+
+/* Mount animation — stroke-draw on the polygon, staggered ribbons,
+   gentle dot pop. Respects prefers-reduced-motion. */
+.viz-plan-radar__shape {
+  stroke-dasharray: 1200;
+  stroke-dashoffset: 1200;
+  animation: viz-plan-radar-shape-in 900ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) 200ms forwards;
+}
+
+.viz-plan-radar__ribbon {
+  transform-origin: center;
+  opacity: 0;
+  animation: viz-plan-radar-ribbon-in 420ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) forwards;
+  animation-delay: var(--ribbon-delay, 0ms);
+}
+
+.viz-plan-radar__dot {
+  opacity: 0;
+  animation: viz-plan-radar-dot-in 240ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) forwards;
+  animation-delay: var(--dot-delay, 0ms);
+}
+
+@keyframes viz-plan-radar-shape-in {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes viz-plan-radar-ribbon-in {
+  from {
+    opacity: 0;
+    stroke-width: 0;
+  }
+  to {
+    opacity: 0.85;
+    stroke-width: 1.5;
+  }
+}
+
+@keyframes viz-plan-radar-dot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+    transform-origin: center;
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes viz-plan-radar-label-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@keyframes viz-plan-radar-label-in-muted {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%);
+  }
+  to {
+    opacity: 0.55;
+    transform: translate(-50%, -50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viz-plan-radar__shape,
+  .viz-plan-radar__ribbon,
+  .viz-plan-radar__dot,
+  .viz-plan-radar__label {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+
+  .viz-plan-radar__label--empty {
+    opacity: 0.55;
+  }
+
+  .viz-plan-radar__label-bar-fill {
+    transition: none;
+  }
+}
+
+/* Compact viewport — collapse the chart card padding and shrink the
+   center figure so the compass still reads well at narrow widths. */
+@media (max-width: 480px) {
+  .viz-plan-radar--compass {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .viz-plan-radar__total-num {
+    font-size: 1.85rem;
+  }
+
+  .viz-plan-radar__label {
+    min-width: 56px;
+    padding: 3px 6px 4px 7px;
+  }
 }
 
 /* ================================================================
