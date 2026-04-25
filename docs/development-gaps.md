@@ -134,6 +134,15 @@ Original "every prompt class except extract_worksheet" caveat is closed.
 - Author cross-feature synthesis cases: plan+pattern, forecast+intervention, ea-load+intervention, survival-packet+forecast.
 - Add retrieval-relevance cases for `forecast_complexity`, `detect_scaffold_decay`, `generate_survival_packet`, `balance_ea_load` (none yet — only plan and pat have explicit retrieval-relevance cases).
 
+**Update 2026-04-25:** Retrieval-relevance cases shipped for forecast / scaffold-decay / survival
+(`fcst-007-retrieval-relevance`, `scaff-001-retrieval-relevance`, `surv-008-retrieval-relevance`).
+Cross-feature synthesis cases shipped for plan+pattern and family-message+intervention
+(`synth-001-plan-references-demo-pattern`, `synth-002-fammsg-references-intervention`). Two
+remaining items deferred: `balance_ea_load` retrieval/synthesis cases require adding a runner
+dispatch handler first (currently falls through to `runDifferentiationEval`); forecast+intervention
+synthesis is covered by the existing `fcst-002-content-quality` (`must_contain: ["Amira"]`);
+survival+forecast synthesis is covered by `surv-004-comprehensive-retrieval`.
+
 ### G-04 — Observability and operator view
 
 **Status:** Foundation in place.
