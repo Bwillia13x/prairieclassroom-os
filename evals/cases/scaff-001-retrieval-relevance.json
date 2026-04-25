@@ -1,0 +1,16 @@
+{
+  "id": "scaff-001-retrieval-relevance",
+  "category": "retrieval_relevance",
+  "description": "Scaffold-decay report for D2 Brody (active intervention history) returns a non-insufficient report with required schema keys — proves retrieval pulled real intervention rows, not a generic stub",
+  "prompt_class": "detect_scaffold_decay",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "student_ref": "D2",
+    "time_window": 30
+  },
+  "expected": {
+    "required_keys": ["report_id", "classroom_id", "student_ref", "time_window_days", "scaffold_history", "decay_signals", "recommendations", "schema_version"],
+    "schema_version": "0.1.0",
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "deficit"]
+  }
+}

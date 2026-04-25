@@ -1,0 +1,16 @@
+{
+  "id": "surv-008-retrieval-relevance",
+  "category": "retrieval_relevance",
+  "description": "Survival packet for demo classroom is explicitly typed as retrieval-relevance: must reference intervention history, schedule data, scaffold metadata, and complexity peaks — distinct from surv-004 (cross_feature_synthesis) which makes the same assertions but under a different categorization",
+  "prompt_class": "generate_survival_packet",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "target_date": "2026-04-07"
+  },
+  "expected": {
+    "references_intervention_history": true,
+    "references_schedule_data": true,
+    "student_support_informed_by_scaffolds": true,
+    "complexity_peaks_present": true
+  }
+}
