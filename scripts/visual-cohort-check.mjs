@@ -11,7 +11,6 @@
  *  - takes screenshots: dashboard-cohort-pulse-{375,768,1440}.png
  */
 import { chromium } from "playwright";
-import assert from "node:assert/strict";
 import fs from "node:fs/promises";
 
 const WEB = process.env.PRAIRIE_WEB_URL ?? "http://localhost:5173";
