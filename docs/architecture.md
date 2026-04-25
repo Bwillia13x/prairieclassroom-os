@@ -170,6 +170,37 @@ streaming endpoint emits SSE `chunk`, `thinking`, `complete`, and `error`
 events. The orchestrator translates that backend stream into client-facing SSE
 events for planning-tier panels and persists only the final parsed JSON output.
 
+## Web shell
+
+### Scroll containers
+
+The app shell uses an inner-element scroll pattern, not document scroll. The
+top header (`.app-header__inner`) and primary tab bar are sticky to the
+viewport. Below them, `<main class="app-main">` is the *only* element that
+scrolls; it has `overflow: hidden auto` and a fixed pixel height equal to
+`100vh - shell chrome`. The `<body>` and `<html>` heights stay flush with
+the viewport.
+
+Practical consequences:
+
+- `window.scrollY` is always `0`; `document.documentElement.scrollHeight`
+  equals the viewport height. Use
+  `document.querySelector('.app-main').scrollTop` instead.
+- Anchor links inside the workspace (`<a href="#review-workspace">`) work
+  because `scrollIntoView` is container-aware. The `PageAnchorRail`
+  component depends on this.
+- Full-page screenshot tools (Playwright `fullPage: true`, browser
+  extensions) only capture the viewport. Smoke scripts in `qa/` and
+  `scripts/capture-*.mjs` already accommodate this; new screenshot tooling
+  must do the same.
+- Page-bottom intersection observers must root on `.app-main`, not the
+  viewport.
+
+The pattern lives in `apps/web/src/styles/ambient.css` (see `.app-shell`
+and `.app-main` rules) and is intentional: it lets the chrome (header,
+nav, classroom switcher) stay fixed while only the workspace content
+scrolls.
+
 ## What to keep modular
 
 - Prompt contracts (versioned, one per class)
