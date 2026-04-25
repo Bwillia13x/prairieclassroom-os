@@ -60,6 +60,20 @@ The dark accent is deliberately darker than the previous sky-blue `#7aa7d9`. It 
 
 **Atmospheric hero token (2026-04-22 Tier C).** `--gradient-prairie-horizon` is a two-radial-gradient backdrop built from `--color-brand-highlight` (bottom 12%) and `--color-brand-green` (upper-left 8%). Scope is **exactly one consumer — `.today-hero` in TodayHero.css** — as the single sanctioned atmospheric moment in the product. Do not apply to other heroes, marketing surfaces, or card backgrounds without a new decision-log entry; the token's singular-consumer status is the guardrail that prevents the Prairie identity from bleeding into the institutional material stack. The percentages sit at or below the pre-existing `.surface-panel--atmospheric` standard (accent 8%, analysis 6%), so hue shift carries brand recognition without breaking the institutional register.
 
+**Command-block surface family (2026-04-24).** The bird's-eye "command header" treatment on every top-level page (Classroom, Today, Tomorrow, Week, Prep, Ops, Review) sits one elevation step above `.surface-panel--atmospheric`: more presence on the page, never a wash. Consumers are **exactly `PageHero` and the `OperationalPreview` strip** — the page-anchoring header surfaces. Do not use these tokens for ordinary cards; the command-block aesthetic is reserved for the two shared primitives. Ordinary cards continue to use the neutral material stack.
+
+| Role | Light | Dark |
+|---|---|---|
+| `--color-command-surface` | `#ffffff` | `#0d0e12` |
+| `--color-command-rule` | 60% cognac in cool neutral | 50% lifted cognac in dark graphite |
+| `--color-command-eyebrow` | `#8a4f12` (deep cognac) | `#d4a15c` (lifted cognac) |
+| `--color-command-border` | `#cdd5e2` | `#1f222a` |
+| `--color-preview-surface` | `#fafbfd` | `#0a0b0f` |
+| `--color-preview-tile` | `#ffffff` | `#14161b` |
+| `--color-preview-border` | `#dde2eb` | `#1d2026` |
+
+The wheat-soft accent surfaces only on the left rule and eyebrow, preserving the black-first dark register for body content. The operational-preview strip is quieter than the command block but strongly framed on dark mode so dense tile rows read as a single unit. Contrast verified green (80/80 WCAG AA pairs) at introduction; see `output/contrast-report.md` and `docs/decision-log.md` §2026-04-24 Design delta closure. Bundle impact: net −7.7 kB CSS (`.tomorrow-planning-hub` and `.week-command-hub` retired as `PageHero` absorbed both).
+
 ### Dark semantic backgrounds
 
 Semantic dark backgrounds are rebased to black with only a trace of hue:
