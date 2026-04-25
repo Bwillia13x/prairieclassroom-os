@@ -177,7 +177,7 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
             width="100%"
             viewBox={`0 0 ${MATRIX_W} ${MATRIX_H}`}
             className="viz-svg"
-            role="img"
+            role={onStudentClick ? "group" : "img"}
             aria-label={ariaLabel}
           >
             <rect
@@ -1121,7 +1121,8 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
       </div>
       <div className="viz-composition__body">
         <div className="viz-composition__visual">
-          <svg width="190" height="190" viewBox="0 0 180 180" className="viz-svg" role="img"
+          <svg width="190" height="190" viewBox="0 0 180 180" className="viz-svg"
+            role={onSegmentClick ? "group" : "img"}
             aria-label={ariaLabel}>
             <circle className="viz-composition__track" cx={cx} cy={cy} r={78} />
             <circle className="viz-composition__track" cx={cx} cy={cy} r={58} />
@@ -1528,7 +1529,8 @@ export function SupportPatternRadar({ themes, onSegmentClick }: PatternRadarProp
         <h4 className="t-eyebrow viz-title">Support Pattern Shape</h4>
         <span className="t-eyebrow viz-subtitle">Theme distribution from records</span>
       </div>
-      <svg width="200" height="200" viewBox="0 0 200 200" className="viz-svg" role="img"
+      <svg width="200" height="200" viewBox="0 0 200 200" className="viz-svg"
+        role={onSegmentClick ? "group" : "img"}
         aria-label="Radar chart of support pattern themes">
         {/* Background rings */}
         {rings.map((pct) => (
@@ -1644,7 +1646,8 @@ export function PlanStreakCalendar({ plans14d, onSegmentClick }: PlanStreakCalen
         <span className="viz-plan-streak__count">{planned} of {plans14d.length} days planned</span>
       </div>
       <svg width={svgW} height={svgH} viewBox={`0 0 ${svgW} ${svgH}`} className="viz-svg"
-        role="img" aria-label={`Plan streak: ${planned} of ${plans14d.length} days planned`}>
+        role={onSegmentClick ? "group" : "img"}
+        aria-label={`Plan streak: ${planned} of ${plans14d.length} days planned`}>
         {cells.map((val, idx) => {
           const row = Math.floor(idx / cols);
           const col = idx % cols;
@@ -2046,7 +2049,7 @@ export function ComplexityTrendCalendar({ data, onSegmentClick }: ComplexityTren
   if (trimmed.length === 0) return null;
 
   return (
-    <div className="viz-complexity-cal" role="img" aria-label="Peak complexity over 14 days">
+    <div className="viz-complexity-cal" role={onSegmentClick ? "group" : "img"} aria-label="Peak complexity over 14 days">
       <div className="viz-header">
         <span className="t-eyebrow viz-title">Complexity · 14 Days</span>
       </div>
@@ -2119,7 +2122,7 @@ export function InterventionTimeline({ records, onDotClick }: IntTimelineProps) 
   const pad = 12;
 
   return (
-    <div className="viz-int-timeline" role="img" aria-label={`${sorted.length} interventions over time`}>
+    <div className="viz-int-timeline" role={onDotClick ? "group" : "img"} aria-label={`${sorted.length} interventions over time`}>
       <div className="viz-header">
         <span className="t-eyebrow viz-title">Intervention Timeline</span>
         <span className="t-eyebrow viz-subtitle">{sorted.length} records</span>
@@ -2344,7 +2347,7 @@ export function VariantSummaryStrip({ variants, onSegmentClick }: VariantSummary
   const maxMin = Math.max(...variants.map((v) => v.estimated_minutes), 1);
 
   return (
-    <div className="viz-variant-strip" role="img" aria-label="Variant summary">
+    <div className="viz-variant-strip" role={onSegmentClick ? "group" : "img"} aria-label="Variant summary">
       {variants.map((v, i) => {
         const inner = (
           <>
@@ -2597,7 +2600,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
   ];
 
   return (
-    <div className="viz-plan-radar viz-plan-radar--compass" role="img" aria-label="Plan coverage radar">
+    <div className="viz-plan-radar viz-plan-radar--compass" role={onSegmentClick ? "group" : "img"} aria-label="Plan coverage radar">
       <header className="viz-plan-radar__head">
         <div className="viz-plan-radar__head-copy">
           <span className="viz-plan-radar__eyebrow t-eyebrow">Plan compass</span>
