@@ -53,6 +53,15 @@ export function checkpointAll(): void {
   }
 }
 
+export function closeDb(classroomId: ClassroomId): void {
+  const db = connections.get(classroomId);
+  if (db) {
+    try { db.pragma("wal_checkpoint(TRUNCATE)"); } catch { /* ignore */ }
+    db.close();
+    connections.delete(classroomId);
+  }
+}
+
 export function closeAll(): void {
   checkpointAll();
   for (const db of connections.values()) db.close();
