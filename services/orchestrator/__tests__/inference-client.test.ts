@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { mkdtempSync, rmSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { callInference, callInferenceStream } from "../inference-client.js";
+import { callInference, callInferenceStream, __testables } from "../inference-client.js";
 import { getRequestContext } from "../request-context.js";
 import {
   getTodaySpendUsd,
@@ -759,5 +759,26 @@ describe("callInference — cost budget gate", () => {
       prompt: { system: "sys", user: "user" },
       maxTokens: 128,
     })).resolves.toBeDefined();
+  });
+});
+
+describe("isRetryableErrorBody", () => {
+  const { isRetryableErrorBody } = __testables;
+
+  it("retries on upstream Gemini 504 deadline_exceeded wrapped in inference-service body", () => {
+    const body = `{"error":"504 DEADLINE_EXCEEDED. {'error': {'code': 504, 'message': 'Deadline expired before operation could complete.', 'status': 'DEADLINE_EXCEEDED'}}","latency_ms":97675}`;
+    expect(isRetryableErrorBody(body)).toBe(true);
+  });
+
+  it("retries on lowercase deadline exceeded variant", () => {
+    expect(isRetryableErrorBody("error: deadline exceeded after 95s")).toBe(true);
+  });
+
+  it("does NOT retry on schema validation errors", () => {
+    expect(isRetryableErrorBody('{"error":"missing required field: classroom_id"}')).toBe(false);
+  });
+
+  it("retries on connection reset (regression — pre-existing token)", () => {
+    expect(isRetryableErrorBody("connection reset by peer")).toBe(true);
   });
 });
