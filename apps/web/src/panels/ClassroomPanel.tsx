@@ -11,6 +11,7 @@ import {
 } from "../api";
 import type { NavTarget } from "../appReducer";
 import SectionSkeleton from "../components/SectionSkeleton";
+import CohortSparklineGrid from "../components/CohortSparklineGrid";
 import ErrorBanner from "../components/ErrorBanner";
 import HealthBar from "../components/HealthBar";
 import StudentRoster from "../components/StudentRoster";
@@ -417,6 +418,34 @@ export default function ClassroomPanel({
           />
         ) : (
           <SectionSkeleton label="Loading watchlist" variant="story" lines={2} />
+        )}
+      </section>
+
+      {/* ============================================================
+          ZONE 3.5 — COHORT PULSE
+          14-day per-student intervention sparkline grid.
+          Pre-attentive outlier scan that complements the top-N
+          Watchlist with an everyone-at-once view.
+          ============================================================ */}
+      <section className="classroom-section" aria-labelledby="classroom-cohort-pulse-heading">
+        <div className="classroom-section__header">
+          <div>
+            <span className="classroom-section__eyebrow">Cohort pulse</span>
+            <h3 id="classroom-cohort-pulse-heading" className="classroom-section__title">
+              14-day intervention pulse
+            </h3>
+          </div>
+          <p className="classroom-section__caption">
+            Each cell is one student. Tall recent peaks = active attention this week. Faint dashed line = cohort average.
+          </p>
+        </div>
+        {studentSummaries.result && studentSummaries.result.length > 0 ? (
+          <CohortSparklineGrid
+            students={studentSummaries.result}
+            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+          />
+        ) : (
+          <SectionSkeleton label="Loading cohort pulse" variant="story" lines={2} />
         )}
       </section>
 
