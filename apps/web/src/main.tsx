@@ -1,8 +1,16 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import ErrorBoundary from "./components/ErrorBoundary";
-import { reportError } from "./errorReporter";
+import { addErrorTransport, reportError } from "./errorReporter";
+import { createSentryTransport } from "./transports/sentry";
 import App from "./App";
+
+addErrorTransport(
+  createSentryTransport({
+    dsn: import.meta.env.VITE_SENTRY_DSN ?? "",
+    environment: import.meta.env.MODE,
+  }),
+);
 import "./styles/fonts.css";
 import "./styles/tokens.css";
 import "./tokens.css";
