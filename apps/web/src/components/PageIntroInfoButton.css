@@ -1,8 +1,9 @@
 /* PageIntroInfoButton — compact ⓘ affordance in the PageIntro header.
-   Popover opens below the trigger, aligned to the left edge. */
+   The popover surface (border, shadow, bg, motion) is provided by the
+   shared Popover primitive. Width override lives below as
+   `.page-intro-info-popover`. 2026-04-25 migration. */
 
 .page-intro-info {
-  position: relative;
   display: inline-flex;
   align-items: center;
   margin-left: var(--space-2);
@@ -40,18 +41,12 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-.page-intro-info__pop {
-  position: absolute;
-  top: calc(100% + var(--space-1));
-  left: 0;
-  z-index: 14;
-  width: min(22rem, 80vw);
+/* Surface override — info popovers are content-rich (heading + body)
+   and want a wider, comfortable reading column than a default menu. */
+.page-intro-info-popover {
+  min-width: min(22rem, 80vw);
+  max-width: min(22rem, calc(100vw - 16px));
   padding: var(--space-3);
-  background: var(--color-surface-elevated);
-  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md), var(--inner-stroke);
-  animation: fade-up var(--motion-fast) var(--ease-out-expo) both;
 }
 
 .page-intro-info__title {

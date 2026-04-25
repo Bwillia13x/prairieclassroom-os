@@ -86,7 +86,7 @@ class ModelTier(Enum):
 
 DEFAULT_GEMINI_HTTP_TIMEOUT_MS_BY_TIER = {
     ModelTier.LIVE: 100_000,
-    ModelTier.PLANNING: 120_000,
+    ModelTier.PLANNING: 180_000,
 }
 
 

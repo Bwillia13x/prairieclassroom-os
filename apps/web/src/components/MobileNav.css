@@ -9,9 +9,17 @@
     linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 64%, transparent), color-mix(in srgb, var(--color-surface-elevated) 12%, transparent)),
     var(--color-surface);
   border-top: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  /* Top-edge lift for the bottom-anchored mobile nav. Light alpha matches
+     --_shadow-lg-b (0.07); dark alpha is intentionally heavier (0.20 vs
+     canonical 0.11) because the floating chrome needs more separation
+     from the near-black workspace than a normal elevated surface does.
+     Documented here so the deviation is visible to future contributors
+     and not silently normalized into --shadow-lg. Decision-log 2026-04-25
+     — color-system audit remediation. */
   box-shadow: 0 -8px 22px light-dark(rgba(17, 24, 39, 0.07), rgba(0, 0, 0, 0.2));
   backdrop-filter: blur(22px) saturate(1.2);
   -webkit-backdrop-filter: blur(22px) saturate(1.2);
+  overflow: hidden;
 }
 
 .mobile-nav-subtabs {
@@ -40,6 +48,20 @@
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-bg-sage) 18%, var(--color-surface));
   text-align: left;
+  box-shadow: var(--inner-stroke);
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-spring);
+}
+
+.mobile-nav-recommended__btn:active {
+  transform: scale(0.99);
+}
+
+.mobile-nav-recommended__btn:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
 }
 
 .mobile-nav-recommended__eyebrow {
@@ -143,6 +165,7 @@
   border-radius: 0;
   background: color-mix(in srgb, var(--color-surface-elevated) 22%, transparent);
   color: var(--color-text-secondary);
+  overflow: hidden;
   will-change: transform;
   transition:
     background-color var(--motion-fast) var(--ease-standard),
@@ -152,6 +175,15 @@
     box-shadow var(--motion-base) var(--ease-spring);
 }
 
+.mobile-nav-group::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 1px;
+  background: color-mix(in srgb, var(--color-border) 34%, transparent);
+  opacity: 0;
+}
+
 .mobile-nav-group:first-child {
   border-left: 0;
 }
@@ -159,7 +191,9 @@
 /* Active state speaks the section's tone — matches the desktop nav's
    cohesive-per-section language without shouting with solid accent. */
 .mobile-nav-group--active {
-  background: color-mix(in srgb, var(--color-surface-elevated) 80%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 74%),
+    color-mix(in srgb, var(--color-surface-elevated) 88%, transparent);
   color: var(--color-accent);
   box-shadow:
     inset 0 2.5px 0 var(--color-accent),
@@ -211,6 +245,7 @@
   font-size: var(--text-2xs);
   font-weight: var(--font-weight-bold);
   animation: success-pop 0.35s var(--ease-spring) both;
+  box-shadow: 0 0 0 2px var(--color-surface);
 }
 
 .mobile-nav-icon {
@@ -229,6 +264,21 @@
 @media (max-width: 600px) {
   .mobile-nav {
     display: block;
+  }
+}
+
+@media (max-width: 380px) {
+  .mobile-nav-groups {
+    padding-inline: max(var(--space-1), env(safe-area-inset-left, var(--space-1)));
+  }
+
+  .mobile-nav-group {
+    min-height: 3.35rem;
+    padding-inline: 0.1rem;
+  }
+
+  .mobile-nav-group-label {
+    font-size: 0.52rem;
   }
 }
 

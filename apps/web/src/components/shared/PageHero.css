@@ -12,6 +12,7 @@
   --page-hero-glow: var(--color-brand-highlight);
 
   position: relative;
+  isolation: isolate;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: var(--space-4);
@@ -27,6 +28,34 @@
     ),
     var(--color-command-surface);
   box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition:
+    border-color var(--motion-base) var(--ease-standard),
+    box-shadow var(--motion-base) var(--ease-standard);
+}
+
+.page-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    linear-gradient(110deg, transparent 0%, color-mix(in srgb, white 5%, transparent) 48%, transparent 68%);
+  opacity: 0.42;
+  mix-blend-mode: soft-light;
+}
+
+.page-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.page-hero:hover {
+  border-color: color-mix(in srgb, var(--color-command-border) 92%, transparent);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 1px color-mix(in srgb, var(--page-hero-rule) 8%, transparent);
 }
 
 @media (min-width: 960px) {
@@ -140,12 +169,21 @@
   cursor: pointer;
   transition: border-color var(--motion-hover) var(--ease-standard),
     background-color var(--motion-hover) var(--ease-standard),
+    box-shadow var(--motion-hover) var(--ease-standard),
     transform var(--motion-fast) var(--ease-press);
 }
 
 .page-hero__pivot:hover {
   border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
   background: color-mix(in srgb, var(--color-surface) 96%, var(--color-bg-accent));
+  box-shadow:
+    var(--inner-stroke),
+    0 8px 18px -16px color-mix(in srgb, var(--page-hero-eyebrow) 45%, transparent);
+  transform: translateY(-1px);
+}
+
+.page-hero__pivot:active {
+  transform: translateY(0.5px) scale(0.99);
 }
 
 .page-hero__pivot:focus-visible {
@@ -194,7 +232,10 @@
   padding: var(--space-3) var(--space-4);
   border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
   border-radius: var(--radius-sm);
-  background: var(--color-surface);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--_pulse-tone, var(--color-accent)) 5%, transparent), transparent 52%),
+    var(--color-surface);
+  box-shadow: var(--inner-stroke);
 }
 
 .page-hero__pulse-row {
@@ -458,5 +499,9 @@
   .page-hero__pulse-metrics,
   .page-hero__metric-group-tiles {
     grid-template-columns: 1fr 1fr;
+  }
+  .page-hero__metric,
+  .page-hero__pulse-metric {
+    min-width: 0;
   }
 }

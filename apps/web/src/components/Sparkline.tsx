@@ -9,10 +9,10 @@ interface Props {
 }
 
 const TONE_COLORS: Record<SectionTone, string> = {
-  sun: "var(--color-section-sun)",
-  sage: "var(--color-section-sage)",
-  slate: "var(--color-section-slate)",
-  forest: "var(--color-section-forest)",
+  sun: "var(--color-section-watchpoint)",
+  sage: "var(--color-section-family)",
+  slate: "var(--color-section-ea)",
+  forest: "var(--color-section-trend)",
   muted: "var(--color-text-tertiary)",
 };
 

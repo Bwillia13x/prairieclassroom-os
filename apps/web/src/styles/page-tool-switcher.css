@@ -246,6 +246,12 @@
   text-align: left !important;
   white-space: normal !important;
   overflow: visible;
+  box-shadow: var(--inner-stroke);
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-base) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-spring);
 }
 
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
@@ -253,10 +259,28 @@
   border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent) !important;
 }
 
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn:hover:not(.page-tool-switcher__btn--active) {
+  border-color: color-mix(in srgb, var(--color-border) 68%, transparent) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 76%, transparent) !important;
+  box-shadow:
+    var(--inner-stroke),
+    0 10px 20px -18px color-mix(in srgb, var(--color-text) 28%, transparent);
+  transform: translateY(-1px);
+}
+
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn:active {
+  transform: translateY(0.5px) scale(0.992);
+}
+
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn--active {
   border-left-color: color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 80%, var(--color-border)) !important;
-  background: color-mix(in srgb, var(--page-command-bg, var(--color-bg-sun)) 26%, var(--color-surface)) !important;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--page-command-bg, var(--color-bg-sun)) 34%, transparent), transparent 58%),
+    var(--color-surface) !important;
   color: var(--color-text) !important;
+  box-shadow:
+    var(--inner-stroke),
+    inset 0 0 0 1px color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 20%, transparent);
 }
 
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn--active::after {

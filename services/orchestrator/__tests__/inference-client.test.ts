@@ -81,6 +81,15 @@ const supportPatternsRoute: RouteConfig = {
   output_schema_version: "0.1.0",
 };
 
+const forecastRoute: RouteConfig = {
+  prompt_class: "forecast_complexity",
+  model_tier: "planning",
+  thinking_enabled: true,
+  retrieval_required: true,
+  tool_call_capable: false,
+  output_schema_version: "0.1.0",
+};
+
 describe("callInference", () => {
   beforeEach(() => {
     vi.unstubAllGlobals();
@@ -202,6 +211,27 @@ describe("callInference", () => {
     expect(getRequestContext(planningRes).timeout_ms).toBe(130_000);
     expect(getRequestContext(eaRes).timeout_ms).toBe(130_000);
     expect(getRequestContext(patternsRes).timeout_ms).toBe(180_000);
+  });
+
+  it("extends hosted complexity forecasts past the Gemini planning client deadline", async () => {
+    vi.stubEnv("PRAIRIE_INFERENCE_PROVIDER", "gemini");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      text: "{\"forecast\":{}}",
+      model_id: "gemma-4-31b-it",
+      latency_ms: 42,
+    }), { status: 200 })));
+
+    const res = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res,
+      route: forecastRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
+    expect(getRequestContext(res).timeout_ms).toBe(180_000);
   });
 
   it("retries retryable HTTP failures only", async () => {

@@ -1,0 +1,175 @@
+/* Popover — portaled floating surface.
+   Mounted at document.body, viewport-fixed, anchored by JS-computed
+   top/left/transform-origin. Lives at z-index 80 (--z-popover): above
+   sticky headers, below modals/drawers/toasts. */
+
+.popover-root {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-popover);
+  pointer-events: none;
+}
+
+.popover-scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--color-text) 18%, transparent);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--motion-fast) var(--ease-standard);
+}
+
+/* Auto scrim: only paint on coarse pointers (touch). Desktop stays clean. */
+@media (pointer: coarse) {
+  .popover-scrim {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* Forced scrim — overrides the auto media query. */
+.popover-scrim[data-scrim-mode="always"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.popover-surface {
+  position: fixed;
+  min-width: 12rem;
+  max-width: min(360px, calc(100vw - 16px));
+  padding: var(--space-1);
+  background: var(--color-surface-elevated);
+  border: 1px solid color-mix(in srgb, var(--color-border) 72%, transparent);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md), var(--inner-stroke);
+  pointer-events: auto;
+  outline: none;
+  /* Gate paint on first measurement so the surface never flashes at (0,0). */
+  opacity: 0;
+  transform: scale(0.96);
+  transition:
+    opacity var(--motion-base) var(--ease-out-expo),
+    transform var(--motion-base) var(--ease-out-expo);
+}
+
+.popover-root[data-ready="true"] .popover-surface {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.popover-surface:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ------------------------------------------------------------
+   Menu — keyboard-navigable list of options inside a popover.
+   Used by Menu.tsx; styling lives here so the popover bundle is
+   self-contained and the styles ship together.
+   ------------------------------------------------------------ */
+
+.popover-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  outline: none;
+}
+
+.popover-menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: var(--control-h-sm);
+  padding: var(--space-2) var(--control-px-sm);
+  border: 0;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-secondary);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: var(--font-weight-medium);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    padding-left var(--motion-fast) var(--ease-standard);
+}
+
+.popover-menu-item:hover,
+.popover-menu-item[data-active="true"] {
+  background: color-mix(in srgb, var(--color-surface-muted) 75%, transparent);
+  color: var(--color-text);
+  /* 2px nudge that follows the cursor/keyboard focus down the list. */
+  padding-left: calc(var(--control-px-sm) + 2px);
+  outline: none;
+}
+
+/* 2px navy left-rule appears on hover/focus.
+   The institutional accent touches the row, signaling "this is the choice"
+   without the heavy bg-fill that often reads as flat in dense menus. */
+.popover-menu-item::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  width: 2px;
+  height: 0;
+  background: var(--color-accent);
+  border-radius: 1px;
+  transform: translateY(0);
+  transition:
+    height var(--motion-fast) var(--ease-out-expo),
+    top var(--motion-fast) var(--ease-out-expo);
+}
+
+.popover-menu-item:hover::before,
+.popover-menu-item[data-active="true"]::before {
+  height: 56%;
+  top: 22%;
+}
+
+.popover-menu-item[aria-checked="true"],
+.popover-menu-item[data-selected="true"] {
+  background: color-mix(in srgb, var(--color-accent-soft) 70%, transparent);
+  color: var(--color-text);
+}
+
+.popover-menu-item:disabled,
+.popover-menu-item[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.popover-menu-item:focus-visible {
+  outline: none; /* the 2px rule + bg already signals focus inside the menu */
+}
+
+/* Inside a menu, an item that is also the trigger's keyboard rover gets
+   a slightly bolder rule so keyboard users can follow the focus visually. */
+.popover-menu-item[data-active="true"]::before {
+  width: 2.5px;
+}
+
+/* ------------------------------------------------------------
+   Reduced motion — collapse all enter/exit and hover transitions
+   to opacity-only. The 2px rule and the padding nudge become
+   immediate state changes rather than animated reveals.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  .popover-surface {
+    transition: opacity var(--motion-fast) var(--ease-standard);
+    transform: none !important;
+  }
+  .popover-menu-item {
+    transition: background-color var(--motion-fast) var(--ease-standard),
+      color var(--motion-fast) var(--ease-standard);
+  }
+  .popover-menu-item::before {
+    transition: none;
+  }
+}

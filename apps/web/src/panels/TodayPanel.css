@@ -31,20 +31,24 @@
   order: 1;
 }
 
-.today-panel .student-coverage {
+.today-panel #today-preview {
   order: 2;
 }
 
-.today-panel .today-workflow-nudge {
+.today-panel .student-coverage {
   order: 3;
 }
 
-.today-panel .today-pulse {
+.today-panel .today-workflow-nudge {
   order: 4;
 }
 
-.today-panel .today-end-marker {
+.today-panel .today-pulse {
   order: 5;
+}
+
+.today-panel .today-end-marker {
+  order: 6;
 }
 
 /* Scroll-padding belongs on the scroll container (.app-main), which
@@ -684,9 +688,6 @@
   --risk-text-primary: var(--color-text);
   --risk-text-secondary: var(--color-text-secondary);
   --risk-row: var(--color-surface);
-  --risk-red: #D71921;
-  --risk-green: #4a9e5c;
-  --risk-amber: #d4a843;
 
   overflow: hidden;
   background: transparent;
@@ -852,9 +853,9 @@
   outline: none;
 }
 
-.risk-windows__peak--high   { border-color: var(--risk-red); }
-.risk-windows__peak--medium { border-color: var(--risk-amber); }
-.risk-windows__peak--low    { border-color: var(--risk-green); }
+.risk-windows__peak--high   { border-color: var(--color-danger); }
+.risk-windows__peak--medium { border-color: var(--color-warning); }
+.risk-windows__peak--low    { border-color: var(--color-success); }
 
 .risk-windows__peak-time {
   color: var(--risk-text-display);
@@ -877,9 +878,9 @@
   white-space: nowrap;
 }
 
-.risk-windows__peak--high   .risk-windows__peak-level { color: var(--risk-red); }
-.risk-windows__peak--medium .risk-windows__peak-level { color: var(--risk-amber); }
-.risk-windows__peak--low    .risk-windows__peak-level { color: var(--risk-green); }
+.risk-windows__peak--high   .risk-windows__peak-level { color: var(--color-text-danger); }
+.risk-windows__peak--medium .risk-windows__peak-level { color: var(--color-text-warning); }
+.risk-windows__peak--low    .risk-windows__peak-level { color: var(--color-text-success); }
 
 .risk-windows__open {
   flex-shrink: 0;
@@ -921,16 +922,16 @@
 .risk-windows .forecast-timeline-segment { min-height: 3.5rem; }
 
 .risk-windows .forecast-timeline-segment--low {
-  background: color-mix(in srgb, var(--risk-green) 22%, var(--risk-row) 78%);
-  color: light-dark(#18583a, #b4d6c1);
+  background: color-mix(in srgb, var(--color-success) 22%, var(--risk-row) 78%);
+  color: var(--color-text-success);
 }
 .risk-windows .forecast-timeline-segment--medium {
-  background: color-mix(in srgb, var(--risk-amber) 28%, var(--risk-row) 72%);
-  color: light-dark(#5c3a00, #f1d49b);
+  background: color-mix(in srgb, var(--color-warning) 28%, var(--risk-row) 72%);
+  color: var(--color-text-warning);
 }
 .risk-windows .forecast-timeline-segment--high {
-  background: color-mix(in srgb, var(--risk-red) 28%, var(--risk-row) 72%);
-  color: light-dark(#7a1116, #ffb5b9);
+  background: color-mix(in srgb, var(--color-danger) 28%, var(--risk-row) 72%);
+  color: var(--color-text-danger);
 }
 
 .risk-windows__ledger {
@@ -1003,9 +1004,9 @@
   font-weight: var(--font-weight-semibold);
 }
 
-.risk-windows__row--high   .risk-windows__row-level { color: var(--risk-red); }
-.risk-windows__row--medium .risk-windows__row-level { color: var(--risk-amber); }
-.risk-windows__row--low    .risk-windows__row-level { color: var(--risk-green); }
+.risk-windows__row--high   .risk-windows__row-level { color: var(--color-text-danger); }
+.risk-windows__row--medium .risk-windows__row-level { color: var(--color-text-warning); }
+.risk-windows__row--low    .risk-windows__row-level { color: var(--color-text-success); }
 
 .plan-recap-priority-btn {
   display: block;
@@ -1222,9 +1223,9 @@
 .today-health-error {
   padding: var(--space-3) var(--space-4);
   background: transparent;
-  border: 1px solid var(--risk-red, #D71921);
+  border: 1px solid var(--color-danger);
   border-radius: 2px;
-  color: var(--risk-red, #D71921);
+  color: var(--color-text-danger);
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   letter-spacing: 0.08em;

@@ -72,8 +72,8 @@ def test_env_key_lookup_prefers_prairie_env(monkeypatch: pytest.MonkeyPatch) -> 
     assert backend.client.api_key == "prairie-key"
     assert backend.client.http_options.timeout == 100_000
     assert backend.http_timeout_ms_by_tier[ModelTier.LIVE] == 100_000
-    assert backend.http_timeout_ms_by_tier[ModelTier.PLANNING] == 120_000
-    assert backend.client_by_tier[ModelTier.PLANNING].http_options.timeout == 120_000
+    assert backend.http_timeout_ms_by_tier[ModelTier.PLANNING] == 180_000
+    assert backend.client_by_tier[ModelTier.PLANNING].http_options.timeout == 180_000
 
 
 def test_http_timeout_prefers_env_override(monkeypatch: pytest.MonkeyPatch) -> None:

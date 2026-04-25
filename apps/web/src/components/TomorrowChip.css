@@ -1,4 +1,7 @@
-.tomorrow-chip { position: relative; }
+/* The popover surface (border, shadow, bg, motion) is provided by the
+   shared Popover primitive. Width override lives below as
+   `.tomorrow-chip-popover`. 2026-04-25 migration. */
+.tomorrow-chip { display: inline-flex; }
 
 .tomorrow-chip__trigger {
   display: inline-flex;
@@ -37,18 +40,12 @@
   text-align: center;
 }
 
-.tomorrow-chip__popover {
-  position: absolute;
-  top: calc(100% + var(--space-2));
-  left: 0;
+/* Surface override — list of queued actions wants a comfortable reading
+   width and a defined max-height so long lists scroll inside the surface. */
+.tomorrow-chip-popover {
   min-width: 280px;
-  max-width: min(360px, calc(100vw - var(--space-4)));
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-lg);
+  max-width: min(360px, calc(100vw - 16px));
   padding: var(--space-3);
-  z-index: 900;
 }
 
 

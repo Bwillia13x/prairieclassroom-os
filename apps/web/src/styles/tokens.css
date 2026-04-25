@@ -73,6 +73,28 @@
   --color-brand-green: light-dark(#184030, #6d9481);
   --color-brand-green-soft: light-dark(#e6ede8, #0e1a14);
 
+  /* Modal scrims — neutral black overlays behind drawers, dialogs, and
+     onboarding. Read identically in both modes (the dark-mode contract
+     §8.1 carve-out for pure-neutral overlays). Tokenized so opacity is
+     centrally tunable and the three current call sites cannot drift.
+     --scrim-soft     drawers, contextual overlays (DrillDownDrawer,
+                      OnboardingOverlay)
+     --scrim-strong   identity-decision modals where the underlying UI
+                      should fully recede (RolePromptDialog)
+     Decision-log 2026-04-25 — color-system audit remediation. */
+  --scrim-soft: rgba(0, 0, 0, 0.35);
+  --scrim-strong: rgba(0, 0, 0, 0.55);
+
+  /* Brand-signal critical — vivid red used on Nothing-design alert badges
+     (mobile-nav badge, shell-nav alert badge). Intentionally consistent
+     across modes because it functions as a brand affordance, not a state
+     color: state semantics live on --color-danger / --color-text-danger;
+     this token is reserved for must-see notification chrome only.
+     White-on-this-red measures 5.18:1 (AA for normal text) on both modes.
+     Decision-log 2026-04-25 — color-system audit remediation, promoted
+     out of nothing-theme.css to honor the dark-mode contract. */
+  --color-signal-critical: light-dark(#d71921, #d71921);
+
   /* ------------------------------------------------------------
      Prairie-horizon atmospheric backdrop (2026-04-22 Tier C,
      retuned in the 2026-04-22 de-beige pass).
@@ -187,20 +209,18 @@
   /* Compatibility aliases — legacy component names mapped to the
      canonical theme roles so old call sites cannot fall back to
      hardcoded bootstrap/warm colors. New code should use canonical
-     tokens above. */
+     tokens above.
+
+     The earth-tone aliases (--color-{sun,sage,slate,forest} and the
+     --color-section-{sun,sage,slate,forest} pair) were retired in the
+     2026-04-25 color-system audit after their last consumers
+     (Sparkline.tsx, DataVisualizations.tsx, nothing-theme.css) were
+     migrated to the canonical --color-section-* names. --color-alert
+     was retired in the same pass; use --color-danger directly. */
   --color-text-primary: var(--color-text);
   --color-text-muted: var(--color-text-tertiary);
   --color-surface-secondary: var(--color-surface-muted);
   --color-border-subtle: var(--color-border);
-  --color-alert: var(--color-danger);
-  --color-sun: var(--color-section-watchpoint);
-  --color-sage: var(--color-section-family);
-  --color-slate: var(--color-section-ea);
-  --color-forest: var(--color-section-trend);
-  --color-section-sun: var(--color-section-watchpoint);
-  --color-section-sage: var(--color-section-family);
-  --color-section-slate: var(--color-section-ea);
-  --color-section-forest: var(--color-section-trend);
 
   /* Variant type badge colors */
   --color-variant-core: light-dark(#3f5a7a, #8f98a8);
@@ -439,12 +459,20 @@
      the horizontal/bottom sides — see audit fix B2 / shell.css. */
   --page-content-padding-top: var(--space-5);
 
-  /* Stacking — only sticky affordances are tokenized today. Overlays
-     (DrillDownDrawer 90/91, ShortcutSheet 1000, CommandPalette 1100,
-     toast 9999) still use raw literals by design because they are
-     tightly coupled to their own layering. If that changes, expand
-     this layer list before migrating call sites. */
+  /* Stacking — sticky affordances and popovers are tokenized.
+     Modals/drawers (DrillDownDrawer 90/91, ShortcutSheet 1000,
+     CommandPalette 1100, toast 9999) still use raw literals by
+     design because they are tightly coupled to their own layering.
+     If that changes, expand this layer list before migrating call
+     sites. Popover sits above sticky and below every modal so a
+     dropdown anchored to a sticky header still floats correctly,
+     but a real modal always covers it.
+
+       --z-sticky    10  sticky headers, scroll affordances
+       --z-popover   80  dropdown menus, info popovers, tooltips
+       (90+)             modals, drawers, toasts (raw literals) */
   --z-sticky: 10;
+  --z-popover: 80;
 
   /* Motion — canonical four eases + three durations (2026-04-23 Phase 6).
      All other motion tokens alias into this canonical set so call sites

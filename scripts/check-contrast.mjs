@@ -122,6 +122,7 @@ function parseColor(s) {
 
 function parseTokens(css) {
   const tokens = {};
+  const aliases = {};
   const stripped = css.replace(/\/\*[\s\S]*?\*\//g, "");
   const lines = stripped.split("\n");
 
@@ -146,20 +147,46 @@ function parseTokens(css) {
     }
 
     if (depth === 1) {
-      const m = line.match(/^\s*--([\w-]+):\s*light-dark\(([\s\S]+)\);?\s*$/);
-      if (m) {
-        const name = m[1];
-        const inside = m[2].trim().replace(/;\s*$/, "");
+      const ld = line.match(/^\s*--([\w-]+):\s*light-dark\(([\s\S]+)\);?\s*$/);
+      if (ld) {
+        const name = ld[1];
+        const inside = ld[2].trim().replace(/;\s*$/, "");
         const parts = splitTopLevel(inside.replace(/\)\s*$/, ""), ",");
         if (parts.length === 2) {
           tokens[name] = { light: parts[0], dark: parts[1] };
         }
+      } else {
+        // Capture single-var aliases like `--name: var(--other);` so the
+        // contrast checker can follow one or more levels of indirection.
+        // Anything more complex (color-mix, multi-arg fallbacks, gradients)
+        // is intentionally skipped — those values are not directly contrast-
+        // checkable without a CSS engine.
+        const al = line.match(/^\s*--([\w-]+):\s*var\(--([\w-]+)\)\s*;?\s*$/);
+        if (al) aliases[al[1]] = al[2];
       }
     }
 
     depth += opens - closes;
     if (depth <= 0) done = true;
   }
+
+  // Resolve aliases. Walk the chain up to a small depth so cycles or missing
+  // targets fail safely instead of looping. Resolved tokens are written into
+  // the same map so PAIRS lookups treat them like ordinary light-dark()
+  // declarations.
+  const MAX_DEPTH = 5;
+  for (const name of Object.keys(aliases)) {
+    let target = aliases[name];
+    for (let i = 0; i < MAX_DEPTH; i++) {
+      if (tokens[target]) {
+        tokens[name] = tokens[target];
+        break;
+      }
+      if (!aliases[target]) break;
+      target = aliases[target];
+    }
+  }
+
   return tokens;
 }
 

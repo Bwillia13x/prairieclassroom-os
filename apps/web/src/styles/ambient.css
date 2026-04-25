@@ -475,6 +475,186 @@
 }
 
 /* ================================================================
+   6. PAGE-HERO STAGGER — cross-page reveal parity (2026-04-25)
+   ================================================================
+   TodayHero already cascades on mount (section 3 above). The same
+   cadence is applied to the shared PageHero primitive so the six
+   non-Today pages — Classroom, Tomorrow, Week, Prep, Ops, Review —
+   land with the same sweep instead of popping in flat under
+   `panel-enter`. The lede column reveals top-down from eyebrow → title
+   → caption → pivots → actions; the pulse aside lands at ~200ms so
+   the right rail arrives just after the title settles, reading as a
+   companion beat rather than a duplicate animation.
+
+   Reuses `ambient-hero-rise` (defined in section 3) for visual unity
+   across both hero families. The blanket reduced-motion override in
+   motion.css clamps duration to 0.01ms so static layout is preserved
+   for users who opt out.
+   ================================================================ */
+
+.page-hero__lede > * {
+  animation: ambient-hero-rise 480ms var(--ease-out-expo) both;
+}
+
+.page-hero__lede > *:nth-child(1) { animation-delay:  40ms; }
+.page-hero__lede > *:nth-child(2) { animation-delay: 100ms; }
+.page-hero__lede > *:nth-child(3) { animation-delay: 160ms; }
+.page-hero__lede > *:nth-child(4) { animation-delay: 220ms; }
+.page-hero__lede > *:nth-child(5) { animation-delay: 280ms; }
+
+.page-hero__pulse {
+  animation: ambient-hero-rise 520ms var(--ease-out-expo) 200ms both;
+}
+
+/* The pivot row inside the lede subcascades its buttons so the
+   "LIVE / STAGE / FORECAST" trio reads as a 3-beat reveal instead
+   of a single block landing together. Keeps the existing 220ms
+   parent delay so the pivots' first child still aligns with the
+   lede's pivot slot above. */
+.page-hero__pivots > .page-hero__pivot {
+  animation: ambient-hero-rise 420ms var(--ease-out-expo) both;
+}
+.page-hero__pivots > .page-hero__pivot:nth-child(1) { animation-delay: 260ms; }
+.page-hero__pivots > .page-hero__pivot:nth-child(2) { animation-delay: 320ms; }
+.page-hero__pivots > .page-hero__pivot:nth-child(3) { animation-delay: 380ms; }
+.page-hero__pivots > .page-hero__pivot:nth-child(4) { animation-delay: 440ms; }
+
+/* ================================================================
+   7. PRESS FEEDBACK — hero CTAs and pivots (2026-04-25)
+   ================================================================
+   The today-hero CTA and page-hero pivot already carry hover states
+   but no `:active` press response. Adding a 0.5–1px translateY +
+   spring-back transition on press gives the OS a tactile foundation:
+   the user feels weight on the very first click. Pairs with the
+   existing motion.css `.motion-press` utility but is applied directly
+   so we don't have to thread a prop change through the components.
+
+   Doubled-class on `.today-hero__cta.today-hero__cta` matches the
+   existing TodayHero override pattern (today-hero.css:340) and avoids
+   `!important`.
+   ================================================================ */
+
+.today-hero__cta.today-hero__cta {
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-press),
+    box-shadow var(--motion-fast) var(--ease-press);
+}
+
+.today-hero__cta.today-hero__cta:active:not(:disabled) {
+  transform: translateY(0.5px) scale(0.992);
+  box-shadow: var(--shadow-press);
+  transition-duration: 80ms;
+}
+
+.page-hero__pivot:active:not(:disabled) {
+  transform: scale(0.985);
+  transition-duration: 80ms;
+}
+
+.today-hero__student-chip:active:not(:disabled) {
+  transform: scale(0.97);
+  transition-duration: 80ms;
+}
+
+/* ================================================================
+   8. NEXT-MOVE INVITATION — first-paint accent glow (2026-04-25)
+   ================================================================
+   When the demo classroom lands, the "Open Intervention Log"
+   recommended CTA should feel like the OS is offering it — a
+   one-time soft accent halo that crests after the hero settles
+   (~800ms), pulses for one cycle (~1400ms), and decays. Single
+   iteration, no infinite loop, fill-mode `both` so the resting
+   state is the unilluminated default. This is the single sanctioned
+   "your next move" beat — never replicated on secondary CTAs.
+
+   The keyframe avoids saturating box-shadow since the CTA is already
+   black-fill in light mode (see today-hero.css:343); we paint the
+   glow with a small ring + diffuse halo at peak, then unwind to
+   nothing. Accent is the navy `--color-accent` so the warmth never
+   crosses into the wheat-cognac brand palette.
+   ================================================================ */
+
+@keyframes ambient-cta-invite {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+  }
+  35% {
+    box-shadow:
+      0 0 0 3px color-mix(in srgb, var(--color-accent) 22%, transparent),
+      0 0 22px 0 color-mix(in srgb, var(--color-accent) 30%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+  }
+}
+
+.today-hero__cta.today-hero__cta {
+  animation: ambient-cta-invite 1400ms var(--ease-out-expo) 820ms 1 both;
+}
+
+/* If the user has already interacted (hover / focus) before the invite
+   fires, suppress the glow — the system has already gotten their
+   attention and a fresh halo would feel redundant. */
+.today-hero__cta.today-hero__cta:hover,
+.today-hero__cta.today-hero__cta:focus-visible {
+  animation: none;
+}
+
+/* ================================================================
+   9. BRAND BREATH — ambient glyph pulse (2026-04-25)
+   ================================================================
+   The `.brand-mark__glyph` already carries a static cognac drop-
+   shadow halo (see line 533 above). A 12-second breathing cycle
+   modulates the halo opacity 18% → 26% → 18%, giving the brand
+   mark a "this OS is alive" cue. Cycle is intentionally long so the
+   motion is sub-perceptual at any single glance — judges feel it
+   without naming it. Halo color stays `--shell-control-accent` so
+   it composes with the existing chrome.
+
+   The static `!important` filter at line 533 is overridden during
+   the animation's keyframe interpolation; when reduced-motion clamps
+   duration to 0.01ms, the element snaps to the keyframe-zero state
+   which matches the static fallback exactly.
+   ================================================================ */
+
+@keyframes ambient-glyph-breath {
+  0%, 100% {
+    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent));
+  }
+  50% {
+    filter: drop-shadow(0 0 22px color-mix(in srgb, var(--shell-control-accent) 26%, transparent));
+  }
+}
+
+.brand-mark__glyph {
+  animation: ambient-glyph-breath 12s ease-in-out infinite;
+}
+
+/* ================================================================
+   Reduced-motion fallbacks for sections 6–9 (2026-04-25)
+   ================================================================
+   motion.css already clamps `animation-duration: 0.01ms` and
+   `iteration-count: 1` for `prefers-reduced-motion: reduce`, which
+   collapses the breath, stagger, and invite glow to their resting
+   visual states. Press feedback `:active` transforms remain — they
+   are user-initiated, not autoplaying, and are essential tactile
+   information for low-motion users. The explicit overrides below
+   exist only to suppress static side effects that would otherwise
+   linger after the duration clamp.
+   ================================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .today-hero__cta.today-hero__cta,
+  .brand-mark__glyph,
+  .page-hero__lede > *,
+  .page-hero__pulse,
+  .page-hero__pivots > .page-hero__pivot {
+    animation: none;
+  }
+}
+
+/* ================================================================
    Option B shell chrome — final cascade layer
    ================================================================
    nothing-theme.css intentionally uses high-specificity technical

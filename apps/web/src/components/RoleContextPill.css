@@ -1,6 +1,27 @@
+/* Both role-selection and confirm-downgrade surfaces are now portaled
+   Popovers (apps/web/src/components/popover/). The anchor here just
+   provides inline-flex layout for the trigger pill. 2026-04-25 migration. */
 .role-pill-anchor {
-  position: relative;
   display: inline-flex;
+}
+
+/* Surface override — role menu hosts richer card-style options, so we
+   widen and reset padding compared to a default flat menu. */
+.role-pill-popover {
+  min-width: 18rem;
+  max-width: min(22rem, calc(100vw - 16px));
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+/* Confirm-downgrade — modal-shaped popover (scrim + focus trap). Anchored
+   to the pill on purpose so it reads as a consequence of the pill action. */
+.role-pill-confirm-popover {
+  min-width: 20rem;
+  max-width: min(22rem, calc(100vw - 16px));
+  padding: var(--space-4);
 }
 
 .role-pill {
@@ -83,21 +104,8 @@
   color: var(--color-text-tertiary);
 }
 
-.role-pill__menu {
-  position: absolute;
-  top: calc(100% + var(--space-2));
-  right: 0;
-  min-width: 18rem;
-  padding: var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-elevated);
-  box-shadow: var(--shadow-lg);
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  z-index: 50;
-}
+/* The role menu surface chrome is provided by the Popover primitive plus
+   the .role-pill-popover override above. Layout/contents below. */
 
 .role-pill__menu-header {
   display: inline-flex;
@@ -186,25 +194,12 @@
   line-height: var(--leading-snug);
 }
 
-/* Teacher-downgrade confirm dialog. Anchored to the pill instead of the
- * viewport so it reads as a consequence of the pill action rather than a
- * global modal; tabbing into the cancel/confirm buttons gives keyboard
- * users an obvious escape hatch. */
+/* Teacher-downgrade confirm dialog. Surface chrome lives on the Popover;
+ * the inner content layout is below. */
 .role-pill__confirm {
-  position: absolute;
-  top: calc(100% + var(--space-2));
-  right: 0;
-  min-width: 20rem;
-  max-width: 22rem;
-  padding: var(--space-4);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-lg);
-  background: var(--color-surface-elevated);
-  box-shadow: var(--shadow-lg);
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
-  z-index: 60;
 }
 
 .role-pill__confirm-title {

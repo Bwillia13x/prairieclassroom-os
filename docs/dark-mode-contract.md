@@ -208,9 +208,10 @@ This means **new tokens should prefer `color-mix(in oklch, ...)`**, but **existi
 
 When you change anything that touches color:
 
-1. **Always use tokens.** Component CSS must reference `var(--color-*)` or `var(--ds-*)`. Raw hex, `rgb()`, `rgba()`, and `hsl()` values are forbidden outside of `tokens.css` with two exceptions:
+1. **Always use tokens.** Component CSS must reference `var(--color-*)` or `var(--ds-*)`. Raw hex, `rgb()`, `rgba()`, and `hsl()` values are forbidden outside of `tokens.css` with one exception:
    - Inside `@media print` blocks (print is light-only and token switching is irrelevant)
-   - Pure neutral modal overlays like `rgba(0, 0, 0, 0.3)` that read the same in both modes
+
+   Modal scrims use the canonical `var(--scrim-soft)` / `var(--scrim-strong)` tokens. (Historically they were a per-component `rgba(0, 0, 0, ...)` exception; they were tokenized in the 2026-04-25 color audit so opacity stays consistent across drawers, dialogs, and onboarding.)
 2. **Never write `@media (prefers-color-scheme: dark)` overrides in component CSS.** The switching is centralized in `tokens.css` via `light-dark()`. If you need a dark-only value, wrap it in `light-dark(<light>, <dark>)` at the token level.
 3. **Always run `npm run check:contrast`** after any change to `styles/tokens.css`. A green gate is the minimum bar.
 4. **Update this document** if you change the switching mechanism, introduce a new accessibility override, or change the decorative-vs-affordance border distinction.

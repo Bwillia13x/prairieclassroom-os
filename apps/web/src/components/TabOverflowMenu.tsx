@@ -1,17 +1,17 @@
 /**
- * TabOverflowMenu — "More ▾" dropdown for sub-tabs that don't fit in
- * the visible tabstrip. The parent measures which tabs overflow and
- * passes them in; this component renders the trigger + a menu of
- * hidden tabs with arrow-key cycling and Escape-to-close.
+ * TabOverflowMenu — "More ▾" dropdown for sub-tabs that don't fit in the
+ * visible tabstrip. The parent measures which tabs overflow and passes
+ * them in; this component renders the trigger + delegates the floating
+ * menu to the shared Popover/Menu primitive.
  *
- * Accessibility: the trigger is a `button` with `aria-haspopup="menu"`
- * and `aria-expanded`; the menu items are `role="menuitem"`. A hidden
- * tab that is actually selected renders the trigger in an active state
- * so teachers can still tell where they are.
- *
- * 2026-04-19 OPS audit — part of the overflow-safe sub-tab row.
+ * 2026-04-25 — migrated to Popover/Menu. Previously the menu rendered as
+ * an inline sibling of the trigger inside the horizontally-scrolling
+ * tabstrip; the absolute-positioned overlay was clipped by the scroll
+ * container and pushed the nav layout when the user opened it. Popover
+ * portals the surface into document.body and positions it via fixed
+ * coordinates, so the layout is no longer disturbed.
  */
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import {
   TAB_META,
   TOOL_META,
@@ -20,6 +20,7 @@ import {
   type ActiveTab,
   type NavTarget,
 } from "../appReducer";
+import { Menu, MenuItem, Popover } from "./popover";
 
 interface Props {
   tabs: NavTarget[];
@@ -37,89 +38,38 @@ function labelFor(target: NavTarget): string {
 
 export default function TabOverflowMenu({ tabs, activeTab, onSelect, getBadgeCount }: Props) {
   const [open, setOpen] = useState(false);
-  const [activeIdx, setActiveIdx] = useState(0);
+  const [initialIdx, setInitialIdx] = useState(0);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const menuId = useId();
   const activeInOverflow = tabs.includes(activeTab);
   const hiddenBadgeTotal = getBadgeCount
     ? tabs.reduce((sum, t) => sum + (getBadgeCount(t) || 0), 0)
     : 0;
 
-  const closeMenu = useCallback(() => {
+  function close() {
     setOpen(false);
-    triggerRef.current?.focus();
-  }, []);
+  }
 
-  // Outside click + Escape close. Only bind while open to avoid leaking handlers.
-  useEffect(() => {
-    if (!open) return;
-
-    function handlePointerDown(e: MouseEvent) {
-      const target = e.target as Node;
-      if (
-        !menuRef.current?.contains(target) &&
-        !triggerRef.current?.contains(target)
-      ) {
-        setOpen(false);
-      }
-    }
-    function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        closeMenu();
-      }
-    }
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [open, closeMenu]);
-
-  // Move DOM focus to the highlighted menuitem whenever it changes.
-  useEffect(() => {
-    if (!open) return;
-    itemRefs.current[activeIdx]?.focus();
-  }, [activeIdx, open]);
+  function handleTriggerClick() {
+    setInitialIdx(Math.max(0, tabs.indexOf(activeTab)));
+    setOpen((o) => !o);
+  }
 
   function handleTriggerKeyDown(e: React.KeyboardEvent<HTMLButtonElement>) {
     if (e.key === "ArrowDown" || e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      setActiveIdx(0);
+      setInitialIdx(0);
       setOpen(true);
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActiveIdx(tabs.length - 1);
+      setInitialIdx(tabs.length - 1);
       setOpen(true);
-    }
-  }
-
-  function handleMenuKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setActiveIdx((i) => (i + 1) % tabs.length);
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActiveIdx((i) => (i - 1 + tabs.length) % tabs.length);
-    } else if (e.key === "Home") {
-      e.preventDefault();
-      setActiveIdx(0);
-    } else if (e.key === "End") {
-      e.preventDefault();
-      setActiveIdx(tabs.length - 1);
-    } else if (e.key === "Tab") {
-      // Tab away closes the menu so focus goes back to the outer tabstrip.
-      setOpen(false);
     }
   }
 
   function choose(tab: NavTarget) {
     onSelect(tab);
     setOpen(false);
-    triggerRef.current?.focus();
   }
 
   return (
@@ -131,10 +81,7 @@ export default function TabOverflowMenu({ tabs, activeTab, onSelect, getBadgeCou
         aria-haspopup="menu"
         aria-expanded={open}
         aria-controls={menuId}
-        onClick={() => {
-          setActiveIdx(Math.max(0, tabs.indexOf(activeTab)));
-          setOpen((o) => !o);
-        }}
+        onClick={handleTriggerClick}
         onKeyDown={handleTriggerKeyDown}
         data-testid="shell-nav-tabs-overflow-trigger"
       >
@@ -149,30 +96,27 @@ export default function TabOverflowMenu({ tabs, activeTab, onSelect, getBadgeCou
           </span>
         ) : null}
       </button>
-      {open ? (
-        <div
-          ref={menuRef}
-          id={menuId}
-          role="menu"
-          className="shell-nav__tabs-overflow-menu"
-          aria-label="More tools"
-          onKeyDown={handleMenuKeyDown}
+      <Popover
+        open={open}
+        onClose={close}
+        anchorRef={triggerRef}
+        placement="bottom-end"
+        role="menu"
+        id={menuId}
+        ariaLabel="More tools"
+      >
+        <Menu
+          ariaLabel="More tools"
+          initialActiveIndex={initialIdx}
+          onClose={close}
         >
-          {tabs.map((tab, i) => {
+          {tabs.map((tab) => {
             const count = getBadgeCount ? getBadgeCount(tab) : 0;
             return (
-              <button
+              <MenuItem
                 key={tab}
-                ref={(el) => {
-                  itemRefs.current[i] = el;
-                }}
-                type="button"
-                role="menuitem"
-                tabIndex={-1}
-                className={`shell-nav__tabs-overflow-item${
-                  activeTab === tab ? " shell-nav__tabs-overflow-item--active" : ""
-                }`}
-                onClick={() => choose(tab)}
+                onSelect={() => choose(tab)}
+                selected={activeTab === tab}
               >
                 <span>{labelFor(tab)}</span>
                 {count > 0 ? (
@@ -183,11 +127,11 @@ export default function TabOverflowMenu({ tabs, activeTab, onSelect, getBadgeCou
                     {count}
                   </span>
                 ) : null}
-              </button>
+              </MenuItem>
             );
           })}
-        </div>
-      ) : null}
+        </Menu>
+      </Popover>
     </div>
   );
 }

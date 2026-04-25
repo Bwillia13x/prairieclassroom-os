@@ -82,6 +82,7 @@ const GEMINI_TIMEOUT_BY_TIER = {
 } as const;
 const GEMINI_TIMEOUT_BY_PROMPT_CLASS: Partial<Record<RouteConfig["prompt_class"], number>> = {
   detect_support_patterns: 180_000,
+  forecast_complexity: 180_000,
   generate_ea_briefing: 130_000,
 } as const;
 

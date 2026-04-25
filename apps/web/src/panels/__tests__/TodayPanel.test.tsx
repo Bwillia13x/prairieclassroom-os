@@ -528,6 +528,20 @@ describe("TodayPanel", () => {
     ).toBeTruthy();
   });
 
+  it("keeps the Today operational preview visually below the command center", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const cssPath = path.resolve(
+      __dirname,
+      "..",
+      "TodayPanel.css",
+    );
+    const css = fs.readFileSync(cssPath, "utf8");
+
+    expect(css).toMatch(/\.today-panel #command-center\s*{[^}]*order:\s*1/s);
+    expect(css).toMatch(/\.today-panel #today-preview\s*{[^}]*order:\s*2/s);
+  });
+
   it("renders DayArc before PendingActionsCard in the hero row", async () => {
     mockedFetchTodaySnapshot.mockResolvedValue(makeSnapshot());
     mockedFetchClassroomHealth.mockResolvedValue(makeHealth());

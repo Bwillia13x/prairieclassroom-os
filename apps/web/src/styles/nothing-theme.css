@@ -1481,7 +1481,7 @@
 }
 
 .shell-nav__badge--alert {
-  background: var(--color-alert);
+  background: var(--color-danger);
   color: var(--color-text-on-danger);
   border: 1px solid transparent;
 }
@@ -1755,9 +1755,6 @@
 
 .app-header__inner,
 .app-main,
-.shell-classroom-panel,
-.role-pill__menu,
-.role-pill__confirm,
 .command-palette,
 .shortcut-sheet,
 .access-dialog,
@@ -1829,24 +1826,18 @@
   }
 }
 
-/* Classroom switcher popover anchoring — pinned to its trigger pill,
-   not the viewport. Canonical positioning lives here so the panel
-   never drifts mid-page across viewport widths. */
+/* The classroom switcher is now a portaled Popover (2026-04-25); its
+   positioning lives in the Popover primitive (apps/web/src/components/
+   popover/Popover.css). The previous absolute-positioning rules here
+   were retired because the panel is no longer a child of its trigger.
+   `.shell-classroom-anchor` keeps its grid placement; nothing more. */
 .shell-classroom-anchor {
   position: relative;
 }
-.shell-classroom-panel {
-  position: absolute;
-  top: calc(100% + var(--space-2));
-  left: 0;
-  right: auto;
-  width: max(320px, 100%);
-  z-index: 50;
-}
 
-.shell-classroom-panel,
-.role-pill__menu,
-.role-pill__confirm,
+/* Role-pill menu and confirm dialog moved to Popover (2026-04-25); their
+   chrome lives on the Popover surface. The remaining entries are still
+   bespoke modals/drawers with their own surface contracts. */
 .command-palette,
 .shortcut-sheet,
 .access-dialog,
@@ -2260,12 +2251,21 @@ textarea {
   border-radius: 2px !important;
 }
 
+/* Motion suppression on transitional surfaces only.
+   The `.workspace-page *` blanket previously listed here (retired
+   2026-04-25) was overly broad — it silently killed the sanctioned
+   ambient hero staggers, the brand glyph breath, and the next-move
+   invite glow that ambient.css §3, §6, §8, §9 explicitly ship.
+   `.day-arc *` is retained because the DayArc visualization carries
+   its own narrative animation that conflicts with naive cascade.
+   `.workspace-page *` was removed because the ambient layer is the
+   right place to coordinate workspace-interior motion, not a
+   blanket kill switch. */
 .shell-nav__tabs-frame,
 .app-main > div,
 [role="tabpanel"],
 .page-transition,
 .animate-in,
-.workspace-page *,
 .day-arc * {
   animation: none !important;
   animation-name: none !important;
@@ -2313,7 +2313,7 @@ textarea {
 /* ---------- Nothing buttons v2 — circular utilities + signal pills ---------- */
 
 :root {
-  --nothing-button-signal: #d71921;
+  --nothing-button-signal: var(--color-signal-critical);
   --nothing-button-border: color-mix(in srgb, var(--color-border-strong) 74%, transparent);
   --nothing-button-border-hover: color-mix(in srgb, var(--color-text) 40%, transparent);
   --nothing-button-hover: color-mix(in srgb, var(--color-surface-muted) 84%, var(--color-surface));
@@ -3449,7 +3449,7 @@ textarea {
   border-radius: 999px;
   border: 1px solid var(--nothing-button-signal);
   background: var(--nothing-button-signal) !important;
-  color: #ffffff !important;
+  color: var(--color-text-on-danger) !important;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
@@ -3551,7 +3551,7 @@ textarea {
   border-radius: 999px !important;
   border: 1px solid var(--nothing-button-signal) !important;
   background: var(--nothing-button-signal) !important;
-  color: #ffffff !important;
+  color: var(--color-text-on-danger) !important;
 }
 
 .app-footer__shortcuts-btn {

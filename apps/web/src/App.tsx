@@ -28,6 +28,7 @@ import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
 import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
 import RoleContextPill from "./components/RoleContextPill";
+import { Popover } from "./components/popover";
 import RoleEscapeBanner from "./components/RoleEscapeBanner";
 import RolePromptDialog from "./components/RolePromptDialog";
 import ClassroomPanel from "./panels/ClassroomPanel";
@@ -94,7 +95,7 @@ export default function App() {
   const classroomsRef = useRef<ClassroomProfile[]>(state.classrooms);
   const classroomCodesRef = useRef(state.classroomAccessCodes);
   const classroomRolesRef = useRef(state.classroomRoles);
-  const classroomMenuRef = useRef<HTMLDivElement>(null);
+  const classroomTriggerRef = useRef<HTMLButtonElement>(null);
   const appShellRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
@@ -471,29 +472,10 @@ export default function App() {
     setClassroomMenuOpen(false);
   }, [state.activeClassroom, state.authPrompt]);
 
-  useEffect(() => {
-    if (!classroomMenuOpen) return;
-
-    function handlePointerDown(event: MouseEvent) {
-      if (!classroomMenuRef.current?.contains(event.target as Node)) {
-        setClassroomMenuOpen(false);
-      }
-    }
-
-    function handleEscape(event: KeyboardEvent) {
-      if (event.key === "Escape") {
-        setClassroomMenuOpen(false);
-      }
-    }
-
-    document.addEventListener("mousedown", handlePointerDown);
-    document.addEventListener("keydown", handleEscape);
-
-    return () => {
-      document.removeEventListener("mousedown", handlePointerDown);
-      document.removeEventListener("keydown", handleEscape);
-    };
-  }, [classroomMenuOpen]);
+  // Outside-click and ESC handling are now provided by the Popover surface
+  // that renders the classroom switcher panel. The previous useEffect was
+  // duplicated across five dropdowns in this codebase; centralizing the
+  // primitive removed the duplication. 2026-04-25.
 
   // Canonical URL write — always emit top-level `tab` + optional `tool`.
   // Legacy `?tab=<old-tool>` links get migrated on the first write after
@@ -823,13 +805,15 @@ export default function App() {
                 <BrandMark className="app-logo" />
               </div>
 
-              <div className="shell-classroom-anchor" ref={classroomMenuRef}>
+              <div className="shell-classroom-anchor">
                 <button
+                  ref={classroomTriggerRef}
                   id="shell-classroom-trigger"
                   className={`shell-classroom-pill${classroomMenuOpen ? " shell-classroom-pill--open" : ""}`}
                   type="button"
                   onClick={() => setClassroomMenuOpen((open) => !open)}
                   aria-expanded={classroomMenuOpen}
+                  aria-haspopup="dialog"
                   aria-controls="shell-classroom-panel"
                   disabled={!profile}
                 >
@@ -843,57 +827,65 @@ export default function App() {
                   <span className="shell-classroom-pill__caret" aria-hidden="true">⌄</span>
                 </button>
 
-                {classroomMenuOpen && profile ? (
-                  <div
-                    id="shell-classroom-panel"
-                    className="shell-classroom-panel"
-                  >
-                    <div className="field shell-classroom-field">
-                      <label htmlFor="shell-classroom">Switch classroom</label>
-                      <select
-                        id="shell-classroom"
-                        value={activeClassroom}
-                        onChange={(e) => {
-                          setClassroomMenuOpen(false);
-                          setActiveClassroom(e.target.value);
-                        }}
-                        disabled={state.classrooms.length === 0}
-                      >
-                        {state.classrooms.map((classroom) => (
-                          <option key={classroom.classroom_id} value={classroom.classroom_id}>
-                            {describeClassroom(classroom)}
-                            {classroom.is_demo ? " · demo" : ""}
-                            {classroom.requires_access_code ? " · protected" : ""}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
+                <Popover
+                  open={classroomMenuOpen && !!profile}
+                  onClose={() => setClassroomMenuOpen(false)}
+                  anchorRef={classroomTriggerRef}
+                  placement="bottom-start"
+                  role="dialog"
+                  id="shell-classroom-panel"
+                  ariaLabel="Switch classroom"
+                  surfaceClassName="shell-classroom-popover"
+                >
+                  {profile ? (
+                    <div className="shell-classroom-panel">
+                      <div className="field shell-classroom-field">
+                        <label htmlFor="shell-classroom">Switch classroom</label>
+                        <select
+                          id="shell-classroom"
+                          value={activeClassroom}
+                          onChange={(e) => {
+                            setClassroomMenuOpen(false);
+                            setActiveClassroom(e.target.value);
+                          }}
+                          disabled={state.classrooms.length === 0}
+                        >
+                          {state.classrooms.map((classroom) => (
+                            <option key={classroom.classroom_id} value={classroom.classroom_id}>
+                              {describeClassroom(classroom)}
+                              {classroom.is_demo ? " · demo" : ""}
+                              {classroom.requires_access_code ? " · protected" : ""}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
 
-                    <section className="shell-classroom-panel__snapshot" aria-label="Active classroom details">
-                      <div className="shell-classroom-panel__topline">
-                        <span className="shell-classroom-panel__eyebrow">Classroom status</span>
-                        <div className="shell-classroom-panel__chips">
-                          {profile.is_demo ? <StatusChip label="Demo lane" tone="slate" icon={<SectionIcon name="info" className="shell-nav__group-icon" />} /> : null}
-                          <StatusChip
-                            label={profile.requires_access_code ? "Protected classroom" : "Open classroom"}
-                            tone={profile.requires_access_code ? "pending" : "success"}
-                            icon={<SectionIcon name={profile.requires_access_code ? "lock" : "check"} className="shell-nav__group-icon" />}
-                          />
-                          {accessSaved ? <StatusChip label="Access saved locally" tone="provenance" icon={<SectionIcon name="refresh" className="shell-nav__group-icon" />} /> : null}
+                      <section className="shell-classroom-panel__snapshot" aria-label="Active classroom details">
+                        <div className="shell-classroom-panel__topline">
+                          <span className="shell-classroom-panel__eyebrow">Classroom status</span>
+                          <div className="shell-classroom-panel__chips">
+                            {profile.is_demo ? <StatusChip label="Demo lane" tone="slate" icon={<SectionIcon name="info" className="shell-nav__group-icon" />} /> : null}
+                            <StatusChip
+                              label={profile.requires_access_code ? "Protected classroom" : "Open classroom"}
+                              tone={profile.requires_access_code ? "pending" : "success"}
+                              icon={<SectionIcon name={profile.requires_access_code ? "lock" : "check"} className="shell-nav__group-icon" />}
+                            />
+                            {accessSaved ? <StatusChip label="Access saved locally" tone="provenance" icon={<SectionIcon name="refresh" className="shell-nav__group-icon" />} /> : null}
+                          </div>
                         </div>
-                      </div>
-                      <div className="shell-classroom-panel__title-row">
-                        <strong className="shell-classroom-panel__title">{activeClassroomLabel}</strong>
-                        <span className="shell-classroom-panel__id" data-testid="shell-classroom-active-id">{profile.classroom_id}</span>
-                      </div>
-                      <div className="shell-classroom-panel__details">
-                        <span>{students.length} students</span>
-                        <span>{activeClassroomMeta}</span>
-                        {profile.requires_access_code ? <span>{accessSaved ? "Access saved in this browser" : "Classroom code required"}</span> : null}
-                      </div>
-                    </section>
-                  </div>
-                ) : null}
+                        <div className="shell-classroom-panel__title-row">
+                          <strong className="shell-classroom-panel__title">{activeClassroomLabel}</strong>
+                          <span className="shell-classroom-panel__id" data-testid="shell-classroom-active-id">{profile.classroom_id}</span>
+                        </div>
+                        <div className="shell-classroom-panel__details">
+                          <span>{students.length} students</span>
+                          <span>{activeClassroomMeta}</span>
+                          {profile.requires_access_code ? <span>{accessSaved ? "Access saved in this browser" : "Classroom code required"}</span> : null}
+                        </div>
+                      </section>
+                    </div>
+                  ) : null}
+                </Popover>
               </div>
 
               <div className="shell-bar__actions">

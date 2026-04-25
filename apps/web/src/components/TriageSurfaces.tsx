@@ -11,6 +11,7 @@ import {
 } from "../appReducer";
 import { roleCapabilities } from "../hooks/useRole";
 import SectionIcon from "./SectionIcon";
+import { Menu, MenuItem, Popover } from "./popover";
 import "./TriageSurfaces.css";
 
 type AtlasColumnId = "message" | "intervention" | "plan" | "forecast" | "ea" | "sub";
@@ -606,7 +607,7 @@ export function StudentCoverageStrip({
   const sectionRef = useRef<HTMLElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const chipRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
-  const moreRef = useRef<HTMLDivElement | null>(null);
+  const moreTriggerRef = useRef<HTMLButtonElement | null>(null);
 
   const filterCounts = useMemo(
     () => ({
@@ -688,22 +689,8 @@ export function StudentCoverageStrip({
     chip?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
   }, [selectedAlias]);
 
-  // Dismiss the "more filters" menu on outside click / Escape.
-  useEffect(() => {
-    if (!menuOpen) return;
-    const handleMouse = (event: MouseEvent) => {
-      if (!moreRef.current?.contains(event.target as Node)) setMenuOpen(false);
-    };
-    const handleKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setMenuOpen(false);
-    };
-    document.addEventListener("mousedown", handleMouse);
-    document.addEventListener("keydown", handleKey);
-    return () => {
-      document.removeEventListener("mousedown", handleMouse);
-      document.removeEventListener("keydown", handleKey);
-    };
-  }, [menuOpen]);
+  // Outside-click and ESC handling for the secondary-filter menu are now
+  // provided by the shared Popover surface. 2026-04-25 migration.
 
   const scrollByDir = useCallback((dir: -1 | 1) => {
     const el = scrollRef.current;
@@ -769,8 +756,9 @@ export function StudentCoverageStrip({
             ))}
           </div>
 
-          <div ref={moreRef} className="student-coverage__more">
+          <div className="student-coverage__more">
             <button
+              ref={moreTriggerRef}
               type="button"
               className="student-coverage__more-toggle"
               data-has-active={secondaryActive ? "true" : "false"}
@@ -781,39 +769,45 @@ export function StudentCoverageStrip({
               <span>{secondaryLabel}</span>
               <span aria-hidden="true" className="student-coverage__caret">▾</span>
             </button>
-            {menuOpen ? (
-              <div className="student-coverage__more-menu" role="menu">
+            <Popover
+              open={menuOpen}
+              onClose={() => setMenuOpen(false)}
+              anchorRef={moreTriggerRef}
+              placement="bottom-end"
+              role="menu"
+              ariaLabel="Filter by support category"
+            >
+              <Menu
+                ariaLabel="Filter by support category"
+                onClose={() => setMenuOpen(false)}
+              >
                 {SECONDARY_FILTERS.map(([value, label]) => (
-                  <button
+                  <MenuItem
                     key={value}
-                    type="button"
                     role="menuitemradio"
-                    aria-checked={filter === value}
-                    onClick={() => {
+                    selected={filter === value}
+                    onSelect={() => {
                       setFilter(value);
                       setMenuOpen(false);
                     }}
                   >
                     <span>{label}</span>
                     <span>{filterCounts[value]}</span>
-                  </button>
+                  </MenuItem>
                 ))}
                 {secondaryActive ? (
-                  <button
-                    type="button"
-                    role="menuitem"
-                    className="student-coverage__more-clear"
-                    onClick={() => {
+                  <MenuItem
+                    onSelect={() => {
                       setFilter("all");
                       setMenuOpen(false);
                     }}
                   >
                     <span>Clear filter</span>
                     <span aria-hidden="true">×</span>
-                  </button>
+                  </MenuItem>
                 ) : null}
-              </div>
-            ) : null}
+              </Menu>
+            </Popover>
           </div>
         </div>
 
