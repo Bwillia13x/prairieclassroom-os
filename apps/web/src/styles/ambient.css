@@ -670,7 +670,11 @@
   --shell-control-bg: color-mix(in srgb, var(--color-surface-elevated) 48%, transparent);
   --shell-control-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 78%, transparent);
   --shell-control-accent: var(--color-brand-highlight);
-  --shell-page-rail-width: 9.25rem;
+  /* Bumped from 9.25rem so the longest labels in the seven-view shell —
+     "Complexity Debt", "Planning Health", "Command Center" — wrap on
+     word boundaries (one wrap), never mid-word. At 11rem the workspace
+     gutter is still comfortable on the 1280–1920 desktop range. */
+  --shell-page-rail-width: 11rem;
   --shell-page-rail-collapsed-width: 2.5rem;
   max-width: min(100%, 1920px) !important;
   padding: var(--space-3) var(--space-4) 0 !important;

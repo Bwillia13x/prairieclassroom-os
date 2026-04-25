@@ -187,6 +187,11 @@ export default function PageAnchorRail({
     .filter(Boolean)
     .join(" ");
 
+  const activeMarker =
+    activeId === topAnchorId
+      ? "▲"
+      : (anchors.find((a) => a.id === activeId)?.number ?? "");
+
   return (
     <nav
       ref={navRef}
@@ -205,6 +210,11 @@ export default function PageAnchorRail({
           aria-label={toggleLabel}
           title={toggleLabel}
         >
+          {activeMarker ? (
+            <span className="page-anchor-rail__toggle-marker" aria-hidden="true">
+              {activeMarker}
+            </span>
+          ) : null}
           <svg
             className="page-anchor-rail__toggle-icon"
             viewBox="0 0 16 16"
@@ -257,7 +267,10 @@ export default function PageAnchorRail({
             tabIndex={collapsed ? -1 : undefined}
             onClick={(e) => handleLinkClick(e, topAnchorId)}
           >
-            Back to top
+            <span className="page-anchor-rail__back-to-top-icon" aria-hidden="true">
+              ↑
+            </span>
+            <span className="page-anchor-rail__back-to-top-text">Back to top</span>
           </a>
         </li>
       </ol>
