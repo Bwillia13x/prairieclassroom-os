@@ -109,7 +109,7 @@
 .role-prompt-dialog__option-desc {
   font-size: var(--text-xs);
   color: var(--color-text-secondary);
-  line-height: 1.35;
+  line-height: var(--leading-snug);
 }
 
 .role-prompt-dialog__actions {

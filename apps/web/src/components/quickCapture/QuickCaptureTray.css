@@ -24,7 +24,7 @@
 .quick-capture-tray__heading {
   margin: 0;
   font-size: var(--text-md, 1rem);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .quick-capture-tray__subtitle {
@@ -35,7 +35,7 @@
 
 .quick-capture-tray__label {
   font-size: var(--text-sm, 0.875rem);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-text);
   margin: 0;
 }
@@ -224,7 +224,7 @@
   height: var(--control-h-sm);
   border-radius: 50%;
   background: var(--color-bg-muted);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: var(--text-base);
 }
 
@@ -279,7 +279,7 @@
 }
 
 .intervention-chip__label {
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }
 
 .intervention-chip--selected {

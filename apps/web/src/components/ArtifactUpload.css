@@ -70,7 +70,7 @@
   background: var(--color-bg-sage);
   color: var(--color-text-secondary);
   font-size: var(--text-sm);
-  line-height: 1.55;
+  line-height: var(--leading-base);
 }
 
 .artifact-upload__legend {

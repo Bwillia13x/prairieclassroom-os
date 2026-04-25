@@ -25,7 +25,14 @@
   src: url("/fonts/inter-variable.woff2") format("woff2");
 }
 
-/* Instrument Sans — display. Four static weights. */
+/* Instrument Sans — display. Four static weights.
+   These font-weight numerics are intentional: inside @font-face they
+   IDENTIFY which static WOFF2 file matches a given font-weight request.
+   Do NOT tokenize them — if --font-weight-normal ever resolves to a
+   different number than 400, the 400 WOFF2 would orphan and Instrument
+   Sans regular would silently fail to load. The same rule applies to
+   the variable-font axis ranges (e.g. 100 900) for Inter, JetBrains
+   Mono, and Source Serif 4 above and below. */
 @font-face {
   font-family: "Instrument Sans";
   font-style: normal;

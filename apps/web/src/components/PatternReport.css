@@ -90,7 +90,7 @@
 }
 
 .pattern-card-tag {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }

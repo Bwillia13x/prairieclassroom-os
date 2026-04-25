@@ -7,6 +7,7 @@ import "./styles/fonts.css";
 import "./styles/tokens.css";
 import "./tokens.css";
 import "./styles/base.css";
+import "./styles/typography.css";
 import "./styles/primitives.css";
 import "./styles/shell.css";
 import "./styles/page-tool-switcher.css";

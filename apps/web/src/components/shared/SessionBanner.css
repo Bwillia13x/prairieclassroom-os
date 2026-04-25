@@ -11,7 +11,7 @@
 .session-banner__name {
   font-family: var(--ds-font-sans);
   font-size: var(--ds-text-base);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--ds-text);
 }
 

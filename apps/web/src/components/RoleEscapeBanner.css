@@ -54,7 +54,7 @@
   background: var(--color-accent);
   color: var(--color-surface);
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   white-space: nowrap;
 }

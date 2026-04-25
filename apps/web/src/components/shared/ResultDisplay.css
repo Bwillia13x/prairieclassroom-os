@@ -35,7 +35,7 @@
   gap: var(--ds-space-2);
   font-family: var(--ds-font-sans);
   font-size: var(--ds-text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--ds-text);
   cursor: pointer;
   transition: color var(--motion-fast) var(--ease-standard);

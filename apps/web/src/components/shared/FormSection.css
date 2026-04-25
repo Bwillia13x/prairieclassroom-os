@@ -18,7 +18,7 @@
 .form-section__label {
   font-family: var(--ds-font-sans);
   font-size: var(--ds-text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--ds-text);
 }
 
@@ -34,7 +34,7 @@
 
 .form-section__counter--over {
   color: var(--ds-danger);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .form-section__description {
@@ -52,5 +52,5 @@
   margin: 0;
   font-size: var(--ds-text-xs);
   color: var(--ds-danger);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
 }

@@ -1,0 +1,141 @@
+/* ============================================================
+   Typography — semantic class layer (2026-04-24).
+
+   Sits between tokens.css (atomic) and component CSS (specific).
+   Components compose these utilities instead of re-deriving the
+   recipe from raw tokens. Each class encodes ONE typographic role
+   (eyebrow, page title, metric, etc.) using existing tokens.
+
+   Why this exists:
+     Audit on 2026-04-24 found 80 hardcoded font-sizes and 183 raw
+     numeric font-weights across the web app, concentrated in chart
+     and panel CSS where designers re-derived the same eyebrow / title
+     / metric recipes per file. The token system was healthy; what was
+     missing was a semantic layer to compose tokens into roles.
+
+   Rules of use:
+     1. Apply on the leaf element (h3, span, label) — never on a
+        layout container.
+     2. Most utilities deliberately do NOT set font-family. The parent
+        context (sans by default, mono inside Nothing-aesthetic chart
+        cards) propagates naturally so chart eyebrows stay mono and
+        editorial eyebrows stay sans without per-call overrides.
+     3. Roles that demand a specific family (display titles, metric
+        figures) declare the family explicitly.
+     4. Color is intentionally NOT set — composes with the surrounding
+        semantic color (text-secondary on captions, text-tertiary on
+        chart subtitles, etc.).
+
+   Compose with surface classes:
+     <span class="t-eyebrow viz-subtitle">  -- recipe + chart styling
+     <h2 class="t-page-title">              -- recipe alone
+   ============================================================ */
+
+/* ---- Display tier ----
+   Hero moments only — TodayHero, PageHero, brand-statement intros.
+   Fluid clamp scale. Display family + tightened tracking + tight leading. */
+.t-display-lg,
+.t-display-md,
+.t-display-sm {
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-display);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-display);
+  letter-spacing: var(--tracking-display);
+  font-optical-sizing: auto;
+  text-wrap: balance;
+}
+.t-display-lg {
+  font-size: var(--text-display-lg);
+  letter-spacing: var(--tracking-display-tight);
+}
+.t-display-md { font-size: var(--text-display-md); }
+.t-display-sm { font-size: var(--text-display-sm); }
+
+/* ---- Title tier ----
+   Page / section / subsection. Fixed scale (not fluid) so the
+   hierarchy stays predictable across viewports. */
+.t-page-title {
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-display);
+  text-wrap: balance;
+}
+.t-section-title {
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-snug);
+  letter-spacing: var(--tracking-display);
+}
+.t-subsection-title {
+  font-family: var(--font-display);
+  font-feature-settings: var(--font-feature-display);
+  font-size: var(--text-lg);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-snug);
+}
+
+/* ---- Eyebrow ----
+   The most-repeated drift target. ~25+ component classes were
+   re-implementing this recipe before the layer existed.
+   Family-agnostic — composes with parent (Inter on editorial
+   surfaces, mono on chart cards). */
+.t-eyebrow {
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-eyebrow);
+  line-height: 1;
+}
+
+/* ---- Caption ----
+   Small descriptive text below labels, in metadata rows, beside
+   data points. Color is set because tertiary is the canonical
+   caption tone — override at the call site if needed. */
+.t-caption {
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-normal);
+  line-height: var(--leading-snug);
+  color: var(--color-text-tertiary);
+}
+
+/* ---- Metric ----
+   Large numeric figures — KPI cards, gauge centerpieces, dashboard
+   counters. Mono + tabular figures + tightened tracking gives the
+   technical, percussive voice described in the Nothing-aesthetic
+   notes (DataVisualizations.css:99-112). */
+.t-metric {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-weight: var(--font-weight-medium);
+  letter-spacing: -0.02em;
+  line-height: var(--leading-tight);
+}
+
+/* ---- Mono meta ----
+   Short metadata strings (timestamps, IDs, version stamps). Pairs
+   with the existing .num/.plan-meta family in base.css. Smaller
+   than .t-metric, not for headline figures. */
+.t-mono-meta {
+  font-family: var(--font-mono);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums slashed-zero;
+  font-size: var(--text-xs);
+  letter-spacing: -0.01em;
+}
+
+/* ---- Body lead ----
+   First paragraph in editorial sections, intro copy, dialog
+   descriptions. Slightly larger and softer than body to set
+   the reading rhythm. */
+.t-body-lead {
+  font-size: var(--text-md);
+  line-height: var(--leading-loose);
+  color: var(--color-text-secondary);
+}

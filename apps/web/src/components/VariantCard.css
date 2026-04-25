@@ -91,7 +91,7 @@
 .variant-section p {
   font-size: var(--text-base);
   color: var(--color-text);
-  line-height: 1.55;
+  line-height: var(--leading-base);
 }
 
 .variant-section ul {

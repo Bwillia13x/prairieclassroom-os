@@ -58,7 +58,7 @@
 .dataviz-progress__label {
   font-family: var(--ds-font-sans);
   font-size: var(--ds-text-xs);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--ds-text-secondary);
 }
 

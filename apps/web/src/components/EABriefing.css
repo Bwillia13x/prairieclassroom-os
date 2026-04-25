@@ -20,7 +20,7 @@
 }
 
 .ea-briefing-optional {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   color: var(--color-text-secondary);
 }
 
@@ -145,7 +145,7 @@
 }
 
 .ea-card-tag {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
 }
@@ -247,7 +247,7 @@
     background: #fffbeb;
     border-color: #d97706;
     color: #92400e;
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
@@ -284,6 +284,6 @@
   }
 
   .ea-card--watch .ea-card-approach {
-    font-weight: 500;
+    font-weight: var(--font-weight-medium);
   }
 }

@@ -27,26 +27,21 @@
 .viz-title {
   margin: 0;
   /* Nothing-design tertiary signature: the card's title is structural
-     metadata, not a primary heading. Mono + ALL CAPS + wide tracking
-     pushes it firmly below the data it describes. */
+     metadata, not a primary heading. Mono establishes the chart-card
+     voice; the eyebrow recipe (size, weight, caps, tracking) is
+     supplied by the .t-eyebrow utility class composed at the call site. */
   font-family: var(--font-mono);
   font-feature-settings: "kern" 1, "liga" 1;
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-eyebrow);
-  line-height: 1;
 }
 
 .viz-subtitle {
+  /* Subtitle inherits the eyebrow recipe via .t-eyebrow at the call site;
+     this rule only sets the chart-card voice (mono) and the right-aligned
+     metadata-style positioning. */
   min-width: 0;
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-semibold);
   color: var(--color-text-tertiary);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-eyebrow);
   text-align: right;
 }
 
@@ -69,6 +64,8 @@
    No pill background, no rounded corners, no tinted fill. Color escapes
    only onto that single 2px accent, keeping the chip monochrome at rest. */
 .viz-tone-badge {
+  /* Chip styling only — the eyebrow typographic recipe is composed
+     via .t-eyebrow at the call site. */
   display: inline-flex;
   align-items: center;
   padding: 4px 10px;
@@ -77,10 +74,6 @@
   background: transparent;
   color: var(--color-text);
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-semibold);
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-eyebrow);
   white-space: nowrap;
 }
 
@@ -499,7 +492,7 @@ button.viz-priority-matrix__watch-row:focus-visible {
   font-size: clamp(3.5rem, 8vw, 6rem);
   font-weight: var(--font-weight-normal);
   line-height: 0.88;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking-display-tight);
   color: var(--color-text);
 }
 
@@ -810,7 +803,7 @@ button.viz-priority-matrix__watch-row:focus-visible {
   font-variant-numeric: tabular-nums slashed-zero;
   font-size: 36px;
   font-weight: var(--font-weight-normal);
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking-display-tight);
 }
 
 .viz-composition__center-label {
@@ -819,7 +812,7 @@ button.viz-priority-matrix__watch-row:focus-visible {
   font-size: 9px;
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
 }
 
 .viz-composition__metrics {
@@ -1134,7 +1127,7 @@ button.viz-composition__row:focus-visible {
   font-variant-numeric: tabular-nums slashed-zero;
   font-size: clamp(2.75rem, 5vw, 3.75rem);
   font-weight: var(--font-weight-normal);
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking-display-tight);
   line-height: 0.88;
 }
 
@@ -1894,7 +1887,7 @@ button.viz-recency__row:focus-visible {
 
 .viz-followup-rate__count {
   font-size: var(--text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 /* ================================================================
@@ -2136,7 +2129,7 @@ button.viz-recency__row:focus-visible {
 
 .viz-variant-strip__type {
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   min-width: 80px;
 }
@@ -2191,7 +2184,7 @@ button.viz-recency__row:focus-visible {
 
 .viz-workflow-strip__count {
   font-size: var(--text-xs);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--color-text-secondary);
   min-width: 28px;
   text-align: right;
@@ -2209,7 +2202,7 @@ button.viz-recency__row:focus-visible {
   align-items: center;
   gap: var(--space-1);
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
   background: var(--color-surface-muted);
   border: 1.5px solid;
@@ -2242,7 +2235,7 @@ button.viz-recency__row:focus-visible {
 
 .viz-readability-gauge__label {
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text);
 }
 
@@ -2263,7 +2256,7 @@ button.viz-recency__row:focus-visible {
   align-items: center;
   padding: 0 var(--space-1);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-on-accent);
   min-width: 32px;
   transition: width 0.3s ease;

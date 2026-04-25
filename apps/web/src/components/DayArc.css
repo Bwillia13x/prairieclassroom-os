@@ -113,7 +113,7 @@
   font-size: var(--text-2xl);
   font-weight: var(--font-weight-normal);
   line-height: 0.9;
-  letter-spacing: -0.04em;
+  letter-spacing: var(--tracking-display-tight);
   color: var(--color-text);
 }
 
@@ -177,7 +177,7 @@
   font-size: 9px;
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
 }
 
 .day-arc__block-guides line {

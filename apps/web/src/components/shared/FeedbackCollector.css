@@ -79,7 +79,7 @@
 }
 
 .feedback-collector__optional {
-  font-weight: 400;
+  font-weight: var(--font-weight-normal);
   opacity: 0.7;
 }
 

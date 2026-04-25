@@ -108,7 +108,7 @@
 .workspace-page .page-intro__title {
   font-family: var(--font-display);
   font-size: var(--text-display-md);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   line-height: 1.1;
   color: var(--color-text);
@@ -123,7 +123,7 @@
   font-size: var(--text-sm);
   font-weight: var(--font-weight-normal);
   letter-spacing: 0;
-  line-height: 1.55;
+  line-height: var(--leading-base);
   text-transform: none;
   text-wrap: pretty;
 }
@@ -231,8 +231,8 @@
   padding: 3px 9px;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   box-shadow: none;
 }
@@ -292,7 +292,7 @@
 .workspace-page [class*="viz-"] [class*="__header-title"] {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-text);
   margin: 0;
@@ -302,7 +302,7 @@
 .workspace-page [class*="viz-"] [class*="__summary"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -323,8 +323,8 @@
   padding: 3px 9px;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   box-shadow: none;
 }
@@ -340,7 +340,7 @@
   fill: var(--color-text-tertiary);
   font-family: var(--font-mono);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -359,8 +359,8 @@
 .workspace-page .health-bar__label {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
@@ -404,7 +404,7 @@
 .workspace-page .time-suggestion__label {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -443,7 +443,7 @@
 .workspace-page [class*="skeleton-label"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -472,7 +472,7 @@
 .workspace-page .error-banner [class*="__title"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-danger);
@@ -492,7 +492,7 @@
 .drill-down-drawer [class*="__section-heading"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -509,8 +509,8 @@
   box-shadow: none;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   padding: 8px 14px;
 }
@@ -535,7 +535,7 @@
   box-shadow: none;
   font-family: var(--font-mono);
   font-size: var(--text-xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -592,8 +592,8 @@
 .workspace-page .viz-debt-trend__range {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
@@ -602,7 +602,7 @@
 .workspace-page .viz-composition__center-number {
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums slashed-zero;
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.02em;
   color: var(--color-text);
 }
@@ -655,7 +655,7 @@
   padding: 4px 8px;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -695,7 +695,7 @@
 .workspace-page .viz-recency__lead-student {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-text);
   letter-spacing: -0.01em;
 }
@@ -704,7 +704,7 @@
   font-style: normal;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-secondary);
@@ -747,7 +747,7 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums slashed-zero;
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
   color: var(--color-text-tertiary);
   min-width: 1.5ch;
@@ -792,7 +792,7 @@
 .workspace-page .day-arc__title {
   font-family: var(--font-display);
   font-size: var(--text-lg);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-text);
 }
@@ -802,8 +802,8 @@
 .workspace-page .day-arc__legend-label {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
@@ -819,7 +819,7 @@
   padding: 6px 10px;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.1em;
   text-transform: uppercase;
   box-shadow: none;
@@ -839,7 +839,7 @@
   margin-top: var(--space-2);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -858,7 +858,7 @@
 .workspace-page .plan-recap-heading {
   font-family: var(--font-display);
   font-size: var(--text-base);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-text);
   margin: 0;
@@ -870,7 +870,7 @@
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  line-height: 1.55;
+  line-height: var(--leading-base);
 }
 
 .workspace-page .plan-recap-section { margin-top: var(--space-5); }
@@ -879,7 +879,7 @@
   margin-bottom: var(--space-2);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-tertiary);
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -896,7 +896,7 @@
   font-size: var(--text-sm);
   padding: var(--space-3) 0;
   border-bottom: 1px solid var(--color-border);
-  line-height: 1.55;
+  line-height: var(--leading-base);
   color: var(--color-text);
 }
 
@@ -907,7 +907,7 @@
   font-style: normal;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  letter-spacing: 0.14em;
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
 }
 
@@ -921,8 +921,8 @@
 .workspace-page [class*="__eyebrow"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
   background: transparent;
@@ -983,7 +983,7 @@
 .contextual-hint-title {
   font-family: var(--font-display);
   font-size: var(--text-base);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-text);
   margin: 0;
@@ -995,7 +995,7 @@
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   color: var(--color-text-secondary);
-  line-height: 1.55;
+  line-height: var(--leading-base);
 }
 
 .contextual-hint-dismiss {
@@ -1005,7 +1005,7 @@
   box-shadow: none;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 4px 10px;
@@ -1033,7 +1033,7 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums slashed-zero;
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0;
   width: 1.75rem;
   height: 1.75rem;
@@ -1056,8 +1056,8 @@
 .workspace-page [class*="field-label"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
@@ -1134,7 +1134,7 @@
 .workspace-page .output-action-bar button:not(.nothing-btn) {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0;
   line-height: 1;
   text-transform: uppercase;
@@ -1174,7 +1174,7 @@
 
 .workspace-page .student-avatar__initial {
   font-family: var(--font-mono);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   font-size: var(--text-sm);
   letter-spacing: 0;
   color: inherit;
@@ -1218,7 +1218,7 @@
 .workspace-page .intervention-chip__label {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: inherit;
@@ -1278,14 +1278,14 @@
 .shell-brand {
   font-family: var(--font-display);
   font-size: var(--text-base);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-text);
 }
 
 .shell-brand__wordmark {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.015em;
   color: var(--color-text);
 }
@@ -1311,8 +1311,8 @@
 .shell-classroom-pill__eyebrow {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
@@ -1359,7 +1359,7 @@
   box-shadow: none;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 6px 10px;
@@ -1387,8 +1387,8 @@
 .role-context-pill__eyebrow {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
 }
@@ -1496,7 +1496,7 @@
 .shell-nav__kbd {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--color-text-tertiary);
   background: color-mix(in srgb, var(--color-surface-muted) 70%, transparent);
   border: 1px solid color-mix(in srgb, var(--color-border) 80%, transparent);
@@ -1559,7 +1559,7 @@
 .app-footer [class*="__title"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -1568,7 +1568,7 @@
 .app-footer a,
 .app-footer button {
   font-family: var(--font-mono);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text);
@@ -1586,7 +1586,7 @@
   padding: 3px 8px;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: 0.1em;
   color: var(--color-text);
   box-shadow: none;
@@ -1649,7 +1649,7 @@
 .mock-mode-banner__title {
   font-size: var(--text-sm);
   letter-spacing: 0;
-  line-height: 1.35;
+  line-height: var(--leading-snug);
   text-transform: none;
 }
 
@@ -1671,7 +1671,7 @@
 .workspace-page .student-roster__label {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -1697,7 +1697,7 @@
 
 .workspace-page .student-card__name {
   font-family: var(--font-display);
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   letter-spacing: -0.01em;
   color: var(--color-text);
 }
@@ -1707,7 +1707,7 @@
   font-family: var(--font-mono);
   font-variant-numeric: tabular-nums slashed-zero;
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--color-text-tertiary);
@@ -1893,7 +1893,7 @@
   transform: none !important;
   filter: none !important;
   font-family: var(--font-mono) !important;
-  font-weight: 600 !important;
+  font-weight: var(--font-weight-semibold) !important;
   text-transform: uppercase !important;
 }
 
@@ -2006,7 +2006,7 @@
   color: var(--color-text) !important;
   font-family: var(--font-mono) !important;
   font-size: var(--text-2xs) !important;
-  font-weight: 600 !important;
+  font-weight: var(--font-weight-semibold) !important;
   text-transform: uppercase !important;
 }
 
@@ -2161,7 +2161,7 @@ textarea {
   color: var(--color-text-tertiary) !important;
   font-family: var(--font-mono) !important;
   font-size: var(--text-2xs) !important;
-  font-weight: 600 !important;
+  font-weight: var(--font-weight-semibold) !important;
   text-transform: uppercase !important;
 }
 
@@ -2450,7 +2450,7 @@ textarea {
   .output-feedback-submit
 ) {
   font-family: var(--font-mono) !important;
-  font-weight: 600 !important;
+  font-weight: var(--font-weight-semibold) !important;
   font-size: var(--text-xs) !important;
   letter-spacing: 0.06em !important;
   text-transform: none !important;
@@ -3452,7 +3452,7 @@ textarea {
   color: #ffffff !important;
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
 }
 

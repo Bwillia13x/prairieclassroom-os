@@ -23,7 +23,7 @@
 
 .usage-insights-summary-value {
   font-size: var(--ds-text-xl, var(--text-xl, 1.25rem));
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
 }
 
@@ -56,7 +56,7 @@
   display: block;
   font-family: var(--font-mono);
   font-size: var(--ds-text-xs, var(--text-xs));
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ds-text-secondary, var(--color-text-secondary));
@@ -65,7 +65,7 @@
 .usage-impact-dashboard__header h2 {
   margin: 0.25rem 0 0;
   font-size: var(--ds-text-lg, var(--text-lg));
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--ds-text, var(--color-text));
 }
 
@@ -96,7 +96,7 @@
 
 .usage-impact-dashboard__metric span {
   font-size: clamp(1.35rem, 3vw, 2rem);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   line-height: 1;
   color: var(--ds-text, var(--color-text));
 }
@@ -160,7 +160,7 @@
 
 .usage-insights-stat__value {
   font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   color: var(--ds-text, var(--color-text));
   line-height: 1;
 }
@@ -186,7 +186,7 @@
 .usage-insights-breakdown__panel-name {
   flex: 0 0 7rem;
   font-size: var(--ds-text-xs, var(--text-xs));
-  font-weight: 500;
+  font-weight: var(--font-weight-medium);
   color: var(--ds-text-secondary, var(--color-text-secondary));
   white-space: nowrap;
   overflow: hidden;
@@ -251,7 +251,7 @@
 .usage-insights-lane__label {
   margin: 0 0 var(--ds-space-2, var(--space-2));
   font-size: var(--ds-text-xs, var(--text-xs));
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--ds-text-secondary, var(--color-text-secondary));
   text-transform: uppercase;
   letter-spacing: 0.04em;

@@ -159,7 +159,7 @@ export function StudentPriorityMatrix({ students, onStudentClick }: PriorityMatr
     <div className={`viz-priority-matrix${mounted ? " viz-priority-matrix--mounted" : ""}`}>
       <div className="viz-header viz-priority-matrix__header">
         <div>
-          <h4 className="viz-title">Student Priority View <SourceTag kind="record" /></h4>
+          <h4 className="t-eyebrow viz-title">Student Priority View <SourceTag kind="record" /></h4>
           <span className="viz-priority-matrix__summary">
             {totalPlotted} plotted · {attentionCount} priority {attentionCount === 1 ? "student" : "students"} · dot size follows pattern count
           </span>
@@ -528,7 +528,7 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
         : {})}
     >
       <div className="viz-header">
-        <h3 className="viz-title">Complexity Debt <SourceTag kind="record" /></h3>
+        <h3 className="t-eyebrow viz-title">Complexity Debt <SourceTag kind="record" /></h3>
         <div className="viz-debt-gauge__badges">
           {delta !== null && (
             <span
@@ -542,7 +542,7 @@ export function ComplexityDebtGauge({ debtItems, previousTotal, onSegmentClick }
               CRITICAL / Accumulating / Manageable each carry their
               threshold rule on hover. */}
           <span
-            className={`viz-tone-badge viz-tone-badge--${tone}`}
+            className={`t-eyebrow viz-tone-badge viz-tone-badge--${tone}`}
             title={
               tone === "danger"
                 ? "Critical: 8 or more open items. Healthy range is 0–3; 4–7 is accumulating."
@@ -1064,7 +1064,7 @@ export function ClassroomCompositionRings({ students, onSegmentClick }: Composit
     <div className={`viz-composition${mounted ? " viz-composition--mounted" : ""}`}>
       <div className="viz-header viz-composition__header">
         <div>
-          <h4 className="viz-title">Classroom Profile <SourceTag kind="record" /></h4>
+          <h4 className="t-eyebrow viz-title">Classroom Profile <SourceTag kind="record" /></h4>
           <span className="viz-composition__summary">
             {students.length} students · {ealTotal} EAL · {langCount} languages
           </span>
@@ -1195,7 +1195,7 @@ export function ComplexityHeatmap({ blocks }: ComplexityHeatmapProps) {
   return (
     <div className="viz-heatmap">
       <div className="viz-header">
-        <h4 className="viz-title">Risk Heatmap</h4>
+        <h4 className="t-eyebrow viz-title">Risk Heatmap</h4>
         <div className="viz-heatmap__legend">
           <span className="viz-heatmap__legend-item viz-heatmap__legend-item--low">Low</span>
           <span className="viz-heatmap__legend-item viz-heatmap__legend-item--medium">Med</span>
@@ -1285,7 +1285,7 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
     <div className={`viz-recency${mounted ? " viz-recency--mounted" : ""}`} role="group" aria-label={ariaLabel}>
       <div className="viz-header viz-recency__header">
         <div>
-          <h4 className="viz-title">Intervention Recency <SourceTag kind="record" /></h4>
+          <h4 className="t-eyebrow viz-title">Intervention Recency <SourceTag kind="record" /></h4>
           <span className="viz-recency__summary">
             {rows.length} longest gaps · {beyondTargetCount} beyond {maxDays}d target
           </span>
@@ -1413,8 +1413,8 @@ export function EALoadStackedBars({ blocks }: EALoadStackedBarsProps) {
   return (
     <div className="viz-ea-bars" role="figure" aria-label="EA Load Distribution chart">
       <div className="viz-header">
-        <h4 className="viz-title">EA Load Distribution</h4>
-        <span className="viz-subtitle">Students per block</span>
+        <h4 className="t-eyebrow viz-title">EA Load Distribution</h4>
+        <span className="t-eyebrow viz-subtitle">Students per block</span>
       </div>
       <div className="viz-ea-bars__list">
         {blocks.map((block, i) => {
@@ -1525,8 +1525,8 @@ export function SupportPatternRadar({ themes, onSegmentClick }: PatternRadarProp
   return (
     <div className="viz-radar">
       <div className="viz-header">
-        <h4 className="viz-title">Support Pattern Shape</h4>
-        <span className="viz-subtitle">Theme distribution from records</span>
+        <h4 className="t-eyebrow viz-title">Support Pattern Shape</h4>
+        <span className="t-eyebrow viz-subtitle">Theme distribution from records</span>
       </div>
       <svg width="200" height="200" viewBox="0 0 200 200" className="viz-svg" role="img"
         aria-label="Radar chart of support pattern themes">
@@ -1720,8 +1720,8 @@ export function FollowUpDecayIndicators({ gaps, onStudentClick }: FollowUpDecayP
   return (
     <div className="viz-decay">
       <div className="viz-header">
-        <h4 className="viz-title">Follow-Up Aging</h4>
-        <span className="viz-subtitle">{sorted.length} gap{sorted.length !== 1 ? "s" : ""} awaiting action</span>
+        <h4 className="t-eyebrow viz-title">Follow-Up Aging</h4>
+        <span className="t-eyebrow viz-subtitle">{sorted.length} gap{sorted.length !== 1 ? "s" : ""} awaiting action</span>
       </div>
       <div className="viz-decay__list">
         {sorted.slice(0, 8).map((gap, i) => {
@@ -1782,8 +1782,8 @@ export function MessageApprovalFunnel({ messagesTotal, messagesApproved }: Messa
   return (
     <div className="viz-funnel" role="figure" aria-label={`Message Pipeline: ${Math.round(approvalRate)}% approval rate`}>
       <div className="viz-header">
-        <h4 className="viz-title">Message Pipeline</h4>
-        <span className="viz-subtitle">{Math.round(approvalRate)}% approval rate</span>
+        <h4 className="t-eyebrow viz-title">Message Pipeline</h4>
+        <span className="t-eyebrow viz-subtitle">{Math.round(approvalRate)}% approval rate</span>
       </div>
       <div className="viz-funnel__body">
         <div className="viz-funnel__stage">
@@ -1831,8 +1831,8 @@ export function ScaffoldEffectivenessChart({ scaffolds }: ScaffoldBarProps) {
   return (
     <div className="viz-scaffold" role="figure" aria-label="Active Scaffolds chart">
       <div className="viz-header">
-        <h4 className="viz-title">Active Scaffolds</h4>
-        <span className="viz-subtitle">Frequency across students</span>
+        <h4 className="t-eyebrow viz-title">Active Scaffolds</h4>
+        <span className="t-eyebrow viz-subtitle">Frequency across students</span>
       </div>
       <div className="viz-scaffold__list">
         {scaffolds.slice(0, 8).map((s) => {
@@ -1981,8 +1981,8 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
         : {})}
     >
       <div className="viz-header">
-        <span className="viz-title">Debt Trend</span>
-        <span className={`viz-tone-badge viz-tone-badge--${toneClass}`}>
+        <span className="t-eyebrow viz-title">Debt Trend</span>
+        <span className={`t-eyebrow viz-tone-badge viz-tone-badge--${toneClass}`}>
           {trend === "rising" ? "↑ Rising" : trend === "falling" ? "↓ Falling" : "→ Flat"}
         </span>
       </div>
@@ -2048,7 +2048,7 @@ export function ComplexityTrendCalendar({ data, onSegmentClick }: ComplexityTren
   return (
     <div className="viz-complexity-cal" role="img" aria-label="Peak complexity over 14 days">
       <div className="viz-header">
-        <span className="viz-title">Complexity · 14 Days</span>
+        <span className="t-eyebrow viz-title">Complexity · 14 Days</span>
       </div>
       <div className="viz-complexity-cal__grid">
         {trimmed.map((level, i) => {
@@ -2121,8 +2121,8 @@ export function InterventionTimeline({ records, onDotClick }: IntTimelineProps) 
   return (
     <div className="viz-int-timeline" role="img" aria-label={`${sorted.length} interventions over time`}>
       <div className="viz-header">
-        <span className="viz-title">Intervention Timeline</span>
-        <span className="viz-subtitle">{sorted.length} records</span>
+        <span className="t-eyebrow viz-title">Intervention Timeline</span>
+        <span className="t-eyebrow viz-subtitle">{sorted.length} records</span>
       </div>
       <svg viewBox={`0 0 ${w} ${h}`} className="viz-svg viz-int-timeline__svg">
         {/* baseline */}

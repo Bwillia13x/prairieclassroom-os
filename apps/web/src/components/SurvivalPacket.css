@@ -338,7 +338,7 @@
     color: #991b1b;
     print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
-    font-weight: 700;
+    font-weight: var(--font-weight-bold);
   }
 
   /* Complexity peak badges print colored */
@@ -383,6 +383,6 @@
   /* Avoid text prints bold */
   .survival-packet-avoid {
     color: #991b1b;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
   }
 }

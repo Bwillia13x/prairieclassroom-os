@@ -273,7 +273,7 @@
 }
 
 .editorial strong {
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .editorial em {
@@ -403,7 +403,7 @@
   letter-spacing: var(--tracking-eyebrow);
   text-transform: uppercase;
   color: var(--color-text-tertiary);
-  line-height: 1.2;
+  line-height: var(--leading-tight);
 }
 
 .metric__value {
@@ -715,7 +715,7 @@ label.form-label {
   font-family: var(--font-sans);
   font-size: var(--text-sm);
   font-weight: var(--font-weight-normal);
-  line-height: 1.55;
+  line-height: var(--leading-base);
   color: var(--color-text-primary);
 }
 

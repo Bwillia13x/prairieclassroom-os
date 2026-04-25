@@ -16,7 +16,7 @@
   margin: 0;
   font-family: var(--ds-font-sans);
   font-size: var(--ds-text-lg);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   color: var(--ds-text);
 }
 
@@ -37,7 +37,7 @@
   padding: var(--ds-space-2) var(--ds-space-5);
   border-radius: var(--ds-radius-md);
   font-size: var(--ds-text-sm);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   cursor: pointer;
   transition:
     background var(--ds-transition-fast),

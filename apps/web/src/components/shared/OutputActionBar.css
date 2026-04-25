@@ -101,7 +101,7 @@
   background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
   border-color: color-mix(in srgb, var(--color-accent) 44%, transparent);
   color: var(--color-text-accent);
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
 }
 
 .output-action-bar__icon {

@@ -48,7 +48,7 @@
 .ea-load-viewer__summary p {
   margin: 0;
   font-size: var(--text-base);
-  line-height: 1.55;
+  line-height: var(--leading-base);
   color: var(--color-text);
 }
 
