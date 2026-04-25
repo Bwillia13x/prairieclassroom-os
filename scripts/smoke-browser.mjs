@@ -254,6 +254,15 @@ async function main() {
     await openClassroomPanel(page);
     assert.equal((await page.locator('[data-testid="shell-classroom-active-id"]').innerText()).trim(), DEMO_CLASSROOM_ID);
     await page.keyboard.press("Escape");
+
+    // Cohort Pulse zone: at least one cohort-cell must render on the demo classroom.
+    await page.waitForSelector('[data-testid="cohort-cell"]', { timeout: 5000 });
+    const cohortCellCount = await page.locator('[data-testid="cohort-cell"]').count();
+    assert.ok(
+      cohortCellCount >= 1,
+      `Expected at least 1 cohort-cell on Classroom page, got ${cohortCellCount}`,
+    );
+
     await expectSevenViewShell(page);
     await navigateToSurface(page, "today");
     await navigateToSurface(page, "differentiate");
