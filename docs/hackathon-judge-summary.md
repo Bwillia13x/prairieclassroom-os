@@ -15,7 +15,7 @@ PrairieClassroom OS is a Gemma 4-native classroom copilot built for Alberta K-6 
 
 ## Proof Anchors
 
-- Current hosted baseline: `output/release-gate/2026-04-22T02-16-16-557Z-74236`
+- Current hosted baseline: `output/release-gate/2026-04-25T17-52-51-834Z-9428`
 - Hosted eval result: `12/12` curated proof cases passed.
 - Models observed in the hosted lane: `gemma-4-26b-a4b-it` and `gemma-4-31b-it`
 - Provider source of truth: [eval-baseline.md](./eval-baseline.md)
