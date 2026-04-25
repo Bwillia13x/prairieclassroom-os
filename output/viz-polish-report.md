@@ -324,7 +324,89 @@ No button text, panel label, or interactive-state contrast failures were found.
 Skipped — `npm run check:contrast` is deterministic and provides definitive token-level coverage. All manual calculations above confirm the cell-level `color-mix()` pairs that the automated tool cannot reach. Dev-server screenshots would not add information beyond what static analysis covers.
 
 ## Dimension 5: Mobile Reflow
-<!-- filled by Task 10 -->
+
+**Audit date:** 2026-04-25
+**Status:** PASS — all viz components scale fluidly or have explicit mobile breakpoints. No remediation required (Task 11 skipped).
+
+### Methodology
+
+Static CSS analysis of all four viz CSS files plus inline TSX widths. Floor viewport: 375px. SVG `width` attributes whose value matches the corresponding `viewBox` dimension are treated as SVG internal coordinate values, not layout pixels, unless there is no CSS override.
+
+### Step 1: Fixed pixel widths found (raw grep output)
+
+Total matches: 26 across all files. Breakdown:
+
+| File | Matches |
+|------|---------|
+| `DataVisualizations.css` | 23 |
+| `DataVisualizations.tsx` | 2 (`width="190"`, `width="200"` on `<svg>`) |
+| `CohortSparklineGrid.css` | 1 (inside `@media (max-width: 600px)` rule) |
+
+**Small UI decorations (safe — all < 32px):** Lines in `DataVisualizations.css` referencing `width: 8px`, `width: 6px`, `width: 10px`, `width: 14px`, `width: 24px` — these are icon badges, dot indicators, and pulse markers. Not layout-affecting at any viewport.
+
+**SVG attribute `width="190"` (line 1124, `ClassroomCompositionRings`):**
+- `viewBox="0 0 180 180"` — slight bleed intended by the author (190 > 180 to give stroke room)
+- CSS rule `.viz-composition__visual .viz-svg { width: min(100%, 190px); height: auto; }` overrides the attribute at runtime
+- Under the 600px breakpoint: `grid-template-columns: minmax(0, 1fr)` collapses the parent grid; the SVG fills available width up to 190px
+- **SAFE** — CSS controls layout size; attribute is coordinate hint only
+
+**SVG attribute `width="200"` (line 1532, `SupportPatternRadar`):**
+- `viewBox="0 0 200 200"` — coordinate system matches attribute
+- CSS rule `.viz-radar .viz-svg { margin: 0 auto; }` does not override the width
+- The SVG renders at its native 200px at all viewports; 200px < 375px floor — no overflow
+- **SAFE** — 200px is below the floor; does not cause horizontal scroll
+
+### Step 2: min-width and grid-template-columns
+
+**Grid-template-columns with fixed `minmax(Npx, ...)` floors:**
+
+| Selector | Columns | Mobile guard |
+|----------|---------|--------------|
+| `.viz-priority-matrix__body` | `minmax(260px, 1.35fr) minmax(190px, 0.65fr)` | YES — collapses at `max-width: 600px` |
+| `.viz-debt-gauge__body` | `minmax(190px, 0.88fr) minmax(240px, 1.12fr)` | YES — collapses at `max-width: 600px` |
+| `.viz-composition__body` | `minmax(190px, 0.84fr) minmax(260px, 1.16fr)` | YES — collapses at `max-width: 600px` |
+| `.viz-recency__body` | `minmax(132px, 0.46fr) minmax(0, 1fr)` | YES — collapses at `max-width: 600px` |
+| `.viz-debt-gauge__threshold` | `1fr 1fr 1fr` | n/a — `1fr` tracks are inherently fluid |
+| `CohortSparklineGrid .cohort-grid` | `repeat(auto-fill, minmax(132px, 1fr))` | YES — `@media (max-width: 600px)` reduces to `minmax(100px, 1fr)` |
+
+All two-column layouts with `minmax(190+px, ...)` columns are collapsed to single column at 600px, which provides full coverage down to 375px.
+
+**min-width values >= 80px:**
+
+| Selector | Value | Assessment |
+|----------|-------|-----------|
+| `.viz-student-theme-heatmap svg` | `min-width: 240px` | Container has `overflow-x: auto` — scrolls instead of overflowing. **SAFE** |
+| `.viz-priority-matrix__body` (after 600px collapse) | n/a | Collapsed, so `min-width: 260px` column is gone |
+
+No unconstrained `min-width` values that would force overflow at 375px.
+
+### Step 3: Responsive guards inventory
+
+| File | `@media (max-width: ...)` rules | Status |
+|------|---------------------------------|--------|
+| `DataVisualizations.css` | `max-width: 600px` (line 1646) + `max-width: 480px` (line 2487) | PASS — two breakpoints; collapses all two-column grids at 600px, refines plan-radar compass at 480px |
+| `CohortSparklineGrid.css` | `max-width: 600px` (line 56) | PASS — reduces grid cell minmax from 132px to 100px; cells still fit 3+ per row at 375px |
+| `ForecastTimeline.css` | none (except `prefers-reduced-motion`) | PASS — `ForecastTimeline` uses `display: flex; flex: 1` on segments; fully fluid; no breakpoint needed |
+| `shared/DataViz.css` | none (except `prefers-reduced-motion`) | PASS — `Sparkline`, `TrendIndicator`, `HealthDot`, `ProgressBar` are inline/inline-flex primitives; all fluid |
+
+### Step 4: Screenshot status
+
+Skipped — static CSS analysis is definitive. The three two-column grids with 190–260px column floors are all guarded by the existing `@media (max-width: 600px)` block, which was confirmed by direct inspection of lines 1664–1702 of `DataVisualizations.css`. Visual confirmation via Playwright would not add information beyond what the CSS analysis provides.
+
+### Task 11: Remediation
+
+No violations found. Task 11 commit skipped.
+
+### Summary
+
+**Total raw pixel-width matches:** 26
+**After filtering for SVG coordinate dimensions and small decorations:** 0 layout violations
+**Files with responsive guards:** `DataVisualizations.css` (two breakpoints), `CohortSparklineGrid.css` (one breakpoint)
+**Files not needing breakpoints (already fluid):** `ForecastTimeline.css`, `shared/DataViz.css`
+**Ambiguous cases resolved:**
+- `width="190"` on composition donut SVG: CSS `width: min(100%, 190px)` controls layout — SAFE
+- `width="200"` on radar SVG: 200px < 375px floor; renders within viewport — SAFE
+- `min-width: 240px` on heatmap SVG: parent has `overflow-x: auto` — scrolls, does not break layout
 
 ## Dimension 6: Test Coverage
 <!-- filled by Task 12 -->
