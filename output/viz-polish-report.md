@@ -141,14 +141,16 @@ PASS — no invented tokens detected. 96 tokens used across viz CSS; all resolve
 | WorkflowFlowStrip | PASS |
 | ReadabilityComparisonGauge | PASS |
 
-### Components skipped (3 of 29)
+### Components skipped (2 of 29) — after post-merge polish
 
 | Component | Reason |
 |-----------|--------|
-| `ScaffoldEffectivenessChart` | Known `role="figure"` on non-SVG container — requires struct fix tracked below. Skipped from automated audit to avoid misleading PASS; axe would also flag missing `aria-labelledby`. Will revisit in Phase 4 or a follow-up PR. |
-| `StudentThemeHeatmap` | Uses `color-mix()` for fill values derived at runtime. jsdom cannot resolve these CSS functions, making axe color-contrast results unreliable. Deferred to Phase 4 (dark-mode contrast). |
-| `ComplexityHeatmap` | Same `color-mix()` / CSS-var fill issue as above. Static heatmap with `role="img"` and `<title>` per cell is structurally sound; color values are the only open concern. Deferred to Phase 4. |
-| `ForecastTimeline` | Not included in current audit scope (standalone component, complex fixture with schedule/forecast objects). Documented as Phase 6 coverage gap. |
+| `StudentThemeHeatmap` | Uses `color-mix()` for fill values derived at runtime. jsdom cannot resolve these CSS functions, making axe color-contrast results unreliable. Manual contrast verified in Phase 4 (5.07:1 dark minimum, all WCAG AA). |
+| `ComplexityHeatmap` | Same `color-mix()` / CSS-var fill issue as above. Static heatmap with `role="img"` and `<title>` per cell is structurally sound; color values verified manually in Phase 4. |
+
+Previously skipped, now covered in the omnibus:
+- `ScaffoldEffectivenessChart` — `role="figure"` was changed to `role="img"` in the post-merge polish loop and the component is now in the axe omnibus.
+- `ForecastTimeline` — fixture is a simple `ComplexityBlock[]`; added to the omnibus in the post-merge polish loop.
 
 ### Violations found and fixed (8 total, 8 fixed)
 
@@ -157,6 +159,13 @@ All 8 violations were the same axe rule: **`nested-interactive`** (impact: serio
 **Root cause:** Components that conditionally render interactive children (role="button" / tabIndex=0 SVG elements) inside a container that had `role="img"`. ARIA spec prohibits interactive elements inside an `role="img"` landmark.
 
 **Fix applied:** Made the `role` conditional — `role="img"` when no click handler is present (static display), `role="group"` when a click handler is provided (interactive display). This preserves semantics: static charts read as images to screen readers; interactive charts read as groups of labeled controls.
+
+**Pattern variance — `role="button"` instead of `role="group"`:**
+`DebtTrendSparkline` and `FollowUpSuccessRate` already used `role={handler ? "button" : "img"}` before this audit. They are kept that way intentionally: in both components the outer container is itself the single click target (no nested-interactive children), so `role="button"` is a valid ARIA assignment that matches `ComplexityDebtGauge`'s pattern (line 521). axe accepts this as compliant. The pattern variance is documented here so future audits don't mistake it for drift.
+
+**Post-merge polish (this report's last edit):**
+- `EALoadStackedBars`, `MessageApprovalFunnel`, `ScaffoldEffectivenessChart` had `role="figure"` (not a valid ARIA role on a `div`) — changed to `role="img"`.
+- `InterventionRecencyTimeline` was hardcoded to `role="group"` regardless of click handler — switched to the conditional pattern matching its peers.
 
 | Component | Location | axe rule | Fix |
 |-----------|----------|----------|-----|
@@ -514,14 +523,20 @@ Visualization Polish Pass — completed 2026-04-25
 | 5. Mobile Reflow | PASS | 0 layout violations | none |
 | 6. Test Coverage | PASS | 4 HIGH gaps + 7 LOW gaps | 4 fixed (+28 tests) |
 
-**Test count:** 1,891 → 1,994 (delta: +103)
+**Test count:** 1,891 → 2,003 (delta: +112)
 
-The total delta (+103) breaks down as: +47 from the jest-axe accessibility omnibus (`viz-accessibility.test.tsx`) + +28 from the four new coverage test files (`ForecastTimeline`, `ScaffoldEffectivenessChart`, `StudentThemeHeatmap`, `ComplexityHeatmap`) + baseline drift from earlier Plan 1 / Plan 2 preamble work that landed before this pass started.
+The total delta (+112) breaks down as: +50 from the jest-axe accessibility omnibus (`viz-accessibility.test.tsx`, including post-merge additions for ScaffoldEffectivenessChart and ForecastTimeline) + +28 from the four new coverage test files (`ForecastTimeline`, `ScaffoldEffectivenessChart`, `StudentThemeHeatmap`, `ComplexityHeatmap`) + baseline drift from earlier Plan 1 / Plan 2 preamble work that landed before this pass started.
 
 **Commits:** 10 commits on feat/viz-polish-pass
 
 **Deferred items (for future polish passes):**
 - 7 LOW-priority static viz components remain at axe/render-only coverage: `EALoadStackedBars`, `FollowUpDecayIndicators`, `MessageApprovalFunnel`, `StudentSparkIndicator`, `ScheduleLoadStrip`, `WorkflowFlowStrip`, `ReadabilityComparisonGauge`
 - `Sparkline.tsx` (standalone tone variant) — axe-only; the shared `DataViz.Sparkline` has comprehensive tests
-- `ScaffoldEffectivenessChart` — known `role="figure"` on non-SVG container; structural fix tracked but deferred
 - ForecastTimeline coverage was added; consider extracting shared fixtures if more such timeline tests follow
+
+**Resolved by post-merge polish:**
+- `ScaffoldEffectivenessChart` `role="figure"` structural fix — applied (`role="img"`) and added to axe omnibus
+- `EALoadStackedBars` and `MessageApprovalFunnel` `role="figure"` — applied
+- `InterventionRecencyTimeline` hardcoded role — switched to conditional pattern
+- ClassroomPanel Zone 3.5 missing error branch — added
+- `CohortSparklineGrid` SVG aspect-ratio distortion at narrow cells — fixed via `aspect-ratio: 92 / 28`

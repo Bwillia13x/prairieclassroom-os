@@ -10,15 +10,17 @@
  *    synthesised without risking misrepresentation are documented as gaps below.
  *
  * Skipped (documented gaps):
- *  - ScaffoldEffectivenessChart: fixture shape is trivial but the component body has
- *    known axe issues (role="figure" on a non-SVG div without aria-labelledby);
- *    deferred to Task 5 fix loop.
  *  - StudentThemeHeatmap: color-mix() fill values are not resolvable in jsdom, making
  *    the SVG render opaque — axe results would be unreliable. Skipped as color-contrast
- *    concern deferred to Phase 4.
+ *    concern; manual contrast verification done in Phase 4 (all pairs WCAG AA).
  *  - ComplexityHeatmap: uses inline `fill={LEVEL_COLORS[block.level]}` which resolves
  *    to CSS vars not supported in jsdom. axe would report false color-contrast
- *    violations. Deferred to Phase 4.
+ *    violations. Manual contrast verified in Phase 4.
+ *
+ * Previously skipped, now covered:
+ *  - ScaffoldEffectivenessChart: original `role="figure"` was fixed to `role="img"`
+ *    in the post-merge polish loop, so axe coverage is now feasible.
+ *  - ForecastTimeline: standalone component with simple ComplexityBlock[] fixture.
  */
 
 import { describe, it } from "vitest";
@@ -34,6 +36,7 @@ import {
 } from "../shared/DataViz";
 import ToneSparkline from "../Sparkline";
 import CohortSparklineGrid from "../CohortSparklineGrid";
+import ForecastTimeline from "../ForecastTimeline";
 
 // ── DataVisualizations components ────────────────────────────────────────────
 import {
@@ -45,6 +48,7 @@ import {
   PlanStreakCalendar,
   FollowUpDecayIndicators,
   MessageApprovalFunnel,
+  ScaffoldEffectivenessChart,
   StudentSparkIndicator,
   DebtTrendSparkline,
   ComplexityTrendCalendar,
@@ -519,6 +523,43 @@ describe("viz accessibility — zero axe violations", () => {
       <ReadabilityComparisonGauge
         sourceText="The student demonstrated significant difficulty with complex multi-step mathematical word problems involving fractions."
         simplifiedText="The student had trouble with hard math word problems about fractions."
+      />,
+    );
+    await expectNoAxeViolations(container);
+  });
+
+  it("ScaffoldEffectivenessChart — static (post role-fix)", async () => {
+    const { container } = render(
+      <ScaffoldEffectivenessChart
+        scaffolds={[
+          { name: "visual_support", count: 5 },
+          { name: "sentence_starters", count: 3 },
+          { name: "partner_reading", count: 4 },
+        ]}
+      />,
+    );
+    await expectNoAxeViolations(container);
+  });
+
+  it("ForecastTimeline — static", async () => {
+    const { container } = render(
+      <ForecastTimeline
+        blocks={[
+          { id: "b1", time_slot: "9:00 AM", activity: "Math", level: "high", source: "forecast" } as never,
+          { id: "b2", time_slot: "10:00 AM", activity: "Reading", level: "low", source: "forecast" } as never,
+        ]}
+      />,
+    );
+    await expectNoAxeViolations(container);
+  });
+
+  it("ForecastTimeline — interactive", async () => {
+    const { container } = render(
+      <ForecastTimeline
+        blocks={[
+          { id: "b1", time_slot: "9:00 AM", activity: "Math", level: "high", source: "forecast" } as never,
+        ]}
+        onBlockClick={() => {}}
       />,
     );
     await expectNoAxeViolations(container);

@@ -444,6 +444,10 @@ export default function ClassroomPanel({
             students={studentSummaries.result}
             onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
           />
+        ) : studentSummaries.error ? (
+          <div className="today-health-error" role="alert">
+            Couldn&apos;t load cohort pulse: {studentSummaries.error}
+          </div>
         ) : (
           <SectionSkeleton label="Loading cohort pulse" variant="story" lines={2} />
         )}

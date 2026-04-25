@@ -50,7 +50,8 @@
 .cohort-cell__svg {
   display: block;
   width: 100%;
-  height: 28px;
+  height: auto;
+  aspect-ratio: 92 / 28;
 }
 
 @media (max-width: 600px) {

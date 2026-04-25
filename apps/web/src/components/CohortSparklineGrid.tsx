@@ -20,8 +20,9 @@ const HISTORY_DAYS = 14;
  * Encoding:
  *   x-axis: day (oldest left, today right) — fixed 14 points
  *   y-axis: per-student intervention count for that day
- *   per-cell scale: each sparkline is normalized to its own min/max
- *     so quiet students stay visually quiet, but trajectory still shows
+ *   per-cell scale: shared maximum of (this student's data ∪ cohort baseline),
+ *     so quiet students stay visually quiet while active students' trajectories
+ *     rise toward the cell top — and the baseline line is comparable across cells
  *   cohort baseline: faint dashed line per cell showing the cohort mean
  *
  * No automatic ranking, no risk score — alphabetical only by alias.

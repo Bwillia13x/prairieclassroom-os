@@ -10,7 +10,7 @@ export default function ForecastTimeline({ blocks, onBlockClick }: Props) {
   if (blocks.length === 0) return null;
 
   return (
-    <div className="forecast-timeline" role="img" aria-label="Complexity timeline for the day">
+    <div className="forecast-timeline" role="group" aria-label="Complexity timeline for the day">
       {blocks.map((block, i) => (
         <button
           key={i}

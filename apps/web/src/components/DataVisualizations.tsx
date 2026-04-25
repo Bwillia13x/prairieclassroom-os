@@ -1283,7 +1283,7 @@ export function InterventionRecencyTimeline({ students, maxDays = 14, onStudentC
     `${beyondTargetCount} beyond the ${maxDays} day target, ${watchCount} in watch range. Longest gap: ${longestGap.alias} at ${longestGap.days} days.`;
 
   return (
-    <div className={`viz-recency${mounted ? " viz-recency--mounted" : ""}`} role="group" aria-label={ariaLabel}>
+    <div className={`viz-recency${mounted ? " viz-recency--mounted" : ""}`} role={onStudentClick ? "group" : "img"} aria-label={ariaLabel}>
       <div className="viz-header viz-recency__header">
         <div>
           <h4 className="t-eyebrow viz-title">Intervention Recency <SourceTag kind="record" /></h4>
@@ -1412,7 +1412,7 @@ export function EALoadStackedBars({ blocks }: EALoadStackedBarsProps) {
   const barMaxW = 200;
 
   return (
-    <div className="viz-ea-bars" role="figure" aria-label="EA Load Distribution chart">
+    <div className="viz-ea-bars" role="img" aria-label="EA Load Distribution chart">
       <div className="viz-header">
         <h4 className="t-eyebrow viz-title">EA Load Distribution</h4>
         <span className="t-eyebrow viz-subtitle">Students per block</span>
@@ -1783,7 +1783,7 @@ export function MessageApprovalFunnel({ messagesTotal, messagesApproved }: Messa
   const approvedW = (messagesApproved / messagesTotal) * barW;
 
   return (
-    <div className="viz-funnel" role="figure" aria-label={`Message Pipeline: ${Math.round(approvalRate)}% approval rate`}>
+    <div className="viz-funnel" role="img" aria-label={`Message Pipeline: ${Math.round(approvalRate)}% approval rate`}>
       <div className="viz-header">
         <h4 className="t-eyebrow viz-title">Message Pipeline</h4>
         <span className="t-eyebrow viz-subtitle">{Math.round(approvalRate)}% approval rate</span>
@@ -1832,7 +1832,7 @@ export function ScaffoldEffectivenessChart({ scaffolds }: ScaffoldBarProps) {
   const maxCount = Math.max(1, ...scaffolds.map((s) => s.count));
 
   return (
-    <div className="viz-scaffold" role="figure" aria-label="Active Scaffolds chart">
+    <div className="viz-scaffold" role="img" aria-label="Active Scaffolds chart">
       <div className="viz-header">
         <h4 className="t-eyebrow viz-title">Active Scaffolds</h4>
         <span className="t-eyebrow viz-subtitle">Frequency across students</span>
