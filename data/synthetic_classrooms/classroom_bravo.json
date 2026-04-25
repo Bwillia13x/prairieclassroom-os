@@ -18,7 +18,7 @@
       "student_id": "S4",
       "alias": "Lina",
       "eal_flag": true,
-      "support_tags": ["emerging_english", "strong_math_conceptually", "needs_visual_instructions"],
+      "support_tags": ["eal_level_2", "strong_math_conceptually", "needs_visual_instructions"],
       "known_successful_scaffolds": ["picture_cues", "first_language_math_vocab"]
     },
     {
@@ -32,7 +32,7 @@
       "student_id": "S6",
       "alias": "Tomás",
       "eal_flag": true,
-      "support_tags": ["emerging_english", "anxious_during_transitions", "strong_oral_presence"],
+      "support_tags": ["eal_level_2", "anxious_during_transitions", "strong_oral_presence"],
       "known_successful_scaffolds": ["visual_schedule", "advance_warning", "partner_work"]
     },
     {

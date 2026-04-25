@@ -31,7 +31,7 @@
 | **G-12** | Teacher dashboard structural gaps | **Closed** | Health Bar (success states), sparkline trends, student roster, drill-down drawer — all four structural gaps from the frontend design audit are now implemented. See details below. |
 | **G-13** | Canonical system inventory drift | **Closed for current surface** | `npm run system:inventory` now generates `docs/system-inventory.md` and `docs/api-surface.md`, while `npm run system:inventory:check` catches panel, prompt, tier, and exact endpoint drift across canonical docs. |
 | **G-14** | Pilot readiness and real-data governance | **Mostly closed** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) cover operating modes, memory lifecycle, teacher/EA/substitute/reviewer boundaries, per-request access evidence, and the paperwork a first real pilot session would need. **2026-04-17 (round 4):** dedicated substitute and reviewer bounded views shipped (scope matrix locked by `services/orchestrator/__tests__/auth.test.ts`, per-route enforcement added to the pre-existing mount-level pattern, frontend tab visibility + capability hooks + teacher-downgrade confirmation). **2026-04-17 (round 5):** reusable safety-artifact review template + 5 completed per-prompt-class reviews (`docs/pilot/safety-artifacts/`) + 5 rehearsable incident-response drill scripts (`docs/pilot/incident-drills/`) all landed. The remaining blockers are all human-process: at least one real teacher walkthrough, pilot-coordinator countersign on each safety-artifact review, and at least one rehearsal of each of drills 1-5 before the first real-data session. |
-| **G-15** | Synthetic classroom fixture convention drift | Partial | The cross-classroom `Amira` alias collision is now closed by renaming Charlie's S10 alias to `Aisha` and adding a demo fixture validator that blocks future alias collisions. Remaining drift is EAL tag vocabulary fragmentation: `classroom_demo.json` uses `eal_level_1/2/3` while non-demo classrooms use `emerging_english` and related variants. |
+| **G-15** | Synthetic classroom fixture convention drift | **Closed** | Cross-fixture EAL tag vocabulary unified 2026-04-25: non-demo classrooms (`alpha/bravo/charlie/delta/echo`) migrated from `emerging_english`/`eal_for_academic_vocabulary` to `eal_level_N`. |
 | **G-16** | Wire clickable chart drill-downs on Tomorrow Plan, Differentiate, Support Patterns, and Intervention panels | **Closed 2026-04-24** | All five previously-unwired chart components now pass click callbacks from their parent panels into `DrillDownDrawer`: `PlanCoverageRadar`, `VariantSummaryStrip`, `SupportPatternRadar`, `FollowUpSuccessRate`, and `InterventionTimeline`. |
 | **G-17** | Intervention capture velocity | **Closed** | `QuickCaptureTray` chip-first flow shipped 2026-04-14. Legacy `InterventionLogger` preserved in a `<details>` expansion; auto-opens on Tomorrow-Plan prefill. No schema or API changes — frontend-only addition on top of the existing `logIntervention` contract. |
 | **G-18** | OutputActionBar rollout — Plan 4 | **Closed** | Shipped 2026-04-14. All eight generation panels now render a consistent `OutputActionBar`. Supporting hooks `useCopyToClipboard` and `useDownloadBlob` extracted. `tomorrowNotes` AppState slot added for cross-panel output aggregation. `FamilyMessagePanel` approval promoted to a two-step `MessageApprovalDialog`. See `docs/decision-log.md` 2026-04-14 entry. |
@@ -248,7 +248,12 @@ future browser-sweep cycle but the structural CSS contract is intact.
 
 ### G-15 — Synthetic classroom fixture convention drift
 
-**Status:** Partial. Surfaced 2026-04-13 during the post-implementation code review of the 26-student demo classroom expansion (commits `013994f`..`e828be3`).
+**Status:** Closed 2026-04-25.
+
+**Resolution:** Non-demo classrooms (`alpha/bravo/charlie/delta/echo`) migrated
+from `emerging_english` to the demo convention `eal_level_N`. Cross-fixture
+vocabulary now unified. Eval cases referencing the old tag updated in the
+same commit.
 
 **Findings**
 
@@ -268,11 +273,11 @@ future browser-sweep cycle but the structural CSS contract is intact.
 - The spec at `docs/superpowers/specs/2026-04-13-full-classroom-seed-design.md` §3.2 "Naming integrity rule" now documents the review finding and the rename, so future contributors see the history.
 - Charlie's duplicate `Amira` alias was renamed to `Aisha` on 2026-04-23, preserving the demo's load-bearing D1 `Amira`.
 - `scripts/validate-demo-fixture.mjs` now blocks future synthetic alias collisions, validates the tiered demo roster, checks demo EAL tags, and asserts clean-seed counts.
+- EAL tag vocabulary unified 2026-04-25: `emerging_english` replaced with `eal_level_1/2/3` and `eal_for_academic_vocabulary` replaced with `eal_level_3` across all 5 non-demo classrooms. Option A executed.
 
 **What remains**
 
-- Decide whether to normalize non-demo EAL tags into the demo's `eal_level_N` convention or keep both vocabularies deliberately documented.
-- Until then: flag EAL tag vocabulary drift in any code review that touches synthetic classroom fixtures so the inconsistency does not propagate further.
+None — fully closed.
 
 ### Intervention capture velocity
 
