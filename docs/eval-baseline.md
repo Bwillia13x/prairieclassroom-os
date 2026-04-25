@@ -5,10 +5,10 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-04-25T16:26:53.699Z
+**Run date:** 2026-04-25T18:33:58.905Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
-**Raw artifacts:** `output/release-gate/2026-04-25T16-24-57-671Z-90394`
+**Raw artifacts:** `output/release-gate/2026-04-25T18-31-17-925Z-20019`
 
 ### Commands
 
@@ -22,7 +22,7 @@ npm run release:gate
 
 **Status:** Blocked before evals — Ollama preflight failed.
 **Backend:** `ollama`
-**Raw artifacts:** `output/host-preflight/2026-04-12T16-10-14-124Z.json`
+**Raw artifacts:** `output/host-preflight/2026-04-09T14-55-17-627Z.json`
 
 ### Commands
 
@@ -38,20 +38,14 @@ npm run release:gate:ollama
 - Ollama CLI is not available or `ollama list` failed.
 - Required models: `gemma4:4b`, `gemma4:27b`
 - Available models: none
-- Available disk on host: 6.76 GiB
+- Available disk on host: 7.22 GiB
 - Total host memory: 8.00 GiB
 
 ## Hosted Gemini API Baseline
 
-**Status:** Passing baseline — 12/12 evals passed and the full hosted release gate completed.
-**Run date:** 2026-04-22T02:26:34.470Z
+**Status:** Blocked before evals — Gemini API preflight failed.
 **Backend:** `gemini`
-**Key source:** `PRAIRIE_GEMINI_API_KEY`
-**Hosted run guard:** enabled
-**Eval suite:** Hosted Gemini proof suite (12/127 cases from the full corpus).
-**Usage scope:** Synthetic/demo evaluation only.
-**Model identifiers observed:** `gemma-4-26b-a4b-it`, `gemma-4-31b-it`
-**Raw artifacts:** `output/release-gate/2026-04-22T02-16-16-557Z-74236`
+**Raw artifacts:** `output/release-gate/2026-04-25T18-31-17-925Z-20019/gemini-preflight.json`
 
 ### Commands
 
@@ -61,32 +55,14 @@ export PRAIRIE_ENABLE_GEMINI_RUNS=true
 npm run release:gate:gemini
 ```
 
-### Route Summary
+### Preflight
 
-| Route | Cases | Passed |
-|-------|-------|--------|
-| complexity_debt_register | 1 | 1/1 |
-| draft_family_message | 2 | 2/2 |
-| extract_worksheet | 1 | 1/1 |
-| forecast_complexity | 1 | 1/1 |
-| generate_ea_briefing | 1 | 1/1 |
-| generate_survival_packet | 1 | 1/1 |
-| POST /api/differentiate | 3 | 3/3 |
-| prepare_tomorrow_plan | 2 | 2/2 |
-
-### Failure Ledger
-
-#### Auth / Startup
-- None
-
-#### Parse / Schema
-- None
-
-#### Safety
-- None
-
-#### Content Quality
-- None
+- Hosted Gemini API baseline has not been executed yet.
+- API key present: no
+- Key source: not configured
+- Hosted run guard: disabled
+- Hosted live model: `gemma-4-26b-a4b-it`
+- Hosted planning model: `gemma-4-31b-it`
 
 ## Paid Vertex Endpoint Baseline
 
