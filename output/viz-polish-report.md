@@ -409,7 +409,97 @@ No violations found. Task 11 commit skipped.
 - `min-width: 240px` on heatmap SVG: parent has `overflow-x: auto` — scrolls, does not break layout
 
 ## Dimension 6: Test Coverage
-<!-- filled by Task 12 -->
+
+**Audit date:** 2026-04-25
+**Task 12 (audit) + Task 13 (remediation) — Status:** DONE
+
+### Coverage definitions
+
+| Level | Meaning |
+|-------|---------|
+| `comprehensive` | Dedicated test file with render + interaction + empty-state |
+| `render+interaction` | Has behavior/click tests (in shared test file) |
+| `render+empty-state` | Has render + empty-state tests |
+| `render-only` | Covered by axe omnibus (viz-accessibility.test.tsx) — render smoke, no behavior |
+| `none` | No test coverage prior to Task 13 |
+
+### Coverage table (29 components)
+
+| Component | Source file | Pre-Task-13 status | Post-Task-13 status | Test file(s) |
+|-----------|-------------|-------------------|---------------------|--------------|
+| **shared/DataViz.tsx** | | | | |
+| Sparkline | shared/DataViz | `comprehensive` | `comprehensive` | DataViz.test.tsx |
+| TrendIndicator | shared/DataViz | `comprehensive` | `comprehensive` | DataViz.test.tsx |
+| HealthDot | shared/DataViz | `comprehensive` | `comprehensive` | DataViz.test.tsx |
+| ProgressBar | shared/DataViz | `comprehensive` | `comprehensive` | DataViz.test.tsx |
+| **Standalone** | | | | |
+| Sparkline (tone-based) | Sparkline.tsx | `render-only` | `render-only` | viz-accessibility.test.tsx |
+| ForecastTimeline | ForecastTimeline.tsx | `none` ⚠️ | `render+interaction` ✅ | ForecastTimeline.test.tsx (new) |
+| CohortSparklineGrid | CohortSparklineGrid.tsx | `comprehensive` | `comprehensive` | CohortSparklineGrid.test.tsx |
+| **DataVisualizations.tsx** | | | | |
+| StudentPriorityMatrix | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, viz-accessibility.test.tsx |
+| ComplexityDebtGauge | DataVisualizations | `comprehensive` | `comprehensive` | ComplexityDebtGauge.test.tsx, DataVisualizationsClicks.test.tsx |
+| ClassroomCompositionRings | DataVisualizations | `render+interaction` | `render+interaction` | ClassroomCompositionRings.test.tsx, DataVisualizationsClicks.test.tsx |
+| ComplexityHeatmap | DataVisualizations | `none` ⚠️ | `render+empty-state` ✅ | ComplexityHeatmap.test.tsx (new) |
+| InterventionRecencyTimeline | DataVisualizations | `render+interaction` | `render+interaction` | InterventionRecencyTimeline.test.tsx, DataVisualizationsClicks.test.tsx |
+| EALoadStackedBars | DataVisualizations | `render-only` | `render-only` | viz-accessibility.test.tsx |
+| SupportPatternRadar | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| PlanStreakCalendar | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| FollowUpDecayIndicators | DataVisualizations | `render-only` | `render-only` | viz-accessibility.test.tsx |
+| MessageApprovalFunnel | DataVisualizations | `render-only` | `render-only` | viz-accessibility.test.tsx |
+| ScaffoldEffectivenessChart | DataVisualizations | `none` ⚠️ | `render+empty-state` ✅ | ScaffoldEffectivenessChart.test.tsx (new) |
+| StudentSparkIndicator | DataVisualizations | `render-only` | `render-only` | viz-accessibility.test.tsx |
+| DebtTrendSparkline | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| ComplexityTrendCalendar | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| InterventionTimeline | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| FollowUpSuccessRate | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| ScheduleLoadStrip | DataVisualizations | `render-only` | `render-only` | viz-accessibility.test.tsx |
+| VariantSummaryStrip | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| StudentThemeHeatmap | DataVisualizations | `none` ⚠️ | `render+empty-state` ✅ | StudentThemeHeatmap.test.tsx (new) |
+| PlanCoverageRadar | DataVisualizations | `render+interaction` | `render+interaction` | DataVisualizationsClicks.test.tsx, DataVisualizationsA11y.test.tsx |
+| WorkflowFlowStrip | DataVisualizations | `render-only` | `render-only` | viz-accessibility.test.tsx |
+| ReadabilityComparisonGauge | DataVisualizations | `render-only` | `render-only` | viz-accessibility.test.tsx |
+
+### Task 12 gap summary
+
+**HIGH priority (no coverage at all) — 4 components:**
+- `ForecastTimeline` — standalone component, no test file prior to Task 13
+- `ScaffoldEffectivenessChart` — static chart, no test file prior to Task 13
+- `StudentThemeHeatmap` — SVG heatmap using color-mix(), no test file prior to Task 13
+- `ComplexityHeatmap` — SVG heatmap using CSS-var fills, no test file prior to Task 13
+
+**LOW priority (axe-only, render-only) — 7 components:**
+`EALoadStackedBars`, `FollowUpDecayIndicators`, `MessageApprovalFunnel`, `StudentSparkIndicator`, `ScheduleLoadStrip`, `WorkflowFlowStrip`, `ReadabilityComparisonGauge`
+
+Note: `viz-accessibility.test.tsx` counts as a render smoke test because it asserts `container` exists after render and runs axe. It does NOT cover behavior (output shape, interactions, empty-state).
+
+### Task 13 remediation
+
+**Test files added: 4**
+
+| File | Tests added | What's covered |
+|------|-------------|----------------|
+| `ForecastTimeline.test.tsx` | 8 | render, empty-state (blocks=[]), interaction (onBlockClick fires with correct index), aria-label, single-block edge case |
+| `ScaffoldEffectivenessChart.test.tsx` | 7 | render, empty-state (scaffolds=[]), label formatting (underscores→spaces), count display, 8-row cap, aria-label, single entry |
+| `StudentThemeHeatmap.test.tsx` | 6 | render, empty-state (themes=[]), aria-label, student aliases in SVG text, single theme, rect count |
+| `ComplexityHeatmap.test.tsx` | 7 | render, empty-state (blocks=[]), aria-label, rect count, title elements per rect, legend labels, single block |
+
+**Components remaining at `render-only` after Task 13 (LOW priority, skipped per time budget):**
+- `EALoadStackedBars` — static chart, no clickable handlers to test; render-only is acceptable
+- `FollowUpDecayIndicators` — has `onStudentClick` but no dedicated behavior test; axe covers render
+- `MessageApprovalFunnel` — static funnel; no clickable handlers
+- `StudentSparkIndicator` — purely visual SVG with no handlers
+- `ScheduleLoadStrip` — static strip with no handlers
+- `WorkflowFlowStrip` — static strip with no handlers
+- `ReadabilityComparisonGauge` — static gauge with no handlers
+- `Sparkline.tsx` (standalone/tone) — axe-only; the shared `DataViz.Sparkline` has comprehensive tests
+
+**Note on `StudentThemeHeatmap` and `ComplexityHeatmap`:** color-mix() / CSS-var fills are not resolved in jsdom. Tests verify DOM structure (rect count, title elements, aria-labels) without asserting fill colors. This is consistent with the axe skip notes from Phase 2.
+
+### Test count delta
+
+- Pre-Task-13 component tests: 560 (in the `apps/web/src/components` scope)
+- Post-Task-13 component tests: 588 (+28 new tests across 4 files)
 
 ## Summary
 <!-- final pass summary -->
