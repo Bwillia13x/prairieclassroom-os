@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { createSentryTransport } from "../sentry";
 
 vi.mock("@sentry/browser", () => ({
@@ -7,6 +7,10 @@ vi.mock("@sentry/browser", () => ({
 }));
 
 describe("sentryTransport", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   it("forwards errors to Sentry.captureException with structured context", async () => {
     const sentry = await import("@sentry/browser");
     const transport = createSentryTransport({ dsn: "https://test@example.com/1" });
@@ -29,7 +33,6 @@ describe("sentryTransport", () => {
 
   it("no-ops when dsn is empty (lets dev environments skip Sentry init)", async () => {
     const sentry = await import("@sentry/browser");
-    vi.clearAllMocks();
     const transport = createSentryTransport({ dsn: "" });
 
     transport({
