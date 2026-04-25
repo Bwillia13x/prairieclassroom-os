@@ -1,0 +1,71 @@
+.cohort-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+}
+
+.cohort-grid--empty {
+  padding: var(--space-4);
+  color: var(--color-text-tertiary);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.cohort-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: transparent;
+  border: 1px solid var(--color-border-subtle, rgba(127, 127, 127, 0.18));
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 0.75rem;
+  color: var(--color-text);
+  text-align: left;
+}
+
+.cohort-cell--interactive {
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.cohort-cell--interactive:hover,
+.cohort-cell--interactive:focus-visible {
+  border-color: var(--color-section-priority);
+  outline: none;
+}
+
+.cohort-cell__alias {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cohort-cell__svg {
+  display: block;
+  width: 100%;
+  height: 28px;
+}
+
+@media (max-width: 600px) {
+  .cohort-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--space-2);
+  }
+
+  .cohort-cell {
+    padding: var(--space-1) var(--space-2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cohort-cell--interactive {
+    transition: none;
+  }
+}
