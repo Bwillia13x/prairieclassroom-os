@@ -1,0 +1,20 @@
+{
+  "id": "synth-002-fammsg-references-intervention",
+  "category": "cross_feature_synthesis",
+  "description": "Family message draft about Brody (multiple seeded interventions) must produce a routine_update message that synthesizes from intervention history rather than emitting a generic template — proves the family-message route uses interventions retrieval",
+  "prompt_class": "draft_family_message",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "student_ref": "Brody",
+    "tone": "warm_and_factual",
+    "purpose": "routine_update",
+    "teacher_notes": "Wanted to share how the calm-corner reset routine is going. Brody had two strong recoveries this week."
+  },
+  "expected": {
+    "required_message_keys": ["draft_id", "classroom_id", "student_ref", "purpose", "tone", "plain_language_text", "teacher_approved", "schema_version"],
+    "schema_version": "0.1.0",
+    "teacher_approved_must_be_false": true,
+    "must_contain": ["Brody"],
+    "must_not_contain": ["diagnosis", "clinical", "disorder", "deficit"]
+  }
+}
