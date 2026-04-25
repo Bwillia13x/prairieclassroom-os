@@ -180,7 +180,64 @@ No color-contrast violations were detected in the axe run (jsdom cannot resolve 
 Broader component sweep confirmed: 560/560 tests pass, zero regressions from the 8 component fixes.
 
 ## Dimension 3: Reduced Motion
-<!-- filled by Task 6 -->
+
+**Audit date:** 2026-04-25
+**Status:** DONE — 2 files patched; all 4 viz CSS files now have `prefers-reduced-motion` guards.
+
+### Files scanned for motion declarations
+
+| File | Motion declarations | Guard present before audit |
+|------|--------------------|-----------------------------|
+| `DataVisualizations.css` | `transition:` (15 selectors), `animation:` (4 keyframe usages), `@keyframes` (4 blocks) | YES — 2 guard blocks (lines 2025, 2465); hover transitions additionally gated behind `no-preference` |
+| `CohortSparklineGrid.css` | `transition:` (1 selector: `.cohort-cell--interactive`) | YES — guard at line 67 |
+| `ForecastTimeline.css` | `transition:` (1 selector: `.forecast-timeline-segment`) | NO — FAIL |
+| `shared/DataViz.css` | `transition:` (2 selectors), `animation:` (1 selector: `.dataviz-health-dot--critical pulse-ring`) | NO — FAIL |
+
+### Pre-audit guard status
+
+- **PASS (already guarded):** `DataVisualizations.css`, `CohortSparklineGrid.css`
+- **FAIL (unguarded):** `ForecastTimeline.css`, `shared/DataViz.css`
+
+### Violations fixed (Task 7)
+
+**`ForecastTimeline.css`** — selector needing guard:
+- `.forecast-timeline-segment` — `transition: background-color, color, filter` via `var(--motion-fast)`
+
+Guard appended at bottom of file:
+```css
+@media (prefers-reduced-motion: reduce) {
+  .forecast-timeline-segment {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+```
+
+**`shared/DataViz.css`** — selectors needing guards:
+- `.dataviz-health-dot` — `transition: background, box-shadow` via `var(--motion-base)`
+- `.dataviz-health-dot--critical` — `animation: pulse-ring 1.5s infinite`
+- `.dataviz-progress__fill` — `transition: width` via `var(--motion-slow)`
+
+Guard appended at bottom of file:
+```css
+@media (prefers-reduced-motion: reduce) {
+  .dataviz-health-dot,
+  .dataviz-health-dot--critical,
+  .dataviz-progress__fill {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+```
+
+### Test result
+
+No tests broken — CSS media query additions are invisible to the vitest + jsdom test environment. Confirmed 560/560 pass (no regression from Dimension 2 baseline).
+
+### Notes
+
+- `DataVisualizations.css` uses a `no-preference`-gated pattern for hover affordances (clickable chart transitions at lines 2668, 2703, 2744) — these are correctly opt-in rather than opt-out. WCAG 2.1 SC 2.3.3 compliant.
+- `pulse-ring` keyframe is defined inline on `.dataviz-health-dot--critical`; disabling the animation via `animation: none !important` also suppresses it without needing to reference the keyframe name explicitly.
 
 ## Dimension 4: Dark Mode Contrast
 <!-- filled by Task 8 -->
