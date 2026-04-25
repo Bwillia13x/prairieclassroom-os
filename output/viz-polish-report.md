@@ -240,7 +240,88 @@ No tests broken — CSS media query additions are invisible to the vitest + jsdo
 - `pulse-ring` keyframe is defined inline on `.dataviz-health-dot--critical`; disabling the animation via `animation: none !important` also suppresses it without needing to reference the keyframe name explicitly.
 
 ## Dimension 4: Dark Mode Contrast
-<!-- filled by Task 8 -->
+
+**Audit date:** 2026-04-25
+**Status:** PASS — `npm run check:contrast` clean for all viz token pairs across both themes. No remediation required (Task 9 skipped).
+
+### Contrast checker result
+
+```
+Pairs evaluated: 80 (light + dark)
+All pairs meet WCAG AA. ✓
+```
+
+Full report at `output/contrast-report.md`.
+
+**6 advisory pairs** — all decorative borders (`--color-border`, `--color-border-strong`) below 3:1. These are intentional decorative separators, not text or UI-control contrasts. WCAG 2.1 SC 1.4.11 excludes purely decorative elements; these are correctly classified `⚠ advisory` in the report. No action required.
+
+### Viz-specific token pairs
+
+All forecast/chart-tone tokens used in viz cell fills and legend badges are covered by the contrast checker and pass with large margins:
+
+| Token pair | Theme | Ratio | Target | Status |
+|---|---|---:|---:|---|
+| `--color-forecast-low-text` / `--color-forecast-low-bg` | light | 7.89 | 4.5 | PASS |
+| `--color-forecast-medium-text` / `--color-forecast-medium-bg` | light | 6.36 | 4.5 | PASS |
+| `--color-forecast-high-text` / `--color-forecast-high-bg` | light | 8.95 | 4.5 | PASS |
+| `--color-forecast-low-text` / `--color-forecast-low-bg` | dark | 11.79 | 4.5 | PASS |
+| `--color-forecast-medium-text` / `--color-forecast-medium-bg` | dark | 11.08 | 4.5 | PASS |
+| `--color-forecast-high-text` / `--color-forecast-high-bg` | dark | 8.83 | 4.5 | PASS |
+
+All `--color-section-*` tokens use `light-dark()` pairings in `tokens.css`; none are rendered as cell text backgrounds in the viz layer — they serve as stroke/fill colors on SVG paths where no text is painted on top. No text-on-`section` contrast pairs are present.
+
+### Phase-2-deferred components: `StudentThemeHeatmap` + `ComplexityHeatmap`
+
+Both components were deferred from the Phase 2 axe audit because jsdom cannot resolve `color-mix()` at test time. Contrast is verified here by static analysis of the token values.
+
+#### `ComplexityHeatmap`
+
+- **Cell fills:** `var(--chart-tone-{low,medium,high}-bg)` — resolved from `tokens.css` `light-dark()` pairs.
+- **Cell text:** `--color-text` (#111827 light / #f2f5f8 dark) rendered via `.viz-heatmap__cell-text`.
+- **Legend badges:** `--chart-tone-*-bg` at `opacity: 0.7` on `--color-surface` parent, `--color-text` foreground.
+
+Manual contrast ratios (sRGB linear interpolation):
+
+| Pair | Light | Dark |
+|---|---:|---:|
+| `--color-text` on `--chart-tone-low-bg` | 15.25:1 | 17.76:1 |
+| `--color-text` on `--chart-tone-medium-bg` | 15.68:1 | 17.73:1 |
+| `--color-text` on `--chart-tone-high-bg` | 14.89:1 | 17.96:1 |
+| `--color-text` on legend badge (bg @0.7 opacity, light surface) | 15.95:1 | 17.11:1 |
+
+All ratios exceed 4.5:1 WCAG AA by a factor of 3+. **PASS both themes.**
+
+#### `StudentThemeHeatmap`
+
+- **Cell fills:** `color-mix(in srgb, var(--color-danger) N%, var(--color-surface-secondary))` where N ∈ [18, 60].
+  - `--color-danger`: #a62f26 (light) / #ef8a81 (dark)
+  - `--color-surface-secondary` → `--color-surface-muted`: #f1f4f8 (light) / #0b0c10 (dark)
+- **SVG row labels:** `fill="var(--color-text)"` — full-opacity, painted outside cells on the surface background.
+- **SVG column headers:** `fill="var(--color-text-secondary)"` — painted on the heatmap background.
+- The `StudentThemeHeatmap` cells contain **no text** — they are data-only rects with `<title>` tooltip. The only contrast-sensitive element is the cell fill itself against the surrounding page, which is decorative grid context, not a WCAG text-contrast scenario.
+
+Row/column label contrast against parent surface is covered by the existing `--color-text` / `--color-text-secondary` pairs in the contrast checker (ratios 15.66–18.86:1 for `--color-text`, 7.21–11.26:1 for `--color-text-secondary`).
+
+Manual fill contrast at the extremes (text-on-fill, defensive check):
+
+| Scenario | Light ratio | Dark ratio |
+|---|---:|---:|
+| `--color-text` on 18% danger mix (lightest cell) | 12.12:1 | 13.59:1 |
+| `--color-text` on 39% danger mix (mid cell) | 8.34:1 | 8.44:1 |
+| `--color-text` on 60% danger mix (darkest cell) | 5.59:1 | 5.07:1 |
+| `--color-text` on zero-val cell (surface-muted) | 16.08:1 | 17.86:1 |
+
+Even at the maximum 60% danger concentration (the worst case), the hypothetical text-on-fill ratio is 5.07:1 — above the 4.5:1 AA threshold. Since cells contain no text, this is a defensive verification only. **PASS both themes.**
+
+### Non-viz contrast issues
+
+The 6 advisory decorative-border pairs (border below 3:1) are the only sub-threshold items in the full report. These are `--color-border` and `--color-border-strong` on surface/bg — purely structural separators, classified `⚠ advisory` in the contrast checker, and unchanged from the pre-audit baseline. They are logged here for awareness but are out of scope for this phase.
+
+No button text, panel label, or interactive-state contrast failures were found.
+
+### Screenshot status
+
+Skipped — `npm run check:contrast` is deterministic and provides definitive token-level coverage. All manual calculations above confirm the cell-level `color-mix()` pairs that the automated tool cannot reach. Dev-server screenshots would not add information beyond what static analysis covers.
 
 ## Dimension 5: Mobile Reflow
 <!-- filled by Task 10 -->
