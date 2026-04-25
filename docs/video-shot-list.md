@@ -101,7 +101,7 @@ Only switch this script back to an Ollama-first story after you have a passing h
 
 **Exact narration**
 
-> "For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. The live tier handles fast classroom transformations. The planning tier handles deeper synthesis. The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. Twelve primary panels. One hundred twenty-seven checked-in eval cases. Teacher-first, safety-first, Gemma-4-native. This is not an AI tutor with school branding. It is a classroom operating system."
+> "For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. The live tier handles fast classroom transformations. The planning tier handles deeper synthesis. The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. Twelve primary panels. One hundred twenty-nine checked-in eval cases. Teacher-first, safety-first, Gemma-4-native. This is not an AI tutor with school branding. It is a classroom operating system."
 
 **Final on-screen line**
 
@@ -122,7 +122,7 @@ Use this when recording in one pass. The pause markers are pacing cues, not spok
 >
 > Family communication is handled the same way: useful, but bounded. [pause] The system can draft a plain-language message, but it never sends on its own. [pause] The teacher reads it, edits it, and approves it. [pause] That approval gate is permanent. [pause] PrairieClassroom OS is designed to reduce coordination load without removing professional control.
 >
-> For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. [pause] The live tier handles fast classroom transformations. [pause] The planning tier handles deeper synthesis. [pause] The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. [pause] Twelve primary panels. [pause] One hundred twenty-seven checked-in eval cases. [pause] Teacher-first, safety-first, Gemma-4-native. [pause] This is not an AI tutor with school branding. [pause] It is a classroom operating system.
+> For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. [pause] The live tier handles fast classroom transformations. [pause] The planning tier handles deeper synthesis. [pause] The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. [pause] Twelve primary panels. [pause] One hundred twenty-nine checked-in eval cases. [pause] Teacher-first, safety-first, Gemma-4-native. [pause] This is not an AI tutor with school branding. [pause] It is a classroom operating system.
 
 ## Tight Cut Teleprompter Read
 
@@ -138,4 +138,4 @@ Use this version if you want a safer `2:40` to `2:50` runtime with less risk of 
 >
 > Family communication stays bounded. [pause] PrairieClassroom OS can draft a plain-language message, but it never sends on its own. [pause] The teacher reviews, edits, and approves every message.
 >
-> For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. [pause] The live tier handles fast classroom transformations. [pause] The planning tier handles deeper synthesis. [pause] The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. [pause] Twelve primary panels. [pause] One hundred twenty-seven checked-in eval cases. [pause] This is not an AI tutor with school branding. [pause] It is a classroom operating system.
+> For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. [pause] The live tier handles fast classroom transformations. [pause] The planning tier handles deeper synthesis. [pause] The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. [pause] Twelve primary panels. [pause] One hundred twenty-nine checked-in eval cases. [pause] This is not an AI tutor with school branding. [pause] It is a classroom operating system.

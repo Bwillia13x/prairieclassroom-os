@@ -37,6 +37,11 @@ const INJECTION_RULES: PromptInjectionMatch[] = [
 
   // ── Delimiter injection ──
   { key: "delimiter_injection", pattern: /\[INST\]|<\|system\|>|<\|im_start\|>|<\|assistant\|>|<\|user\|>|<\|endoftext\|>/i },
+
+  // ── Indirect prompt extraction (covers questions that don't use show/reveal verbs) ──
+  // Anchored to "your" so it targets the AI's identity, not classroom prose
+  // referencing "the original instructions for the worksheet".
+  { key: "extract_via_repetition", pattern: /\b(what\s+(were|are|was|is|did)|tell\s+me)\b[^.?!]{0,30}\byour\s+(initial|original|first|exact|previous)\s+(prompt|instruction|message|system|rule)/i },
 ];
 
 const PROMPT_SAFETY_NOTICE = `PROMPT SAFETY:

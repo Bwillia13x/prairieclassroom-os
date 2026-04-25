@@ -50,3 +50,13 @@ export function releaseGateEvalLabelForMode(inferenceMode) {
   }
   return inferenceMode;
 }
+
+export function nodeMajorFromVersion(version) {
+  return String(version ?? "").trim().replace(/^v/, "").split(".")[0] ?? "";
+}
+
+export function nodeMajorVersionMatches(expectedVersion, actualVersion) {
+  const expectedMajor = nodeMajorFromVersion(expectedVersion);
+  const actualMajor = nodeMajorFromVersion(actualVersion);
+  return expectedMajor.length > 0 && expectedMajor === actualMajor;
+}

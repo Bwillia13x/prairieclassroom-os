@@ -8,13 +8,20 @@ process.env.PRAIRIE_MEMORY_DIR ??= resolve(
   String(process.pid),
 );
 
-// Node 25 ships an experimental `globalThis.localStorage` that lacks `clear()`
-// and shadows the jsdom Storage in component tests. Replace it with a complete
-// in-memory Storage implementation so spec-conformant tests work in either env.
+// Node 25 ships an experimental `globalThis.localStorage` getter that warns
+// unless Node is launched with --localstorage-file. Inspect the descriptor
+// instead of reading the getter, then replace it with the in-memory Storage
+// implementation expected by component tests.
 {
+  const localStorageDescriptor = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
+  const localStorageValue =
+    localStorageDescriptor && "value" in localStorageDescriptor
+      ? (localStorageDescriptor.value as Storage | undefined)
+      : undefined;
   const needsPolyfill =
-    typeof (globalThis as { localStorage?: Storage }).localStorage === "undefined" ||
-    typeof (globalThis as { localStorage?: Storage }).localStorage?.clear !== "function";
+    !localStorageDescriptor ||
+    !("value" in localStorageDescriptor) ||
+    typeof localStorageValue?.clear !== "function";
 
   if (needsPolyfill) {
     const store = new Map<string, string>();

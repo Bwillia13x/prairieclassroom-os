@@ -48,7 +48,7 @@ The app is a working monorepo, not a static mockup:
 - **SQLite classroom memory** for per-classroom interventions, plans, messages, forecasts, pattern reports, feedback, sessions, and lifecycle controls.
 - **Shared Zod schemas** for request/response contracts and structured model outputs.
 
-The current generated inventory records 49 exact API endpoints, 13 prompt classes, 7 live-tier routes, 6 planning-tier routes, and 7 retrieval-backed prompt classes.
+The current generated inventory records 52 exact API endpoints, 13 prompt classes, 7 live-tier routes, 6 planning-tier routes, and 7 retrieval-backed prompt classes.
 
 ## 5. Safety And Governance
 
@@ -68,13 +68,13 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 
 The repo has a current artifact-backed proof story:
 
-- **Mock structural gate:** passing at `output/release-gate/2026-04-21T17-40-46-011Z-52231`.
+- **Mock structural gate:** passing at `output/release-gate/2026-04-25T02-31-26-869Z-92725`.
 - **Hosted Gemma 4 release gate:** passing on synthetic/demo data at `output/release-gate/2026-04-22T02-16-16-557Z-74236`.
 - **Hosted Gemini proof lane:** passing baseline; the full hosted release gate passed via `npm run release:gate:gemini`.
 - **Hosted proof eval summary:** `output/evals/2026-04-22-gemini/2026-04-22T02-16-16-557Z-74236-gemini-summary.json`.
 - **Hosted eval result:** 12/12 curated hosted proof cases passed.
-- **Full eval corpus:** 127 checked-in eval case files.
-- **Current unit coverage in latest mock gate:** 1,802 TypeScript/Vitest tests and 69 Python tests passed.
+- **Full eval corpus:** 129 checked-in eval case files.
+- **Current unit coverage in latest mock gate:** 1,891 TypeScript/Vitest tests and 69 Python tests passed.
 - **Canonical inventory:** `docs/system-inventory.md` and `docs/api-surface.md`.
 - **Provider proof source:** `docs/eval-baseline.md`.
 - **Concise judge proof brief:** `docs/hackathon-proof-brief.md`.
@@ -107,8 +107,8 @@ PrairieClassroom OS is therefore not an AI tutor with school branding. It is a G
 | Model tiers | 2 |
 | Submission proof models | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` |
 | Privacy-first deployment target | `gemma4:4b`, `gemma4:27b` |
-| API endpoints | 49 |
+| API endpoints | 52 |
 | SQLite tables per classroom | 10 |
-| Checked-in eval case files | 127 |
-| Latest mock-gate tests | 1,802 Vitest + 69 Python |
+| Checked-in eval case files | 129 |
+| Latest mock-gate tests | 1,891 Vitest + 69 Python |
 | Primary user roles | teacher, educational assistant, substitute, reviewer |

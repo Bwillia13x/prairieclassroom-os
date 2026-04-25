@@ -2,13 +2,13 @@
 
 Reference document for all eval cases in `evals/cases/`.
 
-Generated: 2026-04-10
+Generated: 2026-04-24
 
 ---
 
 ## Summary Statistics
 
-**Total eval case files:** 126 JSON cases (plus 1 README)
+**Total eval case files:** 129 JSON cases (plus 1 README)
 
 *Updated 2026-04-10: +6 prompt injection cases (int-007, ea-007, fcst-006, decay-006, simp-005, vocab-004). Category `safety_boundaries` standardized to `safety_correctness` across all cases.*
 
@@ -18,27 +18,28 @@ Generated: 2026-04-10
 
 *Updated 2026-04-12: +6 degraded-path / edge-case cases closing part of G-03: `msg-010-empty-context` (optional context omitted), `simp-006-minimum-grade-text` (very short source), `vocab-005-thin-artifact` (minimal source material), `ea-008-cold-memory` (classroom with minimal intervention history — retrieval relevance), `eal-004-no-ea-window` (full teacher-only day, every block should report break), `eal-005-minimal-roster` (small roster, must not invent aliases).*
 
+*Updated 2026-04-24: +2 `extract_worksheet` cases (`extract-004-latency`, `extract-005-mime-tolerance`) covering the live extraction latency budget and JPEG MIME/schema tolerance.*
+
 ### Cases per Prompt Class
 
 | Prompt Class | Abbreviation | Cases |
 |---|---|---|
-| `differentiate_material` | diff | 14 |
-| `prepare_tomorrow_plan` | plan | 13 |
-| `detect_support_patterns` | pat | 8 |
-| `draft_family_message` | msg | 27 |
+| `differentiate_material` | diff | 15 |
+| `prepare_tomorrow_plan` | plan | 14 |
+| `detect_support_patterns` | pat | 10 |
+| `draft_family_message` | msg | 28 |
 | `generate_survival_packet` | surv | 7 |
-| `generate_ea_briefing` | ea | 7 |
-| `log_intervention` | int | 6 |
-| `forecast_complexity` | fcst | 5 |
-| `detect_scaffold_decay` | decay | 5 |
+| `generate_ea_briefing` | ea | 8 |
+| `log_intervention` | int | 8 |
+| `forecast_complexity` | fcst | 6 |
+| `detect_scaffold_decay` | decay | 6 |
 | `balance_ea_load` | eal | 5 |
-| `simplify_for_student` | simp | 5 |
+| `simplify_for_student` | simp | 6 |
 | `complexity_debt_register` | debt | 4 |
-| `generate_vocab_cards` | vocab | 4 |
-| `extract_worksheet` | extract | 3 |
-| `retrieve_latest_pattern` | pat (retrieval) | 2 |
+| `generate_vocab_cards` | vocab | 5 |
+| `extract_worksheet` | extract | 5 |
 | Schedule endpoints (no prompt class) | sched | 2 |
-| **Total** | | **126** |
+| **Total** | | **129** |
 
 Note: pat-007 and pat-010 use `retrieve_latest_pattern` as their prompt class (a retrieval sub-route of support patterns). sched-001 and sched-002 have `prompt_class: null` and target schedule CRUD endpoints directly.
 
@@ -46,17 +47,17 @@ Note: pat-007 and pat-010 use `retrieve_latest_pattern` as their prompt class (a
 
 | Category | Cases |
 |---|---|
-| `schema_reliability` | 33 |
-| `safety_correctness` | 17 |
-| `latency_suitability` | 11 |
-| `differentiation_quality` | 7 |
+| `schema_reliability` | 42 |
+| `safety_correctness` | 33 |
+| `differentiation_quality` | 20 |
+| `latency_suitability` | 12 |
+| `retrieval_relevance` | 10 |
 | `planning_usefulness` | 7 |
-| `retrieval_relevance` | 6 |
-| `cross_feature_synthesis` | 2 |
 | `content_quality` | 2 |
-| `safety_boundaries` | 1 |
+| `cross_feature_synthesis` | 2 |
+| `tool_calling` | 1 |
 
-Note: Category names used in JSON files sometimes vary slightly from the runner's `EvalCategory` union (e.g., `safety_boundaries` vs `safety_correctness`). The counts above reflect the exact `category` values in the case files.
+Note: The counts above reflect the exact `category` values in the case files.
 
 ---
 
@@ -235,13 +236,15 @@ Note: Category names used in JSON files sometimes vary slightly from the runner'
 | `vocab-002-content-safety.json` | safety_correctness | No diagnosis, no student names, no clinical language |
 | `vocab-003-nonlatin-lesson.json` | schema_reliability | Handles mixed-language lesson text |
 
-### extract -- extract_worksheet (3 cases)
+### extract -- extract_worksheet (5 cases)
 
 | Filename | Category | Purpose |
 |---|---|---|
 | `extract-001-schema.json` | schema_reliability | Returns valid schema with extracted_text and confidence_notes |
 | `extract-002-content-quality.json` | content_quality | Output contains actual text content, not empty or generic |
-| `extract-003-safety.json` | safety_boundaries | Does not introduce forbidden diagnostic terms |
+| `extract-003-safety.json` | safety_correctness | Does not introduce forbidden diagnostic terms |
+| `extract-004-latency.json` | latency_suitability | Completes within 30s on the live extraction route |
+| `extract-005-mime-tolerance.json` | schema_reliability | Accepts JPEG MIME input and still returns the extraction schema |
 
 Note: extract cases use a different JSON structure (`assertions` array with typed assertion objects) rather than the `expected` object used by all other cases.
 
@@ -355,6 +358,7 @@ The extract cases use a different structure with an `assertions` array. Types in
 | `is_array` | Value at key is an array |
 | `min_length` | String value at key meets minimum length |
 | `not_contains` | Value at key does not contain the specified substring |
+| `max_latency_ms` | Response latency must not exceed the expected millisecond threshold |
 
 ---
 
@@ -364,10 +368,10 @@ The extract cases use a different structure with an `assertions` array. Types in
 
 | Prompt Class | Cases | Notes |
 |---|---|---|
-| `extract_worksheet` | 3 | No latency test. No prompt injection test. No multilingual input test. Uses a different assertion format from other cases. |
-| `generate_vocab_cards` | 3 | No latency-only test case. No prompt injection test. |
+| `extract_worksheet` | 5 | Has schema, content, safety, latency, and MIME-tolerance coverage. Still missing prompt injection and multilingual/degraded-OCR cases. Uses a different assertion format from other cases. |
+| `generate_vocab_cards` | 5 | Has prompt-injection and thin-artifact coverage. Still no latency-only test case. |
 | `complexity_debt_register` | 4 | No safety-specific test. No latency test. Deterministic (not model-routed), so safety/latency may be lower priority. |
-| `simplify_for_student` | 4 | No prompt injection test. No retrieval or persistence test. |
+| `simplify_for_student` | 6 | Has prompt-injection and minimum-source coverage. Still no retrieval or persistence test. |
 | Schedule endpoints | 2 | No safety test. No latency test. No prompt injection test. Deterministic CRUD, so this is expected. |
 
 ### Categories That Are Underrepresented
@@ -376,9 +380,8 @@ The extract cases use a different structure with an `assertions` array. Types in
 |---|---|---|
 | `cross_feature_synthesis` | 2 | Only surv-004 and surv-007. No cross-feature cases for plan+pattern, forecast+intervention, or EA+debt interactions. |
 | `content_quality` | 2 | Only surv-002 and extract-002. Most content quality testing is tagged under `differentiation_quality` or `planning_usefulness`. |
-| `safety_boundaries` | 1 | Only surv-003. Most safety testing uses `safety_correctness` instead. These may be intended as the same category. |
-| `retrieval_relevance` | 6 | Only covers plan (2), pat (3), ea (1). No retrieval test for forecast, decay, or survival packet retrieval quality. |
-| Prompt injection | 6 | diff-008, plan-010, msg-007, pat-008, surv-006 and implicitly others. Missing for: int, ea, fcst, decay, simp, vocab, extract, debt, sched. |
+| `retrieval_relevance` | 10 | Covers plan, pat, ea, survival, and cold/minimal memory cases. No retrieval test for forecast or decay retrieval quality. |
+| Prompt injection | 12 | diff-008, plan-010, msg-007, pat-008, surv-006, int-007, ea-007, fcst-006, decay-006, simp-005, vocab-004, and eal-003. Missing for: extract, debt, sched. |
 | Multilingual / non-Latin | 26 | diff-014, plan-011, msg-006, msg-008, int-006, fcst-005, simp-004, vocab-003, plus 18 `msg-lang-*` cases covering Punjabi, Tagalog, Mandarin, French, Arabic, Ukrainian across routine_update / praise / low_stakes_concern. Missing for: ea, pat, decay, surv, debt, sched, extract. |
 | Edge case / empty input | 11 | diff-009 (no text), diff-010/011/012/013 (error paths), decay-004, debt-004, plan-009/012/013, pat-010, msg-010 (empty context), simp-006 (minimum source text), vocab-005 (thin artifact), ea-008 (cold memory retrieval), eal-004 (no EA window), eal-005 (minimal roster). Still missing for: extract. |
 | Persistence / round-trip | 1 | Only pat-006 explicitly tests that a generated report is persisted. No persistence test for interventions, plans, or messages. |
@@ -387,7 +390,7 @@ The extract cases use a different structure with an `assertions` array. Types in
 
 1. **Category naming inconsistency**: `safety_boundaries` and `safety_correctness` appear to overlap. The runner's `EvalCategory` type lists both, but nearly all cases use `safety_correctness`. surv-003 uses `safety_boundaries`.
 
-2. **Extract cases use a different format**: The `extract-*` cases use `assertions` arrays with typed objects plus `request`/`route` fields, while all other cases use the `expected` object with `input` fields. The runner does not appear to have a dedicated dispatch path for `extract_worksheet` -- these cases would fall through to `runDifferentiationEval` since `extract_worksheet` is not listed in the prompt class dispatch switch, which may cause test failures.
+2. **Extract cases use a different format**: The `extract-*` cases use `assertions` arrays with typed objects plus `request`/`route` fields, while all other cases use the `expected` object with `input` fields. The runner now has a dedicated `extract_worksheet` dispatch path, so these cases execute against `/api/extract-worksheet` rather than falling through to differentiation.
 
 3. **No eval cases exist for**: `generate_schedule` as a model-routed class (schedule is tested as deterministic CRUD only).
 

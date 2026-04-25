@@ -1757,7 +1757,7 @@ async function runMessagePersistenceRoundtrip(evalCase: EvalCase): Promise<EvalR
 // --- Extract worksheet evaluation ---
 
 interface ExtractAssertion {
-  type: "status" | "has_key" | "typeof" | "is_array" | "min_length" | "not_contains";
+  type: "status" | "has_key" | "typeof" | "is_array" | "min_length" | "not_contains" | "max_latency_ms";
   key?: string;
   expected?: unknown;
   value?: string;
@@ -1839,6 +1839,12 @@ async function runExtractWorksheetEval(evalCase: EvalCase): Promise<EvalResult> 
             if (typeof val === "string" && val.toLowerCase().includes(assertion.value.toLowerCase())) {
               failures.push(`${assertion.key} contains forbidden content: "${assertion.value}"`);
             }
+          }
+          break;
+        }
+        case "max_latency_ms": {
+          if (typeof assertion.expected === "number" && latencyMs > assertion.expected) {
+            failures.push(`Latency ${Math.round(latencyMs)}ms exceeds max ${assertion.expected}ms`);
           }
           break;
         }

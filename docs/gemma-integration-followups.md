@@ -320,7 +320,7 @@ classroom + same-day date window. ~2 hrs.
 ## Validation checklist for any followup
 
 - `npm run typecheck` — passes
-- `npm run test` — passes (1257+ vitest)
-- `npm run test:python` — passes (67+ pytest)
+- `npm run test` — passes (1891+ vitest)
+- `npm run test:python` — passes (69+ pytest)
 - For new routes: `npm run release:gate` (mock) before merge
 - For backend behavior changes: targeted eval case before merge

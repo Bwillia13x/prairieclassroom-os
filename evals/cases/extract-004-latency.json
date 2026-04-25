@@ -1,0 +1,16 @@
+{
+  "id": "extract-004-latency",
+  "description": "extract_worksheet should complete within 30 seconds on the live model route",
+  "category": "latency_suitability",
+  "route": "POST /api/extract-worksheet",
+  "prompt_class": "extract_worksheet",
+  "request": {
+    "classroom_id": "demo-okafor-grade34",
+    "image_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "mime_type": "image/png"
+  },
+  "assertions": [
+    { "type": "status", "expected": 200 },
+    { "type": "max_latency_ms", "expected": 30000 }
+  ]
+}

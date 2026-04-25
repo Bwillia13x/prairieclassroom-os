@@ -134,6 +134,7 @@ export default function CommandPalette({ open, onClose, entries }: Props) {
           ref={inputRef}
           type="text"
           role="combobox"
+          aria-label="Search commands, classrooms, and actions"
           aria-expanded="true"
           aria-controls="command-palette-results"
           aria-activedescendant={filtered[activeIdx] ? `cp-opt-${filtered[activeIdx].id}` : undefined}

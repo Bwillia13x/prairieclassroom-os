@@ -17,7 +17,7 @@ If you use a different prepared interpreter, export `PRAIRIE_PYTHON=/abs/path/to
 
 ## What the gate does
 
-- Verifies the local Node version matches `.nvmrc`
+- Verifies the local Node major version matches `.nvmrc` while allowing minor/patch drift within the same major
 - Checks the demo fixture contract with `npm run demo:fixture:check`
 - Starts mock inference on `:3200`
 - Starts the orchestrator on `:3100`

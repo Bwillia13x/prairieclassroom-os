@@ -9,7 +9,13 @@ import { DEFAULT_GEMINI_MODEL_IDS, GEMINI_RUN_GUARD_ENV_VAR, writeGeminiPrefligh
 import { REQUIRED_OLLAMA_MODELS, buildHostSummary, readLatestHostPreflight, runOllamaHostPreflight } from "./lib/ollama-host-preflight.mjs";
 import { resolvePrairiePythonBin } from "./lib/python-bin.mjs";
 import { updateProofStatusDoc } from "./lib/proof-status.mjs";
-import { parseReleaseGateArgs, releaseGateCommandForMode, releaseGateEvalLabelForMode } from "./lib/release-gate-helpers.mjs";
+import {
+  nodeMajorFromVersion,
+  nodeMajorVersionMatches,
+  parseReleaseGateArgs,
+  releaseGateCommandForMode,
+  releaseGateEvalLabelForMode,
+} from "./lib/release-gate-helpers.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -111,9 +117,17 @@ async function writeRunSummary(patch = {}) {
 
 async function verifyNodeVersion() {
   const expected = (await readFile(path.join(ROOT, ".nvmrc"), "utf8")).trim();
-  if (process.version !== expected) {
+  // Match on the major version only. Rationale: native modules
+  // (better-sqlite3) ABI compatibility is keyed to Node's NODE_MODULE_VERSION,
+  // which advances on majors, not minors or patches. nvm-managed hosts
+  // commonly install the latest minor/patch in a major series, so requiring
+  // exact major.minor match created brittle false failures (e.g. .nvmrc
+  // pinned v25.8.2 but the host had v25.9.0). Major drift still fails fast
+  // with a clear remediation hint.
+  const expectedMajor = nodeMajorFromVersion(expected);
+  if (!nodeMajorVersionMatches(expected, process.version)) {
     throw new Error(
-      `Node version mismatch. Expected ${expected} from .nvmrc, got ${process.version}. Run \`nvm use\` before \`npm run ${currentGateCommand()}\`.`,
+      `Node major version mismatch. Expected v${expectedMajor}.x from .nvmrc, got ${process.version}. Run \`nvm use\` before \`npm run ${currentGateCommand()}\`.`,
     );
   }
 }

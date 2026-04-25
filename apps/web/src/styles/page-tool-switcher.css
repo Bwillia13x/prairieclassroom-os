@@ -207,10 +207,9 @@
   line-height: var(--leading-snug);
 }
 
-/* Tool-switcher card kicker / status share the eyebrow typography
-   that the tomorrow-planning-hub eyebrow used to anchor. The hub
-   itself now consumes the shared PageHero primitive (2026-04-24
-   design pass), so these two selectors stand on their own. */
+/* Tool-switcher card kicker / status share the same eyebrow typography
+   used by the shared PageHero primitive — keep the two consistent so
+   tool-switcher cards visually align with the page hero above them. */
 .page-tool-switcher--cards .page-tool-switcher__btn-kicker,
 .page-tool-switcher--cards .page-tool-switcher__btn-status {
   font-family: var(--font-mono);
