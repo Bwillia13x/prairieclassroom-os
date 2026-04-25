@@ -48,6 +48,21 @@ describe("CohortSparklineGrid", () => {
     expect(cell?.querySelector("svg polyline")).toBeInTheDocument();
   });
 
+  it("never produces NaN coordinates in the points attribute", () => {
+    const students = [
+      makeStudent("A1", [1, 2, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+      makeStudent("A2", new Array(14).fill(0)),
+    ];
+    const { container } = render(<CohortSparklineGrid students={students} />);
+    const polylines = container.querySelectorAll("svg polyline");
+    expect(polylines.length).toBeGreaterThan(0);
+    for (const pl of Array.from(polylines)) {
+      const points = pl.getAttribute("points") ?? "";
+      expect(points).not.toMatch(/NaN/);
+      expect(points).toMatch(/^[0-9. ,]+$/);
+    }
+  });
+
   it("shows a flat baseline (no spike) for students with all-zero history", () => {
     const students = [makeStudent("Quiet", new Array(14).fill(0))];
     const { container } = render(<CohortSparklineGrid students={students} />);

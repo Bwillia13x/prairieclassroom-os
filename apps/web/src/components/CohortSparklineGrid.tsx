@@ -57,7 +57,6 @@ export default function CohortSparklineGrid({ students, onStudentClick }: Props)
               data={student.intervention_history_14d}
               baseline={baseline}
             />
-            <span className="sr-only">{ariaLabel}</span>
           </>
         );
 
@@ -78,6 +77,7 @@ export default function CohortSparklineGrid({ students, onStudentClick }: Props)
         return (
           <div
             key={student.alias}
+            role="group"
             data-testid="cohort-cell"
             className="cohort-cell"
             aria-label={ariaLabel}
@@ -96,6 +96,7 @@ interface CellSparklineProps {
 }
 
 function CellSparkline({ data, baseline }: CellSparklineProps) {
+  if (data.length < 2) return null;
   const max = Math.max(1, ...data, ...(baseline ?? []));
   const innerW = CELL_W - PAD * 2;
   const innerH = CELL_H - PAD * 2;
@@ -150,6 +151,7 @@ function computeBaseline(students: StudentSummary[]): number[] {
   const out = new Array(HISTORY_DAYS).fill(0);
   for (const s of students) {
     for (let i = 0; i < HISTORY_DAYS; i += 1) {
+      // Schema-enforced length 14, but ?? 0 guards against future drift.
       out[i] += s.intervention_history_14d[i] ?? 0;
     }
   }
