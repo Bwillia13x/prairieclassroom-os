@@ -60,6 +60,7 @@ output/tomorrow-ui-review/
 output/contrast-report.md
 output/evidence-snapshots/
 output/prairieclassroom-logo-header-*.png
+output/ui-touchpoints/
 apps/web/tsconfig.tsbuildinfo
 
 # SQLite classroom memory
