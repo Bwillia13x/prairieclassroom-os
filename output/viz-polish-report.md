@@ -502,4 +502,26 @@ Note: `viz-accessibility.test.tsx` counts as a render smoke test because it asse
 - Post-Task-13 component tests: 588 (+28 new tests across 4 files)
 
 ## Summary
-<!-- final pass summary -->
+
+Visualization Polish Pass — completed 2026-04-25
+
+| Dimension | Status | Findings | Fixes |
+|-----------|--------|----------|-------|
+| 1. Token Consistency | PASS | 0 violations | none |
+| 2. Accessibility | PASS | 8 nested-interactive violations | 8 fixed |
+| 3. Reduced Motion | PASS | 2 unguarded files | 2 patched |
+| 4. Dark Mode Contrast | PASS | 0 viz-specific failures | none |
+| 5. Mobile Reflow | PASS | 0 layout violations | none |
+| 6. Test Coverage | PASS | 4 HIGH gaps + 7 LOW gaps | 4 fixed (+28 tests) |
+
+**Test count:** 1,891 → 1,994 (delta: +103)
+
+The total delta (+103) breaks down as: +47 from the jest-axe accessibility omnibus (`viz-accessibility.test.tsx`) + +28 from the four new coverage test files (`ForecastTimeline`, `ScaffoldEffectivenessChart`, `StudentThemeHeatmap`, `ComplexityHeatmap`) + baseline drift from earlier Plan 1 / Plan 2 preamble work that landed before this pass started.
+
+**Commits:** 10 commits on feat/viz-polish-pass
+
+**Deferred items (for future polish passes):**
+- 7 LOW-priority static viz components remain at axe/render-only coverage: `EALoadStackedBars`, `FollowUpDecayIndicators`, `MessageApprovalFunnel`, `StudentSparkIndicator`, `ScheduleLoadStrip`, `WorkflowFlowStrip`, `ReadabilityComparisonGauge`
+- `Sparkline.tsx` (standalone tone variant) — axe-only; the shared `DataViz.Sparkline` has comprehensive tests
+- `ScaffoldEffectivenessChart` — known `role="figure"` on non-SVG container; structural fix tracked but deferred
+- ForecastTimeline coverage was added; consider extracting shared fixtures if more such timeline tests follow
