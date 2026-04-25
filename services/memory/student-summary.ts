@@ -5,6 +5,7 @@ import type { StudentSummary } from "../../packages/shared/schemas/student-summa
 import type { TomorrowPlan } from "../../packages/shared/schemas/plan.js";
 import type { SupportPatternReport } from "../../packages/shared/schemas/pattern.js";
 import { safeParseJson } from "./json-utils.js";
+import { getInterventionHistoryByStudent } from "./intervention-history.js";
 
 /**
  * Compute the number of whole calendar days between the midnight-UTC of a
@@ -117,6 +118,11 @@ export function getStudentSummaries(
 
   // ── Build summaries per student ──────────────────────────────────────────
 
+  const historyMap = getInterventionHistoryByStudent(
+    classroomId,
+    students.map((s) => s.alias),
+  );
+
   return students.map(({ alias }) => {
     const pendingMsgRow = stmtPendingMessages.get(classroomId, alias) as
       | { cnt: number }
@@ -142,6 +148,8 @@ export function getStudentSummaries(
       active_pattern_count,
       pending_message_count,
       latest_priority_reason,
+      intervention_history_14d:
+        historyMap.get(alias) ?? new Array(14).fill(0),
     };
   });
 }

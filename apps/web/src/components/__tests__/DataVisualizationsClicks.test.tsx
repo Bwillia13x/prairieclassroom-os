@@ -51,6 +51,7 @@ const PRIORITY_STUDENTS: StudentSummary[] = [
     active_pattern_count: 2,
     pending_message_count: 1,
     latest_priority_reason: "Open follow-up",
+    intervention_history_14d: new Array(14).fill(0),
   },
   {
     alias: "Brody",
@@ -59,6 +60,7 @@ const PRIORITY_STUDENTS: StudentSummary[] = [
     active_pattern_count: 1,
     pending_message_count: 0,
     latest_priority_reason: null,
+    intervention_history_14d: new Array(14).fill(0),
   },
   {
     alias: "Daniyal",
@@ -67,6 +69,7 @@ const PRIORITY_STUDENTS: StudentSummary[] = [
     active_pattern_count: 0,
     pending_message_count: 1,
     latest_priority_reason: "Check family note",
+    intervention_history_14d: new Array(14).fill(0),
   },
 ];
 
@@ -78,6 +81,7 @@ const RECENCY_STUDENTS: StudentSummary[] = [
     active_pattern_count: 0,
     pending_message_count: 0,
     latest_priority_reason: null,
+    intervention_history_14d: new Array(14).fill(0),
   },
   {
     alias: "Brody",
@@ -86,6 +90,7 @@ const RECENCY_STUDENTS: StudentSummary[] = [
     active_pattern_count: 1,
     pending_message_count: 0,
     latest_priority_reason: null,
+    intervention_history_14d: new Array(14).fill(0),
   },
   {
     alias: "Chantal",
@@ -94,6 +99,7 @@ const RECENCY_STUDENTS: StudentSummary[] = [
     active_pattern_count: 0,
     pending_message_count: 0,
     latest_priority_reason: null,
+    intervention_history_14d: new Array(14).fill(0),
   },
 ];
 
