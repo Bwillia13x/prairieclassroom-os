@@ -126,6 +126,11 @@ This means the Ollama lane as a full release gate cannot run on the maintenance 
 - Keep adding host-specific degraded-path cases as new failure modes appear.
 - Use proof fixtures rather than demo data for any new edge-case coverage.
 - Add at least one edge-case eval for `extract_worksheet` (the remaining uncovered class).
+
+**Update 2026-04-25:** `extract_worksheet` has edge-case coverage via
+`extract-003-safety`, `extract-004-latency`, and `extract-005-mime-tolerance`.
+Original "every prompt class except extract_worksheet" caveat is closed.
+
 - Author cross-feature synthesis cases: plan+pattern, forecast+intervention, ea-load+intervention, survival-packet+forecast.
 - Add retrieval-relevance cases for `forecast_complexity`, `detect_scaffold_decay`, `generate_survival_packet`, `balance_ea_load` (none yet — only plan and pat have explicit retrieval-relevance cases).
 
@@ -203,7 +208,12 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 **What remains**
 
 - VocabCard export (Anki/Quizlet/PDF) — separate feature, not a dashboard concern
-- Survival packet print page-break polish — CSS-only refinement
+
+**Update 2026-04-25:** SurvivalPacket print CSS verified by inspection — the
+`@media print` block at `apps/web/src/components/SurvivalPacket.css` carries
+the documented `break-inside: avoid` and `print-color-adjust: exact` rules
+across all 6 packet sections. Manual print-preview verification deferred to a
+future browser-sweep cycle but the structural CSS contract is intact.
 
 ### G-13 — Canonical system inventory drift
 
