@@ -56,7 +56,9 @@ export function checkpointAll(): void {
 export function closeDb(classroomId: ClassroomId): void {
   const db = connections.get(classroomId);
   if (db) {
-    try { db.pragma("wal_checkpoint(TRUNCATE)"); } catch { /* ignore */ }
+    try { db.pragma("wal_checkpoint(TRUNCATE)"); } catch (err) {
+      console.warn(`WAL checkpoint failed for ${classroomId}:`, err);
+    }
     db.close();
     connections.delete(classroomId);
   }

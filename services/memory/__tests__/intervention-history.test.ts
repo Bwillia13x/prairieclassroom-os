@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, afterAll } from "vitest";
 import { getInterventionHistoryByStudent } from "../intervention-history.js";
 import { getDb, closeDb } from "../db.js";
 import type { ClassroomId } from "../../../packages/shared/schemas/branded.js";
@@ -32,6 +32,10 @@ function clearInterventions() {
 }
 
 describe("getInterventionHistoryByStudent", () => {
+  afterAll(() => {
+    closeDb(TEST_CLASSROOM);
+  });
+
   beforeEach(() => {
     closeDb(TEST_CLASSROOM);
     clearInterventions();

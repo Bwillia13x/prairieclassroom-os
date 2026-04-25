@@ -10,6 +10,10 @@ const MS_PER_DAY = 86_400_000;
  * representing how many interventions touched that student per UTC day,
  * oldest-first. Index 0 is 13 days ago, index 13 is today.
  *
+ * Bucketing is by UTC calendar day. An intervention logged near local
+ * midnight (Alberta is UTC-6 or UTC-7) may appear on a different
+ * sparkline day than the teacher's local calendar.
+ *
  * Aliases with zero matching interventions still receive a zero-filled
  * length-14 array, so callers can iterate without nullish handling.
  */
