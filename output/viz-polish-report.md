@@ -40,7 +40,46 @@ apps/web/src/components/ForecastTimeline.tsx
 apps/web/src/components/CohortSparklineGrid.tsx
 
 ## Dimension 1: Token Consistency
-<!-- filled by Task 2 -->
+
+**Audit date:** 2026-04-25
+**Status:** PASS — no invented tokens detected.
+
+### Files scanned (CSS)
+
+| File | Tokens used |
+|------|-------------|
+| `apps/web/src/components/DataVisualizations.css` | (majority of viz token load) |
+| `apps/web/src/components/ForecastTimeline.css` | |
+| `apps/web/src/components/CohortSparklineGrid.css` | |
+| `apps/web/src/components/shared/DataViz.css` | 13 `--ds-*` tokens |
+
+**Total unique tokens used across viz CSS:** 96
+**Token definition sources checked:**
+- `apps/web/src/styles/tokens.css` (278 tokens defined)
+- `apps/web/src/tokens.css` (54 additional `--ds-*` alias tokens defined)
+
+### TSX inline `var(--)` audit
+
+Files checked: `DataVisualizations.tsx`, `ForecastTimeline.tsx`, `CohortSparklineGrid.tsx`, `shared/DataViz.tsx`
+
+All inline `stroke="var(--…)"`, `fill="var(--…)"` and `style={{…var(--…)…}}` references resolve to defined canonical tokens.
+
+### Candidate investigation
+
+Initial diff (comm -23 used vs defined) produced 22 candidates. Each was resolved:
+
+**`--ds-*` tokens (13 tokens in `shared/DataViz.css`):**
+All 13 are legitimately defined in `apps/web/src/tokens.css`, which is a deliberate shared-component alias layer (maps `--ds-*` names onto canonical Prairie palette tokens). The audit grep initially missed this file because it sits in `apps/web/src/` rather than `apps/web/src/styles/`. These are NOT violations.
+
+**Component-scoped runtime values (9 tokens in `DataVisualizations.css`):**
+`--axis-tone`, `--composition-row-delay`, `--composition-row-pct`, `--debt-bar-width`, `--dot-delay`, `--label-delay`, `--recency-pct`, `--recency-row-delay`, `--ribbon-delay` — all injected via `style={{…}}` in `DataVisualizations.tsx` as per-element data channels. All have safe fallback values in the CSS (e.g. `var(--debt-bar-width, 0%)`). These are intentional CSS-custom-property data passing, not design-token references. NOT violations.
+
+**Regex artifact (`--color-`):**
+Produced by template literals like `` `var(--color-${tone})` `` in DataVisualizations.tsx lines 2240–2251. The pattern `var\(--[a-z][a-z0-9-]+` captures the prefix before the JS interpolation. NOT a real token.
+
+### Result
+
+PASS — no invented tokens detected. 96 tokens used across viz CSS; all resolve in `apps/web/src/styles/tokens.css` or `apps/web/src/tokens.css` (the `--ds-*` alias layer). No remediation required.
 
 ## Dimension 2: Accessibility
 <!-- filled by Task 4 -->
