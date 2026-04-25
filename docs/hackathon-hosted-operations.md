@@ -14,8 +14,8 @@ This document is the operator source of truth for the hosted Gemma 4 hackathon l
 - Hosted Gemini proof lane: passing on the API-key-only synthetic/demo lane
 - Hosted Gemini eval suite: passed (`12/12` curated cases)
 - Full `release:gate:gemini`: passed
-- Latest passing gate artifact: `output/release-gate/2026-04-22T02-16-16-557Z-74236`
-- Latest passing eval summary: `output/evals/2026-04-22-gemini/2026-04-22T02-16-16-557Z-74236-gemini-summary.json`
+- Latest passing gate artifact: `output/release-gate/2026-04-25T17-52-51-834Z-9428`
+- Latest passing eval summary: `output/evals/2026-04-25-gemini/2026-04-25T17-52-51-834Z-9428-gemini-summary.json`
 - Latest failure summary contains only the Ollama host-preflight artifact, not a hosted Gemini route failure.
 - Hosted reruns remain opt-in and synthetic/demo-only
 

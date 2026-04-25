@@ -25,13 +25,13 @@
 | **G-06** | Human validation and pilot evidence | Not started; synthetic walkthrough baseline + complete pilot-paperwork set now exist | `docs/structured-walkthrough-v1.md` is an explicitly synthetic, self-walked friction log by the maintainer — it surfaces design gaps at hackathon pace but is **not** human validation. `docs/pilot/` now contains the full paperwork set — `participant-brief.md`, `observation-template.md`, `usefulness-rubric.md`, `session-log-template.md`, `claims-ledger.md`, and `incident-log.md` — so the first real pilot session can start without any further drafting. The product narrative is still strongest when a real teacher, EA, or school fills out the rubric and session log, which remains intentionally unclaimed. |
 | **G-07** | Paid Vertex baseline | Deferred by design | The paid path remains available, but it is outside the hackathon/zero-cost credibility story and should stay clearly separated. |
 | **G-08** | Branded types for domain IDs | **Closed** | ClassroomId, StudentRef, DraftId, PlanId, RecordId branded types defined in `packages/shared/schemas/branded.ts`. Applied at memory layer boundary (db.ts, retrieve.ts, store.ts) and all route handlers. Progressive adoption — internal code migrated, new code uses branded types automatically. |
-| **G-09** | Error tracking integration | **Partially closed** | Structured error reporter (`apps/web/src/errorReporter.ts`) with pluggable transport, ErrorBoundary integration, and global error/rejection handlers. Ready for Sentry/LogRocket — just register a transport. |
+| **G-09** | Error tracking integration | **Closed 2026-04-25** | Sentry transport registered; DSN configured via VITE_SENTRY_DSN; complies with safety-governance.md (no PII, no session replay). |
 | **G-10** | Automated baseline regression detection | **Closed** | Release gate now detects regressions automatically by comparing against the latest passing run per inference mode. Non-fatal warnings printed clearly; baseline only updates on pass. |
 | **G-11** | Database migration framework | **Closed** | Versioned SQL migrations in `services/memory/migrations/`. Tracked in per-database `_migrations` table. Runs inside transactions with rollback. Current schema is migration 001. Backward-compatible with pre-existing databases. |
 | **G-12** | Teacher dashboard structural gaps | **Closed** | Health Bar (success states), sparkline trends, student roster, drill-down drawer — all four structural gaps from the frontend design audit are now implemented. See details below. |
 | **G-13** | Canonical system inventory drift | **Closed for current surface** | `npm run system:inventory` now generates `docs/system-inventory.md` and `docs/api-surface.md`, while `npm run system:inventory:check` catches panel, prompt, tier, and exact endpoint drift across canonical docs. |
 | **G-14** | Pilot readiness and real-data governance | **Mostly closed** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) cover operating modes, memory lifecycle, teacher/EA/substitute/reviewer boundaries, per-request access evidence, and the paperwork a first real pilot session would need. **2026-04-17 (round 4):** dedicated substitute and reviewer bounded views shipped (scope matrix locked by `services/orchestrator/__tests__/auth.test.ts`, per-route enforcement added to the pre-existing mount-level pattern, frontend tab visibility + capability hooks + teacher-downgrade confirmation). **2026-04-17 (round 5):** reusable safety-artifact review template + 5 completed per-prompt-class reviews (`docs/pilot/safety-artifacts/`) + 5 rehearsable incident-response drill scripts (`docs/pilot/incident-drills/`) all landed. The remaining blockers are all human-process: at least one real teacher walkthrough, pilot-coordinator countersign on each safety-artifact review, and at least one rehearsal of each of drills 1-5 before the first real-data session. |
-| **G-15** | Synthetic classroom fixture convention drift | Partial | The cross-classroom `Amira` alias collision is now closed by renaming Charlie's S10 alias to `Aisha` and adding a demo fixture validator that blocks future alias collisions. Remaining drift is EAL tag vocabulary fragmentation: `classroom_demo.json` uses `eal_level_1/2/3` while non-demo classrooms use `emerging_english` and related variants. |
+| **G-15** | Synthetic classroom fixture convention drift | **Closed** | Cross-fixture EAL tag vocabulary unified 2026-04-25: non-demo classrooms (`alpha/bravo/charlie/delta/echo`) migrated from `emerging_english`/`eal_for_academic_vocabulary` to `eal_level_N`. |
 | **G-16** | Wire clickable chart drill-downs on Tomorrow Plan, Differentiate, Support Patterns, and Intervention panels | **Closed 2026-04-24** | All five previously-unwired chart components now pass click callbacks from their parent panels into `DrillDownDrawer`: `PlanCoverageRadar`, `VariantSummaryStrip`, `SupportPatternRadar`, `FollowUpSuccessRate`, and `InterventionTimeline`. |
 | **G-17** | Intervention capture velocity | **Closed** | `QuickCaptureTray` chip-first flow shipped 2026-04-14. Legacy `InterventionLogger` preserved in a `<details>` expansion; auto-opens on Tomorrow-Plan prefill. No schema or API changes — frontend-only addition on top of the existing `logIntervention` contract. |
 | **G-18** | OutputActionBar rollout — Plan 4 | **Closed** | Shipped 2026-04-14. All eight generation panels now render a consistent `OutputActionBar`. Supporting hooks `useCopyToClipboard` and `useDownloadBlob` extracted. `tomorrowNotes` AppState slot added for cross-panel output aggregation. `FamilyMessagePanel` approval promoted to a two-step `MessageApprovalDialog`. See `docs/decision-log.md` 2026-04-14 entry. |
@@ -126,8 +126,22 @@ This means the Ollama lane as a full release gate cannot run on the maintenance 
 - Keep adding host-specific degraded-path cases as new failure modes appear.
 - Use proof fixtures rather than demo data for any new edge-case coverage.
 - Add at least one edge-case eval for `extract_worksheet` (the remaining uncovered class).
+
+**Update 2026-04-25:** `extract_worksheet` has edge-case coverage via
+`extract-003-safety`, `extract-004-latency`, and `extract-005-mime-tolerance`.
+Original "every prompt class except extract_worksheet" caveat is closed.
+
 - Author cross-feature synthesis cases: plan+pattern, forecast+intervention, ea-load+intervention, survival-packet+forecast.
 - Add retrieval-relevance cases for `forecast_complexity`, `detect_scaffold_decay`, `generate_survival_packet`, `balance_ea_load` (none yet — only plan and pat have explicit retrieval-relevance cases).
+
+**Update 2026-04-25:** Retrieval-relevance cases shipped for forecast / scaffold-decay / survival
+(`fcst-007-retrieval-relevance`, `scaff-001-retrieval-relevance`, `surv-008-retrieval-relevance`).
+Cross-feature synthesis cases shipped for plan+pattern and family-message+intervention
+(`synth-001-plan-references-demo-pattern`, `synth-002-fammsg-references-intervention`). Two
+remaining items deferred: `balance_ea_load` retrieval/synthesis cases require adding a runner
+dispatch handler first (currently falls through to `runDifferentiationEval`); forecast+intervention
+synthesis is covered by the existing `fcst-002-content-quality` (`must_contain: ["Amira"]`);
+survival+forecast synthesis is covered by `surv-004-comprehensive-retrieval`.
 
 ### G-04 — Observability and operator view
 
@@ -203,7 +217,12 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 **What remains**
 
 - VocabCard export (Anki/Quizlet/PDF) — separate feature, not a dashboard concern
-- Survival packet print page-break polish — CSS-only refinement
+
+**Update 2026-04-25:** SurvivalPacket print CSS verified by inspection — the
+`@media print` block at `apps/web/src/components/SurvivalPacket.css` carries
+the documented `break-inside: avoid` and `print-color-adjust: exact` rules
+across all 6 packet sections. Manual print-preview verification deferred to a
+future browser-sweep cycle but the structural CSS contract is intact.
 
 ### G-13 — Canonical system inventory drift
 
@@ -238,7 +257,12 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 
 ### G-15 — Synthetic classroom fixture convention drift
 
-**Status:** Partial. Surfaced 2026-04-13 during the post-implementation code review of the 26-student demo classroom expansion (commits `013994f`..`e828be3`).
+**Status:** Closed 2026-04-25.
+
+**Resolution:** Non-demo classrooms (`alpha/bravo/charlie/delta/echo`) migrated
+from `emerging_english` to the demo convention `eal_level_N`. Cross-fixture
+vocabulary now unified. Eval cases referencing the old tag updated in the
+same commit.
 
 **Findings**
 
@@ -258,11 +282,11 @@ The paid path may still matter later for hosted or district-scale deployment, bu
 - The spec at `docs/superpowers/specs/2026-04-13-full-classroom-seed-design.md` §3.2 "Naming integrity rule" now documents the review finding and the rename, so future contributors see the history.
 - Charlie's duplicate `Amira` alias was renamed to `Aisha` on 2026-04-23, preserving the demo's load-bearing D1 `Amira`.
 - `scripts/validate-demo-fixture.mjs` now blocks future synthetic alias collisions, validates the tiered demo roster, checks demo EAL tags, and asserts clean-seed counts.
+- EAL tag vocabulary unified 2026-04-25: `emerging_english` replaced with `eal_level_1/2/3` and `eal_for_academic_vocabulary` replaced with `eal_level_3` across all 5 non-demo classrooms. Option A executed.
 
 **What remains**
 
-- Decide whether to normalize non-demo EAL tags into the demo's `eal_level_N` convention or keep both vocabularies deliberately documented.
-- Until then: flag EAL tag vocabulary drift in any code review that touches synthetic classroom fixtures so the inconsistency does not propagate further.
+None — fully closed.
 
 ### Intervention capture velocity
 

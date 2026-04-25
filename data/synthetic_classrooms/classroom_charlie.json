@@ -18,7 +18,7 @@
       "student_id": "S8",
       "alias": "Priya",
       "eal_flag": true,
-      "support_tags": ["advanced_reader", "eal_for_academic_vocabulary", "can_peer_tutor"],
+      "support_tags": ["advanced_reader", "eal_level_3", "can_peer_tutor"],
       "known_successful_scaffolds": ["academic_word_lists", "extension_projects"]
     },
     {
@@ -32,7 +32,7 @@
       "student_id": "S10",
       "alias": "Aisha",
       "eal_flag": true,
-      "support_tags": ["emerging_english", "strong_science_skills", "needs_simplified_text"],
+      "support_tags": ["eal_level_2", "strong_science_skills", "needs_simplified_text"],
       "known_successful_scaffolds": ["simplified_handouts", "first_language_glossary", "visual_diagrams"]
     },
     {

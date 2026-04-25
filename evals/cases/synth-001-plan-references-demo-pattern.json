@@ -1,0 +1,18 @@
+{
+  "id": "synth-001-plan-references-demo-pattern",
+  "category": "cross_feature_synthesis",
+  "description": "Tomorrow plan for demo classroom must reference at least one student named in the seeded pattern report (proves plan synthesis is using pattern_reports retrieval, not just classroom profile)",
+  "prompt_class": "prepare_tomorrow_plan",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "teacher_reflection": "Reviewing yesterday's pattern report alongside today's interventions. Tomorrow needs to address recurring transition struggles.",
+    "teacher_goal": "Continue scaffolding for students named in the pattern report."
+  },
+  "expected": {
+    "required_plan_keys": ["transition_watchpoints", "support_priorities", "ea_actions", "prep_checklist", "family_followups"],
+    "min_watchpoints": 1,
+    "min_priorities": 1,
+    "schema_version": "0.1.0",
+    "must_contain": ["Brody"]
+  }
+}

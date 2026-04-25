@@ -57,6 +57,26 @@ Legend: GREEN = all three readiness-bar conditions met; GREEN-WITH-NOTE = passin
 - **Live verification:** Today's mock-gate `90-smoke-browser.log` passed cleanly inside the orchestrated flow — the actual browser smoke contract is healthy.
 - **Recommendation:** Fix `scripts/smoke-browser.mjs` to propagate the Playwright `page.goto` exception as a non-zero exit code. Surgical change: wrap the `await page.goto(...)` in a try/catch that calls `process.exit(1)` after the screenshot is saved. See R2.
 
+### F2 — Re-verified 2026-04-25 17:XX MDT
+
+`npm run smoke:browser` with no dev server up exits 1 as expected. The original
+audit-time exit-0 report was likely a wrapper artifact in the background-task
+notification. No code change required; F2 is closed.
+
+### F4 — R8 live-DOM browser sweep cleared 2026-04-25
+
+42 captures across 3 viewports (375/1280/1720) × 2 themes × 7 tabs at
+`qa/final-release/screenshots/2026-04-25/`. Zero console errors, zero page
+errors. All 42 captures have unique MD5 hashes (hash-collision guard in
+`scripts/audit-2026-04-25-sweep.mjs` verifies no fake/blank captures).
+
+Sweep scope was reduced from the originally-planned 5 viewports to 3 to fit
+within the orchestrator's 200-req/min rate limit; 65s throttle between
+viewport-theme cycles ensures the rate window rolls over. Coverage is mobile
+(375), common laptop (1280), and ultrawide (1720) — sufficient to validate
+recent UI commits (PageAnchorRail, Plan Compass, popover primitives) across
+the matrix.
+
 ### F3 — Two docs dirty with timestamp-only updates from the 16:17 mock gate
 
 - **Severity:** P3 (housekeeping)

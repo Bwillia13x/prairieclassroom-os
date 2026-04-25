@@ -69,9 +69,9 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 The repo has a current artifact-backed proof story:
 
 - **Mock structural gate:** passing at `output/release-gate/2026-04-25T02-31-26-869Z-92725`.
-- **Hosted Gemma 4 release gate:** passing on synthetic/demo data at `output/release-gate/2026-04-22T02-16-16-557Z-74236`.
+- **Hosted Gemma 4 release gate:** passing on synthetic/demo data at `output/release-gate/2026-04-25T17-52-51-834Z-9428`.
 - **Hosted Gemini proof lane:** passing baseline; the full hosted release gate passed via `npm run release:gate:gemini`.
-- **Hosted proof eval summary:** `output/evals/2026-04-22-gemini/2026-04-22T02-16-16-557Z-74236-gemini-summary.json`.
+- **Hosted proof eval summary:** `output/evals/2026-04-25-gemini/2026-04-25T17-52-51-834Z-9428-gemini-summary.json`.
 - **Hosted eval result:** 12/12 curated hosted proof cases passed.
 - **Full eval corpus:** 129 checked-in eval case files.
 - **Current unit coverage in latest mock gate:** 1,891 TypeScript/Vitest tests and 69 Python tests passed.

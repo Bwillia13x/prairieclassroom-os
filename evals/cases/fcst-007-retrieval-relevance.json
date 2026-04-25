@@ -1,0 +1,16 @@
+{
+  "id": "fcst-007-retrieval-relevance",
+  "category": "retrieval_relevance",
+  "description": "Complexity forecast for demo classroom incorporates retrieved roster context (load-bearing student aliases must appear)",
+  "prompt_class": "forecast_complexity",
+  "input": {
+    "classroom_id": "demo-okafor-grade34",
+    "forecast_date": "2026-04-04"
+  },
+  "expected": {
+    "required_forecast_keys": ["forecast_id", "classroom_id", "forecast_date", "blocks", "overall_summary", "highest_risk_block", "schema_version"],
+    "min_blocks": 3,
+    "schema_version": "0.1.0",
+    "must_contain": ["Amira"]
+  }
+}

@@ -32,7 +32,7 @@
       "student_id": "S18",
       "alias": "Riya",
       "eal_flag": true,
-      "support_tags": ["emerging_english", "newcomer_this_year", "strong_math"],
+      "support_tags": ["eal_level_1", "newcomer_this_year", "strong_math"],
       "known_successful_scaffolds": ["visual_vocabulary", "partner_work", "first_language_support"]
     }
   ]

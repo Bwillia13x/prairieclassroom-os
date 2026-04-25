@@ -42,12 +42,13 @@ export default tseslint.config(
     },
   },
   {
-    files: ["scripts/smoke-browser.mjs"],
+    files: ["scripts/smoke-browser.mjs", "scripts/audit-2026-04-25-sweep.mjs"],
     languageOptions: {
       globals: {
         document: "readonly",
         getComputedStyle: "readonly",
         window: "readonly",
+        PopStateEvent: "readonly",
       },
     },
   },

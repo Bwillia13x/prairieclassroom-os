@@ -144,6 +144,12 @@ function isRetryableErrorBody(text: string): boolean {
     "internal error encountered",
     "500 internal",
     "temporarily unavailable",
+    // Upstream Gemini API 504s wrapped by the inference service as 502 bodies.
+    // Observed 2026-04-25: ea-001-schema returned 504 at 97.7s while the local
+    // budget is 130s. With MAX_RETRIES=2 and 500ms→1000ms backoff, the second
+    // attempt typically succeeds because the upstream queue has cleared.
+    "deadline_exceeded",
+    "deadline exceeded",
   ].some((token) => normalized.includes(token));
 }
 
@@ -877,3 +883,5 @@ export async function callInferenceStream(
     detail_code: "tool_call_unresolved",
   });
 }
+
+export const __testables = { isRetryableErrorBody };

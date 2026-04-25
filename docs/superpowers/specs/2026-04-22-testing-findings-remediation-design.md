@@ -52,14 +52,14 @@ This spec scopes a one-sprint remediation. Non-goals: new features, proof-lane r
 
 ### F4 — Proof artifact resync
 
-- Bump `scripts/lib/hackathon-proof.mjs` → `HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-04-22T02-16-16-557Z-74236"`.
+- Bump `scripts/lib/hackathon-proof.mjs` → `HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-04-25T17-52-51-834Z-9428"` (constant subsequently advanced beyond the original 2026-04-22 artifact to the 2026-04-25 canonical artifact).
 - Update in lockstep:
   - `README.md:169`
   - `docs/kaggle-writeup.md:72`, `:74`
   - `docs/demo-script.md:93`, `:94`
   - `docs/gemma-integration-followups.md:165`
   - `docs/pilot/claims-ledger.md:29`
-- Eval summary path: `2026-04-21-gemini/2026-04-21T05-13-43-243Z-52665-gemini-summary.json` → `2026-04-22-gemini/2026-04-22T02-16-16-557Z-74236-gemini-summary.json`.
+- Eval summary path: `2026-04-21-gemini/2026-04-21T05-13-43-243Z-52665-gemini-summary.json` → `2026-04-25-gemini/2026-04-25T17-52-51-834Z-9428-gemini-summary.json` (advanced to the 2026-04-25 canonical artifact).
 - Add `// TODO(follow-up)` at the constant pointing to future refactor: make `validateProofSurfaces` derive the required artifact from `extractHostedProofRunDir(surfaces)` rather than the hardcoded constant, so a single doc edit (in the proof-brief) propagates.
 - **Tests**: `npm run proof:check` passes.
 

@@ -25,7 +25,7 @@
       "student_id": "S14",
       "alias": "Yasmin",
       "eal_flag": true,
-      "support_tags": ["emerging_english", "kindergarten_literacy_level"],
+      "support_tags": ["eal_level_1", "kindergarten_literacy_level"],
       "known_successful_scaffolds": ["picture_cues", "one_on_one_reading", "bilingual_parent_support"]
     },
     {

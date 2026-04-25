@@ -26,7 +26,7 @@ The previous session landed F1–F5 (teacher-safe progress copy, EA Briefing str
 
 ## Task 1 — Proof validator refactor (bounded, no-cost, priority: do this first)
 
-Context. The previous session bumped `HOSTED_PROOF_RUN_DIR` in `scripts/lib/hackathon-proof.mjs:14` from `2026-04-21T05-13-43-243Z-52665` to `2026-04-22T02-16-16-557Z-74236` and manually synchronized six proof surfaces (README.md, docs/kaggle-writeup.md, docs/demo-script.md, docs/gemma-integration-followups.md, docs/pilot/claims-ledger.md, docs/hackathon-proof-brief.md, docs/hackathon-hosted-operations.md, docs/eval-baseline.md). That fan-out will recur on every hosted refresh. The validator already has the machinery to avoid it — see `extractHostedProofRunDir(surfaces)` in the same file — but `validateProofSurfaces` still checks every doc against the hardcoded constant.
+Context. The previous session bumped `HOSTED_PROOF_RUN_DIR` in `scripts/lib/hackathon-proof.mjs:14` and manually synchronized six proof surfaces (README.md, docs/kaggle-writeup.md, docs/demo-script.md, docs/gemma-integration-followups.md, docs/pilot/claims-ledger.md, docs/hackathon-proof-brief.md, docs/hackathon-hosted-operations.md, docs/eval-baseline.md). That fan-out will recur on every hosted refresh. (The canonical artifact is now `output/release-gate/2026-04-25T17-52-51-834Z-9428` as of the 2026-04-25 audit sprint.) The validator already has the machinery to avoid it — see `extractHostedProofRunDir(surfaces)` in the same file — but `validateProofSurfaces` still checks every doc against the hardcoded constant.
 
 Goal. Make `docs/hackathon-proof-brief.md` the single source of truth for the canonical hosted proof artifact, so a future refresh is a one-file edit.
 
