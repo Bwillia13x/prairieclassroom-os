@@ -15,18 +15,21 @@ export function createSentryTransport(config: SentryTransportConfig): ErrorTrans
       dsn: config.dsn,
       environment: config.environment,
       release: config.release,
-      // Per safety-governance.md: no PII, no session replay, no user-identifying context.
+      // Per safety-governance.md: no PII, no surveillance.
+      // sendDefaultPii=false strips IP, cookies, and request bodies.
+      // Sessions are NOT tracked because the Replay integration is intentionally
+      // omitted (Sentry v10 removed autoSessionTracking; absence of Replay is
+      // the canonical way to avoid session-replay capture).
       sendDefaultPii: false,
-      autoSessionTracking: false,
     });
   }
 
   return function sentryTransport(report: ErrorReport): void {
     if (!enabled) return;
     const err = new Error(report.message);
-    err.stack = report.stack;
+    if (report.stack) err.stack = report.stack;
     Sentry.captureException(err, {
-      extra: report,
+      extra: { ...report },
     });
   };
 }
