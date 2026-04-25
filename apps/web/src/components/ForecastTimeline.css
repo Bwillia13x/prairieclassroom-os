@@ -68,3 +68,11 @@
   letter-spacing: 0;
   white-space: nowrap;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable motion for users who prefer reduced motion. */
+  .forecast-timeline-segment {
+    animation: none !important;
+    transition: none !important;
+  }
+}

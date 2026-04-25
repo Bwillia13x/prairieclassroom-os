@@ -75,3 +75,13 @@
   border-radius: var(--ds-radius-full);
   transition: width var(--motion-slow) var(--ease-out-expo);
 }
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable motion for users who prefer reduced motion. */
+  .dataviz-health-dot,
+  .dataviz-health-dot--critical,
+  .dataviz-progress__fill {
+    animation: none !important;
+    transition: none !important;
+  }
+}
