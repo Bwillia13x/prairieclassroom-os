@@ -52,9 +52,16 @@ for (const vp of VIEWPORTS) {
       failures.push(`viewport ${vp.name}: console errors — ${JSON.stringify(filtered.slice(0, 3))}`);
     }
 
+    // Scroll the cohort grid into view so the screenshot actually captures
+    // the Zone 3.5 cohort pulse area. The app shell is viewport-locked
+    // (overflow:hidden on .app-shell, overflow-y:auto on .app-main), so
+    // fullPage:true captures the same height as the viewport. Scrolling
+    // the first cohort-cell into view ensures the zone is visible.
+    await page.locator('[data-testid="cohort-cell"]').first().scrollIntoViewIfNeeded();
+
     await page.screenshot({
       path: `${OUT_DIR}/dashboard-cohort-pulse-${vp.name}.png`,
-      fullPage: false,
+      fullPage: true,
     });
   } catch (err) {
     failures.push(`viewport ${vp.name}: ${err.message}`);
