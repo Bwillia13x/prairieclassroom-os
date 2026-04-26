@@ -73,7 +73,13 @@ export default function ClassroomAccessDialog({
         <h2 id="classroom-access-title" className="access-dialog__title">
           Unlock {classroomId}
         </h2>
-        <p id="classroom-access-description" className="access-dialog__description">{message}</p>
+        <p
+          id="classroom-access-description"
+          className="access-dialog__description"
+          aria-live="polite"
+        >
+          {message}
+        </p>
 
         <form className="access-dialog__form" onSubmit={handleSubmit}>
           <div className="field access-dialog__field">

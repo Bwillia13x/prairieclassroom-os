@@ -39,7 +39,7 @@ export default function TodayStory({ snapshot, health, students }: Props) {
     >
       <span className="today-story__glyph" aria-hidden="true" />
       <div className="today-story__text">
-        <p className="today-story__lede">{story.lede}</p>
+        <h1 className="today-story__lede">{story.lede}</h1>
         {story.sub && <p className="today-story__sub">{story.sub}</p>}
       </div>
     </section>
