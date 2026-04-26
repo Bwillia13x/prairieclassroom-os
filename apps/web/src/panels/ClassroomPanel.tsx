@@ -488,7 +488,7 @@ export default function ClassroomPanel({
           ============================================================ */}
       <details
         className="classroom-section classroom-zone--collapsible"
-        id="classroom-intelligence"
+        id="classroom-insights"
         aria-label="Classroom intelligence"
         open={intelDisclosure.open}
         onToggle={(e) => intelDisclosure.setOpen(e.currentTarget.open)}

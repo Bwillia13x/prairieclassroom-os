@@ -16,7 +16,7 @@ export const PAGE_ANCHORS: Record<ActiveTab, PageAnchorConfig> = {
       { id: "classroom-health", number: "02", label: "Pulse" },
       { id: "classroom-watchlist", number: "03", label: "Watchlist" },
       { id: "classroom-dashboard", number: "04", label: "Operations" },
-      { id: "classroom-intelligence", number: "05", label: "Intelligence" },
+      { id: "classroom-insights", number: "05", label: "Insights" },
       { id: "classroom-roster", number: "06", label: "Roster" },
     ],
   },
