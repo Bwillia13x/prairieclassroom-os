@@ -92,8 +92,8 @@ http://localhost:5173/?demo=true
 
 **Point to artifact-backed proof if needed:**
 
-- Hosted gate: `output/release-gate/2026-04-25T17-52-51-834Z-9428`
-- Hosted eval summary: `output/evals/2026-04-25-gemini/2026-04-25T17-52-51-834Z-9428-gemini-summary.json`
+- Hosted gate: `output/release-gate/2026-04-26T13-28-55-908Z-48591`
+- Hosted eval summary: `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-summary.json`
 - System inventory: `docs/system-inventory.md`
 
 ## A4. Safety (45 seconds)

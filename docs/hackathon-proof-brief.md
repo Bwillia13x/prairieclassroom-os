@@ -14,7 +14,7 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 - **Models used:** `gemma-4-26b-a4b-it` (live), `gemma-4-31b-it` (planning)
 - **Hosted readycheck:** passed with the supplied AI Studio key and explicit run guard
 - **Curated hosted eval suite:** `12/12` passed
-- **Full hosted release gate:** passed at `output/release-gate/2026-04-25T17-52-51-834Z-9428`
+- **Full hosted release gate:** passed at `output/release-gate/2026-04-26T13-28-55-908Z-48591`
 - **Hosted eval failure ledger:** the latest generated failure summary records only the Ollama host-preflight artifact and no hosted Gemini route failures.
 - **What this proves:** real hosted Gemma 4 execution on synthetic/demo classroom data for the curated proof suite, API smoke, and browser smoke without enabling the paid Vertex lane or any rented GPU path
 
@@ -23,11 +23,11 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 - **Provider truth source:** `docs/eval-baseline.md`
 - **Latest passing mock gate:** `output/release-gate/2026-04-25T02-31-26-869Z-92725`
 - **Latest mock gate summary:** `output/release-gate/2026-04-25T02-31-26-869Z-92725/summary.json`
-- **Latest passing hosted gate:** `output/release-gate/2026-04-25T17-52-51-834Z-9428`
-- **Hosted release summary:** `output/release-gate/2026-04-25T17-52-51-834Z-9428/summary.json`
-- **Hosted eval summary:** `output/evals/2026-04-25-gemini/2026-04-25T17-52-51-834Z-9428-gemini-summary.json`
-- **Hosted eval artifacts:** `output/evals/2026-04-25-gemini`
-- **Hosted eval failure summary:** `output/evals/2026-04-25-gemini/2026-04-25T17-52-51-834Z-9428-gemini-failure-summary.json`
+- **Latest passing hosted gate:** `output/release-gate/2026-04-26T13-28-55-908Z-48591`
+- **Hosted release summary:** `output/release-gate/2026-04-26T13-28-55-908Z-48591/summary.json`
+- **Hosted eval summary:** `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-summary.json`
+- **Hosted eval artifacts:** `output/evals/2026-04-26-gemini`
+- **Hosted eval failure summary:** `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-failure-summary.json`
 
 ## Privacy Boundary
 
