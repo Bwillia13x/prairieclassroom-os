@@ -39,9 +39,11 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, showSuccess, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, showSuccess, showError, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>({
+    onError: (msg) => showError(`Couldn't draft plan — ${msg}`),
+  });
   const history = useHistory(fetchPlanHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<TomorrowPlanResponse | null>(null);
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);

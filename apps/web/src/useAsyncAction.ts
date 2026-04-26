@@ -13,6 +13,8 @@ export interface AsyncAction<T> {
 interface UseAsyncActionOptions {
   /** Number of retry attempts for transient errors (default: 0) */
   maxRetries?: number;
+  /** Called once with the friendly message when a request ultimately fails. */
+  onError?: (message: string) => void;
 }
 
 function isTransientError(err: unknown): boolean {
@@ -50,6 +52,8 @@ function friendlyErrorMessage(err: unknown): string {
 
 export function useAsyncAction<T>(opts?: UseAsyncActionOptions): AsyncAction<T> {
   const maxRetries = opts?.maxRetries ?? 0;
+  const onErrorRef = useRef<UseAsyncActionOptions["onError"]>(opts?.onError);
+  onErrorRef.current = opts?.onError;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<T | null>(null);
@@ -108,8 +112,10 @@ export function useAsyncAction<T>(opts?: UseAsyncActionOptions): AsyncAction<T> 
     }
 
     if (mountedRef.current && !controller.signal.aborted) {
-      setError(friendlyErrorMessage(lastErr));
+      const friendly = friendlyErrorMessage(lastErr);
+      setError(friendly);
       setLoading(false);
+      onErrorRef.current?.(friendly);
     }
     return null;
   }, [maxRetries]);

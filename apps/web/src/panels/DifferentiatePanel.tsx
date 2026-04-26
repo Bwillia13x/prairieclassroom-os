@@ -37,13 +37,16 @@ export default function DifferentiatePanel() {
     activeClassroom,
     profile,
     showSuccess,
+    showError,
     streaming,
     appendTomorrowNote,
     setActiveTab,
   } = useApp();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const session = useSession();
-  const { loading, error, result, execute, cancel, reset } = useAsyncAction<DifferentiateResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<DifferentiateResponse>({
+    onError: (msg) => showError(`Couldn't generate variants — ${msg}`),
+  });
   const [artifactTitle, setArtifactTitle] = useState("");
   const resultRef = useRef<HTMLDivElement>(null);
   const intakeRef = useRef<HTMLFormElement>(null);

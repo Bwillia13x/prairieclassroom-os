@@ -31,9 +31,11 @@ interface Props {
 }
 
 export default function SupportPatternsPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, profile, students, showSuccess, appendTomorrowNote, streaming, latestTodaySnapshot, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, profile, students, showSuccess, showError, appendTomorrowNote, streaming, latestTodaySnapshot, setActiveTab } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, cancel, reset } = useAsyncAction<SupportPatternsResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<SupportPatternsResponse>({
+    onError: (msg) => showError(`Couldn't analyze patterns — ${msg}`),
+  });
   const streamer = useStreamingRequest({
     sectionLabels: ["Themes", "Follow-up gaps", "Suggested focus"],
   });

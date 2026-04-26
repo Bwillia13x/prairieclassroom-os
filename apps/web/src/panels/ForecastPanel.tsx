@@ -30,9 +30,11 @@ import { serializeForecastToPlainText } from "./outputActionBarHelpers";
 import type { ComplexityBlock, ComplexityForecastResponse, DrillDownContext } from "../types";
 
 export default function ForecastPanel() {
-  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, showSuccess, showError, appendTomorrowNote, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<ComplexityForecastResponse>({
+    onError: (msg) => showError(`Couldn't generate forecast — ${msg}`),
+  });
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const streamer = useStreamingRequest({
     sectionLabels: ["Block analysis", "Complexity curves", "Risk assessment"],

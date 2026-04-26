@@ -38,9 +38,11 @@ interface Props {
  *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, latestTodaySnapshot, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, showError, latestTodaySnapshot, setActiveTab } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>();
+  const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>({
+    onError: (msg) => showError(`Couldn't log intervention — ${msg}`),
+  });
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
   const [drawerPrefill, setDrawerPrefill] = useState<InterventionPrefill | null>(null);

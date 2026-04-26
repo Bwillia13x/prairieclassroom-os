@@ -23,9 +23,11 @@ import { serializeSurvivalPacketToMarkdown } from "./outputActionBarHelpers";
 import type { SurvivalPacketResponse } from "../types";
 
 export default function SurvivalPacketPanel() {
-  const { classrooms, activeClassroom, showSuccess, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, showError, streaming } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, cancel, reset } = useAsyncAction<SurvivalPacketResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<SurvivalPacketResponse>({
+    onError: (msg) => showError(`Couldn't generate sub packet — ${msg}`),
+  });
   const streamer = useStreamingRequest({
     sectionLabels: ["Schedule", "Student profiles", "Emergency info"],
   });

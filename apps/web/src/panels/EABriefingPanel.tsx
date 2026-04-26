@@ -23,9 +23,11 @@ import { serializeEABriefingToPlainText, serializeEABriefingToMarkdown } from ".
 import type { EABriefingResponse } from "../types";
 
 export default function EABriefingPanel() {
-  const { classrooms, activeClassroom, showSuccess, appendTomorrowNote, streaming } = useApp();
+  const { classrooms, activeClassroom, showSuccess, showError, appendTomorrowNote, streaming } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, cancel, reset } = useAsyncAction<EABriefingResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<EABriefingResponse>({
+    onError: (msg) => showError(`Couldn't generate briefing — ${msg}`),
+  });
   const streamer = useStreamingRequest({
     sectionLabels: ["Notes", "Schedule", "Watch list", "Follow-ups"],
   });

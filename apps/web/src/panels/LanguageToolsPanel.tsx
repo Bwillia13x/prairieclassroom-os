@@ -34,10 +34,14 @@ import { useRecentRuns } from "../hooks/useRecentRuns";
 type LanguageTool = "simplify" | "vocab";
 
 export default function LanguageToolsPanel() {
-  const { profile, showSuccess, appendTomorrowNote, activeClassroom, streaming, latestTodaySnapshot } = useApp();
+  const { profile, showSuccess, showError, appendTomorrowNote, activeClassroom, streaming, latestTodaySnapshot } = useApp();
   const session = useSession();
-  const simplify = useAsyncAction<SimplifyResponse>();
-  const vocab = useAsyncAction<VocabCardsResponse>();
+  const simplify = useAsyncAction<SimplifyResponse>({
+    onError: (msg) => showError(`Couldn't simplify text — ${msg}`),
+  });
+  const vocab = useAsyncAction<VocabCardsResponse>({
+    onError: (msg) => showError(`Couldn't generate vocab cards — ${msg}`),
+  });
   const [activeTool, setActiveTool] = useState<LanguageTool>("simplify");
   const [simplifyKey, setSimplifyKey] = useState(0);
   const [vocabKey, setVocabKey] = useState(0);

@@ -215,9 +215,11 @@ function EALoadViewer({ response }: EALoadViewerProps) {
 }
 
 export default function EALoadPanel() {
-  const { classrooms, activeClassroom, showSuccess, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, showSuccess, showError, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
   const session = useSession();
-  const { loading, error, result, execute, cancel, reset } = useAsyncAction<EALoadResponse>();
+  const { loading, error, result, execute, cancel, reset } = useAsyncAction<EALoadResponse>({
+    onError: (msg) => showError(`Couldn't balance EA load — ${msg}`),
+  });
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
   const streamer = useStreamingRequest({
     sectionLabels: ["Schedule analysis", "Load curves", "Redistribution"],

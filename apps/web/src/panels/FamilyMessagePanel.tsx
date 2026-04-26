@@ -36,7 +36,9 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   const role = useRole();
   const { canApproveMessages } = role;
   const session = useSession();
-  const { loading, error, result, execute, reset } = useAsyncAction<FamilyMessageResponse>();
+  const { loading, error, result, execute, reset } = useAsyncAction<FamilyMessageResponse>({
+    onError: (msg) => showError(`Couldn't draft message — ${msg}`),
+  });
   const healthAction = useAsyncAction<ClassroomHealth>();
   const history = useHistory(fetchMessageHistory, activeClassroom, 10);
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
