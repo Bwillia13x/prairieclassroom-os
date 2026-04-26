@@ -33,6 +33,7 @@ import {
   StudentPriorityMatrix,
   ComplexityDebtGauge,
 } from "../components/DataVisualizations";
+import { countActionableThreads } from "./ClassroomPanel.helpers";
 import type {
   ClassroomHealth,
   DrillDownContext,
@@ -149,10 +150,15 @@ export default function ClassroomPanel({
     return series[series.length - 2];
   }, [health.result]);
   const ealCount = profile?.students.filter((student) => student.eal_flag).length ?? 0;
-  const openThreadCount = result?.student_threads?.length ?? null;
+  // Count only threads that actually carry work — see ClassroomPanel.helpers.
+  // The orchestrator returns one student_threads entry per roster student
+  // (built from `classroom.students.map(...)`), so the raw `.length` would
+  // always equal the roster size and made the THREADS stat read identically
+  // to STUDENTS. Filtering preserves the seed contract's tiered roster.
+  const openThreadCount = countActionableThreads(result?.student_threads);
   const openItemCount = result?.debt_register.items.length ?? null;
   const plannedDays = health.result?.plans_last_7.filter(Boolean).length ?? null;
-  const watchCount = result?.student_threads?.length ?? 0;
+  const watchCount = openThreadCount ?? 0;
 
   const pulse = derivePulse(health.result ?? null, pendingActionCount);
 
