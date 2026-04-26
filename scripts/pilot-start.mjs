@@ -143,7 +143,7 @@ async function main() {
 
   console.log("Pilot bootstrap starting.");
   console.log(`  inference: ${opts.inferenceLane}`);
-  console.log(`  web:       ${opts.startWeb ? "yes (Vite on 5173)" : "no"}`);
+  console.log(`  web:       ${opts.startWeb ? `yes (Vite on ${HEALTH_CHECKS.web.port})` : "no"}`);
   console.log("");
 
   const children = [];
@@ -152,7 +152,7 @@ async function main() {
   children.push(spawnChild(
     "inference",
     "python",
-    ["services/inference/server.py", "--mode", opts.inferenceLane, "--port", "3200"],
+    ["services/inference/server.py", "--mode", opts.inferenceLane, "--port", String(HEALTH_CHECKS.inference.port)],
   ));
 
   // Orchestrator (Express)
@@ -160,7 +160,10 @@ async function main() {
     "orchestrator",
     "npx",
     ["tsx", "services/orchestrator/server.ts"],
-    { INFERENCE_URL: "http://localhost:3200", PORT: "3100" },
+    {
+      INFERENCE_URL: `http://localhost:${HEALTH_CHECKS.inference.port}`,
+      PORT: String(HEALTH_CHECKS.orchestrator.port),
+    },
   ));
 
   // Web (Vite) — optional
@@ -168,7 +171,7 @@ async function main() {
     children.push(spawnChild(
       "web",
       "npm",
-      ["run", "dev", "-w", "apps/web", "--", "--port", "5173"],
+      ["run", "dev", "-w", "apps/web", "--", "--port", String(HEALTH_CHECKS.web.port)],
     ));
   }
 
@@ -197,10 +200,10 @@ async function main() {
 
   console.log("\n────────────────────────────────────────");
   console.log("Pilot servers ready.");
-  console.log("  Inference:    http://localhost:3200/health");
-  console.log("  Orchestrator: http://localhost:3100/health");
+  console.log(`  Inference:    http://localhost:${HEALTH_CHECKS.inference.port}/health`);
+  console.log(`  Orchestrator: http://localhost:${HEALTH_CHECKS.orchestrator.port}/health`);
   if (opts.startWeb) {
-    console.log("  Web:          http://localhost:5173/?demo=true");
+    console.log(`  Web:          http://localhost:${HEALTH_CHECKS.web.port}/?demo=true`);
   }
   console.log("");
 
@@ -212,7 +215,7 @@ async function main() {
   const orchestratorBase = `http://localhost:${HEALTH_CHECKS.orchestrator.port}`;
   const latestInterventionAt = await fetchDemoLatestIntervention(orchestratorBase);
   if (isDemoStale({ latestInterventionAt })) {
-    console.log("⚠ Demo classroom data is stale (latest activity > 7 days old).");
+    console.log("⚠ Demo classroom data is stale (latest activity > 7 days old, whole-day rounded).");
     console.log("  Teachers and judges will see relative timestamps like '396d ago'.");
     console.log("  Run: npm run pilot:reset");
     console.log("");
