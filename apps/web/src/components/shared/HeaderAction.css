@@ -53,3 +53,12 @@
   letter-spacing: 0.04em;
   color: var(--color-text-tertiary);
 }
+
+/* The ⌘K hint is meaningless on touch devices and adds visual noise in the
+   cramped mobile shell-bar. The button itself remains tappable. Mirrors the
+   shell-nav__kbd hide-on-mobile rule in shell.css (same 600px breakpoint). */
+@media (max-width: 600px) {
+  .header-action__kbd {
+    display: none;
+  }
+}

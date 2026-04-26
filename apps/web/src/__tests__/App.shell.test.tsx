@@ -218,6 +218,16 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
     expect(btn.textContent).toMatch(/⌘K/);
   });
 
+  it("renders the ⌘K keycap with a class our mobile-hide CSS can target", async () => {
+    // Visual hiding at <=600px is enforced by HeaderAction.css; here we just
+    // guard against the class being renamed away from the CSS rule's selector.
+    await renderShellWithDemo();
+    const btn = screen.getByTestId("shell-search-trigger");
+    const keycap = btn.querySelector(".header-action__kbd");
+    expect(keycap).not.toBeNull();
+    expect(keycap?.textContent).toBe("⌘K");
+  });
+
   it("renders the help button as an icon-only `?` control with contextual aria-label", async () => {
     await renderShellWithDemo();
     const btn = screen.getByTestId("shell-help-trigger");
