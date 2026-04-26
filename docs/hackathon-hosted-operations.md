@@ -63,9 +63,13 @@ export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
 export PRAIRIE_ENABLE_GEMINI_RUNS=true
 npm run gemini:readycheck
 npm run release:gate:gemini
+npm run proof:bump -- --auto    # fan canonical ref across editorial surfaces
+npm run proof:check             # verify post-bump consistency
 npm run eval:summary
 npm run logs:summary
 ```
+
+`proof:bump` is the operator helper that sweeps the canonical hosted-gate artifact reference across the editorial surfaces (`README.md`, `docs/hackathon-proof-brief.md`, `docs/kaggle-writeup.md`, `docs/pilot/claims-ledger.md`, etc.). `release:gate:gemini --update-baseline` refreshes `docs/eval-baseline.md` and `docs/live-model-proof-status.md` automatically; `proof:bump` covers the rest. Use `proof:bump -- --dry-run --auto` to preview, or pass an explicit artifact id when bumping back to a prior canonical.
 
 ## Optional Repair-First Loop
 

@@ -32,6 +32,7 @@
     "pilot:reset": "node scripts/pilot-reset.mjs",
     "pilot:start": "node scripts/pilot-start.mjs",
     "proof:check": "node scripts/proof-check.mjs",
+    "proof:bump": "node scripts/proof-bump.mjs",
     "gemini:readycheck": "node scripts/gemini-readycheck.mjs",
     "host:preflight:ollama": "node scripts/host-preflight-ollama.mjs",
     "logs:summary": "node scripts/logs-summary.mjs",
