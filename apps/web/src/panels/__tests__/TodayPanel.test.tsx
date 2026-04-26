@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import TodayPanel from "../TodayPanel";
-import type { ClassroomHealth, TodaySnapshot } from "../../types";
+import type { ClassroomHealth, StudentThread, TodaySnapshot } from "../../types";
 import * as TodayWorkflowModule from "../../utils/todayWorkflow";
 
 vi.mock("../../api", async (importOriginal) => {
@@ -667,5 +667,50 @@ describe("TodayPanel", () => {
     expect(
       within(pulseCard as HTMLElement).getByTestId("source-tag-record"),
     ).toBeInTheDocument();
+  });
+
+  it("counts only actionable student threads in the Touchpoints 'watching' meta, not the full roster", async () => {
+    // Mirrors the demo seed contract: 26 roster entries arrive in
+    // student_threads, but only the actionable subset (threads with
+    // signal) belongs in the watching count. Strength-only entries
+    // must be excluded.
+    const makeThread = (overrides: Partial<StudentThread>): StudentThread => ({
+      alias: "Anon",
+      priority_reason: null,
+      last_intervention_days: null,
+      pending_action_count: 0,
+      pending_message_count: 0,
+      active_pattern_count: 0,
+      thread_count: 0,
+      actions: [],
+      ...overrides,
+    });
+    const threads: StudentThread[] = [
+      makeThread({ alias: "Amira", thread_count: 1, pending_action_count: 2 }),
+      makeThread({ alias: "Brody", pending_action_count: 1 }),
+      makeThread({ alias: "Chantal", active_pattern_count: 1 }),
+      makeThread({
+        alias: "Daniyal",
+        actions: [
+          {
+            category: "approaching_review",
+            label: "Pattern review",
+            count: 1,
+            target_tab: "support-patterns",
+            state: "needs_action",
+          },
+        ],
+      }),
+      makeThread({ alias: "Liam" }),    // strength-only
+      makeThread({ alias: "Violet" }),  // strength-only
+      makeThread({ alias: "Zayn" }),    // strength-only
+    ];
+
+    renderTodayPanel(makeSnapshot({ student_threads: threads }));
+
+    const preview = await screen.findByLabelText("Today operational preview");
+    // 4 actionable out of 7 total roster threads — must read "4 watching".
+    expect(within(preview).getByText("4 watching")).toBeInTheDocument();
+    expect(within(preview).queryByText("7 watching")).not.toBeInTheDocument();
   });
 });

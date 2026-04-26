@@ -34,6 +34,7 @@ import {
   getStudentsToCheckFirst,
   getPeakBlock,
 } from "../utils/todayWorkflow";
+import { countActionableThreads } from "./ClassroomPanel.helpers";
 import type {
   ComplexityBlock,
   ComplexityForecast,
@@ -180,6 +181,8 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     });
   }
 
+  const watchingCount = countActionableThreads(result?.student_threads) ?? 0;
+
   const touchpointChips: OperationalPreviewChip[] = (
     result?.student_threads ?? []
   )
@@ -219,10 +222,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     },
     {
       eyebrow: "Touchpoints",
-      meta:
-        result?.student_threads && result.student_threads.length > 0
-          ? `${result.student_threads.length} watching`
-          : undefined,
+      meta: watchingCount > 0 ? `${watchingCount} watching` : undefined,
       chips: touchpointChips.length > 0 ? touchpointChips : undefined,
     },
   ];
