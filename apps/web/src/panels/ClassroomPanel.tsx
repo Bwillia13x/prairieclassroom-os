@@ -489,13 +489,13 @@ export default function ClassroomPanel({
       <details
         className="classroom-section classroom-zone--collapsible"
         id="classroom-insights"
-        aria-label="Classroom intelligence"
+        aria-labelledby="classroom-insights-eyebrow classroom-insights-title"
         open={intelDisclosure.open}
         onToggle={(e) => intelDisclosure.setOpen(e.currentTarget.open)}
       >
         <summary className="classroom-zone__summary">
-          <span className="classroom-zone__summary-eyebrow">Intelligence</span>
-          <span className="classroom-zone__summary-title">Patterns &amp; composition</span>
+          <span id="classroom-insights-eyebrow" className="classroom-zone__summary-eyebrow">Intelligence</span>
+          <span id="classroom-insights-title" className="classroom-zone__summary-title">Patterns &amp; composition</span>
           <span className="classroom-zone__summary-hint">{intelDisclosure.open ? "Collapse" : "Expand"}</span>
         </summary>
         <div className="classroom-intelligence__grid">

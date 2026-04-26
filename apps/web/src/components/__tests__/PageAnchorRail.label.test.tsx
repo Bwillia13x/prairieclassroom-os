@@ -9,6 +9,7 @@ describe("PageAnchorRail labels", () => {
       .map((a) => a.label)
       .filter((l) => !l.includes(" "))
       .reduce((max, l) => (l.length > max.length ? l : max), "");
+    // 11rem rail at 0.06em uppercase letter-spacing fits ~10 chars; "Operations" is at the edge.
     expect(longest.length, `single-word label "${longest}" risks mid-word wrap at the 11rem rail`)
       .toBeLessThanOrEqual(10);
   });
@@ -23,7 +24,7 @@ describe("PageAnchorRail labels", () => {
     );
     PAGE_ANCHORS.classroom.anchors.forEach((a) => {
       const el = screen.getByText(a.label);
-      expect(el.textContent).not.toMatch(/[­​]/);
+      expect(el.textContent).not.toMatch(/[\u00AD\u200B]/);
     });
   });
 });

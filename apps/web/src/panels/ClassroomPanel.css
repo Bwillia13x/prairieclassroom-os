@@ -140,6 +140,7 @@
        viz can never dominate the page
      - retains the data-viz components untouched
    ---------------------------------------------------------------- */
+/* Class name retained for stability; rail label is "Insights" (T4 / 2026-04-25). */
 .classroom-intelligence__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
