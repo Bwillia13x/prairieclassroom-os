@@ -209,7 +209,8 @@ async function main() {
   // pilot:reset since the last seed shows stale "396d ago" timestamps to
   // teachers and demo judges. Warn but never block startup. If the
   // orchestrator is unreachable for any reason, skip silently.
-  const latestInterventionAt = await fetchDemoLatestIntervention("http://localhost:3100");
+  const orchestratorBase = `http://localhost:${HEALTH_CHECKS.orchestrator.port}`;
+  const latestInterventionAt = await fetchDemoLatestIntervention(orchestratorBase);
   if (isDemoStale({ latestInterventionAt })) {
     console.log("⚠ Demo classroom data is stale (latest activity > 7 days old).");
     console.log("  Teachers and judges will see relative timestamps like '396d ago'.");
