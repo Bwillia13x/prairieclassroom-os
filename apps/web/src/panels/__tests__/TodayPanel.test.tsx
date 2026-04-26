@@ -713,4 +713,19 @@ describe("TodayPanel", () => {
     expect(within(preview).getByText("4 watching")).toBeInTheDocument();
     expect(within(preview).queryByText("7 watching")).not.toBeInTheDocument();
   });
+
+  it("hides the Touchpoints 'watching' meta when no thread is actionable", async () => {
+    // Strength-only roster (every thread has zero signal across all five
+    // actionable fields). The meta should be omitted entirely rather than
+    // rendering "0 watching".
+    const strengthOnly: StudentThread[] = [
+      { alias: "Liam", priority_reason: null, last_intervention_days: null, pending_action_count: 0, pending_message_count: 0, active_pattern_count: 0, thread_count: 0, actions: [] },
+      { alias: "Violet", priority_reason: null, last_intervention_days: null, pending_action_count: 0, pending_message_count: 0, active_pattern_count: 0, thread_count: 0, actions: [] },
+    ];
+
+    renderTodayPanel(makeSnapshot({ student_threads: strengthOnly }));
+
+    const preview = await screen.findByLabelText("Today operational preview");
+    expect(within(preview).queryByText(/\bwatching\b/i)).not.toBeInTheDocument();
+  });
 });
