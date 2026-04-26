@@ -10,6 +10,9 @@
  * intervention timestamp from the orchestrator API.
  */
 
+// Note: the orchestrator emits last_intervention_days as a whole-day
+// integer (services/memory/student-summary.ts), so the effective
+// threshold is ~8 days, not 7. Acceptable for a non-blocking advisory.
 const STALE_THRESHOLD_DAYS = 7;
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
