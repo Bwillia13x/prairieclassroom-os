@@ -232,6 +232,7 @@ async function main() {
   });
 
   const page = await context.newPage();
+  page.setDefaultTimeout(HOSTED_GENERATION_TIMEOUT_MS);
   const consoleErrors = [];
   const pageErrors = [];
 
