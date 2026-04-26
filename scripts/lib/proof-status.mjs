@@ -1,6 +1,7 @@
 import { existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { parseHostedPassFromProofStatusDoc } from "./markdown-section.mjs";
 
 const MOCK_ONLY_COMMANDS = [
   "npm run host:preflight:ollama",
@@ -317,13 +318,34 @@ export async function updateProofStatusDoc({
   const resolvedRoot = path.resolve(rootDir ?? process.cwd());
   const hostPreflights = await listHostPreflightArtifacts(path.join(resolvedRoot, "output", "host-preflight"));
   const runSummaries = await listReleaseGateRunSummaries(path.join(resolvedRoot, "output", "release-gate"));
+  const summariesForBuild = await preserveHostedPassFromExistingDoc(runSummaries, docPath);
   const markdown = buildProofStatusMarkdown({
     rootDir: resolvedRoot,
     preflights: hostPreflights,
-    runSummaries,
+    runSummaries: summariesForBuild,
   });
 
   await mkdir(path.dirname(docPath), { recursive: true });
   await writeFile(docPath, `${markdown}\n`, "utf8");
   return docPath;
+}
+
+async function preserveHostedPassFromExistingDoc(runSummaries, docPath) {
+  const hasFreshHostedPass = runSummaries.some(
+    (run) => run.inference_mode === "gemini" && run.status === "passed",
+  );
+  if (hasFreshHostedPass || !existsSync(docPath)) {
+    return runSummaries;
+  }
+  let existing;
+  try {
+    existing = await readFile(docPath, "utf8");
+  } catch {
+    return runSummaries;
+  }
+  const synthesized = parseHostedPassFromProofStatusDoc(existing);
+  if (!synthesized) {
+    return runSummaries;
+  }
+  return [synthesized, ...runSummaries];
 }

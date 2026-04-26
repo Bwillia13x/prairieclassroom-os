@@ -5,6 +5,7 @@ import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildBaselineMarkdown } from "./lib/eval-baseline-doc.mjs";
+import { extractMarkdownSection, isBlockedHostedSection } from "./lib/markdown-section.mjs";
 import { DEFAULT_GEMINI_MODEL_IDS, GEMINI_RUN_GUARD_ENV_VAR, writeGeminiPreflight } from "./lib/gemini-api-preflight.mjs";
 import { REQUIRED_OLLAMA_MODELS, buildHostSummary, readLatestHostPreflight, runOllamaHostPreflight } from "./lib/ollama-host-preflight.mjs";
 import { resolvePrairiePythonBin } from "./lib/python-bin.mjs";
@@ -1183,14 +1184,37 @@ async function writeBaselineDoc({
   geminiSection,
   vertexSection,
 }) {
-  const markdown = buildBaselineMarkdown({
+  let markdown = buildBaselineMarkdown({
     mockSection,
     ollamaSection,
     geminiSection,
     vertexSection,
   });
 
+  markdown = await preserveHostedSectionFromExisting(markdown, EVAL_BASELINE_DOC);
+
   await writeFile(EVAL_BASELINE_DOC, `${markdown}\n`, "utf8");
+}
+
+async function preserveHostedSectionFromExisting(candidate, docPath) {
+  if (!existsSync(docPath)) {
+    return candidate;
+  }
+  const newHosted = extractMarkdownSection(candidate, "Hosted Gemini API Baseline");
+  if (!newHosted || !isBlockedHostedSection(newHosted)) {
+    return candidate;
+  }
+  let existing;
+  try {
+    existing = await readFile(docPath, "utf8");
+  } catch {
+    return candidate;
+  }
+  const existingHosted = extractMarkdownSection(existing, "Hosted Gemini API Baseline");
+  if (!existingHosted || isBlockedHostedSection(existingHosted)) {
+    return candidate;
+  }
+  return candidate.replace(newHosted, existingHosted);
 }
 
 async function updateOllamaBaselineDoc(ollamaPreflight = null) {
