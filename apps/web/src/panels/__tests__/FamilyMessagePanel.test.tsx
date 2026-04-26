@@ -3,13 +3,35 @@ import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
 
-const mocks = vi.hoisted(() => ({
-  approveFamilyMessage: vi.fn(),
-  fetchClassroomHealth: vi.fn(),
-  fetchMessageHistory: vi.fn(),
-  submitFeedback: vi.fn(),
-  refreshHistory: vi.fn(),
-}));
+const mocks = vi.hoisted(() => {
+  const populatedDraftResult = {
+    draft: {
+      draft_id: "draft-1",
+      classroom_id: "demo-classroom",
+      student_refs: ["Amira"],
+      message_type: "routine_update",
+      target_language: "English",
+      plain_language_text: "Amira had a steady day and completed the reading check-in.",
+      teacher_approved: false,
+      schema_version: "1",
+    },
+    model_id: "mock",
+    latency_ms: 42,
+  };
+  return {
+    approveFamilyMessage: vi.fn(),
+    fetchClassroomHealth: vi.fn(),
+    fetchMessageHistory: vi.fn(),
+    submitFeedback: vi.fn(),
+    refreshHistory: vi.fn(),
+    populatedDraftResult,
+    draftActionState: {
+      loading: false,
+      error: null as string | null,
+      result: populatedDraftResult as typeof populatedDraftResult | null,
+    },
+  };
+});
 
 vi.mock("../../api", () => ({
   draftFamilyMessage: vi.fn(),
@@ -22,22 +44,9 @@ vi.mock("../../api", () => ({
 
 vi.mock("../../useAsyncAction", () => ({
   useAsyncAction: () => ({
-    loading: false,
-    error: null,
-    result: {
-      draft: {
-        draft_id: "draft-1",
-        classroom_id: "demo-classroom",
-        student_refs: ["Amira"],
-        message_type: "routine_update",
-        target_language: "English",
-        plain_language_text: "Amira had a steady day and completed the reading check-in.",
-        teacher_approved: false,
-        schema_version: "1",
-      },
-      model_id: "mock",
-      latency_ms: 42,
-    },
+    loading: mocks.draftActionState.loading,
+    error: mocks.draftActionState.error,
+    result: mocks.draftActionState.result,
     execute: vi.fn(),
     reset: vi.fn(),
     cancel: vi.fn(),
@@ -113,6 +122,9 @@ function makeAppContext(): AppContextValue {
 describe("FamilyMessagePanel", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mocks.draftActionState.loading = false;
+    mocks.draftActionState.error = null;
+    mocks.draftActionState.result = mocks.populatedDraftResult;
     mocks.approveFamilyMessage.mockResolvedValue(undefined);
     mocks.fetchClassroomHealth.mockResolvedValue({
       classroom_id: "demo-classroom",
@@ -147,6 +159,26 @@ describe("FamilyMessagePanel", () => {
     // (rail hint + empty-state hint); assert at least one is present.
     const mentions = screen.getAllByText(/nothing sends automatically/i);
     expect(mentions.length).toBeGreaterThan(0);
+  });
+
+  it("does not render the Pipeline summary card overlapping the empty state", () => {
+    // T7: Closes QA m3. The empty-state canvas previously rendered the
+    // MessageApprovalFunnel ("MESSAGE PIPELINE / X% APPROVAL RATE") with
+    // synthetic minimum values alongside the placeholder cue, producing a
+    // ghosted overlap that read as a CSS stacking glitch. The placeholder
+    // now stands alone in the empty state; the funnel still appears in the
+    // rail when real classroom-health data is available.
+    mocks.draftActionState.result = null;
+    const appContext = makeAppContext();
+    render(
+      <AppContext.Provider value={appContext}>
+        <FamilyMessagePanel prefill={null} />
+      </AppContext.Provider>,
+    );
+
+    expect(screen.getByText(/pick students to draft a message/i)).toBeInTheDocument();
+    expect(screen.queryByText(/message pipeline/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/approval rate/i)).not.toBeInTheDocument();
   });
 
   it("sets data-split-state='output' on the WorkspaceLayout while a draft is visible", () => {

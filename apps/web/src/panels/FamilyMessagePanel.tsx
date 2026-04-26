@@ -270,17 +270,11 @@ export default function FamilyMessagePanel({ prefill }: Props) {
               <SkeletonLoader variant="single" message="Drafting family message..." label="Drafting family message" />
             ) : null}
             {!loading && displayResult === null && !error ? (
-              <>
-                <MessageApprovalFunnel
-                  messagesTotal={Math.max(healthAction.result?.messages_total ?? 0, 6)}
-                  messagesApproved={Math.max(healthAction.result?.messages_approved ?? 0, 3)}
-                />
-                <EmptyStateCard
-                  variant="minimal"
-                  cue="Pick students to draft a message."
-                  hint="Nothing sends automatically — you review and approve every message first."
-                />
-              </>
+              <EmptyStateCard
+                variant="minimal"
+                cue="Pick students to draft a message."
+                hint="Nothing sends automatically — you review and approve every message first."
+              />
             ) : null}
             {displayResult ? (
               <>
