@@ -64,6 +64,23 @@ The implemented system now exceeds the original MVP loop. The current operating 
 
 The next product phase is pilot-readiness, not feature sprawl. Real classroom use requires the controls in `docs/pilot-readiness.md` and `docs/safety-governance.md`.
 
+### Top-nav badge counts
+
+Each top-tab pending badge counts **only items the teacher should act on
+right now**, not the total workload represented on the page. This keeps
+badges as priority signals rather than inventory dashboards.
+
+| Tab      | Counted                                       |
+|----------|-----------------------------------------------|
+| Tomorrow | saved tomorrow notes                          |
+| Ops      | stale follow-ups awaiting capture             |
+| Review   | reviews approaching due date                  |
+
+Patterns, unapproved messages, EA moves, and other surfaces remain
+visible inside the host page's own stat cards but are excluded from the
+nav badge. Implemented in `apps/web/src/appReducer.ts` →
+`getTabBadgeCount`; covered by `apps/web/src/__tests__/appReducer.test.ts`.
+
 ## Success criteria
 
 - The system completes the loop end to end.

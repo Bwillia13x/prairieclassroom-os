@@ -46,6 +46,11 @@ function makeContext(overrides: Partial<AppContextValue> = {}): AppContextValue 
 
 describe("MobileNav", () => {
   it("uses the visible label and badge counts as the group button accessible names", () => {
+    // Per the unified narrow/actionable badge rule (docs/spec.md →
+    // "Top-nav badge counts"), the Ops badge counts only stale follow-ups
+    // and the Review badge counts only reviews approaching due. Patterns
+    // and unapproved messages stay visible inside each page's stat cards
+    // but are excluded from the nav badge.
     render(
       <AppContext.Provider value={makeContext()}>
         <MobileNav
@@ -62,7 +67,7 @@ describe("MobileNav", () => {
     );
 
     expect(screen.getByRole("button", { name: /ops\s*8/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /review\s*9/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /review\s*4/i })).toBeInTheDocument();
   });
 
   it("surfaces queued Tomorrow notes as the Tomorrow tab badge and keeps routing intact", () => {

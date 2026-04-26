@@ -291,9 +291,14 @@ export function isTabVisibleForRole(tab: ActiveTab, role: ClassroomRole): boolea
 
 /**
  * Debt-count badge value for the top-level tabs that aggregate over
- * embedded tools. The Review page rolls up message/pattern counts; the
- * Ops page rolls up stale follow-ups; Today still shows its own debt
- * gauge on-page so the nav does not double-count.
+ * embedded tools.
+ *
+ * Unified rule (see docs/spec.md → "Top-nav badge counts"): each badge
+ * counts only the items the teacher should act on right now, not the
+ * broader workload represented on the page. This keeps badges as
+ * priority signals rather than inventory dashboards. Patterns,
+ * unapproved messages, and EA moves remain visible inside each page's
+ * own stat cards but are excluded from the nav badge.
  */
 export function getTabBadgeCount(
   tab: ActiveTab,
@@ -304,9 +309,7 @@ export function getTabBadgeCount(
     case "tomorrow":
       return tomorrowNoteCount;
     case "review":
-      return (debtCounts.unapproved_message ?? 0)
-        + (debtCounts.unaddressed_pattern ?? 0)
-        + (debtCounts.approaching_review ?? 0);
+      return debtCounts.approaching_review ?? 0;
     case "ops":
       return debtCounts.stale_followup ?? 0;
     default:

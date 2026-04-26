@@ -4,6 +4,7 @@ import {
   appReducer,
   createInitialState,
   defaultToolForTab,
+  getTabBadgeCount,
   getVisibleTabs,
   isActiveTab,
   isActiveTool,
@@ -476,5 +477,54 @@ describe("appReducer — featuresSeen lifecycle", () => {
     const next = appReducer(initial, { type: "RESET_FEATURES_SEEN" });
     expect(next.featuresSeen).toEqual({});
     expect(localStorage.getItem("prairie-features-seen")).toBeNull();
+  });
+});
+
+describe("getTabBadgeCount — unified narrow/actionable rule", () => {
+  // Both Ops and Review badges count only items the teacher should act on
+  // *right now*, not the broader workload represented on the page. See
+  // docs/spec.md → "Top-nav badge counts" for the rationale.
+
+  it("Review badge counts only reviews approaching due, not patterns or messages", () => {
+    // QA evidence: demo classroom showed Review=25 (23 reviews + 2 patterns).
+    // After the fix, the badge should report only the 23 actionable reviews.
+    const counts = getTabBadgeCount("review", {
+      approaching_review: 23,
+      unaddressed_pattern: 2,
+      unapproved_message: 4,
+      stale_followup: 6,
+    });
+    expect(counts).toBe(23);
+  });
+
+  it("Ops badge counts only stale follow-ups awaiting capture", () => {
+    const counts = getTabBadgeCount("ops", {
+      approaching_review: 23,
+      unaddressed_pattern: 2,
+      unapproved_message: 4,
+      stale_followup: 6,
+    });
+    expect(counts).toBe(6);
+  });
+
+  it("Review badge is zero when there are no approaching reviews even if patterns exist", () => {
+    expect(
+      getTabBadgeCount("review", {
+        approaching_review: 0,
+        unaddressed_pattern: 5,
+        unapproved_message: 3,
+      }),
+    ).toBe(0);
+  });
+
+  it("Tomorrow badge still counts saved tomorrow notes", () => {
+    expect(getTabBadgeCount("tomorrow", {}, 4)).toBe(4);
+  });
+
+  it("Other tabs do not produce a badge", () => {
+    expect(getTabBadgeCount("classroom", { stale_followup: 6, approaching_review: 23 })).toBe(0);
+    expect(getTabBadgeCount("today", { stale_followup: 6, approaching_review: 23 })).toBe(0);
+    expect(getTabBadgeCount("week", { stale_followup: 6, approaching_review: 23 })).toBe(0);
+    expect(getTabBadgeCount("prep", { stale_followup: 6, approaching_review: 23 })).toBe(0);
   });
 });
