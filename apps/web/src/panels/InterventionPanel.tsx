@@ -41,7 +41,7 @@ export default function InterventionPanel({ prefill }: Props) {
   const { classrooms, activeClassroom, students, showSuccess, showError, latestTodaySnapshot, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>({
-    onError: (msg) => showError(`Couldn't log intervention — ${msg}`),
+    onError: (msg) => showError(`Couldn't save intervention — ${msg}`),
   });
   const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
