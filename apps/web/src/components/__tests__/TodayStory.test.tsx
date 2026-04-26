@@ -279,6 +279,52 @@ describe("composeStory template rules", () => {
     expect(story.tone).toBe("calm");
   });
 
+  it("derives the hero time from peakBlock.time_slot, not a constant", () => {
+    function buildHeavyQueueStory(timeSlot: string) {
+      return composeStory({
+        snapshot: makeSnapshot({
+          debt_register: {
+            register_id: "r",
+            classroom_id: "demo",
+            items: [
+              makeDebtItem("unapproved_message", "Amira"),
+              makeDebtItem("stale_followup", "Brody", 6),
+              makeDebtItem("stale_followup", "Amira", 4),
+              makeDebtItem("unaddressed_pattern", "Farid", 2),
+            ],
+            item_count_by_category: {},
+            generated_at: "",
+            schema_version: "1.0",
+          } as TodaySnapshot["debt_register"],
+          latest_forecast: {
+            forecast_id: "fc-dyn",
+            classroom_id: "demo",
+            forecast_date: "2026-04-13",
+            overall_summary: "",
+            highest_risk_block: timeSlot,
+            schema_version: "1.0",
+            blocks: [
+              {
+                time_slot: timeSlot,
+                activity: "Math",
+                level: "high",
+                contributing_factors: [],
+                suggested_mitigation: "",
+              },
+            ],
+          },
+        }),
+        health: makeHealth(1, true),
+        students: [],
+      });
+    }
+    const lateMorning = buildHeavyQueueStory("11:30-12:15");
+    const lateAfternoon = buildHeavyQueueStory("14:30-15:30");
+    expect(lateMorning.lede).toMatch(/^11:30 is today's real test\.$/);
+    expect(lateAfternoon.lede).toMatch(/^14:30 is today's real test\.$/);
+    expect(lateMorning.lede).not.toEqual(lateAfternoon.lede);
+  });
+
   it("uses StudentSummary fallback to pick a priority student when debt has no student refs", () => {
     const story = composeStory({
       snapshot: makeSnapshot({
