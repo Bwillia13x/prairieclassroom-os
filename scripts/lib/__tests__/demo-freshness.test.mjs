@@ -45,8 +45,11 @@ describe("fetchDemoLatestIntervention", () => {
       assert.ok(iso, "expected an ISO timestamp");
       const ageMs = Date.now() - new Date(iso).getTime();
       const ageDays = ageMs / (24 * 60 * 60 * 1000);
-      // smallest non-null is 3 → derived ISO should be ~3 days old
-      assert.ok(ageDays > 2.9 && ageDays < 3.1, `expected ~3 days, got ${ageDays}`);
+      // smallest non-null is 3 → derived ISO should be ~3 days old. The
+      // ±0.01-day window is wide enough to absorb CI runner skew but
+      // narrow enough that a unit regression (e.g. hours vs days, ~72x)
+      // fails loudly.
+      assert.ok(ageDays > 2.99 && ageDays < 3.01, `expected ~3 days, got ${ageDays}`);
     } finally {
       globalThis.fetch = originalFetch;
     }
