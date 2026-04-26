@@ -76,6 +76,11 @@ badges as priority signals rather than inventory dashboards.
 | Ops      | stale follow-ups awaiting capture             |
 | Review   | reviews approaching due date                  |
 
+**Today** and **Classroom** intentionally have no badge — both surfaces
+render their own debt gauges on-page (the Today complexity-debt block
+and the Classroom Pulse stat card respectively), so a nav badge would
+double-count.
+
 Patterns, unapproved messages, EA moves, and other surfaces remain
 visible inside the host page's own stat cards but are excluded from the
 nav badge. Implemented in `apps/web/src/appReducer.ts` →
