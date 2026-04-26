@@ -30,6 +30,8 @@ import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { isDemoStale, fetchDemoLatestIntervention } from "./lib/demo-freshness.mjs";
+
 const __filename = fileURLToPath(import.meta.url);
 const ROOT = path.resolve(path.dirname(__filename), "..");
 
@@ -201,6 +203,20 @@ async function main() {
     console.log("  Web:          http://localhost:5173/?demo=true");
   }
   console.log("");
+
+  // Demo-staleness preflight. The demo seed (data/demo/seed.ts) is
+  // time-relative but upsert-only, so a local SQLite DB that hasn't been
+  // pilot:reset since the last seed shows stale "396d ago" timestamps to
+  // teachers and demo judges. Warn but never block startup. If the
+  // orchestrator is unreachable for any reason, skip silently.
+  const latestInterventionAt = await fetchDemoLatestIntervention("http://localhost:3100");
+  if (isDemoStale({ latestInterventionAt })) {
+    console.log("⚠ Demo classroom data is stale (latest activity > 7 days old).");
+    console.log("  Teachers and judges will see relative timestamps like '396d ago'.");
+    console.log("  Run: npm run pilot:reset");
+    console.log("");
+  }
+
   console.log("Open the web URL in your browser. Press Ctrl-C here to stop.");
   console.log("────────────────────────────────────────\n");
 }
