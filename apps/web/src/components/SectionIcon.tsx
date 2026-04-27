@@ -27,7 +27,12 @@ export type SectionIconName =
      mark is the canonical bird's-eye dashboard cue. */
   | "trend"
   | "compass"
-  | "week";
+  | "week"
+  /* Phase γ2 (2026-04-28) — magnifying-glass mark for the header
+     SEARCH (⌘K) trigger. Earns its own glyph so the grid mark in
+     the Classroom nav stays load-bearing as "bird's-eye dashboard"
+     instead of doing double duty as "search affordance." */
+  | "search";
 
 export default function SectionIcon({ name, className, decorative = true }: Props) {
   const sharedProps = decorative ? { "aria-hidden": true } : { role: "img" as const };
@@ -179,6 +184,17 @@ export default function SectionIcon({ name, className, decorative = true }: Prop
           <rect x="13.8" y="6.5" width="2.4" height="11" rx="0.6" />
           <rect x="17.4" y="6.5" width="2.4" height="11" rx="0.6" />
           <path d="M2.5 12.5h19" opacity="0.45" />
+        </>
+      ) : null}
+      {name === "search" ? (
+        // Magnifying-glass mark — lens in the upper-left at
+        // (10.5, 10.5) r=5.5, handle traveling to the lower-right
+        // corner. Pulled in from the canvas edges so the glyph
+        // composes well at the 16–22px header sizing where the
+        // rest of the icon vocabulary lives.
+        <>
+          <circle cx="10.5" cy="10.5" r="5.5" />
+          <path d="M14.4 14.4l5.1 5.1" />
         </>
       ) : null}
     </svg>

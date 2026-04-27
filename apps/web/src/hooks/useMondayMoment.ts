@@ -1,9 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-import "./MondayResetMoment.css";
-
-interface Props {
-  classroomId: string;
-}
 
 function getIsoWeek(date: Date): string {
   const target = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
@@ -28,17 +23,33 @@ function readDismissed(classroomId: string, weekKey: string): boolean {
   }
 }
 
-export default function MondayResetMoment({ classroomId }: Props) {
+/**
+ * Detect the Monday "fresh week" moment with per-week-per-classroom
+ * dismissal. Returns `active = true` only when today is Monday, a
+ * non-empty classroomId is provided, and the user has not already
+ * dismissed this week's banner. Consumed by `TodayHero` via its
+ * `mondayMoment` prop (see TodayPanel.tsx for wiring).
+ *
+ * Phase 4 follow-up (2026-04-28): extracted from the now-deleted
+ * `MondayResetMoment.tsx` so the hook lives alongside other hooks
+ * and the dead standalone component is gone from the tree.
+ */
+export function useMondayMoment(classroomId: string): {
+  active: boolean;
+  dismiss: () => void;
+} {
   const today = useMemo(() => new Date(), []);
   const weekKey = useMemo(() => getIsoWeek(today), [today]);
   const isMonday = today.getDay() === 1;
-  const [dismissed, setDismissed] = useState<boolean>(() => readDismissed(classroomId, weekKey));
+  const [dismissed, setDismissed] = useState<boolean>(() =>
+    readDismissed(classroomId, weekKey),
+  );
 
   useEffect(() => {
     setDismissed(readDismissed(classroomId, weekKey));
   }, [classroomId, weekKey]);
 
-  const handleDismiss = () => {
+  const dismiss = () => {
     setDismissed(true);
     try {
       window.localStorage.setItem(storageKey(classroomId, weekKey), "dismissed");
@@ -47,23 +58,5 @@ export default function MondayResetMoment({ classroomId }: Props) {
     }
   };
 
-  if (!isMonday || dismissed || !classroomId) return null;
-
-  return (
-    <section className="monday-reset-moment" role="status" aria-label="Fresh week">
-      <div className="monday-reset-moment__band" aria-hidden="true" />
-      <div className="monday-reset-moment__body">
-        <span className="monday-reset-moment__eyebrow">Monday</span>
-        <p className="monday-reset-moment__title">A fresh week. One calm move opens it.</p>
-      </div>
-      <button
-        type="button"
-        className="monday-reset-moment__dismiss"
-        onClick={handleDismiss}
-        aria-label="Dismiss fresh week banner"
-      >
-        x
-      </button>
-    </section>
-  );
+  return { active: isMonday && !dismissed && !!classroomId, dismiss };
 }

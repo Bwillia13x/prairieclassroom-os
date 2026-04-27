@@ -137,7 +137,7 @@ export default function PrepPanel() {
       <SectionMarker
         number="02"
         title="Active prep lane"
-        subtitle="Work the lesson canvas or the language supports. Both share the prep memory."
+        subtitle="Two lanes, one memory."
       />
 
       <div id="prep-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Prep tool">

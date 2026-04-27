@@ -375,7 +375,7 @@ export default function ClassroomPanel({
       <SectionMarker
         number="02"
         title="Operating signal"
-        subtitle="Pulse, watchlist, and queue distribution that drive the day's coverage decisions."
+        subtitle="What's hot, who's watching, what's pending — at a glance."
       />
 
       {/* ============================================================

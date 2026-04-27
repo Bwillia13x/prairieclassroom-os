@@ -160,4 +160,32 @@ describe("CohortSparklineGrid", () => {
     const cell = screen.getByTestId("cohort-cell");
     expect(cell.getAttribute("data-severity")).toBe("medium");
   });
+
+  it("paints a trajectory gradient stroke when polyline endpoints have differing local severity", () => {
+    // Phase δ2 (2026-04-28). Student "Climber" starts at 0 on day 0 and
+    // ends at 4 on day 13; the cohort baseline at those positions sits
+    // between the two students at low/high cohort norms, so the
+    // endpoint classifier produces (low → high). The other students
+    // anchor a non-trivial cohort baseline so the per-day comparison
+    // resolves correctly.
+    const students = [
+      makeStudent("Climber", [0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 3, 4, 4]),
+      makeStudent("Steady",  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]),
+      makeStudent("Calmer",  [4, 4, 3, 2, 2, 1, 1, 1, 1, 1, 0, 0, 0, 0]),
+    ];
+    const { container } = render(<CohortSparklineGrid students={students} />);
+    // Pull every cohort-cell__line polyline. At least one must carry
+    // a `data-trajectory="true"` marker, signalling that the gradient
+    // stroke was applied (endpoints differed in local severity).
+    const trajectoryLines = container.querySelectorAll(
+      ".cohort-cell__line[data-trajectory='true']",
+    );
+    expect(trajectoryLines.length).toBeGreaterThan(0);
+    // The trajectory polyline references one of the six pre-defined
+    // gradient ids (asymmetric severity pairs). Verify the id shape.
+    const stroke = trajectoryLines[0]?.getAttribute("stroke") ?? "";
+    expect(stroke).toMatch(
+      /^url\(#cohort-trajectory-(low|medium|high)-(low|medium|high)\)$/,
+    );
+  });
 });

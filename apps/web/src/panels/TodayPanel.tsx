@@ -14,7 +14,7 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import ErrorBanner from "../components/ErrorBanner";
 import SectionIcon from "../components/SectionIcon";
 import DrillDownDrawer from "../components/DrillDownDrawer";
-import MondayResetMoment from "../components/MondayResetMoment";
+import { useMondayMoment } from "../hooks/useMondayMoment";
 import TimeSuggestion from "../components/TimeSuggestion";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import { Card, ActionButton } from "../components/shared";
@@ -70,6 +70,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   const studentSummaries = useAsyncAction<StudentSummary[]>();
   const sessionSummary = useAsyncAction<SessionSummary>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
+  const mondayMoment = useMondayMoment(activeClassroom ?? "");
 
   useEffect(() => {
     session.recordPanelVisit("today");
@@ -249,8 +250,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         ]}
       />
 
-      {activeClassroom ? <MondayResetMoment classroomId={activeClassroom} /> : null}
-
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 
       <div id="command-center" className="today-anchor-target">
@@ -264,6 +263,14 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             checkFirstStudents={studentsToCheckFirst}
             studentReasons={studentReasons}
             peakBlock={peakBlock}
+            mondayMoment={
+              mondayMoment.active
+                ? {
+                    label: "Monday — A fresh week. One calm move opens it.",
+                    onDismiss: mondayMoment.dismiss,
+                  }
+                : null
+            }
             onCtaClick={() => {
               if (recommendedAction) onTabChange(recommendedAction.tab);
             }}
@@ -321,7 +328,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           number="02"
           titleId="today-pulse-heading"
           title="What to watch next"
-          subtitle="Day-of risk map, open items, and carry-forward signal. Week-level coverage lives on the Week page."
+          subtitle="What to triage now. Where the day stands."
         />
         <div className="today-grid motion-stagger">
         <div className="today-grid__hero-row">

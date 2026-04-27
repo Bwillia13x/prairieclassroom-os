@@ -224,7 +224,7 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
       <SectionMarker
         number="02"
         title="Stage tomorrow"
-        subtitle="Choose between the support plan and the complexity forecast — both feed the next school day."
+        subtitle="What to stage. What to forecast. What lands tomorrow."
       />
 
       <div id="tomorrow-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Tomorrow tool">

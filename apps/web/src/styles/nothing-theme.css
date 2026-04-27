@@ -287,6 +287,17 @@
   margin-bottom: var(--space-4);
 }
 
+/* Cascade note (Phase 2 follow-up, 2026-04-28): chart-card titles in
+   DataVisualizations.tsx are composed at the call site as
+   `className="t-eyebrow viz-title"` to inherit the eyebrow recipe's
+   uppercase + line-height. Inside `.workspace-page`, this rule's
+   (0,2,0) specificity beats `.t-eyebrow` (0,1,0), so the workspace
+   chart titles render at display-lg (18px) / -0.01em / display family
+   while keeping the uppercase + line-height contributed by .t-eyebrow.
+   This is the intended workspace promotion — chart titles read as
+   "structural metadata, larger than eyebrow but smaller than section
+   title" only when mounted in a workspace page. Outside the workspace
+   (tests, isolated component dev), .t-eyebrow's recipe applies fully. */
 .workspace-page .viz-title,
 .workspace-page [class*="viz-"] [class*="__title"],
 .workspace-page [class*="viz-"] [class*="__header-title"] {
@@ -917,8 +928,15 @@
    without needing per-component rules.
    ================================================================ */
 
-/* Any "__eyebrow" leaf inside a workspace page reads as mono caps */
-.workspace-page [class*="__eyebrow"] {
+/* Any "__eyebrow" leaf inside a workspace page reads as mono caps.
+   Wrapped in :where() (Phase 1, 2026-04-28) so the rule contributes only
+   the [class*="__eyebrow"] attribute selector to specificity (0,0,1).
+   This makes any per-component override that names an eyebrow class
+   directly (e.g., `.page-hero--classroom .page-hero__eyebrow` at 0,2,0)
+   win cleanly without source-order or duplicate-selector workarounds.
+   The substring matcher still applies the canonical mono-caps treatment
+   to every eyebrow element that doesn't define its own override. */
+:where(.workspace-page) [class*="__eyebrow"] {
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
@@ -1742,15 +1760,14 @@
   --ease-in-out-circ: var(--ease-letterpress);
 }
 
-.app-shell *,
-.toast-queue *,
-.command-palette *,
-.shortcut-sheet *,
-.access-dialog *,
-.role-prompt-dialog *,
-.onboarding-card *,
-.drilldown-drawer * {
-  letter-spacing: 0 !important;
+/* 2026-04-28 — Typography cascade rescue (Phase α).
+   The prior universal-descendant `.app-shell *, … { letter-spacing: 0 !important }`
+   reset silently overrode the project's 7-step tracking scale on every hero,
+   eyebrow, and section marker. Retired in favour of an opt-in class so any
+   element that genuinely needs zero tracking can apply it explicitly without
+   the blanket. See docs/decision-log.md 2026-04-28. */
+.t-mono-untracked {
+  letter-spacing: 0;
 }
 
 .app-header__inner,

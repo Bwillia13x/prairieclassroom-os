@@ -84,7 +84,21 @@
    The most-repeated drift target. ~25+ component classes were
    re-implementing this recipe before the layer existed.
    Family-agnostic — composes with parent (Inter on editorial
-   surfaces, mono on chart cards). */
+   surfaces, mono on chart cards).
+
+   Cascade note (Phase 2 follow-up, 2026-04-28): on chart cards
+   inside `.workspace-page`, this recipe is partially overridden by
+   `.workspace-page .viz-title` in nothing-theme.css (specificity
+   0,2,0 vs the (0,1,0) below). Composed call sites like
+   `<h4 className="t-eyebrow viz-title">…</h4>` (DataVisualizations.tsx)
+   keep the `text-transform: uppercase` and `line-height: 1` from
+   here, but receive font-size, font-weight, font-family, and
+   letter-spacing from the workspace `.viz-title` promotion (display-lg
+   at -0.01em — see nothing-theme.css:290). This is the design intent:
+   chart-card titles are intentionally larger inside the workspace
+   shell than the eyebrow recipe alone would render. The composition
+   still earns its keep — without `.t-eyebrow` the titles would lose
+   their uppercase + tight line-height. */
 .t-eyebrow {
   font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);

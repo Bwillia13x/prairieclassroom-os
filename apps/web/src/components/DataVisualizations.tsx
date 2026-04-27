@@ -19,6 +19,7 @@ import type {
   InterventionRecord,
 } from "../types";
 import SourceTag from "./SourceTag";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 import "./DataVisualizations.css";
 
 /* ================================================================
@@ -1924,7 +1925,7 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
   const h = 32;
   const pad = 4;
 
-  const { points, lastX, lastY, first, last, trend, tone, bandY, bandHeight } = useMemo(() => {
+  const { points, areaPath, lastX, lastY, first, last, trend, tone, bandY, bandHeight } = useMemo(() => {
     const trimmed = data.slice(-14);
     const max = Math.max(...trimmed, 1);
     const coords = trimmed.map((v, i) => ({
@@ -1933,6 +1934,7 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
     }));
     const pts = coords.map((c) => `${c.x},${c.y}`).join(" ");
     const endPt = coords[coords.length - 1] ?? { x: 0, y: 0 };
+    const startPt = coords[0] ?? { x: 0, y: 0 };
     const f = trimmed[0] ?? 0;
     const l = trimmed[trimmed.length - 1] ?? 0;
     const tr = l > f ? "rising" : l < f ? "falling" : "flat";
@@ -1945,8 +1947,19 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
       ? pad + (1 - HEALTHY_THRESHOLD / max) * (h - pad * 2)
       : pad;
     const bandBottom = pad + (h - pad * 2);
+    // Phase δ1 (2026-04-28) — area-fill path under the polyline. Built
+    // by traversing every point along the line, then dropping to the
+    // baseline at the right edge, traversing back to the start at the
+    // left, closing the path. The SVG <linearGradient id="debt-trend-area">
+    // fills it with high-tone alpha at the right (today) fading to 0 at
+    // the left (14d ago) so the rise on the right is *felt*, not just read.
+    const baseline = bandBottom;
+    const ap = coords.length > 0
+      ? `M${coords[0]!.x},${coords[0]!.y} ${coords.slice(1).map((c) => `L${c.x},${c.y}`).join(" ")} L${endPt.x},${baseline} L${startPt.x},${baseline} Z`
+      : "";
     return {
       points: pts,
+      areaPath: ap,
       lastX: endPt.x,
       lastY: endPt.y,
       first: f,
@@ -1958,6 +1971,14 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
       bandHeight: Math.max(0, bandBottom - bandTop),
     };
   }, [data]);
+
+  // Phase δ1 — reduced-motion fallback: gradient-stroke + area-fill is
+  // a layered visual that the spec treats as a reduced-motion-eligible
+  // accommodation. When the user prefers reduced motion, fall back to
+  // the existing solid trend-toned stroke so the chart still encodes
+  // direction (rising = danger, falling = success, flat = warning) with
+  // a single visual layer.
+  const prefersReducedMotion = useReducedMotion();
 
   if (data.length < 2) return null;
 
@@ -1990,6 +2011,21 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
         </span>
       </div>
       <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} className="viz-svg">
+        {/* Phase δ1 (2026-04-28) — gradient defs for the tonal stroke
+            and area fill. Stop-color references the chart-tone token
+            family via inline style so token cascade works. */}
+        {!prefersReducedMotion && (
+          <defs>
+            <linearGradient id="debt-trend-stroke" x1="0%" x2="100%" y1="0%" y2="0%">
+              <stop offset="0%" style={{ stopColor: "var(--chart-tone-low)" }} />
+              <stop offset="100%" style={{ stopColor: "var(--chart-tone-high)" }} />
+            </linearGradient>
+            <linearGradient id="debt-trend-area" x1="0%" x2="100%" y1="0%" y2="0%">
+              <stop offset="0%" style={{ stopColor: "var(--chart-tone-high)", stopOpacity: 0 }} />
+              <stop offset="100%" style={{ stopColor: "var(--chart-tone-high)", stopOpacity: 0.12 }} />
+            </linearGradient>
+          </defs>
+        )}
         {/* Audit #22: healthy band (0–15) gives the Y axis an anchor
             without requiring tick labels on a sparkline. */}
         {bandHeight > 0 && (
@@ -2003,10 +2039,13 @@ export function DebtTrendSparkline({ data, onSegmentClick }: DebtTrendProps) {
             <title>Healthy range: 0–15 open items</title>
           </rect>
         )}
+        {!prefersReducedMotion && areaPath ? (
+          <path d={areaPath} fill="url(#debt-trend-area)" stroke="none" />
+        ) : null}
         <polyline
           points={points}
           fill="none"
-          stroke={tone}
+          stroke={prefersReducedMotion ? tone : "url(#debt-trend-stroke)"}
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -2699,7 +2738,10 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
 
           {/* Per-axis ribbons — thin colored segment from origin to data
               point in each axis's tone. This is what gives each spoke
-              identity even before the polygon resolves. */}
+              identity even before the polygon resolves. Phase δ3
+              (2026-04-28) plumbs `--axis-tone` onto the ribbon element
+              itself (it was already on the label) so any future CSS
+              rule keyed on `--axis-tone` can resolve here. */}
           {axisData.map(({ axis, px, py }, i) => (
             <line
               key={`ribbon-${axis.key}`}
@@ -2712,7 +2754,12 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
               strokeLinecap="round"
               opacity="0.85"
               className="viz-plan-radar__ribbon"
-              style={{ "--ribbon-delay": `${i * 60}ms` } as CSSProperties}
+              style={
+                {
+                  "--ribbon-delay": `${i * 60}ms`,
+                  "--axis-tone": axis.toneVar,
+                } as CSSProperties
+              }
             />
           ))}
 

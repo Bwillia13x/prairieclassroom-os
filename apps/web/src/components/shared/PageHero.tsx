@@ -91,6 +91,23 @@ function isLeadMetric(metric: PageHeroMetric, idx: number): boolean {
   return idx === 0;
 }
 
+/** Pick the single critical group index for a hero — the group that
+ * earns the larger lead-metric scale. A group is critical if any of
+ * its metrics carries a `danger` or `warning` tone. Danger outranks
+ * warning so a hero with mixed criticality lifts the danger group
+ * (not the warning group). If no group qualifies, returns -1.
+ *
+ * Only one critical lead per hero by design — promoting every group
+ * that happens to contain a non-neutral metric collapses the
+ * priority signal. Phase β3 (2026-04-28). */
+function findCriticalGroupIndex(groups: PageHeroMetricGroup[]): number {
+  const dangerIdx = groups.findIndex((g) =>
+    g.metrics.some((m) => m.tone === "danger"),
+  );
+  if (dangerIdx >= 0) return dangerIdx;
+  return groups.findIndex((g) => g.metrics.some((m) => m.tone === "warning"));
+}
+
 export default function PageHero({
   eyebrow,
   title,
@@ -125,6 +142,9 @@ export default function PageHero({
   const hasGroupedMetrics = !!(metricGroups && metricGroups.length > 0);
   const hasStatusRows = !!(statusRows && statusRows.length > 0);
   const showAside = !!pulse || hasFlatMetrics || hasGroupedMetrics || hasStatusRows;
+  const criticalGroupIdx = hasGroupedMetrics
+    ? findCriticalGroupIndex(metricGroups!)
+    : -1;
 
   return (
     <section className={className} id={id} aria-label={ariaLabel}>
@@ -193,7 +213,11 @@ export default function PageHero({
               {metricGroups!.map((group, groupIdx) => (
                 <div
                   key={`${group.label}-${groupIdx}`}
-                  className="page-hero__metric-group"
+                  className={`page-hero__metric-group${
+                    groupIdx === criticalGroupIdx
+                      ? " page-hero__metric-group--critical"
+                      : ""
+                  }`}
                 >
                   <span className="page-hero__metric-group-eyebrow">{group.label}</span>
                   <div className="page-hero__metric-group-tiles">

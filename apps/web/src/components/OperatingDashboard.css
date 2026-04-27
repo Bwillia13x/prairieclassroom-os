@@ -256,6 +256,39 @@
   background: var(--chart-tone-high);
 }
 
+/* ------------------------------------------------------------
+   Phase δ4 (2026-04-28) — Unknown-cell dashed signal.
+   Symmetric in shape with C2's forecast-intensity bar (4px tall,
+   bottom-anchored, tracks the cell's inner radius) but rendered
+   as a dashed pattern in `--color-text-tertiary` instead of a
+   solid chart-tone fill. The pattern (vs solid) signals "not yet
+   known" rather than severity, so a teacher reading the heatmap
+   can distinguish "unknown" from "low" at a glance — the prior
+   silent-on-severity unknown cell looked identical to a low cell
+   to anyone not parsing the cell content.
+   Implemented as `repeating-linear-gradient` rather than a
+   border-style: dashed because we want the dashed pattern only
+   on the bottom 4px (matching C2), not as a full-perimeter dash.
+   ------------------------------------------------------------ */
+.week-heatmap__cell--unknown::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
+  background: repeating-linear-gradient(
+    90deg,
+    var(--color-text-tertiary) 0,
+    var(--color-text-tertiary) 4px,
+    transparent 4px,
+    transparent 8px
+  );
+  opacity: 0.55;
+  pointer-events: none;
+}
+
 .support-coverage-grid {
   display: grid;
   grid-template-columns: minmax(9.5rem, 1.4fr) repeat(var(--coverage-column-count, 5), minmax(5.3rem, 1fr));

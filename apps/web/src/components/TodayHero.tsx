@@ -28,6 +28,23 @@ export interface TodayHeroAction {
   tone: "pending" | "warning" | "analysis" | "provenance" | "success";
 }
 
+/**
+ * Phase γ3 (2026-04-28) — Optional Monday-only eyebrow that absorbs
+ * the prior `MondayResetMoment` standalone banner into the hero
+ * composition. When provided, renders a single tracked-mono row at
+ * the top of `.today-hero__narrative` with the freshness label and
+ * an inline dismiss × that triggers `onDismiss`.
+ *
+ * Phase 4 follow-up (2026-04-28): the standalone `MondayResetMoment`
+ * component has been deleted; the only remaining consumer of the
+ * Monday moment is this eyebrow form. The dismissal contract lives
+ * in the `useMondayMoment` hook (see `apps/web/src/hooks/useMondayMoment.ts`).
+ */
+export interface TodayHeroMondayMoment {
+  label: string;
+  onDismiss: () => void;
+}
+
 interface Props {
   snapshot: TodaySnapshot | null;
   health: ClassroomHealth | null;
@@ -37,6 +54,7 @@ interface Props {
   checkFirstStudents?: string[];
   studentReasons?: Record<string, string>;
   peakBlock?: ComplexityBlock | null;
+  mondayMoment?: TodayHeroMondayMoment | null;
   onCtaClick: () => void;
   onStudentClick?: (studentRef: string) => void;
 }
@@ -50,6 +68,7 @@ export default function TodayHero({
   checkFirstStudents = [],
   studentReasons,
   peakBlock,
+  mondayMoment,
   onCtaClick,
   onStudentClick,
 }: Props) {
@@ -65,6 +84,22 @@ export default function TodayHero({
       data-testid="today-hero"
     >
       <div className="today-hero__narrative">
+        {mondayMoment ? (
+          <p
+            className="today-hero__eyebrow today-hero__eyebrow--fresh-week"
+            data-testid="today-hero-monday-eyebrow"
+          >
+            <span className="today-hero__eyebrow-label">{mondayMoment.label}</span>
+            <button
+              type="button"
+              className="today-hero__eyebrow-dismiss"
+              onClick={mondayMoment.onDismiss}
+              aria-label="Dismiss fresh week eyebrow"
+            >
+              x
+            </button>
+          </p>
+        ) : null}
         <TodayStory snapshot={snapshot} health={health} students={students} />
 
         <p className="today-hero__directive" data-testid="today-hero-directive">

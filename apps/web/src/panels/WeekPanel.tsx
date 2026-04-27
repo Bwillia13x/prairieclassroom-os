@@ -185,7 +185,7 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
       <SectionMarker
         number="02"
         title="Forecasted days"
-        subtitle="Multi-day pressure, event load, and planning rhythm. Use to time the next plan."
+        subtitle="Where the pressure is, where the events are, where the plan should land."
       />
 
       <div id="week-overview" className="week-panel__anchor-target">

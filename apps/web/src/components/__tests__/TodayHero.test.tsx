@@ -294,6 +294,43 @@ describe("TodayHero", () => {
     expect(brodyChip).toBeInTheDocument();
   });
 
+  it("renders a Monday freshness eyebrow with a working dismiss button when mondayMoment is provided", async () => {
+    const user = userEvent.setup();
+    const onDismiss = vi.fn();
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        mondayMoment={{
+          label: "Monday — A fresh week. One calm move opens it.",
+          onDismiss,
+        }}
+        onCtaClick={() => {}}
+      />,
+    );
+    const eyebrow = screen.getByTestId("today-hero-monday-eyebrow");
+    expect(eyebrow).toHaveTextContent(/monday/i);
+    expect(eyebrow).toHaveTextContent(/fresh week/i);
+    await user.click(screen.getByRole("button", { name: /dismiss fresh week eyebrow/i }));
+    expect(onDismiss).toHaveBeenCalledTimes(1);
+  });
+
+  it("hides the Monday eyebrow when mondayMoment is null", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        mondayMoment={null}
+        onCtaClick={() => {}}
+      />,
+    );
+    expect(screen.queryByTestId("today-hero-monday-eyebrow")).not.toBeInTheDocument();
+  });
+
   it("renders a mobile next-move line with the recommended action rationale", () => {
     render(
       <TodayHero

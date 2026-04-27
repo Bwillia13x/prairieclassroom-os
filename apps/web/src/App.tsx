@@ -905,7 +905,9 @@ export default function App() {
                   kbd="⌘K"
                   onClick={() => setPaletteOpen(true)}
                   data-testid="shell-search-trigger"
-                />
+                >
+                  <SectionIcon name="search" />
+                </HeaderAction>
                 <ThemeToggle />
                 <HeaderAction
                   label={

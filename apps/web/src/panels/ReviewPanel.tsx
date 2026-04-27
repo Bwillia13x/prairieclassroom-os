@@ -250,7 +250,7 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
       <SectionMarker
         number="02"
         title="Review lane"
-        subtitle="Approve communications, surface patterns, and audit usage from one workflow."
+        subtitle="What to approve, what to read, what to learn."
       />
 
       <div id="review-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Review tool">

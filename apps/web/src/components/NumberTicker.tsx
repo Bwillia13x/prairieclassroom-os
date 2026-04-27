@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "../hooks/useReducedMotion";
 
 /**
  * NumberTicker — animates a numeric value between transitions.
@@ -46,13 +47,9 @@ export default function NumberTicker({
   const fromRef = useRef(value);
   const startRef = useRef<number | null>(null);
   const rafRef = useRef<number | null>(null);
+  const prefersReduced = useReducedMotion();
 
   useEffect(() => {
-    const prefersReduced =
-      typeof window !== "undefined" &&
-      typeof window.matchMedia === "function" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
     if (prefersReduced || value === displayValue) {
       setDisplayValue(value);
       fromRef.current = value;
@@ -83,7 +80,7 @@ export default function NumberTicker({
     };
     // displayValue is intentionally omitted — using it would restart the
     // tween every frame. fromRef captures the starting point at commit.
-  }, [value, durationMs]);
+  }, [value, durationMs, prefersReduced]);
 
   const formatter = new Intl.NumberFormat(locale, format);
   // When the caller supplies a format, trust it to handle rounding

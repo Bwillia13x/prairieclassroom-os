@@ -18,6 +18,7 @@ export default defineConfig({
       "apps/web/src/hooks/__tests__/**/*.test.tsx",
       "apps/web/src/utils/__tests__/**/*.test.ts",
       "apps/web/src/transports/__tests__/**/*.test.ts",
+      "apps/web/src/styles/__tests__/**/*.test.ts",
     ],
     environment: "node",
     environmentMatchGlobs: [

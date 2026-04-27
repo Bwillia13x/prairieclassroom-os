@@ -297,7 +297,7 @@ export default function OpsPanel({ prefillIntervention }: Props) {
       <SectionMarker
         number="02"
         title="Operational lane"
-        subtitle="Pick the surface that matches the next adult coordination move."
+        subtitle="Log, brief, balance, hand off."
       />
 
       <div id="ops-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Ops tool">

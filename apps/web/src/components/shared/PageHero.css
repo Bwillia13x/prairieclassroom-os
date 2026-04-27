@@ -20,18 +20,32 @@
   border: 1px solid color-mix(in srgb, var(--color-command-border) 75%, transparent);
   border-left: 3px solid var(--page-hero-rule);
   border-radius: var(--radius-md);
-  background:
-    radial-gradient(
-      ellipse 70% 60% at 6% -10%,
-      color-mix(in srgb, var(--page-hero-glow) 4%, transparent),
-      transparent 65%
-    ),
-    var(--color-command-surface);
+  background: var(--color-command-surface);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition:
     border-color var(--motion-base) var(--ease-standard),
     box-shadow var(--motion-base) var(--ease-standard);
+}
+
+/* Phase β2 (2026-04-28) — Atmospheric layering carve-out.
+   The corner glow used to live on the base `.page-hero` background
+   alongside the Classroom lume; the radial dominated the upper-left
+   and the lume read as its tail. Moved to its own `::before` pseudo-
+   element so the variant lume on Classroom (`::after`) composites
+   cleanly above the corner glow with sharp DOM separation. Each
+   variant's own --page-hero-glow color cascades through. */
+.page-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 70% 60% at 6% -10%,
+    color-mix(in srgb, var(--page-hero-glow) 4%, transparent),
+    transparent 65%
+  );
 }
 
 .page-hero::after {
@@ -69,21 +83,25 @@
 
 /* Classroom — the bird's-eye dashboard. This is the one variant
    that earns a second atmospheric moment: a 3% cognac vertical
-   wash layered on top of the standard glow. See the
-   --gradient-classroom-lume token comment in tokens.css and the
-   2026-04-27 Phase A decision-log entry for the carve-out. */
+   wash. Phase β2 (2026-04-28) moved the lume from the base
+   background (where it was bleeding into the corner-glow radial)
+   onto its own `::after` pseudo-element so the two atmospheric
+   layers — corner glow on `::before`, lume on `::after` — composite
+   deterministically without bleeding into each other. The rule
+   below overrides only the bevel-highlight properties on the base
+   `.page-hero::after`; same-specificity source order makes this
+   the winning rule for Classroom. See the --gradient-classroom-lume
+   token in tokens.css and the 2026-04-27 Phase A decision-log entry. */
 .page-hero--classroom {
   --page-hero-rule: color-mix(in srgb, var(--color-brand-highlight) 56%, var(--color-border-strong));
   --page-hero-eyebrow: var(--color-brand-highlight-strong);
   --page-hero-glow: var(--color-brand-highlight);
-  background:
-    var(--gradient-classroom-lume),
-    radial-gradient(
-      ellipse 70% 60% at 6% -10%,
-      color-mix(in srgb, var(--page-hero-glow) 4%, transparent),
-      transparent 65%
-    ),
-    var(--color-command-surface);
+}
+
+.page-hero--classroom::after {
+  background: var(--gradient-classroom-lume);
+  opacity: 1;
+  mix-blend-mode: normal;
 }
 
 .page-hero--prep {
@@ -175,6 +193,29 @@
   letter-spacing: var(--tracking-display-tight);
 }
 
+/* Phase β1 (2026-04-28) — Classroom hero co-composition lifts the
+   eyebrow and lede body to display-lg gravity so they don't feel
+   small under the 59.2px title at desktop. The eyebrow gains 1px
+   and slightly looser tracking; the caption (lede body) lifts to
+   17px / 1.6 line-height so it carries the weight expected of a
+   bird's-eye dashboard. Classroom-only — utility-tier hosts keep
+   the lighter eyebrow + caption defaults so they don't compete
+   with their in-tool typography. */
+/* Specificity note (Phase 1 follow-up, 2026-04-28): the kitchen-sink
+   `.workspace-page [class*="__eyebrow"]` rule in nothing-theme.css is
+   now wrapped in `:where()`, dropping its specificity to (0,0,1). The
+   single-class `.page-hero--classroom .page-hero__eyebrow` at (0,2,0)
+   wins cleanly without the prior duplicated `.workspace-page` selector. */
+.page-hero--classroom .page-hero__eyebrow {
+  font-size: var(--text-xs); /* 12px */
+  letter-spacing: 0.16em;
+}
+
+.page-hero--classroom .page-hero__caption {
+  font-size: var(--text-md); /* 17px */
+  line-height: 1.6;
+}
+
 /* Tomorrow / Prep / Ops / Review — utility-tier hosts. These
    pages frame tool switchers and dense workflow content; the
    hero collapses to display-sm so the type does not compete
@@ -236,15 +277,25 @@
   border: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent);
   /* Phase B2 — destination-tinted 2px bottom underline. The
      `--page-hero-pivot-tint` is set per icon below; default neutral
-     keeps non-temporal pivots from picking up unintended tones. */
-  border-bottom: 2px solid color-mix(in srgb, var(--page-hero-pivot-tint, var(--color-border-strong)) 64%, transparent);
+     keeps non-temporal pivots from picking up unintended tones.
+     Phase γ4 (2026-04-28) — bump dark-mode α from 0.64 → 0.78 via
+     `light-dark()` so the underline carries against the dark
+     workspace floor without losing the calm light-mode tone. The
+     hover state below ramps to full tint (1.0α) over 200ms. */
+  border-bottom: 2px solid light-dark(
+    color-mix(in srgb, var(--page-hero-pivot-tint, var(--color-border-strong)) 64%, transparent),
+    color-mix(in srgb, var(--page-hero-pivot-tint, var(--color-border-strong)) 78%, transparent)
+  );
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text);
   font: inherit;
   text-align: left;
   cursor: pointer;
-  transition: border-color var(--motion-hover) var(--ease-standard),
+  transition: border-top-color var(--motion-hover) var(--ease-standard),
+    border-left-color var(--motion-hover) var(--ease-standard),
+    border-right-color var(--motion-hover) var(--ease-standard),
+    border-bottom-color 200ms var(--ease-out-expo),
     background-color var(--motion-hover) var(--ease-standard),
     box-shadow var(--motion-hover) var(--ease-standard),
     transform var(--motion-fast) var(--ease-press);
@@ -272,12 +323,26 @@
 
 .page-hero__pivot:hover {
   border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
-  border-bottom-color: color-mix(in srgb, var(--page-hero-pivot-tint, var(--color-border-strong)) 92%, transparent);
+  /* Phase γ4 — ramp to full tint (1.0α) on hover so the user senses
+     the destination before clicking. Transition lives on the base
+     rule with 200ms / --ease-out-expo. */
+  border-bottom-color: var(--page-hero-pivot-tint, var(--color-border-strong));
   background: color-mix(in srgb, var(--color-surface) 96%, var(--color-bg-accent));
   box-shadow:
     var(--inner-stroke),
     0 8px 18px -16px color-mix(in srgb, var(--page-hero-pivot-tint, var(--page-hero-eyebrow)) 45%, transparent);
   transform: translateY(-1px);
+}
+
+/* Reduced-motion fallback — skip the underline ramp; hover state
+   still applies (full-tint), it just lands instantly. The other
+   transitions on the pivot keep their original durations because
+   they were already short and the reduced-motion clamp on the
+   global motion stack handles them via `prefers-reduced-motion`. */
+@media (prefers-reduced-motion: reduce) {
+  .page-hero__pivot {
+    transition: none;
+  }
 }
 
 .page-hero__pivot:active {
@@ -489,6 +554,20 @@
 .page-hero__metric.page-hero__metric--lead.page-hero__metric--danger strong,
 .page-hero__pulse-metric.page-hero__metric--lead.page-hero__metric--danger strong {
   border-bottom-color: color-mix(in srgb, var(--color-text-danger) 60%, transparent);
+}
+
+/* Phase β3 (2026-04-28) — Critical-priority lead-metric scale.
+   When a metric group contains a metric with `tone: 'danger'` (or
+   `tone: 'warning'` if no danger group exists), the group's lead
+   figure scales up to a calibrated step above display-sm and the
+   underline thickens from 2px to 3px so the operationally-most-
+   consequential number reads as the page's headline. The TSX
+   helper (`findCriticalGroupIndex`) picks ONE critical group per
+   hero — subsequent critical groups stay at standard scale to
+   avoid a visual "everything is critical" arms race. */
+.page-hero__metric-group--critical .page-hero__metric.page-hero__metric--lead strong {
+  font-size: clamp(2rem, 2vw + 1rem, 2.5rem);
+  border-bottom-width: 3px;
 }
 
 /* ----- Status rows (pulse extension) ----- */

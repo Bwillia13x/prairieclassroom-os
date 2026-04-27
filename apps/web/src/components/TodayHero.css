@@ -84,6 +84,74 @@
   min-width: 0;
 }
 
+/* Phase γ3 (2026-04-28) — Monday-only freshness eyebrow.
+   The hero composition absorbs the start-of-week moment so it reads
+   as part of the hero's voice rather than a disconnected banner
+   between the page intro and the hero. The eyebrow renders only when
+   a `mondayMoment` prop is provided (Mondays + non-dismissed +
+   classroomId present) so the standard composition is unchanged on
+   every other day. The inline × dismisses for the rest of the week.
+
+   Phase 4 follow-up (2026-04-28): the standalone `MondayResetMoment`
+   component (the prior ribbon form) has been deleted; the dismissal
+   contract is single-sourced in `useMondayMoment` and consumed
+   exclusively by this eyebrow today. */
+.today-hero__eyebrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2-5, 0.625rem) 0;
+  padding: 0 var(--space-1);
+  color: color-mix(in srgb, var(--color-text-accent) 78%, var(--color-text-secondary));
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.today-hero__eyebrow-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.today-hero__eyebrow-label::before {
+  content: "";
+  width: 16px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+.today-hero__eyebrow-dismiss {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: 0;
+  border-radius: 1px;
+  background: transparent;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  text-transform: lowercase;
+  cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+
+.today-hero__eyebrow-dismiss:hover {
+  color: var(--color-text);
+}
+
+.today-hero__eyebrow-dismiss:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: 1px;
+}
+
 /* Audit #3: Morning triage directive — tertiary-elevated, second-loudest
    after the narrative lede. NOT a pill/chip — it's a structural
    sentence under the headline. */

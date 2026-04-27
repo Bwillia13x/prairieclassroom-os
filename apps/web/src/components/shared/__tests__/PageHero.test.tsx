@@ -125,4 +125,77 @@ describe("PageHero", () => {
     );
     expect(screen.getByText("+1 this week")).toBeInTheDocument();
   });
+
+  it("marks exactly one critical group when any metric carries danger or warning tone", () => {
+    // Phase β3 (2026-04-28). The danger-bearing group should win over a
+    // warning-only group, and only ONE critical class should be applied
+    // to the hero — extra warning groups stay at standard scale so the
+    // priority signal doesn't collapse into "everything is critical".
+    const { container } = render(
+      <PageHero
+        eyebrow="Classroom"
+        title="Operating dashboard"
+        metricGroups={[
+          {
+            label: "Roster",
+            metrics: [{ value: 26, label: "Students" }],
+          },
+          {
+            label: "Today",
+            metrics: [
+              { value: 20, label: "Threads", tone: "danger" },
+              { value: 25, label: "Open" },
+            ],
+          },
+          {
+            label: "Plan",
+            metrics: [{ value: "2/7", label: "Filed", tone: "warning" }],
+          },
+        ]}
+      />,
+    );
+    const criticalGroups = container.querySelectorAll(
+      ".page-hero__metric-group--critical",
+    );
+    expect(criticalGroups.length).toBe(1);
+    expect(criticalGroups[0]?.textContent).toContain("Today");
+    expect(criticalGroups[0]?.textContent).toContain("20");
+  });
+
+  it("falls back to a warning group when no danger group exists", () => {
+    const { container } = render(
+      <PageHero
+        eyebrow="Tomorrow"
+        title="Stage"
+        metricGroups={[
+          { label: "Plan", metrics: [{ value: 4, label: "Blocks" }] },
+          {
+            label: "Risk",
+            metrics: [{ value: 2, label: "At risk", tone: "warning" }],
+          },
+        ]}
+      />,
+    );
+    const criticalGroups = container.querySelectorAll(
+      ".page-hero__metric-group--critical",
+    );
+    expect(criticalGroups.length).toBe(1);
+    expect(criticalGroups[0]?.textContent).toContain("Risk");
+  });
+
+  it("applies no critical class when every metric is neutral or success", () => {
+    const { container } = render(
+      <PageHero
+        eyebrow="Review"
+        title="Look back"
+        metricGroups={[
+          { label: "Approved", metrics: [{ value: 3, label: "Sent", tone: "success" }] },
+          { label: "Pending", metrics: [{ value: 1, label: "Drafts" }] },
+        ]}
+      />,
+    );
+    expect(
+      container.querySelector(".page-hero__metric-group--critical"),
+    ).toBeNull();
+  });
 });
