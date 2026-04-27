@@ -64,7 +64,7 @@ Each dimension lists: scope, commands, artifacts, pass criteria, current status,
 - **Scope:** Zod schemas in `packages/shared`, branded domain ID types, prompt request/response contracts, migrations table.
 - **Commands:** `npm run test` (vitest covers schema + builder + parser suites), `npm run test:python` (pytest covers inference-side contracts).
 - **Artifacts:** vitest + pytest summaries inside the release-gate log bundle.
-- **Pass:** 2,035 vitest + 69 pytest cases pass; no skipped schema suites; migration `_migrations` table reflects current schema version.
+- **Pass:** 2,054 vitest + 69 pytest cases pass; no skipped schema suites; migration `_migrations` table reflects current schema version.
 - **Answers to:** [architecture.md](architecture.md), [database-schema.md](database-schema.md), [classroom-profile-schema.md](classroom-profile-schema.md).
 
 ### D3. Prompt Class Coverage (13 model-routed classes)
