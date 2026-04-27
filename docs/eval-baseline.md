@@ -5,10 +5,10 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-04-27T19:31:38.188Z
+**Run date:** 2026-04-27T20:18:18.518Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
-**Raw artifacts:** `output/release-gate/2026-04-27T19-29-16-395Z-7383`
+**Raw artifacts:** `output/release-gate/2026-04-27T20-16-11-600Z-24675`
 
 ### Commands
 
