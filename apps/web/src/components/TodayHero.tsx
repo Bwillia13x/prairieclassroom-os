@@ -96,7 +96,7 @@ export default function TodayHero({
               onClick={mondayMoment.onDismiss}
               aria-label="Dismiss fresh week eyebrow"
             >
-              x
+              ×
             </button>
           </p>
         ) : null}

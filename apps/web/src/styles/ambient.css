@@ -20,7 +20,7 @@
                                  logo mark while classrooms load.
 
    Every animation respects `prefers-reduced-motion: reduce` via the
-   blanket override already in motion.css (0.01ms clamp).
+   blanket override in base.css (lines 282–293; 0.01ms clamp).
    ================================================================ */
 
 /* ---------- Shared keyframes ---------- */
@@ -458,8 +458,8 @@
 /* ================================================================
    Reduced-motion fallbacks
    ================================================================
-   motion.css already clamps all animation-duration to 0.01ms when
-   `prefers-reduced-motion: reduce` is set. The aurora-specific
+   base.css (lines 282–293) already clamps all animation-duration to
+   0.01ms when `prefers-reduced-motion: reduce` is set. The aurora-specific
    override here was retired with the aurora itself; what remains
    is the nav-indicator halo stop and a slight calm-down on the
    hero grain overlay so a fully static wash still reads gracefully.
@@ -488,8 +488,8 @@
 
    Reuses `ambient-hero-rise` (defined in section 3) for visual unity
    across both hero families. The blanket reduced-motion override in
-   motion.css clamps duration to 0.01ms so static layout is preserved
-   for users who opt out.
+   base.css (lines 282–293) clamps duration to 0.01ms so static layout
+   is preserved for users who opt out.
    ================================================================ */
 
 .page-hero__lede > * {
@@ -680,8 +680,9 @@
 /* ================================================================
    Reduced-motion fallbacks for sections 6–9 (2026-04-25)
    ================================================================
-   motion.css already clamps `animation-duration: 0.01ms` and
-   `iteration-count: 1` for `prefers-reduced-motion: reduce`, which
+   base.css (lines 282–293) already clamps `animation-duration: 0.01ms`
+   and `animation-iteration-count: 1` for `prefers-reduced-motion: reduce`,
+   which
    collapses the breath, stagger, and invite glow to their resting
    visual states. Press feedback `:active` transforms remain — they
    are user-initiated, not autoplaying, and are essential tactile

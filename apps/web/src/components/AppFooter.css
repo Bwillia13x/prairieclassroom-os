@@ -120,7 +120,7 @@
 .app-footer__toggle {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: var(--space-1-5);
   padding: 0.2rem var(--space-2);
   border: 1px solid transparent;
   border-radius: var(--radius-pill);
@@ -147,7 +147,7 @@
 }
 
 .app-footer__toggle-caret {
-  font-size: 0.7rem;
+  font-size: var(--text-2xs);
   line-height: 1;
   opacity: 0.75;
 }
@@ -225,14 +225,14 @@
 .app-footer__rail-slot {
   display: inline-flex;
   align-items: baseline;
-  gap: 0.4rem;
+  gap: var(--space-1-5);
 }
 
 .app-footer__rail-slot + .app-footer__rail-slot::before {
   /* Bullet separator drawn via pseudo-element so the gap-driven
      layout still applies when slots wrap to a second row on mobile. */
   content: "·";
-  margin-right: 0.4rem;
+  margin-right: var(--space-1-5);
   color: var(--color-text-tertiary);
   opacity: 0.45;
 }

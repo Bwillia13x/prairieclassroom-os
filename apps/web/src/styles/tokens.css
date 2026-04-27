@@ -342,6 +342,7 @@
 
   /* Spacing */
   --space-1: 0.25rem;
+  --space-1-5: 0.375rem; /* 6px — fills the 4→8 gap */
   --space-2: 0.5rem;
   --space-2-5: 0.75rem; /* 12px — fills the 8→16 gap; canonical chip/row padding */
   --space-3: 1rem;

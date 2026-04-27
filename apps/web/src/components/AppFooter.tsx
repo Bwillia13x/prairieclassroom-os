@@ -62,7 +62,11 @@ export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) 
   return (
     <footer className={`app-footer${expanded ? " app-footer--expanded" : ""}`} role="contentinfo">
       {expanded ? (
-        <div className="app-footer__shortcuts" aria-label="Keyboard shortcuts">
+        <div
+          id="app-footer-shortcuts"
+          className="app-footer__shortcuts"
+          aria-label="Keyboard shortcuts"
+        >
           <span className="app-footer__shortcuts-label">Shortcuts</span>
           <div className="app-footer__shortcut-list">
             {TAB_ORDER.map((tab, i) => {
@@ -113,7 +117,7 @@ export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) 
           at least one slot has a value; when classroomId is missing
           we still show the env + version so the build context is
           always legible to teachers, support, and judges. */}
-      <div className="app-footer__rail" role="contentinfo" aria-label="Build context">
+      <div className="app-footer__rail" role="group" aria-label="Build context">
         {classroomId ? (
           <span className="app-footer__rail-slot" data-rail-slot="classroom">
             <span className="app-footer__rail-key">classroom</span>

@@ -192,7 +192,7 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
         <Card variant="flat" className="week-panel__overview" aria-labelledby="week-overview-heading">
           <Card.Body>
             <header className="operating-dashboard__band-header">
-              <h2 id="week-overview-heading">This Week</h2>
+              <h3 id="week-overview-heading">This Week</h3>
               <p>Forecasted days use AI risk levels; schedule- and event-seeded days stay visible for handoff planning.</p>
             </header>
             {dashboard ? (
@@ -251,7 +251,7 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
         <Card variant="flat" className="week-panel__events" aria-labelledby="week-events-heading">
           <Card.Body>
           <header className="operating-dashboard__band-header">
-            <h2 id="week-events-heading">Upcoming events</h2>
+            <h3 id="week-events-heading">Upcoming events</h3>
             <p>Field trips, assemblies, and schedule shifts surfaced from the classroom profile.</p>
           </header>
           {upcomingEvents.length > 0 ? (
@@ -281,7 +281,7 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
         <Card variant="flat" className="week-panel__pressure" aria-labelledby="week-pressure-heading">
           <Card.Body>
           <header className="operating-dashboard__band-header">
-            <h2 id="week-pressure-heading">Planning rhythm & pattern pressure</h2>
+            <h3 id="week-pressure-heading">Planning rhythm & pattern pressure</h3>
             <p>Debt trend and open pattern/followup signal over the last 7-14 days.</p>
           </header>
           <ul className="week-pressure-list">

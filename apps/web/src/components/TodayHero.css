@@ -129,16 +129,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   padding: 0;
   border: 0;
   border-radius: 1px;
   background: transparent;
   color: var(--color-text-tertiary);
   font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  text-transform: lowercase;
+  font-size: var(--text-sm);
+  line-height: 1;
   cursor: pointer;
   transition: color var(--motion-fast) var(--ease-standard);
 }
