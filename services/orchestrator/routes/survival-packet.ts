@@ -6,7 +6,7 @@ import { saveSurvivalPacket } from "../../memory/store.js";
 import {
   buildSurvivalContext,
   getRecentPlans,
-  getRecentInterventions,
+  getRelevantInterventions,
   getLatestPatternReport,
   getRecentFamilyMessages,
   getLatestForecast,
@@ -86,7 +86,21 @@ async function buildSurvivalPacketPayload(
     for (const plan of filterRosterScoped(getRecentPlans(classroom_id, 1), rosterScope)) {
       citations.push(planCitation(plan));
     }
-    for (const record of filterRosterScoped(getRecentInterventions(classroom_id, 10), rosterScope)) {
+    const survivalNotes = Array.isArray(classroom.classroom_notes)
+      ? classroom.classroom_notes
+      : classroom.classroom_notes
+        ? [classroom.classroom_notes]
+        : [];
+    const survivalQuery = [
+      ...survivalNotes,
+      ...(classroom.support_constraints ?? []),
+      ...(classroom.schedule ?? []).map((block) => `${block.time_slot} ${block.activity} ${block.notes ?? ""}`),
+    ].join(" ");
+    for (const record of getRelevantInterventions(classroom_id, {
+      limit: 10,
+      query: survivalQuery,
+      rosterScope,
+    })) {
       citations.push(interventionCitation(record));
     }
     const latestPattern = getLatestPatternReport(classroom_id);

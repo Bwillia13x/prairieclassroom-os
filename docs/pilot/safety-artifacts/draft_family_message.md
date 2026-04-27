@@ -34,7 +34,7 @@ A plain-language family note the teacher can copy into their existing communicat
   - `msg-008-nonlatin-context.json` — non-Latin script handling.
   - `msg-009-persistence.json` — draft + approve round-trip persistence.
   - `msg-010-empty-context.json` — empty context degrades gracefully.
-  - 18 `msg-lang-*` cases across Arabic, French, Punjabi, Tagalog, Ukrainian covering concern / praise / routine tones (status: authored, not yet run on hosted).
+  - 18 `msg-lang-*` cases across Arabic, French, Punjabi, Tagalog, Ukrainian covering concern / praise / routine tones (status: `msg-lang-pa-praise` passed in the latest hosted proof suite; broader multilingual matrix remains authored for a wider hosted sweep).
 - **Prompt file:** `services/orchestrator/family-message.ts`. Safety RULES block at lines 34–44 is explicit on: alias-only, no diagnosis, no clinical language, no "sent" implication, brevity cap, language conformance, observations vs inferences, bare-JSON output.
 - **Schema contract:** `packages/shared/schemas/family-message.ts` — `FamilyMessageDraft` requires `teacher_approved: z.boolean()` and the API response sets it to `false` at draft time.
 - **Approval route:** `services/orchestrator/routes/family-message.ts` — the `/approve` handler flips `teacher_approved=true` only on an explicit POST with the draft id, and the route is teacher-only in the scope matrix.

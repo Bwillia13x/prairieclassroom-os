@@ -179,7 +179,7 @@ npm run release:gate
 If the gate fails because a port is already in use, stop the existing local processes and re-run the command. The gate expects to own `:3200`, `:3100`, and `:5173`.
 
 For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. The checked-in hosted proof is now passing: the curated hosted eval suite passed and the full hosted release gate completed on synthetic/demo data. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present.
-The latest passing hosted artifact is `output/release-gate/2026-04-26T13-28-55-908Z-48591`.
+The latest passing hosted artifact is `output/release-gate/2026-04-27T01-26-45-190Z-87424`.
 
 After a future hosted refresh, only one doc needs to change: edit the `Latest passing hosted gate:` line in `docs/hackathon-proof-brief.md`. `npm run proof:check` derives the canonical artifact from that line and verifies every other proof surface references the same value.
 
@@ -320,7 +320,7 @@ Flask Inference :3200
 
 ## Evaluation
 
-129 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 1,891 TypeScript tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,035 TypeScript tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
 ```bash
 # Run evals (requires orchestrator + inference running)

@@ -480,10 +480,18 @@ describe("callInference", () => {
     const secondBody = JSON.parse(fetchMock.mock.calls[1][1].body as string);
     expect(firstBody.tools[0].name).toBe("lookup_curriculum_outcome");
     expect(secondBody.tools).toBeUndefined();
-    expect(secondBody.tool_interactions).toBeUndefined();
-    expect(secondBody.prompt).toContain("TOOL RESULTS:");
-    expect(secondBody.prompt).toContain("lookup_curriculum_outcome");
-    expect(secondBody.prompt).toContain("ab-math-3");
+    expect(secondBody.tool_interactions).toEqual([
+      expect.objectContaining({
+        tool_call_id: "call_curriculum_1",
+        tool_name: "lookup_curriculum_outcome",
+        executed: true,
+        result: expect.objectContaining({
+          matched: true,
+          matches: expect.arrayContaining([expect.objectContaining({ entry_id: "ab-math-3" })]),
+        }),
+      }),
+    ]);
+    expect(secondBody.prompt).not.toContain("TOOL RESULTS:");
     expect(result.text).toBe("{\"ok\":true}");
     expect(result.tool_calls[0]).toMatchObject({
       tool_call_id: "call_curriculum_1",
@@ -495,6 +503,7 @@ describe("callInference", () => {
     expect(result.total_tokens).toBe(41);
     expect(getRequestContext(res).latency_ms).toBe(12);
     expect(getRequestContext(res).debug_prompt_body).toContain("TOOL RESULTS:");
+    expect(getRequestContext(res).debug_prompt_body).toContain("ab-math-3");
   });
 
   it("does not retry invalid inference JSON", async () => {
@@ -609,7 +618,18 @@ describe("callInferenceStream", () => {
     const secondBody = JSON.parse(fetchMock.mock.calls[1][1].body as string);
     expect(firstBody.tools[0].name).toBe("lookup_curriculum_outcome");
     expect(secondBody.tools).toBeUndefined();
-    expect(secondBody.prompt).toContain("TOOL RESULTS:");
+    expect(secondBody.tool_interactions).toEqual([
+      expect.objectContaining({
+        tool_call_id: "call_curriculum_1",
+        tool_name: "lookup_curriculum_outcome",
+        executed: true,
+        result: expect.objectContaining({
+          matched: true,
+          matches: expect.arrayContaining([expect.objectContaining({ entry_id: "ab-math-3" })]),
+        }),
+      }),
+    ]);
+    expect(secondBody.prompt).not.toContain("TOOL RESULTS:");
     expect(emit).toHaveBeenCalledWith({
       type: "thinking",
       text: "\nCross-checking classroom memory…",

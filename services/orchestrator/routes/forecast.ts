@@ -6,7 +6,7 @@ import { saveForecast } from "../../memory/store.js";
 import {
   getLatestForecast,
   buildForecastContext,
-  getRecentInterventions,
+  getRelevantInterventions,
   getFollowUpPending,
   getLatestPatternReport,
 } from "../../memory/retrieve.js";
@@ -76,7 +76,11 @@ async function buildForecastPayload(
     forecastCtx = buildForecastContext(classroom_id, rosterScope);
     // Mirror the records buildForecastContext pulls so the response trace
     // matches what was actually injected into the prompt.
-    for (const record of filterRosterScoped(getRecentInterventions(classroom_id, 5), rosterScope)) {
+    for (const record of getRelevantInterventions(classroom_id, {
+      limit: 5,
+      query: "forecast schedule transition morning afternoon lunch recess math literacy follow up",
+      rosterScope,
+    })) {
       if (seenInterventionIds.has(record.record_id)) continue;
       seenInterventionIds.add(record.record_id);
       citations.push(interventionCitation(record));

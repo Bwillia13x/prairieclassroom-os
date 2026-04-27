@@ -4,7 +4,7 @@ import { buildEALoadPrompt, parseEALoadResponse } from "../ea-load.js";
 import type { EALoadInput } from "../ea-load.js";
 import {
   buildForecastContext,
-  getRecentInterventions,
+  getRelevantInterventions,
   getFollowUpPending,
   getLatestPatternReport,
 } from "../../memory/retrieve.js";
@@ -75,7 +75,11 @@ async function buildEALoadPayload(
   try {
     loadCtx = buildForecastContext(classroom_id, rosterScope);
     // Mirror buildForecastContext's citable retrievals.
-    for (const record of filterRosterScoped(getRecentInterventions(classroom_id, 5), rosterScope)) {
+    for (const record of getRelevantInterventions(classroom_id, {
+      limit: 5,
+      query: "forecast schedule transition morning afternoon lunch recess math literacy follow up",
+      rosterScope,
+    })) {
       if (seenInterventionIds.has(record.record_id)) continue;
       seenInterventionIds.add(record.record_id);
       citations.push(interventionCitation(record));

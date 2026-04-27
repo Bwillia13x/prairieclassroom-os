@@ -1,8 +1,10 @@
 import { useState } from "react";
 import type { CurriculumSelection, VocabCardsResponse } from "../types";
 import CurriculumPicker from "./CurriculumPicker";
+import OutputMetaRow from "./OutputMetaRow";
 import PrintButton from "./PrintButton";
 import { FormCard } from "./shared";
+import { buildModelMetaItems } from "./buildModelMetaItems";
 import "./VocabCardGrid.css";
 
 interface Props {
@@ -144,6 +146,10 @@ export default function VocabCardGrid({
               {result.card_set.subject} · {LANGUAGE_OPTIONS.find((l) => l.code === result.card_set.target_language)?.label ?? result.card_set.target_language}
             </span>
           </div>
+          <OutputMetaRow
+            compact
+            items={buildModelMetaItems(result)}
+          />
 
           <div className="cards-grid">
             {result.card_set.cards.map((card, i) => (

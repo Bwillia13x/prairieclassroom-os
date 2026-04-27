@@ -18,6 +18,69 @@ import {
   type RosterScope,
 } from "./roster-scope.js";
 
+const RETRIEVAL_STOP_WORDS = new Set([
+  "the", "and", "for", "with", "that", "this", "from", "into", "have", "has",
+  "had", "was", "were", "are", "you", "your", "today", "tomorrow", "student",
+  "students", "class", "classroom",
+]);
+
+export interface RelevantInterventionOptions {
+  limit?: number;
+  candidateLimit?: number;
+  query?: string;
+  studentRefs?: string[];
+  rosterScope?: RosterScope;
+}
+
+function tokenizeRetrievalText(value: string): Set<string> {
+  const tokens = value
+    .toLowerCase()
+    .match(/[\p{L}\p{N}]+/gu) ?? [];
+  return new Set(tokens.filter((token) => token.length >= 3 && !RETRIEVAL_STOP_WORDS.has(token)));
+}
+
+function interventionRetrievalText(record: InterventionRecord): string {
+  return [
+    ...record.student_refs,
+    record.observation,
+    record.action_taken,
+    record.outcome ?? "",
+    record.follow_up_needed ? "follow up needed" : "",
+  ].join(" ");
+}
+
+function scoreInterventionRelevance(
+  record: InterventionRecord,
+  queryTokens: Set<string>,
+  studentRefs: Set<string>,
+): number {
+  let score = record.follow_up_needed ? 8 : 0;
+  for (const studentRef of record.student_refs) {
+    if (studentRefs.has(studentRef.toLowerCase())) score += 6;
+  }
+  if (queryTokens.size > 0) {
+    const recordTokens = tokenizeRetrievalText(interventionRetrievalText(record));
+    for (const token of queryTokens) {
+      if (recordTokens.has(token)) score += 3;
+    }
+  }
+  return score;
+}
+
+function sortInterventionsByRelevance(
+  records: InterventionRecord[],
+  options: RelevantInterventionOptions,
+): InterventionRecord[] {
+  const queryTokens = tokenizeRetrievalText(options.query ?? "");
+  const studentRefs = new Set((options.studentRefs ?? []).map((ref) => ref.toLowerCase()));
+  return [...records].sort((a, b) => {
+    const scoreDiff = scoreInterventionRelevance(b, queryTokens, studentRefs)
+      - scoreInterventionRelevance(a, queryTokens, studentRefs);
+    if (scoreDiff !== 0) return scoreDiff;
+    return Date.parse(b.created_at ?? "") - Date.parse(a.created_at ?? "");
+  });
+}
+
 export function getRecentPlans(classroomId: ClassroomId, limit = 5): TomorrowPlan[] {
   const db = getDb(classroomId);
   const rows = db.prepare(`
@@ -135,6 +198,26 @@ export function getRecentInterventions(classroomId: ClassroomId, limit = 5, stud
   return rows.map((r) => safeParseJson<InterventionRecord>(r.record_json, "intervention")).filter((rec): rec is InterventionRecord => rec !== null);
 }
 
+export function getRelevantInterventions(
+  classroomId: ClassroomId,
+  options: RelevantInterventionOptions = {},
+): InterventionRecord[] {
+  const limit = Math.max(1, Math.min(options.limit ?? 5, 50));
+  const candidateLimit = Math.max(limit, Math.min(options.candidateLimit ?? Math.max(limit * 4, 20), 100));
+  const db = getDb(classroomId);
+  const rows = db.prepare(`
+    SELECT record_json FROM interventions
+    WHERE classroom_id = ?
+    ORDER BY created_at DESC
+    LIMIT ?
+  `).all(classroomId, candidateLimit) as { record_json: string }[];
+  const records = rows
+    .map((r) => safeParseJson<InterventionRecord>(r.record_json, "relevant-intervention"))
+    .filter((rec): rec is InterventionRecord => rec !== null)
+    .filter((rec) => isRosterScopedValue(rec, options.rosterScope));
+  return sortInterventionsByRelevance(records, options).slice(0, limit);
+}
+
 export function summarizeRecentInterventions(records: InterventionRecord[]): string {
   if (records.length === 0) return "";
 
@@ -191,7 +274,12 @@ export function buildPatternContext(
 
   const interventions = studentRef
     ? getStudentInterventions(classroomId, studentRef, windowSize)
-    : getRecentInterventions(classroomId, windowSize);
+    : getRelevantInterventions(classroomId, {
+      limit: windowSize,
+      candidateLimit: Math.max(windowSize * 4, 20),
+      query: "support pattern follow up transition confidence independence scaffold",
+      rosterScope,
+    });
   const scopedInterventions = filterRosterScoped(interventions, rosterScope);
 
   if (scopedInterventions.length > 0) {
@@ -328,7 +416,11 @@ export function buildEABriefingContext(classroomId: ClassroomId, rosterScope?: R
     }
   }
 
-  const recent = filterRosterScoped(getRecentInterventions(classroomId, 5), rosterScope);
+  const recent = getRelevantInterventions(classroomId, {
+    limit: 5,
+    query: "ea briefing support priority schedule transition follow up",
+    rosterScope,
+  });
   if (recent.length > 0) {
     lines.push("");
     lines.push("RECENT INTERVENTIONS:");
@@ -426,7 +518,11 @@ export function buildForecastContext(classroomId: ClassroomId, rosterScope?: Ros
   }
 
   // Recent interventions for context
-  const recent = filterRosterScoped(getRecentInterventions(classroomId, 5), rosterScope);
+  const recent = getRelevantInterventions(classroomId, {
+    limit: 5,
+    query: "forecast schedule transition morning afternoon lunch recess math literacy follow up",
+    rosterScope,
+  });
   if (recent.length > 0) {
     lines.push("");
     lines.push("MOST RECENT INTERVENTIONS:");
@@ -1001,7 +1097,21 @@ export function buildSurvivalContext(
   }
 
   // 6. RECENT INTERVENTIONS
-  const interventions = filterRosterScoped(getRecentInterventions(classroomId, 10), rosterScope);
+  const survivalNotes = Array.isArray(classroom.classroom_notes)
+    ? classroom.classroom_notes
+    : classroom.classroom_notes
+      ? [classroom.classroom_notes]
+      : [];
+  const survivalQuery = [
+    ...survivalNotes,
+    ...(classroom.support_constraints ?? []),
+    ...(classroom.schedule ?? []).map((block) => `${block.time_slot} ${block.activity} ${block.notes ?? ""}`),
+  ].join(" ");
+  const interventions = getRelevantInterventions(classroomId, {
+    limit: 10,
+    query: survivalQuery,
+    rosterScope,
+  });
   if (interventions.length > 0) {
     lines.push("");
     lines.push("RECENT INTERVENTIONS:");

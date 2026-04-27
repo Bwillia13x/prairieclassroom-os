@@ -5,7 +5,7 @@ import type { EABriefingInput } from "../ea-briefing.js";
 import {
   buildEABriefingContext,
   getRecentPlans,
-  getRecentInterventions,
+  getRelevantInterventions,
   getFollowUpPending,
   getLatestPatternReport,
 } from "../../memory/retrieve.js";
@@ -74,7 +74,11 @@ async function buildEABriefingPayload(
       seenInterventionIds.add(record.record_id);
       citations.push(interventionCitation(record));
     }
-    for (const record of filterRosterScoped(getRecentInterventions(classroom_id, 5), rosterScope)) {
+    for (const record of getRelevantInterventions(classroom_id, {
+      limit: 5,
+      query: "ea briefing support priority schedule transition follow up",
+      rosterScope,
+    })) {
       if (seenInterventionIds.has(record.record_id)) continue;
       seenInterventionIds.add(record.record_id);
       citations.push(interventionCitation(record));

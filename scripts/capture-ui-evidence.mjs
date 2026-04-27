@@ -6,6 +6,15 @@ import { chromium } from "playwright";
 
 const WEB_BASE = process.env.PRAIRIE_WEB_BASE ?? "http://localhost:5173";
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+const FRACTIONS_WORKSHEET = `Fractions Review Worksheet
+
+1. Circle the larger fraction: 1/4 or 1/3?
+2. Show 2/3 on the number line below.
+3. Solve: 1/2 + 1/4 = ___
+4. Write a fraction that is equal to 1/2.`;
+const DIFFERENTIATION_GOAL = "Support Amira and Daniyal with EAL language scaffolds, keep Elena concrete with manipulatives, and add extension for Chantal.";
+const TOMORROW_REFLECTION = "The visual timer helped Brody transition during math. Elena was more confident with fraction strips. Tomorrow's math block comes after lunch and the EA is only available in the morning.";
+const FAMILY_MESSAGE_CONTEXT = "Amira finished her reading block with strong effort and used her vocabulary card independently.";
 const ROOT_OUTPUT_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",
@@ -64,6 +73,62 @@ async function captureDesktopTab(page, tab, filename, tool = null) {
   });
   await page.waitForSelector(`#panel-${tab}:not([hidden])`);
   await page.screenshot({ path: filename, fullPage: true });
+}
+
+async function gotoPanel(page, tab, tool = null) {
+  const params = new URLSearchParams({
+    demo: "true",
+    tab,
+    classroom: DEMO_CLASSROOM_ID,
+  });
+  if (tool) params.set("tool", tool);
+  await page.goto(`${WEB_BASE}/?${params.toString()}`, {
+    waitUntil: "networkidle",
+  });
+  await page.waitForSelector(`#panel-${tab}:not([hidden])`);
+}
+
+async function captureDifferentiatedOutput(page, filename) {
+  await gotoPanel(page, "prep", "differentiate");
+  await page.getByRole("tab", { name: /Paste/i }).click();
+  await page.getByLabel(/Artifact title/i).fill("Fractions Review Worksheet");
+  await page.getByLabel(/^Subject$/i).fill("Math");
+  await page.locator("#raw-text").fill(FRACTIONS_WORKSHEET);
+  await page.getByLabel(/Instructional focus/i).fill(DIFFERENTIATION_GOAL);
+  await page.getByRole("button", { name: /Generate variants/i }).click();
+  await page.getByText(/variants generated/i).first().waitFor({ timeout: 30_000 });
+  await page.locator(".variant-grid-wrapper").scrollIntoViewIfNeeded();
+  await page.screenshot({ path: filename, fullPage: true });
+}
+
+async function captureTomorrowPlanSources(page, filename) {
+  await gotoPanel(page, "tomorrow", "tomorrow-plan");
+  await page.getByLabel(/Today's reflection/i).fill(TOMORROW_REFLECTION);
+  await page.getByLabel(/Tomorrow's intention/i).fill("Use the timer win without overloading the afternoon block.");
+  await page.getByTestId("generate-tomorrow-plan-submit").click();
+  await page.getByText(/Plan generated/i).first().waitFor({ timeout: 45_000 });
+  const traceSummary = page.locator(".retrieval-trace__summary").first();
+  if (await traceSummary.count()) {
+    await traceSummary.click();
+    await page.locator(".retrieval-trace").first().scrollIntoViewIfNeeded();
+  } else {
+    await page.locator(".plan-viewer").first().scrollIntoViewIfNeeded();
+  }
+  await page.screenshot({ path: filename, fullPage: true });
+}
+
+async function captureFamilyApproval(page, filename) {
+  await gotoPanel(page, "review", "family-message");
+  await page.getByRole("checkbox", { name: "Amira" }).check();
+  await page.getByLabel(/Message type/i).selectOption("praise");
+  await page.getByLabel(/Language/i).selectOption("pa");
+  await page.getByLabel(/Context/i).fill(FAMILY_MESSAGE_CONTEXT);
+  await page.getByRole("button", { name: /Draft family message/i }).click();
+  await page.getByText(/Message drafted/i).first().waitFor({ timeout: 30_000 });
+  await page.getByRole("button", { name: /Review approval/i }).click();
+  await page.getByRole("dialog", { name: /Review approval/i }).waitFor({ timeout: 10_000 });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: filename, fullPage: true, animations: "disabled" });
 }
 
 async function main() {
@@ -129,21 +194,10 @@ async function main() {
   });
 
   try {
-    const captures = [
-      { tab: "today", tool: null, filename: "today-desktop.png" },
-      { tab: "prep", tool: "differentiate", filename: "differentiate-desktop.png" },
-      { tab: "tomorrow", tool: "tomorrow-plan", filename: "tomorrow-plan-desktop.png" },
-      { tab: "review", tool: "family-message", filename: "family-message-desktop.png" },
-    ];
-
-    for (const capture of captures) {
-      await captureDesktopTab(
-        desktopPage,
-        capture.tab,
-        path.join(runDir, capture.filename),
-        capture.tool,
-      );
-    }
+    await captureDesktopTab(desktopPage, "today", path.join(runDir, "today-desktop.png"));
+    await captureDifferentiatedOutput(desktopPage, path.join(runDir, "differentiate-desktop.png"));
+    await captureTomorrowPlanSources(desktopPage, path.join(runDir, "tomorrow-plan-desktop.png"));
+    await captureFamilyApproval(desktopPage, path.join(runDir, "family-message-desktop.png"));
 
     const tabletParams = new URLSearchParams({
       demo: "true",

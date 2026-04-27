@@ -13,7 +13,7 @@ import {
 } from "../proof-bump.mjs";
 
 const OLD_ID = "2026-04-25T17-52-51-834Z-9428";
-const NEW_ID = "2026-04-26T13-28-55-908Z-48591";
+const NEW_ID = "2026-04-27T01-26-45-190Z-87424";
 
 async function seedFile(rootDir, relPath, content) {
   const filePath = path.join(rootDir, relPath);
@@ -47,14 +47,14 @@ async function seedReleaseGateRun(rootDir, runId, summary) {
 
 describe("isValidArtifactId", () => {
   it("accepts the canonical release-gate artifact format", () => {
-    assert.equal(isValidArtifactId("2026-04-26T13-28-55-908Z-48591"), true);
+    assert.equal(isValidArtifactId("2026-04-27T01-26-45-190Z-87424"), true);
   });
 
   it("rejects malformed inputs", () => {
     assert.equal(isValidArtifactId(""), false);
     assert.equal(isValidArtifactId("not-an-id"), false);
     assert.equal(isValidArtifactId("2026-04-26"), false);
-    assert.equal(isValidArtifactId("output/release-gate/2026-04-26T13-28-55-908Z-48591"), false);
+    assert.equal(isValidArtifactId("output/release-gate/2026-04-27T01-26-45-190Z-87424"), false);
     assert.equal(isValidArtifactId(null), false);
     assert.equal(isValidArtifactId(undefined), false);
   });
@@ -62,7 +62,7 @@ describe("isValidArtifactId", () => {
 
 describe("dateFromArtifactId", () => {
   it("extracts the YYYY-MM-DD date prefix", () => {
-    assert.equal(dateFromArtifactId(NEW_ID), "2026-04-26");
+    assert.equal(dateFromArtifactId(NEW_ID), "2026-04-27");
   });
 
   it("returns null for malformed inputs", () => {
@@ -125,7 +125,7 @@ describe("bumpCanonicalArtifact", () => {
         const content = await readFile(path.join(rootDir, relPath), "utf8");
         assert.match(content, new RegExp(NEW_ID), `${relPath} should contain new id`);
         assert.doesNotMatch(content, new RegExp(OLD_ID), `${relPath} should not contain old id`);
-        assert.match(content, /2026-04-26-gemini/, `${relPath} should contain new date folder`);
+        assert.match(content, /2026-04-27-gemini/, `${relPath} should contain new date folder`);
         assert.doesNotMatch(content, /2026-04-25-gemini/, `${relPath} should not contain old date folder`);
       }
     } finally {

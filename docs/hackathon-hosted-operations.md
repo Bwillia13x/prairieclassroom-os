@@ -12,11 +12,11 @@ This document is the operator source of truth for the hosted Gemma 4 hackathon l
 ## Current Proof Status
 
 - Hosted Gemini proof lane: passing on the API-key-only synthetic/demo lane
-- Hosted Gemini eval suite: passed (`12/12` curated cases)
+- Hosted Gemini eval suite: passed (`13/13` curated cases) for the latest checked-in artifact, including the Punjabi family-message equity case
 - Full `release:gate:gemini`: passed
-- Latest passing gate artifact: `output/release-gate/2026-04-26T13-28-55-908Z-48591`
-- Latest passing eval summary: `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-summary.json`
-- Latest failure summary contains only the Ollama host-preflight artifact, not a hosted Gemini route failure.
+- Latest passing gate artifact: `output/release-gate/2026-04-27T01-26-45-190Z-87424`
+- Latest passing eval summary: `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-summary.json`
+- Hosted eval failure ledger: `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-failure-summary.json` contains only the separate Ollama host-preflight block; hosted Gemini validation, transport, timeout, parse, schema, and retrieval failure groups are empty.
 - Hosted reruns remain opt-in and synthetic/demo-only
 
 ## Hosted Models

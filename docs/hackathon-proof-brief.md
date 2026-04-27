@@ -4,7 +4,7 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 
 ## Current State
 
-- **Mock gate:** green at `output/release-gate/2026-04-25T02-31-26-869Z-92725`
+- **Mock gate:** green at `output/release-gate/2026-04-27T01-59-30-481Z-36219`
 - **Hosted Gemini proof lane:** passing on the API-key-only synthetic/demo lane
 - **Ollama privacy-first lane:** blocked on host capability on the current machine
 - **Paid Vertex lane:** intentionally not run in the zero-cost sprint
@@ -13,21 +13,23 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 
 - **Models used:** `gemma-4-26b-a4b-it` (live), `gemma-4-31b-it` (planning)
 - **Hosted readycheck:** passed with the supplied AI Studio key and explicit run guard
-- **Curated hosted eval suite:** `12/12` passed
-- **Full hosted release gate:** passed at `output/release-gate/2026-04-26T13-28-55-908Z-48591`
-- **Hosted eval failure ledger:** the latest generated failure summary records only the Ollama host-preflight artifact and no hosted Gemini route failures.
+- **Curated hosted eval suite:** `13/13` passed for the latest checked-in artifact, including the Punjabi family-message equity case
+- **Gemma-native coverage:** the hosted proof suite includes worksheet image extraction, route-scoped tool calling, and multilingual family-message generation on synthetic/demo data
+- **Full hosted release gate:** passed at `output/release-gate/2026-04-27T01-26-45-190Z-87424`
+- **Hosted eval failure ledger:** `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-failure-summary.json` contains only the separate Ollama host-preflight block; hosted Gemini validation, transport, timeout, parse, schema, and retrieval failure groups are empty.
 - **What this proves:** real hosted Gemma 4 execution on synthetic/demo classroom data for the curated proof suite, API smoke, and browser smoke without enabling the paid Vertex lane or any rented GPU path
 
 ## Artifact Trail
 
 - **Provider truth source:** `docs/eval-baseline.md`
-- **Latest passing mock gate:** `output/release-gate/2026-04-25T02-31-26-869Z-92725`
-- **Latest mock gate summary:** `output/release-gate/2026-04-25T02-31-26-869Z-92725/summary.json`
-- **Latest passing hosted gate:** `output/release-gate/2026-04-26T13-28-55-908Z-48591`
-- **Hosted release summary:** `output/release-gate/2026-04-26T13-28-55-908Z-48591/summary.json`
-- **Hosted eval summary:** `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-summary.json`
-- **Hosted eval artifacts:** `output/evals/2026-04-26-gemini`
-- **Hosted eval failure summary:** `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-failure-summary.json`
+- **Latest passing mock gate:** `output/release-gate/2026-04-27T01-59-30-481Z-36219`
+- **Latest mock gate summary:** `output/release-gate/2026-04-27T01-59-30-481Z-36219/summary.json`
+- **Latest passing hosted gate:** `output/release-gate/2026-04-27T01-26-45-190Z-87424`
+- **Hosted release summary:** `output/release-gate/2026-04-27T01-26-45-190Z-87424/summary.json`
+- **Hosted eval summary:** `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-summary.json`
+- **Hosted eval artifacts:** `output/evals/2026-04-27-gemini`
+- **Hosted eval failure ledger:** `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-failure-summary.json`
+- **Ollama host-preflight failure summary:** `output/host-preflight/2026-04-12T16-10-14-124Z-failure-summary.json`
 
 ## Privacy Boundary
 

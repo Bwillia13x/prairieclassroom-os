@@ -6,7 +6,7 @@ import { savePatternReport } from "../../memory/store.js";
 import {
   buildPatternContext,
   getLatestPatternReport,
-  getRecentInterventions,
+  getRelevantInterventions,
   getStudentInterventions,
   getRecentPlans,
   getFollowUpPending,
@@ -93,7 +93,12 @@ async function buildSupportPatternsPayload(
     const interventions = filterRosterScoped(
       student_filter
         ? getStudentInterventions(classroom_id, student_filter, window)
-        : getRecentInterventions(classroom_id, window),
+        : getRelevantInterventions(classroom_id, {
+          limit: window,
+          candidateLimit: Math.max(window * 4, 20),
+          query: "support pattern follow up transition confidence independence scaffold",
+          rosterScope,
+        }),
       rosterScope,
     );
     for (const record of interventions) {

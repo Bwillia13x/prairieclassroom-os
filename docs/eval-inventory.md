@@ -2,17 +2,17 @@
 
 Reference document for all eval cases in `evals/cases/`.
 
-Generated: 2026-04-24
+Generated: 2026-04-27
 
 ---
 
 ## Summary Statistics
 
-**Total eval case files:** 129 JSON cases (plus 1 README)
+**Total eval case files:** 134 JSON cases (plus 1 README)
 
 *Updated 2026-04-10: +6 prompt injection cases (int-007, ea-007, fcst-006, decay-006, simp-005, vocab-004). Category `safety_boundaries` standardized to `safety_correctness` across all cases.*
 
-*Updated 2026-04-12: +18 bilingual `draft_family_message` cases (`msg-lang-*`) covering Punjabi, Tagalog, Mandarin, French, Arabic, and Ukrainian across three message types each. Authoring-only — intended to run on the next hosted-Gemini refresh; mock-mode validation continues to pass because mock fixtures respond uniformly across target languages.*
+*Updated 2026-04-12: +18 bilingual `draft_family_message` cases (`msg-lang-*`) covering Punjabi, Tagalog, Mandarin, French, Arabic, and Ukrainian across three message types each. The latest hosted-Gemini proof suite includes `msg-lang-pa-praise`; the broader 18-case multilingual matrix remains authored for a wider hosted sweep. Mock-mode validation continues to pass because mock fixtures respond uniformly across target languages.*
 
 *Updated 2026-04-12: +3 `balance_ea_load` cases (`eal-001-schema`, `eal-002-safety`, `eal-003-prompt-injection`) shipped with the EA Cognitive Load Balancer prompt class.*
 

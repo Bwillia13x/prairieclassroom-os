@@ -65,7 +65,7 @@ describe("isBlockedHostedSection", () => {
   });
 
   it("returns false when the section is a Passing status block", () => {
-    const md = "## Hosted Gemini API Baseline\n\n**Status:** Passing baseline — 12/12 evals passed.";
+    const md = "## Hosted Gemini API Baseline\n\n**Status:** Passing baseline — 13/13 evals passed.";
     assert.equal(isBlockedHostedSection(md), false);
   });
 

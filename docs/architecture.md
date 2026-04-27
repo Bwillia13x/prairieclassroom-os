@@ -78,8 +78,9 @@ Hosted Gemini uses different model IDs than local targets because Google AI Stud
 |---|---|---|---|
 | `differentiate_material` | `lookup_curriculum_outcome(grade, subject, keyword)` | Local Alberta curriculum catalog | Curriculum grounding only |
 | `prepare_tomorrow_plan` | `query_intervention_history(student_ref, days, limit)` | Active classroom SQLite memory | Observational intervention history only |
+| `detect_support_patterns` | `query_intervention_history(student_ref, days, limit)` | Active classroom SQLite memory | Roster-checked observational history only |
 
-The Python inference service forwards tool definitions to Gemini API, Ollama, and Vertex/OpenAI-compatible payloads, and returns model-emitted tool calls to the TypeScript orchestrator. The orchestrator executes the JavaScript tool implementation and asks for a final JSON response in a follow-up turn.
+The Python inference service forwards tool definitions to Gemini API, Ollama, and Vertex/OpenAI-compatible payloads, and returns model-emitted tool calls to the TypeScript orchestrator. The orchestrator executes the JavaScript tool implementation and asks for a final JSON response in a follow-up turn using provider-native tool-result history; request logs retain a bounded `TOOL RESULTS` debug prompt for audit readability.
 
 ### 4. Memory layer
 
@@ -103,9 +104,12 @@ Per-classroom SQLite databases (`services/memory/`) with WAL mode for concurrenc
 All tables indexed on `(classroom_id, created_at)`. Student-specific tables add `student_ref` to the index.
 
 **Retrieval functions** (`retrieve.ts`) provide clean interfaces for the orchestrator:
-- `getRecentPlans()`, `getRecentInterventions()`, `getRecentPatternReports()` — feed context into planning-tier prompts
+- `getRecentPlans()`, `getRecentInterventions()`, `getRecentPatternReports()` — serve chronological history and citable records
+- `getRelevantInterventions()` — deterministically ranks local intervention memory by student alias match, query-token overlap, follow-up status, and recency before injecting context into planning and briefing prompts
 - `buildDebtRegister()` — computes the complexity debt register deterministically from memory state
 - `getLatestForecast()`, `getLatestPlan()` — power the Today panel
+
+This is local, deterministic retrieval over SQLite records; it is not an EmbeddingGemma or semantic-vector proof unless a future embedding adapter and hosted/local artifact are added.
 
 ### 5. Prompt class routing layer
 

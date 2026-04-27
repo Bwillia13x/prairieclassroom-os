@@ -186,7 +186,7 @@ Proof state from the repository:
 - 6 planning classes.
 - 1 deterministic debt register.
 - Hosted Gemma proof lane passing on synthetic/demo data.
-- Hosted curated eval suite: 12/12 passed.
+- Hosted curated eval suite: 13/13 passed.
 - Final baseline eval report: 42/42 passing.
 - Reliability evidence analyzed 6,298 requests across 8 log files.
 
@@ -324,4 +324,3 @@ Option 2:
 Option 3:
 
 "The promise is not artificial intelligence replacing professional judgment. The promise is professional judgment with better memory, better timing, and less invisible load."
-

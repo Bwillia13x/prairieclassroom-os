@@ -31,6 +31,8 @@ PrairieClassroom OS uses Gemma 4 as the reasoning and generation layer, not as a
 
 **Selective thinking.** Thinking is enabled only for planning-tier workflows where it adds value: synthesizing across classroom memory, follow-up debt, schedules, and previous records. The system does not over-reason fast classroom actions that need to stay operational.
 
+**Function calling with local tools.** Gemma 4 can call bounded local tools for Alberta curriculum lookup and roster-checked intervention history; the orchestrator executes those tools and returns provider-native tool-result history before the final structured response.
+
 For the competition proof lane, the project uses hosted Gemma 4 through the Gemini API on synthetic/demo data only:
 
 - live tier: `gemma-4-26b-a4b-it`
@@ -68,13 +70,13 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 
 The repo has a current artifact-backed proof story:
 
-- **Mock structural gate:** passing at `output/release-gate/2026-04-25T02-31-26-869Z-92725`.
-- **Hosted Gemma 4 release gate:** passing on synthetic/demo data at `output/release-gate/2026-04-26T13-28-55-908Z-48591`.
+- **Mock structural gate:** passing at `output/release-gate/2026-04-27T01-59-30-481Z-36219`.
+- **Hosted Gemma 4 release gate:** passing on synthetic/demo data at `output/release-gate/2026-04-27T01-26-45-190Z-87424`.
 - **Hosted Gemini proof lane:** passing baseline; the full hosted release gate passed via `npm run release:gate:gemini`.
-- **Hosted proof eval summary:** `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-summary.json`.
-- **Hosted eval result:** 12/12 curated hosted proof cases passed.
-- **Full eval corpus:** 129 checked-in eval case files.
-- **Current unit coverage in latest mock gate:** 1,891 TypeScript/Vitest tests and 69 Python tests passed.
+- **Hosted proof eval summary:** `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-summary.json`.
+- **Hosted eval result:** 13/13 curated hosted proof cases passed in the latest checked-in hosted artifact, including the Punjabi family-message equity case.
+- **Full eval corpus:** 134 checked-in eval case files.
+- **Current unit coverage in latest mock gate:** 2,035 TypeScript/Vitest tests and 69 Python tests passed.
 - **Canonical inventory:** `docs/system-inventory.md` and `docs/api-surface.md`.
 - **Provider proof source:** `docs/eval-baseline.md`.
 - **Concise judge proof brief:** `docs/hackathon-proof-brief.md`.
@@ -109,6 +111,6 @@ PrairieClassroom OS is therefore not an AI tutor with school branding. It is a G
 | Privacy-first deployment target | `gemma4:4b`, `gemma4:27b` |
 | API endpoints | 52 |
 | SQLite tables per classroom | 10 |
-| Checked-in eval case files | 129 |
-| Latest mock-gate tests | 1,891 Vitest + 69 Python |
+| Checked-in eval case files | 134 |
+| Latest mock-gate tests | 2,035 Vitest + 69 Python |
 | Primary user roles | teacher, educational assistant, substitute, reviewer |

@@ -1,7 +1,9 @@
 import { useState } from "react";
 import type { SimplifyResponse } from "../types";
+import OutputMetaRow from "./OutputMetaRow";
 import PrintButton from "./PrintButton";
 import { FormCard } from "./shared";
+import { buildModelMetaItems } from "./buildModelMetaItems";
 import "./SimplifiedViewer.css";
 
 interface Props {
@@ -79,6 +81,10 @@ export default function SimplifiedViewer({ onSubmit, result, loading, defaultGra
               EAL {result.simplified.eal_level} · {result.simplified.grade_band}
             </span>
           </div>
+          <OutputMetaRow
+            compact
+            items={buildModelMetaItems(result)}
+          />
 
           <div className="simplified-text-block">
             {result.simplified.simplified_text}

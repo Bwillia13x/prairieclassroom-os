@@ -6,7 +6,7 @@ import { TomorrowPlanSchema } from "../../../packages/shared/schemas/plan.js";
 import { validateParsedResponse } from "../validate-parsed-response.js";
 import type { TomorrowPlanInput } from "../tomorrow-plan.js";
 import { savePlan } from "../../memory/store.js";
-import { getRecentPlans, summarizeRecentPlans, getRecentInterventions, summarizeRecentInterventions, getLatestPatternReport, summarizePatternInsights } from "../../memory/retrieve.js";
+import { getRecentPlans, summarizeRecentPlans, getRelevantInterventions, summarizeRecentInterventions, getLatestPatternReport, summarizePatternInsights } from "../../memory/retrieve.js";
 import { validateBody, TomorrowPlanRequestSchema } from "../validate.js";
 import { requireRoles, type RouteDeps } from "../route-deps.js";
 import type { TomorrowPlan } from "../../../packages/shared/schemas/plan.js";
@@ -80,7 +80,15 @@ async function buildTomorrowPlanPayload(
   // Retrieve recent interventions for memory injection
   let interventionSummary = "";
   try {
-    const recentInterventions = filterRosterScoped(getRecentInterventions(classroom_id, 5), rosterScope);
+    const recentInterventions = getRelevantInterventions(classroom_id, {
+      limit: 5,
+      query: [
+        teacher_reflection ?? "",
+        teacher_goal ?? "",
+        JSON.stringify(artifacts ?? []),
+      ].join(" "),
+      rosterScope,
+    });
     interventionSummary = summarizeRecentInterventions(recentInterventions);
     for (const record of recentInterventions) citations.push(interventionCitation(record));
   } catch (memErr) {

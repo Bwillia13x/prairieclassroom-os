@@ -92,8 +92,8 @@ http://localhost:5173/?demo=true
 
 **Point to artifact-backed proof if needed:**
 
-- Hosted gate: `output/release-gate/2026-04-26T13-28-55-908Z-48591`
-- Hosted eval summary: `output/evals/2026-04-26-gemini/2026-04-26T13-28-55-908Z-48591-gemini-summary.json`
+- Hosted gate: `output/release-gate/2026-04-27T01-26-45-190Z-87424`
+- Hosted eval summary: `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-summary.json`
 - System inventory: `docs/system-inventory.md`
 
 ## A4. Safety (45 seconds)
@@ -206,7 +206,7 @@ Open **Review -> Usage Insights** if populated, or reference the proof docs dire
 
 **Say clearly:**
 
-> "The proof lane is hosted Gemma 4 on synthetic/demo data. The latest hosted gate passed, the current generated inventory records 12 panels, 13 prompt classes, 52 endpoints, and 129 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
+> "The proof lane is hosted Gemma 4 on synthetic/demo data. The latest hosted gate passed, the current generated inventory records 12 panels, 13 prompt classes, 52 endpoints, and 134 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
 
 ---
 

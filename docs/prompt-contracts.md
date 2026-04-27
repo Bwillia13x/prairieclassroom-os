@@ -39,7 +39,7 @@ Input:
 - today note (teacher reflection)
 - upcoming artifact(s)
 - classroom memory summary (auto-injected from recent plans)
-- intervention summary (auto-injected from recent interventions)
+- intervention summary (auto-injected from relevance-ranked local intervention retrieval)
 - pattern insights (auto-injected from latest persisted pattern report, Sprint 7)
 - optional tool grounding through `query_intervention_history(student_ref, days, limit)` against the active classroom's local SQLite memory
 
@@ -126,14 +126,15 @@ Notes: Output is ephemeral. Card count bounded 5-8 to keep sets manageable. Supp
 Route: `detect_support_patterns`
 Model tier: planning (gemma-4-27b-it)
 Thinking: on
-Retrieval: yes (interventions, plans, family messages)
-Tool-call: no
+Retrieval: yes (relevance-ranked interventions, plans, family messages)
+Tool-call: yes
 Schema version: 0.1.0
 
 Input:
 - classroom_id
 - student_filter (optional — alias to filter by)
 - time_window (number of recent records to analyze: 5, 10, or 20)
+- optional tool grounding through `query_intervention_history(student_ref, days, limit)` against the active classroom's local SQLite memory when the planner needs to drill into one roster-checked alias
 
 Output:
 - recurring_themes[] (theme, student_refs, evidence_count, example_observations)
@@ -168,7 +169,7 @@ Output:
 
 Notes: Output is ephemeral — not persisted to classroom memory. Uses live tier because this is synthesis/formatting, not deep reasoning. All output uses coordination-focused language ("The teacher's plan notes..."). Same 15 forbidden diagnostic terms as pattern detection. This is the first prompt class designed for the secondary user (EA).
 
-Retrieval: `buildEABriefingContext()` pulls from three sources — today's plan EA actions + support priorities, recent interventions (follow-up-pending first), and latest pattern report focus items + positive trends.
+Retrieval: `buildEABriefingContext()` pulls from three sources — today's plan EA actions + support priorities, pending follow-ups plus relevance-ranked interventions, and latest pattern report focus items + positive trends.
 
 ## Prompt design rules
 
@@ -207,7 +208,7 @@ For every prompt class, document:
 **Route:** `forecast_complexity`
 **Model:** planning tier -- `gemma-4-27b-it`
 **Thinking:** On
-**Retrieval:** Yes -- intervention history by time-block, recent interventions, pattern report highlights, pending follow-ups
+**Retrieval:** Yes -- intervention history by time-block, relevance-ranked interventions, pattern report highlights, pending follow-ups
 
 **Input:**
 - `classroom_id` -- which classroom
@@ -218,7 +219,7 @@ For every prompt class, document:
 - Classroom schedule (time blocks, activities, EA availability)
 - Upcoming events
 - Intervention frequency by time/context pattern
-- Recent interventions
+- Relevance-ranked interventions
 - Pattern report highlights
 - Pending follow-ups
 
@@ -250,7 +251,7 @@ For every prompt class, document:
 **Route:** `balance_ea_load`
 **Model:** planning tier -- `gemma-4-27b-it`
 **Thinking:** On
-**Retrieval:** Yes -- intervention frequency by time/context pattern, recent interventions, latest pattern-report highlights (reuses `buildForecastContext` — the EA-load feature shares retrieval with the complexity forecast)
+**Retrieval:** Yes -- intervention frequency by time/context pattern, relevance-ranked interventions, latest pattern-report highlights (reuses `buildForecastContext` — the EA-load feature shares retrieval with the complexity forecast)
 
 **Input:**
 - `classroom_id` -- which classroom

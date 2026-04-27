@@ -279,9 +279,7 @@ async function performGenerationCall(options: {
         headers: { "Content-Type": "application/json" },
         body: requestBodyForGeneration({
           route: options.route,
-          prompt: options.toolInteractions && options.toolInteractions.length > 0
-            ? appendToolResultsToPrompt(options.prompt, options.toolInteractions)
-            : options.prompt,
+          prompt: options.prompt,
           images: options.images,
           thinkingEnabled: options.thinkingEnabled,
           maxTokens: options.maxTokens,
@@ -289,6 +287,7 @@ async function performGenerationCall(options: {
           tools: options.toolInteractions && options.toolInteractions.length > 0
             ? undefined
             : options.tools,
+          toolInteractions: options.toolInteractions,
         }),
         signal: timeout.signal,
       });
@@ -534,9 +533,7 @@ async function performGenerationStreamCall(options: {
         headers: { "Content-Type": "application/json", "Accept": "text/event-stream" },
         body: requestBodyForGeneration({
           route: options.route,
-          prompt: options.toolInteractions && options.toolInteractions.length > 0
-            ? appendToolResultsToPrompt(options.prompt, options.toolInteractions)
-            : options.prompt,
+          prompt: options.prompt,
           images: options.images,
           thinkingEnabled: options.thinkingEnabled,
           maxTokens: options.maxTokens,
@@ -544,6 +541,7 @@ async function performGenerationStreamCall(options: {
           tools: options.toolInteractions && options.toolInteractions.length > 0
             ? undefined
             : options.tools,
+          toolInteractions: options.toolInteractions,
         }),
         signal: timeout.signal,
       });

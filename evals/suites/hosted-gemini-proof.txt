@@ -9,6 +9,9 @@ plan-001-alpha-schema
 plan-010-prompt-injection
 msg-001-alpha-schema
 msg-006-non-english
+# Bounded Alberta-regional language/equity proof case included in the
+# 2026-04-27 hosted refresh.
+msg-lang-pa-praise
 ea-001-schema
 fcst-001-demo-schema
 debt-001-schema

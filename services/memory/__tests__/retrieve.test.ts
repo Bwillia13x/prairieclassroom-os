@@ -216,6 +216,63 @@ describe("getRecentInterventions (via mock DB)", () => {
   });
 });
 
+describe("getRelevantInterventions (via mock DB)", () => {
+  it("ranks an older query-relevant record above a newer irrelevant record", () => {
+    insertIntervention(testDb, makeIntervention({
+      record_id: "int-transition",
+      observation: "Brody had a difficult transition after recess",
+      action_taken: "Used visual timer and first-then card",
+      created_at: "2026-04-01T00:00:00Z",
+    }), "2026-04-01T00:00:00Z");
+    insertIntervention(testDb, makeIntervention({
+      record_id: "int-newer",
+      student_refs: ["Amira"],
+      observation: "Amira finished the reading response",
+      action_taken: "Shared work with a partner",
+      created_at: "2026-04-05T00:00:00Z",
+    }), "2026-04-05T00:00:00Z");
+
+    const records = retrieve.getRelevantInterventions(TEST_ROOM, {
+      limit: 2,
+      query: "transition visual timer",
+    });
+
+    expect(records.map((record) => record.record_id)).toEqual([
+      "int-transition",
+      "int-newer",
+    ]);
+  });
+
+  it("prioritizes follow-up and requested student aliases", () => {
+    insertIntervention(testDb, makeIntervention({
+      record_id: "int-mika",
+      student_refs: ["Mika"],
+      observation: "Mika needs a family follow up about science materials",
+      action_taken: "Prepared note for home",
+      follow_up_needed: true,
+      created_at: "2026-04-01T00:00:00Z",
+    }), "2026-04-01T00:00:00Z");
+    insertIntervention(testDb, makeIntervention({
+      record_id: "int-brody",
+      student_refs: ["Brody"],
+      observation: "Brody had a newer transition note",
+      action_taken: "Used timer",
+      follow_up_needed: false,
+      created_at: "2026-04-06T00:00:00Z",
+    }), "2026-04-06T00:00:00Z");
+
+    const records = retrieve.getRelevantInterventions(TEST_ROOM, {
+      limit: 2,
+      studentRefs: ["Mika"],
+      query: "follow up",
+    });
+
+    expect(records).toHaveLength(2);
+    expect(records[0].record_id).toBe("int-mika");
+    expect(records[1].record_id).toBe("int-brody");
+  });
+});
+
 describe("getLatestPatternReport (via mock DB)", () => {
   it("returns null for empty DB", () => {
     expect(retrieve.getLatestPatternReport(TEST_ROOM)).toBeNull();
