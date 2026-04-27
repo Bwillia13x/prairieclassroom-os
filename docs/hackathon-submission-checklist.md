@@ -2,17 +2,22 @@
 
 Repo-side checklist for preparing PrairieClassroom OS for the Gemma 4 Good Hackathon submission.
 
+The submission window is owned by [plans/2026-05-18-submission-plan.md](./plans/2026-05-18-submission-plan.md). This checklist is the day-of compliance view; the plan is the day-by-day execution view.
+
 ## Current status
 
-Checked against the repo on 2026-04-27.
+Checked against the repo on 2026-04-27, refreshed 2026-04-26 strategic pass.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-27T01-59-30-481Z-36219`
+- Mock structural gate: passing at `output/release-gate/2026-04-27T04-12-56-544Z-96299`
 - Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-27T01-26-45-190Z-87424`
-- Ollama proof on this machine: not proven
-- Kaggle writeup draft: aligned to the hosted proof lane and current code inventory
-- Public-video script: aligned to the hosted proof lane
-- Judge/demo URL: `?demo=true` now skips first-run onboarding and role-selection modals for the demo classroom
-- Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md)
+- Ollama proof on this machine: **not proven; deferred until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available** (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D)
+- Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,412 (within 1,500-word limit)
+- Kaggle paste block: synced to writeup
+- Public-video script: rewritten 2026-04-26 to lead with multimodal hero shot + teacher quote + offline-Ollama shot (gated)
+- Judge/demo URL: `?demo=true` skips first-run onboarding and role-selection modals for the demo classroom
+- Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
+- Strategic posture: lead with multimodal magic + teacher voice; treat offline-Ollama as the third WOW lever, capturable the moment a viable host arrives
+- Live demo deploy: NOT YET DEPLOYED — `apps/web/vercel.json` does not exist; backend deploy target not yet selected (Render free / Fly free / Hetzner $5)
 
 ## Completed safely in repo
 
@@ -47,24 +52,60 @@ Current local video candidate:
 
 ## External actions still required
 
-These are required for an actual competition submission but cannot be completed safely from inside the repo alone.
+These are required for an actual competition submission but cannot be completed safely from inside the repo alone. Sequenced by submission-plan phase; cross-reference [plans/2026-05-18-submission-plan.md](./plans/2026-05-18-submission-plan.md) for the day-by-day execution.
 
-1. Make the GitHub repository public and verify public access without login.
-2. Publish a public live demo URL and verify it loads without auth or paywall; use [public demo operations](./public-demo-operations.md) for the smoke checklist.
-3. Publish a public YouTube video that is 3 minutes or less.
-4. Attach the public repo URL, live demo URL, and YouTube URL to the Kaggle writeup.
-5. Add a cover image and supporting screenshots to the media gallery.
-6. Confirm the final Kaggle writeup is submitted, not left as a draft.
-7. If a real teacher/EA walkthrough is completed before submission, add the anonymized artifact under `docs/pilot/` and update `docs/pilot/claims-ledger.md`. If not, leave human validation explicitly unclaimed.
+**Phase B — production prep (target window 2026-04-29 → 2026-05-03):**
+
+1. Send 3 teacher recruitment messages (target: 1 K-6 teacher, 1 EA, 1 retired teacher / consultant; $100 honorarium; 60-90 minute session).
+2. Print a real Grade 3/4 fractions worksheet for the multimodal hero shot.
+3. Identify a host with ≥16 GiB RAM and ≥40 GiB free disk for the eventual Ollama lane (borrow or order refurb Mac Mini).
+4. Select live-demo backend target (Render free / Fly free / Hetzner $5/mo) and create `apps/web/vercel.json`.
+
+**Phase C — teacher session (target window 2026-05-04 → 2026-05-10):**
+
+5. Conduct the teacher session per [plans/2026-05-XX-teacher-session-prep.md](./plans/2026-05-XX-teacher-session-prep.md).
+6. Capture a ≤20-second teacher quote suitable for the video.
+7. Save anonymized session notes under `docs/pilot/sessions/<date>-session.md` and advance the relevant row in [pilot/claims-ledger.md](./pilot/claims-ledger.md) — likely from `unsupported` to `partially supported (n=1, synthetic data)`.
+
+**Phase D — Ollama (resumes when viable host arrives, no fixed date):**
+
+8. Install Ollama, pull `gemma4:4b` and `gemma4:27b`, run `npm run host:preflight:ollama` then `npm run release:gate:ollama`.
+9. Capture the offline shot: `ollama ps` → Wi-Fi off → Tomorrow Plan generates.
+10. Update [eval-baseline.md](./eval-baseline.md) Ollama section and [pilot/claims-ledger.md](./pilot/claims-ledger.md) row "Runs privacy-first locally on commodity Alberta hardware."
+
+**Phase E — video production (target window 2026-05-11 → 2026-05-13):**
+
+11. Record narration; assemble shots per the primary order in [video-shot-list.md](./video-shot-list.md).
+12. Add captions; export 1080p H.264; upload to YouTube as **unlisted** first.
+
+**Phase F — live demo deploy (target window 2026-05-11 → 2026-05-12):**
+
+13. Deploy frontend to Vercel; deploy orchestrator + inference to chosen backend.
+14. Smoke from external network and from cellular.
+15. Verify `/?demo=true` lands directly on Today and at least one generation completes end-to-end.
+
+**Phase G — verification (target window 2026-05-14 → 2026-05-16):**
+
+16. Make the GitHub repository public; verify clone works from a different machine without auth.
+17. Run the full pre-submit pass (see "Final pre-submit checks" below).
+18. Have one cold viewer watch the video and answer (a) what does it do, (b) why Gemma 4, (c) what surprised you.
+19. Switch YouTube video to public.
+20. Add cover image + 4-5 supporting screenshots + closed-loop architecture diagram to media gallery.
+
+**Phase H — submission (2026-05-17 → 2026-05-18):**
+
+21. Convert Kaggle draft to submitted entry on 2026-05-17 (do not wait until 2026-05-18).
+22. Final smoke on submission day: GitHub public ✅, video public ✅, demo loads ✅, writeup submitted ✅.
 
 ## Claims to avoid
 
 Do not claim any of the following unless new artifacts exist:
 
-- A passing Ollama proof on the current demo machine
-- No-cloud or fully local behavior for a hosted-demo video
-- Teacher pilot validation, family validation, or measured classroom outcomes
+- A passing Ollama proof on any host that has not actually run `npm run release:gate:ollama` to a passing artifact
+- No-cloud or fully local behavior for a hosted-demo video (the offline shot only legitimizes that claim if it is real)
+- Teacher pilot validation, family validation, or measured classroom outcomes (the n=1 synthetic-data session unlocks at most "partially supported (n=1)")
 - Paid Vertex validation in the current zero-cost sprint
+- "Time-back-to-teaching" framed as measured rather than estimated against synthetic demo data
 
 ## Recommended attachment set
 
@@ -81,6 +122,7 @@ Do not claim any of the following unless new artifacts exist:
 Run these from the repo root before publishing the final links:
 
 ```bash
+nvm use
 npm run claims:check
 npm run proof:check
 npm run system:inventory:check
@@ -88,7 +130,13 @@ npm run check:contrast
 npm run release:gate
 ```
 
-If you refresh the hosted proof before submission, run:
+If a viable Ollama host exists by submission day:
+
+```bash
+PRAIRIE_INFERENCE_PROVIDER=ollama npm run release:gate:ollama
+```
+
+If you refresh the hosted proof before submission:
 
 ```bash
 export PRAIRIE_GEMINI_API_KEY=<your-ai-studio-key>
@@ -98,3 +146,15 @@ npm run release:gate:gemini
 npm run eval:summary
 npm run logs:summary
 ```
+
+## Go/No-Go gates
+
+Each gate must be green before advancing to the next phase:
+
+- **Phase A (doc hardening) → Phase B:** `claims:check` + `system:inventory:check` green; submission-plan checkboxes ticked through Phase A deliverables.
+- **Phase B (production prep) → Phase C:** at least one teacher session confirmed; multimodal hero-shot dry-run successful; backend deploy target chosen.
+- **Phase C (teacher session) → Phase E:** ≥20-second usable teacher clip captured **OR** explicit decision to ship with multimodal-only opening.
+- **Phase D (Ollama) — non-blocking:** runs in parallel; lands when host arrives; not gating any other phase.
+- **Phase E + F (production + deploy) → Phase G:** video uploaded (unlisted); live demo loads from external network; repo public-ready (no secrets in history).
+- **Phase G (verification) → Phase H:** all `npm run` checks green; cold-viewer comprehension test passed; YouTube video flipped to public.
+- **Phase H (submission):** Kaggle entry submitted by 2026-05-17 EOD (24-hour buffer to deadline).

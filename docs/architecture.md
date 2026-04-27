@@ -1,10 +1,28 @@
 # PrairieClassroom OS — Architecture
 
-*Updated 2026-04-18 — reflects the implemented system, not the original aspirational sketch.*
+*Updated 2026-04-18 — reflects the implemented system, not the original aspirational sketch. Closed-loop diagram added 2026-04-26.*
 
 ## System thesis
 
 Use Gemma 4 as the reasoning-and-orchestration substrate for a classroom operating layer that helps Alberta K-6 teachers manage complexity without replacing their judgment.
+
+## Closed feedback loop
+
+Every workflow in the product participates in one shared loop. Today's classroom signal becomes tomorrow's planning context.
+
+```mermaid
+flowchart LR
+    Signal["Classroom signal<br/><sub>worksheet, note,<br/>intervention, photo</sub>"] --> Synthesis
+    Synthesis["Gemma 4 synthesis<br/><sub>live tier or planning tier<br/>+ retrieval + tool calls</sub>"] --> Action
+    Action["Teacher / EA action<br/><sub>differentiate, log,<br/>brief, plan, approve</sub>"] --> Memory
+    Memory["Classroom memory<br/><sub>SQLite per classroom:<br/>plans · interventions · patterns ·<br/>messages · forecasts</sub>"] -.->|retrieval| Synthesis
+    Memory -->|"informs the next signal"| Signal
+
+    classDef nodeStyle fill:#f5f3ee,stroke:#3b3b3b,color:#1d1d1d,rx:8,ry:8
+    class Signal,Synthesis,Action,Memory nodeStyle
+```
+
+The four daily teacher jobs (open the day, adapt instruction, prepare tomorrow, coordinate) each enter at the **Signal** node and exit at the **Action** node, but they all share the same Memory layer. The compounding-value property — *the system gets more useful the longer a classroom uses it* — comes from this shared memory, not from any single workflow.
 
 ## Core architecture
 

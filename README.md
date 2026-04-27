@@ -1,8 +1,21 @@
 # PrairieClassroom OS
 
-Gemma-4-native, local-first classroom complexity copilot for Alberta K-6 inclusive classrooms.
+**A Gemma-4-native operating layer for high-complexity inclusive classrooms.**
 
-PrairieClassroom OS is not a chatbot. It is a teacher command center with 12 primary panels and 13 prompt or retrieval-backed workflows that reduce the coordination tax on teachers working in high-complexity classrooms with mixed grades, EAL learners, accessibility needs, and shared staffing.
+PrairieClassroom OS is built for the adult coordination work behind inclusive teaching, not the student. It is a teacher command center with 12 primary panels, organized around **four daily teacher jobs** — open the day, adapt instruction, prepare tomorrow, coordinate with adults or families — wired together by a closed feedback loop where today's classroom signal becomes tomorrow's planning context.
+
+The repo ships **12 workflow tools**, **13 model-routed prompt classes**, and **134 eval cases**, validated end-to-end on real hosted Gemma 4 (`gemma-4-26b-a4b-it` + `gemma-4-31b-it`) against synthetic Alberta K-6 classroom data.
+
+> **Submitted to:** [Gemma 4 Good Hackathon](https://kaggle.com/competitions/gemma-4-good-hackathon) — Future of Education track.
+> **Judges, start here:** [Kaggle writeup](docs/kaggle-writeup.md) · [Judge summary](docs/hackathon-judge-summary.md) · [Proof brief](docs/hackathon-proof-brief.md) · [Submission plan](docs/plans/2026-05-18-submission-plan.md)
+> **Live demo + video:** see "Project Links" inside the Kaggle writeup once Phase F (deploy) and Phase E (video) of the [submission plan](docs/plans/2026-05-18-submission-plan.md) complete.
+
+## Why Gemma 4
+
+- **Multimodal:** the `extract_worksheet` route turns a paper artifact into a structured prompt input — base64-encoded into Gemini-API `inline_data` parts or sent through Ollama's vision channel.
+- **Open-weight, local-first:** the same architecture runs on `gemma4:4b` + `gemma4:27b` via Ollama for offline / privacy-preserving deployment to Alberta classrooms.
+- **Dual-tier with selective thinking:** live tier for fast classroom transformations; planning tier with `thinking: true` only for cross-record synthesis.
+- **Roster-checked function calling:** two bounded local tools (`lookup_curriculum_outcome`, `query_intervention_history`); the intervention-history tool **rejects unknown student aliases** so the model cannot silently confirm a hallucinated student. Tool results round-trip as provider-native `tool_interactions[]`, not prompt injection.
 
 ## Quick Start
 
@@ -320,7 +333,9 @@ Flask Inference :3200
 
 ## Evaluation
 
-134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,035 TypeScript tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,035 TypeScript / Vitest tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+
+The hosted Gemma 4 release gate passes 13/13 curated proof cases on synthetic/demo data — including the Punjabi family-message equity case — at `output/release-gate/2026-04-27T01-26-45-190Z-87424` (artifact-backed; see [docs/hackathon-proof-brief.md](docs/hackathon-proof-brief.md) for the full artifact trail).
 
 ```bash
 # Run evals (requires orchestrator + inference running)
@@ -351,19 +366,12 @@ For public claims, `npm run claims:check` blocks unsupported statements like inv
 
 ## Sprint History
 
-| Sprint | Focus | Evals |
-|--------|-------|-------|
-| 0 | Framework, schemas, mock harness | 0 |
-| 1 | Differentiation (5 variants) | 7 |
-| 2 | Tomorrow Plan (thinking mode) | 15 |
-| 3 | Memory + Family Messaging | 20 |
-| 4 | Intervention Logging | 25 |
-| 5 | Language Bridge (simplify + vocab) | 30 |
-| 6 | Support Pattern Detection | 37 |
-| 7 | Pattern-Informed Planning | 37 |
-| 8 | EA Daily Briefing | 42 |
-| 9 | Demo Packaging + Writeup | 42 |
-| 10 | Vertex AI Inference Backend | 42 |
-| 11 | Zod Validation Layer | 42 |
-| 12 | Auth + Housekeeping | 42 |
-| 13 | Submission Polish | 42 |
+Detailed sprint plans, reviews, and decisions live in [`docs/`](docs/) (search for `sprint-*-{plan,review}.md`) and the [decision log](docs/decision-log.md). The current canonical surface counts (panels, prompt classes, endpoints, eval cases) are derived from code at [`docs/system-inventory.md`](docs/system-inventory.md) and verified by `npm run system:inventory:check` — do not maintain a parallel hand-counted table here.
+
+| Sprint range | Phase focus |
+|---|---|
+| 0–3 | Framework, schemas, mock harness; differentiation; planning-tier with thinking; classroom memory + family messaging |
+| 4–7 | Intervention logging; language bridge (simplify + vocab cards); support pattern detection; pattern-informed planning |
+| 8–10 | EA daily briefing; demo packaging + writeup; Vertex AI inference backend |
+| 11–13 | Zod validation layer; auth + housekeeping; submission polish |
+| Ongoing | Production hardening, hosted Gemini proof maintenance, design-system convergence, pilot paperwork, submission-window plan |

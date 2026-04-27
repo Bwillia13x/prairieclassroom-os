@@ -1,141 +1,166 @@
-# PrairieClassroom OS -- 3 Minute Video Script
+# PrairieClassroom OS — 3 Minute Video Script
 
-Default public-video lane: **hosted Gemma 4 on synthetic/demo classroom data**.
-Only switch this script back to an Ollama-first story after you have a passing host artifact for the exact demo machine.
+**Strategic posture (locked 2026-04-26):** lead with the multimodal Gemma-4 magic moment, follow with a real teacher voice, and reserve the offline-Ollama shot for the moment a viable host (≥16 GiB RAM) is available. The submission proof lane remains hosted Gemma 4 on synthetic/demo data; the offline shot reinforces *why Gemma 4* and is gated by the Ollama work in [docs/plans/2026-05-18-submission-plan.md](./plans/2026-05-18-submission-plan.md) Phase D.
+
+This script supersedes the prior shot order. The earlier ordering (problem → differentiate → log → plan → message → tech) is preserved as the **fallback narrative** at the bottom of this doc for use only if the multimodal hero shot or teacher quote cannot be captured in time.
 
 ## Recording notes
 
 - Target delivery pace: calm and deliberate, about 130 to 140 words per minute
-- Total narration length: about 390 to 405 words
+- Total narration length: about 380 to 405 words
 - Keep the screen moving every 8 to 12 seconds
-- Use one proof overlay near the end so the technical story lands without slowing the demo
+- One proof overlay near the end so the technical story lands without slowing the demo
+- Captions from Day 1 — judges often watch muted
 
-## Shot 1 — Problem Hook (0:00-0:28)
+---
 
-**Visual**
+## Primary Shot Order (lead with WOW)
 
-- Classroom B-roll or still photo
-- Text overlay: `26 students. 7 home languages. 1 teacher.`
+### Shot 1 — Multimodal hero (0:00 – 0:18)
 
-**Exact narration**
+**Visual** — paper worksheet → phone photo → five differentiated variants on the laptop.
 
-> "Mrs. Okafor teaches a Grade 3/4 split in Lethbridge, Alberta. Twenty-six synthetic students. Eight are learning English as an additional language. Several need sensory, transition, language, or accessibility supports. The educational assistant is only there in the morning. The hardest part of her day is not writing the lesson. It is coordinating everything around it."
+1. Hands holding a printed Grade 3/4 fractions worksheet, framed center on a clean desk in natural light.
+2. Phone camera close-up taking the photo (overhead angle, shutter sound).
+3. Cut to laptop screen: image dropped into the Differentiate panel's WorksheetUpload component.
+4. Brief loading shimmer (Gemma 4 reading the image).
+5. Reveal: five variant cards appear with reading-level chips visible.
 
-**Wow moment to land**
+**Exact narration (under 50 words)**
 
-- This is a coordination problem, not a tutoring problem.
+> "This is a paper worksheet. Eighteen seconds later, on a laptop, it is the same worksheet in five readiness-aligned versions. Support for Elena. EAL scaffolds for Amira and Daniyal. Extension for Chantal. This is a Gemma 4 vision call, on a teacher's laptop, doing what would have taken her thirty minutes by hand."
 
-## Shot 2 — Differentiate From One Artifact (0:28-1:00)
+**Wow to land** — paper became differentiated instruction without retyping. Gemma-4-specific (multimodal), visceral, unmistakable.
 
-**Visual**
+### Shot 2 — Teacher voice (0:18 – 0:38)
 
-- Open the Differentiate workflow
-- Upload or paste the fractions worksheet
-- Show five returned variants
+**Visual** — talking head of the real teacher, or B-roll over their voice.
 
-**Exact narration**
+The 20-second clip captured during Phase C of the submission plan. Use only what the teacher actually said. Acceptable variants:
 
-> "PrairieClassroom OS starts from one classroom artifact. Mrs. Okafor drops in a fractions worksheet, adds one short teacher goal, and Gemma 4 turns it into five usable versions: support for Elena, EAL scaffolds for Amira and Daniyal, and extension for Chantal. The point is not more content. The point is getting the right version to the right learner fast enough to matter during the school day."
+- "This is the part of my day that's hard."
+- "I'd use this on Monday morning."
+- "I'm not worried about it taking my judgment away."
+- "I would want this for my EA."
 
-**Wow moment to land**
+**On-screen lower third** — first name only, role (e.g. "Grade 4 teacher, Alberta"), no school name.
 
-- One artifact becomes multiple classroom-ready versions in one pass.
+**Wow to land** — there is a real human in this story, not just a synthetic persona.
 
-## Shot 3 — Turn Notes Into Memory (1:00-1:32)
+> **Contingency:** If no usable teacher clip exists by Day 12 of the plan, replace this shot with a text-on-camera card: "Recruited from the structured-walkthrough rubric. Pilot session paperwork in `docs/pilot/`." Acknowledged compromise; lowers Impact score by ~3 points but keeps the video honest.
 
-**Visual**
+### Shot 3 — Mrs. Okafor problem framing (0:38 – 1:00)
 
-- Open Intervention Log
-- Paste the Brody note
-- Show the structured record
-- Move into Support Patterns
-
-**Exact narration**
-
-> "During class, Brody uses his visual timer independently for the first time. Mrs. Okafor writes one quick note. The system structures it into a usable record instead of leaving it trapped in free text. Then the planning workflow reads across recent observations and surfaces the pattern: Brody’s independence is improving, Elena’s confidence is uneven, and one family follow-up is overdue."
-
-**Wow moment to land**
-
-- Free text becomes memory, and memory becomes pattern detection.
-
-## Shot 4 — Build Tomorrow, Not Just Today (1:32-2:05)
-
-**Visual**
-
-- Open Tomorrow Plan
-- Paste a brief teacher reflection
-- Generate the plan
-- Highlight specific EA actions and student watch items
+**Visual** — Today panel, classroom roster, EA window indicator.
 
 **Exact narration**
 
-> "Now tomorrow’s plan is grounded in what actually happened. Not generic advice like 'support Brody.' It says 'have the timer ready for the 9:15 transition.' Not 'watch Elena.' It says 'build on Wednesday’s math win.' This is where PrairieClassroom OS stops looking like a chatbot and starts looking like an operating layer for the classroom."
+> "This is a synthetic Grade 3/4 split classroom in Lethbridge, Alberta. Twenty-six students. Eight learning English as an additional language. Sensory and transition supports. An educational assistant only in the morning. The hardest part of this day is not writing the lesson. It is coordinating everything around it."
 
-**Wow moment to land**
+**Wow to land** — coordination is the real problem; the product is a coordination layer.
 
-- The plan is specific because retrieval makes it specific.
+### Shot 4 — Closed loop in motion (1:00 – 1:35)
 
-## Shot 5 — Safety and Teacher Control (2:05-2:28)
+**Visual** — Log Intervention → Support Patterns → Tomorrow Plan, in sequence with a brief animated arrow overlay between each.
 
-**Visual**
-
-- Open Family Message
-- Show the draft
-- Keep the approval button visible but do not click
+1. Quick capture: "Brody used his visual timer independently for the first time during math centers."
+2. Cut to Support Patterns: the structured record is now part of the pattern report.
+3. Cut to Tomorrow Plan: planning-tier output references "the timer breakthrough" by retrieval, not invention.
 
 **Exact narration**
 
-> "Family communication is handled the same way: useful, but bounded. The system can draft a plain-language message, but it never sends on its own. The teacher reads it, edits it, and approves it. That approval gate is permanent. PrairieClassroom OS is designed to reduce coordination load without removing professional control."
+> "A quick teacher note becomes structured memory. The planning workflow reads across recent records and returns specific next-day actions. Not generic advice. 'Have the timer ready for the nine-fifteen transition.' 'Build on Wednesday's math win with Elena.' This is where the system stops looking like a chatbot and starts looking like an operating layer."
 
-**Wow moment to land**
+**Wow to land** — the closed loop is not a slide; it is the demo.
 
-- Helpful automation without autonomy over families.
+### Shot 5 — Offline / Why Gemma 4 (1:35 – 2:00)
 
-## Shot 6 — Technical Proof and Closing (2:28-3:00)
-
-**Visual**
-
-- Full UI shell
-- Overlay one proof card or screenshot referencing the hosted gate artifact
-- End on product name and tagline
+**Visual** — terminal showing `ollama ps` listing `gemma4:27b` running locally; menubar Wi-Fi indicator visible. Disconnect Wi-Fi mid-shot. Generate a Tomorrow Plan in the web app — it succeeds.
 
 **Exact narration**
 
-> "For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. The live tier handles fast classroom transformations. The planning tier handles deeper synthesis. The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. Twelve primary panels. One hundred twenty-nine checked-in eval cases. Teacher-first, safety-first, Gemma-4-native. This is not an AI tutor with school branding. It is a classroom operating system."
+> "Same workflow. No cloud. No teacher data leaving the room. This is Gemma 4 running entirely on a laptop. It is why the model choice matters: open weights, real on-device privacy, and a deployment story for an Alberta classroom with spotty internet."
 
-**Final on-screen line**
+**Wow to land** — Gemma 4 specificity is *demonstrated*, not asserted.
+
+> **Contingency:** If the Ollama lane has not landed on a viable host by Day 12, replace this shot with a 25-second framing of the privacy boundary: hosted lane is synthetic-demo only; intended deployment path is local. Less wow; still honest. **Capturing this shot is the single largest score lever remaining.**
+
+### Shot 6 — Safety and teacher control (2:00 – 2:25)
+
+**Visual** — Family Message draft + approval dialog. Do not click send.
+
+**Exact narration**
+
+> "Family communication is bounded. The system drafts a plain-language note. The teacher reviews, edits, and approves. The approval gate is permanent. PrairieClassroom OS is designed to reduce coordination load without removing professional control."
+
+**Wow to land** — adult-judgment-preserving by design, not by policy.
+
+### Shot 7 — Technical proof and close (2:25 – 3:00)
+
+**Visual** — full UI shell. Overlay one card with the latest hosted gate artifact and the eval count. End on product name + tagline.
+
+**Exact narration**
+
+> "This is a Gemma-4-native architecture. A live tier for fast classroom transformations. A planning tier with selective thinking for cross-record synthesis. Roster-checked function calling so the model cannot confirm a student who does not exist. Twelve workflow tools. One hundred thirty-four checked-in eval cases. Four daily teacher jobs. One closed loop. Built for the Future of Education track because inclusive teaching is a coordination problem, and coordination is a Gemma 4 problem."
+
+**Final on-screen**
 
 - `PrairieClassroom OS`
 - `A Gemma-4-native operating layer for inclusive classrooms`
 
-## Full Teleprompter Read
+---
+
+## Full Teleprompter Read (primary, 3:00 cut)
 
 Use this when recording in one pass. The pause markers are pacing cues, not spoken words.
 
-> Mrs. Okafor teaches a Grade 3/4 split in Lethbridge, Alberta. [pause] Twenty-six synthetic students. [pause] Eight are learning English as an additional language. [pause] Several need sensory, transition, language, or accessibility supports. [pause] The educational assistant is only there in the morning. [pause] The hardest part of her day is not writing the lesson. [pause] It is coordinating everything around it.
->
-> PrairieClassroom OS is built for that coordination problem. [pause] Mrs. Okafor drops in a fractions worksheet, adds one short teacher goal, and Gemma 4 turns it into five usable versions. [pause] Support for Elena. [pause] EAL scaffolds for Amira and Daniyal. [pause] Extension for Chantal. [pause] The point is not more content. [pause] The point is getting the right version to the right learner fast enough to matter during the school day.
->
-> During class, Brody uses his visual timer independently for the first time. [pause] Mrs. Okafor writes one quick note. [pause] The system structures it into a usable record instead of leaving it trapped in free text. [pause] Then the planning workflow reads across recent observations and surfaces the pattern: Brody’s independence is improving, Elena’s confidence is uneven, and one family follow-up is overdue.
->
-> Now tomorrow’s plan is grounded in what actually happened. [pause] Not generic advice like support Brody. [pause] It says have the timer ready for the 9:15 transition. [pause] Not watch Elena. [pause] It says build on Wednesday’s math win. [pause] This is where PrairieClassroom OS stops looking like a chatbot and starts looking like an operating layer for the classroom.
->
-> Family communication is handled the same way: useful, but bounded. [pause] The system can draft a plain-language message, but it never sends on its own. [pause] The teacher reads it, edits it, and approves it. [pause] That approval gate is permanent. [pause] PrairieClassroom OS is designed to reduce coordination load without removing professional control.
->
-> For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. [pause] The live tier handles fast classroom transformations. [pause] The planning tier handles deeper synthesis. [pause] The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. [pause] Twelve primary panels. [pause] One hundred twenty-nine checked-in eval cases. [pause] Teacher-first, safety-first, Gemma-4-native. [pause] This is not an AI tutor with school branding. [pause] It is a classroom operating system.
+> This is a paper worksheet. [pause] Eighteen seconds later, on a laptop, it is the same worksheet in five readiness-aligned versions. [pause] Support for Elena. [pause] EAL scaffolds for Amira and Daniyal. [pause] Extension for Chantal. [pause] This is a Gemma 4 vision call, on a teacher's laptop, doing what would have taken her thirty minutes by hand.
 
-## Tight Cut Teleprompter Read
+> [Teacher quote — 20 seconds, no narration overlap]
 
-Use this version if you want a safer `2:40` to `2:50` runtime with less risk of overrunning the upload limit.
+> This is a synthetic Grade 3/4 split classroom in Lethbridge, Alberta. [pause] Twenty-six students. [pause] Eight learning English as an additional language. [pause] Sensory and transition supports. [pause] An educational assistant only in the morning. [pause] The hardest part of this day is not writing the lesson. [pause] It is coordinating everything around it.
 
-> Mrs. Okafor teaches a Grade 3/4 split in Lethbridge, Alberta. [pause] Twenty-six synthetic students. [pause] Eight are learning English as an additional language. [pause] Several need sensory, transition, language, or accessibility supports. [pause] The educational assistant is only there in the morning. [pause] The hardest part of her day is not writing the lesson. [pause] It is coordinating everything around it.
->
-> PrairieClassroom OS is built for that coordination problem. [pause] She drops in one worksheet, adds one short goal, and Gemma 4 turns it into multiple classroom-ready versions: support for Elena, EAL scaffolds for Amira and Daniyal, and extension for Chantal. [pause] This is not more content for its own sake. [pause] It is faster coordination for the learners in front of her.
->
-> During class, she logs one quick note about Brody using his timer independently. [pause] The system turns that free text into structured memory. [pause] Then the planning workflow reads across recent records and surfaces the pattern: Brody’s independence is improving, Elena’s confidence is uneven, and one family follow-up is overdue.
->
-> Next, tomorrow’s plan is grounded in what actually happened. [pause] Not generic advice. [pause] Specific next actions: have the timer ready for the 9:15 transition, and build on Elena’s math win from Wednesday. [pause] The system is useful because retrieval makes it specific.
->
-> Family communication stays bounded. [pause] PrairieClassroom OS can draft a plain-language message, but it never sends on its own. [pause] The teacher reviews, edits, and approves every message.
->
-> For this hackathon, PrairieClassroom OS is proven on hosted Gemma 4 using synthetic classroom data. [pause] The live tier handles fast classroom transformations. [pause] The planning tier handles deeper synthesis. [pause] The same architecture also keeps a separate local-first path for privacy-preserving school deployment, but this video claims only the hosted proof lane. [pause] Twelve primary panels. [pause] One hundred twenty-nine checked-in eval cases. [pause] This is not an AI tutor with school branding. [pause] It is a classroom operating system.
+> A quick teacher note becomes structured memory. [pause] The planning workflow reads across recent records and returns specific next-day actions. [pause] Not generic advice. [pause] Have the timer ready for the nine-fifteen transition. [pause] Build on Wednesday's math win with Elena. [pause] This is where the system stops looking like a chatbot and starts looking like an operating layer.
+
+> Same workflow. [pause] No cloud. [pause] No teacher data leaving the room. [pause] This is Gemma 4 running entirely on a laptop. [pause] It is why the model choice matters: open weights, real on-device privacy, and a deployment story for an Alberta classroom with spotty internet.
+
+> Family communication is bounded. [pause] The system drafts a plain-language note. [pause] The teacher reviews, edits, and approves. [pause] The approval gate is permanent. [pause] PrairieClassroom OS is designed to reduce coordination load without removing professional control.
+
+> This is a Gemma-4-native architecture. [pause] A live tier for fast classroom transformations. [pause] A planning tier with selective thinking for cross-record synthesis. [pause] Roster-checked function calling so the model cannot confirm a student who does not exist. [pause] Twelve workflow tools. [pause] One hundred thirty-four checked-in eval cases. [pause] Four daily teacher jobs. [pause] One closed loop. [pause] Built for the Future of Education track because inclusive teaching is a coordination problem, and coordination is a Gemma 4 problem.
+
+---
+
+## Tight Cut (2:40 backup)
+
+Use this if the 3:00 cut overruns or the teacher clip is unavailable and only multimodal opens.
+
+- Shot 1 (multimodal hero) — 0:00 – 0:18
+- Shot 3 (problem framing) — 0:18 – 0:38 (compressed)
+- Shot 4 (closed loop) — 0:38 – 1:08
+- Shot 5 (offline / why Gemma 4) — 1:08 – 1:32
+- Shot 6 (safety) — 1:32 – 1:55
+- Shot 7 (technical proof and close) — 1:55 – 2:40
+
+---
+
+## Production Asset Checklist
+
+Captured assets needed for the primary cut:
+
+- [ ] Paper worksheet — printed Grade 3/4 fractions (use the script in [docs/demo-script.md](./demo-script.md) §B2).
+- [ ] Phone photo of the worksheet (overhead, natural light, in focus).
+- [ ] Screen recording of the WorksheetUpload → 5 variants flow.
+- [ ] Teacher quote, ≤20 seconds, anonymized lower third.
+- [ ] Screen recording of Today panel showing 26-student roster and EA window.
+- [ ] Screen recording of Log Intervention → Support Patterns → Tomorrow Plan sequence.
+- [ ] Terminal recording: `ollama ps` + Wi-Fi off + Tomorrow Plan generates (gated on Phase D Ollama work).
+- [ ] Screen recording of Family Message draft + approval dialog.
+- [ ] Hosted-gate artifact overlay (date and gate-id text on transparent background).
+
+If any one of these is missing 5 days before submission, escalate per the contingencies above.
+
+---
+
+## Fallback narrative (legacy ordering)
+
+The earlier shot order — problem hook → differentiate → log → plan → message → tech — remains a viable structure if the multimodal hero shot is unrecoverable and the teacher session falls through. It scores lower than the primary order but is honest and well-rehearsed. See git history of this file for the prior version.

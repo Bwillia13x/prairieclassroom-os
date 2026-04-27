@@ -16,14 +16,18 @@ The hardest part of teaching an inclusive classroom is usually not writing the l
 
 PrairieClassroom OS is built for that coordination problem. It is a classroom operations copilot for teachers and educational assistants, not a tutor and not a replacement for teacher judgment.
 
-The clearest product story is four adult jobs:
+The product is organized around four daily adult jobs:
 
 1. open the day and decide where to start
 2. adapt instruction for different learners
 3. prepare tomorrow from what happened today
 4. coordinate with adults or families using the same classroom context
 
-Behind that simpler story, the repo currently includes 12 primary panels and 13 model-routed workflows across differentiation, worksheet extraction, tomorrow planning, family-message drafting with approval gates, intervention logging, language supports, support-pattern detection, EA briefings, complexity forecasting, scaffold-decay review, substitute packets, and EA load balancing.
+These four jobs are wired together by a closed feedback loop: a note logged today becomes structured memory, that memory feeds tomorrow's plan, the plan informs the EA briefing, and the resulting interventions feed the next pattern report. The system gets more useful the longer a classroom uses it.
+
+Behind the four-job framing the repo ships 12 workflow tools and 13 model-routed prompt classes across differentiation, worksheet extraction, tomorrow planning, family-message drafting with approval gates, intervention logging, language supports, support-pattern detection, EA briefings, complexity forecasting, scaffold-decay review, substitute packets, and EA load balancing.
+
+Estimated time-back-to-teaching against the synthetic demo classroom (not pilot-validated): differentiating one worksheet for five readiness levels (~30 min by hand → ~30 sec); preparing an EA briefing (~15 min verbal → ~30 sec structured read); surfacing a recurring support pattern across two weeks of records (impractical → ~5 sec).
 
 The product thesis is simple: classroom complexity is a coordination problem. A useful AI system in this setting needs memory, retrieval, safety boundaries, and role-specific workflows, not just text generation.
 
@@ -35,11 +39,12 @@ Technically, PrairieClassroom OS uses a three-service architecture:
 
 Classroom memory lives in SQLite. Retrieval is SQL-based because the data is bounded, structured, and relational: students, interventions, plans, messages, and pattern reports. For this use case, SQL is more transparent and controllable than approximate vector retrieval.
 
-Gemma 4 is central to the design in three ways.
+Gemma 4 is central to the design in four ways.
 
-1. Multimodal worksheet handling: teachers can submit a worksheet image directly to the Differentiate workflow, letting Gemma 4 vision extract content without manual retyping.
+1. Multimodal worksheet handling: teachers submit a worksheet image directly to the Differentiate workflow; the `extract_worksheet` route base64-encodes the image into a Gemini-API `inline_data` part so Gemma 4 reads the paper artifact without manual retyping.
 2. Dual-tier routing: fast transformation tasks stay on the live tier, while planning and pattern synthesis route to the larger planning tier.
 3. Selective thinking mode: thinking is enabled only for tomorrow planning and support-pattern detection, where cross-record reasoning matters.
+4. Roster-checked function calling: Gemma 4 can call two bounded local tools (Alberta curriculum lookup, classroom intervention history); the intervention-history tool rejects unknown student aliases so the model cannot silently confirm a hallucinated student. Tool results round-trip through provider-native `tool_interactions[]`, not prompt injection.
 
 For the hackathon submission, the artifact-backed proof lane is hosted Gemma 4 through the Gemini API on synthetic/demo classroom data:
 

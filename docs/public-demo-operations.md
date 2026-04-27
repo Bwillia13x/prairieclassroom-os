@@ -2,6 +2,41 @@
 
 This is the deployment-side checklist for turning the local PrairieClassroom OS proof into a judge-safe public demo.
 
+The submission window for this work is Phase F of [plans/2026-05-18-submission-plan.md](./plans/2026-05-18-submission-plan.md), targeting 2026-05-11 → 2026-05-12.
+
+## Deploy Targets (selected 2026-04-26)
+
+- **Frontend:** Vercel free tier. `apps/web/vercel.json` is committed and configures SPA rewrites, security headers, and immutable asset caching for the production build.
+- **Orchestrator + inference:** TBD — choose one before Phase F begins:
+  - Render free tier (sleeps after 15 min idle; cold-start latency ~30s — acceptable for judge demos)
+  - Fly.io free tier (3 shared-cpu VMs; no idle sleep on free; needs Dockerfile)
+  - Hetzner CX11 ($5/mo; always on; manual systemd setup)
+
+## Pre-deploy Setup (Phase B/F)
+
+```bash
+# Frontend — link to a Vercel project
+cd apps/web
+npx vercel link
+# Set the API base; the orchestrator URL goes here
+npx vercel env add VITE_API_URL production
+```
+
+For the backend (Render example):
+
+```bash
+# render.yaml at repo root would define two services (orchestrator + inference)
+# Orchestrator env vars:
+#   PORT (set by Render)
+#   INFERENCE_URL=https://<inference-service>.onrender.com
+#   CORS_ORIGIN=https://<vercel-frontend-url>
+# Inference env vars:
+#   PRAIRIE_INFERENCE_HOST=0.0.0.0
+#   PRAIRIE_INFERENCE_PORT=$PORT
+#   PRAIRIE_GEMINI_API_KEY (secret)
+#   PRAIRIE_ENABLE_GEMINI_RUNS=true
+```
+
 ## Demo URL
 
 Use a URL that lands directly on the strongest demo state:
