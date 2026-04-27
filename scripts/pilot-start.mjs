@@ -207,11 +207,10 @@ async function main() {
   }
   console.log("");
 
-  // Demo-staleness preflight. The demo seed (data/demo/seed.ts) is
-  // time-relative but upsert-only, so a local SQLite DB that hasn't been
-  // pilot:reset since the last seed shows stale "396d ago" timestamps to
-  // teachers and demo judges. Warn but never block startup. If the
-  // orchestrator is unreachable for any reason, skip silently.
+  // Demo-staleness preflight. The demo seed is time-relative, but direct
+  // upserts and long-lived local SQLite DBs can still leave old rows behind.
+  // Warn but never block startup. If the orchestrator is unreachable for any
+  // reason, skip silently.
   const orchestratorBase = `http://localhost:${HEALTH_CHECKS.orchestrator.port}`;
   const latestInterventionAt = await fetchDemoLatestIntervention(orchestratorBase);
   if (isDemoStale({ latestInterventionAt })) {

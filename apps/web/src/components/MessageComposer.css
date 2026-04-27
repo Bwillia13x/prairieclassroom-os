@@ -31,20 +31,37 @@
 }
 
 .student-checkbox {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: var(--space-1);
   padding: var(--space-1) var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
   font-size: var(--text-sm);
+  font: inherit;
+  color: var(--color-text-secondary);
+  background: var(--color-surface);
   cursor: pointer;
   border-radius: calc(var(--radius) / 2);
-  transition: background var(--motion-fast) var(--ease-standard);
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard);
 }
 
 .student-checkbox:hover {
   background: var(--color-bg-muted);
 }
 
-.student-checkbox input[type="checkbox"] {
-  accent-color: var(--color-accent);
+.student-checkbox[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--color-accent-soft) 64%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+  color: var(--color-text);
+}
+
+.student-checkbox[aria-pressed="true"]::before {
+  content: "";
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: var(--radius-pill);
+  background: var(--color-accent);
 }

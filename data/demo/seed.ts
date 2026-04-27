@@ -47,6 +47,40 @@ const MODEL = "mock-gemma-4-4b-it";
 const SCHEMA_V = "1.0";
 
 const NOW = new Date();
+const MS_PER_MINUTE = 60_000;
+
+function isWeekendDay(date: Date): boolean {
+  const day = date.getDay();
+  return day === 0 || day === 6;
+}
+
+function latestUsableSchoolTimestamp(hour: number, minute: number, second = 0): Date {
+  const timestamp = new Date(NOW);
+  timestamp.setHours(hour, minute, second, 0);
+  while (isWeekendDay(timestamp) || timestamp > NOW) {
+    timestamp.setDate(timestamp.getDate() - 1);
+    timestamp.setHours(hour, minute, second, 0);
+  }
+  return timestamp;
+}
+
+function recentSchoolDayIso(
+  schoolDaysAgo: number,
+  hour: number,
+  minute: number,
+  second = 0,
+): string {
+  const timestamp = latestUsableSchoolTimestamp(hour, minute, second);
+  let remaining = Math.max(0, Math.floor(schoolDaysAgo));
+  while (remaining > 0) {
+    timestamp.setDate(timestamp.getDate() - 1);
+    timestamp.setHours(hour, minute, second, 0);
+    if (!isWeekendDay(timestamp)) {
+      remaining -= 1;
+    }
+  }
+  return timestamp.toISOString();
+}
 
 function startOfCurrentIsoWeekLocal(): Date {
   const isoDay = NOW.getDay() || 7;
@@ -84,7 +118,7 @@ function currentWeekSessionIso(
     timestamp = localSchoolWeekTimestamp(actualDayIndex, hour, minute, second);
   }
   if (timestamp > NOW) {
-    timestamp = new Date(NOW.getTime() - 60_000);
+    timestamp = new Date(NOW.getTime() - MS_PER_MINUTE);
   }
   return timestamp.toISOString();
 }
@@ -125,7 +159,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Brody rejoined the group calmly after approximately 6 minutes. Settled into seat and engaged with math warm-up within 2 minutes of sitting down.",
     follow_up_needed: false,
-    created_at: "2025-03-20T13:18:00.000Z",
+    created_at: recentSchoolDayIso(6, 13, 18),
     schema_version: SCHEMA_V,
   },
   {
@@ -139,7 +173,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Amira completed the problem correctly with written work that reflected her actual understanding. Farid benefited from explaining the steps aloud.",
     follow_up_needed: true,
-    created_at: "2025-03-21T10:42:00.000Z",
+    created_at: recentSchoolDayIso(5, 10, 42),
     schema_version: SCHEMA_V,
   },
   {
@@ -153,7 +187,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Daniyal followed Farid to the carpet without resistance. For the next transition (carpet to lunch), he independently checked the visual schedule and moved with the class.",
     follow_up_needed: true,
-    created_at: "2025-03-22T11:05:00.000Z",
+    created_at: recentSchoolDayIso(5, 11, 5),
     schema_version: SCHEMA_V,
   },
   {
@@ -167,7 +201,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Elena completed 8 out of 10 questions correctly with the manipulatives available (used them for 3 questions). Said 'that was way better' when finished.",
     follow_up_needed: true,
-    created_at: "2025-03-24T09:55:00.000Z",
+    created_at: recentSchoolDayIso(4, 9, 55),
     schema_version: SCHEMA_V,
   },
   {
@@ -181,7 +215,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Brody smiled and made eye contact briefly. Transitioned smoothly into math centres. Positive momentum building — this is day 3 of successful post-lunch transitions.",
     follow_up_needed: false,
-    created_at: "2025-03-25T13:12:00.000Z",
+    created_at: recentSchoolDayIso(3, 13, 12),
     schema_version: SCHEMA_V,
   },
   {
@@ -195,7 +229,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Daniyal read through two more pages with Chantal nearby. Chantal appeared proud and focused. At end of reading block she said 'I helped Daniyal figure out a word.'",
     follow_up_needed: false,
-    created_at: "2025-03-26T10:30:00.000Z",
+    created_at: recentSchoolDayIso(3, 10, 30),
     schema_version: SCHEMA_V,
   },
   {
@@ -209,7 +243,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Farid produced a complete journal entry with his dictated explanation copied. He reread it aloud twice and seemed satisfied. The written work accurately reflected his strong reasoning.",
     follow_up_needed: true,
-    created_at: "2025-03-27T11:20:00.000Z",
+    created_at: recentSchoolDayIso(2, 11, 20),
     schema_version: SCHEMA_V,
   },
   {
@@ -223,7 +257,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Elena said 'I actually get this now' at the end of the extended session. Amira accurately explained fraction equivalency to the group when we regrouped. Both students produced correct written summaries afterward.",
     follow_up_needed: false,
-    created_at: "2025-03-28T10:15:00.000Z",
+    created_at: recentSchoolDayIso(2, 10, 15),
     schema_version: SCHEMA_V,
   },
   // ─── Chantal scaffold-decay arc (12 records for scaffold-decay eval threshold) ──
@@ -235,7 +269,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Provided full sentence starters and word bank. Modelled the first sentence together.",
     outcome: "Completed 2 of 5 sentences with full scaffold support.",
     follow_up_needed: true,
-    created_at: "2025-03-05T10:00:00.000Z",
+    created_at: recentSchoolDayIso(24, 10, 0),
     schema_version: SCHEMA_V,
   },
   {
@@ -246,7 +280,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Gave sentence starters card. Sat nearby for the first 3 minutes.",
     outcome: "Completed 3 of 5 sentences. Used sentence starters for all three.",
     follow_up_needed: true,
-    created_at: "2025-03-07T10:15:00.000Z",
+    created_at: recentSchoolDayIso(22, 10, 15),
     schema_version: SCHEMA_V,
   },
   {
@@ -257,7 +291,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Provided sentence starters and word bank as requested. No additional modelling needed.",
     outcome: "Completed 4 of 5 sentences. Faster start than previous sessions.",
     follow_up_needed: false,
-    created_at: "2025-03-10T10:00:00.000Z",
+    created_at: recentSchoolDayIso(20, 10, 0),
     schema_version: SCHEMA_V,
   },
   {
@@ -268,7 +302,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Noted the independent start. Kept sentence starters available but did not prompt their use.",
     outcome: "Completed all 5 sentences. Two started independently, three used sentence starters.",
     follow_up_needed: false,
-    created_at: "2025-03-12T10:30:00.000Z",
+    created_at: recentSchoolDayIso(18, 10, 30),
     schema_version: SCHEMA_V,
   },
   {
@@ -279,7 +313,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Provided word bank only. Sentence starters on desk but face-down.",
     outcome: "Completed 4 of 5 sentences. Used sentence starters only for the last one.",
     follow_up_needed: false,
-    created_at: "2025-03-14T10:00:00.000Z",
+    created_at: recentSchoolDayIso(16, 10, 0),
     schema_version: SCHEMA_V,
   },
   {
@@ -290,7 +324,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Observed from a distance. Did not intervene.",
     outcome: "Completed all 5 sentences. Only used word bank for two unfamiliar words.",
     follow_up_needed: false,
-    created_at: "2025-03-17T10:15:00.000Z",
+    created_at: recentSchoolDayIso(14, 10, 15),
     schema_version: SCHEMA_V,
   },
   {
@@ -301,7 +335,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "No scaffold provided. Word bank available on desk but unused.",
     outcome: "Completed all sentences independently. Writing quality consistent with scaffolded sessions.",
     follow_up_needed: false,
-    created_at: "2025-03-19T10:00:00.000Z",
+    created_at: recentSchoolDayIso(12, 10, 0),
     schema_version: SCHEMA_V,
   },
   {
@@ -312,7 +346,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Offered word bank for the new topic vocabulary. Did not provide sentence starters.",
     outcome: "Completed 4 of 5 sentences. Quality lower on unfamiliar topic but independent.",
     follow_up_needed: false,
-    created_at: "2025-03-21T10:30:00.000Z",
+    created_at: recentSchoolDayIso(10, 10, 30),
     schema_version: SCHEMA_V,
   },
   {
@@ -323,7 +357,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "No intervention needed.",
     outcome: "Completed all sentences independently. Improving confidence visible in willingness to start.",
     follow_up_needed: false,
-    created_at: "2025-03-24T10:00:00.000Z",
+    created_at: recentSchoolDayIso(8, 10, 0),
     schema_version: SCHEMA_V,
   },
   {
@@ -334,7 +368,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "Acknowledged Chantal's peer support. No scaffold needed for her own work.",
     outcome: "Completed all sentences and assisted a peer. Strong independent writing session.",
     follow_up_needed: false,
-    created_at: "2025-03-26T10:15:00.000Z",
+    created_at: recentSchoolDayIso(6, 10, 15),
     schema_version: SCHEMA_V,
   },
   {
@@ -345,7 +379,7 @@ const interventions: InterventionRecord[] = [
     action_taken: "No intervention. Monitored for accuracy — writing was on-topic and complete.",
     outcome: "Completed early. Used the extra time to add details to her responses.",
     follow_up_needed: false,
-    created_at: "2025-03-28T10:00:00.000Z",
+    created_at: recentSchoolDayIso(4, 10, 0),
     schema_version: SCHEMA_V,
   },
   {
@@ -356,10 +390,10 @@ const interventions: InterventionRecord[] = [
     action_taken: "No intervention. Sentence starters have not been used for 2 weeks.",
     outcome: "Full independent completion. Your records show clear scaffold withdrawal pattern over past 4 weeks.",
     follow_up_needed: false,
-    created_at: "2025-03-31T10:30:00.000Z",
+    created_at: recentSchoolDayIso(2, 10, 30),
     schema_version: SCHEMA_V,
   },
-  // ─── Full-roster interventions (2026-04 week) — referencing new aliases ────
+  // ─── Full-roster interventions (current school week) — referencing new aliases ────
   {
     record_id: "int-demo-020",
     classroom_id: CLASSROOM,
@@ -371,7 +405,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Imani followed each step of the morning routine by end of day. No verbal English but she mimicked Chantal's actions accurately. Left with her belongings organized and a small smile. Follow-up: coordinate with settlement services for home-language support this week.",
     follow_up_needed: true,
-    created_at: "2026-04-07T09:12:00.000Z",
+    created_at: recentSchoolDayIso(4, 9, 12),
     schema_version: SCHEMA_V,
   },
   {
@@ -385,7 +419,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Chantal's peer mentor role (see int-demo-006, Mar 26) extends naturally to the new arrival. Imani has a clear ally for routine questions. Mental note: Chantal's informal support is saving many teacher interventions per day during Imani's first week.",
     follow_up_needed: false,
-    created_at: "2026-04-08T10:45:00.000Z",
+    created_at: recentSchoolDayIso(3, 10, 45),
     schema_version: SCHEMA_V,
   },
   {
@@ -399,7 +433,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Maya worked on the poetry analysis for the remaining 15 minutes. Produced a thoughtful paragraph on imagery. Independent engagement the whole time. The extension menu is finally working at the pace we hoped for.",
     follow_up_needed: false,
-    created_at: "2026-04-08T09:52:00.000Z",
+    created_at: recentSchoolDayIso(3, 9, 52),
     schema_version: SCHEMA_V,
   },
   {
@@ -413,7 +447,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Quinn completed 17 of 20 questions in the remaining time. 16 correct. Said 'I didn't know practice could be a draft' at the end of class. The framing matters; she needs written permission to be wrong on practice work.",
     follow_up_needed: true,
-    created_at: "2026-04-09T10:22:00.000Z",
+    created_at: recentSchoolDayIso(3, 10, 22),
     schema_version: SCHEMA_V,
   },
   {
@@ -427,7 +461,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Marco read the draft fluently, including the three flagged words. He said 'I don't feel the throat tightness on archaeologist anymore.' Sharing is next Friday — repeat the preview on Thursday. Follow-up: confirm SLP consult schedule covers next week.",
     follow_up_needed: true,
-    created_at: "2026-04-09T11:35:00.000Z",
+    created_at: recentSchoolDayIso(3, 11, 35),
     schema_version: SCHEMA_V,
   },
   {
@@ -441,7 +475,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Both students produced correct vocabulary matching sheets. Navpreet's written work was more complete than usual (he stayed focused to explain concepts to Farid) and Farid's pronunciation of the two target words improved. Mutual benefit — this pairing is worth repeating.",
     follow_up_needed: false,
-    created_at: "2026-04-10T09:30:00.000Z",
+    created_at: recentSchoolDayIso(2, 9, 30),
     schema_version: SCHEMA_V,
   },
   {
@@ -455,7 +489,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Wesley solved it in 12 minutes, with a correct written explanation. His reasoning was more structured than I expected — he identified the pattern in two steps and checked his work. Worth documenting as an anchor observation for the GATE program conversation with the resource teacher. Not a referral yet — an observation.",
     follow_up_needed: false,
-    created_at: "2026-04-12T13:10:00.000Z",
+    created_at: recentSchoolDayIso(0, 13, 10),
     schema_version: SCHEMA_V,
   },
 
@@ -472,7 +506,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Gabriel recovered within minutes once moved. Participated in the post-assembly discussion. Need to flag this with the music teacher before Friday concert rehearsal — gym acoustics are the issue, not classroom volume.",
     follow_up_needed: true,
-    created_at: "2026-04-08T10:45:00.000Z",
+    created_at: recentSchoolDayIso(3, 10, 45),
     schema_version: SCHEMA_V,
   },
   {
@@ -486,7 +520,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Hannah's typed output was the strongest narrative in the class today. This confirms the OT recommendation: keyboard access is not a convenience, it is an access tool. Will ensure Chromebook is on her desk at the start of every writing block going forward. Follow up with OT to document.",
     follow_up_needed: true,
-    created_at: "2026-04-08T09:50:00.000Z",
+    created_at: recentSchoolDayIso(3, 9, 50),
     schema_version: SCHEMA_V,
   },
   {
@@ -500,7 +534,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Jasper participated fully once he understood the sequence. He actually led the measurement recording because he noticed a pattern in the data that Oliver missed. The social story + preview combination is reliable for him — need to prep these before any new-format activity.",
     follow_up_needed: false,
-    created_at: "2026-04-09T10:55:00.000Z",
+    created_at: recentSchoolDayIso(2, 10, 55),
     schema_version: SCHEMA_V,
   },
   {
@@ -514,7 +548,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Kiana returned after 10 minutes looking much better. Need to reinforce with the whole class that some students have break schedules that aren't optional — frame it as 'everyone's body has different needs' without singling her out. The vibrate timer should prevent this from recurring.",
     follow_up_needed: true,
-    created_at: "2026-04-09T10:20:00.000Z",
+    created_at: recentSchoolDayIso(2, 10, 20),
     schema_version: SCHEMA_V,
   },
   {
@@ -528,7 +562,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Oliver's dictated journal entry was one of the most detailed in the class. The gap between his oral and written expression is the widest I've seen. The resource teacher is monitoring monthly — will share this sample at the next check-in. The key insight: he doesn't lack ideas or language, he lacks an output channel that matches his capacity.",
     follow_up_needed: true,
-    created_at: "2026-04-10T09:40:00.000Z",
+    created_at: recentSchoolDayIso(2, 9, 40),
     schema_version: SCHEMA_V,
   },
   {
@@ -542,7 +576,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Anaya was visibly more confident for the rest of the period. Two students asked her questions about Ontario afterward. This is the first time she's spontaneously contributed in social studies since transferring. The bridge between her prior curriculum knowledge and Alberta content is a strength, not a gap.",
     follow_up_needed: false,
-    created_at: "2026-04-10T11:00:00.000Z",
+    created_at: recentSchoolDayIso(2, 11, 0),
     schema_version: SCHEMA_V,
   },
   {
@@ -556,7 +590,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Rania completed the activity and Farid reported that explaining helped him understand the terms better too. Mutual benefit — exactly the peer model dynamic the EAL literature describes. Will seat them together for vocabulary-heavy tasks. Note: Farid and Rania speak different Arabic dialects but communicate effectively.",
     follow_up_needed: false,
-    created_at: "2026-04-11T11:15:00.000Z",
+    created_at: recentSchoolDayIso(1, 11, 15),
     schema_version: SCHEMA_V,
   },
   {
@@ -570,7 +604,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Nadia engaged with the rest of the morning. The art-as-processing strategy is working — she regulates through drawing and then re-enters academic tasks independently. The school counselor confirmed the flexible attendance arrangement is still in place. Key: the morning check-in must happen every day she's present, especially after absences.",
     follow_up_needed: true,
-    created_at: "2026-04-12T08:40:00.000Z",
+    created_at: recentSchoolDayIso(0, 8, 40),
     schema_version: SCHEMA_V,
   },
   {
@@ -584,7 +618,7 @@ const interventions: InterventionRecord[] = [
     outcome:
       "Gabriel completed the test comfortably and scored 92% — above his typical range. Noise level in the main room was clearly impacting his performance. Will request a second permanent quiet desk from the resource room for test days going forward.",
     follow_up_needed: false,
-    created_at: "2026-04-12T13:30:00.000Z",
+    created_at: recentSchoolDayIso(0, 13, 30),
     schema_version: SCHEMA_V,
   },
 ];
@@ -974,7 +1008,7 @@ const patternReport: SupportPatternReport = {
       priority: "medium",
     } as SuggestedFocus,
   ],
-  generated_at: "2025-03-28T15:00:00.000Z",
+  generated_at: recentSchoolDayIso(1, 15, 0),
   schema_version: SCHEMA_V,
 };
 

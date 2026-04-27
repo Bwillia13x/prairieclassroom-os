@@ -181,7 +181,7 @@ describe("FamilyMessagePanel", () => {
     expect(screen.queryByText(/approval rate/i)).not.toBeInTheDocument();
   });
 
-  it("sets data-split-state='output' on the WorkspaceLayout while a draft is visible", () => {
+  it("keeps the message workflow in a single-column WorkspaceLayout while a draft is visible", () => {
     const appContext = makeAppContext();
     const { container } = render(
       <AppContext.Provider value={appContext}>
@@ -191,7 +191,39 @@ describe("FamilyMessagePanel", () => {
 
     const layout = container.querySelector(".workspace-layout");
     expect(layout).toBeTruthy();
+    expect(layout).toHaveAttribute("data-layout", "single");
     expect(layout).toHaveAttribute("data-split-state", "output");
+  });
+
+  it("renders family follow-up coverage as an in-flow strip so it cannot cover the composer", () => {
+    const appContext = {
+      ...makeAppContext(),
+      latestTodaySnapshot: {
+        student_threads: [
+          {
+            alias: "Amira",
+            thread_count: 0,
+            pending_action_count: 0,
+            last_intervention_days: 1,
+            eal_flag: false,
+            support_tags: [],
+            actions: [],
+            priority_reason: "Amira is ready for a routine family update.",
+          },
+        ],
+      } as unknown as AppContextValue["latestTodaySnapshot"],
+    };
+
+    const { container } = render(
+      <AppContext.Provider value={appContext}>
+        <FamilyMessagePanel prefill={null} />
+      </AppContext.Provider>,
+    );
+
+    const coverage = container.querySelector(".student-coverage");
+    expect(coverage).toHaveClass("student-coverage--static");
+    expect(coverage).toHaveAttribute("data-pinned", "false");
+    expect(container.querySelector(".student-coverage__sentinel")).toBeNull();
   });
 
   it("persists approval edits, updates the visible approval state, and does not expose fake undo", async () => {

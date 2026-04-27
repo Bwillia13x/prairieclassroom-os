@@ -214,6 +214,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
           threads={latestTodaySnapshot.student_threads}
           title="Family follow-up coverage"
           selectedAlias={selectedAlias}
+          sticky={false}
           onSelectThread={(thread) => {
             setSelectedAlias(thread.alias);
             dispatch({
@@ -229,6 +230,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
       ) : null}
 
       <WorkspaceLayout
+        layout="single"
         splitState={displayResult ? "output" : "input"}
         rail={(
           <>

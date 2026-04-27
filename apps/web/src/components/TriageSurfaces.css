@@ -361,6 +361,12 @@ button.action-atlas__compact-card:disabled {
     box-shadow var(--motion-base) var(--ease-standard);
 }
 
+.student-coverage--static {
+  position: relative;
+  top: auto;
+  z-index: auto;
+}
+
 .student-coverage[data-pinned="true"] {
   padding: var(--space-2) var(--space-3);
   gap: var(--space-2);

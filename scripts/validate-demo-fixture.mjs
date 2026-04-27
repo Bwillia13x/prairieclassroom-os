@@ -12,6 +12,8 @@ const CLASSROOM = "demo-okafor-grade34";
 const DEMO_FILE = path.join(ROOT, "data", "synthetic_classrooms", "classroom_demo.json");
 const SEED_FILE = path.join(ROOT, "data", "demo", "seed.ts");
 const SYNTHETIC_CLASSROOM_DIR = path.join(ROOT, "data", "synthetic_classrooms");
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+const MAX_DEMO_RECORD_AGE_DAYS = 45;
 
 const EXPECTED_COUNTS = {
   interventions: 36,
@@ -225,6 +227,40 @@ function assertNoFutureRows(db) {
   }
 }
 
+function assertNoStaleSeedRows(db) {
+  const cutoffIso = new Date(Date.now() - MAX_DEMO_RECORD_AGE_DAYS * MS_PER_DAY).toISOString();
+  const createdAtTables = [
+    "interventions",
+    "generated_plans",
+    "pattern_reports",
+    "family_messages",
+    "sessions",
+  ];
+
+  for (const table of createdAtTables) {
+    const row = db
+      .prepare(`SELECT created_at FROM ${table} WHERE classroom_id = ? AND created_at < ? ORDER BY created_at ASC LIMIT 1`)
+      .get(CLASSROOM, cutoffIso);
+    if (row) {
+      fail(`${table} contains stale demo timestamp older than ${MAX_DEMO_RECORD_AGE_DAYS} days: ${row.created_at}.`);
+    }
+  }
+
+  const staleSession = db
+    .prepare(`
+      SELECT id, started_at, ended_at
+      FROM sessions
+      WHERE classroom_id = ?
+        AND (started_at < ? OR ended_at < ?)
+      ORDER BY started_at ASC
+      LIMIT 1
+    `)
+    .get(CLASSROOM, cutoffIso, cutoffIso);
+  if (staleSession) {
+    fail(`Session ${staleSession.id} is stale-dated: ${staleSession.started_at} / ${staleSession.ended_at}.`);
+  }
+}
+
 function assertCleanSeedCounts() {
   const tempDir = mkdtempSync(path.join(tmpdir(), "prairie-demo-fixture-"));
   try {
@@ -281,6 +317,7 @@ function assertCleanSeedCounts() {
       }
 
       assertNoFutureRows(db);
+      assertNoStaleSeedRows(db);
 
       const approvedMessages = db
         .prepare("SELECT COUNT(*) AS count FROM family_messages WHERE classroom_id = ? AND teacher_approved = 1")

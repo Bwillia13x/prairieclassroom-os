@@ -108,16 +108,27 @@ async function expectActiveClassroom(page, expected, label) {
 
 async function expectCheckedStudentInPanel(page, surfaceId, student, label) {
   const host = hostTabForSurface(surfaceId);
-  const checkbox = page
+  const control = page
     .locator(`#panel-${host}:not([hidden]) .student-checkbox`)
     .filter({ hasText: student })
-    .locator("input");
-  await checkbox.waitFor();
+    .first();
+  await control.waitFor({ state: "visible" });
+
+  const checkbox = control.locator("input");
+  if ((await checkbox.count()) > 0) {
+    await page.waitForFunction(
+      (element) => Boolean(element && typeof element === "object" && "checked" in element && element.checked),
+      await checkbox.elementHandle(),
+    );
+    assert.equal(await checkbox.isChecked(), true, `${label} expected ${student} to be checked`);
+    return;
+  }
+
   await page.waitForFunction(
-    (element) => Boolean(element && typeof element === "object" && "checked" in element && element.checked),
-    await checkbox.elementHandle(),
+    (element) => element?.getAttribute("aria-pressed") === "true",
+    await control.elementHandle(),
   );
-  assert.equal(await checkbox.isChecked(), true, `${label} expected ${student} to be checked`);
+  assert.equal(await control.getAttribute("aria-pressed"), "true", `${label} expected ${student} to be selected`);
 }
 
 async function dismissRolePromptIfPresent(page) {

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useId } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
 import DraftRestoreChip from "./DraftRestoreChip";
 import { FormCard } from "./shared";
@@ -44,6 +44,7 @@ export default function MessageComposer({
   loading,
   prefill,
 }: Props) {
+  const studentListId = useId();
   const [selectedStudents, setSelectedStudents] = useState<string[]>(
     prefill?.student_ref ? [prefill.student_ref] : [],
   );
@@ -98,8 +99,15 @@ export default function MessageComposer({
     }
   }, [selectedStudents, students]);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  function toggleStudent(alias: string) {
+    setSelectedStudents((prev) =>
+      prev.includes(alias)
+        ? prev.filter((student) => student !== alias)
+        : [...prev, alias],
+    );
+  }
+
+  function submitDraft() {
     if (selectedStudents.length === 0) return;
     onSubmit(
       selectedClassroom,
@@ -109,6 +117,11 @@ export default function MessageComposer({
       context.trim() || undefined,
     );
     clearDraft();
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    submitDraft();
   }
 
   return (
@@ -138,24 +151,22 @@ export default function MessageComposer({
         )}
 
         <div className={`field${prefill && !prefillDismissed ? " field--prefilled" : ""}`}>
-          <label className="form-label">Students</label>
-          <div className="student-checkbox-list">
-            {students.map((s) => (
-              <label key={s.alias} className="student-checkbox">
-                <input
-                  type="checkbox"
-                  checked={selectedStudents.includes(s.alias)}
-                  onChange={(e) => {
-                    if (e.target.checked) {
-                      setSelectedStudents((prev) => [...prev, s.alias]);
-                    } else {
-                      setSelectedStudents((prev) => prev.filter((r) => r !== s.alias));
-                    }
-                  }}
-                />
-                <span>{s.alias}</span>
-              </label>
-            ))}
+          <span id={`${studentListId}-label`} className="form-label">Students</span>
+          <div className="student-checkbox-list" role="group" aria-labelledby={`${studentListId}-label`}>
+            {students.map((s) => {
+              const selected = selectedStudents.includes(s.alias);
+              return (
+                <button
+                  key={s.alias}
+                  type="button"
+                  className="student-checkbox"
+                  aria-pressed={selected}
+                  onClick={() => toggleStudent(s.alias)}
+                >
+                  <span>{s.alias}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
@@ -200,10 +211,19 @@ export default function MessageComposer({
             placeholder="e.g. 'Ari showed great improvement in reading comprehension this week.'"
             value={context}
             onChange={(e) => setContext(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key !== "Enter" || (!e.metaKey && !e.ctrlKey)) return;
+              e.preventDefault();
+              submitDraft();
+            }}
           />
         </div>
 
-        <button type="submit" className="btn btn--primary" disabled={loading}>
+        <button
+          type="submit"
+          className="btn btn--primary"
+          disabled={loading}
+        >
           {loading ? "Drafting message…" : "Draft family message"}
         </button>
       </form>

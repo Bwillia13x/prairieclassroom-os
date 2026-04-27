@@ -60,6 +60,12 @@ import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, Tomor
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 const PAGE_RAIL_COLLAPSED_KEY = "prairie:page-rail-collapsed";
 const LEGACY_TODAY_RAIL_COLLAPSED_KEY = "prairie:today-rail-collapsed";
+const PAGE_RAIL_TABS: ReadonlySet<ActiveTab> = new Set([
+  "classroom",
+  "today",
+  "tomorrow",
+  "week",
+]);
 
 function describeClassroom(classroom: ClassroomProfile) {
   return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
@@ -659,7 +665,11 @@ export default function App() {
 
   const { activeClassroom, activeTab, activeTool, authPrompt, debtCounts, initError } = state;
   const activePageAnchors = PAGE_ANCHORS[activeTab];
-  const pageRailAvailable = state.classrooms.length > 0 && !initError && Boolean(activePageAnchors);
+  const pageRailAvailable =
+    state.classrooms.length > 0 &&
+    !initError &&
+    Boolean(activePageAnchors) &&
+    PAGE_RAIL_TABS.has(activeTab);
   const profile = state.classrooms.find((entry) => entry.classroom_id === activeClassroom);
   const students = profile?.students ?? [];
   const roleForNav: ClassroomRole = activeRole;

@@ -1,13 +1,13 @@
 /**
  * scripts/lib/demo-freshness.mjs — pilot:start preflight helper for stale demo data.
  *
- * Why this exists: `data/demo/seed.ts` is time-relative (uses `NOW = new Date()`)
- * but is upsert-only. A local SQLite memory DB that hasn't been freshly reset
- * keeps stale rows, so teachers and demo judges see relative timestamps like
- * "396d ago" on the Classroom and Today panels. The fix is a one-line operator
- * recommendation: run `npm run pilot:reset`. This module encapsulates the
- * "is it stale?" decision and the read of the demo classroom's most recent
- * intervention timestamp from the orchestrator API.
+ * Why this exists: `data/demo/seed.ts` is time-relative, but direct upserts and
+ * long-lived local SQLite DBs can still leave stale rows behind. Teachers and
+ * demo judges then see old relative timestamps on the Classroom and Today
+ * panels. The fix is a one-line operator recommendation: run
+ * `npm run pilot:reset`. This module encapsulates the "is it stale?" decision
+ * and the read of the demo classroom's most recent intervention timestamp from
+ * the orchestrator API.
  */
 
 // Note: the orchestrator emits last_intervention_days as a whole-day

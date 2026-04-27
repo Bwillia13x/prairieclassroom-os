@@ -262,20 +262,17 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
     expect(rail.querySelector(".shell-nav__kbd")).toBeNull();
   });
 
-  it("mounts the collapsible page drawer across every main page", async () => {
+  it("mounts the collapsible page drawer on long-form pages and keeps dense tool workspaces clear", async () => {
     await renderShellWithDemo();
 
-    const pages = [
+    const railPages = [
       ["classroom", "Classroom sections", /01.*Command/i],
       ["today", "Today sections", /01.*Command Center/i],
       ["tomorrow", "Tomorrow sections", /01.*Planning Hub/i],
       ["week", "Week sections", /01.*Week Command/i],
-      ["prep", "Prep sections", /01.*Prep Command/i],
-      ["ops", "Ops sections", /01.*Ops Command/i],
-      ["review", "Review sections", /01.*Review Command/i],
     ] as const;
 
-    for (const [tab, label, firstAnchor] of pages) {
+    for (const [tab, label, firstAnchor] of railPages) {
       fireEvent.click(screen.getByTestId(`shell-nav-group-${tab}`));
       await waitFor(() => {
         expect(screen.getByRole("navigation", { name: label })).toBeInTheDocument();
@@ -283,15 +280,22 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
       expect(screen.getByRole("link", { name: firstAnchor })).toBeInTheDocument();
     }
 
-    const collapse = screen.getByRole("button", { name: /collapse review sections navigation/i });
+    const collapse = screen.getByRole("button", { name: /collapse week sections navigation/i });
     fireEvent.click(collapse);
 
-    expect(screen.getByRole("button", { name: /expand review sections navigation/i })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: /expand week sections navigation/i })).toHaveAttribute(
       "aria-expanded",
       "false",
     );
     expect(localStorage.getItem("prairie:page-rail-collapsed")).toBe("1");
-    expect(screen.queryByRole("link", { name: /01.*Review Command/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: /01.*Week Command/i })).not.toBeInTheDocument();
+
+    for (const tab of ["prep", "ops", "review"] as const) {
+      fireEvent.click(screen.getByTestId(`shell-nav-group-${tab}`));
+      await waitFor(() => {
+        expect(screen.queryByRole("navigation", { name: /sections/i })).not.toBeInTheDocument();
+      });
+    }
   });
 
   it("feeds Today debt into the command palette for per-student actions", async () => {

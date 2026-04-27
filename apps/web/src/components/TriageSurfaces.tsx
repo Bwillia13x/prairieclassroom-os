@@ -549,6 +549,7 @@ interface StudentCoverageStripProps {
   threads: StudentThread[];
   title?: string;
   selectedAlias?: string | null;
+  sticky?: boolean;
   onSelectThread: (thread: StudentThread) => void;
 }
 
@@ -595,6 +596,7 @@ export function StudentCoverageStrip({
   threads,
   title = "Student coverage",
   selectedAlias,
+  sticky = true,
   onSelectThread,
 }: StudentCoverageStripProps) {
   const [filter, setFilter] = useState<CoverageFilter>("all");
@@ -629,6 +631,11 @@ export function StudentCoverageStrip({
   // computed sticky offset. The sentinel sits just above the section so
   // when it scrolls above the sticky line we know the section is pinned.
   useEffect(() => {
+    if (!sticky) {
+      setPinned(false);
+      return;
+    }
+
     const sentinel = sentinelRef.current;
     const section = sectionRef.current;
     if (!sentinel || !section) return;
@@ -652,7 +659,7 @@ export function StudentCoverageStrip({
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
     };
-  }, []);
+  }, [sticky]);
 
   // Horizontal-scroll overflow detection for fade masks and arrow buttons.
   const syncOverflow = useCallback(() => {
@@ -723,11 +730,11 @@ export function StudentCoverageStrip({
 
   return (
     <>
-      <div ref={sentinelRef} className="student-coverage__sentinel" aria-hidden="true" />
+      {sticky ? <div ref={sentinelRef} className="student-coverage__sentinel" aria-hidden="true" /> : null}
       <section
         ref={sectionRef}
-        className="student-coverage"
-        data-pinned={pinned ? "true" : "false"}
+        className={`student-coverage${sticky ? "" : " student-coverage--static"}`}
+        data-pinned={sticky && pinned ? "true" : "false"}
         aria-label={title}
       >
         <div className="student-coverage__header">
