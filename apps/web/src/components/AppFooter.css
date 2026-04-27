@@ -194,3 +194,71 @@
     padding-bottom: 8rem; /* clear mobile nav */
   }
 }
+
+/* ────────────────────────────────────────────────────────────
+   Phase E1 (2026-04-27) — mono identity rail.
+   A build-stamp row anchored below the friendly meta line.
+   Reads as a status / context rail (classroom · env · version),
+   not as user-facing chrome. Hairline top border separates it
+   from the meta line above. Mono numerals/keys make it easy
+   to grep visually during demos and bug reports.
+   ──────────────────────────────────────────────────────────── */
+
+.app-footer__rail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin-top: var(--space-1);
+  padding-top: var(--space-2);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 32%, transparent);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-feature-settings: var(--font-feature-numeric);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-tertiary);
+  line-height: 1;
+}
+
+.app-footer__rail-slot {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+
+.app-footer__rail-slot + .app-footer__rail-slot::before {
+  /* Bullet separator drawn via pseudo-element so the gap-driven
+     layout still applies when slots wrap to a second row on mobile. */
+  content: "·";
+  margin-right: 0.4rem;
+  color: var(--color-text-tertiary);
+  opacity: 0.45;
+}
+
+.app-footer__rail-key {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.65;
+}
+
+.app-footer__rail-value {
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* On <600px the meta line drops the toggle/shortcuts list, but the
+   build context rail stays visible — it's the most useful piece of
+   the footer for support and judging contexts on phones. The rail
+   keeps `--text-2xs` (11px) so the build stamp remains legible
+   without requiring a zoom; only the inter-slot gap tightens so
+   the slots can wrap onto a second line cleanly when the
+   classroom code is long. */
+@media (max-width: 600px) {
+  .app-footer__rail {
+    gap: var(--space-2);
+  }
+}

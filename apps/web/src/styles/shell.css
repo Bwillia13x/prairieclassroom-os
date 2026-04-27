@@ -116,8 +116,18 @@
 }
 
 .brand-mark__glyph {
-  width: clamp(1.85rem, 2.3vw, 2.35rem);
-  height: clamp(1.85rem, 2.3vw, 2.35rem);
+  /* Phase D1 (2026-04-27) — pinned to 1.5rem (24px) so the logomark
+     reads as a deliberate brand size rather than a viewport-scaled
+     decoration. The previous clamp(1.85rem, 2.3vw, 2.35rem) drifted
+     30→38px depending on viewport, which crowded the wordmark on
+     wide displays and lost design discipline. The 64-unit viewBox
+     stays unchanged; rendering scales cleanly at the smaller fixed
+     size. The 18px drop-shadow halo is preserved — at 24px glyph
+     it now extends slightly further relative to the mark, which
+     reinforces the brand-breath atmospheric cycle without growing
+     the header's height. */
+  width: 1.5rem;
+  height: 1.5rem;
   flex-shrink: 0;
   color: var(--shell-control-accent);
   filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent));
@@ -895,12 +905,25 @@
   scrollbar-width: thin;
   padding: var(--page-content-padding-top) var(--space-6) var(--space-6);
   background: var(--color-workspace);
-  border: 1px solid color-mix(in srgb, var(--color-border) 45%, transparent);
+  /* Phase B4 — Workspace boundary hairline.
+     Bumped left/right border opacity 45% → 62% so the three-layer
+     architecture (bg → workspace → surface) reads as a contained
+     vessel. The previous 45% boundary was sub-perceptual in dark
+     mode where bg (#020305) and workspace (#08090c) are both
+     near-black — the workspace silhouette dissolved into the canvas
+     and the layered material model was invisible. The workspace
+     meets the viewport edge at the bottom (app-shell has no bottom
+     padding) so a true bottom border is not added; instead an inset
+     top hairline at higher contrast carries the layer cue downward. */
+  border: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent);
   border-top: 0;
   border-bottom: none;
   border-radius: 0 0 0 0;
   scroll-padding-top: var(--space-3);
-  box-shadow: inset 0 1px 0 color-mix(in srgb, white 4%, transparent);
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 5%, transparent),
+    inset 1px 0 0 color-mix(in srgb, var(--color-border) 28%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--color-border) 28%, transparent);
 }
 
 /* Section-toned top rail — a 2px accent that falls directly under the

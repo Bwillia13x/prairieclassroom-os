@@ -143,6 +143,40 @@
       transparent 55%
     );
 
+  /* ------------------------------------------------------------
+     Classroom-lume vertical wash (2026-04-27 Phase A1).
+     The second sanctioned atmospheric moment in the product,
+     scoped exclusively to the Classroom command-block hero
+     (.page-hero--classroom). A 3% cognac-tinted vertical wash
+     descending from the top of the hero — quieter than the
+     retired prairie-horizon (which sat at 4%/3% on Today) and
+     directionally distinct: prairie-horizon was a bottom-up
+     ground glow paired with an upper-left sky wash, lume is a
+     single top-down sheet that anchors the bird's-eye dashboard
+     role of the Classroom page.
+
+     Because --color-brand-highlight is itself defined with
+     light-dark() values, the color-mix() call below
+     automatically produces mode-appropriate output without an
+     explicit light-dark() wrapper.
+
+     Consumers: exactly one — `.page-hero--classroom` in
+     PageHero.css. The 2026-04-22 Tier-C "atmospheric treatment
+     is limited to the single hero moment" carve-out is updated
+     by the 2026-04-27 Phase A entry to allow this Classroom-
+     scoped second moment because the hero on Today is no
+     longer atmospheric (it switched to a hairline in the same
+     2026-04-22 Tier-C de-beige pass). The total atmospheric
+     surface count across the product remains one — it just
+     moved from Today to Classroom.
+     ------------------------------------------------------------ */
+  --gradient-classroom-lume:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-brand-highlight) 3%, transparent) 0%,
+      transparent 55%
+    );
+
   /* Semantic status family — conservative education-sector palette */
   --color-success: light-dark(#1f7a44, #6cc38f);
   --color-warning: light-dark(#a66a00, #e7b35c);

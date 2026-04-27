@@ -26,6 +26,7 @@ import OperationalPreview, {
   type OperationalPreviewChip,
   type OperationalPreviewGroup,
 } from "../components/shared/OperationalPreview";
+import SectionMarker from "../components/shared/SectionMarker";
 import { useZoneDisclosure } from "../hooks/useZoneDisclosure";
 import {
   ClassroomCompositionRings,
@@ -344,7 +345,12 @@ export default function ClassroomPanel({
           {
             eyebrow: "Forecast",
             label: "Week",
-            icon: "grid",
+            // Phase D2 (2026-04-27) — `trend` glyph (rising sparkline
+            // + dashed baseline) replaces the prior `grid` so the
+            // FORECAST card reads as a forward-looking measurement,
+            // not as another dashboard. Destination tint stays green
+            // via the `data-pivot-icon` cascade in PageHero.css.
+            icon: "trend",
             onClick: () => onTabChange("week"),
           },
         ]}
@@ -365,6 +371,12 @@ export default function ClassroomPanel({
       />
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
+
+      <SectionMarker
+        number="02"
+        title="Operating signal"
+        subtitle="Pulse, watchlist, and queue distribution that drive the day's coverage decisions."
+      />
 
       {/* ============================================================
           ZONE 2 — PULSE (HealthBar moved up from bottom)

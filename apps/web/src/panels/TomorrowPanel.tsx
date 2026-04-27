@@ -16,6 +16,7 @@ import PageHero, {
 import OperationalPreview, {
   type OperationalPreviewGroup,
 } from "../components/shared/OperationalPreview";
+import SectionMarker from "../components/shared/SectionMarker";
 import type { FamilyMessagePrefill, InterventionPrefill } from "../types";
 
 const TOMORROW_TOOLS = TOOLS_BY_TAB.tomorrow ?? (["tomorrow-plan", "complexity-forecast"] as ActiveTool[]);
@@ -195,7 +196,7 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
         }
         metricGroups={heroMetricGroups}
         statusRows={heroStatusRows}
-        variant="week"
+        variant="tomorrow"
       />
 
       {planHasPreview ? (
@@ -219,6 +220,12 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
           />
         </section>
       ) : null}
+
+      <SectionMarker
+        number="02"
+        title="Stage tomorrow"
+        subtitle="Choose between the support plan and the complexity forecast — both feed the next school day."
+      />
 
       <div id="tomorrow-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Tomorrow tool">
         {TOMORROW_TOOLS.map((tool) => {

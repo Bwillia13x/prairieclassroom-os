@@ -1804,9 +1804,23 @@
 
 .app-main {
   background: var(--color-workspace) !important;
-  border: 1px solid var(--color-border) !important;
+  /* Phase B4 — Workspace boundary hairline.
+     Bumped border opacity 100% solid → 70% mixed against the workspace
+     bg so the boundary still reads cleanly at the Nothing aesthetic
+     without the rule looking ink-pen-heavy at desktop widths. The
+     color-mix with --color-workspace (rather than transparent) keeps
+     the line warm-graphite in dark mode rather than fading the edge
+     into the page bg. Inset side hairlines reinforce the vertical
+     edges so the three-layer architecture (bg → workspace → surface)
+     reads even on dark mode where the bg/workspace tonal step is
+     near-perceptual. */
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-workspace)) !important;
   border-top: 0 !important;
   border-radius: 0 0 2px 2px !important;
+  box-shadow:
+    inset 0 1px 0 color-mix(in srgb, white 5%, transparent),
+    inset 1px 0 0 color-mix(in srgb, var(--color-border) 32%, transparent),
+    inset -1px 0 0 color-mix(in srgb, var(--color-border) 32%, transparent) !important;
 }
 
 @media (min-width: 1280px) {
@@ -1814,15 +1828,23 @@
      !important rules above so shell.css's `@media (min-width: 1280px)`
      intent can take effect: four-sided border so the workspace reads as
      a floating card separated from the header by the gutter. Uses the
-     theme's own --radius-lg and --shadow-sm tokens — under the Nothing
-     theme those flatten to --radius-sm and none, preserving the flat
-     rectangle aesthetic while still communicating the float via the
-     gutter + full border. Narrower viewports keep the flush-docked
-     silhouette from the base rule. */
+     theme's own --radius-lg token — under the Nothing theme that
+     flattens to --radius-sm, preserving the flat rectangle aesthetic
+     while still communicating the float via the gutter + full border.
+     Narrower viewports keep the flush-docked silhouette from the base
+     rule. Phase B4 keeps the inset side hairlines so the three-layer
+     cue is preserved on the floating variant too — the inset hairlines
+     are rendered via box-shadow but they ARE the hairlines, not drop
+     shadows, so the Nothing-theme shadow suppression does not apply
+     (we don't include --shadow-sm in the list because that token is
+     set to `none` and would invalidate the comma-separated shadow). */
   .app-main {
-    border-top: 1px solid var(--color-border) !important;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, var(--color-workspace)) !important;
     border-radius: var(--radius-lg) !important;
-    box-shadow: var(--shadow-sm) !important;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 5%, transparent),
+      inset 1px 0 0 color-mix(in srgb, var(--color-border) 32%, transparent),
+      inset -1px 0 0 color-mix(in srgb, var(--color-border) 32%, transparent) !important;
   }
 }
 

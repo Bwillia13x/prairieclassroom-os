@@ -3,7 +3,13 @@ import SectionIcon from "../SectionIcon";
 import "./PageHero.css";
 
 export type PageHeroPulseTone = "success" | "warning" | "danger" | "neutral";
-export type PageHeroVariant = "classroom" | "prep" | "ops" | "review" | "week";
+export type PageHeroVariant =
+  | "classroom"
+  | "prep"
+  | "ops"
+  | "review"
+  | "week"
+  | "tomorrow";
 
 export interface PageHeroPulse {
   tone: PageHeroPulseTone;
@@ -15,7 +21,15 @@ export interface PageHeroPulse {
 export interface PageHeroPivot {
   eyebrow: string;
   label: string;
-  icon: "sun" | "clock" | "grid";
+  /* Phase B2 introduced the destination-tinted underline contract:
+     sun → cognac (Today / live), clock → navy (Tomorrow / staged),
+     grid → green (Week / forecast).
+     Phase D2 (2026-04-27) adds `trend` as a clearer "forecast"
+     glyph — kept paired to the same green Week-destination tint as
+     `grid` so the navigation intent and the brand tone stay in sync.
+     `grid` remains a valid value for non-Week pivots that may want
+     the green tint without the trend metaphor. */
+  icon: "sun" | "clock" | "grid" | "trend";
   onClick: () => void;
 }
 
@@ -24,6 +38,10 @@ export interface PageHeroMetric {
   label: string;
   tone?: PageHeroPulseTone;
   meta?: string;
+  /** Phase B1: when true, the metric renders at display-sm scale with
+   * a 2px tonal underline. The first metric in each group / flat list
+   * is auto-promoted to lead unless the consumer overrides explicitly. */
+  lead?: boolean;
 }
 
 export interface PageHeroMetricGroup {
@@ -39,7 +57,7 @@ export interface PageHeroStatusRow {
 
 interface Props {
   eyebrow: string;
-  title: string;
+  title: ReactNode;
   description?: ReactNode;
   pulse?: PageHeroPulse;
   metrics?: PageHeroMetric[];
@@ -52,15 +70,25 @@ interface Props {
   ariaLabel?: string;
 }
 
-const PIVOT_ICON: Record<PageHeroPivot["icon"], "sun" | "clock" | "grid"> = {
+const PIVOT_ICON: Record<PageHeroPivot["icon"], PageHeroPivot["icon"]> = {
   sun: "sun",
   clock: "clock",
   grid: "grid",
+  trend: "trend",
 };
 
 function metricToneClass(tone?: PageHeroPulseTone): string {
   if (!tone || tone === "neutral") return "";
   return ` page-hero__metric--${tone}`;
+}
+
+/** Resolve the `lead` flag for a metric at index `idx` within its
+ * group. The first metric is auto-promoted unless the consumer set
+ * `lead` explicitly; non-first metrics default to false unless the
+ * consumer set `lead: true`. Phase B1. */
+function isLeadMetric(metric: PageHeroMetric, idx: number): boolean {
+  if (typeof metric.lead === "boolean") return metric.lead;
+  return idx === 0;
 }
 
 export default function PageHero({
@@ -111,6 +139,7 @@ export default function PageHero({
                 key={`${pivot.eyebrow}-${pivot.label}-${idx}`}
                 type="button"
                 className="page-hero__pivot"
+                data-pivot-icon={pivot.icon}
                 onClick={pivot.onClick}
                 aria-label={`${pivot.eyebrow}: ${pivot.label}`}
               >
@@ -171,7 +200,9 @@ export default function PageHero({
                     {group.metrics.map((metric, idx) => (
                       <div
                         key={`${metric.label}-${idx}`}
-                        className={`page-hero__metric${metricToneClass(metric.tone)}`}
+                        className={`page-hero__metric${metricToneClass(metric.tone)}${
+                          isLeadMetric(metric, idx) ? " page-hero__metric--lead" : ""
+                        }`}
                       >
                         <strong>{metric.value}</strong>
                         <span>{metric.label}</span>
@@ -190,7 +221,9 @@ export default function PageHero({
               {metrics!.map((metric, idx) => (
                 <div
                   key={`${metric.label}-${idx}`}
-                  className={`page-hero__pulse-metric${metricToneClass(metric.tone)}`}
+                  className={`page-hero__pulse-metric${metricToneClass(metric.tone)}${
+                    isLeadMetric(metric, idx) ? " page-hero__metric--lead" : ""
+                  }`}
                 >
                   <strong>{metric.value}</strong>
                   <span>{metric.label}</span>

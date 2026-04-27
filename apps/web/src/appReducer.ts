@@ -221,7 +221,10 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   week: {
     label: "Week",
     shortLabel: "Week",
-    icon: "grid",
+    // Phase D2 (2026-04-27) — five-column day-strip glyph replaces
+    // the prior `grid` so the Week tab no longer collides with
+    // Classroom and Ops, which also used `grid`.
+    icon: "week",
     sectionTone: "slate",
     roles: ["teacher", "substitute", "reviewer"],
     purpose: "Multi-day coverage, upcoming events, planning rhythm, pattern pressure.",
@@ -237,7 +240,10 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   ops: {
     label: "Ops",
     shortLabel: "Ops",
-    icon: "grid",
+    // Phase D2 (2026-04-27) — compass glyph replaces the prior
+    // `grid`. Ops is adult coordination, not a dashboard, so the
+    // cardinal-marker compass reads as "coordinate" not "view."
+    icon: "compass",
     sectionTone: "slate",
     roles: ["teacher", "ea", "substitute"],
     purpose: "Adult coordination — log intervention, EA briefing, EA load, substitute packet.",

@@ -18,7 +18,16 @@ export type SectionIconName =
   | "bars"
   | "lock"
   | "info"
-  | "refresh";
+  | "refresh"
+  /* Phase D2 (2026-04-27) — three new glyphs that retire the
+     "grid icon means four different things" overload. `trend`
+     replaces `grid` on the FORECAST pivot card; `compass`
+     replaces `grid` on the Ops nav; `week` replaces `grid` on
+     the Week nav. Classroom keeps `grid` because the 4-quadrant
+     mark is the canonical bird's-eye dashboard cue. */
+  | "trend"
+  | "compass"
+  | "week";
 
 export default function SectionIcon({ name, className, decorative = true }: Props) {
   const sharedProps = decorative ? { "aria-hidden": true } : { role: "img" as const };
@@ -123,6 +132,53 @@ export default function SectionIcon({ name, className, decorative = true }: Prop
         <>
           <path d="M21.5 2v6h-6" />
           <path d="M21.34 15.57A9 9 0 1119 7l2.5 1" />
+        </>
+      ) : null}
+      {name === "trend" ? (
+        // Rising forecast trace ending at a peak marker — replaces
+        // the 4-quadrant grid as the FORECAST pivot card glyph so
+        // "Forecast: Week" reads as a forward-looking trace, not as
+        // "another dashboard." The dashed baseline anchors the
+        // trace visually without competing with the rising line;
+        // the path climbs through one consolidation dip so the
+        // glyph reads as a real forecast trajectory rather than a
+        // straight rising arrow, then ends at the dot marker so
+        // the eye lands on "where this is heading."
+        <>
+          <path d="M3.5 18h17" strokeDasharray="1.5 2.5" opacity="0.55" />
+          <path d="M3.5 16.5L7.5 13.8 11 15 14.5 11 19.5 7.5" />
+          <circle cx="19.5" cy="7.5" r="1.6" fill="currentColor" stroke="none" />
+        </>
+      ) : null}
+      {name === "compass" ? (
+        // Cardinal-marker compass with a slim south-pointing
+        // needle — coordinates and adult workflows on Ops. The
+        // 3-unit-wide needle reads more like a compass than a
+        // diamond, and the four short cardinal ticks separate
+        // Ops from Classroom (`grid`) and Week (`week`) at first
+        // glance.
+        <>
+          <circle cx="12" cy="12" r="9" />
+          <path d="M12 4.5v3" />
+          <path d="M12 16.5v3" />
+          <path d="M19.5 12h-3" />
+          <path d="M7.5 12h-3" />
+          <path d="M12 7.5L13.5 9 12 16.5 10.5 9z" fill="currentColor" stroke="none" opacity="0.85" />
+        </>
+      ) : null}
+      {name === "week" ? (
+        // Five-column day strip with a baseline through the
+        // middle — reads as a multi-day forecast row. Distinct
+        // from `bars` (varying-height analytics bars) and `grid`
+        // (4-quadrant dashboard) so the Week tab earns its own
+        // glyph at first glance.
+        <>
+          <rect x="3" y="6.5" width="2.4" height="11" rx="0.6" />
+          <rect x="6.6" y="6.5" width="2.4" height="11" rx="0.6" />
+          <rect x="10.2" y="6.5" width="2.4" height="11" rx="0.6" />
+          <rect x="13.8" y="6.5" width="2.4" height="11" rx="0.6" />
+          <rect x="17.4" y="6.5" width="2.4" height="11" rx="0.6" />
+          <path d="M2.5 12.5h19" opacity="0.45" />
         </>
       ) : null}
     </svg>

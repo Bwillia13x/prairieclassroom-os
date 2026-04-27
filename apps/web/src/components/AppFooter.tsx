@@ -1,12 +1,37 @@
 import { useEffect, useState } from "react";
 import { TAB_ORDER, TAB_META } from "../appReducer";
+import packageJson from "../../package.json";
 import "./AppFooter.css";
 
 interface Props {
   onOpenShortcuts?: () => void;
+  classroomId?: string;
 }
 
 const STORAGE_KEY = "prairie.footer.shortcuts.expanded";
+
+/**
+ * Phase E1 (2026-04-27) — mono rail constants.
+ *
+ * `version` flows from apps/web/package.json so the rail stays in
+ * sync with the workspace's actual published version. The package
+ * import uses `resolveJsonModule` (already enabled in tsconfig) so
+ * Vite tree-shakes everything except the `version` field.
+ *
+ * `runtimeEnv` reads `VITE_PRAIRIE_MODE` if it's exposed at build /
+ * dev time. The orchestrator selects its real inference lane
+ * server-side and the web client doesn't currently learn that mode
+ * over the wire (`/api/health` exposes uptime/memory only). Until
+ * a `/api/runtime` endpoint surfaces the canonical mode, we default
+ * to `"mock"` because that matches the project's documented default
+ * (CLAUDE.md "Current State Of Development" — release-gate runs in
+ * mock mode, the cheapest no-cost lane). When the orchestrator
+ * starts publishing the runtime mode, swap this constant for a
+ * fetched value without touching the rail's visual contract.
+ */
+const APP_VERSION: string = packageJson.version;
+const RUNTIME_ENV: string =
+  (import.meta.env.VITE_PRAIRIE_MODE as string | undefined) ?? "mock";
 
 /**
  * AppFooter — persistent footer with a collapsible keyboard-shortcut map and
@@ -14,7 +39,7 @@ const STORAGE_KEY = "prairie.footer.shortcuts.expanded";
  * line; teachers who rely on the visual map can pin it open, and the choice
  * persists across sessions in localStorage.
  */
-export default function AppFooter({ onOpenShortcuts }: Props = {}) {
+export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) {
   const [expanded, setExpanded] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     try {
@@ -80,6 +105,29 @@ export default function AppFooter({ onOpenShortcuts }: Props = {}) {
             ?
           </button>
         )}
+      </div>
+      {/* Phase E1 (2026-04-27) — mono identity rail. Three quiet
+          slots (classroom code · runtime env · version) anchored to
+          the bottom of the footer. Reads as a build-stamp / status
+          rail, not as user-facing copy. The rail is rendered when
+          at least one slot has a value; when classroomId is missing
+          we still show the env + version so the build context is
+          always legible to teachers, support, and judges. */}
+      <div className="app-footer__rail" role="contentinfo" aria-label="Build context">
+        {classroomId ? (
+          <span className="app-footer__rail-slot" data-rail-slot="classroom">
+            <span className="app-footer__rail-key">classroom</span>
+            <span className="app-footer__rail-value">{classroomId}</span>
+          </span>
+        ) : null}
+        <span className="app-footer__rail-slot" data-rail-slot="env">
+          <span className="app-footer__rail-key">env</span>
+          <span className="app-footer__rail-value">{RUNTIME_ENV}</span>
+        </span>
+        <span className="app-footer__rail-slot" data-rail-slot="version">
+          <span className="app-footer__rail-key">v</span>
+          <span className="app-footer__rail-value">{APP_VERSION}</span>
+        </span>
       </div>
     </footer>
   );

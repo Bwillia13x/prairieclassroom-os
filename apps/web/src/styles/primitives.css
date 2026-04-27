@@ -823,6 +823,16 @@ label.form-label {
 }
 
 .status-chip {
+  /* Phase E3 (2026-04-27) — tighten focus-ring offset on every xs
+     chip primitive that can appear in a dense row (status chips,
+     coverage legend pills, preview chips, segment toggles, the
+     today-hero student-chip already overrides locally). Without
+     this scope, six adjacent xs chips at 2px offset stack rings
+     into an overlapping band when keyboard-tabbing through; 1px
+     keeps each chip's focus signal legible without crowding. The
+     global `--focus-ring-offset` token stays at 2px so buttons
+     and inputs with their own breathing room are unaffected. */
+  --focus-ring-offset: 1px;
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
@@ -837,6 +847,18 @@ label.form-label {
   font-weight: var(--font-weight-medium);
   line-height: 1;
   letter-spacing: 0.03em;
+}
+
+/* Phase E3 — peer xs chip selectors that share the dense-row risk
+   profile and consume the global `--focus-ring-offset` token via
+   their `:focus-visible` outline rules. Listed individually rather
+   than via a generic attribute selector so the override stays
+   greppable and the scope is auditable. */
+.coverage-timeline__legend-pill,
+.student-coverage__segment-btn,
+.student-coverage__more-toggle,
+.preview-chip {
+  --focus-ring-offset: 1px;
 }
 
 .status-chip--accent { background: var(--color-bg-accent); border-color: var(--color-border-accent); color: var(--color-text-accent); }

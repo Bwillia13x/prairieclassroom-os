@@ -519,6 +519,52 @@
 .page-hero__pivots > .page-hero__pivot:nth-child(3) { animation-delay: 380ms; }
 .page-hero__pivots > .page-hero__pivot:nth-child(4) { animation-delay: 440ms; }
 
+/* ----------------------------------------------------------------
+   Phase B3 — Right-rail child cascade.
+   The .page-hero__pulse already lifts as one block at 200ms (above).
+   We then sub-cascade its inner content so the metrics and status
+   rows reveal in a wave instead of a single block. Pulls the same
+   ambient-hero-rise keyframe so the curve matches the lede.
+
+   First wave (status rows + group eyebrows) starts 280ms after mount;
+   metric tiles cascade in 60ms increments through the 5th tile so
+   the right rail feels orchestrated rather than dumped.
+
+   Grain overlay and shimmer-sweep remain Today-exclusive — those
+   are the singular WOW beats reserved for the live triage hero.
+   ---------------------------------------------------------------- */
+.page-hero__status-rows,
+.page-hero__metric-group {
+  animation: ambient-hero-rise 460ms var(--ease-out-expo) both;
+  animation-delay: 280ms;
+}
+
+.page-hero__metric-group-tiles > .page-hero__metric,
+.page-hero__pulse-metrics > .page-hero__pulse-metric {
+  animation: ambient-hero-rise 420ms var(--ease-out-expo) both;
+}
+
+.page-hero__metric-group-tiles > .page-hero__metric:nth-child(1),
+.page-hero__pulse-metrics > .page-hero__pulse-metric:nth-child(1) {
+  animation-delay: 320ms;
+}
+.page-hero__metric-group-tiles > .page-hero__metric:nth-child(2),
+.page-hero__pulse-metrics > .page-hero__pulse-metric:nth-child(2) {
+  animation-delay: 380ms;
+}
+.page-hero__metric-group-tiles > .page-hero__metric:nth-child(3),
+.page-hero__pulse-metrics > .page-hero__pulse-metric:nth-child(3) {
+  animation-delay: 440ms;
+}
+.page-hero__metric-group-tiles > .page-hero__metric:nth-child(4),
+.page-hero__pulse-metrics > .page-hero__pulse-metric:nth-child(4) {
+  animation-delay: 500ms;
+}
+.page-hero__metric-group-tiles > .page-hero__metric:nth-child(n+5),
+.page-hero__pulse-metrics > .page-hero__pulse-metric:nth-child(n+5) {
+  animation-delay: 560ms;
+}
+
 /* ================================================================
    7. PRESS FEEDBACK — hero CTAs and pivots (2026-04-25)
    ================================================================
@@ -649,7 +695,11 @@
   .brand-mark__glyph,
   .page-hero__lede > *,
   .page-hero__pulse,
-  .page-hero__pivots > .page-hero__pivot {
+  .page-hero__pivots > .page-hero__pivot,
+  .page-hero__status-rows,
+  .page-hero__metric-group,
+  .page-hero__metric-group-tiles > .page-hero__metric,
+  .page-hero__pulse-metrics > .page-hero__pulse-metric {
     animation: none;
   }
 }
@@ -710,8 +760,14 @@
 }
 
 .brand-mark__glyph {
-  width: clamp(1.85rem, 2.3vw, 2.35rem) !important;
-  height: clamp(1.85rem, 2.3vw, 2.35rem) !important;
+  /* Phase D1 (2026-04-27) — pinned to 1.5rem (24px). The
+     `!important` is preserved because this rule sits in the late
+     ambient cascade specifically to defeat external skin layers.
+     The size value is the single source of design-discipline
+     truth; if a future variant needs a larger logomark, override
+     it via a wrapper class rather than reintroducing clamp here. */
+  width: 1.5rem !important;
+  height: 1.5rem !important;
   flex-shrink: 0 !important;
   color: var(--shell-control-accent) !important;
   filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent)) !important;

@@ -11,6 +11,7 @@ import PageHero, {
   type PageHeroMetricGroup,
   type PageHeroStatusRow,
 } from "../components/shared/PageHero";
+import SectionMarker from "../components/shared/SectionMarker";
 import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
@@ -131,6 +132,12 @@ export default function PrepPanel() {
         statusRows={heroStatusRows}
         pulse={pulse}
         variant="prep"
+      />
+
+      <SectionMarker
+        number="02"
+        title="Active prep lane"
+        subtitle="Work the lesson canvas or the language supports. Both share the prep memory."
       />
 
       <div id="prep-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Prep tool">

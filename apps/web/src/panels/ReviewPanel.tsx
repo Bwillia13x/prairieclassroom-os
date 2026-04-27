@@ -14,6 +14,7 @@ import PageHero, {
 import OperationalPreview, {
   type OperationalPreviewGroup,
 } from "../components/shared/OperationalPreview";
+import SectionMarker from "../components/shared/SectionMarker";
 import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import FamilyMessagePanel from "./FamilyMessagePanel";
 import SupportPatternsPanel from "./SupportPatternsPanel";
@@ -245,6 +246,12 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
           groups={reviewPreviewGroups}
         />
       ) : null}
+
+      <SectionMarker
+        number="02"
+        title="Review lane"
+        subtitle="Approve communications, surface patterns, and audit usage from one workflow."
+      />
 
       <div id="review-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Review tool">
         {REVIEW_TOOLS.map((tool) => {

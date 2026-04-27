@@ -14,11 +14,13 @@ import ErrorBanner from "../components/ErrorBanner";
 import { buildOperatingDashboardSnapshot } from "../components/OperatingDashboard";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { Card, ActionButton } from "../components/shared";
+import EmptyStateCard from "../components/EmptyStateCard";
 import SectionIcon from "../components/SectionIcon";
 import PageHero, {
   type PageHeroMetricGroup,
   type PageHeroStatusRow,
 } from "../components/shared/PageHero";
+import SectionMarker from "../components/shared/SectionMarker";
 import type {
   ClassroomHealth,
   DrillDownContext,
@@ -154,7 +156,7 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
         id="week-hub"
         ariaLabel="Week command and multi-day forecast"
         eyebrow="Week command"
-        title="Shape the week before it shapes tomorrow"
+        title={<>Shape the <em>week</em> before it shapes tomorrow</>}
         description={
           <>
             {commandDetail} Read the forecasted days, event load, and open pressure signal
@@ -179,6 +181,12 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
       />
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
+
+      <SectionMarker
+        number="02"
+        title="Forecasted days"
+        subtitle="Multi-day pressure, event load, and planning rhythm. Use to time the next plan."
+      />
 
       <div id="week-overview" className="week-panel__anchor-target">
         <Card variant="flat" className="week-panel__overview" aria-labelledby="week-overview-heading">
@@ -260,7 +268,10 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
               ))}
             </ul>
           ) : (
-            <p className="empty-state__note">No upcoming events recorded for this classroom.</p>
+            <EmptyStateCard
+              cue="No upcoming events on file."
+              hint="Field trips, assemblies, and schedule shifts populate this rail when they're added to the classroom profile."
+            />
           )}
           </Card.Body>
         </Card>

@@ -2341,6 +2341,34 @@ button.viz-recency__row:focus-visible {
   line-height: 1;
 }
 
+/* ------------------------------------------------------------
+   Featured axis chip (2026-04-27 Phase C3).
+   The dominant axis on the compass — the one with the highest
+   ratio — renders with promoted typography so the instrument
+   reads as a self-narrating composition: the eye lands on what
+   this plan is *about* before the verdict caption explains what's
+   missing. The label-name jumps from `--text-2xs` mono uppercase
+   to `--text-md` display-register sentence case; the chip widens
+   slightly to host the larger glyph height; the left rule
+   thickens 2px → 3px so the featured spoke's tonal identity
+   reads at a glance.
+   ------------------------------------------------------------ */
+.viz-plan-radar__label--featured {
+  border-left-width: 3px;
+  padding: 5px 10px 6px 11px;
+  min-width: 78px;
+  z-index: 1;
+}
+
+.viz-plan-radar__label--featured .viz-plan-radar__label-name {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  text-transform: none;
+  letter-spacing: var(--tracking-display);
+  line-height: 1.05;
+}
+
 .viz-plan-radar__label-count {
   font-size: var(--text-2xs);
   font-feature-settings: var(--font-feature-numeric);

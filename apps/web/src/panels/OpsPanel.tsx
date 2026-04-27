@@ -14,6 +14,7 @@ import PageHero, {
 import OperationalPreview, {
   type OperationalPreviewGroup,
 } from "../components/shared/OperationalPreview";
+import SectionMarker from "../components/shared/SectionMarker";
 import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import InterventionPanel from "./InterventionPanel";
 import EABriefingPanel from "./EABriefingPanel";
@@ -292,6 +293,12 @@ export default function OpsPanel({ prefillIntervention }: Props) {
           groups={opsPreviewGroups}
         />
       ) : null}
+
+      <SectionMarker
+        number="02"
+        title="Operational lane"
+        subtitle="Pick the surface that matches the next adult coordination move."
+      />
 
       <div id="ops-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Ops tool">
         {OPS_TOOLS.map((tool) => {

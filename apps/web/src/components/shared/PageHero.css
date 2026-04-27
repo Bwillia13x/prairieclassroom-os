@@ -67,6 +67,25 @@
 
 /* ----- Variants ----- */
 
+/* Classroom — the bird's-eye dashboard. This is the one variant
+   that earns a second atmospheric moment: a 3% cognac vertical
+   wash layered on top of the standard glow. See the
+   --gradient-classroom-lume token comment in tokens.css and the
+   2026-04-27 Phase A decision-log entry for the carve-out. */
+.page-hero--classroom {
+  --page-hero-rule: color-mix(in srgb, var(--color-brand-highlight) 56%, var(--color-border-strong));
+  --page-hero-eyebrow: var(--color-brand-highlight-strong);
+  --page-hero-glow: var(--color-brand-highlight);
+  background:
+    var(--gradient-classroom-lume),
+    radial-gradient(
+      ellipse 70% 60% at 6% -10%,
+      color-mix(in srgb, var(--page-hero-glow) 4%, transparent),
+      transparent 65%
+    ),
+    var(--color-command-surface);
+}
+
 .page-hero--prep {
   --page-hero-rule: color-mix(in srgb, var(--color-brand-highlight) 64%, var(--color-border-strong));
   --page-hero-eyebrow: var(--color-brand-highlight-strong);
@@ -86,6 +105,16 @@
 }
 
 .page-hero--week {
+  --page-hero-rule: color-mix(in srgb, var(--color-brand-highlight) 50%, var(--color-border-strong));
+  --page-hero-eyebrow: var(--color-text-secondary);
+  --page-hero-glow: var(--color-brand-highlight);
+}
+
+/* Tomorrow shares Week's cognac rule color but earns its own
+   utility-tier typographic register (display-sm) via the title
+   override below. Phase A2: hero registers diverge so each top-
+   level page reads at its own typographic weight. */
+.page-hero--tomorrow {
   --page-hero-rule: color-mix(in srgb, var(--color-brand-highlight) 50%, var(--color-border-strong));
   --page-hero-eyebrow: var(--color-text-secondary);
   --page-hero-glow: var(--color-brand-highlight);
@@ -124,12 +153,56 @@
   margin: 0;
   color: var(--color-text);
   font-family: var(--font-display);
+  /* Default register — Phase A2 differentiates this per variant
+     below. Classroom earns display-lg (narrative dashboard),
+     Week earns display-md (editorial), Tomorrow / Prep / Ops /
+     Review collapse to display-sm (utility tool hosts). The
+     bare default is display-md so any future PageHero added
+     without a variant lands on the editorial register. */
   font-size: var(--text-display-md);
   font-weight: var(--font-weight-semibold);
   font-feature-settings: var(--font-feature-display);
   line-height: var(--leading-display);
   letter-spacing: var(--tracking-display);
   text-wrap: balance;
+}
+
+/* Classroom — narrative dashboard scale. Tighter tracking + the
+   editorial-display typographic moment that signals "this is the
+   bird's-eye page, not a tool host." */
+.page-hero--classroom .page-hero__title {
+  font-size: var(--text-display-lg);
+  letter-spacing: var(--tracking-display-tight);
+}
+
+/* Tomorrow / Prep / Ops / Review — utility-tier hosts. These
+   pages frame tool switchers and dense workflow content; the
+   hero collapses to display-sm so the type does not compete
+   with the in-tool typography below. */
+.page-hero--tomorrow .page-hero__title,
+.page-hero--prep .page-hero__title,
+.page-hero--ops .page-hero__title,
+.page-hero--review .page-hero__title {
+  font-size: var(--text-display-sm);
+}
+
+/* Week — display-md retained, but a single editorial accent is
+   sanctioned: any <em> inside the title renders in Source Serif
+   4 italic. Consumers opt in by wrapping a single key word in
+   <em> (e.g. "Shape the <em>week</em> before it shapes
+   tomorrow"). The accent is intentionally rare — exactly one
+   word per Week hero — to evoke a long-form editorial register
+   without breaking the institutional sans system. */
+.page-hero--week .page-hero__title em {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: var(--font-weight-normal);
+  letter-spacing: -0.01em;
+  /* Source Serif 4 reads slightly larger optically than
+     Instrument Sans at the same px size; bring it down a hair
+     so the italic word does not visually outweigh the rest of
+     the line. */
+  font-size: 0.96em;
 }
 
 .page-hero__caption {
@@ -161,6 +234,10 @@
   gap: var(--space-2-5);
   padding: var(--space-3);
   border: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent);
+  /* Phase B2 — destination-tinted 2px bottom underline. The
+     `--page-hero-pivot-tint` is set per icon below; default neutral
+     keeps non-temporal pivots from picking up unintended tones. */
+  border-bottom: 2px solid color-mix(in srgb, var(--page-hero-pivot-tint, var(--color-border-strong)) 64%, transparent);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text);
@@ -173,12 +250,33 @@
     transform var(--motion-fast) var(--ease-press);
 }
 
+/* Destination tints: sun → cognac (Today / live), clock → navy
+   (Tomorrow / staged), grid → green (Week / forecast — legacy),
+   trend → green (Week / forecast — Phase D2 canonical). When a
+   pivot's icon resolves to one of these, the bottom underline
+   carries the destination's brand tone so the user reads the
+   navigation intent before reading the label.
+   `grid` is preserved for any consumer that still passes it
+   (the destination-tint contract treats grid and trend as
+   interchangeable — both resolve to brand-green for Week). */
+.page-hero__pivot[data-pivot-icon="sun"] {
+  --page-hero-pivot-tint: var(--color-brand-highlight);
+}
+.page-hero__pivot[data-pivot-icon="clock"] {
+  --page-hero-pivot-tint: var(--color-accent);
+}
+.page-hero__pivot[data-pivot-icon="grid"],
+.page-hero__pivot[data-pivot-icon="trend"] {
+  --page-hero-pivot-tint: var(--color-brand-green);
+}
+
 .page-hero__pivot:hover {
   border-color: color-mix(in srgb, var(--color-border-accent) 55%, transparent);
+  border-bottom-color: color-mix(in srgb, var(--page-hero-pivot-tint, var(--color-border-strong)) 92%, transparent);
   background: color-mix(in srgb, var(--color-surface) 96%, var(--color-bg-accent));
   box-shadow:
     var(--inner-stroke),
-    0 8px 18px -16px color-mix(in srgb, var(--page-hero-eyebrow) 45%, transparent);
+    0 8px 18px -16px color-mix(in srgb, var(--page-hero-pivot-tint, var(--page-hero-eyebrow)) 45%, transparent);
   transform: translateY(-1px);
 }
 
@@ -352,6 +450,46 @@
 .page-hero__metric.page-hero__metric--danger strong  { color: var(--color-text-danger); }
 .page-hero__pulse-metric.page-hero__metric--neutral strong,
 .page-hero__metric.page-hero__metric--neutral strong { color: var(--color-text-secondary); }
+
+/* Phase B1 — Lead metric.
+   The first metric inside each group (or the first flat metric, if
+   no groups are passed) is auto-promoted to a lead figure: a
+   display-sm-tier figure plus a 2px tonal underline that picks up
+   the variant's --page-hero-rule color. The lead metric reads as
+   the page's headline number; the rest of the group reads as
+   supporting context. */
+.page-hero__metric.page-hero__metric--lead strong,
+.page-hero__pulse-metric.page-hero__metric--lead strong {
+  font-size: var(--text-display-sm);
+  letter-spacing: var(--tracking-display);
+  line-height: 0.98;
+}
+
+/* Tonal underline on the lead figure. Bound to the page-hero rule
+   color so each variant carries its own brand tone (cognac on
+   Classroom/Prep, navy on Ops, green on Review, cognac-soft on
+   Week/Tomorrow). When a tone modifier is set on the metric itself
+   (success/warning/danger), the variant rule is overridden by the
+   semantic state below. */
+.page-hero__metric.page-hero__metric--lead strong,
+.page-hero__pulse-metric.page-hero__metric--lead strong {
+  display: inline-block;
+  padding-bottom: 4px;
+  border-bottom: 2px solid color-mix(in srgb, var(--page-hero-rule) 70%, transparent);
+}
+
+.page-hero__metric.page-hero__metric--lead.page-hero__metric--success strong,
+.page-hero__pulse-metric.page-hero__metric--lead.page-hero__metric--success strong {
+  border-bottom-color: color-mix(in srgb, var(--color-text-success) 60%, transparent);
+}
+.page-hero__metric.page-hero__metric--lead.page-hero__metric--warning strong,
+.page-hero__pulse-metric.page-hero__metric--lead.page-hero__metric--warning strong {
+  border-bottom-color: color-mix(in srgb, var(--color-text-warning) 60%, transparent);
+}
+.page-hero__metric.page-hero__metric--lead.page-hero__metric--danger strong,
+.page-hero__pulse-metric.page-hero__metric--lead.page-hero__metric--danger strong {
+  border-bottom-color: color-mix(in srgb, var(--color-text-danger) 60%, transparent);
+}
 
 /* ----- Status rows (pulse extension) ----- */
 

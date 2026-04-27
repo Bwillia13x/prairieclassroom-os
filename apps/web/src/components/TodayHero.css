@@ -150,6 +150,12 @@
 }
 
 .today-hero__student-chip {
+  /* Phase E3 (2026-04-27) — tighten focus-ring offset to 1px so a
+     dense roster (the demo cohort renders 6+ chips per row) doesn't
+     stack 2px-offset rings into an overlapping band when the user
+     keyboard-tabs through. Local override; the global token stays at
+     2px for buttons/inputs that have natural breathing room. */
+  --focus-ring-offset: 1px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

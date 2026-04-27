@@ -22,6 +22,7 @@ import OperationalPreview, {
   type OperationalPreviewChip,
   type OperationalPreviewGroup,
 } from "../components/shared/OperationalPreview";
+import SectionMarker from "../components/shared/SectionMarker";
 import { ComplexityDebtGauge } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
 import TodayHero from "../components/TodayHero";
@@ -316,14 +317,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         className="today-pulse"
         aria-labelledby="today-pulse-heading"
       >
-        <header className="today-pulse__header">
-          <h2 id="today-pulse-heading" className="today-pulse__title">
-            What to watch next
-          </h2>
-          <p className="today-pulse__subtitle">
-            Day-of risk map, open items, and carry-forward signal. Week-level coverage lives on the Week page.
-          </p>
-        </header>
+        <SectionMarker
+          number="02"
+          titleId="today-pulse-heading"
+          title="What to watch next"
+          subtitle="Day-of risk map, open items, and carry-forward signal. Week-level coverage lives on the Week page."
+        />
         <div className="today-grid motion-stagger">
         <div className="today-grid__hero-row">
           <div

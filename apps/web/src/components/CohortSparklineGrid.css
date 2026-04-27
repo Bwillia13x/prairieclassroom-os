@@ -34,7 +34,7 @@
 
 .cohort-cell--interactive:hover,
 .cohort-cell--interactive:focus-visible {
-  border-color: var(--color-section-priority);
+  border-color: var(--cohort-cell-tone, var(--color-section-priority));
   outline: none;
 }
 
@@ -52,6 +52,30 @@
   width: 100%;
   height: auto;
   aspect-ratio: 92 / 28;
+}
+
+/* ------------------------------------------------------------
+   Severity-toned strokes (2026-04-27 Phase C1).
+   Each cell publishes its tone as `--cohort-cell-tone` so the
+   stroke and the hover-ring border share one source. Tones map
+   to the canonical chart-tone scale: navy (low) → amber (medium)
+   → rust (high). The threshold logic lives in TS — this layer
+   only paints what was classified upstream.
+   ------------------------------------------------------------ */
+.cohort-cell--severity-low {
+  --cohort-cell-tone: var(--chart-tone-low);
+}
+
+.cohort-cell--severity-medium {
+  --cohort-cell-tone: var(--chart-tone-medium);
+}
+
+.cohort-cell--severity-high {
+  --cohort-cell-tone: var(--chart-tone-high);
+}
+
+.cohort-cell__line {
+  stroke: var(--cohort-cell-tone, var(--color-section-priority));
 }
 
 @media (max-width: 600px) {

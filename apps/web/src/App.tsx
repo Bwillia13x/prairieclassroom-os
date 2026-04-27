@@ -1049,7 +1049,10 @@ export default function App() {
             <ReviewPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} />,
           )}
 
-          <AppFooter onOpenShortcuts={() => setShortcutSheetOpen(true)} />
+          <AppFooter
+            onOpenShortcuts={() => setShortcutSheetOpen(true)}
+            classroomId={state.activeClassroom || undefined}
+          />
         </main>
 
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />

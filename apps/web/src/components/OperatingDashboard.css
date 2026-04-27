@@ -171,6 +171,7 @@
 }
 
 .week-heatmap__cell {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -212,6 +213,47 @@
 
 .week-heatmap__cell--event {
   border-style: dashed;
+}
+
+/* ------------------------------------------------------------
+   Forecast intensity bar (2026-04-27 Phase C2).
+   A 4px tonal bar at the bottom of each level-tagged cell that
+   maps complexity to the canonical chart-tone scale (navy→amber
+   →rust). Pre-attentive — the eye reads severity from the bar
+   color before parsing the cell's text content. The cell's
+   background wash continues to carry section-tone identity
+   (forest/sun/sage), so the bar adds severity orthogonally
+   without replacing the wash.
+   `--unknown` and `--event` cells deliberately omit the bar:
+   unknown has no level to express, and event tiles already
+   carry a dashed border that signals their non-forecast role.
+   The bar uses the cell's inner border-radius (radius-md minus
+   the 1px border) so its corners track the cell's rounded
+   bottom edges without the cell needing `overflow: hidden`.
+   ------------------------------------------------------------ */
+.week-heatmap__cell--low::after,
+.week-heatmap__cell--medium::after,
+.week-heatmap__cell--high::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 4px;
+  border-radius: 0 0 calc(var(--radius-md) - 1px) calc(var(--radius-md) - 1px);
+  pointer-events: none;
+}
+
+.week-heatmap__cell--low::after {
+  background: var(--chart-tone-low);
+}
+
+.week-heatmap__cell--medium::after {
+  background: var(--chart-tone-medium);
+}
+
+.week-heatmap__cell--high::after {
+  background: var(--chart-tone-high);
 }
 
 .support-coverage-grid {

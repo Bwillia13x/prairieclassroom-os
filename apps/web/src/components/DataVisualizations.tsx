@@ -2590,6 +2590,29 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
   }, {} as Record<PlanRadarSection, number>);
   const { tier, caption } = computePlanTier(ratiosByKey);
 
+  // Phase C3 (2026-04-27) — featured axis hierarchy.
+  // The dominant axis (highest ratio, then highest raw) is the
+  // dimension that *defines* this plan's shape. Promoting its label
+  // to display-tier typography makes the compass self-narrating: the
+  // teacher reads what the plan is *about* before reading the verdict
+  // caption that names what's *missing*. Stable on ties — falls back
+  // to PLAN_RADAR_AXES order so the same plan always elects the same
+  // axis frame to frame.
+  const featuredAxisData = axisData.reduce((acc, d) => {
+    if (d.ratio > acc.ratio) return d;
+    if (d.ratio === acc.ratio && d.raw > acc.raw) return d;
+    return acc;
+  }, axisData[0]);
+  const featuredAxisKey = featuredAxisData.axis.key;
+  // Surface the featured axis to assistive tech only when the plan
+  // has any coverage at all — an all-empty plan has no meaningful
+  // dominant dimension, so falling back to the plain radar label
+  // matches the visual rule (no chip is rendered as featured).
+  const radarAriaLabel =
+    featuredAxisData.raw > 0
+      ? `Plan coverage radar; dominant dimension: ${featuredAxisData.axis.label}`
+      : "Plan coverage radar";
+
   // Three tier rings at 33% / 66% / 100% — drawn as dotted hairlines
   // so the chart background reads as a measured field, not a heavy
   // grid. Tick labels (1 / 2 / 3) sit on the north spoke for legibility.
@@ -2600,7 +2623,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
   ];
 
   return (
-    <div className="viz-plan-radar viz-plan-radar--compass" role={onSegmentClick ? "group" : "img"} aria-label="Plan coverage radar">
+    <div className="viz-plan-radar viz-plan-radar--compass" role={onSegmentClick ? "group" : "img"} aria-label={radarAriaLabel}>
       <header className="viz-plan-radar__head">
         <div className="viz-plan-radar__head-copy">
           <span className="viz-plan-radar__eyebrow t-eyebrow">Plan compass</span>
@@ -2693,13 +2716,18 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
             />
           ))}
 
-          {/* Polygon — hairline stroke with whisper-soft fill. The
-              shape draws on mount via stroke-dashoffset (CSS). */}
+          {/* Polygon — hairline stroke with tonal accent fill (Phase C3).
+              The shape draws on mount via stroke-dashoffset (CSS). The
+              fill picks up `--color-accent` at 12% opacity so the
+              instrument reads as a navy reading on the prairie compass
+              rather than a generic gray triangle. The stroke stays at
+              `--color-text` to keep the shape's outer boundary anchored
+              to the canonical text color across modes. */}
           <path
             d={shapePath}
             className="viz-plan-radar__shape"
-            fill="var(--color-text)"
-            fillOpacity="0.05"
+            fill="var(--color-accent)"
+            fillOpacity="0.12"
             stroke="var(--color-text)"
             strokeWidth="1.25"
             strokeLinejoin="round"
@@ -2751,7 +2779,12 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
 
         {/* Axis label chips — tone-rule chips arranged radially around
             the SVG. Each chip mirrors viz-tone-badge: 2px left rule in
-            the section's tone, mono numerals for the count fraction. */}
+            the section's tone, mono numerals for the count fraction.
+            Phase C3 (2026-04-27): the dominant axis (`featuredAxisKey`)
+            renders with the `--featured` modifier — its label-name
+            promotes to display-tier typography, signaling "this is
+            what this plan is about." All other axis labels stay at
+            their original 11px mono weight. */}
         <ul className="viz-plan-radar__labels" aria-hidden="true">
           {axisData.map(({ axis, raw, ratio }, i) => {
             const angle = -Math.PI / 2 + i * step;
@@ -2762,10 +2795,11 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
             const lx = 50 + Math.cos(angle) * 44;
             const ly = 50 + Math.sin(angle) * 44;
             const empty = raw === 0;
+            const featured = axis.key === featuredAxisKey && !empty;
             return (
               <li
                 key={axis.key}
-                className={`viz-plan-radar__label${empty ? " viz-plan-radar__label--empty" : ""}`}
+                className={`viz-plan-radar__label${empty ? " viz-plan-radar__label--empty" : ""}${featured ? " viz-plan-radar__label--featured" : ""}`}
                 style={{
                   left: `${lx}%`,
                   top: `${ly}%`,

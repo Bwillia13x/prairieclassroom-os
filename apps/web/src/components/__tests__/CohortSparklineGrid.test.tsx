@@ -113,4 +113,51 @@ describe("CohortSparklineGrid", () => {
     const { container } = render(<CohortSparklineGrid students={students} />);
     expect(container.querySelector("[data-testid='cohort-baseline']")).toBeNull();
   });
+
+  /* Phase C1 (2026-04-27) — severity tone classification.
+     Each cell publishes a `data-severity` attribute that downstream
+     CSS maps to the canonical chart-tone scale. The thresholds are
+     cohort-relative: a student materially above the cohort 14-day
+     sum reads "high"; materially below reads "low"; everything in
+     between reads "medium". A single-student view defaults to
+     "medium" because there is no cohort baseline to compare
+     against — guarding against a divide-by-zero downgrade to
+     "low". */
+  it("classifies each student's severity relative to the cohort baseline", () => {
+    const QUIET = [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]; // 1
+    const ACTIVE = [1, 0, 1, 0, 2, 0, 1, 0, 2, 1, 1, 1, 0, 1]; // 11
+    const students = [
+      makeStudent("Quiet", QUIET),
+      makeStudent("Mid", ACTIVE.map((v) => Math.max(0, v - 1))), // ~5
+      makeStudent("Active", ACTIVE),
+      makeStudent("AlsoActive", ACTIVE.map((v) => v + 1)), // ~25
+    ];
+    render(<CohortSparklineGrid students={students} />);
+    const severities = screen
+      .getAllByTestId("cohort-cell")
+      .map((cell) => ({
+        alias: cell.querySelector(".cohort-cell__alias")?.textContent,
+        severity: cell.getAttribute("data-severity"),
+      }));
+    // Order is alphabetical by alias.
+    const byAlias = Object.fromEntries(
+      severities.map((s) => [s.alias!, s.severity!]),
+    );
+    expect(byAlias.Quiet).toBe("low");
+    expect(byAlias.AlsoActive).toBe("high");
+    // Mid + Active fall on either side of the cohort norm — both
+    // should resolve to a defined tone. The most important contract
+    // is that low/medium/high are the only three values, never null.
+    expect(["low", "medium", "high"]).toContain(byAlias.Mid);
+    expect(["low", "medium", "high"]).toContain(byAlias.Active);
+  });
+
+  it("defaults to medium severity when only one student is rendered (no cohort baseline)", () => {
+    const students = [
+      makeStudent("Solo", [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0]),
+    ];
+    render(<CohortSparklineGrid students={students} />);
+    const cell = screen.getByTestId("cohort-cell");
+    expect(cell.getAttribute("data-severity")).toBe("medium");
+  });
 });
