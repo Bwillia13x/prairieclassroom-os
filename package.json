@@ -49,6 +49,7 @@
     "release:gate:ollama": "node scripts/release-gate.mjs --inference-mode ollama --update-baseline",
     "release:gate:gemini": "node scripts/release-gate.mjs --inference-mode gemini --update-baseline",
     "release:gate:real": "node scripts/release-gate.mjs --inference-mode api --update-baseline",
+    "submission:final-check": "node scripts/submission-final-check.mjs",
     "eval:summary": "node scripts/eval-summary.mjs",
     "evidence:generate": "npx tsx scripts/evidence-generate.ts",
     "evidence:snapshot": "npx tsx scripts/evidence-snapshot.ts",
