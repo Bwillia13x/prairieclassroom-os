@@ -1,0 +1,221 @@
+{
+  "created_at": "2026-04-27T23:02:35.130Z",
+  "previous": {
+    "created_at": "2026-04-27T23:02:01.289Z",
+    "prior": {
+      "created_at": "2026-04-27T23:01:06.622Z",
+      "final_url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "results": [
+        {
+          "step": "load demo classroom",
+          "ok": true,
+          "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+          "value": [
+            "      - heading \"Read the room before choosing the lens.\" [level=1]",
+            "    - heading \"Operating signal\" [level=2]",
+            "      - heading \"Planning streak & trend\" [level=3]",
+            "      - heading \"Students to watch\" [level=3]",
+            "        - heading \"Top students to watch\" [level=3]"
+          ]
+        },
+        {
+          "step": "click Today tab and verify live triage",
+          "ok": true,
+          "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+          "value": [
+            "        - heading \"10:00–10:45 is today's real test.\" [level=1]",
+            "      - heading \"Who needs a touchpoint\" [level=3]",
+            "      - heading \"What to watch next\" [level=2]",
+            "        - heading \"Today's Shape\" [level=2]",
+            "        - heading \"Complexity Debt Record-derived data\" [level=3]: Complexity Debt RECORD"
+          ]
+        },
+        {
+          "step": "click Prep tab and verify prep command",
+          "ok": true,
+          "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+          "value": [
+            "      - heading \"Prepare the material before it reaches the room.\" [level=1]",
+            "    - heading \"Active prep lane\" [level=2]",
+            "      - heading \"Build Lesson Variants\" [level=2]",
+            "        - heading \"Prepare lesson artifact\" [level=2]"
+          ]
+        },
+        {
+          "step": "generate differentiated variants from pasted worksheet",
+          "ok": false,
+          "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+          "error": "Expected one label Artifact title, got 0"
+        },
+        {
+          "step": "click Tomorrow tab and generate plan",
+          "ok": false,
+          "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+          "error": "Expected one label Today's reflection, got 0"
+        },
+        {
+          "step": "click Ops tab and verify adult coordination surface",
+          "ok": true,
+          "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+          "value": [
+            "      - heading \"Coordinate the adults without losing the thread.\" [level=1]",
+            "    - heading \"Operational lane\" [level=2]",
+            "      - heading \"Log Intervention Notes About Log Intervention\" [level=2]:",
+            "        - heading \"Intervention coverage\" [level=3]",
+            "        - heading \"Quick capture\" [level=3]"
+          ]
+        },
+        {
+          "step": "click Review tab and verify human-approved follow-through surface",
+          "ok": true,
+          "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+          "value": [
+            "      - heading \"Turn classroom memory into accountable follow-through.\" [level=1]",
+            "    - heading \"Review lane\" [level=2]",
+            "      - heading \"Draft Family Messages\" [level=2]",
+            "        - heading \"Family follow-up coverage\" [level=3]",
+            "          - heading \"Message Pipeline\" [level=4]"
+          ]
+        },
+        {
+          "step": "open search command palette",
+          "ok": false,
+          "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+          "error": "Timed out after 3000ms waiting for selector internal:text=\"Search PrairieClassroom\"i: Browser Use encountered an error interacting with this webpage: Error: Element is not attached\n    at <anonymous>:4:267\n    at <anonymous>:4:483\n    at <anonymous>:5:15\nlocator.waitFor(visible) timed out for selector internal:text=\"Search PrairieClassroom\"i"
+        },
+        {
+          "step": "close search command palette",
+          "ok": false,
+          "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+          "error": "Unable to translate Input.dispatchKeyEvent in the in-app browser: Focused input target no longer matches the resolved locator\nlocator.press failed for selector body"
+        }
+      ],
+      "logs": []
+    },
+    "retries": [
+      {
+        "step": "retry differentiate generation with visible labels",
+        "ok": false,
+        "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+        "error": "Expected one label Artifact title, got 0"
+      },
+      {
+        "step": "retry tomorrow plan generation with visible labels",
+        "ok": false,
+        "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+        "error": "Expected one label Today's reflection, got 0"
+      },
+      {
+        "step": "inspect command palette after Search click",
+        "ok": true,
+        "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+        "value": [
+          "  - generic \"PrairieClassroom home\":",
+          "    - generic: PrairieClassroom",
+          "  - button \"Search\":",
+          "    - generic: Search",
+          "  - navigation \"PrairieClassroom OS navigation\":",
+          "      - tab \"Classroom\":",
+          "        - generic: Classroom",
+          "      - tab \"Today\":",
+          "        - generic: Today",
+          "      - tab \"Tomorrow\" [selected]:",
+          "        - generic: Tomorrow",
+          "      - tab \"Ops 5 pending\":",
+          "        - generic: Ops",
+          "      - tab \"Review 15 pending\":",
+          "        - generic: Review",
+          "  - tabpanel \"Tomorrow\":",
+          "    - region \"Tomorrow planning hub\":",
+          "      - generic: Tomorrow command",
+          "        - generic: Tomorrow Plan",
+          "    - region \"Tomorrow operational preview\":",
+          "          - generic: · Preview the problem",
+          "    - heading \"Stage tomorrow\" [level=2]",
+          "    - paragraph: What to stage. What to forecast. What lands tomorrow.",
+          "    - tablist \"Tomorrow tool\":",
+          "      - tab \"01 Planning order Tomorrow Plan Watchpoints, priorities, EA moves, prep, and family follow-ups. 3 priorities ready\" [selected]:",
+          "        - generic: Tomorrow Plan",
+          "    - heading \"Plan Tomorrow's Support About Tomorrow Plan\" [level=2]:",
+          "      - text: Plan Tomorrow's Support",
+          "      - button \"About Tomorrow Plan\":",
+          "    - generic: Capture the signal from today and convert it into watchpoints, student priorities, EA actions, prep items, and family follow-ups before the next school day starts.",
+          "    - region \"Tomorrow plan coverage\":",
+          "      - heading \"Tomorrow plan coverage\" [level=3]",
+          "      - generic: Today's reflection *",
+          "      - textbox \"Today's reflection\":",
+          "        - /placeholder: What worked today? Which students struggled? Any surprises or changes to flag for tomorrow? (e.g., 'Math went well, but Mika spiraled during writing — need smoother transition tomorrow.')",
+          "      - generic: Tomorrow's intention",
+          "      - textbox \"Tomorrow's intention\":",
+          "    - status \"Tomorrow plan preview\"",
+          "    - generic: PrairieClassroom OS",
+          "      - generic: classroom",
+          "- dialog \"Command palette\":",
+          "  - combobox \"Search commands, classrooms, and actions\" [expanded] [active]",
+          "    - option \"panel Classroom Bird's-eye dashboard — health, coverage, queues, student watch. Keyboard shortcut 1\":",
+          "      - generic: Classroom",
+          "    - option \"panel Today Live-day triage — recommended next move, immediate risks, carry-forward. Keyboard shortcut 2\":",
+          "      - generic: Today",
+          "    - option \"panel Tomorrow Next-day plan, complexity forecast, and queued carry-forward. Keyboard shortcut 3\":",
+          "      - generic: Tomorrow",
+          "    - option \"panel Ops Adult coordination — log intervention, EA briefing, EA load, substitute packet. Keyboard shortcut 6\":",
+          "      - generic: Ops",
+          "    - option \"panel Review Family message, support patterns, and usage insights. Keyboard shortcut 7\":",
+          "      - generic: Review",
+          "    - option \"tool Tomorrow · Tomorrow Plan Tomorrow\":",
+          "      - generic: Tomorrow · Tomorrow Plan",
+          "      - generic: Tomorrow",
+          "    - option \"tool Tomorrow · Forecast Tomorrow\":",
+          "      - generic: Tomorrow · Forecast",
+          "      - generic: Tomorrow",
+          "    - option \"tool Ops · Log Intervention Ops\":",
+          "      - generic: Ops · Log Intervention",
+          "      - generic: Ops",
+          "    - option \"tool Ops · EA Briefing Ops\":",
+          "      - generic: Ops · EA Briefing",
+          "      - generic: Ops",
+          "    - option \"tool Ops · EA Load Balance Ops\":",
+          "      - generic: Ops · EA Load Balance",
+          "      - generic: Ops",
+          "    - option \"tool Ops · Sub Packet Ops\":",
+          "      - generic: Ops · Sub Packet",
+          "      - generic: Ops",
+          "    - option \"tool Review · Family Message Review\":",
+          "      - generic: Review · Family Message",
+          "      - generic: Review",
+          "    - option \"tool Review · Support Patterns Review\":",
+          "      - generic: Review · Support Patterns",
+          "      - generic: Review",
+          "    - option \"tool Review · Usage Insights Review\":",
+          "      - generic: Review · Usage Insights",
+          "      - generic: Review",
+          "    - text: CLASSROOMS"
+        ]
+      }
+    ],
+    "logs": [],
+    "final_url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan"
+  },
+  "roleRetries": [
+    {
+      "step": "dismiss command palette if open",
+      "ok": true,
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "value": "dismiss attempted"
+    },
+    {
+      "step": "differentiate generation through role textboxes",
+      "ok": true,
+      "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "value": "variants generated visible"
+    },
+    {
+      "step": "tomorrow plan generation through role textboxes",
+      "ok": true,
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "value": "plan generated visible"
+    }
+  ],
+  "logs": [],
+  "final_url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan"
+}

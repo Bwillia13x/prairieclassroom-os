@@ -82,13 +82,13 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 
 The repo has a current artifact-backed proof story:
 
-- **Mock structural gate:** passing at `output/release-gate/2026-04-27T04-12-56-544Z-96299`.
+- **Mock structural gate:** passing at `output/release-gate/2026-04-28T00-38-53-468Z-24492`.
 - **Hosted Gemma 4 release gate:** passing on synthetic/demo data at `output/release-gate/2026-04-27T01-26-45-190Z-87424`.
 - **Hosted Gemini proof lane:** passing baseline; the full hosted release gate passed via `npm run release:gate:gemini`.
 - **Hosted proof eval summary:** `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-summary.json`.
 - **Hosted eval result:** 13/13 curated hosted proof cases passed in the latest checked-in hosted artifact, including the Punjabi family-message equity case.
 - **Full eval corpus:** 134 checked-in eval case files.
-- **Current unit coverage in latest mock gate:** 2,035 TypeScript/Vitest tests and 69 Python tests passed.
+- **Current unit coverage in latest mock gate:** 2,058 TypeScript/Vitest tests and 69 Python tests passed.
 - **Canonical inventory:** `docs/system-inventory.md` and `docs/api-surface.md`.
 - **Provider proof source:** `docs/eval-baseline.md`.
 - **Concise judge proof brief:** `docs/hackathon-proof-brief.md`.
@@ -125,5 +125,5 @@ PrairieClassroom OS is therefore not an AI tutor with school branding. It is a G
 | API endpoints | 52 |
 | SQLite tables per classroom | 10 |
 | Checked-in eval case files | 134 |
-| Latest mock-gate tests | 2,035 Vitest + 69 Python |
+| Latest mock-gate tests | 2,058 Vitest + 69 Python |
 | Primary user roles | teacher, educational assistant, substitute, reviewer |

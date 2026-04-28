@@ -228,8 +228,8 @@ When you change anything that touches color:
 
 The theme contract extends to typography. Three font families are declared in
 `apps/web/src/styles/tokens.css`, loaded from `apps/web/src/styles/fonts.css`,
-served from `apps/web/public/fonts/`, and only the Inter body face is preloaded
-by `apps/web/index.html`:
+served from `apps/web/public/fonts/`, with only the critical Inter body face
+preloaded by `apps/web/index.html`:
 
 | Role | Token | Font | Used for |
 |---|---|---|---|
@@ -280,7 +280,7 @@ by `apps/web/index.html`:
 - `apps/web/public/fonts/` — checked-in woff2 font files copied to `dist/fonts/`
 - `apps/web/src/components/NumberTicker.tsx` — spring-tweened numeric transitions
 - `apps/web/src/components/ThemeToggle.tsx` — three-state toggle component
-- `apps/web/index.html` — favicon link and same-origin Inter preload
+- `apps/web/index.html` — favicon link plus same-origin Inter preload
 - `scripts/check-contrast.mjs` — contrast verification script
 - `output/contrast-report.md` — last generated contrast report (git-ignored)
 - `docs/dark-mode-upgrade-2026-04-12.md` — the dark-mode side of the 2026-04-12 sprint

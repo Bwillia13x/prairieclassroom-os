@@ -1,0 +1,987 @@
+apps/web/src/motion.css:8:@keyframes fade-up {
+apps/web/src/motion.css:19:@keyframes fade-in {
+apps/web/src/motion.css:24:@keyframes fade-down {
+apps/web/src/motion.css:35:@keyframes scale-in {
+apps/web/src/motion.css:46:@keyframes scale-in-spring {
+apps/web/src/motion.css:61:@keyframes slide-in-right {
+apps/web/src/motion.css:72:@keyframes slide-in-left {
+apps/web/src/motion.css:85:@keyframes fade-out {
+apps/web/src/motion.css:90:@keyframes fade-out-down {
+apps/web/src/motion.css:101:@keyframes scale-out {
+apps/web/src/motion.css:114:@keyframes gentle-float {
+apps/web/src/motion.css:119:@keyframes breathe {
+apps/web/src/motion.css:124:@keyframes pulse-ring {
+apps/web/src/motion.css:126:    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 10%, transparent);
+apps/web/src/motion.css:129:    box-shadow: 0 0 0 10px color-mix(in srgb, var(--color-accent) 0%, transparent);
+apps/web/src/motion.css:133:@keyframes shimmer-sweep {
+apps/web/src/motion.css:144:@keyframes success-pop {
+apps/web/src/motion.css:162:@keyframes check-draw {
+apps/web/src/motion.css:173:@keyframes ripple-expand {
+apps/web/src/motion.css:184:@keyframes press-bounce {
+apps/web/src/motion.css:193:@keyframes reveal-height {
+apps/web/src/motion.css:208:@keyframes collapse-height {
+apps/web/src/motion.css:223:@keyframes backdrop-blur-in {
+apps/web/src/motion.css:226:    backdrop-filter: blur(0px);
+apps/web/src/motion.css:230:    backdrop-filter: blur(4px);
+apps/web/src/motion.css:234:@keyframes backdrop-blur-out {
+apps/web/src/motion.css:237:    backdrop-filter: blur(4px);
+apps/web/src/motion.css:241:    backdrop-filter: blur(0px);
+apps/web/src/motion.css:247:@keyframes panel-enter {
+apps/web/src/motion.css:260:@keyframes tabs-slide-in {
+apps/web/src/motion.css:276:  animation: fade-up 0.32s var(--ease-out-expo) both;
+apps/web/src/motion.css:294:  animation: panel-enter 0.35s var(--ease-out-expo) both;
+apps/web/src/motion.css:303:@keyframes elastic-in {
+apps/web/src/motion.css:324:@keyframes rubber-band {
+apps/web/src/motion.css:334:@keyframes bounce-in {
+apps/web/src/motion.css:354:@keyframes tooltip-pop {
+apps/web/src/motion.css:369:@keyframes tooltip-dismiss {
+apps/web/src/motion.css:382:@keyframes glow-pulse {
+apps/web/src/motion.css:384:    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+apps/web/src/motion.css:387:    box-shadow: 0 0 12px 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+apps/web/src/motion.css:391:@keyframes attention-shake {
+apps/web/src/motion.css:400:@keyframes wiggle {
+apps/web/src/motion.css:408:@keyframes counter-tick-up {
+apps/web/src/motion.css:419:@keyframes counter-tick-down {
+apps/web/src/motion.css:432:@keyframes chip-enter {
+apps/web/src/motion.css:447:@keyframes badge-ping {
+apps/web/src/motion.css:450:    box-shadow: 0 0 0 0 currentColor;
+apps/web/src/motion.css:453:    box-shadow: 0 0 0 4px transparent;
+apps/web/src/motion.css:457:    box-shadow: 0 0 0 0 transparent;
+apps/web/src/motion.css:463:@keyframes card-settle {
+apps/web/src/motion.css:470:@keyframes toast-enter {
+apps/web/src/motion.css:481:@keyframes toast-exit {
+apps/web/src/motion.css:494:@keyframes morph-check {
+apps/web/src/motion.css:514:@keyframes cursor-blink {
+apps/web/src/motion.css:521:@keyframes skeleton-wave {
+apps/web/src/motion.css:532:@keyframes indeterminate-slide {
+apps/web/src/motion.css:543:@keyframes spin {
+apps/web/src/motion.css:548:@keyframes spin-pulse {
+apps/web/src/motion.css:560:  transition:
+apps/web/src/motion.css:562:    box-shadow var(--motion-hover) var(--ease-spring);
+apps/web/src/motion.css:566:  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-text) 6%, transparent);
+apps/web/src/motion.css:575:  transition: transform var(--motion-hover) var(--ease-elastic);
+apps/web/src/motion.css:587:  transition: transform var(--motion-micro) var(--ease-press);
+apps/web/src/motion.css:595:  transition:
+apps/web/src/motion.css:597:    box-shadow var(--motion-micro) var(--ease-press);
+apps/web/src/motion.css:601:  box-shadow: 0 1px 2px color-mix(in srgb, var(--color-text) 8%, transparent);
+apps/web/src/motion.css:606:  transition: box-shadow var(--motion-base) var(--ease-standard);
+apps/web/src/motion.css:609:  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 12%, transparent);
+apps/web/src/motion.css:614:  animation: attention-shake 0.5s var(--ease-spring) both;
+apps/web/src/motion.css:621:  animation: focus-ring-expand var(--motion-fast) var(--ease-out-expo) both;
+apps/web/src/motion.css:624:@keyframes focus-ring-expand {
+apps/web/src/motion.css:627:    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+apps/web/src/motion.css:631:    box-shadow: var(--focus-ring-halo);
+apps/web/src/motion.css:639:  animation: cursor-blink 1s steps(1) infinite;
+apps/web/src/motion.css:646:  animation: spin 0.8s linear infinite;
+apps/web/src/motion.css:655:  animation: scale-in-spring 0.36s var(--ease-bounce) both;
+apps/web/src/motion.css:668:  animation: slide-in-right 0.3s var(--ease-out-expo) both;
+apps/web/src/motion.css:681:  animation: elastic-in 0.5s var(--ease-elastic) both;
+apps/web/src/print.css:48:    box-shadow: none !important;
+apps/web/src/print.css:86:    animation: none !important;
+apps/web/src/styles/base.css:85:  transition:
+apps/web/src/styles/base.css:87:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/base.css:94:  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 10%, transparent);
+apps/web/src/styles/base.css:114:  animation: focus-ring-expand var(--motion-fast, 150ms) var(--ease-out-back, cubic-bezier(0.34, 1.3, 0.64, 1)) both;
+apps/web/src/styles/base.css:193:@keyframes skeleton-shimmer {
+apps/web/src/styles/base.css:198:@keyframes skeleton-pulse {
+apps/web/src/styles/base.css:206:    animation: none !important;
+apps/web/src/styles/base.css:210:@keyframes spin {
+apps/web/src/styles/base.css:214:@keyframes toast-in {
+apps/web/src/styles/base.css:219:@keyframes toast-out {
+apps/web/src/styles/base.css:224:@keyframes prefill-highlight {
+apps/web/src/styles/base.css:232:@keyframes data-change-pulse {
+apps/web/src/styles/base.css:233:  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 28%, transparent); }
+apps/web/src/styles/base.css:234:  40%  { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-accent) 14%, transparent); }
+apps/web/src/styles/base.css:235:  100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent); }
+apps/web/src/styles/base.css:239:  animation: data-change-pulse 520ms var(--ease-out-expo) 1;
+apps/web/src/styles/base.css:244:    animation: none;
+apps/web/src/styles/nothing-theme.css:36:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:75:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:171:  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--color-accent) 10%, transparent));
+apps/web/src/styles/nothing-theme.css:237:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:265:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:272:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:340:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:365:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:382:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:393:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:399:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:406:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:435:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:440:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:450:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:479:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:498:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:520:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:535:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:546:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:559:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:586:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:632:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:650:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:700:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:741:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:754:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:781:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:787:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:798:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:836:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:866:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:949:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:958:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:978:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1023:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1061:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1070:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1094:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1108:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1119:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1129:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1138:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1163:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1174:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1177:  transition: border-color var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/nothing-theme.css:1184:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1218:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1220:  transition: border-color var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/nothing-theme.css:1227:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1256:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1266:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1287:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1318:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1320:  transition: border-color var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/nothing-theme.css:1377:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1385:  transition: border-color var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/nothing-theme.css:1395:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1402:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1427:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1441:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1450:  transition: color var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/nothing-theme.css:1457:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1497:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1523:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1532:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1559:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1569:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1595:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1610:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1618:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1648:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1656:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1686:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1703:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1712:  box-shadow: none;
+apps/web/src/styles/nothing-theme.css:1804:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:1805:  backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:1806:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:1837:  box-shadow:
+apps/web/src/styles/nothing-theme.css:1854:     are rendered via box-shadow but they ARE the hairlines, not drop
+apps/web/src/styles/nothing-theme.css:1861:    box-shadow:
+apps/web/src/styles/nothing-theme.css:1899:  backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:1900:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:1920:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:1921:  backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:1922:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:1924:  filter: none !important;
+apps/web/src/styles/nothing-theme.css:2004:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2033:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2034:  backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2035:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2065:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2066:  backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2067:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2084:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2139:  animation: nothing-toast-enter var(--motion-base) var(--ease-snap) both !important;
+apps/web/src/styles/nothing-theme.css:2209:  animation: none !important;
+apps/web/src/styles/nothing-theme.css:2217:  animation: none !important;
+apps/web/src/styles/nothing-theme.css:2232:  animation: none !important;
+apps/web/src/styles/nothing-theme.css:2239:  animation: none !important;
+apps/web/src/styles/nothing-theme.css:2240:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2264:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2277:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2309:  animation: none !important;
+apps/web/src/styles/nothing-theme.css:2391:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2392:  backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2393:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2396:  filter: none !important;
+apps/web/src/styles/nothing-theme.css:2397:  transition:
+apps/web/src/styles/nothing-theme.css:2447:  transition: opacity var(--motion-fast) var(--ease-standard),
+apps/web/src/styles/nothing-theme.css:2760:  animation: btn-spin 0.7s linear infinite !important;
+apps/web/src/styles/nothing-theme.css:2787:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:2788:  backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2789:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/nothing-theme.css:2791:  filter: none !important;
+apps/web/src/styles/nothing-theme.css:2792:  transition:
+apps/web/src/styles/nothing-theme.css:2826:  transition: opacity var(--motion-fast) var(--ease-standard),
+apps/web/src/styles/nothing-theme.css:3021:@keyframes nothing-marker-pulse {
+apps/web/src/styles/nothing-theme.css:3033:@keyframes nothing-icon-jog {
+apps/web/src/styles/nothing-theme.css:3045:@keyframes nothing-button-press {
+apps/web/src/styles/nothing-theme.css:3048:    box-shadow: 0 0 0 0 transparent;
+apps/web/src/styles/nothing-theme.css:3052:    box-shadow: inset 0 1px 3px color-mix(in srgb, var(--color-text) 4%, transparent);
+apps/web/src/styles/nothing-theme.css:3062:    box-shadow: 0 0 0 0 transparent;
+apps/web/src/styles/nothing-theme.css:3066:@keyframes nothing-button-press-compact {
+apps/web/src/styles/nothing-theme.css:3084:@keyframes nothing-button-press-heavy {
+apps/web/src/styles/nothing-theme.css:3087:    box-shadow: 0 0 0 0 transparent;
+apps/web/src/styles/nothing-theme.css:3091:    box-shadow: inset 0 1px 4px color-mix(in srgb, var(--color-text) 5%, transparent);
+apps/web/src/styles/nothing-theme.css:3101:    box-shadow: 0 0 0 0 transparent;
+apps/web/src/styles/nothing-theme.css:3105:@keyframes nothing-button-press-heavy-compact {
+apps/web/src/styles/nothing-theme.css:3123:@keyframes nothing-marker-press {
+apps/web/src/styles/nothing-theme.css:3138:@keyframes nothing-marker-press-heavy {
+apps/web/src/styles/nothing-theme.css:3153:@keyframes nothing-icon-press {
+apps/web/src/styles/nothing-theme.css:3168:@keyframes nothing-icon-press-heavy {
+apps/web/src/styles/nothing-theme.css:3183:@keyframes nothing-toast-enter {
+apps/web/src/styles/nothing-theme.css:3211:    animation: nothing-button-press var(--nothing-button-press-duration) var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3219:    animation: nothing-button-press-heavy var(--nothing-button-press-duration-heavy) var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3223:    animation: nothing-button-press-heavy-compact var(--nothing-button-press-duration-heavy-compact) var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3235:    animation: nothing-button-press-compact var(--nothing-button-press-duration-compact) var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3277:    animation: nothing-marker-press var(--nothing-button-press-marker-duration) var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3293:    animation: nothing-marker-press-heavy var(--nothing-button-press-marker-duration-heavy) var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3333:    animation: nothing-icon-press-heavy var(--nothing-button-press-duration-heavy-compact) var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3376:    animation: nothing-marker-pulse 340ms var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3397:    animation: nothing-icon-jog 320ms var(--ease-standard) 1;
+apps/web/src/styles/nothing-theme.css:3508:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:3511:  transition:
+apps/web/src/styles/nothing-theme.css:3532:  transition: opacity var(--motion-fast) var(--ease-standard),
+apps/web/src/styles/nothing-theme.css:3604:  box-shadow: none !important;
+apps/web/src/styles/nothing-theme.css:3607:  transition:
+apps/web/src/styles/nothing-theme.css:3624:  transition: opacity var(--motion-fast) var(--ease-standard),
+apps/web/src/styles/page-tool-switcher.css:45:  transition:
+apps/web/src/styles/page-tool-switcher.css:249:  box-shadow: var(--inner-stroke);
+apps/web/src/styles/page-tool-switcher.css:250:  transition:
+apps/web/src/styles/page-tool-switcher.css:253:    box-shadow var(--motion-base) var(--ease-standard),
+apps/web/src/styles/page-tool-switcher.css:265:  box-shadow:
+apps/web/src/styles/page-tool-switcher.css:281:  box-shadow:
+apps/web/src/hooks/useAmbientCursorGlow.ts:48:      const rect = target.getBoundingClientRect();
+apps/web/src/styles/shell.css:35:  box-shadow: none;
+apps/web/src/styles/shell.css:36:  backdrop-filter: none;
+apps/web/src/styles/shell.css:37:  -webkit-backdrop-filter: none;
+apps/web/src/styles/shell.css:115:  transition: filter var(--motion-fast, 0.15s) ease;
+apps/web/src/styles/shell.css:133:  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent));
+apps/web/src/styles/shell.css:205:  transition:
+apps/web/src/styles/shell.css:208:    box-shadow var(--motion-base) var(--ease-spring),
+apps/web/src/styles/shell.css:233:  box-shadow: inset 0 -2px 0 var(--shell-control-accent);
+apps/web/src/styles/shell.css:268:  transition: background-color var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/shell.css:303:  transition: transform var(--motion-fast) var(--ease-standard),
+apps/web/src/styles/shell.css:451:  transition:
+apps/web/src/styles/shell.css:568:  transition:
+apps/web/src/styles/shell.css:572:    box-shadow var(--motion-fast) var(--ease-spring);
+apps/web/src/styles/shell.css:608:  box-shadow:
+apps/web/src/styles/shell.css:622:  box-shadow: 0 -2px 6px color-mix(in srgb, var(--shell-control-accent) 24%, transparent);
+apps/web/src/styles/shell.css:649:  animation: tabs-slide-in var(--motion-base) var(--ease-out-expo);
+apps/web/src/styles/shell.css:662:  transition: opacity var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/shell.css:778:  transition:
+apps/web/src/styles/shell.css:826:  transition: color var(--motion-fast) var(--ease-standard),
+apps/web/src/styles/shell.css:923:  box-shadow:
+apps/web/src/styles/shell.css:972:  animation: panel-enter var(--motion-base) var(--ease-standard) both;
+apps/web/src/styles/shell.css:980:@keyframes panel-enter {
+apps/web/src/styles/shell.css:984:    filter: blur(1.5px);
+apps/web/src/styles/shell.css:996:    filter: none;
+apps/web/src/styles/shell.css:1000:@keyframes tabs-slide-in {
+apps/web/src/styles/shell.css:1203:    transition: none;
+apps/web/src/styles/shell.css:1232:    box-shadow: var(--shadow-sm);
+apps/web/src/panels/InterventionPanel.css:27:  transition:
+apps/web/src/panels/InterventionPanel.css:39:  transition: transform var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/multi-tool-page.css:38:  transition: border-color var(--motion-hover) var(--ease-standard),
+apps/web/src/panels/TodayPanel.css:263:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:264:  backdrop-filter: none;
+apps/web/src/panels/TodayPanel.css:265:  -webkit-backdrop-filter: none;
+apps/web/src/panels/TodayPanel.css:440:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:455:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:458:  transition: color var(--motion-fast) var(--ease-standard);
+apps/web/src/panels/TodayPanel.css:493:  transition: color var(--motion-fast) var(--ease-standard);
+apps/web/src/panels/TodayPanel.css:577:  transition:
+apps/web/src/panels/TodayPanel.css:597:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:697:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:702:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:844:  transition:
+apps/web/src/panels/TodayPanel.css:890:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:904:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:955:  transition: color var(--motion-fast) var(--ease-standard);
+apps/web/src/panels/TodayPanel.css:1220:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1316:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1370:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1377:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1413:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1429:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1477:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1494:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1505:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1511:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1518:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1562:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1601:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1625:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1633:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1642:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1696:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1744:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1766:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1789:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1818:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1921:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1926:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1953:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:1981:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2009:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2015:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2038:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2114:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2127:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2203:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2237:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2263:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2285:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2304:  box-shadow: none;
+apps/web/src/panels/TodayPanel.css:2321:  box-shadow: none;
+apps/web/src/panels/EALoadPanel.css:36:  box-shadow: var(--shadow-sm);
+apps/web/src/panels/EALoadPanel.css:90:  box-shadow: var(--shadow-xs);
+apps/web/src/styles/ambient.css:28:@keyframes ambient-aurora-drift {
+apps/web/src/styles/ambient.css:47:@keyframes ambient-indicator-halo {
+apps/web/src/styles/ambient.css:49:    box-shadow:
+apps/web/src/styles/ambient.css:55:    box-shadow:
+apps/web/src/styles/ambient.css:62:@keyframes ambient-shimmer-sweep {
+apps/web/src/styles/ambient.css:67:@keyframes ambient-hero-rise {
+apps/web/src/styles/ambient.css:71:    filter: blur(2px);
+apps/web/src/styles/ambient.css:76:    filter: blur(0);
+apps/web/src/styles/ambient.css:80:@keyframes ambient-aperture-spin {
+apps/web/src/styles/ambient.css:85:@keyframes ambient-aperture-breathe {
+apps/web/src/styles/ambient.css:164:  animation: ambient-indicator-halo 6.5s var(--ease-in-out-circ) infinite;
+apps/web/src/styles/ambient.css:182:   solid rule via background-image/box-shadow; we layer this on top
+apps/web/src/styles/ambient.css:202:  animation: ambient-underline-grow 480ms var(--ease-out-expo) both;
+apps/web/src/styles/ambient.css:210:@keyframes ambient-underline-grow {
+apps/web/src/styles/ambient.css:258:  animation: ambient-hero-rise 520ms var(--ease-out-expo) 40ms both;
+apps/web/src/styles/ambient.css:261:  animation: ambient-hero-rise 520ms var(--ease-out-expo) 180ms both;
+apps/web/src/styles/ambient.css:264:  animation: ambient-hero-rise 520ms var(--ease-out-expo) 240ms both;
+apps/web/src/styles/ambient.css:267:  animation: ambient-hero-rise 520ms var(--ease-out-expo) 320ms both;
+apps/web/src/styles/ambient.css:271:  animation: ambient-hero-rise 480ms var(--ease-out-expo) both;
+apps/web/src/styles/ambient.css:303:  transition: opacity var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/ambient.css:309:  animation: ambient-shimmer-sweep 900ms var(--ease-out-expo) forwards;
+apps/web/src/styles/ambient.css:316:  transition:
+apps/web/src/styles/ambient.css:323:  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--color-accent) 25%, transparent));
+apps/web/src/styles/ambient.css:365:  transition: opacity var(--motion-base) var(--ease-standard);
+apps/web/src/styles/ambient.css:378:  transition:
+apps/web/src/styles/ambient.css:381:    box-shadow var(--motion-base) var(--ease-spring);
+apps/web/src/styles/ambient.css:395:  transition: opacity var(--motion-base) var(--ease-standard);
+apps/web/src/styles/ambient.css:405:  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent);
+apps/web/src/styles/ambient.css:435:  animation:
+apps/web/src/styles/ambient.css:470:    animation: none;
+apps/web/src/styles/ambient.css:496:  animation: ambient-hero-rise 480ms var(--ease-out-expo) both;
+apps/web/src/styles/ambient.css:506:  animation: ambient-hero-rise 520ms var(--ease-out-expo) 200ms both;
+apps/web/src/styles/ambient.css:515:  animation: ambient-hero-rise 420ms var(--ease-out-expo) both;
+apps/web/src/styles/ambient.css:538:  animation: ambient-hero-rise 460ms var(--ease-out-expo) both;
+apps/web/src/styles/ambient.css:544:  animation: ambient-hero-rise 420ms var(--ease-out-expo) both;
+apps/web/src/styles/ambient.css:584:  transition:
+apps/web/src/styles/ambient.css:587:    box-shadow var(--motion-fast) var(--ease-press);
+apps/web/src/styles/ambient.css:592:  box-shadow: var(--shadow-press);
+apps/web/src/styles/ambient.css:617:   The keyframe avoids saturating box-shadow since the CTA is already
+apps/web/src/styles/ambient.css:624:@keyframes ambient-cta-invite {
+apps/web/src/styles/ambient.css:626:    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+apps/web/src/styles/ambient.css:629:    box-shadow:
+apps/web/src/styles/ambient.css:634:    box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-accent) 0%, transparent);
+apps/web/src/styles/ambient.css:639:  animation: ambient-cta-invite 1400ms var(--ease-out-expo) 820ms 1 both;
+apps/web/src/styles/ambient.css:647:  animation: none;
+apps/web/src/styles/ambient.css:667:@keyframes ambient-glyph-breath {
+apps/web/src/styles/ambient.css:669:    filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent));
+apps/web/src/styles/ambient.css:672:    filter: drop-shadow(0 0 22px color-mix(in srgb, var(--shell-control-accent) 26%, transparent));
+apps/web/src/styles/ambient.css:677:  animation: ambient-glyph-breath 12s ease-in-out infinite;
+apps/web/src/styles/ambient.css:704:    animation: none;
+apps/web/src/styles/ambient.css:741:  box-shadow: none !important;
+apps/web/src/styles/ambient.css:742:  backdrop-filter: none !important;
+apps/web/src/styles/ambient.css:743:  -webkit-backdrop-filter: none !important;
+apps/web/src/styles/ambient.css:751:  box-shadow: none !important;
+apps/web/src/styles/ambient.css:774:  filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent)) !important;
+apps/web/src/styles/ambient.css:834:  box-shadow: none !important;
+apps/web/src/styles/ambient.css:836:  filter: none !important;
+apps/web/src/styles/ambient.css:885:  box-shadow: inset 0 -2px 0 var(--shell-control-accent) !important;
+apps/web/src/styles/ambient.css:912:  box-shadow: none !important;
+apps/web/src/styles/ambient.css:947:  box-shadow: none !important;
+apps/web/src/styles/ambient.css:1088:  box-shadow: inset 0 2px 0 var(--shell-control-accent) !important;
+apps/web/src/styles/ambient.css:1112:  box-shadow:
+apps/web/src/styles/ambient.css:1127:  box-shadow:
+apps/web/src/styles/ambient.css:1138:  box-shadow:
+apps/web/src/panels/ClassroomPanel.css:200:  transition: background-color var(--motion-fast) var(--ease-standard);
+apps/web/src/panels/__tests__/outputActionBarHelpers.test.ts:27:  student_filter: null,
+apps/web/src/hooks/useFloatingPosition.ts:97:      const a = anchor.getBoundingClientRect();
+apps/web/src/hooks/useFloatingPosition.ts:98:      const p = popover.getBoundingClientRect();
+apps/web/src/__tests__/App.shell.test.tsx:74:    scrollHeight?: number;
+apps/web/src/__tests__/App.shell.test.tsx:75:    clientHeight?: number;
+apps/web/src/__tests__/App.shell.test.tsx:86:  Object.defineProperty(element, "scrollHeight", {
+apps/web/src/__tests__/App.shell.test.tsx:88:    get: () => options.scrollHeight ?? 1600,
+apps/web/src/__tests__/App.shell.test.tsx:90:  Object.defineProperty(element, "clientHeight", {
+apps/web/src/__tests__/App.shell.test.tsx:92:    get: () => options.clientHeight ?? 400,
+apps/web/src/__tests__/App.shell.test.tsx:94:  Object.defineProperty(element, "scrollTop", {
+apps/web/src/__tests__/App.shell.test.tsx:107:function mockContainerScrollState(element: HTMLElement, scrollTop: number) {
+apps/web/src/__tests__/App.shell.test.tsx:108:  let currentScrollTop = scrollTop;
+apps/web/src/__tests__/App.shell.test.tsx:110:  Object.defineProperty(element, "scrollTop", {
+apps/web/src/App.tsx:154:      shell.style.setProperty("--shell-sticky-offset", `${Math.ceil(header.getBoundingClientRect().height)}px`);
+apps/web/src/App.tsx:160:    let observer: ResizeObserver | null = null;
+apps/web/src/App.tsx:161:    if (typeof ResizeObserver !== "undefined") {
+apps/web/src/App.tsx:162:      observer = new ResizeObserver(() => updateStickyOffset());
+apps/web/src/App.tsx:268:        panel.scrollHeight > panel.clientHeight;
+apps/web/src/App.tsx:279:      sessionStorage.setItem(`prairie-scroll-${tab}`, String(scrollEl.scrollTop));
+apps/web/src/App.tsx:519:      scrollEl.scrollTop = parseInt(saved, 10);
+apps/web/src/App.tsx:524:    scrollEl.scrollTop = 0;
+apps/web/src/panels/SupportPatternsPanel.tsx:113:          student_filter: studentFilter,
+apps/web/src/components/ArtifactUpload.css:18:  filter: drop-shadow(0 10px 22px color-mix(in srgb, var(--color-accent) 10%, transparent));
+apps/web/src/components/ArtifactUpload.css:48:  transition:
+apps/web/src/components/ArtifactUpload.css:51:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/ArtifactUpload.css:57:  box-shadow: var(--shadow-sm);
+apps/web/src/components/ArtifactUpload.css:157:  box-shadow: var(--shadow-xs);
+apps/web/src/panels/outputActionBarHelpers.ts:22:    lines.push(`Student filter: ${report.student_filter}`);
+apps/web/src/components/DrillDownDrawer.css:9:  backdrop-filter: blur(4px);
+apps/web/src/components/DrillDownDrawer.css:10:  -webkit-backdrop-filter: blur(4px);
+apps/web/src/components/DrillDownDrawer.css:11:  animation: backdrop-blur-in var(--motion-base) var(--ease-decelerate) both;
+apps/web/src/components/DrillDownDrawer.css:26:  box-shadow: var(--shadow-lg);
+apps/web/src/components/DrillDownDrawer.css:27:  animation: drawer-slide-in var(--motion-slow) var(--ease-spring) both;
+apps/web/src/components/DrillDownDrawer.css:30:@keyframes drawer-slide-in {
+apps/web/src/components/DrillDownDrawer.css:77:  transition:
+apps/web/src/components/DrillDownDrawer.css:331:@keyframes drawer-slide-out {
+apps/web/src/components/DrillDownDrawer.css:343:  animation: drawer-slide-out var(--motion-base) var(--ease-standard) both;
+apps/web/src/components/DrillDownDrawer.css:348:  transition: opacity var(--motion-base) var(--ease-standard);
+apps/web/src/components/DrillDownDrawer.css:354:    animation: none;
+apps/web/src/components/DrillDownDrawer.css:358:    animation: none;
+apps/web/src/components/dataviz/composition.tsx:216:    transition: "var(--color-warning)",
+apps/web/src/components/dataviz/composition.tsx:257:      transition: "Transition",
+apps/web/src/components/OnboardingOverlay.css:9:  backdrop-filter: blur(4px);
+apps/web/src/components/OnboardingOverlay.css:10:  -webkit-backdrop-filter: blur(4px);
+apps/web/src/components/OnboardingOverlay.css:11:  animation: backdrop-blur-in var(--motion-base) var(--ease-decelerate) both;
+apps/web/src/components/OnboardingOverlay.css:23:  box-shadow: var(--inner-stroke), var(--shadow-lg);
+apps/web/src/components/OnboardingOverlay.css:24:  animation: scale-in-spring var(--motion-slow) var(--ease-spring) both;
+apps/web/src/components/OnboardingOverlay.css:42:  filter: drop-shadow(0 14px 28px color-mix(in srgb, var(--color-accent) 14%, transparent));
+apps/web/src/components/OnboardingOverlay.css:50:  transition:
+apps/web/src/components/OnboardingOverlay.css:53:    box-shadow var(--motion-base) var(--ease-spring);
+apps/web/src/components/OnboardingOverlay.css:59:  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 10%, transparent);
+apps/web/src/components/OnboardingOverlay.css:111:@keyframes onboarding-backdrop-in {
+apps/web/src/components/OnboardingOverlay.css:116:@keyframes onboarding-card-in {
+apps/web/src/components/OnboardingOverlay.css:130:    animation: none;
+apps/web/src/components/ContextualHint.css:12:  backdrop-filter: blur(10px);
+apps/web/src/components/ContextualHint.css:21:  box-shadow:
+apps/web/src/components/ContextualHint.css:24:  animation: fade-up 0.35s var(--ease-out-expo) both;
+apps/web/src/components/ContextualHint.css:27:@keyframes hint-appear {
+apps/web/src/components/ContextualHint.css:66:  backdrop-filter: none;
+apps/web/src/components/ContextualHint.css:67:  box-shadow: none;
+apps/web/src/components/ContextualHint.css:75:  transition:
+apps/web/src/components/ContextualHint.css:100:  backdrop-filter: none;
+apps/web/src/components/ContextualHint.css:103:  box-shadow: none;
+apps/web/src/components/ContextualHint.css:106:  animation: none;
+apps/web/src/components/ContextualHint.css:123:  transition: color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/ContextualHint.css:164:    animation: none;
+apps/web/src/components/ResultBanner.css:12:  animation: fade-up var(--motion-base) var(--ease-spring) both;
+apps/web/src/components/ResultBanner.css:25:  animation: success-pop 0.45s var(--ease-spring) both;
+apps/web/src/components/ResultBanner.css:69:    animation: none;
+apps/web/src/components/PlanViewer.css:6:  box-shadow: var(--shadow-md);
+apps/web/src/components/PlanViewer.css:67:  animation: fade-up 0.35s ease-out both;
+apps/web/src/components/PlanViewer.css:102:  transition:
+apps/web/src/components/PlanViewer.css:104:    box-shadow var(--motion-fast) var(--ease-spring),
+apps/web/src/components/PlanViewer.css:110:  box-shadow: var(--shadow-sm);
+apps/web/src/components/PlanViewer.css:212:  transition:
+apps/web/src/components/PlanViewer.css:214:    box-shadow var(--motion-fast) var(--ease-standard),
+apps/web/src/components/PlanViewer.css:220:  box-shadow: 0 0 0 1px var(--color-section-family);
+apps/web/src/components/PlanViewer.css:244:  transition:
+apps/web/src/components/PlanViewer.css:271:    box-shadow: none;
+apps/web/src/components/StreamingIndicator.css:8:  animation: fade-up 0.35s var(--ease-out-expo) both;
+apps/web/src/components/StreamingIndicator.css:25:  animation: breathe 2s var(--ease-standard) infinite;
+apps/web/src/components/StreamingIndicator.css:56:  transition: background var(--motion-fast) var(--ease-standard);
+apps/web/src/components/StreamingIndicator.css:88:  transition: width var(--motion-slow) var(--ease-out-expo);
+apps/web/src/components/StreamingIndicator.css:89:  animation: shimmer-sweep 2s linear infinite;
+apps/web/src/components/StreamingIndicator.css:168:    animation: none;
+apps/web/src/components/StreamingIndicator.css:172:    animation: none;
+apps/web/src/components/StreamingIndicator.css:176:    animation: none;
+apps/web/src/components/StreamingIndicator.css:177:    transition: none;
+apps/web/src/components/ForecastViewer.css:7:  box-shadow: var(--shadow-sm);
+apps/web/src/components/ForecastViewer.css:77:  animation: fade-up 0.3s ease-out both;
+apps/web/src/components/ForecastViewer.css:89:  transition:
+apps/web/src/components/ForecastViewer.css:97:  filter: brightness(1.08);
+apps/web/src/components/ForecastViewer.css:101:  filter: brightness(0.95);
+apps/web/src/components/ForecastViewer.css:148:  transition: box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/ForecastViewer.css:149:  animation: fade-up 0.3s ease-out both;
+apps/web/src/components/ForecastViewer.css:162:  box-shadow: var(--shadow-sm);
+apps/web/src/components/RecentRunsChipRow.css:37:  transition:
+apps/web/src/components/MessageDraft.css:6:  box-shadow: var(--shadow-md);
+apps/web/src/components/MessageDraft.css:7:  animation: fade-up 0.35s ease-out both;
+apps/web/src/components/MessageDraft.css:88:    box-shadow: none;
+apps/web/src/components/MessageDraft.css:90:    animation: none;
+apps/web/src/components/ToastQueue.css:26:  box-shadow: var(--shadow-md);
+apps/web/src/components/ToastQueue.css:27:  animation: toast-slide-in 0.4s var(--ease-spring) both;
+apps/web/src/components/ToastQueue.css:33:@keyframes toast-slide-in {
+apps/web/src/components/ToastQueue.css:97:  transition: background var(--motion-fast) var(--ease-standard);
+apps/web/src/components/ToastQueue.css:122:  transition:
+apps/web/src/components/ToastQueue.css:162:    animation: none;
+apps/web/src/components/quickCapture/QuickCaptureTray.css:137:  transition:
+apps/web/src/components/quickCapture/QuickCaptureTray.css:159:  animation: mic-pulse 1.4s ease-in-out infinite;
+apps/web/src/components/quickCapture/QuickCaptureTray.css:162:@keyframes mic-pulse {
+apps/web/src/components/quickCapture/QuickCaptureTray.css:163:  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-danger) 28%, transparent); }
+apps/web/src/components/quickCapture/QuickCaptureTray.css:164:  50% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--color-danger) 0%, transparent); }
+apps/web/src/components/quickCapture/QuickCaptureTray.css:169:    animation: none;
+apps/web/src/components/quickCapture/QuickCaptureTray.css:208:  box-shadow: 0 0 0 2px var(--color-surface);
+apps/web/src/components/quickCapture/QuickCaptureTray.css:316:    transition:
+apps/web/src/styles/primitives.css:18:  transition: all var(--motion-letterpress) var(--ease-letterpress);
+apps/web/src/styles/primitives.css:24:  box-shadow: none;
+apps/web/src/styles/primitives.css:26:  filter: saturate(0.7);
+apps/web/src/styles/primitives.css:37:  box-shadow:
+apps/web/src/styles/primitives.css:45:  box-shadow:
+apps/web/src/styles/primitives.css:51:  filter: brightness(1.04);
+apps/web/src/styles/primitives.css:56:  box-shadow:
+apps/web/src/styles/primitives.css:59:  filter: brightness(0.96);
+apps/web/src/styles/primitives.css:66:  box-shadow:
+apps/web/src/styles/primitives.css:74:  box-shadow:
+apps/web/src/styles/primitives.css:80:  filter: brightness(1.04);
+apps/web/src/styles/primitives.css:85:  box-shadow:
+apps/web/src/styles/primitives.css:88:  filter: brightness(0.96);
+apps/web/src/styles/primitives.css:96:  backdrop-filter: blur(20px);
+apps/web/src/styles/primitives.css:97:  -webkit-backdrop-filter: blur(20px);
+apps/web/src/styles/primitives.css:98:  box-shadow: var(--inner-stroke);
+apps/web/src/styles/primitives.css:105:  box-shadow:
+apps/web/src/styles/primitives.css:114:  box-shadow: inset 0 1px 3px color-mix(in srgb, black 4%, transparent);
+apps/web/src/styles/primitives.css:122:  box-shadow: none;
+apps/web/src/styles/primitives.css:138:  backdrop-filter: blur(20px);
+apps/web/src/styles/primitives.css:139:  -webkit-backdrop-filter: blur(20px);
+apps/web/src/styles/primitives.css:140:  box-shadow: var(--inner-stroke);
+apps/web/src/styles/primitives.css:147:  box-shadow:
+apps/web/src/styles/primitives.css:156:  box-shadow: inset 0 1px 3px color-mix(in srgb, black 4%, transparent);
+apps/web/src/styles/primitives.css:163:  box-shadow:
+apps/web/src/styles/primitives.css:171:  box-shadow:
+apps/web/src/styles/primitives.css:177:  filter: brightness(1.04);
+apps/web/src/styles/primitives.css:182:  box-shadow:
+apps/web/src/styles/primitives.css:185:  filter: brightness(0.96);
+apps/web/src/styles/primitives.css:199:  box-shadow: none;
+apps/web/src/styles/primitives.css:290:  animation: btn-spin 0.7s linear infinite;
+apps/web/src/styles/primitives.css:293:@keyframes btn-spin {
+apps/web/src/styles/primitives.css:306:  transition: opacity 0.4s var(--ease-decelerate);
+apps/web/src/styles/primitives.css:318:  box-shadow:
+apps/web/src/styles/primitives.css:356:  box-shadow: var(--shadow-md), var(--inner-stroke);
+apps/web/src/styles/primitives.css:368:  box-shadow: var(--shadow-xs);
+apps/web/src/styles/primitives.css:491:  box-shadow:
+apps/web/src/styles/primitives.css:535:  transition:
+apps/web/src/styles/primitives.css:537:    box-shadow var(--motion-letterpress) var(--ease-letterpress);
+apps/web/src/styles/primitives.css:551:  box-shadow: var(--focus-ring-halo);
+apps/web/src/styles/primitives.css:552:  transition:
+apps/web/src/styles/primitives.css:554:    box-shadow var(--motion-base) var(--ease-spring),
+apps/web/src/styles/primitives.css:595:  animation: prefill-highlight 2s ease-out;
+apps/web/src/styles/primitives.css:639:  transition:
+apps/web/src/styles/primitives.css:642:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/styles/primitives.css:665:  box-shadow: var(--focus-ring-halo);
+apps/web/src/styles/primitives.css:774:  box-shadow:
+apps/web/src/styles/primitives.css:844:  backdrop-filter: blur(20px);
+apps/web/src/styles/primitives.css:890:  transition:
+apps/web/src/styles/primitives.css:968:  transition: grid-template-columns 200ms ease-out;
+apps/web/src/styles/primitives.css:1081:    transition: none;
+apps/web/src/styles/primitives.css:1245:  transition: opacity var(--motion-fast);
+apps/web/src/styles/primitives.css:1306:  animation: skeleton-pulse 1.8s ease-in-out infinite;
+apps/web/src/styles/primitives.css:1355:  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+apps/web/src/styles/primitives.css:1371:  box-shadow: var(--shadow-xs);
+apps/web/src/styles/primitives.css:1403:  animation: skeleton-shimmer 1.8s ease-in-out infinite;
+apps/web/src/styles/primitives.css:1424:  animation: spin 0.8s linear infinite;
+apps/web/src/styles/primitives.css:1475:    transition:
+apps/web/src/styles/primitives.css:1518:  transition:
+apps/web/src/styles/primitives.css:1618:  box-shadow:
+apps/web/src/styles/primitives.css:1708:  box-shadow: inset 0 1px 0 color-mix(in srgb, white 4%, transparent);
+apps/web/src/components/TomorrowChip.css:21:  transition: background 120ms;
+apps/web/src/components/PageIntroInfoButton.css:26:  transition:
+apps/web/src/components/MobileNav.css:19:  box-shadow: 0 -8px 22px light-dark(rgba(17, 24, 39, 0.07), rgba(0, 0, 0, 0.2));
+apps/web/src/components/MobileNav.css:20:  backdrop-filter: blur(22px) saturate(1.2);
+apps/web/src/components/MobileNav.css:21:  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+apps/web/src/components/MobileNav.css:51:  box-shadow: var(--inner-stroke);
+apps/web/src/components/MobileNav.css:52:  transition:
+apps/web/src/components/MobileNav.css:118:  transition:
+apps/web/src/components/MobileNav.css:127:  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 24%, transparent);
+apps/web/src/components/MobileNav.css:170:  transition:
+apps/web/src/components/MobileNav.css:175:    box-shadow var(--motion-base) var(--ease-spring);
+apps/web/src/components/MobileNav.css:198:  box-shadow:
+apps/web/src/components/MobileNav.css:247:  animation: success-pop 0.35s var(--ease-spring) both;
+apps/web/src/components/MobileNav.css:248:  box-shadow: 0 0 0 2px var(--color-surface);
+apps/web/src/components/MockModeBanner.css:10:  box-shadow: var(--shadow-sm);
+apps/web/src/components/TeacherReflection.css:6:  box-shadow: var(--shadow-sm);
+apps/web/src/components/ShortcutSheet.css:5:  backdrop-filter: blur(8px) saturate(1.1);
+apps/web/src/components/ShortcutSheet.css:6:  -webkit-backdrop-filter: blur(8px) saturate(1.1);
+apps/web/src/components/ShortcutSheet.css:10:  animation: shortcut-sheet-fade 160ms ease-out;
+apps/web/src/components/ShortcutSheet.css:22:  box-shadow:
+apps/web/src/components/ShortcutSheet.css:49:  color: var(--color-text); box-shadow: inset 0 -1px 0 var(--color-border);
+apps/web/src/components/ShortcutSheet.css:81:  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
+apps/web/src/components/ShortcutSheet.css:93:@keyframes shortcut-sheet-fade { from { opacity: 0; } to { opacity: 1; } }
+apps/web/src/components/CommandPalette.css:11:  backdrop-filter: blur(12px) saturate(1.05);
+apps/web/src/components/CommandPalette.css:12:  -webkit-backdrop-filter: blur(12px) saturate(1.05);
+apps/web/src/components/CommandPalette.css:17:  animation: cp-fade 140ms ease-out;
+apps/web/src/components/CommandPalette.css:24:  box-shadow:
+apps/web/src/components/CommandPalette.css:32:  animation: cp-card-in var(--motion-base) var(--ease-out-expo) both;
+apps/web/src/components/CommandPalette.css:65:  transition:
+apps/web/src/components/CommandPalette.css:130:  box-shadow: inset 0 -1px 0 var(--color-border);
+apps/web/src/components/CommandPalette.css:185:@keyframes cp-fade {
+apps/web/src/components/CommandPalette.css:194:@keyframes cp-card-in {
+apps/web/src/components/CommandPalette.css:232:    animation: none;
+apps/web/src/panels/__tests__/SupportPatternsPanel.actionBar.test.tsx:14:  student_filter: null,
+apps/web/src/components/FileUploadZone.css:5:  transition:
+apps/web/src/components/ForecastTimeline.css:9:  box-shadow: none;
+apps/web/src/components/ForecastTimeline.css:20:  transition:
+apps/web/src/components/ForecastTimeline.css:40:  filter: brightness(1.06);
+apps/web/src/components/ForecastTimeline.css:75:    animation: none !important;
+apps/web/src/components/ForecastTimeline.css:76:    transition: none !important;
+apps/web/src/components/ForecastForm.css:6:  box-shadow: var(--shadow-xs);
+apps/web/src/components/DataVisualizations.css:5:     • Flat surfaces. No gradient washes, no box-shadows, no ::before
+apps/web/src/components/DataVisualizations.css:260:  transition:
+apps/web/src/components/DataVisualizations.css:334:  transition: background-color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/DataVisualizations.css:586:  transition:
+apps/web/src/components/DataVisualizations.css:644:  transition: transform 780ms var(--ease-out-expo, ease-out) 140ms;
+apps/web/src/components/DataVisualizations.css:760:  transition:
+apps/web/src/components/DataVisualizations.css:907:  transition:
+apps/web/src/components/DataVisualizations.css:961:  transition: transform 680ms var(--ease-out-expo, ease-out) var(--composition-row-delay, 0ms);
+apps/web/src/components/DataVisualizations.css:1169:  transition:
+apps/web/src/components/DataVisualizations.css:1236:  transition:
+apps/web/src/components/DataVisualizations.css:1390:  transition: opacity var(--motion-fast, 150ms) var(--ease-standard, ease);
+apps/web/src/components/DataVisualizations.css:1487:  transition: background-color var(--motion-fast, 150ms) var(--ease-standard, ease);
+apps/web/src/components/DataVisualizations.css:1514:  transition: width var(--motion-base, 260ms) var(--ease-spring, ease);
+apps/web/src/components/DataVisualizations.css:1568:  transition: width var(--motion-base, 260ms) var(--ease-spring, ease);
+apps/web/src/components/DataVisualizations.css:1623:  transition: width var(--motion-base, 260ms) var(--ease-spring, ease);
+apps/web/src/components/DataVisualizations.css:1794:  transition: transform var(--motion-fast);
+apps/web/src/components/DataVisualizations.css:1896:   Each viz enters with a purposeful mount animation:
+apps/web/src/components/DataVisualizations.css:1908:  transition: stroke-dashoffset 900ms var(--ease-spring, ease-out) 80ms;
+apps/web/src/components/DataVisualizations.css:1920:  transition:
+apps/web/src/components/DataVisualizations.css:1972:  transition:
+apps/web/src/components/DataVisualizations.css:2001:  transition:
+apps/web/src/components/DataVisualizations.css:2017:  filter: drop-shadow(0 0 0 2px var(--color-accent))
+apps/web/src/components/DataVisualizations.css:2042:    transition: none !important;
+apps/web/src/components/DataVisualizations.css:2087:  transition: height 0.3s ease;
+apps/web/src/components/DataVisualizations.css:2127:  transition: width 0.3s ease;
+apps/web/src/components/DataVisualizations.css:2326:  animation: viz-plan-radar-label-in 320ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) forwards;
+apps/web/src/components/DataVisualizations.css:2394:  transition: width 600ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1));
+apps/web/src/components/DataVisualizations.css:2426:  animation: viz-plan-radar-shape-in 900ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) 200ms forwards;
+apps/web/src/components/DataVisualizations.css:2432:  animation: viz-plan-radar-ribbon-in 420ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) forwards;
+apps/web/src/components/DataVisualizations.css:2438:  animation: viz-plan-radar-dot-in 240ms var(--ease-standard, cubic-bezier(0.2, 0.7, 0.2, 1)) forwards;
+apps/web/src/components/DataVisualizations.css:2442:@keyframes viz-plan-radar-shape-in {
+apps/web/src/components/DataVisualizations.css:2448:@keyframes viz-plan-radar-ribbon-in {
+apps/web/src/components/DataVisualizations.css:2459:@keyframes viz-plan-radar-dot-in {
+apps/web/src/components/DataVisualizations.css:2471:@keyframes viz-plan-radar-label-in {
+apps/web/src/components/DataVisualizations.css:2482:@keyframes viz-plan-radar-label-in-muted {
+apps/web/src/components/DataVisualizations.css:2498:    animation: none !important;
+apps/web/src/components/DataVisualizations.css:2509:    transition: none;
+apps/web/src/components/DataVisualizations.css:2624:  transition: width 0.3s ease;
+apps/web/src/components/DataVisualizations.css:2700:    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+apps/web/src/components/DataVisualizations.css:2706:    filter: brightness(1.08);
+apps/web/src/components/DataVisualizations.css:2735:    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+apps/web/src/components/DataVisualizations.css:2741:    filter: brightness(1.08);
+apps/web/src/components/DataVisualizations.css:2758:  filter: drop-shadow(0 0 2px var(--color-text));
+apps/web/src/components/DataVisualizations.css:2777:    transition: filter var(--motion-fast, 150ms) var(--ease-standard, ease-out);
+apps/web/src/components/DataVisualizations.css:2784:    filter: brightness(1.08);
+apps/web/src/components/AppFooter.css:72:  transition:
+apps/web/src/components/AppFooter.css:99:  box-shadow: 0 1px 0 color-mix(in srgb, var(--color-border) 40%, transparent);
+apps/web/src/components/AppFooter.css:132:  transition:
+apps/web/src/components/TodayHero.css:53:  box-shadow: none;
+apps/web/src/components/TodayHero.css:143:  transition: color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TodayHero.css:240:  transition:
+apps/web/src/components/TodayHero.css:301:  box-shadow: none;
+apps/web/src/components/TodayHero.css:399:  box-shadow: none;
+apps/web/src/components/TodayHero.css:418:  box-shadow: none;
+apps/web/src/components/TodayHero.css:428:  transition: background-color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TodayHero.css:436:  box-shadow: none;
+apps/web/src/components/OutputFeedback.css:33:  transition:
+apps/web/src/components/OutputFeedback.css:103:  box-shadow: var(--focus-ring-halo);
+apps/web/src/components/PatternReport.css:36:  animation: fade-up 0.35s ease-out both;
+apps/web/src/components/PatternReport.css:37:  transition:
+apps/web/src/components/PatternReport.css:39:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/PatternReport.css:44:  box-shadow: var(--shadow-sm);
+apps/web/src/components/PatternReport.css:72:  transition:
+apps/web/src/components/PatternReport.css:73:    box-shadow var(--motion-fast) var(--ease-spring),
+apps/web/src/components/PatternReport.css:78:  box-shadow: var(--shadow-sm);
+apps/web/src/components/popover/Popover.css:17:  backdrop-filter: blur(2px);
+apps/web/src/components/popover/Popover.css:20:  transition: opacity var(--motion-fast) var(--ease-standard);
+apps/web/src/components/popover/Popover.css:45:  box-shadow: var(--shadow-md), var(--inner-stroke);
+apps/web/src/components/popover/Popover.css:51:  transition:
+apps/web/src/components/popover/Popover.css:97:  transition:
+apps/web/src/components/popover/Popover.css:125:  transition:
+apps/web/src/components/popover/Popover.css:165:    transition: opacity var(--motion-fast) var(--ease-standard);
+apps/web/src/components/popover/Popover.css:169:    transition: background-color var(--motion-fast) var(--ease-standard),
+apps/web/src/components/popover/Popover.css:173:    transition: none;
+apps/web/src/components/shared/FeedbackCollector.css:49:  transition:
+apps/web/src/components/shared/FeedbackCollector.css:65:  animation: success-pop 0.35s var(--ease-spring) both;
+apps/web/src/components/shared/DataViz.css:41:  transition:
+apps/web/src/components/shared/DataViz.css:43:    box-shadow var(--motion-base) var(--ease-spring);
+apps/web/src/components/shared/DataViz.css:47:.dataviz-health-dot--warning  { background: var(--ds-warning); box-shadow: 0 0 6px color-mix(in srgb, var(--ds-warning) 12%, transparent); }
+apps/web/src/components/shared/DataViz.css:48:.dataviz-health-dot--critical { background: var(--ds-danger); animation: pulse-ring 1.5s var(--ease-standard) infinite; }
+apps/web/src/components/shared/DataViz.css:76:  transition: width var(--motion-slow) var(--ease-out-expo);
+apps/web/src/components/shared/DataViz.css:84:    animation: none !important;
+apps/web/src/components/shared/DataViz.css:85:    transition: none !important;
+apps/web/src/components/SimplifiedViewer.css:31:  animation: fade-up 0.35s ease-out both;
+apps/web/src/components/StudentRoster.css:7:  box-shadow: var(--shadow-sm);
+apps/web/src/components/StudentRoster.css:35:  transition: background-color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/StudentRoster.css:81:  transition: transform var(--motion-base) var(--ease-standard);
+apps/web/src/components/StudentRoster.css:109:  box-shadow: var(--shadow-sm), var(--inner-stroke);
+apps/web/src/components/StudentRoster.css:114:  transition:
+apps/web/src/components/StudentRoster.css:116:    box-shadow var(--motion-fast) var(--ease-spring),
+apps/web/src/components/StudentRoster.css:122:  box-shadow: var(--shadow-md);
+apps/web/src/components/StudentRoster.css:217:  transition: background-color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/StudentRoster.css:249:  transition: background-color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/shared/HeaderAction.css:18:  transition:
+apps/web/src/components/EABriefing.css:7:  box-shadow: var(--shadow-xs);
+apps/web/src/components/EABriefing.css:34:  box-shadow: var(--shadow-sm);
+apps/web/src/components/EABriefing.css:65:  animation: fade-up 0.35s ease-out both;
+apps/web/src/components/EABriefing.css:123:  transition:
+apps/web/src/components/EABriefing.css:125:    box-shadow var(--motion-letterpress) var(--ease-spring),
+apps/web/src/components/EABriefing.css:131:  box-shadow: var(--shadow-xs);
+apps/web/src/components/EABriefing.css:233:    box-shadow: none;
+apps/web/src/components/EABriefing.css:256:    animation: none;
+apps/web/src/components/EABriefing.css:268:    box-shadow: none;
+apps/web/src/components/shared/PageHero.css:24:  box-shadow: var(--shadow-sm);
+apps/web/src/components/shared/PageHero.css:26:  transition:
+apps/web/src/components/shared/PageHero.css:28:    box-shadow var(--motion-base) var(--ease-standard);
+apps/web/src/components/shared/PageHero.css:75:  box-shadow:
+apps/web/src/components/shared/PageHero.css:308:  transition: border-top-color var(--motion-hover) var(--ease-standard),
+apps/web/src/components/shared/PageHero.css:313:    box-shadow var(--motion-hover) var(--ease-standard),
+apps/web/src/components/shared/PageHero.css:344:  box-shadow:
+apps/web/src/components/shared/PageHero.css:357:    transition: none;
+apps/web/src/components/shared/PageHero.css:414:  box-shadow: var(--inner-stroke);
+apps/web/src/components/shared/PageHero.css:430:  box-shadow: 0 0 0 4px color-mix(in srgb, var(--_pulse-tone, var(--color-text-tertiary)) 16%, transparent);
+apps/web/src/components/shared/PageHero.css:439:  animation: page-hero-pulse-ring 2.4s var(--ease-out-expo) 3;
+apps/web/src/components/shared/PageHero.css:442:@keyframes page-hero-pulse-ring {
+apps/web/src/components/shared/PageHero.css:449:  .page-hero__pulse-dot--live::after { animation: none; }
+apps/web/src/components/ThemeToggle.tsx:20: * Per-theme fire animation:
+apps/web/src/components/ClassroomAccessDialog.css:10:  backdrop-filter: blur(10px);
+apps/web/src/components/ClassroomAccessDialog.css:21:  box-shadow: var(--inner-stroke), var(--shadow-lg);
+apps/web/src/components/ClassroomAccessDialog.css:84:  transition: color var(--duration-fast) var(--ease-standard);
+apps/web/src/components/CohortSparklineGrid.css:32:  transition: border-color 120ms ease, background 120ms ease;
+apps/web/src/components/CohortSparklineGrid.css:94:    transition: none;
+apps/web/src/components/shared/Card.css:10:  transition:
+apps/web/src/components/shared/Card.css:13:    box-shadow var(--motion-base) var(--ease-spring),
+apps/web/src/components/shared/Card.css:21:  box-shadow: none;
+apps/web/src/components/shared/Card.css:27:  box-shadow:
+apps/web/src/components/shared/Card.css:33:  box-shadow:
+apps/web/src/components/shared/Card.css:41:  box-shadow:
+apps/web/src/components/shared/Card.css:48:  box-shadow: none;
+apps/web/src/components/shared/Card.css:140:  box-shadow:
+apps/web/src/components/shared/Card.css:146:  filter: brightness(1.015);
+apps/web/src/components/shared/Card.css:151:  box-shadow:
+apps/web/src/components/shared/Card.css:155:  filter: brightness(0.985);
+apps/web/src/components/shared/Card.css:162:  box-shadow:
+apps/web/src/components/shared/Card.css:204:    transition:
+apps/web/src/components/shared/Card.css:219:    box-shadow: none !important;
+apps/web/src/components/WorksheetUpload.css:13:  transition:
+apps/web/src/components/PageAnchorRail.tsx:38:      node.scrollHeight > node.clientHeight
+apps/web/src/components/PageAnchorRail.tsx:78:      const rect = main.getBoundingClientRect();
+apps/web/src/components/PageAnchorRail.tsx:88:    let observer: ResizeObserver | null = null;
+apps/web/src/components/PageAnchorRail.tsx:89:    if (main && typeof ResizeObserver !== "undefined") {
+apps/web/src/components/PageAnchorRail.tsx:90:      observer = new ResizeObserver(measure);
+apps/web/src/components/PageAnchorRail.tsx:108:    const getContainerTop = () => scrollContainer?.getBoundingClientRect().top ?? 0;
+apps/web/src/components/PageAnchorRail.tsx:109:    const getContainerHeight = () => scrollContainer?.clientHeight ?? window.innerHeight;
+apps/web/src/components/PageAnchorRail.tsx:124:        const top = el.getBoundingClientRect().top;
+apps/web/src/components/PageAnchorRail.tsx:135:        if (scrollContainer.scrollTop <= 2) {
+apps/web/src/components/PageAnchorRail.tsx:139:          scrollContainer.scrollTop + scrollContainer.clientHeight >=
+apps/web/src/components/PageAnchorRail.tsx:140:          scrollContainer.scrollHeight - 2;
+apps/web/src/components/shared/NothingSpinner.css:40:@keyframes ns-rot       { to { transform: rotate(360deg); } }
+apps/web/src/components/shared/NothingSpinner.css:41:@keyframes ns-rot-rev   { to { transform: rotate(-360deg); } }
+apps/web/src/components/shared/NothingSpinner.css:48:  animation: ns-rot 1.2s steps(12, end) infinite;
+apps/web/src/components/shared/NothingSpinner.css:90:  animation: ns-rot 1s linear infinite;
+apps/web/src/components/shared/NothingSpinner.css:96:  animation: ns-rot-rev 1.4s linear infinite;
+apps/web/src/components/shared/NothingSpinner.css:110:  animation: ns-fadedot 1.2s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+apps/web/src/components/shared/NothingSpinner.css:114:@keyframes ns-fadedot {
+apps/web/src/components/shared/NothingSpinner.css:133:  animation: ns-eqbar 1s ease-in-out infinite;
+apps/web/src/components/shared/NothingSpinner.css:140:@keyframes ns-eqbar {
+apps/web/src/components/shared/NothingSpinner.css:151:  animation: ns-rot 1.6s linear infinite;
+apps/web/src/components/shared/NothingSpinner.css:158:  animation: ns-dash 1.6s ease-in-out infinite;
+apps/web/src/components/shared/NothingSpinner.css:160:@keyframes ns-dash {
+apps/web/src/components/shared/NothingSpinner.css:182:  animation: ns-ping 1.6s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+apps/web/src/components/shared/NothingSpinner.css:191:  animation: ns-ping-dot 1.6s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+apps/web/src/components/shared/NothingSpinner.css:193:@keyframes ns-ping {
+apps/web/src/components/shared/NothingSpinner.css:197:@keyframes ns-ping-dot {
+apps/web/src/components/shared/NothingSpinner.css:223:  animation: ns-orbit 1.4s linear infinite;
+apps/web/src/components/shared/NothingSpinner.css:228:@keyframes ns-orbit {
+apps/web/src/components/shared/NothingSpinner.css:248:  animation: ns-linear 1.4s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1)) infinite;
+apps/web/src/components/shared/NothingSpinner.css:251:@keyframes ns-linear {
+apps/web/src/components/shared/OutputActionBar.css:25:  box-shadow: 0 4px 12px color-mix(in srgb, var(--color-border) 50%, transparent);
+apps/web/src/components/shared/OutputActionBar.css:114:    transition: background-color var(--motion-fast, 150ms) ease-out, border-color var(--motion-fast, 150ms) ease-out;
+apps/web/src/components/TriageSurfaces.tsx:558:function filterThread(thread: StudentThread, filter: CoverageFilter): boolean {
+apps/web/src/components/TriageSurfaces.tsx:647:      setPinned(sentinel.getBoundingClientRect().top < sectionTop - 1);
+apps/web/src/components/TriageSurfaces.tsx:683:    const ro = typeof ResizeObserver !== "undefined" ? new ResizeObserver(syncOverflow) : null;
+apps/web/src/components/SurvivalPacket.css:11:  animation: fade-up 0.35s ease-out both;
+apps/web/src/components/SurvivalPacket.css:84:  transition:
+apps/web/src/components/SurvivalPacket.css:86:    box-shadow var(--motion-letterpress) var(--ease-letterpress);
+apps/web/src/components/SurvivalPacket.css:91:  box-shadow: var(--shadow-xs);
+apps/web/src/components/SurvivalPacket.css:309:    animation: none;
+apps/web/src/components/SurvivalPacket.css:316:    box-shadow: none;
+apps/web/src/components/OpsWorkflowStepper.css:47:  transition:
+apps/web/src/components/OpsWorkflowStepper.css:50:    box-shadow var(--motion-fast) var(--ease-standard),
+apps/web/src/components/OpsWorkflowStepper.css:60:  box-shadow: var(--shadow-xs);
+apps/web/src/components/OpsWorkflowStepper.css:132:  box-shadow: var(--shadow-xs);
+apps/web/src/components/shared/StatusCard.css:56:  animation: status-card-pulse 2s ease-in-out infinite;
+apps/web/src/components/shared/StatusCard.css:63:@keyframes status-card-pulse {
+apps/web/src/components/RoleContextPill.css:40:  transition:
+apps/web/src/components/RoleContextPill.css:43:    box-shadow 120ms ease;
+apps/web/src/components/RoleContextPill.css:53:  box-shadow: inset 0 -2px 0 var(--shell-control-accent, var(--color-accent));
+apps/web/src/components/TimeSuggestion.css:13:  box-shadow: var(--shadow-sm);
+apps/web/src/components/TimeSuggestion.css:14:  transition:
+apps/web/src/components/TimeSuggestion.css:16:    box-shadow var(--motion-fast) var(--ease-standard),
+apps/web/src/components/TimeSuggestion.css:18:  animation: fade-up 0.25s ease-out;
+apps/web/src/components/TimeSuggestion.css:33:  box-shadow: var(--shadow-md);
+apps/web/src/components/TimeSuggestion.css:46:  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border-accent) 48%, transparent);
+apps/web/src/components/TimeSuggestion.css:116:  transition:
+apps/web/src/components/TimeSuggestion.css:121:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TimeSuggestion.css:136:  box-shadow: var(--shadow-sm);
+apps/web/src/components/TimeSuggestion.css:143:  box-shadow: var(--shadow-sm);
+apps/web/src/components/TimeSuggestion.css:184:    animation: none;
+apps/web/src/components/shared/NothingInstrumentButton.css:39:  transition:
+apps/web/src/components/shared/NothingInstrumentButton.css:58:  box-shadow: var(--focus-ring-halo);
+apps/web/src/components/shared/NothingInstrumentButton.css:97:  transition:
+apps/web/src/components/shared/NothingInstrumentButton.css:116:  box-shadow:
+apps/web/src/components/shared/NothingInstrumentButton.css:121:  transition: background 220ms var(--ease-standard), box-shadow 220ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:126:  box-shadow:
+apps/web/src/components/shared/NothingInstrumentButton.css:143:  transition: transform 250ms var(--ease-standard), color 150ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:173:  animation: nib-bounce 520ms var(--ease-bounce, cubic-bezier(0.34, 1.56, 0.64, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:175:@keyframes nib-bounce {
+apps/web/src/components/shared/NothingInstrumentButton.css:184:  animation: nib-spin 640ms var(--ease-snap, cubic-bezier(0.5, 0, 0.1, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:186:@keyframes nib-spin {
+apps/web/src/components/shared/NothingInstrumentButton.css:192:  animation: nib-pulse 460ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:194:@keyframes nib-pulse {
+apps/web/src/components/shared/NothingInstrumentButton.css:202:  animation: nib-shake 480ms steps(10, end);
+apps/web/src/components/shared/NothingInstrumentButton.css:204:@keyframes nib-shake {
+apps/web/src/components/shared/NothingInstrumentButton.css:218:  animation: nib-check 520ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:220:@keyframes nib-check {
+apps/web/src/components/shared/NothingInstrumentButton.css:227:  animation: nib-close 420ms var(--ease-snap, cubic-bezier(0.5, 0, 0.1, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:229:@keyframes nib-close {
+apps/web/src/components/shared/NothingInstrumentButton.css:237:  animation: nib-trash 560ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:239:@keyframes nib-trash {
+apps/web/src/components/shared/NothingInstrumentButton.css:250:  animation: nib-refresh 720ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:252:@keyframes nib-refresh {
+apps/web/src/components/shared/NothingInstrumentButton.css:258:  animation: nib-upload 560ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:260:@keyframes nib-upload {
+apps/web/src/components/shared/NothingInstrumentButton.css:269:  animation: nib-drop 520ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:271:@keyframes nib-drop {
+apps/web/src/components/shared/NothingInstrumentButton.css:280:  animation: nib-spark 460ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:282:@keyframes nib-spark {
+apps/web/src/components/shared/NothingInstrumentButton.css:290:  animation: nib-heartbeat 720ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:292:@keyframes nib-heartbeat {
+apps/web/src/components/shared/NothingInstrumentButton.css:302:  animation: nib-slide-right 420ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:304:@keyframes nib-slide-right {
+apps/web/src/components/shared/NothingInstrumentButton.css:312:  animation: nib-back 420ms var(--ease-standard);
+apps/web/src/components/shared/NothingInstrumentButton.css:314:@keyframes nib-back {
+apps/web/src/components/shared/NothingInstrumentButton.css:323:  animation: nib-signal 560ms var(--ease-spring, cubic-bezier(0.34, 1.56, 0.64, 1));
+apps/web/src/components/shared/NothingInstrumentButton.css:325:@keyframes nib-signal {
+apps/web/src/components/shared/NothingInstrumentButton.css:344:    animation: none !important;
+apps/web/src/components/shared/NothingInstrumentButton.css:345:    transition: none !important;
+apps/web/src/components/shared/ResultDisplay.css:41:  transition: color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/shared/ResultDisplay.css:47:  transition: transform var(--motion-base) var(--ease-spring);
+apps/web/src/components/shared/ResultDisplay.css:60:  transition: background var(--ds-transition-fast);
+apps/web/src/components/MessageComposer.css:6:  box-shadow: var(--shadow-sm);
+apps/web/src/components/MessageComposer.css:45:  transition:
+apps/web/src/components/__tests__/Popover.test.tsx:13: * The position math in useFloatingPosition relies on getBoundingClientRect
+apps/web/src/components/RolePromptDialog.css:21:  box-shadow:
+apps/web/src/components/RolePromptDialog.css:61:  transition: border-color 120ms ease, background 120ms ease;
+apps/web/src/components/shared/EmptyState.css:9:  animation: fade-up 0.4s var(--ease-out-expo) both;
+apps/web/src/components/shared/EmptyState.css:42:  transition:
+apps/web/src/components/shared/EmptyState.css:45:    box-shadow var(--motion-fast) var(--ease-spring);
+apps/web/src/components/shared/EmptyState.css:57:  box-shadow: var(--shadow-sm);
+apps/web/src/components/SectionSkeleton.css:41:  animation: section-skeleton-shimmer 1.6s linear infinite;
+apps/web/src/components/SectionSkeleton.css:48:@keyframes section-skeleton-shimmer {
+apps/web/src/components/SectionSkeleton.css:59:    animation: none;
+apps/web/src/components/RetrievalTraceCard.css:11:  box-shadow: var(--shadow-xs);
+apps/web/src/components/VariantCard.css:6:  box-shadow: var(--shadow-xs);
+apps/web/src/components/VariantCard.css:10:  transition:
+apps/web/src/components/VariantCard.css:12:    box-shadow var(--motion-letterpress) var(--ease-letterpress),
+apps/web/src/components/VariantCard.css:14:  animation: fade-up 0.35s var(--ease-letterpress) both;
+apps/web/src/components/VariantCard.css:25:  box-shadow: var(--shadow-sm);
+apps/web/src/components/InterventionCard.css:6:  box-shadow: var(--shadow-sm);
+apps/web/src/components/InterventionCard.css:7:  animation: fade-up 0.4s var(--ease-letterpress) both;
+apps/web/src/components/HistoryDrawer.css:17:  transition:
+apps/web/src/components/HistoryDrawer.css:21:    box-shadow var(--motion-fast) var(--ease-spring);
+apps/web/src/components/HistoryDrawer.css:28:  box-shadow: var(--shadow-sm);
+apps/web/src/components/HistoryDrawer.css:49:  animation: reveal-height var(--motion-base) var(--ease-out-expo) both;
+apps/web/src/components/HistoryDrawer.css:89:  transition: background var(--motion-fast) var(--ease-standard);
+apps/web/src/components/OperatingDashboard.css:9:  box-shadow: var(--shadow-sm);
+apps/web/src/components/OperatingDashboard.css:123:  transition:
+apps/web/src/components/OperatingDashboard.css:126:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/OperatingDashboard.css:137:  box-shadow: var(--shadow-xs);
+apps/web/src/components/HealthBar.css:33:  transition:
+apps/web/src/components/HealthBar.css:89:  animation: health-shimmer 1.5s ease-in-out infinite;
+apps/web/src/components/HealthBar.css:92:@keyframes health-shimmer {
+apps/web/src/components/HealthBar.css:99:    animation: none;
+apps/web/src/components/PageAnchorRail.css:54:  box-shadow:
+apps/web/src/components/PageAnchorRail.css:61:  transition:
+apps/web/src/components/PageAnchorRail.css:65:    box-shadow var(--rail-fade-duration) var(--rail-ease),
+apps/web/src/components/PageAnchorRail.css:86:  box-shadow: none;
+apps/web/src/components/PageAnchorRail.css:121:  box-shadow:
+apps/web/src/components/PageAnchorRail.css:125:  transition: opacity 220ms ease-out 50ms;
+apps/web/src/components/PageAnchorRail.css:130:  animation: page-rail-led-sweep 6.4s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+apps/web/src/components/PageAnchorRail.css:133:@keyframes page-rail-led-sweep {
+apps/web/src/components/PageAnchorRail.css:170:  box-shadow:
+apps/web/src/components/PageAnchorRail.css:173:  transition:
+apps/web/src/components/PageAnchorRail.css:180:    box-shadow var(--rail-fade-duration) var(--rail-ease);
+apps/web/src/components/PageAnchorRail.css:205:  box-shadow:
+apps/web/src/components/PageAnchorRail.css:228:  transition:
+apps/web/src/components/PageAnchorRail.css:239:  transition:
+apps/web/src/components/PageAnchorRail.css:264:  transition: transform var(--rail-duration) var(--rail-ease);
+apps/web/src/components/PageAnchorRail.css:279:  transition:
+apps/web/src/components/PageAnchorRail.css:289:  transition:
+apps/web/src/components/PageAnchorRail.css:308:  transition:
+apps/web/src/components/PageAnchorRail.css:319:  transition:
+apps/web/src/components/PageAnchorRail.css:343:  transition:
+apps/web/src/components/PageAnchorRail.css:364:  transition:
+apps/web/src/components/PageAnchorRail.css:368:    box-shadow 220ms ease-out;
+apps/web/src/components/PageAnchorRail.css:388:  box-shadow:
+apps/web/src/components/PageAnchorRail.css:428:  transition: color 160ms ease-out;
+apps/web/src/components/PageAnchorRail.css:472:  transition:
+apps/web/src/components/PageAnchorRail.css:501:    transition: padding-left 380ms cubic-bezier(0.16, 1, 0.3, 1);
+apps/web/src/components/PageAnchorRail.css:511:    transition: padding-left 380ms cubic-bezier(0.7, 0, 0.84, 0);
+apps/web/src/components/PageAnchorRail.css:538:    animation: none;
+apps/web/src/components/ToolSwitcherStepper.css:31:  transition: background-color var(--motion-fast) var(--ease-standard),
+apps/web/src/components/ToolSwitcherStepper.css:46:  box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-accent) 14%, transparent);
+apps/web/src/components/TriageSurfaces.css:7:  box-shadow: var(--shadow-sm);
+apps/web/src/components/TriageSurfaces.css:127:  transition:
+apps/web/src/components/TriageSurfaces.css:130:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TriageSurfaces.css:137:  box-shadow: var(--shadow-xs);
+apps/web/src/components/TriageSurfaces.css:265:  transition:
+apps/web/src/components/TriageSurfaces.css:268:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TriageSurfaces.css:277:  box-shadow: var(--shadow-xs);
+apps/web/src/components/TriageSurfaces.css:357:  transition:
+apps/web/src/components/TriageSurfaces.css:361:    box-shadow var(--motion-base) var(--ease-standard);
+apps/web/src/components/TriageSurfaces.css:375:  box-shadow: var(--shadow-md);
+apps/web/src/components/TriageSurfaces.css:376:  backdrop-filter: saturate(1.15) blur(10px);
+apps/web/src/components/TriageSurfaces.css:377:  -webkit-backdrop-filter: saturate(1.15) blur(10px);
+apps/web/src/components/TriageSurfaces.css:449:  transition:
+apps/web/src/components/TriageSurfaces.css:452:    box-shadow var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TriageSurfaces.css:462:  box-shadow: var(--shadow-xs);
+apps/web/src/components/TriageSurfaces.css:492:  transition: border-color var(--motion-fast) var(--ease-standard), background var(--motion-fast) var(--ease-standard), color var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TriageSurfaces.css:531:  transition: opacity var(--motion-fast) var(--ease-standard);
+apps/web/src/components/TriageSurfaces.css:590:  box-shadow: var(--shadow-sm);
+apps/web/src/components/TriageSurfaces.css:591:  transition: opacity var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-spring);
+apps/web/src/components/TriageSurfaces.css:622:  transition:
+apps/web/src/components/TriageSurfaces.css:625:    box-shadow var(--motion-fast) var(--ease-standard),
+apps/web/src/components/TriageSurfaces.css:633:  box-shadow: var(--shadow-xs);
+apps/web/src/components/TriageSurfaces.css:644:  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-border-accent) 34%, transparent);
+apps/web/src/components/TriageSurfaces.css:764:    transition: none;
+apps/web/src/components/VocabCardGrid.css:49:  animation: fade-up 0.4s var(--ease-letterpress) both;
+apps/web/src/components/VocabCardGrid.css:65:  box-shadow: var(--shadow-xs);
+apps/web/src/components/VocabCardGrid.css:67:  transition:
+apps/web/src/components/VocabCardGrid.css:69:    box-shadow var(--motion-letterpress) var(--ease-letterpress);
+apps/web/src/components/VocabCardGrid.css:70:  animation: fade-up 0.35s var(--ease-letterpress) both;
+apps/web/src/components/VocabCardGrid.css:79:  box-shadow: var(--shadow-sm);
+apps/web/src/components/DayArc.css:201:  transition: fill-opacity var(--motion-slower, 640ms) var(--ease-out-expo, ease-out) 120ms;
+apps/web/src/components/DayArc.css:207:  transition: stroke-dashoffset 900ms var(--ease-out-expo, ease-out) 60ms;
+apps/web/src/components/DayArc.css:222:  animation: day-arc-callout-in 460ms var(--ease-out-expo, ease-out) 420ms both;
+apps/web/src/components/DayArc.css:258:@keyframes day-arc-callout-in {
+apps/web/src/components/DayArc.css:273:  animation: day-arc-block-fade var(--motion-base, 260ms)
+apps/web/src/components/DayArc.css:281:@keyframes day-arc-block-fade {
+apps/web/src/components/DayArc.css:320:  transition:
+apps/web/src/components/DayArc.css:343:  animation: day-arc-now-breath 3.2s var(--ease-in-out-circ, ease-in-out)
+apps/web/src/components/DayArc.css:348:  animation: day-arc-now-pulse 3.2s var(--ease-in-out-circ, ease-in-out)
+apps/web/src/components/DayArc.css:361:@keyframes day-arc-now-breath {
+apps/web/src/components/DayArc.css:371:@keyframes day-arc-now-pulse {
+apps/web/src/components/DayArc.css:385:  animation: day-arc-star-pop 520ms var(--ease-spring, ease-out) both;
+apps/web/src/components/DayArc.css:393:  animation: day-arc-star-halo 3.4s var(--ease-in-out-circ, ease-in-out)
+apps/web/src/components/DayArc.css:397:@keyframes day-arc-star-pop {
+apps/web/src/components/DayArc.css:412:@keyframes day-arc-star-halo {
+apps/web/src/components/DayArc.css:446:  transition: fill var(--motion-fast) var(--ease-standard);
+apps/web/src/components/DayArc.css:471:  animation: day-arc-mote-drift 680ms var(--ease-spring-heavy, ease-out) both;
+apps/web/src/components/DayArc.css:476:@keyframes day-arc-mote-drift {
+apps/web/src/components/DayArc.css:630:    transition: none;
+apps/web/src/components/DayArc.css:636:    transition: none;
+apps/web/src/components/DayArc.css:646:    animation: none !important;
+apps/web/src/components/TodayStory.css:23:  box-shadow: var(--shadow-sm), var(--inner-stroke);
+apps/web/src/components/TodayStory.css:34:     overrides below. The box-shadow keyframe reads the same variable, so
+apps/web/src/components/TodayStory.css:38:  box-shadow: 0 0 0 4px
+apps/web/src/components/TodayStory.css:93:  box-shadow: none;
+apps/web/src/components/TodayStory.css:106:  animation: today-story-breath 3.4s var(--ease-in-out-circ, ease-in-out)
+apps/web/src/components/TodayStory.css:110:@keyframes today-story-breath {
+apps/web/src/components/TodayStory.css:113:    box-shadow: 0 0 0 4px
+apps/web/src/components/TodayStory.css:117:    box-shadow: 0 0 0 6px
+apps/web/src/components/TodayStory.css:141:    animation: none;
+apps/web/src/components/InterventionLogger.css:23:  animation: prefill-highlight 2s ease-out;
+apps/web/src/components/InterventionLogger.css:53:  transition: background var(--motion-fast) var(--ease-standard);
+apps/web/src/components/MessageApprovalDialog.css:91:    animation: message-dialog-in 150ms ease-out;
+apps/web/src/components/MessageApprovalDialog.css:93:  @keyframes message-dialog-in {

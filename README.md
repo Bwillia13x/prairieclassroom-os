@@ -333,7 +333,7 @@ Flask Inference :3200
 
 ## Evaluation
 
-134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,035 TypeScript / Vitest tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,058 TypeScript / Vitest tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
 The hosted Gemma 4 release gate passes 13/13 curated proof cases on synthetic/demo data — including the Punjabi family-message equity case — at `output/release-gate/2026-04-27T01-26-45-190Z-87424` (artifact-backed; see [docs/hackathon-proof-brief.md](docs/hackathon-proof-brief.md) for the full artifact trail).
 

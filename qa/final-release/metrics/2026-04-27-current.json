@@ -1,0 +1,3449 @@
+{
+  "generated_at": "2026-04-27T22:53:24.084Z",
+  "base": "http://localhost:5173",
+  "run_id": "2026-04-27-current",
+  "route_count": 7,
+  "viewport_count": 4,
+  "records": [
+    {
+      "route": "Classroom",
+      "tab": "classroom",
+      "tool": null,
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "screenshots/2026-04-27-current/desktop-classroom.png",
+      "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 900,
+      "panelVisible": true,
+      "panelTop": 204,
+      "panelHeight": 4459,
+      "h1s": [
+        "Read the room before choosing the lens."
+      ],
+      "interactiveCount": 277,
+      "smallTargetCount": 78,
+      "smallTargets": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "01Command",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "02Pulse",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "03Watchlist",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "04Operations",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "05Insights",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "06Roster",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Today",
+      "tab": "today",
+      "tool": null,
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "screenshots/2026-04-27-current/desktop-today.png",
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 900,
+      "panelVisible": true,
+      "panelTop": 196,
+      "panelHeight": 3450,
+      "h1s": [
+        "10:00–10:45 is today's real test."
+      ],
+      "interactiveCount": 96,
+      "smallTargetCount": 27,
+      "smallTargets": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Tomorrow",
+      "tab": "tomorrow",
+      "tool": "tomorrow-plan",
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "screenshots/2026-04-27-current/desktop-tomorrow.png",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 900,
+      "panelVisible": true,
+      "panelTop": 204,
+      "panelHeight": 2201,
+      "h1s": [
+        "Plan, forecast, and carry-forward queue"
+      ],
+      "interactiveCount": 30,
+      "smallTargetCount": 4,
+      "smallTargets": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Week",
+      "tab": "week",
+      "tool": null,
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "screenshots/2026-04-27-current/desktop-week.png",
+      "url": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 900,
+      "panelVisible": true,
+      "panelTop": 204,
+      "panelHeight": 1508,
+      "h1s": [
+        "Shape the week before it shapes tomorrow"
+      ],
+      "interactiveCount": 48,
+      "smallTargetCount": 4,
+      "smallTargets": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "02This Week",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Prep",
+      "tab": "prep",
+      "tool": "differentiate",
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "screenshots/2026-04-27-current/desktop-prep.png",
+      "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 900,
+      "panelVisible": true,
+      "panelTop": 204,
+      "panelHeight": 2275,
+      "h1s": [
+        "Prepare the material before it reaches the room."
+      ],
+      "interactiveCount": 27,
+      "smallTargetCount": 4,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 405,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Ops",
+      "tab": "ops",
+      "tool": "log-intervention",
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "screenshots/2026-04-27-current/desktop-ops.png",
+      "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 900,
+      "panelVisible": true,
+      "panelTop": 204,
+      "panelHeight": 2607,
+      "h1s": [
+        "Coordinate the adults without losing the thread."
+      ],
+      "interactiveCount": 136,
+      "smallTargetCount": 56,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Review",
+      "tab": "review",
+      "tool": "family-message",
+      "viewport": "desktop",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "screenshots/2026-04-27-current/desktop-review.png",
+      "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 1440,
+      "viewportWidth": 1440,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 900,
+      "panelVisible": true,
+      "panelTop": 204,
+      "panelHeight": 2880,
+      "h1s": [
+        "Turn classroom memory into accountable follow-through."
+      ],
+      "interactiveCount": 80,
+      "smallTargetCount": 9,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Classroom",
+      "tab": "classroom",
+      "tool": null,
+      "viewport": "tablet",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "screenshots/2026-04-27-current/tablet-classroom.png",
+      "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 1024,
+      "panelVisible": true,
+      "panelTop": 239,
+      "panelHeight": 6381,
+      "h1s": [
+        "Read the room before choosing the lens."
+      ],
+      "interactiveCount": 269,
+      "smallTargetCount": 71,
+      "smallTargets": [
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 2: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 3: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 4: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 5: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 6: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 7: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 8: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Today",
+      "tab": "today",
+      "tool": null,
+      "viewport": "tablet",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "screenshots/2026-04-27-current/tablet-today.png",
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 1024,
+      "panelVisible": true,
+      "panelTop": 231,
+      "panelHeight": 5206,
+      "h1s": [
+        "10:00–10:45 is today's real test."
+      ],
+      "interactiveCount": 87,
+      "smallTargetCount": 24,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Tomorrow",
+      "tab": "tomorrow",
+      "tool": "tomorrow-plan",
+      "viewport": "tablet",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "screenshots/2026-04-27-current/tablet-tomorrow.png",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 1024,
+      "panelVisible": true,
+      "panelTop": 239,
+      "panelHeight": 3246,
+      "h1s": [
+        "Plan, forecast, and carry-forward queue"
+      ],
+      "interactiveCount": 25,
+      "smallTargetCount": 3,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Week",
+      "tab": "week",
+      "tool": null,
+      "viewport": "tablet",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "screenshots/2026-04-27-current/tablet-week.png",
+      "url": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 1024,
+      "panelVisible": true,
+      "panelTop": 239,
+      "panelHeight": 1821,
+      "h1s": [
+        "Shape the week before it shapes tomorrow"
+      ],
+      "interactiveCount": 42,
+      "smallTargetCount": 2,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Prep",
+      "tab": "prep",
+      "tool": "differentiate",
+      "viewport": "tablet",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "screenshots/2026-04-27-current/tablet-prep.png",
+      "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 1024,
+      "panelVisible": true,
+      "panelTop": 239,
+      "panelHeight": 2951,
+      "h1s": [
+        "Prepare the material before it reaches the room."
+      ],
+      "interactiveCount": 27,
+      "smallTargetCount": 4,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 588,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Ops",
+      "tab": "ops",
+      "tool": "log-intervention",
+      "viewport": "tablet",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "screenshots/2026-04-27-current/tablet-ops.png",
+      "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 1024,
+      "panelVisible": true,
+      "panelTop": 239,
+      "panelHeight": 2905,
+      "h1s": [
+        "Coordinate the adults without losing the thread."
+      ],
+      "interactiveCount": 136,
+      "smallTargetCount": 56,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Review",
+      "tab": "review",
+      "tool": "family-message",
+      "viewport": "tablet",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "screenshots/2026-04-27-current/tablet-review.png",
+      "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 768,
+      "viewportWidth": 768,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 1024,
+      "panelVisible": true,
+      "panelTop": 239,
+      "panelHeight": 3117,
+      "h1s": [
+        "Turn classroom memory into accountable follow-through."
+      ],
+      "interactiveCount": 80,
+      "smallTargetCount": 9,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Classroom",
+      "tab": "classroom",
+      "tool": null,
+      "viewport": "mobile",
+      "width": 393,
+      "height": 852,
+      "screenshot": "screenshots/2026-04-27-current/mobile-classroom.png",
+      "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 393,
+      "viewportWidth": 393,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 852,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 7519,
+      "h1s": [
+        "Read the room before choosing the lens."
+      ],
+      "interactiveCount": 266,
+      "smallTargetCount": 68,
+      "smallTargets": [
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 2: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 3: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 4: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 5: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 6: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 7: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 8: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Today",
+      "tab": "today",
+      "tool": null,
+      "viewport": "mobile",
+      "width": 393,
+      "height": 852,
+      "screenshot": "screenshots/2026-04-27-current/mobile-today.png",
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 393,
+      "viewportWidth": 393,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 852,
+      "panelVisible": true,
+      "panelTop": 171,
+      "panelHeight": 6118,
+      "h1s": [
+        "10:00–10:45 is today's real test."
+      ],
+      "interactiveCount": 85,
+      "smallTargetCount": 23,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 19.03125,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Tomorrow",
+      "tab": "tomorrow",
+      "tool": "tomorrow-plan",
+      "viewport": "mobile",
+      "width": 393,
+      "height": 852,
+      "screenshot": "screenshots/2026-04-27-current/mobile-tomorrow.png",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 393,
+      "viewportWidth": 393,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 852,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3641,
+      "h1s": [
+        "Plan, forecast, and carry-forward queue"
+      ],
+      "interactiveCount": 24,
+      "smallTargetCount": 2,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Week",
+      "tab": "week",
+      "tool": null,
+      "viewport": "mobile",
+      "width": 393,
+      "height": 852,
+      "screenshot": "screenshots/2026-04-27-current/mobile-week.png",
+      "url": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 393,
+      "viewportWidth": 393,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 852,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 2344,
+      "h1s": [
+        "Shape the week before it shapes tomorrow"
+      ],
+      "interactiveCount": 41,
+      "smallTargetCount": 1,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Prep",
+      "tab": "prep",
+      "tool": "differentiate",
+      "viewport": "mobile",
+      "width": 393,
+      "height": 852,
+      "screenshot": "screenshots/2026-04-27-current/mobile-prep.png",
+      "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 393,
+      "viewportWidth": 393,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 852,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3321,
+      "h1s": [
+        "Prepare the material before it reaches the room."
+      ],
+      "interactiveCount": 26,
+      "smallTargetCount": 3,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 293,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Ops",
+      "tab": "ops",
+      "tool": "log-intervention",
+      "viewport": "mobile",
+      "width": 393,
+      "height": 852,
+      "screenshot": "screenshots/2026-04-27-current/mobile-ops.png",
+      "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 393,
+      "viewportWidth": 393,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 852,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3331,
+      "h1s": [
+        "Coordinate the adults without losing the thread."
+      ],
+      "interactiveCount": 133,
+      "smallTargetCount": 53,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Needs follow-up",
+          "width": 8,
+          "height": 8,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Resolved",
+          "width": 8,
+          "height": 8,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Review",
+      "tab": "review",
+      "tool": "family-message",
+      "viewport": "mobile",
+      "width": 393,
+      "height": 852,
+      "screenshot": "screenshots/2026-04-27-current/mobile-review.png",
+      "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 393,
+      "viewportWidth": 393,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 852,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3463,
+      "h1s": [
+        "Turn classroom memory into accountable follow-through."
+      ],
+      "interactiveCount": 77,
+      "smallTargetCount": 6,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Classroom",
+      "tab": "classroom",
+      "tool": null,
+      "viewport": "se",
+      "width": 375,
+      "height": 667,
+      "screenshot": "screenshots/2026-04-27-current/se-classroom.png",
+      "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 667,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 7563,
+      "h1s": [
+        "Read the room before choosing the lens."
+      ],
+      "interactiveCount": 266,
+      "smallTargetCount": 68,
+      "smallTargets": [
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 2: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 3: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 4: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 5: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 6: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 7: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 8: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Today",
+      "tab": "today",
+      "tool": null,
+      "viewport": "se",
+      "width": 375,
+      "height": 667,
+      "screenshot": "screenshots/2026-04-27-current/se-today.png",
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 667,
+      "panelVisible": true,
+      "panelTop": 171,
+      "panelHeight": 6116,
+      "h1s": [
+        "10:00–10:45 is today's real test."
+      ],
+      "interactiveCount": 85,
+      "smallTargetCount": 25,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 18.015625,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Tomorrow",
+      "tab": "tomorrow",
+      "tool": "tomorrow-plan",
+      "viewport": "se",
+      "width": 375,
+      "height": 667,
+      "screenshot": "screenshots/2026-04-27-current/se-tomorrow.png",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 667,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3630,
+      "h1s": [
+        "Plan, forecast, and carry-forward queue"
+      ],
+      "interactiveCount": 24,
+      "smallTargetCount": 2,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Week",
+      "tab": "week",
+      "tool": null,
+      "viewport": "se",
+      "width": 375,
+      "height": 667,
+      "screenshot": "screenshots/2026-04-27-current/se-week.png",
+      "url": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 667,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 2379,
+      "h1s": [
+        "Shape the week before it shapes tomorrow"
+      ],
+      "interactiveCount": 41,
+      "smallTargetCount": 1,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Prep",
+      "tab": "prep",
+      "tool": "differentiate",
+      "viewport": "se",
+      "width": 375,
+      "height": 667,
+      "screenshot": "screenshots/2026-04-27-current/se-prep.png",
+      "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 667,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3353,
+      "h1s": [
+        "Prepare the material before it reaches the room."
+      ],
+      "interactiveCount": 26,
+      "smallTargetCount": 3,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 275,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Ops",
+      "tab": "ops",
+      "tool": "log-intervention",
+      "viewport": "se",
+      "width": 375,
+      "height": 667,
+      "screenshot": "screenshots/2026-04-27-current/se-ops.png",
+      "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 667,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3350,
+      "h1s": [
+        "Coordinate the adults without losing the thread."
+      ],
+      "interactiveCount": 133,
+      "smallTargetCount": 53,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Needs follow-up",
+          "width": 7.96875,
+          "height": 7.96875,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Resolved",
+          "width": 7.96875,
+          "height": 7.96875,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    },
+    {
+      "route": "Review",
+      "tab": "review",
+      "tool": "family-message",
+      "viewport": "se",
+      "width": 375,
+      "height": 667,
+      "screenshot": "screenshots/2026-04-27-current/se-review.png",
+      "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "bodyWidth": 375,
+      "viewportWidth": 375,
+      "horizontalOverflowPx": 0,
+      "documentHeight": 667,
+      "panelVisible": true,
+      "panelTop": 179,
+      "panelHeight": 3587,
+      "h1s": [
+        "Turn classroom memory into accountable follow-through."
+      ],
+      "interactiveCount": 77,
+      "smallTargetCount": 6,
+      "smallTargets": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ],
+      "activeNavText": null
+    }
+  ],
+  "console_records": [],
+  "failures": [],
+  "small_target_records": [
+    {
+      "route": "Classroom",
+      "viewport": "desktop",
+      "smallTargetCount": 78,
+      "examples": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "01Command",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "02Pulse",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "03Watchlist",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "04Operations",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "05Insights",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "06Roster",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Today",
+      "viewport": "desktop",
+      "smallTargetCount": 27,
+      "examples": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Tomorrow",
+      "viewport": "desktop",
+      "smallTargetCount": 4,
+      "examples": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Week",
+      "viewport": "desktop",
+      "smallTargetCount": 4,
+      "examples": [
+        {
+          "tag": "A",
+          "role": null,
+          "text": "02This Week",
+          "width": 143,
+          "height": 32.1875,
+          "visible": true
+        },
+        {
+          "tag": "A",
+          "role": null,
+          "text": "↑Back to top",
+          "width": 143,
+          "height": 35.84375,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Prep",
+      "viewport": "desktop",
+      "smallTargetCount": 4,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 405,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Ops",
+      "viewport": "desktop",
+      "smallTargetCount": 56,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Review",
+      "viewport": "desktop",
+      "smallTargetCount": 9,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Classroom",
+      "viewport": "tablet",
+      "smallTargetCount": 71,
+      "examples": [
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 2: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 3: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 4: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 5: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 6: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 7: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 8: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Today",
+      "viewport": "tablet",
+      "smallTargetCount": 24,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 59.609375,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 53,
+          "height": 27.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Tomorrow",
+      "viewport": "tablet",
+      "smallTargetCount": 3,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Week",
+      "viewport": "tablet",
+      "smallTargetCount": 2,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Prep",
+      "viewport": "tablet",
+      "smallTargetCount": 4,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 588,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Ops",
+      "viewport": "tablet",
+      "smallTargetCount": 56,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Review",
+      "viewport": "tablet",
+      "smallTargetCount": 9,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "‹",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "›",
+          "width": 30.390625,
+          "height": 30.390625,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "▸Shortcuts",
+          "width": 109.84375,
+          "height": 26.96875,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Classroom",
+      "viewport": "mobile",
+      "smallTargetCount": 68,
+      "examples": [
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 2: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 3: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 4: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 5: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 6: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 7: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 8: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Today",
+      "viewport": "mobile",
+      "smallTargetCount": 23,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 19.03125,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Tomorrow",
+      "viewport": "mobile",
+      "smallTargetCount": 2,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Week",
+      "viewport": "mobile",
+      "smallTargetCount": 1,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Prep",
+      "viewport": "mobile",
+      "smallTargetCount": 3,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 293,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Ops",
+      "viewport": "mobile",
+      "smallTargetCount": 53,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Needs follow-up",
+          "width": 8,
+          "height": 8,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Resolved",
+          "width": 8,
+          "height": 8,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Review",
+      "viewport": "mobile",
+      "smallTargetCount": 6,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Classroom",
+      "viewport": "se",
+      "smallTargetCount": 68,
+      "examples": [
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 1: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 2: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 3: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 4: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 5: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 6: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 7: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        },
+        {
+          "tag": "rect",
+          "role": "button",
+          "text": "Day 8: Missed",
+          "width": 14,
+          "height": 14,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Today",
+      "viewport": "se",
+      "smallTargetCount": 25,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "×",
+          "width": 18.015625,
+          "height": 24,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Hannah",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Quinn",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Marco",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Oliver",
+          "width": 55.609375,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Kiana",
+          "width": 49,
+          "height": 21.1875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Tomorrow",
+      "viewport": "se",
+      "smallTargetCount": 2,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Week",
+      "viewport": "se",
+      "smallTargetCount": 1,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Prep",
+      "viewport": "se",
+      "smallTargetCount": 3,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Alberta Curriculum Alignment+",
+          "width": 275,
+          "height": 17.046875,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Ops",
+      "viewport": "se",
+      "smallTargetCount": 53,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "ⓘ",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "🎤",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Needs follow-up",
+          "width": 7.96875,
+          "height": 7.96875,
+          "visible": true
+        },
+        {
+          "tag": "circle",
+          "role": "button",
+          "text": "4/21/2026 — Resolved",
+          "width": 7.96875,
+          "height": 7.96875,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "route": "Review",
+      "viewport": "se",
+      "smallTargetCount": 6,
+      "examples": [
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "All26",
+          "width": 52.96875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Urgent20",
+          "width": 77.484375,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "Stale21",
+          "width": 67.1875,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "More▾",
+          "width": 59.015625,
+          "height": 28,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "✕",
+          "width": 36,
+          "height": 36,
+          "visible": true
+        },
+        {
+          "tag": "BUTTON",
+          "role": null,
+          "text": "?",
+          "width": 24,
+          "height": 24,
+          "visible": true
+        }
+      ]
+    }
+  ]
+}

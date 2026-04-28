@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
+import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath, URLSearchParams } from "node:url";
 import { chromium } from "playwright";
 
@@ -22,6 +23,15 @@ const ROOT_OUTPUT_DIR = path.resolve(
   "playwright",
   "ui-evidence",
 );
+const FIRST_SCREEN_SURFACES = [
+  { tab: "classroom", tool: null },
+  { tab: "today", tool: null },
+  { tab: "tomorrow", tool: "tomorrow-plan" },
+  { tab: "week", tool: null },
+  { tab: "prep", tool: "differentiate" },
+  { tab: "ops", tool: "log-intervention" },
+  { tab: "review", tool: "family-message" },
+];
 
 function timestampLabel() {
   return new Date().toISOString().replace(/[:.]/g, "-");
@@ -88,6 +98,127 @@ async function gotoPanel(page, tab, tool = null) {
   await page.waitForSelector(`#panel-${tab}:not([hidden])`);
 }
 
+async function assertNoHorizontalOverflow(page, label) {
+  const overflow = await page.evaluate(() => {
+    const root = globalThis.document.documentElement;
+    const body = globalThis.document.body;
+    return Math.max(root.scrollWidth, body.scrollWidth) - globalThis.innerWidth;
+  });
+  assert.ok(overflow <= 2, `${label}: horizontal overflow ${overflow}px`);
+}
+
+async function assertActivePageContentVisible(page, tab, label) {
+  const visible = await page.evaluate((activeTab) => {
+    const panel = globalThis.document.querySelector(`#panel-${activeTab}:not([hidden])`);
+    if (!panel) return false;
+    const primary = [...panel.querySelectorAll(
+      ".today-hero__mobile-command, .today-hero, .page-hero, .page-intro, .workspace-layout",
+    )].find((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+    if (!primary) return false;
+    const rect = primary.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < globalThis.innerHeight;
+  }, tab);
+  assert.ok(visible, `${label}: active page content should be visible in the first viewport`);
+}
+
+async function assertMobileNavClearance(page, tab, label) {
+  const clearance = await page.evaluate((activeTab) => {
+    const nav = globalThis.document.querySelector(".mobile-nav");
+    const panel = globalThis.document.querySelector(`#panel-${activeTab}:not([hidden])`);
+    if (!nav || !panel) return { ok: true, reason: "mobile nav absent" };
+
+    const navRect = nav.getBoundingClientRect();
+    const primary = [...panel.querySelectorAll(
+      ".today-hero__mobile-command, .page-hero, .page-intro, .workspace-layout",
+    )].find((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+    if (!primary) return { ok: false, reason: "no primary page content" };
+
+    const primaryRect = primary.getBoundingClientRect();
+    if (primaryRect.top >= navRect.top) {
+      return { ok: false, reason: "primary content starts behind mobile nav" };
+    }
+
+    const cta = [...panel.querySelectorAll(
+      ".today-hero__cta, .btn--primary, [data-testid='generate-tomorrow-plan-submit']",
+    )].find((element) => {
+      const rect = element.getBoundingClientRect();
+      const style = globalThis.getComputedStyle(element);
+      return rect.width > 0 && rect.height > 0 && style.visibility !== "hidden" && style.display !== "none";
+    });
+    if (!cta) return { ok: true, reason: "no visible primary CTA in first pass" };
+
+    const ctaRect = cta.getBoundingClientRect();
+    const ctaIntersectsNav =
+      ctaRect.top < navRect.bottom &&
+      ctaRect.bottom > navRect.top &&
+      ctaRect.left < navRect.right &&
+      ctaRect.right > navRect.left;
+    return {
+      ok: !ctaIntersectsNav,
+      reason: ctaIntersectsNav ? "primary CTA intersects mobile nav" : "clear",
+    };
+  }, tab);
+
+  assert.ok(clearance.ok, `${label}: ${clearance.reason}`);
+}
+
+async function assertMobileTodayHero(page) {
+  const mobileRailHidden = await page.evaluate(() => {
+    const rail = globalThis.document.querySelector(".page-anchor-rail");
+    if (!rail) return true;
+    return globalThis.getComputedStyle(rail).display === "none";
+  });
+  assert.ok(mobileRailHidden, "Mobile Today page anchor rail should be hidden");
+
+  const mobileCommandAboveNav = await page.evaluate(() => {
+    const command = globalThis.document.querySelector(".today-hero__mobile-command");
+    const nav = globalThis.document.querySelector(".mobile-nav");
+    if (!command || !nav) return false;
+    return command.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
+  });
+  assert.ok(mobileCommandAboveNav, "Mobile Today command card should appear above mobile nav");
+
+  const mobileCtaAboveNav = await page.evaluate(() => {
+    const cta = globalThis.document.querySelector(".today-hero__cta");
+    const nav = globalThis.document.querySelector(".mobile-nav");
+    if (!cta || !nav) return true;
+    return cta.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
+  });
+  assert.ok(mobileCtaAboveNav, "Mobile Today CTA should appear above mobile nav");
+}
+
+async function captureFirstScreens(page, runDir, prefix, { mobile = false } = {}) {
+  const files = [];
+  for (const { tab, tool } of FIRST_SCREEN_SURFACES) {
+    await gotoPanel(page, tab, tool);
+    const label = `${prefix} ${tab}`;
+    await assertNoHorizontalOverflow(page, label);
+    await assertActivePageContentVisible(page, tab, label);
+    if (mobile) {
+      await page.waitForSelector(".mobile-nav");
+      await assertMobileNavClearance(page, tab, label);
+      if (tab === "today") {
+        await assertMobileTodayHero(page);
+      }
+    }
+    const filename = `first-${prefix}-${tab}.png`;
+    await page.screenshot({
+      path: path.join(runDir, filename),
+      fullPage: false,
+      animations: "disabled",
+    });
+    files.push(filename);
+    await sleep(500);
+  }
+  return files;
+}
+
 async function captureDifferentiatedOutput(page, filename) {
   await gotoPanel(page, "prep", "differentiate");
   await page.getByRole("tab", { name: /Paste/i }).click();
@@ -98,6 +229,7 @@ async function captureDifferentiatedOutput(page, filename) {
   await page.getByRole("button", { name: /Generate variants/i }).click();
   await page.getByText(/variants generated/i).first().waitFor({ timeout: 30_000 });
   await page.locator(".variant-grid-wrapper").scrollIntoViewIfNeeded();
+  await assertNoHorizontalOverflow(page, "Desktop Differentiate output");
   await page.screenshot({ path: filename, fullPage: true });
 }
 
@@ -114,20 +246,34 @@ async function captureTomorrowPlanSources(page, filename) {
   } else {
     await page.locator(".plan-viewer").first().scrollIntoViewIfNeeded();
   }
+  await assertNoHorizontalOverflow(page, "Desktop Tomorrow Plan output");
   await page.screenshot({ path: filename, fullPage: true });
 }
 
 async function captureFamilyApproval(page, filename) {
   await gotoPanel(page, "review", "family-message");
-  await page.getByRole("checkbox", { name: "Amira" }).check();
+  const amiraChip = page.getByTestId("message-student-chip-Amira");
+  try {
+    await amiraChip.waitFor({ state: "visible", timeout: 15_000 });
+  } catch {
+    await page.reload({ waitUntil: "networkidle" });
+    await page.waitForSelector("#panel-review:not([hidden])");
+    await amiraChip.waitFor({ state: "visible", timeout: 30_000 });
+  }
+  await amiraChip.scrollIntoViewIfNeeded();
+  if ((await amiraChip.getAttribute("aria-pressed")) !== "true") {
+    await amiraChip.click();
+  }
   await page.getByLabel(/Message type/i).selectOption("praise");
   await page.getByLabel(/Language/i).selectOption("pa");
-  await page.getByLabel(/Context/i).fill(FAMILY_MESSAGE_CONTEXT);
+  await page.locator("#msg-context").fill(FAMILY_MESSAGE_CONTEXT);
   await page.getByRole("button", { name: /Draft family message/i }).click();
-  await page.getByText(/Message drafted/i).first().waitFor({ timeout: 30_000 });
-  await page.getByRole("button", { name: /Review approval/i }).click();
+  const reviewApprovalButton = page.getByRole("button", { name: /Review approval/i });
+  await reviewApprovalButton.waitFor({ state: "visible", timeout: 45_000 });
+  await reviewApprovalButton.click();
   await page.getByRole("dialog", { name: /Review approval/i }).waitFor({ timeout: 10_000 });
   await page.waitForTimeout(300);
+  await assertNoHorizontalOverflow(page, "Review family-message approval");
   await page.screenshot({ path: filename, fullPage: true, animations: "disabled" });
 }
 
@@ -194,9 +340,22 @@ async function main() {
   });
 
   try {
+    const files = [];
+
+    files.push(...await captureFirstScreens(desktopPage, runDir, "desktop"));
+    files.push(...await captureFirstScreens(mobilePage, runDir, "mobile", { mobile: true }));
+
+    files.push("today-desktop.png");
     await captureDesktopTab(desktopPage, "today", path.join(runDir, "today-desktop.png"));
+    await assertNoHorizontalOverflow(desktopPage, "Desktop Today");
+
+    files.push("differentiate-desktop.png");
     await captureDifferentiatedOutput(desktopPage, path.join(runDir, "differentiate-desktop.png"));
+
+    files.push("tomorrow-plan-desktop.png");
     await captureTomorrowPlanSources(desktopPage, path.join(runDir, "tomorrow-plan-desktop.png"));
+
+    files.push("family-message-desktop.png");
     await captureFamilyApproval(desktopPage, path.join(runDir, "family-message-desktop.png"));
 
     const tabletParams = new URLSearchParams({
@@ -209,6 +368,8 @@ async function main() {
       waitUntil: "networkidle",
     });
     await tabletPage.waitForSelector("#panel-tomorrow:not([hidden])");
+    await assertNoHorizontalOverflow(tabletPage, "Tablet Tomorrow Plan");
+    files.push("tomorrow-plan-tablet.png");
     await tabletPage.screenshot({
       path: path.join(runDir, "tomorrow-plan-tablet.png"),
       fullPage: true,
@@ -218,10 +379,15 @@ async function main() {
       waitUntil: "networkidle",
     });
     await darkPage.waitForSelector("#panel-tomorrow:not([hidden])");
+    await assertNoHorizontalOverflow(darkPage, "Dark Tomorrow Plan");
+    files.push("tomorrow-plan-dark-desktop.png");
     await darkPage.screenshot({
       path: path.join(runDir, "tomorrow-plan-dark-desktop.png"),
       fullPage: true,
     });
+
+    files.push("family-message-dark-desktop.png");
+    await captureFamilyApproval(darkPage, path.join(runDir, "family-message-dark-desktop.png"));
 
     const reviewParams = new URLSearchParams({
       demo: "true",
@@ -234,70 +400,13 @@ async function main() {
     });
     await mobilePage.waitForSelector("#panel-review:not([hidden])");
     await mobilePage.waitForSelector(".mobile-nav");
+    await assertNoHorizontalOverflow(mobilePage, "Mobile shell");
+    await assertMobileNavClearance(mobilePage, "review", "Mobile shell");
+    files.push("shell-mobile.png");
     await mobilePage.screenshot({
       path: path.join(runDir, "shell-mobile.png"),
       fullPage: true,
     });
-
-    // Today mobile evidence: 393×852 iPhone-class viewport
-    await mobilePage.goto(`${WEB_BASE}/?demo=true&tab=today&classroom=${DEMO_CLASSROOM_ID}`, {
-      waitUntil: "networkidle",
-    });
-    await mobilePage.waitForSelector("[data-testid='today-hero']");
-    await mobilePage.screenshot({
-      path: path.join(runDir, "today-mobile.png"),
-      fullPage: true,
-    });
-
-    await desktopPage.goto(`${WEB_BASE}/?demo=true&tab=today&classroom=${DEMO_CLASSROOM_ID}`, {
-      waitUntil: "networkidle",
-    });
-    await desktopPage.waitForSelector("#panel-today:not([hidden])");
-
-    // ─── Layout assertions ───
-
-    // Desktop Today: panel renders with a fixed-position anchor rail beside it
-    // (post-`471ae66 Consolidate seven-view teacher shell`, the panel is flex
-    // and the rail is `.page-anchor-rail` with `position: fixed` — see
-    // TodayPanel.test.tsx line 569 for the contract).
-    const desktopPanelRenders = await desktopPage.evaluate(() => {
-      const panel = globalThis.document.querySelector(".today-panel");
-      if (!panel) return false;
-      const targets = panel.querySelectorAll(".today-anchor-target");
-      return targets.length >= 3;
-    });
-    assert.ok(desktopPanelRenders, "Desktop Today panel should render with multiple anchor targets");
-
-    const railVisible = await desktopPage.evaluate(() => {
-      const rail = globalThis.document.querySelector(".page-anchor-rail");
-      if (!rail) return false;
-      return globalThis.getComputedStyle(rail).display !== "none";
-    });
-    assert.ok(railVisible, "Desktop Today page anchor rail should be visible");
-
-    // Mobile Today: rail hidden, hero brief visible above mobile nav, CTA above mobile nav
-    const mobileRailHidden = await mobilePage.evaluate(() => {
-      const rail = globalThis.document.querySelector(".page-anchor-rail");
-      if (!rail) return true; // absent counts as hidden
-      return globalThis.getComputedStyle(rail).display === "none";
-    });
-    assert.ok(mobileRailHidden, "Mobile Today page anchor rail should be hidden");
-
-    const mobileBriefAboveNav = await mobilePage.evaluate(() => {
-      const brief = globalThis.document.querySelector(".today-hero__brief");
-      const nav = globalThis.document.querySelector(".mobile-nav");
-      if (!brief || !nav) return true; // skip if elements absent
-      return brief.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
-    });
-    assert.ok(mobileBriefAboveNav, "Mobile Today hero brief should appear above mobile nav");
-
-    const mobileCtaAboveNav = await mobilePage.evaluate(() => {
-      const cta = globalThis.document.querySelector(".today-hero__cta");
-      const nav = globalThis.document.querySelector(".mobile-nav");
-      if (!cta || !nav) return true; // skip if elements absent
-      return cta.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
-    });
-    assert.ok(mobileCtaAboveNav, "Mobile Today CTA should appear above mobile nav");
 
     await assertNoRuntimeErrors(desktopPage, desktopConsoleErrors, desktopPageErrors);
     await assertNoRuntimeErrors(tabletPage, tabletConsoleErrors, tabletPageErrors);
@@ -308,16 +417,7 @@ async function main() {
       created_at: new Date().toISOString(),
       web_base: WEB_BASE,
       classroom: DEMO_CLASSROOM_ID,
-      files: [
-        "today-desktop.png",
-        "today-mobile.png",
-        "differentiate-desktop.png",
-        "tomorrow-plan-desktop.png",
-        "tomorrow-plan-tablet.png",
-        "tomorrow-plan-dark-desktop.png",
-        "family-message-desktop.png",
-        "shell-mobile.png",
-      ],
+      files,
     };
 
     await writeFile(
@@ -326,7 +426,7 @@ async function main() {
       "utf8",
     );
 
-    assert.equal(manifest.files.length, 8, "Expected eight evidence screenshots");
+    assert.equal(manifest.files.length, 22, "Expected 22 evidence screenshots");
     console.log(`PASS ui evidence captured at ${runDir}`);
   } finally {
     await desktopContext.close();

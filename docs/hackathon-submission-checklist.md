@@ -8,7 +8,7 @@ The submission window is owned by [plans/2026-05-18-submission-plan.md](./plans/
 
 Checked against the repo on 2026-04-27, refreshed 2026-04-26 strategic pass.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-27T04-12-56-544Z-96299`
+- Mock structural gate: passing at `output/release-gate/2026-04-28T00-38-53-468Z-24492`
 - Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-27T01-26-45-190Z-87424`
 - Ollama proof on this machine: **not proven; deferred until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available** (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D)
 - Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,412 (within 1,500-word limit)

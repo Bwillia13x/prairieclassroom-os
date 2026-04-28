@@ -1,0 +1,42 @@
+[
+  {
+    "url": "http://localhost:4173/brand/prairieclassroom-mark.png",
+    "transferSize": 209436,
+    "resourceSize": 209167,
+    "resourceType": "Image",
+    "statusCode": 200,
+    "mimeType": "image/png"
+  },
+  {
+    "url": "http://localhost:4173/brand/workflow-today.png",
+    "transferSize": 159315,
+    "resourceSize": 159046,
+    "resourceType": "Image",
+    "statusCode": 200,
+    "mimeType": "image/png"
+  },
+  {
+    "url": "http://localhost:4173/favicon.png",
+    "transferSize": 6132,
+    "resourceSize": 5867,
+    "resourceType": "Other",
+    "statusCode": 200,
+    "mimeType": "image/png"
+  },
+  {
+    "url": "data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='…",
+    "transferSize": 0,
+    "resourceSize": 234,
+    "resourceType": "Image",
+    "statusCode": 200,
+    "mimeType": "image/svg+xml"
+  },
+  {
+    "url": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id…",
+    "transferSize": 0,
+    "resourceSize": 329,
+    "resourceType": "Image",
+    "statusCode": 200,
+    "mimeType": "image/svg+xml"
+  }
+]

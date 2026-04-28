@@ -1,0 +1,126 @@
+{
+  "generated_at": "2026-04-28T00:32:59.389Z",
+  "tool": "lighthouse 13.1.0",
+  "preview": {
+    "app_url": "http://localhost:4173",
+    "api_url": "http://localhost:3101/api",
+    "inference_url": "http://127.0.0.1:3200",
+    "inference_mode": "mock"
+  },
+  "thresholds": {
+    "performance_score_target": 90,
+    "lcp_ms_target": 2500,
+    "cls_target": 0.1,
+    "console_errors_target": 0
+  },
+  "routes": [
+    {
+      "name": "desktop",
+      "url": "http://localhost:4173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-28T00:32:21.727Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 92,
+        "best_practices": 100,
+        "seo": 91
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 408,
+        "largest_contentful_paint_ms": 741,
+        "total_blocking_time_ms": 0,
+        "cumulative_layout_shift": 0.007446,
+        "speed_index_ms": 408,
+        "transfer_kb": 407,
+        "console_errors": 0
+      },
+      "lcp_element": "div.shell-classroom-anchor > button#shell-classroom-trigger > span.shell-classroom-pill__copy > span.shell-classroom-pill__label",
+      "pass": {
+        "performance_score_90": true,
+        "lcp_2500": true,
+        "cls_0_1": true,
+        "console_errors_0": true
+      }
+    },
+    {
+      "name": "mobile",
+      "url": "http://localhost:4173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-28T00:31:25.724Z",
+      "scores": {
+        "performance": 90,
+        "accessibility": 100,
+        "best_practices": 100,
+        "seo": 91
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 1957,
+        "largest_contentful_paint_ms": 3418,
+        "total_blocking_time_ms": 44,
+        "cumulative_layout_shift": 0.000447,
+        "speed_index_ms": 1957,
+        "transfer_kb": 407,
+        "console_errors": 0
+      },
+      "lcp_element": "div.shell-classroom-anchor > button#shell-classroom-trigger > span.shell-classroom-pill__copy > span.shell-classroom-pill__label",
+      "pass": {
+        "performance_score_90": true,
+        "lcp_2500": false,
+        "cls_0_1": true,
+        "console_errors_0": true
+      }
+    },
+    {
+      "name": "today-desktop",
+      "url": "http://localhost:4173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-28T00:32:33.620Z",
+      "scores": {
+        "performance": 100,
+        "accessibility": 94,
+        "best_practices": 100,
+        "seo": 91
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 407,
+        "largest_contentful_paint_ms": 730,
+        "total_blocking_time_ms": 0,
+        "cumulative_layout_shift": 0.006031,
+        "speed_index_ms": 413,
+        "transfer_kb": 379,
+        "console_errors": 0
+      },
+      "lcp_element": "div.operational-preview__group > div.operational-preview__evidence > div.preview-evidence-row > span.preview-evidence-row__label",
+      "pass": {
+        "performance_score_90": true,
+        "lcp_2500": true,
+        "cls_0_1": true,
+        "console_errors_0": true
+      }
+    },
+    {
+      "name": "today-mobile",
+      "url": "http://localhost:4173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-28T00:31:40.147Z",
+      "scores": {
+        "performance": 90,
+        "accessibility": 99,
+        "best_practices": 100,
+        "seo": 91
+      },
+      "metrics": {
+        "first_contentful_paint_ms": 1956,
+        "largest_contentful_paint_ms": 3369,
+        "total_blocking_time_ms": 38,
+        "cumulative_layout_shift": 0.000447,
+        "speed_index_ms": 1956,
+        "transfer_kb": 379,
+        "console_errors": 0
+      },
+      "lcp_element": "div.shell-classroom-anchor > button#shell-classroom-trigger > span.shell-classroom-pill__copy > span.shell-classroom-pill__label",
+      "pass": {
+        "performance_score_90": true,
+        "lcp_2500": false,
+        "cls_0_1": true,
+        "console_errors_0": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "desktop": {
+    "forcedReflow": [
+      {
+        "type": "table",
+        "headings": [
+          {
+            "key": "source",
+            "valueType": "source-location",
+            "label": "Top function call"
+          },
+          {
+            "key": "reflowTime",
+            "valueType": "ms",
+            "granularity": 1,
+            "label": "Total reflow time"
+          }
+        ],
+        "items": [
+          {
+            "source": {
+              "type": "source-location",
+              "url": "http://localhost:4173/assets/react-BTDdODlp.js",
+              "urlProvider": "network",
+              "line": 25,
+              "column": 1381
+            },
+            "reflowTime": 42.179
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "headings": [
+          {
+            "key": "source",
+            "valueType": "source-location",
+            "label": "Source"
+          },
+          {
+            "key": "reflowTime",
+            "valueType": "ms",
+            "granularity": 1,
+            "label": "Total reflow time"
+          }
+        ],
+        "items": [
+          {
+            "source": {
+              "type": "source-location",
+              "url": "http://localhost:4173/assets/index-D4f6C_G3.js",
+              "urlProvider": "network",
+              "line": 14,
+              "column": 64750
+            },
+            "reflowTime": 40.102
+          },
+          {
+            "source": {
+              "type": "source-location",
+              "url": "http://localhost:4173/assets/index-D4f6C_G3.js",
+              "urlProvider": "network",
+              "line": 14,
+              "column": 66666
+            },
+            "reflowTime": 2.077
+          }
+        ]
+      }
+    ],
+    "clsCulprits": [
+      {
+        "type": "table",
+        "headings": [
+          {
+            "key": "node",
+            "valueType": "node",
+            "subItemsHeading": {
+              "key": "extra"
+            },
+            "label": "Element"
+          },
+          {
+            "key": "score",
+            "valueType": "numeric",
+            "subItemsHeading": {
+              "key": "cause",
+              "valueType": "text"
+            },
+            "granularity": 0.001,
+            "label": "Layout shift score"
+          }
+        ],
+        "items": [
+          {
+            "node": {
+              "type": "text",
+              "value": "Total"
+            },
+            "score": 0.125075
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-2-SECTION",
+              "path": "1,HTML,1,BODY,0,DIV,0,DIV,3,MAIN,1,DIV,0,SECTION",
+              "selector": "div.app-shell > main#main-content > div#panel-classroom > section#classroom-top",
+              "boundingRect": {
+                "top": 204,
+                "bottom": 4974,
+                "left": 297,
+                "right": 1261,
+                "width": 964,
+                "height": 4770
+              },
+              "snippet": "<section class=\"workspace-page classroom-panel\" id=\"classroom-top\">",
+              "nodeLabel": "CLASSROOM COMMAND\nRead the room before choosing the lens.\n\nBird's-eye health, c…"
+            },
+            "score": 0.080462
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-2-SECTION",
+              "path": "1,HTML,1,BODY,0,DIV,0,DIV,3,MAIN,1,DIV,0,SECTION",
+              "selector": "div.app-shell > main#main-content > div#panel-classroom > section#classroom-top",
+              "boundingRect": {
+                "top": 204,
+                "bottom": 4974,
+                "left": 297,
+                "right": 1261,
+                "width": 964,
+                "height": 4770
+              },
+              "snippet": "<section class=\"workspace-page classroom-panel\" id=\"classroom-top\">",
+              "nodeLabel": "CLASSROOM COMMAND\nRead the room before choosing the lens.\n\nBird's-eye health, c…"
+            },
+            "score": 0.025324
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-2-SECTION",
+              "path": "1,HTML,1,BODY,0,DIV,0,DIV,3,MAIN,1,DIV,0,SECTION",
+              "selector": "div.app-shell > main#main-content > div#panel-classroom > section#classroom-top",
+              "boundingRect": {
+                "top": 204,
+                "bottom": 4974,
+                "left": 297,
+                "right": 1261,
+                "width": 964,
+                "height": 4770
+              },
+              "snippet": "<section class=\"workspace-page classroom-panel\" id=\"classroom-top\">",
+              "nodeLabel": "CLASSROOM COMMAND\nRead the room before choosing the lens.\n\nBird's-eye health, c…"
+            },
+            "score": 0.019174
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-1-SPAN",
+              "path": "1,HTML,1,BODY,0,DIV,0,DIV,2,HEADER,0,DIV,0,DIV,1,DIV,0,BUTTON,1,SPAN,1,SPAN",
+              "selector": "div.shell-classroom-anchor > button#shell-classroom-trigger > span.shell-classroom-pill__copy > span.shell-classroom-pill__label",
+              "boundingRect": {
+                "top": 43,
+                "bottom": 65,
+                "left": 404,
+                "right": 837,
+                "width": 433,
+                "height": 22
+              },
+              "snippet": "<span class=\"shell-classroom-pill__label\">",
+              "nodeLabel": "Grade 3-4 cross curricular"
+            },
+            "score": 0.000115
+          }
+        ]
+      }
+    ]
+  },
+  "mobile": {
+    "forcedReflow": [
+      {
+        "type": "table",
+        "headings": [
+          {
+            "key": "source",
+            "valueType": "source-location",
+            "label": "Top function call"
+          },
+          {
+            "key": "reflowTime",
+            "valueType": "ms",
+            "granularity": 1,
+            "label": "Total reflow time"
+          }
+        ],
+        "items": [
+          {
+            "source": {
+              "type": "source-location",
+              "url": "http://localhost:4173/assets/react-BTDdODlp.js",
+              "urlProvider": "network",
+              "line": 25,
+              "column": 1381
+            },
+            "reflowTime": 34.859
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "headings": [
+          {
+            "key": "source",
+            "valueType": "source-location",
+            "label": "Source"
+          },
+          {
+            "key": "reflowTime",
+            "valueType": "ms",
+            "granularity": 1,
+            "label": "Total reflow time"
+          }
+        ],
+        "items": [
+          {
+            "source": {
+              "type": "source-location",
+              "url": "http://localhost:4173/assets/index-D4f6C_G3.js",
+              "urlProvider": "network",
+              "line": 14,
+              "column": 64750
+            },
+            "reflowTime": 33.28
+          },
+          {
+            "source": {
+              "type": "source-location",
+              "url": "http://localhost:4173/assets/index-D4f6C_G3.js",
+              "urlProvider": "network",
+              "line": 14,
+              "column": 66666
+            },
+            "reflowTime": 1.579
+          }
+        ]
+      }
+    ],
+    "clsCulprits": [
+      {
+        "type": "table",
+        "headings": [
+          {
+            "key": "node",
+            "valueType": "node",
+            "subItemsHeading": {
+              "key": "extra"
+            },
+            "label": "Element"
+          },
+          {
+            "key": "score",
+            "valueType": "numeric",
+            "subItemsHeading": {
+              "key": "cause",
+              "valueType": "text"
+            },
+            "granularity": 0.001,
+            "label": "Layout shift score"
+          }
+        ],
+        "items": [
+          {
+            "node": {
+              "type": "text",
+              "value": "Total"
+            },
+            "score": 0.212999
+          },
+          {
+            "node": {
+              "type": "node",
+              "lhId": "page-1-FOOTER",
+              "path": "1,HTML,1,BODY,0,DIV,0,DIV,3,MAIN,2,FOOTER",
+              "selector": "div#root > div.app-shell > main#main-content > footer.app-footer",
+              "boundingRect": {
+                "top": 7745,
+                "bottom": 7949,
+                "left": 25,
+                "right": 387,
+                "width": 362,
+                "height": 204
+              },
+              "snippet": "<footer class=\"app-footer\" role=\"contentinfo\">",
+              "nodeLabel": "·\nPrairieClassroom OS\n·\nBuilt for the Gemma 4 Good Hackathon\n?\nCLASSROOM\ndemo-o…"
+            },
+            "score": 0.212999
+          }
+        ]
+      }
+    ]
+  }
+}
