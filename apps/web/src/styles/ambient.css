@@ -819,12 +819,13 @@
   display: none !important;
 }
 
-.shell-classroom-pill,
-.role-pill,
-.shell-bar__palette-btn,
-.theme-toggle-instrument.nothing-btn,
-.app-help-btn,
-.tomorrow-chip__trigger {
+  .shell-classroom-pill,
+  .role-pill,
+  .shell-bar__palette-btn,
+  .shell-command-key,
+  .theme-toggle-instrument.nothing-btn,
+  .app-help-btn,
+  .tomorrow-chip__trigger {
   min-height: var(--control-h-md) !important;
   height: var(--control-h-md) !important;
   border: var(--shell-control-border) !important;
@@ -836,12 +837,13 @@
   filter: none !important;
 }
 
-.shell-classroom-pill,
-.role-pill,
-.shell-bar__palette-btn,
-.tomorrow-chip__trigger {
-  padding-block: 0 !important;
-  padding-inline: var(--space-3) !important;
+  .shell-classroom-pill,
+  .role-pill,
+  .shell-bar__palette-btn,
+  .shell-command-key,
+  .tomorrow-chip__trigger {
+    padding-block: 0 !important;
+    padding-inline: var(--space-3) !important;
 }
 
 .shell-classroom-pill {
@@ -1173,7 +1175,346 @@
     max-width: 58vw !important;
   }
 
+  .shell-command-key {
+    display: none !important;
+  }
+
   .shell-nav {
+    display: none !important;
+  }
+}
+
+/* Premium command shell target — late-cascade version.
+   ambient.css is imported last and deliberately uses !important for shell
+   hardening, so the desktop operating-rail composition lives here too. */
+@media (min-width: 961px) {
+  .app-shell {
+    --shell-side-rail-width: clamp(15.5rem, 17vw, 17.75rem) !important;
+    --shell-commandbar-height: 5.5rem !important;
+    --shell-page-rail-width: 2.5rem !important;
+    --shell-page-rail-collapsed-width: 1.75rem !important;
+    display: grid !important;
+    grid-template-columns: var(--shell-side-rail-width) minmax(0, 1fr) !important;
+    grid-template-rows: var(--shell-commandbar-height) minmax(0, 1fr) !important;
+    gap: 0 !important;
+    max-width: none !important;
+    padding: 0 !important;
+    background:
+      radial-gradient(
+        ellipse 65% 45% at 45% -18%,
+        color-mix(in srgb, var(--color-brand-highlight) 6%, transparent),
+        transparent 62%
+      ),
+      var(--color-bg) !important;
+  }
+
+  .app-header,
+  .app-header__inner {
+    display: contents !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+  }
+
+  .shell-brand {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: stretch !important;
+    padding: 0 var(--space-5) !important;
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent) !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent) !important;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface-elevated) 82%, transparent),
+        color-mix(in srgb, var(--color-surface) 64%, transparent)
+      ) !important;
+  }
+
+  .app-logo {
+    height: 100% !important;
+    max-width: none !important;
+    gap: 0.55rem !important;
+  }
+
+  .brand-mark__glyph {
+    width: 1.85rem !important;
+    height: 1.85rem !important;
+  }
+
+  .brand-mark__wordmark {
+    font-family: var(--font-editorial) !important;
+    font-size: clamp(1.05rem, 1.25vw, 1.35rem) !important;
+    font-weight: var(--font-weight-normal) !important;
+    letter-spacing: -0.018em !important;
+  }
+
+  .brand-mark__badge {
+    min-width: auto !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    color: var(--color-brand-highlight) !important;
+    font-family: var(--font-display) !important;
+    font-size: clamp(1.02rem, 1.1vw, 1.22rem) !important;
+    font-weight: var(--font-weight-medium) !important;
+    letter-spacing: -0.02em !important;
+  }
+
+  .shell-bar {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    display: grid !important;
+    grid-template-columns: auto minmax(16rem, 22rem) minmax(0, 1fr) !important;
+    align-items: center !important;
+    min-height: 0 !important;
+    padding: 0 var(--space-6) !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent) !important;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface-elevated) 68%, transparent),
+        color-mix(in srgb, var(--color-surface) 50%, transparent)
+      ) !important;
+    box-shadow: inset 0 -1px 0 color-mix(in srgb, white 4%, transparent) !important;
+  }
+
+  .shell-classroom-anchor {
+    width: min(100%, 22rem) !important;
+    justify-self: center !important;
+  }
+
+  .shell-classroom-pill,
+  .role-pill,
+  .shell-command-key,
+  .header-action,
+  .theme-toggle-instrument.nothing-btn,
+  .app-help-btn {
+    border-color: color-mix(in srgb, var(--color-border) 52%, transparent) !important;
+    background: color-mix(in srgb, var(--color-surface-elevated) 46%, transparent) !important;
+    box-shadow:
+      inset 0 1px 0 color-mix(in srgb, white 5%, transparent),
+      0 10px 24px color-mix(in srgb, black 9%, transparent) !important;
+    backdrop-filter: blur(18px) saturate(1.06) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(1.06) !important;
+  }
+
+  .shell-classroom-pill {
+    padding: 0 var(--space-3) 0 0 !important;
+  }
+
+  .shell-command-key {
+    justify-self: start !important;
+    min-width: var(--control-h-md) !important;
+    width: auto !important;
+    color: var(--color-text-secondary) !important;
+    font-family: var(--font-mono) !important;
+    font-size: var(--text-xs) !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .shell-classroom-pill__switcher::after {
+    background: color-mix(in srgb, var(--color-border) 44%, transparent) !important;
+  }
+
+  .shell-bar__actions {
+    justify-self: end !important;
+    gap: var(--space-3) !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
+    justify-content: flex-start !important;
+    min-width: min(24vw, 18rem) !important;
+    padding-inline: var(--space-4) !important;
+    color: var(--color-text-tertiary) !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__label {
+    display: inline !important;
+    color: var(--color-text-tertiary) !important;
+    font-family: var(--font-sans) !important;
+    font-weight: var(--font-weight-medium) !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
+  }
+
+  .role-pill {
+    border-color: color-mix(in srgb, var(--color-brand-green) 42%, var(--color-border)) !important;
+    color: var(--color-brand-green) !important;
+  }
+
+  .role-pill__eyebrow {
+    display: none !important;
+  }
+
+  .shell-nav,
+  .shell-nav--solo {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    min-height: 0 !important;
+    padding: var(--space-4) !important;
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent) !important;
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface) 76%, transparent),
+        color-mix(in srgb, var(--color-surface-muted) 48%, transparent)
+      ) !important;
+    overflow-y: auto !important;
+  }
+
+  .shell-nav__groups {
+    display: flex !important;
+    min-height: 0 !important;
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: var(--space-1) !important;
+    padding: 0 !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    overflow: visible !important;
+  }
+
+  .shell-nav__group {
+    justify-content: flex-start !important;
+    gap: var(--space-3) !important;
+    min-height: 3rem !important;
+    padding: 0 var(--space-4) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--color-text-secondary) !important;
+    font-size: var(--text-base) !important;
+    font-weight: var(--font-weight-medium) !important;
+    letter-spacing: 0 !important;
+  }
+
+  .shell-nav__group + .shell-nav__group {
+    border-left: 0 !important;
+  }
+
+  .shell-nav__group:hover:not(.shell-nav__group--active) {
+    background: color-mix(in srgb, var(--color-surface-elevated) 34%, transparent) !important;
+  }
+
+  .shell-nav__group--active {
+    color: var(--color-brand-highlight) !important;
+    background:
+      linear-gradient(90deg, color-mix(in srgb, var(--color-brand-highlight) 14%, transparent), transparent 76%),
+      color-mix(in srgb, var(--color-surface-elevated) 44%, transparent) !important;
+    box-shadow:
+      inset 3px 0 0 var(--color-brand-highlight),
+      inset 0 1px 0 color-mix(in srgb, white 5%, transparent) !important;
+  }
+
+  .shell-nav__group--active::after {
+    display: none !important;
+  }
+
+  .shell-nav__group-icon {
+    width: 1.1rem !important;
+    height: 1.1rem !important;
+  }
+
+  .shell-nav__badge {
+    margin-left: auto !important;
+  }
+
+  .shell-nav__meta {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.25rem !important;
+    margin-top: auto !important;
+    padding: var(--space-4) var(--space-4) 0 !important;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent) !important;
+    color: var(--color-text-tertiary) !important;
+    font-size: var(--text-xs) !important;
+    line-height: var(--leading-snug) !important;
+  }
+
+  .app-main {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: var(--space-6) !important;
+    border: 0 !important;
+    border-radius: 0 !important;
+    background:
+      radial-gradient(
+        ellipse 80% 55% at 45% 0%,
+        color-mix(in srgb, var(--color-brand-highlight) 3%, transparent),
+        transparent 60%
+      ),
+      var(--color-workspace) !important;
+    box-shadow: inset 1px 0 0 color-mix(in srgb, white 3%, transparent) !important;
+  }
+
+  .app-main::before,
+  .app-main[data-section]::before {
+    display: none !important;
+  }
+
+  .page-anchor-rail {
+    background: color-mix(in srgb, var(--color-surface) 36%, transparent) !important;
+    border-color: color-mix(in srgb, var(--color-border) 22%, transparent) !important;
+    box-shadow: inset -1px 0 0 color-mix(in srgb, var(--shell-control-accent) 9%, transparent) !important;
+    padding: calc(var(--page-rail-toggle-h) + var(--space-2)) var(--space-1) var(--space-2) !important;
+  }
+
+  .page-anchor-rail__toggle {
+    left: var(--space-1) !important;
+    width: calc(var(--shell-page-rail-width) - var(--space-1)) !important;
+    min-width: calc(var(--shell-page-rail-width) - var(--space-1)) !important;
+    padding: 0 !important;
+  }
+
+  .page-anchor-rail__toggle-text,
+  .page-anchor-rail__label,
+  .page-anchor-rail__back-to-top-text {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+  }
+
+  .page-anchor-rail__link,
+  .page-anchor-rail__back-to-top {
+    justify-content: center !important;
+    gap: 0 !important;
+    padding: var(--space-2) 0 !important;
+  }
+
+  .page-anchor-rail__number,
+  .page-anchor-rail__back-to-top-icon {
+    min-width: auto !important;
+  }
+}
+
+@media (min-width: 961px) and (max-width: 1180px) {
+  .shell-bar {
+    grid-template-columns: minmax(14rem, 1fr) auto !important;
+  }
+
+  .shell-classroom-anchor {
+    justify-self: start !important;
+  }
+
+  .shell-bar__actions {
+    gap: var(--space-2) !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
+    min-width: var(--control-h-md) !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__label {
     display: none !important;
   }
 }

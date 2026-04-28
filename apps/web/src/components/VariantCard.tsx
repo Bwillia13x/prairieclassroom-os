@@ -2,36 +2,65 @@ import type { DifferentiatedVariant } from "../types";
 import { estimateGradeLevel, describeGradeLevel } from "../utils/readingLevel";
 import "./VariantCard.css";
 
-const VARIANT_LABELS: Record<string, string> = {
-  core: "Core",
-  eal_supported: "EAL Supported",
-  chunked: "Chunked",
-  ea_small_group: "EA Small Group",
-  extension: "Extension",
+const VARIANT_COPY: Record<string, { label: string; subtitle: string; confidence: string }> = {
+  core: {
+    label: "Core lane",
+    subtitle: "Right level, right now",
+    confidence: "Review ready",
+  },
+  eal_supported: {
+    label: "EAL Supported lane",
+    subtitle: "Language + meaning",
+    confidence: "Language check",
+  },
+  chunked: {
+    label: "Chunked lane",
+    subtitle: "Scaffold for success",
+    confidence: "Structure check",
+  },
+  ea_small_group: {
+    label: "EA Small Group lane",
+    subtitle: "Guided adult support",
+    confidence: "Support check",
+  },
+  extension: {
+    label: "Extension lane",
+    subtitle: "Push thinking further",
+    confidence: "Challenge check",
+  },
 };
 
 interface Props {
   variant: DifferentiatedVariant;
+  artifactTitle?: string;
+  modelId?: string;
+  preview?: boolean;
 }
 
-export default function VariantCard({ variant }: Props) {
-  const label = VARIANT_LABELS[variant.variant_type] ?? variant.variant_type;
+export default function VariantCard({ variant, artifactTitle, modelId, preview = false }: Props) {
+  const copy = VARIANT_COPY[variant.variant_type] ?? {
+    label: variant.title,
+    subtitle: "Teacher-ready variant",
+    confidence: "Review check",
+  };
   const gradeLevel = estimateGradeLevel(variant.student_facing_instructions);
+  const sourceLabel = artifactTitle || "Source artifact";
+  const previewExcerpt = variant.student_facing_instructions
+    .replace(/\s+/g, " ")
+    .trim()
+    .split(" ")
+    .slice(0, 8)
+    .join(" ");
 
   return (
-    <article className="variant-card">
-      <header className="variant-header">
-        <span className={`variant-badge variant-badge--${variant.variant_type}`}>
-          {label}
-        </span>
-        <span className="variant-time">{variant.estimated_minutes} min</span>
-      </header>
-
-      <h3 className="variant-title">{variant.title}</h3>
-
-      <section className="variant-section">
-        <header className="variant-section__header">
-          <h4>Student Instructions</h4>
+    <article className={`variant-card variant-card--${variant.variant_type}`}>
+      <div className="variant-card__identity">
+        <span className="variant-card__dot" aria-hidden="true" />
+        <div>
+          <h3>{copy.label}</h3>
+          <p>{copy.subtitle}</p>
+        </div>
+        <div className="variant-card__metrics" aria-label="Variant estimates">
           {gradeLevel !== null ? (
             <span
               className="variant-reading-level"
@@ -39,26 +68,52 @@ export default function VariantCard({ variant }: Props) {
             >
               ~Grade {gradeLevel}
             </span>
-          ) : null}
-        </header>
+          ) : (
+            <span>Grade band</span>
+          )}
+          <span>{variant.estimated_minutes} min</span>
+        </div>
+      </div>
+
+      <div className="variant-card__body">
+        <h4>{variant.title}</h4>
         <p>{variant.student_facing_instructions}</p>
-      </section>
+        <div className="variant-card__tags">
+          <span className="variant-card__tag variant-card__tag--confidence">{copy.confidence}</span>
+          <span className="variant-card__tag">Source: {sourceLabel}</span>
+          {!preview && modelId ? <span className="variant-card__tag">Model: {modelId}</span> : null}
+        </div>
+        {variant.teacher_notes || variant.required_materials.length > 0 ? (
+          <details className="variant-card__details">
+            <summary>Teacher edit notes</summary>
+            {variant.teacher_notes ? <p>{variant.teacher_notes}</p> : null}
+            {variant.required_materials.length > 0 ? (
+              <ul>
+                {variant.required_materials.map((m, i) => (
+                  <li key={i}>{m}</li>
+                ))}
+              </ul>
+            ) : null}
+          </details>
+        ) : null}
+      </div>
 
-      <section className="variant-section">
-        <h4>Teacher Notes</h4>
-        <p>{variant.teacher_notes}</p>
-      </section>
+      <div className="variant-card__preview" aria-hidden="true">
+        <span className="variant-card__preview-kicker">{copy.confidence}</span>
+        <strong>{copy.label.replace(" lane", "")}</strong>
+        <p>{previewExcerpt}{previewExcerpt ? "..." : ""}</p>
+        <div className="variant-card__preview-meter">
+          <span />
+          <span />
+          <span />
+        </div>
+      </div>
 
-      {variant.required_materials.length > 0 && (
-        <section className="variant-section">
-          <h4>Materials</h4>
-          <ul>
-            {variant.required_materials.map((m, i) => (
-              <li key={i}>{m}</li>
-            ))}
-          </ul>
-        </section>
-      )}
+      <div className="variant-card__actions">
+        <button type="button">Preview</button>
+        <button type="button">Edit</button>
+        <button type="button" aria-label={`More actions for ${copy.label}`}>...</button>
+      </div>
     </article>
   );
 }

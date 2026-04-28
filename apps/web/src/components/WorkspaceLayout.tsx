@@ -27,6 +27,8 @@ interface Props {
   canvas: ReactNode;
   layout?: "split" | "single";
   splitState?: "input" | "output";
+  className?: string;
+  surface?: string;
 }
 
 export default function WorkspaceLayout({
@@ -34,12 +36,17 @@ export default function WorkspaceLayout({
   canvas,
   layout = "split",
   splitState = "input",
+  className,
+  surface,
 }: Props) {
+  const classes = ["workspace-layout", className].filter(Boolean).join(" ");
+
   return (
     <div
-      className="workspace-layout"
+      className={classes}
       data-layout={layout}
       data-split-state={splitState}
+      data-surface={surface}
     >
       <aside className="workspace-rail">{rail}</aside>
       <div className="workspace-canvas">{canvas}</div>

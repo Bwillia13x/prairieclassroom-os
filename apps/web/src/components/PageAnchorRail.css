@@ -126,8 +126,11 @@
 }
 
 .page-anchor-rail--collapsed::before {
-  opacity: 1;
-  animation: page-rail-led-sweep 6.4s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+  /* The collapsed toggle already carries the active section number and
+     inset accent. Keeping the old fixed LED sweep made a stray vertical
+     line cross the workspace after the premium shell recomposition. */
+  opacity: 0;
+  animation: none;
 }
 
 @keyframes page-rail-led-sweep {
@@ -515,6 +518,12 @@
 @media (max-width: 960px) {
   .page-anchor-rail {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .page-anchor-rail {
+    pointer-events: none;
   }
 }
 

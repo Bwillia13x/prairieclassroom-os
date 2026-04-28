@@ -5,11 +5,9 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEALoadProfile } from "../api";
 import { parseRecordTimestamp } from "../utils/parseRecordTimestamp";
-import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import { formatTargetDate } from "../utils/formatTargetDate";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
-import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import ErrorBanner from "../components/ErrorBanner";
@@ -287,24 +285,6 @@ export default function EALoadPanel() {
 
   return (
     <section className="workspace-page">
-      <PageIntro
-        title="Balance EA Cognitive Load"
-        sectionTone="slate"
-        description="Surface the per-block EA load for tomorrow and flag sequences of sustained high demand without a recovery window. Operational framing only — suggestions never score EA competence."
-        infoContent={{
-          title: "EA Load Balance",
-          body: (
-            <p>
-              Pick the target day and classroom, and the model surfaces per-block EA
-              load with recovery windows. Suggestions never score EA competence — they
-              only flag operational sequences that need rebalancing.
-            </p>
-          ),
-        }}
-      />
-
-      <OpsWorkflowStepper activeTool="ea-load" />
-
       <CoverageTimeline
         title="EA load timeline"
         schedule={profile?.schedule}
@@ -316,6 +296,8 @@ export default function EALoadPanel() {
       />
 
       <WorkspaceLayout
+        className="workspace-layout--ops-workflow"
+        surface="ops-ea-load"
         splitState={result ? "output" : "input"}
         rail={(
           <EALoadForm

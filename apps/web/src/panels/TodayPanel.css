@@ -259,6 +259,69 @@
   }
 }
 
+@media (max-width: 640px) {
+  .today-panel {
+    max-width: 100%;
+    gap: var(--space-2);
+  }
+
+  .app-main[data-section="today"] {
+    padding-top: var(--space-1);
+  }
+
+  .today-panel #today-preview,
+  .today-panel .student-coverage,
+  .today-panel .student-coverage__sentinel,
+  .today-panel .today-workflow-nudge {
+    display: none;
+  }
+
+  .today-panel #command-center .section-skeleton[data-variant="today-hero"] {
+    min-height: 34rem;
+  }
+
+  .today-pulse {
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+  }
+
+  .today-grid,
+  .today-grid__hero-row,
+  .today-grid--secondary {
+    gap: var(--space-2);
+  }
+
+  .today-panel .card,
+  .today-panel .time-suggestion,
+  .today-panel .plan-recap,
+  .today-panel .day-arc,
+  .today-panel .pending-actions-card,
+  .today-panel .health-bar,
+  .today-panel .student-roster {
+    border-color: color-mix(in srgb, var(--color-border) 52%, transparent);
+    border-radius: var(--radius-sm);
+    background: color-mix(in srgb, var(--color-surface) 74%, transparent);
+    box-shadow: var(--inner-stroke);
+  }
+
+  .today-panel .card__body,
+  .today-panel .time-suggestion,
+  .today-panel .plan-recap,
+  .today-panel .day-arc,
+  .today-panel .pending-actions-card,
+  .today-panel .health-bar,
+  .today-panel .student-roster {
+    padding: var(--space-3);
+  }
+
+  .today-end-marker {
+    margin-top: var(--space-4);
+    margin-bottom: calc(4.75rem + env(safe-area-inset-bottom));
+    padding-top: var(--space-4);
+    font-size: var(--text-2xs);
+  }
+}
+
 /* The touchpoint strip is useful as quick triage, but on Today it must not
    become a second persistent navigation layer. app-main already owns the
    scroll context, the page anchor rail owns desktop orientation, and mobile

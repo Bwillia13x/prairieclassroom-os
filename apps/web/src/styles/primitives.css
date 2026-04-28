@@ -1096,6 +1096,175 @@ label.form-label {
   scroll-margin-top: var(--space-3);
 }
 
+.workspace-layout.workspace-layout--ops-workflow {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      ellipse at 8% 4%,
+      color-mix(in srgb, var(--color-bg-slate) 34%, transparent),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 76%, transparent),
+      color-mix(in srgb, var(--color-surface) 90%, transparent)
+    );
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+}
+
+@media (min-width: 960px) {
+  .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] {
+    grid-template-columns: minmax(430px, 58%) minmax(340px, 1fr);
+    min-height: min(780px, calc(100vh - 210px));
+  }
+
+  .workspace-layout.workspace-layout--ops-workflow[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: minmax(380px, 48%) minmax(380px, 1fr);
+  }
+
+  .app-main[data-section="ops"] .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-rail {
+    padding: var(--space-5);
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface-elevated) 56%, transparent),
+        color-mix(in srgb, var(--color-surface-muted) 22%, transparent)
+      );
+  }
+
+  .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-canvas {
+    padding: var(--space-5);
+    background:
+      radial-gradient(
+        ellipse at 80% 8%,
+        color-mix(in srgb, var(--color-bg-slate) 22%, transparent),
+        transparent 46%
+      );
+  }
+}
+
+@media (max-width: 959px) {
+  .workspace-layout.workspace-layout--ops-workflow {
+    border-radius: var(--radius-md);
+  }
+
+  .workspace-layout.workspace-layout--ops-workflow > .workspace-rail,
+  .workspace-layout.workspace-layout--ops-workflow > .workspace-canvas {
+    padding: var(--space-4);
+  }
+
+  .workspace-layout.workspace-layout--ops-workflow > .workspace-canvas {
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  }
+}
+
+.workspace-layout.workspace-layout--prep-canvas {
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 52%, transparent);
+  border-radius: var(--radius-lg);
+  background:
+    radial-gradient(
+      ellipse at 82% 8%,
+      color-mix(in srgb, var(--color-bg-sage) 32%, transparent),
+      transparent 48%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 72%, transparent),
+      color-mix(in srgb, var(--color-surface) 82%, transparent)
+    );
+  box-shadow:
+    var(--shadow-sm),
+    inset 0 1px 0 color-mix(in srgb, white 5%, transparent);
+}
+
+.workspace-layout--prep-canvas .differentiate-intake-pane,
+.workspace-layout--prep-canvas .differentiate-canvas {
+  min-width: 0;
+}
+
+.workspace-layout--prep-canvas .differentiate-canvas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.workspace-layout--prep-canvas .differentiate-canvas__preview {
+  position: relative;
+  min-width: 0;
+}
+
+.workspace-layout--prep-canvas .differentiate-canvas__preview > .output-preview-checklist {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.workspace-layout--prep-canvas .differentiate-canvas__lane-jump {
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-elevated) 32%, transparent);
+}
+
+@media (min-width: 960px) {
+  .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] {
+    grid-template-columns: minmax(370px, 37%) minmax(0, 1fr);
+    min-height: min(820px, calc(100vh - 190px));
+  }
+
+  .workspace-layout.workspace-layout--prep-canvas[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: minmax(330px, 31%) minmax(0, 1fr);
+  }
+
+  .app-main[data-section="prep"] .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] > .workspace-rail {
+    padding: var(--space-5);
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+    background:
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--color-surface-elevated) 52%, transparent),
+        color-mix(in srgb, var(--color-surface-muted) 24%, transparent)
+      );
+  }
+
+  .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] > .workspace-canvas {
+    padding: var(--space-5);
+    background:
+      radial-gradient(
+        ellipse at 72% 0%,
+        color-mix(in srgb, var(--color-accent) 7%, transparent),
+        transparent 42%
+      );
+  }
+}
+
+@media (max-width: 959px) {
+  .workspace-layout.workspace-layout--prep-canvas {
+    border-radius: var(--radius-md);
+  }
+
+  .workspace-layout.workspace-layout--prep-canvas > .workspace-rail,
+  .workspace-layout.workspace-layout--prep-canvas > .workspace-canvas {
+    padding: var(--space-4);
+  }
+
+  .workspace-layout.workspace-layout--prep-canvas > .workspace-canvas {
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+  }
+}
+
 /* Empty state canvas — archetype-differentiated per Workstream G.
    Three variants live here: minimal (quiet text), preview (skeleton of
    the expected output shape), and sample (a real component instance

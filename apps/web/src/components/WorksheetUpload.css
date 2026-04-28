@@ -5,9 +5,10 @@
 }
 
 .worksheet-upload__dropzone {
-  border: 2px dashed var(--color-border);
+  border: 1px dashed color-mix(in srgb, var(--color-border) 54%, transparent);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
+  padding: var(--space-3);
+  background: color-mix(in srgb, var(--color-surface-elevated) 48%, transparent);
   text-align: center;
   cursor: pointer;
   transition:
@@ -22,8 +23,8 @@
 }
 
 .worksheet-upload__preview {
-  max-width: 200px;
-  max-height: 200px;
+  max-width: 160px;
+  max-height: 160px;
   border-radius: var(--radius-sm);
   margin-top: var(--space-2);
 }

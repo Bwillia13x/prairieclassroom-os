@@ -1832,6 +1832,74 @@ button.viz-recency__row:focus-visible {
   border-radius: 2px;
 }
 
+/* ── 14b. Week Risk Horizon ──
+   Compact operations-map line for the Week board. It visualizes only
+   the existing forecast/schedule levels: unknown, low, medium, high. */
+
+.viz-week-risk {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+}
+
+.viz-week-risk .viz-svg {
+  width: 100%;
+  height: auto;
+}
+
+.viz-week-risk__grid {
+  stroke: color-mix(in srgb, var(--color-border) 62%, transparent);
+  stroke-width: 0.8;
+  stroke-dasharray: 2 8;
+}
+
+.viz-week-risk__line {
+  fill: none;
+  stroke: color-mix(in srgb, var(--color-text) 76%, transparent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.viz-week-risk__point {
+  fill: var(--color-surface);
+  stroke-width: 2;
+}
+
+.viz-week-risk__point--unknown {
+  stroke: var(--color-text-tertiary);
+}
+
+.viz-week-risk__point--low {
+  stroke: var(--chart-tone-low);
+}
+
+.viz-week-risk__point--medium {
+  stroke: var(--chart-tone-medium);
+}
+
+.viz-week-risk__point--high {
+  stroke: var(--chart-tone-high);
+  filter: drop-shadow(0 0 6px color-mix(in srgb, var(--chart-tone-high) 26%, transparent));
+}
+
+.viz-week-risk__label,
+.viz-week-risk__date {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  fill: var(--color-text-secondary);
+}
+
+.viz-week-risk__label {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.viz-week-risk__date {
+  font-size: 8px;
+  fill: var(--color-text-tertiary);
+}
+
 /* ── 15. Intervention Timeline ── */
 
 .viz-int-timeline {

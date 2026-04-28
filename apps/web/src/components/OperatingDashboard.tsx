@@ -13,6 +13,7 @@ import type {
   ClassroomHealth,
   ClassroomProfile,
   ComplexityBlock,
+  DebtItem,
   DrillDownContext,
   OperatingDashboardBlockLevel,
   OperatingDashboardCoverageCell,
@@ -39,6 +40,8 @@ interface OperatingDashboardProps {
   activeRole: ClassroomRole;
   onNavigate: (target: NavTarget) => void;
   onOpenContext: (context: DrillDownContext) => void;
+  variant?: "full" | "summary";
+  id?: string;
 }
 
 const SCHOOL_DAY_COUNT = 5;
@@ -532,6 +535,62 @@ function queueMax(queues: OperatingDashboardQueue[]) {
   return Math.max(1, ...queues.map((queue) => queue.count));
 }
 
+const DEBT_CATEGORY_LABELS: Record<string, string> = {
+  stale_followup: "Follow-up overdue",
+  unapproved_message: "Approve family message",
+  unaddressed_pattern: "Review support pattern",
+  recurring_plan_item: "Personalize plan item",
+  approaching_review: "Review checkpoint",
+};
+
+function clampNumber(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function coveragePercent(rows: OperatingDashboardCoverageRow[]) {
+  const cells = rows.flatMap((row) => row.cells).filter((cell) => cell.state !== "not_applicable");
+  if (cells.length === 0) return 0;
+  const score = cells.reduce((total, cell) => {
+    if (cell.state === "covered") return total + 1;
+    if (cell.state === "watch") return total + 0.55;
+    return total;
+  }, 0);
+  return Math.round((score / cells.length) * 100);
+}
+
+function priorityForDebt(item: DebtItem): "High" | "Medium" | "Low" {
+  if (item.age_days >= 7 || item.category === "unapproved_message") return "High";
+  if (item.age_days >= 3 || item.student_refs.length > 1) return "Medium";
+  return "Low";
+}
+
+function summarizeDebtItem(item: DebtItem) {
+  const label = item.suggested_action || DEBT_CATEGORY_LABELS[item.category] || item.description;
+  const students = item.student_refs.length > 0
+    ? item.student_refs.slice(0, 2).join(", ")
+    : "Classroom";
+  const overflow = item.student_refs.length > 2 ? `, +${item.student_refs.length - 2}` : "";
+  const age = item.age_days > 0 ? `${item.age_days}d` : "today";
+  return {
+    label,
+    meta: `${students}${overflow} · ${age}`,
+    priority: priorityForDebt(item),
+  };
+}
+
+function queuePriority(queue: OperatingDashboardQueue): "High" | "Medium" | "Low" {
+  if (queue.state === "needs_action" || queue.state === "stale") return "High";
+  if (queue.state === "draft_ready" || queue.state === "waiting") return "Medium";
+  return "Low";
+}
+
+function formatSupportTag(tag: string) {
+  return tag
+    .replace(/_/g, " ")
+    .replace(/\beal\b/gi, "EAL")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export default function OperatingDashboard({
   snapshot,
   profile,
@@ -540,6 +599,8 @@ export default function OperatingDashboard({
   activeRole,
   onNavigate,
   onOpenContext,
+  variant = "full",
+  id,
 }: OperatingDashboardProps) {
   const dashboard = useMemo(
     () => buildOperatingDashboardSnapshot(snapshot, profile, sessionSummary),
@@ -559,6 +620,12 @@ export default function OperatingDashboard({
   const latestDebt = debtTrend[debtTrend.length - 1] ?? snapshot.debt_register.items.length;
   const previousDebt = debtTrend.length > 1 ? debtTrend[debtTrend.length - 2] : latestDebt;
   const debtDelta = latestDebt - previousDebt;
+  const coverageValue = coveragePercent(dashboard.support_coverage);
+  const summaryWatchlist = dashboard.support_coverage.slice(0, 3);
+  const debtQueue = snapshot.debt_register.items.slice(0, 3);
+  const fallbackQueue = [...dashboard.communication_queue, ...dashboard.prep_queue]
+    .filter((queue) => queue.count > 0 || queue.state !== "clear")
+    .slice(0, 3);
 
   function navigateIfVisible(tabRaw: string | null) {
     const target = targetFromString(tabRaw);
@@ -567,8 +634,142 @@ export default function OperatingDashboard({
     }
   }
 
+  if (variant === "summary") {
+    return (
+      <section
+        id={id}
+        className="operating-dashboard operating-dashboard--summary"
+        aria-labelledby="operating-dashboard-summary-heading"
+      >
+        <h2 id="operating-dashboard-summary-heading" className="sr-only">
+          Classroom operating bands
+        </h2>
+        <div className="operating-dashboard__summary-grid">
+          <section className="operating-summary-card operating-summary-card--watchlist" aria-label="Watchlist">
+            <div className="operating-summary-card__header">
+              <h3>Watchlist</h3>
+              <button type="button" onClick={() => onNavigate("today")}>
+                View all
+              </button>
+            </div>
+            <div className="operating-watchlist">
+              {summaryWatchlist.map((row) => (
+                <button
+                  key={row.alias}
+                  type="button"
+                  className="operating-watchlist__item"
+                  onClick={() => {
+                    if (row.thread) onOpenContext({ type: "student-thread", thread: row.thread });
+                    else onOpenContext({ type: "student", alias: row.alias });
+                  }}
+                >
+                  <span
+                    className={`operating-watchlist__dot operating-watchlist__dot--${
+                      row.cells.some((cell) => cell.state === "open")
+                        ? "open"
+                        : row.cells.some((cell) => cell.state === "watch")
+                          ? "watch"
+                          : "covered"
+                    }`}
+                    aria-hidden="true"
+                  />
+                  <span className="operating-watchlist__name">{row.alias}</span>
+                  <span className="operating-watchlist__reason">
+                    {row.priority_reason
+                      ?? (row.support_tags && row.support_tags.length > 0
+                        ? row.support_tags.slice(0, 2).map(formatSupportTag).join(", ")
+                        : `${row.thread_count} active threads`)}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <section className="operating-summary-card operating-summary-card--coverage" aria-label="Coverage">
+            <div className="operating-summary-card__header">
+              <h3>Coverage</h3>
+              <span>This week</span>
+            </div>
+            <button
+              type="button"
+              className="operating-coverage-gauge"
+              style={{ "--coverage-value": `${clampNumber(coverageValue, 0, 100)}%` } as CSSProperties}
+              onClick={() => {
+                const firstOpen = dashboard.support_coverage
+                  .flatMap((row) => row.cells.map((cell) => ({ row, cell })))
+                  .find(({ cell }) => cell.state === "open" || cell.state === "watch");
+                if (firstOpen) onOpenContext({ type: "coverage-cell", row: firstOpen.row, cell: firstOpen.cell });
+              }}
+              aria-label={`Coverage ${coverageValue}%`}
+            >
+              <span className="operating-coverage-gauge__arc" aria-hidden="true" />
+              <strong>{coverageValue}%</strong>
+              <span>Core coverage</span>
+            </button>
+            <p className={`operating-coverage-status operating-coverage-status--${coverageValue >= 80 ? "steady" : "needs"}`}>
+              <span aria-hidden="true" />
+              {coverageValue >= 80 ? "On track for outcomes" : "Coverage needs a teacher pass"}
+            </p>
+          </section>
+
+          <section className="operating-summary-card operating-summary-card--queue" aria-label="Prairie queue">
+            <div className="operating-summary-card__header">
+              <h3>Prairie queue</h3>
+              <span>{debtQueue.length || fallbackQueue.length} items</span>
+            </div>
+            <div className="operating-queue-list">
+              {debtQueue.length > 0
+                ? debtQueue.map((item, idx) => {
+                    const summary = summarizeDebtItem(item);
+                    return (
+                      <button
+                        key={`${item.category}-${item.source_record_id}-${idx}`}
+                        type="button"
+                        className={`operating-queue-list__item operating-queue-list__item--${summary.priority.toLowerCase()}`}
+                        onClick={() =>
+                          onOpenContext({
+                            type: "debt-category",
+                            category: item.category,
+                            items: snapshot.debt_register.items.filter((candidate) => candidate.category === item.category),
+                          })
+                        }
+                      >
+                        <span className="operating-queue-list__rank">{idx + 1}</span>
+                        <span className="operating-queue-list__body">
+                          <strong>{summary.label}</strong>
+                          <em>{summary.meta}</em>
+                        </span>
+                        <span className="operating-queue-list__priority">{summary.priority}</span>
+                      </button>
+                    );
+                  })
+                : fallbackQueue.map((queue, idx) => {
+                    const priority = queuePriority(queue);
+                    return (
+                      <button
+                        key={queue.id}
+                        type="button"
+                        className={`operating-queue-list__item operating-queue-list__item--${priority.toLowerCase()}`}
+                        onClick={() => onOpenContext({ type: "queue-state", queue })}
+                      >
+                        <span className="operating-queue-list__rank">{idx + 1}</span>
+                        <span className="operating-queue-list__body">
+                          <strong>{queue.label}</strong>
+                          <em>{queue.detail}</em>
+                        </span>
+                        <span className="operating-queue-list__priority">{priority}</span>
+                      </button>
+                    );
+                  })}
+            </div>
+          </section>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section className="operating-dashboard" aria-labelledby="operating-dashboard-heading">
+    <section id={id} className="operating-dashboard" aria-labelledby="operating-dashboard-heading">
       <header className="operating-dashboard__header">
         <div>
           <span className="operating-dashboard__eyebrow">Operating dashboard</span>

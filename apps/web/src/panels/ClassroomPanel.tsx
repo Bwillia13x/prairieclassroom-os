@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -18,14 +18,7 @@ import StudentRoster from "../components/StudentRoster";
 import OperatingDashboard from "../components/OperatingDashboard";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
-import PageHero, {
-  type PageHeroMetricGroup,
-  type PageHeroStatusRow,
-} from "../components/shared/PageHero";
-import OperationalPreview, {
-  type OperationalPreviewChip,
-  type OperationalPreviewGroup,
-} from "../components/shared/OperationalPreview";
+import PageHero from "../components/shared/PageHero";
 import SectionMarker from "../components/shared/SectionMarker";
 import { useZoneDisclosure } from "../hooks/useZoneDisclosure";
 import {
@@ -89,6 +82,125 @@ function derivePulse(
     label: planToday ? "Steady" : "Plan pending",
     meta: `${pendingActionCount} open · ${streak}-day streak`,
   };
+}
+
+function clamp(value: number, min: number, max: number) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function pressureIndex({
+  pendingActionCount,
+  openThreadCount,
+  plannedDays,
+  streakDays,
+}: {
+  pendingActionCount: number;
+  openThreadCount: number | null;
+  plannedDays: number | null;
+  streakDays: number;
+}) {
+  const threads = openThreadCount ?? 0;
+  const plans = plannedDays ?? 0;
+  return Math.round(clamp(
+    30 + pendingActionCount * 1.25 + threads * 0.58 - plans * 2 - Math.min(streakDays, 7) * 1.5,
+    8,
+    96,
+  ));
+}
+
+interface ClassroomCommandInstrumentProps {
+  pulse: { tone: PulseTone; label: string; meta: string };
+  pressure: number;
+  openThreadCount: number | null;
+  openItemCount: number | null;
+  studentCount: number;
+  ealCount: number;
+  plannedDays: number | null;
+  streakDays: number;
+  lastActivityLabel: string;
+  onViewSignals: () => void;
+}
+
+function ClassroomCommandInstrument({
+  pulse,
+  pressure,
+  openThreadCount,
+  openItemCount,
+  studentCount,
+  ealCount,
+  plannedDays,
+  streakDays,
+  lastActivityLabel,
+  onViewSignals,
+}: ClassroomCommandInstrumentProps) {
+  const pressureStyle = { "--classroom-pressure": `${pressure}%` } as CSSProperties;
+  const planValue = plannedDays !== null ? `${plannedDays}/7` : "—";
+
+  return (
+    <div
+      className={`classroom-command-instrument classroom-command-instrument--${pulse.tone}`}
+      aria-label="Classroom health and operating pressure"
+    >
+      <div className="classroom-command-instrument__header">
+        <span>Classroom health</span>
+        <span className="classroom-command-instrument__live">
+          <span aria-hidden="true" />
+          Live
+        </span>
+      </div>
+
+      <div className="classroom-command-instrument__body">
+        <div className="classroom-command-instrument__pressure">
+          <div
+            className="classroom-command-instrument__ring"
+            style={pressureStyle}
+            role="img"
+            aria-label={`Pressure index ${pressure}, ${pulse.label}`}
+          >
+            <span className="classroom-command-instrument__ring-core">
+              <strong>{pressure}</strong>
+              <em>{pulse.label}</em>
+            </span>
+          </div>
+          <span className="classroom-command-instrument__pressure-label">Pressure</span>
+        </div>
+
+        <div className="classroom-command-instrument__stats">
+          <div className="classroom-command-instrument__stat">
+            <span>Threads</span>
+            <strong>{openThreadCount ?? "—"}</strong>
+            <em>Active</em>
+          </div>
+          <div className="classroom-command-instrument__stat">
+            <span>Roster</span>
+            <strong>{studentCount}</strong>
+            <em>{ealCount} EAL</em>
+          </div>
+          <div className="classroom-command-instrument__stat">
+            <span>Plan filed</span>
+            <strong>{planValue}</strong>
+            <em>{streakDays > 0 ? `${streakDays}d streak` : "No streak"}</em>
+          </div>
+          <div className="classroom-command-instrument__stat">
+            <span>Queue</span>
+            <strong>{openItemCount ?? "—"}</strong>
+            <em>Needs you</em>
+          </div>
+        </div>
+      </div>
+
+      <div className="classroom-command-instrument__footer">
+        <span>
+          <span aria-hidden="true" />
+          {pulse.meta}
+        </span>
+        <span>{lastActivityLabel}</span>
+        <button type="button" onClick={onViewSignals}>
+          View all signals
+        </button>
+      </div>
+    </div>
+  );
 }
 
 
@@ -166,52 +278,6 @@ export default function ClassroomPanel({
   if (!profile) return null;
 
   const streakDays = health.result?.streak_days ?? 0;
-
-  // Metric groups read as a command-block: "Today" lens → "Roster" lens →
-  // "Plan" lens. Each group keeps its own eyebrow so the labels never
-  // collide and the figures stay readable when the aside collapses.
-  const heroMetricGroups: PageHeroMetricGroup[] = [
-    {
-      label: "Today",
-      metrics: [
-        {
-          value: openThreadCount ?? "—",
-          label: "Threads",
-          tone: openThreadCount && openThreadCount > 6 ? "danger" : openThreadCount && openThreadCount > 3 ? "warning" : undefined,
-        },
-        {
-          value: openItemCount ?? "—",
-          label: "Open",
-          tone: openItemCount && openItemCount > 6 ? "warning" : undefined,
-        },
-      ],
-    },
-    {
-      label: "Roster",
-      metrics: [
-        { value: profile.students.length, label: "Students" },
-        { value: ealCount, label: "EAL" },
-      ],
-    },
-    {
-      label: "Plan",
-      metrics: [
-        {
-          value: plannedDays !== null ? `${plannedDays}/7` : "—",
-          label: "Filed",
-        },
-        {
-          value: streakDays > 0 ? `${streakDays}d` : "—",
-          label: "Streak",
-          tone: streakDays >= 5 ? "success" : undefined,
-        },
-      ],
-    },
-  ];
-
-  // Status rows surface secondary signals that don't deserve a tile but
-  // belong on the first screen — the plan calls these "pressure status"
-  // and "last activity" cues. Pulled from existing health/snapshot data.
   const lastActivityLabel = result?.last_activity_at
     ? new Date(result.last_activity_at).toLocaleString(undefined, {
         weekday: "short",
@@ -219,87 +285,12 @@ export default function ClassroomPanel({
         minute: "2-digit",
       })
     : "—";
-  const heroStatusRows: PageHeroStatusRow[] = [
-    {
-      label: "Pressure",
-      value: pulse.label,
-      tone: pulse.tone,
-    },
-    {
-      label: "Last activity",
-      value: lastActivityLabel,
-    },
-  ];
-
-  // Operational preview — three groups: students-to-watch, coverage
-  // snapshot, and queue preview. All three pull from existing snapshot
-  // data; falls back gracefully when the snapshot is loading.
-  const watchChips: OperationalPreviewChip[] = (result?.student_threads ?? [])
-    .slice(0, 6)
-    .map((thread) => {
-      const tone =
-        thread.pending_action_count > 2
-          ? "danger"
-          : thread.pending_action_count > 0
-            ? "watch"
-            : thread.eal_flag
-              ? "accent"
-              : "neutral";
-      return {
-        label: thread.alias,
-        tone,
-        meta:
-          thread.pending_action_count > 0
-            ? `${thread.pending_action_count} open`
-            : thread.last_intervention_days !== null
-              ? `${thread.last_intervention_days}d ago`
-              : undefined,
-        title: thread.priority_reason ?? undefined,
-      };
-    });
-
-  const DEBT_LABELS: Record<string, string> = {
-    stale_followup: "Stale follow-up",
-    unapproved_message: "Unapproved message",
-    unaddressed_pattern: "Unaddressed pattern",
-    recurring_plan_item: "Recurring plan item",
-    approaching_review: "Approaching review",
-  };
-  const debtSummary = result?.debt_register?.items ?? [];
-  const queueEvidence = debtSummary.slice(0, 4).map((item) => ({
-    label: DEBT_LABELS[item.category] ?? item.category,
-    meta: `${item.age_days}d · ${item.student_refs.length} student${item.student_refs.length === 1 ? "" : "s"}`,
-  }));
-
-  const previewGroups: OperationalPreviewGroup[] = [
-    {
-      eyebrow: "Students to watch",
-      meta: watchCount > 0 ? `${watchCount} of ${profile.students.length}` : undefined,
-      chips: watchChips.length > 0 ? watchChips : undefined,
-    },
-    {
-      eyebrow: "Coverage",
-      evidence: [
-        {
-          label: "EAL learners",
-          meta: `${ealCount} flagged`,
-        },
-        {
-          label: "Plan readiness",
-          meta: plannedDays !== null ? `${plannedDays} of last 7 days` : "—",
-        },
-        {
-          label: "Streak",
-          meta: streakDays > 0 ? `${streakDays}-day` : "no streak",
-        },
-      ],
-    },
-    {
-      eyebrow: "Queue",
-      meta: pendingActionCount > 0 ? `${pendingActionCount} pending` : "Clear",
-      evidence: queueEvidence.length > 0 ? queueEvidence : undefined,
-    },
-  ];
+  const pressure = pressureIndex({
+    pendingActionCount,
+    openThreadCount,
+    plannedDays,
+    streakDays,
+  });
 
   return (
     <section className="workspace-page classroom-panel" id="classroom-top">
@@ -311,7 +302,7 @@ export default function ClassroomPanel({
         id="classroom-command"
         ariaLabel="Classroom command and temporal pivots"
         eyebrow="Classroom command"
-        title="Read the room before choosing the lens."
+        title={<>Read the room before choosing the <em>lens.</em></>}
         description={
           <>
             Bird&apos;s-eye health, coverage, and queue signal for{" "}
@@ -321,14 +312,20 @@ export default function ClassroomPanel({
             <strong>Week</strong> to forecast pressure.
           </>
         }
-        pulse={{
-          tone: pulse.tone,
-          state: pulse.label,
-          meta: pulse.meta,
-          live: pulse.tone !== "neutral",
-        }}
-        metricGroups={heroMetricGroups}
-        statusRows={heroStatusRows}
+        instrument={
+          <ClassroomCommandInstrument
+            pulse={pulse}
+            pressure={pressure}
+            openThreadCount={openThreadCount}
+            openItemCount={openItemCount}
+            studentCount={profile.students.length}
+            ealCount={ealCount}
+            plannedDays={plannedDays}
+            streakDays={streakDays}
+            lastActivityLabel={lastActivityLabel}
+            onViewSignals={() => onTabChange("today")}
+          />
+        }
         pivots={[
           {
             eyebrow: "Live",
@@ -359,17 +356,25 @@ export default function ClassroomPanel({
       />
 
       {/* ============================================================
-          ZONE 1.5 — OPERATIONAL PREVIEW
-          Dense below-hero strip: students-to-watch chips, coverage
-          snapshot, and queue preview. First-screen content per the
-          design pass — no new backend fields, all data pulled from
-          the existing snapshot/profile/health results.
+          ZONE 1.5 — COMMAND DASHBOARD BANDS
+          First-screen watchlist, coverage, and queue bands. This is a
+          compact OperatingDashboard view; the full board remains below.
           ============================================================ */}
-      <OperationalPreview
-        ariaLabel="Classroom operational preview"
-        id="classroom-preview"
-        groups={previewGroups}
-      />
+      {result ? (
+        <OperatingDashboard
+          id="classroom-preview"
+          variant="summary"
+          snapshot={result}
+          profile={profile}
+          health={health.result ?? null}
+          sessionSummary={sessionSummary.result ?? null}
+          activeRole={activeRole}
+          onNavigate={onTabChange}
+          onOpenContext={setDrillDown}
+        />
+      ) : (
+        <SectionSkeleton label="Loading operating preview" variant="story" lines={2} />
+      )}
 
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 

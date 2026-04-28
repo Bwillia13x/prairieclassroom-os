@@ -83,6 +83,10 @@
     align-items: stretch;
   }
 
+  .page-hero--classroom {
+    grid-template-columns: minmax(25rem, 0.92fr) minmax(28rem, 1.08fr);
+  }
+
   .page-hero--density-utility {
     grid-template-columns: minmax(0, 1.75fr) minmax(18rem, 0.85fr);
   }
@@ -135,6 +139,39 @@
   --page-hero-rule: color-mix(in srgb, var(--color-brand-highlight) 50%, var(--color-border-strong));
   --page-hero-eyebrow: var(--color-text-secondary);
   --page-hero-glow: var(--color-brand-highlight);
+}
+
+.page-hero--week.page-hero--density-utility {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-highlight) 5%, transparent), transparent 46%),
+    var(--color-command-surface);
+}
+
+@media (min-width: 960px) {
+  .page-hero--week.page-hero--density-utility {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .page-hero--week .page-hero__lede {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-2) var(--space-4);
+    align-items: end;
+  }
+
+  .page-hero--week .page-hero__eyebrow,
+  .page-hero--week .page-hero__title,
+  .page-hero--week .page-hero__caption {
+    grid-column: 1;
+  }
+
+  .page-hero--week .page-hero__actions {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    justify-content: flex-end;
+    align-self: end;
+    max-width: 22rem;
+  }
 }
 
 /* Tomorrow shares Week's cognac rule color but earns its own
@@ -199,7 +236,14 @@
    bird's-eye page, not a tool host." */
 .page-hero--classroom .page-hero__title {
   font-size: var(--text-display-lg);
+  font-family: var(--font-editorial);
+  font-weight: var(--font-weight-normal);
   letter-spacing: var(--tracking-display-tight);
+}
+
+.page-hero--classroom .page-hero__title em {
+  color: var(--color-brand-highlight-strong);
+  font-style: normal;
 }
 
 /* Phase β1 (2026-04-28) — Classroom hero co-composition lifts the
@@ -251,7 +295,8 @@
   font-family: var(--font-editorial);
   font-style: italic;
   font-weight: var(--font-weight-normal);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
+  margin-right: 0.12em;
   /* Source Serif 4 reads slightly larger optically than
      Instrument Sans at the same px size; bring it down a hair
      so the italic word does not visually outweigh the rest of
@@ -412,6 +457,10 @@
     linear-gradient(135deg, color-mix(in srgb, var(--_pulse-tone, var(--color-accent)) 5%, transparent), transparent 52%),
     var(--color-surface);
   box-shadow: var(--inner-stroke);
+}
+
+.page-hero__instrument {
+  min-width: 0;
 }
 
 .page-hero__pulse-row {

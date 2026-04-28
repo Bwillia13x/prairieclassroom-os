@@ -848,9 +848,13 @@ export default function App() {
 
         <header className="app-header" ref={headerRef}>
           <div className="app-header__inner">
+            <div className="shell-brand" aria-label="PrairieClassroom home">
+              <BrandMark className="app-logo" />
+            </div>
+
             <div className="shell-bar">
-              <div className="shell-brand" aria-label="PrairieClassroom home">
-                <BrandMark className="app-logo" />
+              <div className="shell-command-key" aria-hidden="true">
+                ⌘ K
               </div>
 
               <div className="shell-classroom-anchor">
@@ -939,7 +943,7 @@ export default function App() {
               <div className="shell-bar__actions">
                 <RoleContextPill />
                 <HeaderAction
-                  label="Search"
+                  label="Search or ask Prairie"
                   kbd="⌘K"
                   onClick={() => setPaletteOpen(true)}
                   data-testid="shell-search-trigger"
@@ -998,6 +1002,11 @@ export default function App() {
                     </button>
                   );
                 })}
+              </div>
+              <div className="shell-nav__meta" aria-hidden="true">
+                <span>Alberta K-6</span>
+                <span>Privacy first</span>
+                <span>Teacher controlled</span>
               </div>
             </nav>
           </div>

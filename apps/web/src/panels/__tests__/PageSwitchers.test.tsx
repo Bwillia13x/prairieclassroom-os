@@ -129,8 +129,8 @@ describe("multi-tool page switchers", () => {
       { activeTab: "ops", activeTool: "ea-load" },
     );
 
-    const switcher = screen.getByRole("tablist", { name: /ops tool/i });
-    expect(within(switcher).getByRole("tab", { name: /ea load balance/i })).toHaveAttribute("aria-selected", "true");
+    const switcher = screen.getByRole("navigation", { name: /ops workflow/i });
+    expect(within(switcher).getByText(/ea load/i)).toBeInTheDocument();
 
     fireEvent.click(within(switcher).getByRole("tab", { name: /sub packet/i }));
     expect(setActiveTool).toHaveBeenCalledWith("survival-packet");

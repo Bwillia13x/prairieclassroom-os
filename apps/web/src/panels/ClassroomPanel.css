@@ -30,6 +30,241 @@
   gap: var(--classroom-zone-gap);
 }
 
+.classroom-command-instrument {
+  --classroom-instrument-tone: var(--color-brand-highlight);
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-command-border) 88%, transparent);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--color-surface-elevated) 36%, transparent), transparent 48%),
+    var(--color-command-surface);
+  box-shadow:
+    var(--inner-stroke),
+    0 18px 48px color-mix(in srgb, black 16%, transparent);
+}
+
+.classroom-command-instrument--success {
+  --classroom-instrument-tone: var(--color-success);
+}
+
+.classroom-command-instrument--warning,
+.classroom-command-instrument--neutral {
+  --classroom-instrument-tone: var(--color-brand-highlight);
+}
+
+.classroom-command-instrument--danger {
+  --classroom-instrument-tone: var(--color-danger);
+}
+
+.classroom-command-instrument__header,
+.classroom-command-instrument__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+}
+
+.classroom-command-instrument__header {
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.classroom-command-instrument__live {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
+  text-transform: none;
+}
+
+.classroom-command-instrument__live span,
+.classroom-command-instrument__footer > span:first-child span {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-success);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-success) 16%, transparent);
+}
+
+.classroom-command-instrument__body {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.76fr) minmax(0, 1.24fr);
+  gap: var(--space-5);
+  align-items: center;
+  padding: var(--space-2) var(--space-5) var(--space-4);
+}
+
+.classroom-command-instrument__pressure {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.classroom-command-instrument__ring {
+  --classroom-pressure: 0%;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(12rem, 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from -90deg,
+      var(--classroom-instrument-tone) 0 var(--classroom-pressure),
+      color-mix(in srgb, var(--color-border) 42%, transparent) var(--classroom-pressure) 100%
+    );
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, white 5%, transparent),
+    0 14px 42px color-mix(in srgb, var(--classroom-instrument-tone) 18%, transparent);
+}
+
+.classroom-command-instrument__ring::before {
+  content: "";
+  position: absolute;
+  inset: 0.74rem;
+  border-radius: inherit;
+  background:
+    radial-gradient(circle at 50% 15%, color-mix(in srgb, white 4%, transparent), transparent 42%),
+    var(--color-command-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-border) 36%, transparent);
+}
+
+.classroom-command-instrument__ring-core {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.22rem;
+}
+
+.classroom-command-instrument__ring-core strong {
+  color: var(--classroom-instrument-tone);
+  font-family: var(--font-display);
+  font-size: var(--text-display-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 0.95;
+  font-variant-numeric: tabular-nums;
+}
+
+.classroom-command-instrument__ring-core em,
+.classroom-command-instrument__pressure-label {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  font-style: normal;
+}
+
+.classroom-command-instrument__pressure-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.classroom-command-instrument__pressure-label::before {
+  content: "";
+  width: 1rem;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.45;
+}
+
+.classroom-command-instrument__stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.classroom-command-instrument__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  padding: var(--space-3) var(--space-4);
+  border-right: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.classroom-command-instrument__stat:nth-child(n + 3) {
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.classroom-command-instrument__stat:nth-child(2n) {
+  border-right: 0;
+}
+
+.classroom-command-instrument__stat span {
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.classroom-command-instrument__stat strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.classroom-command-instrument__stat em {
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
+  font-style: normal;
+}
+
+.classroom-command-instrument__footer {
+  margin-top: auto;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.classroom-command-instrument__footer > span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.classroom-command-instrument__footer > span:first-child {
+  flex: 1 1 auto;
+}
+
+.classroom-command-instrument__footer > span:nth-child(2) {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.classroom-command-instrument__footer button {
+  flex: 0 0 auto;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--motion-fast) var(--ease-standard);
+}
+
+.classroom-command-instrument__footer button:hover {
+  color: var(--color-brand-highlight-strong);
+}
+
 /* ----------------------------------------------------------------
    Section primitive — every classroom zone uses the same header
    shape (eyebrow + title + caption) so the page reads as a series
@@ -242,4 +477,58 @@
 
 .classroom-zone--collapsible[open] > :not(.classroom-zone__summary) {
   padding: 0 var(--space-5) var(--space-5);
+}
+
+@media (max-width: 1180px) {
+  .classroom-command-instrument__body {
+    grid-template-columns: 1fr;
+  }
+
+  .classroom-command-instrument__stats {
+    border-left: 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  }
+}
+
+@media (max-width: 720px) {
+  .classroom-command-instrument__header,
+  .classroom-command-instrument__footer {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .classroom-command-instrument__body {
+    gap: var(--space-4);
+    padding: 0 var(--space-4) var(--space-3);
+  }
+
+  .classroom-command-instrument__ring {
+    width: min(10.5rem, 100%);
+  }
+
+  .classroom-command-instrument__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .classroom-command-instrument__stat:nth-child(n) {
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  }
+
+  .classroom-command-instrument__stat:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .classroom-command-instrument__stat:nth-child(n + 3) {
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  }
+
+  .classroom-zone__summary {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .classroom-zone__summary-chips {
+    flex-wrap: wrap;
+  }
 }

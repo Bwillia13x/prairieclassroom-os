@@ -66,6 +66,7 @@ interface Props {
   statusRows?: PageHeroStatusRow[];
   pivots?: PageHeroPivot[];
   actions?: ReactNode;
+  instrument?: ReactNode;
   variant?: PageHeroVariant;
   density?: PageHeroDensity;
   id?: string;
@@ -120,6 +121,7 @@ export default function PageHero({
   statusRows,
   pivots,
   actions,
+  instrument,
   variant,
   density = "command",
   id,
@@ -148,7 +150,7 @@ export default function PageHero({
   const hasFlatMetrics = !!(metrics && metrics.length > 0);
   const hasGroupedMetrics = !!(metricGroups && metricGroups.length > 0);
   const hasStatusRows = !!(statusRows && statusRows.length > 0);
-  const showAside = !!pulse || hasFlatMetrics || hasGroupedMetrics || hasStatusRows;
+  const showAside = !!instrument || !!pulse || hasFlatMetrics || hasGroupedMetrics || hasStatusRows;
   const criticalGroupIdx = hasGroupedMetrics
     ? findCriticalGroupIndex(metricGroups!)
     : -1;
@@ -186,10 +188,15 @@ export default function PageHero({
 
       {showAside ? (
         <aside
-          className={`page-hero__pulse${pulse ? ` page-hero__pulse--${pulse.tone}` : ""}`}
-          aria-label="Page pulse"
+          className={
+            instrument
+              ? "page-hero__instrument"
+              : `page-hero__pulse${pulse ? ` page-hero__pulse--${pulse.tone}` : ""}`
+          }
+          aria-label={instrument ? "Page instrument" : "Page pulse"}
         >
-          {pulse ? (
+          {instrument ?? null}
+          {!instrument && pulse ? (
             <div className="page-hero__pulse-row">
               <span
                 key={pulseKey}
@@ -202,7 +209,7 @@ export default function PageHero({
               </div>
             </div>
           ) : null}
-          {hasStatusRows ? (
+          {!instrument && hasStatusRows ? (
             <div className="page-hero__status-rows">
               {statusRows!.map((row, idx) => (
                 <div
@@ -215,7 +222,7 @@ export default function PageHero({
               ))}
             </div>
           ) : null}
-          {hasGroupedMetrics ? (
+          {!instrument && hasGroupedMetrics ? (
             <div className="page-hero__metric-groups">
               {metricGroups!.map((group, groupIdx) => (
                 <div
@@ -247,7 +254,7 @@ export default function PageHero({
               ))}
             </div>
           ) : null}
-          {hasFlatMetrics ? (
+          {!instrument && hasFlatMetrics ? (
             <div className="page-hero__pulse-metrics">
               {metrics!.map((metric, idx) => (
                 <div

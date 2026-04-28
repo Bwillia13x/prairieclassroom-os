@@ -28,6 +28,19 @@ describe("PageHero", () => {
     expect(screen.getByText(/5 ea moves/i)).toBeInTheDocument();
   });
 
+  it("renders a custom instrument instead of the default pulse stack", () => {
+    render(
+      <PageHero
+        eyebrow="Classroom"
+        title="Read the room"
+        pulse={{ tone: "warning", state: "Default pulse", meta: "hidden" }}
+        instrument={<div>Pressure instrument</div>}
+      />,
+    );
+    expect(screen.getByText(/pressure instrument/i)).toBeInTheDocument();
+    expect(screen.queryByText(/default pulse/i)).not.toBeInTheDocument();
+  });
+
   it("renders metrics grid when provided", () => {
     render(
       <PageHero

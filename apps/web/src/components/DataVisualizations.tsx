@@ -19,6 +19,7 @@ export {
   ComplexityTrendCalendar,
   EALoadStackedBars,
   ScheduleLoadStrip,
+  WeekRiskHorizon,
 } from "./dataviz/complexity";
 export {
   SupportPatternRadar,

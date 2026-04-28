@@ -159,4 +159,28 @@ describe("OperatingDashboard", () => {
     await user.click(screen.getByRole("button", { name: /Transition risk 10:00 Math/i }));
     expect(onOpenContext).toHaveBeenCalledWith(expect.objectContaining({ type: "transition-risk" }));
   });
+
+  it("renders the premium summary bands and opens debt context", async () => {
+    const user = userEvent.setup();
+    const onOpenContext = vi.fn();
+
+    render(
+      <OperatingDashboard
+        variant="summary"
+        snapshot={makeSnapshot()}
+        profile={makeProfile()}
+        sessionSummary={null}
+        activeRole="teacher"
+        onNavigate={vi.fn()}
+        onOpenContext={onOpenContext}
+      />,
+    );
+
+    expect(screen.getByRole("region", { name: /watchlist/i })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: /coverage/i })).toBeInTheDocument();
+    expect(screen.getByRole("region", { name: /prairie queue/i })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: /approve/i }));
+    expect(onOpenContext).toHaveBeenCalledWith(expect.objectContaining({ type: "debt-category" }));
+  });
 });

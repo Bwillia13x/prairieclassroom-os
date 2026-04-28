@@ -3,6 +3,7 @@ import { useRef } from "react";
 import type { ComplexityForecast } from "../types";
 import PrintButton from "./PrintButton";
 import OutputMetaRow from "./OutputMetaRow";
+import ForecastTimeline from "./ForecastTimeline";
 import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
 import "./ForecastViewer.css";
 
@@ -69,20 +70,12 @@ export default function ForecastViewer({ forecast, thinkingSummary, meta }: Prop
         <section className="forecast-section forecast-section--timeline">
           <h3>Day Timeline</h3>
 
-          {/* Visual timeline bar */}
-          <div className="forecast-timeline-bar" role="img" aria-label="Day complexity overview">
-            {forecast.blocks.map((block, i) => (
-              <button
-                key={i}
-                className={`forecast-timeline-segment forecast-timeline-segment--${block.level}`}
-                onClick={() => scrollToBlock(i)}
-                title={`${block.time_slot}: ${block.activity} (${LEVEL_LABEL[block.level]})`}
-                aria-label={`${block.time_slot} — ${LEVEL_LABEL[block.level]} complexity — click to scroll`}
-              >
-                <span className="forecast-timeline-label">{block.time_slot}</span>
-              </button>
-            ))}
-          </div>
+          <ForecastTimeline
+            blocks={forecast.blocks}
+            onBlockClick={scrollToBlock}
+            variant="viewer"
+            ariaLabel="Day complexity overview"
+          />
 
           <div className="forecast-blocks">
             {forecast.blocks.map((block, i) => (

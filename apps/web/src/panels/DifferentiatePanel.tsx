@@ -8,18 +8,11 @@ import VariantGrid from "../components/VariantGrid";
 import { VariantSummaryStrip } from "../components/DataVisualizations";
 import StreamingIndicator from "../components/StreamingIndicator";
 import { useEmulatedStreaming } from "../hooks/useEmulatedStreaming";
-import ContextualHint from "../components/ContextualHint";
-import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
-import EmptyStateCard from "../components/EmptyStateCard";
 import RecentRunsChipRow from "../components/RecentRunsChipRow";
 import { useRecentRuns } from "../hooks/useRecentRuns";
 import ErrorBanner from "../components/ErrorBanner";
-import OutputMetaRow from "../components/OutputMetaRow";
-import { buildModelMetaItems } from "../components/buildModelMetaItems";
-import ResultBanner from "../components/ResultBanner";
-import MockModeBanner from "../components/MockModeBanner";
-import { Card, FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
+import { FeedbackCollector, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useDownloadBlob } from "../hooks/useDownloadBlob";
@@ -29,7 +22,7 @@ import {
   summarizeVariantsForTomorrow,
 } from "./DifferentiatePanel.helpers";
 import DrillDownDrawer from "../components/DrillDownDrawer";
-import type { CurriculumSelection, LessonArtifact, DifferentiateResponse, DrillDownContext } from "../types";
+import type { CurriculumSelection, LessonArtifact, DifferentiateResponse, DrillDownContext, DifferentiatedVariant } from "../types";
 
 export default function DifferentiatePanel() {
   const {
@@ -164,50 +157,37 @@ export default function DifferentiatePanel() {
   }
 
   return (
-    <section className="workspace-page">
-      <PageIntro
-        eyebrow="Prep Workspace"
-        title="Build Lesson Variants"
-        sectionTone="sage"
-        emphasis="brand"
-        visual={{ src: "/brand/workflow-prep.png" }}
-        description="Bring one lesson artifact into the system and generate a set of classroom-ready variants with clearer scaffolds, chunking, extension, and language support."
-      />
+    <section className="workspace-page differentiate-panel">
+      <h2 className="sr-only">Build Lesson Variants</h2>
 
       <WorkspaceLayout
+        className="workspace-layout--prep-canvas"
+        surface="differentiate"
         splitState={result ? "output" : "input"}
         rail={(
-          <>
-            <ContextualHint
-              featureKey="differentiate"
-              title="Differentiate"
-              description="Upload a lesson artifact and the system generates variants adapted for each student's readiness and language profile."
-              tone="sage"
-            />
+          <div className="differentiate-intake-pane">
             <ArtifactUpload
               classrooms={classrooms}
               selectedClassroom={activeClassroom}
+              classroomProfile={profile}
               onSubmit={handleDifferentiate}
               loading={loading}
               formRef={intakeRef}
             />
-          </>
+          </div>
         )}
         canvas={(
-          <div className="workspace-result" aria-live="polite" aria-busy={loading && result === null} ref={resultRef}>
+          <div className="workspace-result differentiate-canvas" aria-live="polite" aria-busy={loading && result === null} ref={resultRef}>
             {error && result === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
             {(loading || streaming.active) && result === null ? (
               <StreamingIndicator label="Generating lesson variants" onCancel={cancel} />
             ) : null}
             {!loading && result === null && !error ? (
-              <>
-                <VariantSummaryStrip
-                  variants={[
-                    { variant_type: "core", title: "Core path", estimated_minutes: 18 },
-                    { variant_type: "chunked", title: "Chunked path", estimated_minutes: 14 },
-                    { variant_type: "extension", title: "Extension path", estimated_minutes: 20 },
-                    { variant_type: "eal_supported", title: "Language-supported path", estimated_minutes: 16 },
-                  ]}
+              <section className="differentiate-canvas__preview" aria-label="Variant lane preview">
+                <VariantGrid
+                  artifactTitle="Community Helpers Reading Passage"
+                  variants={PREVIEW_VARIANTS}
+                  preview
                 />
                 <ul className="output-preview-checklist" aria-label="Output will include">
                   <li>Readiness lane</li>
@@ -215,43 +195,20 @@ export default function DifferentiatePanel() {
                   <li>Extension lane</li>
                   <li>Language support lane</li>
                 </ul>
-                <EmptyStateCard variant="preview" label="Variant lane preview" />
-              </>
+              </section>
             ) : null}
             {result ? (
               <>
+                <VariantGrid artifactTitle={artifactTitle} variants={result.variants} modelId={result.model_id} />
+                <div className="differentiate-canvas__lane-jump">
+                  <VariantSummaryStrip
+                    variants={result.variants}
+                    onSegmentClick={({ variantType, label, variants }) =>
+                      setDrillDown({ type: "variant-lane", variantType, label, variants })
+                    }
+                  />
+                </div>
                 <RecentRunsChipRow runs={recent.runs} onSelect={handleRestoreRun} />
-                <ResultBanner
-                  label={`${result.variants.length} variants generated`}
-                  generatedAt={Date.now()}
-                />
-                <MockModeBanner
-                  modelId={result.model_id}
-                  panelHint="Variants reuse the same fixture text in mock mode and do not adapt to the lesson artifact you uploaded. Run with Ollama or hosted Gemini to see real differentiation."
-                />
-                <Card variant="raised" tone="sage" className="differentiate-result-summary">
-                  <Card.Body>
-                    <h3 className="form-panel-title">{artifactTitle || "Latest artifact"}</h3>
-                    <p className="panel-description">
-                      {result.variants.length} variants generated across readiness, chunking, extension, and language-support lanes.
-                    </p>
-                    <OutputMetaRow
-                      items={[
-                        { label: profile ? describeSource(profile.grade_band) : "Classroom-linked", tone: "accent" },
-                        { label: "Retrieval-backed profiles", tone: "provenance" },
-                        { label: "Differentiation suite", tone: "analysis" },
-                        ...buildModelMetaItems(result),
-                      ]}
-                    />
-                  </Card.Body>
-                </Card>
-                <VariantSummaryStrip
-                  variants={result.variants}
-                  onSegmentClick={({ variantType, label, variants }) =>
-                    setDrillDown({ type: "variant-lane", variantType, label, variants })
-                  }
-                />
-                <VariantGrid artifactTitle={artifactTitle} variants={result.variants} />
                 <FeedbackCollector
                   onSubmit={handleFeedbackSubmit}
                   submitted={feedback.submitted}
@@ -276,10 +233,53 @@ export default function DifferentiatePanel() {
   );
 }
 
-function describeSource(gradeBand: string) {
-  return `Grade ${gradeBand} classroom`;
-}
-
 function slugify(s: string): string {
   return (s || "variants").replace(/[^A-Za-z0-9._-]+/g, "_").slice(0, 80);
 }
+
+const PREVIEW_VARIANTS: DifferentiatedVariant[] = [
+  {
+    variant_id: "preview-core",
+    artifact_id: "preview",
+    variant_type: "core",
+    title: "Core lane",
+    student_facing_instructions: "Balanced support with clear structure and visuals to build comprehension.",
+    teacher_notes: "Use as the right-level version once the artifact is attached.",
+    required_materials: ["Source artifact", "Student copy"],
+    estimated_minutes: 18,
+    schema_version: "preview",
+  },
+  {
+    variant_id: "preview-chunked",
+    artifact_id: "preview",
+    variant_type: "chunked",
+    title: "Chunked lane",
+    student_facing_instructions: "Smaller steps, sentence stems, and visual supports to build independence.",
+    teacher_notes: "Best for students who need a scaffolded entry point.",
+    required_materials: ["Chunked copy", "Sentence stems"],
+    estimated_minutes: 14,
+    schema_version: "preview",
+  },
+  {
+    variant_id: "preview-extension",
+    artifact_id: "preview",
+    variant_type: "extension",
+    title: "Extension lane",
+    student_facing_instructions: "Richer texts, deeper questions, and opportunities for synthesis.",
+    teacher_notes: "Use with students who are ready to extend the same outcome.",
+    required_materials: ["Challenge prompt"],
+    estimated_minutes: 20,
+    schema_version: "preview",
+  },
+  {
+    variant_id: "preview-eal",
+    artifact_id: "preview",
+    variant_type: "eal_supported",
+    title: "EAL Supported lane",
+    student_facing_instructions: "Language supports and vocabulary focus to build comprehension and confidence.",
+    teacher_notes: "Keep the concept load intact while clarifying language.",
+    required_materials: ["Vocabulary bank", "Visual supports"],
+    estimated_minutes: 16,
+    schema_version: "preview",
+  },
+];

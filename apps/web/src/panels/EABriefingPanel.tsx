@@ -4,11 +4,9 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateEABriefing } from "../api";
 import { EABriefingForm, EABriefingResult } from "../components/EABriefing";
-import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
-import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import ResultBanner from "../components/ResultBanner";
@@ -120,24 +118,9 @@ export default function EABriefingPanel() {
 
   return (
     <section className="workspace-page">
-      <PageIntro
-        title="Build the EA Briefing"
-        sectionTone="slate"
-        description="Generate one briefing that packages schedule blocks, student watch items, pending follow-ups, and the teacher's notes into a shared coordination artifact."
-        infoContent={{
-          title: "EA Briefing",
-          body: (
-            <p>
-              Build a coordination document for the educational assistant that combines
-              the day plan, student watch items, and pending follow-ups.
-            </p>
-          ),
-        }}
-      />
-
-      <OpsWorkflowStepper activeTool="ea-briefing" />
-
       <WorkspaceLayout
+        className="workspace-layout--ops-workflow"
+        surface="ops-briefing"
         splitState={result ? "output" : "input"}
         rail={(
           <>

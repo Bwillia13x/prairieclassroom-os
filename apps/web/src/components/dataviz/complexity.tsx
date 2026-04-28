@@ -14,7 +14,13 @@
  */
 
 import { useMemo } from "react";
-import type { ComplexityBlock, EALoadBlock, EALoadLevel } from "../../types";
+import type {
+  ComplexityBlock,
+  EALoadBlock,
+  EALoadLevel,
+  OperatingDashboardBlockLevel,
+  OperatingDashboardSource,
+} from "../../types";
 
 interface ComplexityHeatmapProps {
   blocks: ComplexityBlock[];
@@ -143,6 +149,99 @@ export function ComplexityTrendCalendar({ data, onSegmentClick }: ComplexityTren
           </span>
         ))}
       </div>
+    </div>
+  );
+}
+
+interface WeekRiskHorizonPoint {
+  label: string;
+  dateLabel?: string;
+  level: OperatingDashboardBlockLevel;
+  source?: OperatingDashboardSource;
+}
+
+interface WeekRiskHorizonProps {
+  points: WeekRiskHorizonPoint[];
+}
+
+const WEEK_RISK_RANK: Record<OperatingDashboardBlockLevel, number> = {
+  unknown: 0,
+  low: 1,
+  medium: 2,
+  high: 3,
+};
+
+const WEEK_RISK_LABEL: Record<OperatingDashboardBlockLevel, string> = {
+  unknown: "Schedule only",
+  low: "Low",
+  medium: "Medium",
+  high: "High",
+};
+
+export function WeekRiskHorizon({ points }: WeekRiskHorizonProps) {
+  const normalized = points.slice(0, 5);
+  if (normalized.length === 0) return null;
+
+  const width = 330;
+  const height = 126;
+  const top = 18;
+  const bottom = 92;
+  const left = 24;
+  const right = width - 18;
+  const span = Math.max(1, normalized.length - 1);
+  const plotW = right - left;
+  const yFor = (level: OperatingDashboardBlockLevel) =>
+    bottom - (WEEK_RISK_RANK[level] / 3) * (bottom - top);
+  const xFor = (index: number) => left + (index / span) * plotW;
+  const polyline = normalized
+    .map((point, index) => `${xFor(index)},${yFor(point.level)}`)
+    .join(" ");
+  const aria = normalized
+    .map((point) => `${point.label} ${point.dateLabel ?? ""}: ${WEEK_RISK_LABEL[point.level]}`.trim())
+    .join("; ");
+
+  return (
+    <div className="viz-week-risk" role="img" aria-label={`Weekly risk horizon. ${aria}`}>
+      <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="viz-svg">
+        {[0, 1, 2, 3].map((rank) => {
+          const y = bottom - (rank / 3) * (bottom - top);
+          return (
+            <line
+              key={rank}
+              x1={left}
+              x2={right}
+              y1={y}
+              y2={y}
+              className="viz-week-risk__grid"
+            />
+          );
+        })}
+        <polyline points={polyline} className="viz-week-risk__line" />
+        {normalized.map((point, index) => {
+          const x = xFor(index);
+          const y = yFor(point.level);
+          return (
+            <g key={`${point.label}-${point.dateLabel ?? index}`}>
+              <circle
+                cx={x}
+                cy={y}
+                r={point.level === "high" ? 5.5 : 4.5}
+                className={`viz-week-risk__point viz-week-risk__point--${point.level}`}
+              >
+                <title>
+                  {point.label} {point.dateLabel ?? ""}: {WEEK_RISK_LABEL[point.level]}
+                </title>
+              </circle>
+              <text x={x} y={height - 18} textAnchor="middle" className="viz-week-risk__label">
+                {point.label}
+              </text>
+              <text x={x} y={height - 6} textAnchor="middle" className="viz-week-risk__date">
+                {point.dateLabel ?? ""}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
     </div>
   );
 }

@@ -4,11 +4,9 @@ import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { generateSurvivalPacket } from "../api";
 import SurvivalPacketView from "../components/SurvivalPacket";
-import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
 import ErrorBanner from "../components/ErrorBanner";
 import SkeletonLoader from "../components/SkeletonLoader";
 import StreamingIndicator from "../components/StreamingIndicator";
-import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
 import EmptyStateCard from "../components/EmptyStateCard";
 import ResultBanner from "../components/ResultBanner";
@@ -102,24 +100,9 @@ export default function SurvivalPacketPanel() {
 
   return (
     <section className="workspace-page">
-      <PageIntro
-        title="Prepare the Substitute Packet"
-        sectionTone="slate"
-        description="Create a print-ready packet that packages routines, student supports, family communication constraints, and the simplified day plan for substitute coverage."
-        infoContent={{
-          title: "Substitute Packet",
-          body: (
-            <p>
-              Generate a print-ready document for substitute coverage. Includes routines,
-              student supports, and a simplified day plan.
-            </p>
-          ),
-        }}
-      />
-
-      <OpsWorkflowStepper activeTool="survival-packet" />
-
       <WorkspaceLayout
+        className="workspace-layout--ops-workflow"
+        surface="ops-sub-packet"
         splitState={result ? "output" : "input"}
         rail={(
           <>

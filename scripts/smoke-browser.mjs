@@ -195,6 +195,29 @@ async function expectSevenViewShell(page) {
   }
 }
 
+async function shellChromeBox(page) {
+  const headerBox = await page.locator(".app-header").boundingBox();
+  if (headerBox) return headerBox;
+
+  // The premium desktop shell lets `.app-header` participate semantically
+  // while `display: contents` promotes brand, command bar, and rail into the
+  // app grid. In that mode the header has no CSS box, so measure the visible
+  // chrome cluster that must remain pinned while `.app-main` scrolls.
+  return page.locator(".shell-brand, .shell-bar, .shell-nav").evaluateAll((elements) => {
+    const boxes = elements
+      .map((element) => element.getBoundingClientRect())
+      .filter((rect) => rect.width > 0 && rect.height > 0);
+
+    if (boxes.length === 0) return null;
+
+    const left = Math.min(...boxes.map((rect) => rect.left));
+    const top = Math.min(...boxes.map((rect) => rect.top));
+    const right = Math.max(...boxes.map((rect) => rect.right));
+    const bottom = Math.max(...boxes.map((rect) => rect.bottom));
+    return { x: left, y: top, width: right - left, height: bottom - top };
+  });
+}
+
 async function expectAuthPromptVisible(page) {
   await page.waitForSelector("#classroom-access-title");
   const title = await page.locator("#classroom-access-title").innerText();
@@ -202,14 +225,14 @@ async function expectAuthPromptVisible(page) {
 }
 
 async function expectStickyShell(page) {
-  const headerBoxBefore = await page.locator(".app-header").boundingBox();
+  const headerBoxBefore = await shellChromeBox(page);
   assert.ok(headerBoxBefore, "Shell header should be measurable before scrolling");
 
   await page.locator(".app-main").evaluate((node) => {
     node.scrollTop = node.scrollHeight;
   });
   await page.waitForTimeout(150);
-  const headerBoxAfter = await page.locator(".app-header").boundingBox();
+  const headerBoxAfter = await shellChromeBox(page);
   assert.ok(headerBoxAfter, "Shell header should be measurable after scrolling");
   assert.ok(
     Math.abs((headerBoxAfter?.y ?? 0) - (headerBoxBefore?.y ?? 0)) <= 2,

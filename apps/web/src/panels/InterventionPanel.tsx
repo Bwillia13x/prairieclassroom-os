@@ -4,15 +4,12 @@ import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
 import { logIntervention, logInterventionQuick, fetchInterventionHistory } from "../api";
-import InterventionLogger from "../components/InterventionLogger";
-import OpsWorkflowStepper from "../components/OpsWorkflowStepper";
+import InterventionLogger, { type InterventionLoggerDraft } from "../components/InterventionLogger";
 import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
 import HistoryDrawer from "../components/HistoryDrawer";
 import { InterventionTimeline, FollowUpSuccessRate } from "../components/DataVisualizations";
-import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
-import EmptyStateCard from "../components/EmptyStateCard";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -23,7 +20,6 @@ import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import { useRole } from "../hooks/useRole";
 import QuickCaptureTray from "../components/quickCapture/QuickCaptureTray";
-import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import type { DebtItem, DrillDownContext, InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
 
 interface Props {
@@ -31,14 +27,12 @@ interface Props {
 }
 
 /**
- * Intervention capture uses a dual-path design:
- * - `QuickCaptureTray` is the primary, chip-first flow — designed for 5-second hallway capture.
- * - The legacy `InterventionLogger` is preserved inside a `<details>` expansion for structured
- *   contexts (classroom switching, Tomorrow-Plan prefill, full-form logging). The details panel
- *   auto-opens when a prefill arrives so cross-panel navigation still lands on the structured form.
+ * Intervention capture uses a dual-path design: the structured log note
+ * is the primary workflow, while QuickCaptureTray remains available as the
+ * fast hallway path.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, showError, latestTodaySnapshot, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, students, showSuccess, showError, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>({
     onError: (msg) => showError(`Couldn't save intervention — ${msg}`),
@@ -48,6 +42,13 @@ export default function InterventionPanel({ prefill }: Props) {
   const [drawerPrefill, setDrawerPrefill] = useState<InterventionPrefill | null>(null);
   const [selectedAlias, setSelectedAlias] = useState<string | null>(prefill?.student_ref ?? null);
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
+  const [loggerDraft, setLoggerDraft] = useState<InterventionLoggerDraft>({
+    selectedStudents: prefill ? [prefill.student_ref] : [],
+    teacherNote: "",
+    followUpNeeded: true,
+    followUpTiming: "Tomorrow morning",
+    memoryDestination: "Classroom memory + student thread",
+  });
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const role = useRole();
   const detailsRef = useRef<HTMLDetailsElement | null>(null);
@@ -174,90 +175,20 @@ export default function InterventionPanel({ prefill }: Props) {
   }
 
   return (
-    <section className="workspace-page">
-      <PageIntro
-        title="Log Intervention Notes"
-        sectionTone="slate"
-        description="Log what happened while the moment is still fresh. The result canvas formats the note for classroom memory, follow-up review, and later pattern analysis."
-        infoContent={{
-          title: "Log Intervention",
-          body: (
-            <p>
-              Describe what happened and the system structures your note into classroom
-              memory for follow-up review and later pattern analysis.
-            </p>
-          ),
-        }}
-      />
-
+    <section className="workspace-page intervention-workflow-page">
       <RoleReadOnlyBanner
         role={role}
         required="canLogInterventions"
         whatIsBlocked="Logging interventions is reserved for adults actively working with this classroom."
       />
 
-      {latestTodaySnapshot?.student_threads?.length ? (
-        <StudentCoverageStrip
-          threads={latestTodaySnapshot.student_threads}
-          title="Intervention coverage"
-          selectedAlias={selectedAlias}
-          onSelectThread={(thread) => setSelectedAlias(thread.alias)}
-        />
-      ) : null}
-
-      <OpsWorkflowStepper activeTool="log-intervention" />
-
       <WorkspaceLayout
+        className="workspace-layout--ops-workflow"
+        surface="ops-log"
         splitState={displayResult ? "output" : "input"}
         rail={(
           <>
-            {role.canLogInterventions ? (
-              <QuickCaptureTray
-                classroomId={activeClassroom}
-                students={students}
-                loading={loading}
-                onSubmit={handleQuickSubmit}
-                studentFlags={studentFlags}
-                prefillAliases={selectedAlias ? [selectedAlias] : undefined}
-              />
-            ) : null}
-            <HistoryDrawer<InterventionRecord>
-              items={history.items}
-              loading={history.loading}
-              error={history.error}
-              renderItem={(rec) => `${rec.student_refs.join(", ")} — ${rec.observation.slice(0, 60)}`}
-              getKey={(rec) => rec.record_id}
-              getTimestamp={(rec) => rec.created_at}
-              onSelect={handleHistorySelect}
-              label="Intervention History"
-            />
-            {history.items.length > 0 && (
-              <>
-                <InterventionTimeline
-                  records={history.items}
-                  onDotClick={handleTimelineDotClick}
-                />
-                <FollowUpSuccessRate
-                  records={history.items}
-                  onSegmentClick={({ category, items }) =>
-                    setDrillDown({
-                      type: "debt-category",
-                      category,
-                      items: mapInterventionsToDebtItems(items, category),
-                    })
-                  }
-                />
-              </>
-            )}
-            {/* 2026-04-19 OPS audit phase 7.4: always render the structured
-                details disclosure so it reads as an affordance. Role
-                gating stays on the submit inside InterventionLogger via
-                canSubmit, not on the disclosure itself. Audit-fix F2
-                lifted the Classroom field — InterventionLogger now reads
-                activeClassroom from useApp and no longer needs the
-                classrooms/onClassroomChange props. */}
-            <details ref={detailsRef} className="intervention-structured-details">
-              <summary>Add structured detail (duration · outcome · next step)</summary>
+            <div className="intervention-workflow-primary">
               <InterventionLogger
                 students={students}
                 selectedClassroom={activeClassroom}
@@ -265,25 +196,74 @@ export default function InterventionPanel({ prefill }: Props) {
                 loading={loading}
                 prefill={activePrefill}
                 canSubmit={role.canLogInterventions}
+                variant="ops-workflow"
+                focusStudentAlias={selectedAlias}
+                onDraftChange={setLoggerDraft}
               />
-            </details>
+            </div>
+
+            <div className="intervention-workflow-secondary" aria-label="Supporting capture tools">
+              {role.canLogInterventions ? (
+                <QuickCaptureTray
+                  classroomId={activeClassroom}
+                  students={students}
+                  loading={loading}
+                  onSubmit={handleQuickSubmit}
+                  studentFlags={studentFlags}
+                  prefillAliases={selectedAlias ? [selectedAlias] : undefined}
+                />
+              ) : null}
+              <HistoryDrawer<InterventionRecord>
+                items={history.items}
+                loading={history.loading}
+                error={history.error}
+                renderItem={(rec) => `${rec.student_refs.join(", ")} — ${rec.observation.slice(0, 60)}`}
+                getKey={(rec) => rec.record_id}
+                getTimestamp={(rec) => rec.created_at}
+                onSelect={handleHistorySelect}
+                label="Intervention History"
+              />
+              {history.items.length > 0 && (
+                <>
+                  <InterventionTimeline
+                    records={history.items}
+                    onDotClick={handleTimelineDotClick}
+                  />
+                  <FollowUpSuccessRate
+                    records={history.items}
+                    onSegmentClick={({ category, items }) =>
+                      setDrillDown({
+                        type: "debt-category",
+                        category,
+                        items: mapInterventionsToDebtItems(items, category),
+                      })
+                    }
+                  />
+                </>
+              )}
+              <details ref={detailsRef} className="intervention-structured-details">
+                <summary>Add structured detail (duration · outcome · next step)</summary>
+                <p className="intervention-structured-details__note">
+                  The structured note fields are now the primary workspace above.
+                  Use quick capture for fast hallway notes, then continue here when the
+                  note needs follow-up timing or a memory destination.
+                </p>
+              </details>
+            </div>
           </>
         )}
         canvas={(
-          <div className="workspace-result" aria-live="polite" aria-busy={loading && displayResult === null}>
+          <div className="workspace-result intervention-memory-preview-stack" aria-live="polite" aria-busy={loading && displayResult === null}>
             {error && displayResult === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
+            <InterventionMemoryPreview
+              draft={loggerDraft}
+              record={displayResult?.record ?? null}
+            />
             {loading && displayResult === null ? (
               <SkeletonLoader variant="single" message="Saving your note to the classroom log…" label="Saving intervention note" />
             ) : null}
-            {!loading && displayResult === null && !error ? (
-              <EmptyStateCard
-                variant="minimal"
-                cue="Select a student to begin."
-                hint="Capture the observation in the form on the left; the structured note will land here."
-              />
-            ) : null}
             {displayResult ? (
-              <>
+              <div className="intervention-output-stack">
                 <ResultBanner
                   label="Intervention logged"
                   generatedAt={displayResult.record.created_at}
@@ -299,7 +279,7 @@ export default function InterventionPanel({ prefill }: Props) {
                   submitted={feedback.submitted}
                   panelLabel="intervention log"
                 />
-              </>
+              </div>
             ) : null}
           </div>
         )}
@@ -315,6 +295,74 @@ export default function InterventionPanel({ prefill }: Props) {
         onInterventionPrefill={handleDrawerInterventionPrefill}
       />
     </section>
+  );
+}
+
+function InterventionMemoryPreview({
+  draft,
+  record,
+}: {
+  draft: InterventionLoggerDraft;
+  record: InterventionRecord | null;
+}) {
+  const selectedStudents = record?.student_refs ?? draft.selectedStudents;
+  const observation = record?.observation ?? draft.teacherNote;
+  const followUpText = record
+    ? record.follow_up_needed
+      ? "Follow-up flagged from saved note"
+      : "No follow-up flagged from saved note"
+    : draft.followUpNeeded
+      ? draft.followUpTiming
+      : "Record only";
+  const destination = record ? "Classroom memory + student thread" : draft.memoryDestination;
+
+  return (
+    <article className="intervention-memory-preview" aria-label="How this becomes classroom memory">
+      <header className="intervention-memory-preview__header">
+        <span className="intervention-memory-preview__eyebrow">
+          {record ? "Saved record" : "Draft preview"}
+        </span>
+        <h2>How this becomes classroom memory</h2>
+        <p>
+          The note is staged as evidence for teacher review. No family message,
+          plan change, or EA instruction is sent automatically.
+        </p>
+      </header>
+
+      <div className="intervention-memory-preview__record">
+        <div className="intervention-memory-preview__record-header">
+          <span>Classroom memory note</span>
+          <span>{record ? "Saved" : "Not saved"}</span>
+        </div>
+        <dl className="intervention-memory-preview__fields">
+          <div>
+            <dt>Students</dt>
+            <dd>{selectedStudents.length ? selectedStudents.join(", ") : "Select from roster"}</dd>
+          </div>
+          <div>
+            <dt>Observation</dt>
+            <dd>{observation.trim() || "Evidence note will appear here as you type."}</dd>
+          </div>
+          <div>
+            <dt>Follow-up</dt>
+            <dd>{followUpText}</dd>
+          </div>
+          <div>
+            <dt>Destination</dt>
+            <dd>{destination}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <section className="intervention-memory-preview__connections" aria-label="Memory connections">
+        <h3>Memory connections</h3>
+        <div>
+          <span>Student thread</span>
+          <span>Follow-up queue</span>
+          <span>EA/Sub context</span>
+        </div>
+      </section>
+    </article>
   );
 }
 

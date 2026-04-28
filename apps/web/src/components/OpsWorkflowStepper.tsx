@@ -16,11 +16,11 @@ import "./OpsWorkflowStepper.css";
  * live on the Tomorrow page. The ops stepper therefore walks only the
  * four adult-coordination tools hosted by the Ops page.
  */
-export const OPS_STEPS: ReadonlyArray<{ tool: ActiveTool; label: string }> = [
-  { tool: "log-intervention", label: "Log" },
-  { tool: "ea-briefing", label: "EA Brief" },
-  { tool: "ea-load", label: "EA Load" },
-  { tool: "survival-packet", label: "Sub Packet" },
+export const OPS_STEPS: ReadonlyArray<{ tool: ActiveTool; label: string; summary: string }> = [
+  { tool: "log-intervention", label: "Log Intervention", summary: "Capture the moment" },
+  { tool: "ea-briefing", label: "EA Briefing", summary: "Turn into coverage" },
+  { tool: "ea-load", label: "EA Load", summary: "Balance attention" },
+  { tool: "survival-packet", label: "Sub Packet", summary: "Package the day" },
 ] as const;
 
 interface Props {
@@ -129,7 +129,7 @@ export default function OpsWorkflowStepper({ activeTool, variant = "full" }: Pro
       aria-label="Ops workflow"
       data-testid="ops-workflow-stepper"
     >
-      <ol className="ops-stepper__list">
+      <ol className="ops-stepper__list" role="tablist" aria-label="Ops workflow steps">
         {OPS_STEPS.map((step, i) => {
           const status = statusMap.get(step.tool) ?? null;
           const isActive = step.tool === focusTool;
@@ -148,50 +148,38 @@ export default function OpsWorkflowStepper({ activeTool, variant = "full" }: Pro
               <span className="ops-stepper__copy">
                 <span className="ops-stepper__label">{step.label}</span>
                 {variant === "full" ? (
-                  <span id={noteId} className="ops-stepper__note">{statusNote(status)}</span>
+                  <span id={noteId} className="ops-stepper__note">{step.summary}</span>
                 ) : null}
               </span>
               <span
                 className={`ops-stepper__badge${status?.pending_count ? " ops-stepper__badge--count" : ""}`}
-                aria-hidden="true"
+                aria-label={statusNote(status)}
               >
                 {statusBadge(status)}
               </span>
             </>
           );
 
-          if (!isActive) {
-            return (
-              <li
-                key={step.tool}
-                className={`ops-stepper__step ${stateClass} ${statusClass} ${dependencyClass}`}
-                title={statusNote(status)}
-              >
-                <button
-                  type="button"
-                  className="ops-stepper__btn"
-                  onClick={() => setActiveTool(step.tool)}
-                  aria-label={`Step ${i + 1}: ${step.label}`}
-                  aria-describedby={variant === "full" ? noteId : undefined}
-                  aria-current={undefined}
-                >
-                  {content}
-                </button>
-              </li>
-            );
-          }
-
           return (
             <li
               key={step.tool}
               className={`ops-stepper__step ${stateClass} ${statusClass} ${dependencyClass}`}
-              aria-label={`Current step ${i + 1}: ${step.label}. ${statusNote(status)}`}
-              aria-current="step"
+              aria-label={isActive ? `Current step ${i + 1}: ${step.label}. ${statusNote(status)}` : undefined}
+              aria-current={isActive ? "step" : undefined}
               title={statusNote(status)}
             >
-              <span className="ops-stepper__indicator">
+              <button
+                type="button"
+                role="tab"
+                className={isActive ? "ops-stepper__indicator" : "ops-stepper__btn"}
+                onClick={() => setActiveTool(step.tool)}
+                aria-label={`Step ${i + 1}: ${step.label}`}
+                aria-selected={isActive}
+                aria-controls="ops-workspace"
+                aria-describedby={variant === "full" ? noteId : undefined}
+              >
                 {content}
-              </span>
+              </button>
             </li>
           );
         })}
