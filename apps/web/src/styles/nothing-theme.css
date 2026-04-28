@@ -3014,6 +3014,39 @@ textarea {
   line-height: 1 !important;
 }
 
+@media (pointer: coarse), (max-width: 640px) {
+  :is(
+    .btn--icon-only,
+    .output-feedback-btn,
+    .tomorrow-chip__remove,
+    .page-intro-info__trigger,
+    .contextual-hint-dismiss,
+    .contextual-hint-restore,
+    .status-chip--live
+  ) {
+    width: var(--control-h-md) !important;
+    min-width: var(--control-h-md) !important;
+    height: var(--control-h-md) !important;
+    min-height: var(--control-h-md) !important;
+  }
+
+  .btn--icon-only.btn--sm,
+  .theme-toggle.btn--sm,
+  .app-help-btn.btn--sm {
+    width: var(--control-h-md) !important;
+    min-width: var(--control-h-md) !important;
+    height: var(--control-h-md) !important;
+    min-height: var(--control-h-md) !important;
+  }
+
+  .shell-bar__actions > button,
+  .shell-bar__palette-btn,
+  .app-help-btn,
+  .shell-classroom-pill {
+    min-height: var(--control-h-md) !important;
+  }
+}
+
 .contextual-hint-restore {
   color: var(--color-text-tertiary) !important;
 }

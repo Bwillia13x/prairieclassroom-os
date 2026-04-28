@@ -1,8 +1,8 @@
 .message-approval-dialog {
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg, 12px);
+  border-radius: var(--radius-md, 8px);
   padding: var(--space-4);
-  max-width: 600px;
+  max-width: 640px;
   width: 90vw;
   background: var(--color-surface);
   color: var(--color-text);
@@ -19,6 +19,7 @@
 
 .message-approval-dialog__meta {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
   font-size: var(--text-sm, 0.875rem);
   color: var(--color-text-secondary, var(--color-text));
@@ -26,12 +27,31 @@
 }
 
 .message-approval-dialog__preview {
-  max-height: 300px;
+  display: grid;
+  gap: var(--space-2);
+  max-height: min(58vh, 460px);
   overflow-y: auto;
   padding: var(--space-3);
   background: var(--color-bg-muted);
   border-radius: var(--radius-md, 8px);
+  border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
   margin-bottom: var(--space-3);
+}
+
+.message-approval-dialog__edit-label {
+  display: block;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.message-approval-dialog__edit {
+  width: 100%;
+  min-height: 9rem;
+  resize: vertical;
 }
 
 .message-approval-dialog__preview h3 {
@@ -55,24 +75,14 @@
   margin-top: var(--space-3);
 }
 
-.message-approval-dialog__action-pair {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-2);
-}
-
-.message-approval-dialog__action-instrument {
-  flex-shrink: 0;
-}
-
 @media (max-width: 640px) {
-  .message-approval-dialog__footer {
-    justify-content: stretch;
+  .message-approval-dialog {
+    padding: var(--space-3);
   }
 
-  .message-approval-dialog__action-pair {
-    width: 100%;
-    justify-content: space-between;
+  .message-approval-dialog__footer {
+    flex-direction: column;
+    align-items: stretch;
   }
 }
 

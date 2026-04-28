@@ -132,6 +132,8 @@ export default function PageIntro({
           alt={visual.alt ?? ""}
           width="320"
           height="320"
+          loading="lazy"
+          decoding="async"
           aria-hidden={visual.alt ? undefined : true}
         />
       ) : null}

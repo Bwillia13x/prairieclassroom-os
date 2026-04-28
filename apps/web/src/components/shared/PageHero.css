@@ -28,6 +28,11 @@
     box-shadow var(--motion-base) var(--ease-standard);
 }
 
+.page-hero--density-utility {
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+
 /* Phase β2 (2026-04-28) — Atmospheric layering carve-out.
    The corner glow used to live on the base `.page-hero` background
    alongside the Classroom lume; the radial dominated the upper-left
@@ -76,6 +81,10 @@
   .page-hero {
     grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
     align-items: stretch;
+  }
+
+  .page-hero--density-utility {
+    grid-template-columns: minmax(0, 1.75fr) minmax(18rem, 0.85fr);
   }
 }
 
@@ -227,8 +236,12 @@
   font-size: var(--text-display-sm);
 }
 
-/* Week — display-md retained, but a single editorial accent is
-   sanctioned: any <em> inside the title renders in Source Serif
+.page-hero--density-utility .page-hero__title {
+  font-size: var(--text-display-sm);
+}
+
+/* Week — keeps its single editorial accent even when utility density
+   compresses the title. Any <em> inside the title renders in Source Serif
    4 italic. Consumers opt in by wrapping a single key word in
    <em> (e.g. "Shape the <em>week</em> before it shapes
    tomorrow"). The accent is intentionally rare — exactly one
@@ -687,6 +700,47 @@
   margin-top: var(--space-1);
 }
 
+/* ----- Density ----- */
+
+.page-hero--density-utility .page-hero__lede {
+  gap: var(--space-2);
+}
+
+.page-hero--density-utility .page-hero__pivots {
+  margin-top: var(--space-1);
+}
+
+.page-hero--density-utility .page-hero__pulse {
+  gap: var(--space-2);
+  padding: var(--space-2-5) var(--space-3);
+}
+
+.page-hero--density-utility .page-hero__pulse-metrics,
+.page-hero--density-utility .page-hero__metric-groups {
+  padding-top: var(--space-2);
+}
+
+.page-hero--density-utility .page-hero__metric-groups {
+  gap: var(--space-2);
+}
+
+.page-hero--density-utility .page-hero__metric-group-tiles {
+  gap: var(--space-1-5);
+}
+
+.page-hero--density-utility .page-hero__metric {
+  padding: var(--space-1-5) var(--space-2);
+}
+
+.page-hero--density-utility .page-hero__metric.page-hero__metric--lead strong,
+.page-hero--density-utility .page-hero__pulse-metric.page-hero__metric--lead strong {
+  font-size: var(--text-2xl);
+}
+
+.page-hero--density-utility .page-hero__metric-group--critical .page-hero__metric.page-hero__metric--lead strong {
+  font-size: var(--text-display-sm);
+}
+
 /* ----- Narrow ----- */
 
 @media (max-width: 720px) {
@@ -694,8 +748,22 @@
     padding: var(--space-3) var(--space-4);
     gap: var(--space-3);
   }
+  .page-hero--density-utility {
+    padding: var(--space-2-5) var(--space-3);
+    gap: var(--space-2);
+  }
   .page-hero__title {
     font-size: var(--text-display-sm);
+  }
+  .page-hero--classroom .page-hero__title,
+  .page-hero--density-utility .page-hero__title {
+    font-size: var(--text-2xl);
+    letter-spacing: 0;
+  }
+  .page-hero__caption,
+  .page-hero--classroom .page-hero__caption {
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
   }
   .page-hero__pulse {
     padding: var(--space-2-5) var(--space-3);
@@ -710,6 +778,9 @@
 }
 
 @media (max-width: 480px) {
+  .page-hero {
+    padding: var(--space-2-5) var(--space-3);
+  }
   .page-hero__pivots {
     grid-template-columns: 1fr;
   }

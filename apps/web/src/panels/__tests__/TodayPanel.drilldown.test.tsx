@@ -99,7 +99,7 @@ function makeSnapshot(overrides: Partial<TodaySnapshot> = {}): TodaySnapshot {
  * Profile students with support_tags so ClassroomCompositionRings renders
  * EAL segments that are clickable.
  */
-function makeAppContext(): AppContextValue {
+function makeAppContext(latestTodaySnapshot: TodaySnapshot | null = makeSnapshot()): AppContextValue {
   return {
     classrooms: [],
     activeClassroom: "demo-classroom",
@@ -119,6 +119,7 @@ function makeAppContext(): AppContextValue {
       is_demo: true,
     },
     students: [{ alias: "Amira" }, { alias: "Brody" }, { alias: "Farid" }],
+    latestTodaySnapshot,
     classroomAccessCodes: {},
     classroomRoles: {},
     activeRole: "teacher" as const,
@@ -164,7 +165,7 @@ function renderPanel(
   mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
 
   const onTabChange = vi.fn();
-  const appContext = makeAppContext();
+  const appContext = makeAppContext(snapshot);
   const user = userEvent.setup();
 
   render(

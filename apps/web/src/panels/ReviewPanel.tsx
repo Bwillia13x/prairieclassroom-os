@@ -237,6 +237,7 @@ export default function ReviewPanel({ onFollowupClick, onInterventionClick }: Pr
         statusRows={heroStatusRows}
         pulse={pulse}
         variant="review"
+        density="utility"
       />
 
       {reviewHasPreview ? (

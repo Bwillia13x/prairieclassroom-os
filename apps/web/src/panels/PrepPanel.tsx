@@ -132,6 +132,7 @@ export default function PrepPanel() {
         statusRows={heroStatusRows}
         pulse={pulse}
         variant="prep"
+        density="utility"
       />
 
       <SectionMarker

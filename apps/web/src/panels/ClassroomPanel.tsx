@@ -355,6 +355,7 @@ export default function ClassroomPanel({
           },
         ]}
         variant="classroom"
+        density="command"
       />
 
       {/* ============================================================

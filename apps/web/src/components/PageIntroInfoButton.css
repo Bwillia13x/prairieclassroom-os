@@ -41,6 +41,15 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+@media (pointer: coarse), (max-width: 640px) {
+  .page-intro-info__trigger {
+    width: var(--control-h-md);
+    min-width: var(--control-h-md);
+    height: var(--control-h-md);
+    min-height: var(--control-h-md);
+  }
+}
+
 /* Surface override — info popovers are content-rich (heading + body)
    and want a wider, comfortable reading column than a default menu. */
 .page-intro-info-popover {

@@ -76,6 +76,11 @@ export default function TodayHero({
     typeof openItemCount === "number" ||
     checkFirstStudents.length > 0 ||
     Boolean(peakBlock);
+  const firstStudentToCheck = checkFirstStudents[0] ?? null;
+  const showMobileCommandMetrics =
+    typeof openItemCount === "number" ||
+    Boolean(peakBlock) ||
+    Boolean(firstStudentToCheck);
 
   return (
     <section
@@ -125,14 +130,41 @@ export default function TodayHero({
           <p className="today-hero__cta-rationale">
             {recommendedAction.description}
           </p>
-          <div
-            className="today-hero__mobile-next-move"
-            data-testid="today-hero-mobile-next-move"
-          >
-            <span className="today-hero__mobile-next-label">Next move</span>
-            <p className="today-hero__mobile-next-rationale">
-              {recommendedAction.description}
-            </p>
+          <div className="today-hero__mobile-command" data-testid="today-hero-mobile-command">
+            <div
+              className="today-hero__mobile-next-move"
+              data-testid="today-hero-mobile-next-move"
+            >
+              <span className="today-hero__mobile-next-label">Next move</span>
+              <strong className="today-hero__mobile-next-title">
+                {recommendedAction.label}
+              </strong>
+              <p className="today-hero__mobile-next-rationale">
+                {recommendedAction.description}
+              </p>
+            </div>
+            {showMobileCommandMetrics ? (
+              <dl className="today-hero__mobile-command-metrics" aria-label="Today command summary">
+                {typeof openItemCount === "number" ? (
+                  <div className="today-hero__mobile-command-metric">
+                    <dt>Open</dt>
+                    <dd>{formatOpenItemCount(openItemCount)}</dd>
+                  </div>
+                ) : null}
+                {peakBlock ? (
+                  <div className="today-hero__mobile-command-metric">
+                    <dt>Peak</dt>
+                    <dd>{formatPeakBlock(peakBlock)}</dd>
+                  </div>
+                ) : null}
+                {firstStudentToCheck ? (
+                  <div className="today-hero__mobile-command-metric">
+                    <dt>First check</dt>
+                    <dd>{firstStudentToCheck}</dd>
+                  </div>
+                ) : null}
+              </dl>
+            ) : null}
           </div>
           <ActionButton
             variant="primary"

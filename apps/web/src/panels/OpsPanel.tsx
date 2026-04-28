@@ -284,6 +284,7 @@ export default function OpsPanel({ prefillIntervention }: Props) {
         statusRows={heroStatusRows}
         pulse={pulse}
         variant="ops"
+        density="utility"
       />
 
       {opsHasPreview ? (

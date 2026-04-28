@@ -13,9 +13,6 @@ export default defineConfig({
           if (id.includes("/apps/web/src/components/DataVisualizations")) {
             return "visualizations";
           }
-          if (id.includes("/apps/web/src/panels/")) {
-            return "panels";
-          }
         },
       },
     },

@@ -197,6 +197,7 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
         metricGroups={heroMetricGroups}
         statusRows={heroStatusRows}
         variant="tomorrow"
+        density="utility"
       />
 
       {planHasPreview ? (

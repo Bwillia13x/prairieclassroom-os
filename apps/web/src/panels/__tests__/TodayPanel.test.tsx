@@ -145,7 +145,7 @@ function makeSnapshot(overrides: Partial<TodaySnapshot> = {}): TodaySnapshot {
   };
 }
 
-function makeAppContext(): AppContextValue {
+function makeAppContext(latestTodaySnapshot: TodaySnapshot | null = makeSnapshot()): AppContextValue {
   return {
     classrooms: [],
     activeClassroom: "demo-classroom",
@@ -165,6 +165,7 @@ function makeAppContext(): AppContextValue {
       is_demo: true,
     },
     students: [{ alias: "Amira" }, { alias: "Brody" }, { alias: "Farid" }],
+    latestTodaySnapshot,
     classroomAccessCodes: {},
     classroomRoles: {},
     activeRole: "teacher" as const,
@@ -227,7 +228,7 @@ function renderTodayPanel(
   mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
 
   const onTabChange = vi.fn();
-  const appContext = makeAppContext();
+  const appContext = makeAppContext(snapshot);
   const user = userEvent.setup();
 
   render(
@@ -540,6 +541,7 @@ describe("TodayPanel", () => {
 
     expect(css).toMatch(/\.today-panel #command-center\s*{[^}]*order:\s*1/s);
     expect(css).toMatch(/\.today-panel #today-preview\s*{[^}]*order:\s*2/s);
+    expect(css).toMatch(/\.today-panel \.student-coverage__sentinel\s*{[^}]*order:\s*2/s);
   });
 
   it("renders DayArc before PendingActionsCard in the hero row", async () => {

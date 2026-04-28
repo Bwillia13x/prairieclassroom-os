@@ -160,6 +160,7 @@ export default function MessageComposer({
                   key={s.alias}
                   type="button"
                   className="student-checkbox"
+                  data-testid={`message-student-chip-${s.alias}`}
                   aria-pressed={selected}
                   onClick={() => toggleStudent(s.alias)}
                 >

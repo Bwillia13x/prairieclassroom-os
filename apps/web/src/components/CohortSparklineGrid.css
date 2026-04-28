@@ -85,6 +85,7 @@
   }
 
   .cohort-cell {
+    min-height: var(--control-h-md);
     padding: var(--space-1) var(--space-2);
   }
 }

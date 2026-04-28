@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
-import { fetchTodaySnapshot, fetchClassroomHealth, fetchStudentSummary, fetchSessionSummary } from "../api";
+import { fetchClassroomHealth, fetchStudentSummary, fetchSessionSummary } from "../api";
 import type { SessionSummary } from "../api";
 import type { NavTarget } from "../appReducer";
 import PendingActionsCard from "../components/PendingActionsCard";
@@ -11,7 +11,6 @@ import ForecastTimeline from "../components/ForecastTimeline";
 import SectionSkeleton from "../components/SectionSkeleton";
 import PageIntro from "../components/PageIntro";
 import EmptyStateCard from "../components/EmptyStateCard";
-import ErrorBanner from "../components/ErrorBanner";
 import SectionIcon from "../components/SectionIcon";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { useMondayMoment } from "../hooks/useMondayMoment";
@@ -39,7 +38,6 @@ import { countActionableThreads } from "./ClassroomPanel.helpers";
 import type {
   ComplexityBlock,
   ComplexityForecast,
-  TodaySnapshot,
   ClassroomHealth,
   StudentSummary,
   DrillDownContext,
@@ -63,9 +61,9 @@ interface Props {
  * current-day carry-forward.
  */
 export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
-  const { activeClassroom, activeRole, profile } = useApp();
+  const { activeClassroom, activeRole, profile, latestTodaySnapshot } = useApp();
   const session = useSession();
-  const { error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
+  const result = latestTodaySnapshot ?? null;
   const health = useAsyncAction<ClassroomHealth>();
   const studentSummaries = useAsyncAction<StudentSummary[]>();
   const sessionSummary = useAsyncAction<SessionSummary>();
@@ -78,11 +76,10 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
   useEffect(() => {
     if (!activeClassroom) return;
-    execute((signal) => fetchTodaySnapshot(activeClassroom, signal));
     health.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
     studentSummaries.execute((signal) => fetchStudentSummary(activeClassroom, undefined, signal));
     sessionSummary.execute((signal) => fetchSessionSummary(activeClassroom, signal));
-  }, [activeClassroom, execute, health.execute, sessionSummary.execute, studentSummaries.execute]);
+  }, [activeClassroom, health.execute, sessionSummary.execute, studentSummaries.execute]);
 
   const recommendedAction = useMemo(
     () => result ? getTodayPrimaryAction(result, activeRole) : null,
@@ -234,7 +231,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
     riskEvidence.length > 0 ||
     touchpointChips.length > 0;
 
-  if (!profile) return null;
+  if (!profile) return <TodayPanelLoading />;
 
   return (
     <section className="workspace-page today-panel" id="today-top">
@@ -249,8 +246,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           { label: `${profile.students.length} students`, tone: "sun" },
         ]}
       />
-
-      {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
 
       <div id="command-center" className="today-anchor-target">
         {result ? (
@@ -277,7 +272,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
           />
         ) : (
-          <SectionSkeleton label="Loading today story" variant="story" lines={2} />
+          <SectionSkeleton label="Loading today story" variant="today-hero" lines={3} />
         )}
       </div>
 
@@ -298,7 +293,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         />
       ) : null}
 
-      {workflowNudge ? (
+      {result && workflowNudge ? (
         <div className="today-workflow-nudge" data-testid="today-workflow-nudge" role="note" aria-label="Weekly workflow suggestion">
           <div className="today-workflow-nudge__copy">
             <span className="today-workflow-nudge__eyebrow">{workflowNudge.kicker}</span>
@@ -319,27 +314,27 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         </div>
       ) : null}
 
-      <section
-        id="classroom-pulse"
-        className="today-pulse"
-        aria-labelledby="today-pulse-heading"
-      >
-        <SectionMarker
-          number="02"
-          titleId="today-pulse-heading"
-          title="What to watch next"
-          subtitle="What to triage now. Where the day stands."
-        />
-        <div className="today-grid motion-stagger">
-        <div className="today-grid__hero-row">
-          <div
-            id="day-arc"
-            className={[
-              "today-anchor-target today-anchor-target--day-arc",
-              result && !result.latest_forecast ? "today-anchor-target--compact-arc" : "",
-            ].filter(Boolean).join(" ")}
-          >
-            {result ? (
+      {result ? (
+        <section
+          id="classroom-pulse"
+          className="today-pulse"
+          aria-labelledby="today-pulse-heading"
+        >
+          <SectionMarker
+            number="02"
+            titleId="today-pulse-heading"
+            title="What to watch next"
+            subtitle="What to triage now. Where the day stands."
+          />
+          <div className="today-grid motion-stagger">
+          <div className="today-grid__hero-row">
+            <div
+              id="day-arc"
+              className={[
+                "today-anchor-target today-anchor-target--day-arc",
+                !result.latest_forecast ? "today-anchor-target--compact-arc" : "",
+              ].filter(Boolean).join(" ")}
+            >
               <DayArc
                 forecast={result.latest_forecast}
                 students={studentSummaries.result ?? []}
@@ -351,13 +346,9 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                   if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
                 }}
               />
-            ) : (
-              <SectionSkeleton label="Loading day arc" variant="day-arc" lines={3} />
-            )}
-          </div>
+            </div>
 
-          <div id="pending-actions" className="today-anchor-target today-anchor-target--pending-actions">
-            {result ? (
+            <div id="pending-actions" className="today-anchor-target today-anchor-target--pending-actions">
               <PendingActionsCard
                 items={[
                   {
@@ -399,107 +390,105 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                   }
                 }}
               />
+            </div>
+
+            {result.debt_register.items.length > 0 ? (
+              <div id="complexity-debt" className="today-anchor-target">
+                <ComplexityDebtGauge
+                  debtItems={result.debt_register.items}
+                  previousTotal={previousDebtTotal}
+                  onSegmentClick={(payload) =>
+                    setDrillDown({
+                      type: "trend",
+                      trendKey: payload.trendKey,
+                      data: health.result?.trends?.debt_total_14d ?? payload.data,
+                      label: payload.label,
+                    })
+                  }
+                />
+              </div>
+            ) : null}
+          </div>
+
+          {showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
+
+          <div id="planning-health" className="today-anchor-target">
+            {health.result ? (
+              <Card variant="flat" className="today-planning-jump" aria-label="Deeper lenses">
+                <Card.Body>
+                  <div className="classroom-jump-actions__row">
+                    <div className="classroom-jump-actions__copy">
+                      <strong>Need the wider lens?</strong>
+                      <span>
+                        Classroom shows the full operating dashboard and health trend; Week opens the multi-day forecast band.
+                      </span>
+                    </div>
+                    <div className="classroom-jump-actions__buttons">
+                      <ActionButton size="sm" variant="soft" onClick={() => onTabChange("classroom")}>
+                        Open Classroom
+                      </ActionButton>
+                      <ActionButton size="sm" variant="soft" onClick={() => onTabChange("week")}>
+                        Open Week
+                      </ActionButton>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            ) : health.error ? (
+              <div className="today-health-error" role="alert">Couldn&apos;t load health summary: {health.error}</div>
             ) : (
-              <SectionSkeleton label="Loading pending actions" variant="pending" lines={3} />
+              <SectionSkeleton label="Loading planning lenses" variant="health" lines={2} />
             )}
           </div>
 
-          {result && result.debt_register.items.length > 0 ? (
-            <div id="complexity-debt" className="today-anchor-target">
-              <ComplexityDebtGauge
-                debtItems={result.debt_register.items}
-                previousTotal={previousDebtTotal}
-                onSegmentClick={(payload) =>
-                  setDrillDown({
-                    type: "trend",
-                    trendKey: payload.trendKey,
-                    data: health.result?.trends?.debt_total_14d ?? payload.data,
-                    label: payload.label,
-                  })
-                }
-              />
+          {result.latest_plan || result.latest_forecast ? (
+            <div
+              id="carry-forward"
+              className={[
+                "today-grid--secondary today-anchor-target",
+                Boolean(result.latest_plan) !== Boolean(result.latest_forecast) ? "today-grid--secondary--single" : "",
+              ].filter(Boolean).join(" ")}
+            >
+              {result.latest_plan ? (
+                <PlanRecap
+                  plan={result.latest_plan}
+                  classroomId={activeClassroom}
+                  onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
+                  onOpenPlan={() => onTabChange("tomorrow")}
+                  onMessagePrefill={
+                    onMessagePrefill
+                      ? (prefill) => {
+                          onMessagePrefill(prefill);
+                          onTabChange("family-message");
+                        }
+                      : undefined
+                  }
+                />
+              ) : null}
+
+              {result.latest_forecast ? (
+                <RiskWindowsPanel
+                  forecast={result.latest_forecast}
+                  onOpenForecast={() => onTabChange("complexity-forecast")}
+                  onBlockClick={(index) => {
+                    const block = result.latest_forecast!.blocks[index];
+                    if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
+                  }}
+                />
+              ) : null}
             </div>
           ) : null}
+
+          {!result.latest_plan && !result.latest_forecast && result.debt_register.items.length === 0 ? (
+            <EmptyStateCard
+              variant="minimal"
+              cue="Fresh start — no debt or planning signal yet."
+              hint="Build a Tomorrow Plan or log an intervention to seed the command center."
+            />
+          ) : null}
         </div>
-
-        {result && showTimeSuggestion ? <TimeSuggestion onNavigate={onTabChange} compact suggestion={suggestion} /> : null}
-
-        <div id="planning-health" className="today-anchor-target">
-          {health.result ? (
-            <Card variant="flat" className="today-planning-jump" aria-label="Deeper lenses">
-              <Card.Body>
-                <div className="classroom-jump-actions__row">
-                  <div className="classroom-jump-actions__copy">
-                    <strong>Need the wider lens?</strong>
-                    <span>
-                      Classroom shows the full operating dashboard and health trend; Week opens the multi-day forecast band.
-                    </span>
-                  </div>
-                  <div className="classroom-jump-actions__buttons">
-                    <ActionButton size="sm" variant="soft" onClick={() => onTabChange("classroom")}>
-                      Open Classroom
-                    </ActionButton>
-                    <ActionButton size="sm" variant="soft" onClick={() => onTabChange("week")}>
-                      Open Week
-                    </ActionButton>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card>
-          ) : health.error ? (
-            <div className="today-health-error" role="alert">Couldn&apos;t load health summary: {health.error}</div>
-          ) : (
-            <SectionSkeleton label="Loading planning lenses" variant="health" lines={2} />
-          )}
-        </div>
-
-        {result && (result.latest_plan || result.latest_forecast) ? (
-          <div
-            id="carry-forward"
-            className={[
-              "today-grid--secondary today-anchor-target",
-              Boolean(result.latest_plan) !== Boolean(result.latest_forecast) ? "today-grid--secondary--single" : "",
-            ].filter(Boolean).join(" ")}
-          >
-            {result.latest_plan ? (
-              <PlanRecap
-                plan={result.latest_plan}
-                classroomId={activeClassroom}
-                onPriorityClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
-                onOpenPlan={() => onTabChange("tomorrow")}
-                onMessagePrefill={
-                  onMessagePrefill
-                    ? (prefill) => {
-                        onMessagePrefill(prefill);
-                        onTabChange("family-message");
-                      }
-                    : undefined
-                }
-              />
-            ) : null}
-
-            {result.latest_forecast ? (
-              <RiskWindowsPanel
-                forecast={result.latest_forecast}
-                onOpenForecast={() => onTabChange("complexity-forecast")}
-                onBlockClick={(index) => {
-                  const block = result.latest_forecast!.blocks[index];
-                  if (block) setDrillDown({ type: "forecast-block", blockIndex: index, block });
-                }}
-              />
-            ) : null}
-          </div>
-        ) : null}
-
-        {result && !result.latest_plan && !result.latest_forecast && result.debt_register.items.length === 0 ? (
-          <EmptyStateCard
-            variant="minimal"
-            cue="Fresh start — no debt or planning signal yet."
-            hint="Build a Tomorrow Plan or log an intervention to seed the command center."
-          />
-        ) : null}
-      </div>
-      </section>
+        </section>
+      ) : null}
 
       {result ? (
         <footer
@@ -523,6 +512,16 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         onInterventionPrefill={onInterventionPrefill}
         onMessagePrefill={onMessagePrefill}
       />
+    </section>
+  );
+}
+
+function TodayPanelLoading() {
+  return (
+    <section className="workspace-page today-panel today-panel--loading" id="today-top" aria-busy="true">
+      <div id="command-center" className="today-anchor-target">
+        <SectionSkeleton label="Loading today command center" variant="today-hero" lines={3} />
+      </div>
     </section>
   );
 }

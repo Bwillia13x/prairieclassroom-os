@@ -1293,17 +1293,36 @@ label.form-label {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  flex: 1 0 auto;
   gap: var(--space-4);
   padding: var(--space-8) var(--space-5);
-  max-width: 400px;
+  min-height: clamp(26rem, 68vh, 42rem);
+  max-width: 480px;
   margin: 0 auto;
+  text-align: center;
 }
 
 .branded-loading__mark {
-  width: var(--icon-hero);
-  height: var(--icon-hero);
-  object-fit: contain;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--color-text);
   animation: skeleton-pulse 1.8s ease-in-out infinite;
+}
+
+.branded-loading__mark .brand-mark__glyph {
+  width: 3rem;
+  height: 3rem;
+}
+
+.branded-loading__mark .brand-mark__wordmark {
+  font-size: var(--text-xl);
+}
+
+.branded-loading__mark .brand-mark__badge {
+  min-height: 1.55rem;
 }
 
 .prefill-banner {

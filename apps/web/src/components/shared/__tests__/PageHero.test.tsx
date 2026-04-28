@@ -66,6 +66,13 @@ describe("PageHero", () => {
     expect(container.querySelector(".page-hero--ops")).toBeInTheDocument();
   });
 
+  it("applies the requested density class", () => {
+    const { container } = render(
+      <PageHero eyebrow="Review" title="Review queue" variant="review" density="utility" />,
+    );
+    expect(container.querySelector(".page-hero--density-utility")).toBeInTheDocument();
+  });
+
   it("renders metric groups with labeled clusters", () => {
     const { container } = render(
       <PageHero

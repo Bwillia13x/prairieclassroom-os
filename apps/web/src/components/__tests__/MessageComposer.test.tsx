@@ -17,7 +17,10 @@ describe("MessageComposer", () => {
       />,
     );
 
-    await user.click(screen.getByRole("button", { name: "Amira" }));
+    const amiraChip = screen.getByTestId("message-student-chip-Amira");
+    expect(amiraChip).toHaveAttribute("aria-pressed", "false");
+    await user.click(amiraChip);
+    expect(amiraChip).toHaveAttribute("aria-pressed", "true");
     await user.type(screen.getByLabelText(/context/i), "Amira had a strong reading check-in.");
     await user.click(screen.getByRole("button", { name: "Draft family message" }));
 

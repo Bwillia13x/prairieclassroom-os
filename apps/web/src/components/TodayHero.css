@@ -278,6 +278,7 @@
    full rationale text is hidden. This gives mobile teachers a
    1-2 line "why" above the CTA without reintroducing the full
    status/rationale stack. */
+.today-hero__mobile-command,
 .today-hero__mobile-next-move {
   display: none;
 }
@@ -550,21 +551,6 @@
     grid-column: 1 / -1;
   }
 
-  /* On phone-sized viewports the story lede already names the immediate
-     focus student, so collapse the extra chip row and keep the full hero
-     summary + primary CTA above the fixed mobile nav. The peak-block
-     tile is also hidden — teachers tap the DayArc to see block detail
-     once they're inside the day. */
-  .today-hero__brief-item--students {
-    display: none;
-  }
-
-  /* Hide the Peak block tile on phone — defer to the DayArc card below
-     for time-block detail. Open items + Next move CTA carry the morning. */
-  .today-hero__brief-item:nth-child(2):not(.today-hero__brief-item--students) {
-    display: none;
-  }
-
   .today-hero__brief-label {
     margin-bottom: var(--space-1);
     letter-spacing: 0.08em;
@@ -589,6 +575,20 @@
     display: none;
   }
 
+  .today-hero__rail-kicker {
+    display: none;
+  }
+
+  .today-hero__mobile-command {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+  }
+
   .today-hero__mobile-next-move {
     display: flex;
     flex-direction: column;
@@ -604,6 +604,14 @@
     color: var(--color-text-tertiary);
   }
 
+  .today-hero__mobile-next-title {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--leading-snug);
+    color: var(--color-text);
+  }
+
   .today-hero__mobile-next-rationale {
     margin: 0;
     font-family: var(--font-sans);
@@ -614,6 +622,41 @@
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+
+  .today-hero__mobile-command-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-1);
+    margin: 0;
+  }
+
+  .today-hero__mobile-command-metric {
+    min-width: 0;
+    padding-top: var(--space-1);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 55%, transparent);
+  }
+
+  .today-hero__mobile-command-metric dt {
+    margin: 0 0 2px;
+    color: var(--color-text-tertiary);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .today-hero__mobile-command-metric dd {
+    margin: 0;
+    overflow: hidden;
+    color: var(--color-text);
+    font-family: var(--font-mono);
+    font-size: var(--text-2xs);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .today-hero__cta-row .status-chip,
@@ -628,8 +671,11 @@
   }
 
   .today-hero__cta-row {
-    gap: 6px;
-    padding-top: 6px;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent);
+    border-radius: 2px;
+    background: color-mix(in srgb, var(--color-surface-muted) 50%, transparent);
   }
 
   .today-hero__cta.today-hero__cta {

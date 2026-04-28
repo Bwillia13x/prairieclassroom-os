@@ -230,7 +230,7 @@ export default function FamilyMessagePanel({ prefill }: Props) {
       ) : null}
 
       <WorkspaceLayout
-        layout="single"
+        layout={displayResult ? "split" : "single"}
         splitState={displayResult ? "output" : "input"}
         rail={(
           <>

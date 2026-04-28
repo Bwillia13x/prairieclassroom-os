@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { FamilyMessageDraft } from "../types";
 import type { CopyStatus } from "../hooks/useCopyToClipboard";
-import SectionIcon from "./SectionIcon";
-import { NothingInstrumentButton } from "./shared";
 import "./MessageApprovalDialog.css";
 
 interface Props {
@@ -118,62 +116,22 @@ export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel
       </div>
 
       <footer className="message-approval-dialog__footer">
-        <div className="message-approval-dialog__action-pair">
-          <button
-            ref={cancelBtnRef}
-            type="button"
-            className="btn btn--ghost"
-            onClick={onCancel}
-          >
-            Cancel
-          </button>
-          <NothingInstrumentButton
-            aria-label="Reject message approval"
-            fireAnim="close"
-            tone="danger"
-            size="md"
-            onClick={onCancel}
-            className="message-approval-dialog__action-instrument"
-            data-testid="message-approval-dialog-reject"
-          >
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M7 7l10 10" />
-              <path d="M17 7 7 17" />
-            </svg>
-          </NothingInstrumentButton>
-        </div>
-
-        <div className="message-approval-dialog__action-pair">
-          <button
-            type="button"
-            className="btn btn--primary"
-            onClick={handleApproveClick}
-            disabled={copyStatus === "copying" || editedText.trim().length === 0}
-          >
-            {copyStatus === "copying" ? "Approving..." : "Approve & Copy"}
-          </button>
-          <NothingInstrumentButton
-            aria-label="Approve and copy family message"
-            fireAnim="check"
-            tone="success"
-            size="md"
-            onClick={handleApproveClick}
-            loading={copyStatus === "copying"}
-            disabled={editedText.trim().length === 0}
-            className="message-approval-dialog__action-instrument"
-            data-testid="message-approval-dialog-approve"
-          >
-            <SectionIcon name="check" />
-          </NothingInstrumentButton>
-        </div>
+        <button
+          ref={cancelBtnRef}
+          type="button"
+          className="btn btn--ghost"
+          onClick={onCancel}
+        >
+          Cancel
+        </button>
+        <button
+          type="button"
+          className="btn btn--primary"
+          onClick={handleApproveClick}
+          disabled={copyStatus === "copying" || editedText.trim().length === 0}
+        >
+          {copyStatus === "copying" ? "Approving..." : "Approve & Copy"}
+        </button>
       </footer>
     </dialog>
   );

@@ -31,7 +31,15 @@
   order: 1;
 }
 
+.today-panel #command-center .section-skeleton[data-variant="today-hero"] {
+  min-height: 24rem;
+}
+
 .today-panel #today-preview {
+  order: 2;
+}
+
+.today-panel .student-coverage__sentinel {
   order: 2;
 }
 
@@ -150,6 +158,10 @@
 @media (max-width: 760px) {
   .app-main[data-section="today"] {
     padding-top: var(--space-2);
+  }
+
+  .today-panel #command-center .section-skeleton[data-variant="today-hero"] {
+    min-height: 40.5rem;
   }
 
   .today-end-marker {

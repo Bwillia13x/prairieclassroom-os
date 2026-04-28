@@ -181,7 +181,7 @@ describe("FamilyMessagePanel", () => {
     expect(screen.queryByText(/approval rate/i)).not.toBeInTheDocument();
   });
 
-  it("keeps the message workflow in a single-column WorkspaceLayout while a draft is visible", () => {
+  it("gives the result canvas priority once a draft is visible", () => {
     const appContext = makeAppContext();
     const { container } = render(
       <AppContext.Provider value={appContext}>
@@ -191,7 +191,7 @@ describe("FamilyMessagePanel", () => {
 
     const layout = container.querySelector(".workspace-layout");
     expect(layout).toBeTruthy();
-    expect(layout).toHaveAttribute("data-layout", "single");
+    expect(layout).toHaveAttribute("data-layout", "split");
     expect(layout).toHaveAttribute("data-split-state", "output");
   });
 

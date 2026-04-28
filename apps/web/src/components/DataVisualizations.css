@@ -768,6 +768,13 @@ button.viz-priority-matrix__watch-row:focus-visible {
   outline: none;
 }
 
+@media (pointer: coarse), (max-width: 640px) {
+  .viz-composition__header-action {
+    min-height: var(--control-h-md);
+    padding-inline: var(--space-3);
+  }
+}
+
 .viz-composition__body {
   display: grid;
   grid-template-columns: minmax(190px, 0.84fr) minmax(260px, 1.16fr);
@@ -1193,6 +1200,12 @@ button.viz-recency__row:hover {
 button.viz-recency__row:focus-visible {
   outline: var(--focus-ring-outline);
   outline-offset: var(--focus-ring-offset);
+}
+
+@media (pointer: coarse), (max-width: 640px) {
+  .viz-recency__row {
+    min-height: var(--control-h-md);
+  }
 }
 
 .viz-recency__rank {
@@ -2691,6 +2704,18 @@ button.viz-recency__row:focus-visible {
 .viz-complexity-cal__cell--clickable:focus-visible {
   outline: var(--focus-ring-outline);
   outline-offset: var(--focus-ring-offset);
+}
+
+@media (pointer: coarse), (max-width: 640px) {
+  .viz-complexity-cal__grid {
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+
+  .viz-complexity-cal__cell--clickable {
+    min-width: var(--control-h-md);
+    min-height: var(--control-h-md);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

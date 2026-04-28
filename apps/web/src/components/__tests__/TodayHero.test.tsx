@@ -125,7 +125,7 @@ describe("TodayHero", () => {
   });
 
   it("surfaces the recommended-action label chip inside the hero", () => {
-    render(
+    const { container } = render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
         health={makeHealth(5, true)}
@@ -134,7 +134,7 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    expect(screen.getByText("Prep ready")).toBeInTheDocument();
+    expect(container.querySelector(".status-chip")).toHaveTextContent("Prep ready");
   });
 
   it("renders the recommended-action rationale sentence so the teacher sees why this is the next move", () => {
@@ -331,19 +331,29 @@ describe("TodayHero", () => {
     expect(screen.queryByTestId("today-hero-monday-eyebrow")).not.toBeInTheDocument();
   });
 
-  it("renders a mobile next-move line with the recommended action rationale", () => {
+  it("renders a mobile command card with the recommended move and compact context", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
         health={makeHealth(5, true)}
         students={[]}
         recommendedAction={calmAction}
+        openItemCount={2}
+        checkFirstStudents={["Amira"]}
+        peakBlock={makeForecast("high").blocks[1]}
         onCtaClick={() => {}}
       />,
     );
 
+    const command = screen.getByTestId("today-hero-mobile-command");
+    expect(command).toHaveTextContent(/open/i);
+    expect(command).toHaveTextContent(/2 items/i);
+    expect(command).toHaveTextContent(/peak/i);
+    expect(command).toHaveTextContent(/first check/i);
+    expect(command).toHaveTextContent(/Amira/i);
     const nextMove = screen.getByTestId("today-hero-mobile-next-move");
     expect(nextMove).toHaveTextContent(/next move/i);
+    expect(nextMove).toHaveTextContent(/differentiate/i);
     expect(nextMove).toHaveTextContent(/core planning is up to date/i);
   });
 });

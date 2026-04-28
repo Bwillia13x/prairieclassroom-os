@@ -195,7 +195,7 @@ describe("MessageApprovalDialog", () => {
     expect(screen.getByRole("button", { name: /Approving/i })).toBeInTheDocument();
   });
 
-  it("renders Nothing instrument companions for reject and approve actions", () => {
+  it("renders exactly one secondary action and one primary action", () => {
     render(
       <MessageApprovalDialog
         open={true}
@@ -206,11 +206,10 @@ describe("MessageApprovalDialog", () => {
       />,
     );
 
-    expect(
-      screen.getByRole("button", { name: /reject message approval/i }),
-    ).toHaveClass("nothing-btn");
-    expect(
-      screen.getByRole("button", { name: /approve and copy family message/i }),
-    ).toHaveClass("nothing-btn");
+    expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Approve & Copy/i })).toBeInTheDocument();
+    expect(screen.getAllByRole("button")).toHaveLength(2);
+    expect(screen.queryByRole("button", { name: /reject message approval/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /approve and copy family message/i })).not.toBeInTheDocument();
   });
 });

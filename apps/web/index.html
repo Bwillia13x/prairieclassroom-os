@@ -15,9 +15,9 @@
     <meta name="twitter:description" content="Local-first classroom complexity copilot for Alberta K-6 teachers." />
     <meta name="twitter:image" content="/brand/og-preview.png" />
     <!-- Typography is self-hosted — see apps/web/src/styles/fonts.css.
-         Preload the Inter variable body face so first meaningful paint has
-         real type rather than system fallback; the other faces swap in as
-         their first glyph is needed (font-display: swap). -->
+         Keep the mobile-critical shell wordmark on the preloaded Inter face.
+         Display faces remain self-hosted and load through CSS when route
+         content needs them. -->
     <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-variable.woff2" crossorigin />
     <title>PrairieClassroom OS</title>
   </head>

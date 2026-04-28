@@ -419,7 +419,7 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
       expect(window.location.search).toContain("tab=tomorrow");
     });
 
-    fireEvent.click(screen.getByRole("button", { name: /tomorrow plan has 1 queued item/i }));
+    fireEvent.click(await screen.findByRole("button", { name: /tomorrow plan has 1 queued item/i }));
     fireEvent.click(screen.getByRole("button", { name: /review all/i }));
 
     await waitFor(() => {

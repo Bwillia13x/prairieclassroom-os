@@ -20,8 +20,22 @@
   transform: translateY(-50%);
   width: 120px;
   height: 120px;
-  background: url("/brand/prairieclassroom-mark.png") center / contain no-repeat;
-  opacity: 0.035;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 18%, transparent);
+  border-radius: 50%;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 48%,
+      color-mix(in srgb, var(--color-accent) 18%, transparent) 49% 51%,
+      transparent 52%
+    ),
+    linear-gradient(
+      0deg,
+      transparent 48%,
+      color-mix(in srgb, var(--color-brand-highlight) 16%, transparent) 49% 51%,
+      transparent 52%
+    );
+  opacity: 0.22;
   pointer-events: none;
   z-index: 0;
 }

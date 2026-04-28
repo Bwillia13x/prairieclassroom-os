@@ -89,6 +89,15 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+@media (pointer: coarse), (max-width: 640px) {
+  .contextual-hint-dismiss {
+    width: var(--control-h-md);
+    min-width: var(--control-h-md);
+    height: var(--control-h-md);
+    min-height: var(--control-h-md);
+  }
+}
+
 /* Collapsed (dismissed) state: hint shrinks to a single ⓘ recovery
    button in the same top-right slot. Click re-expands and clears the
    persisted dismissal flag (audit #12 — irreversible-dismiss fix). */

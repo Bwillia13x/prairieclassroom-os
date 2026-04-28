@@ -10,6 +10,7 @@ export type PageHeroVariant =
   | "review"
   | "week"
   | "tomorrow";
+export type PageHeroDensity = "command" | "utility";
 
 export interface PageHeroPulse {
   tone: PageHeroPulseTone;
@@ -66,6 +67,7 @@ interface Props {
   pivots?: PageHeroPivot[];
   actions?: ReactNode;
   variant?: PageHeroVariant;
+  density?: PageHeroDensity;
   id?: string;
   ariaLabel?: string;
 }
@@ -119,10 +121,15 @@ export default function PageHero({
   pivots,
   actions,
   variant,
+  density = "command",
   id,
   ariaLabel,
 }: Props) {
-  const className = `page-hero${variant ? ` page-hero--${variant}` : ""}`;
+  const className = [
+    "page-hero",
+    `page-hero--density-${density}`,
+    variant ? `page-hero--${variant}` : "",
+  ].filter(Boolean).join(" ");
 
   // Re-key the pulse dot on state change so the 3-iteration ring restarts.
   // Without this, a state change (e.g. "Ready" → "Needs attention") would

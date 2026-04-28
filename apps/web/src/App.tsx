@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import AppContext from "./AppContext";
 import { SessionProvider } from "./SessionContext";
 import {
@@ -24,6 +24,7 @@ import {
 import { configureApiClient, fetchTodaySnapshot, listClassrooms } from "./api";
 import { getClassroomLoadErrorMessage } from "./appErrors";
 import ErrorBoundary from "./components/ErrorBoundary";
+import SectionSkeleton from "./components/SectionSkeleton";
 import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
 import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
@@ -32,11 +33,6 @@ import { Popover } from "./components/popover";
 import RoleEscapeBanner from "./components/RoleEscapeBanner";
 import RolePromptDialog from "./components/RolePromptDialog";
 import ClassroomPanel from "./panels/ClassroomPanel";
-import TomorrowPanel from "./panels/TomorrowPanel";
-import WeekPanel from "./panels/WeekPanel";
-import PrepPanel from "./panels/PrepPanel";
-import OpsPanel from "./panels/OpsPanel";
-import ReviewPanel from "./panels/ReviewPanel";
 import TodayPanel from "./panels/TodayPanel";
 import BrandMark from "./components/BrandMark";
 import MobileNav from "./components/MobileNav";
@@ -66,6 +62,25 @@ const PAGE_RAIL_TABS: ReadonlySet<ActiveTab> = new Set([
   "tomorrow",
   "week",
 ]);
+const TomorrowPanel = lazy(() => import("./panels/TomorrowPanel"));
+const WeekPanel = lazy(() => import("./panels/WeekPanel"));
+const PrepPanel = lazy(() => import("./panels/PrepPanel"));
+const OpsPanel = lazy(() => import("./panels/OpsPanel"));
+const ReviewPanel = lazy(() => import("./panels/ReviewPanel"));
+const todaySnapshotRequestCache = new Map<string, ReturnType<typeof fetchTodaySnapshot>>();
+
+function loadTodaySnapshotOnce(classroomId: string) {
+  const cached = todaySnapshotRequestCache.get(classroomId);
+  if (cached) return cached;
+
+  const request = fetchTodaySnapshot(classroomId).finally(() => {
+    if (todaySnapshotRequestCache.get(classroomId) === request) {
+      todaySnapshotRequestCache.delete(classroomId);
+    }
+  });
+  todaySnapshotRequestCache.set(classroomId, request);
+  return request;
+}
 
 function describeClassroom(classroom: ClassroomProfile) {
   return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
@@ -86,7 +101,19 @@ function renderPanel(
       data-tab={targetTab}
       hidden={activeTab !== targetTab}
     >
-      <ErrorBoundary>{panel}</ErrorBoundary>
+      <ErrorBoundary>
+        <Suspense
+          fallback={
+            <SectionSkeleton
+              label={`Loading ${TAB_META[targetTab].label} workspace`}
+              variant="story"
+              lines={3}
+            />
+          }
+        >
+          {panel}
+        </Suspense>
+      </ErrorBoundary>
     </div>
   );
 }
@@ -453,11 +480,13 @@ export default function App() {
 
   useEffect(() => {
     if (!state.activeClassroom || activeRole === "reviewer") return;
-    const controller = new AbortController();
-    fetchTodaySnapshot(state.activeClassroom, controller.signal)
-      .then((snapshot) => dispatch({ type: "SET_TODAY_SNAPSHOT", snapshot }))
+    let cancelled = false;
+    loadTodaySnapshotOnce(state.activeClassroom)
+      .then((snapshot) => {
+        if (!cancelled) dispatch({ type: "SET_TODAY_SNAPSHOT", snapshot });
+      })
       .catch((err) => {
-        if (controller.signal.aborted) return;
+        if (cancelled) return;
         if (err instanceof DOMException && err.name === "AbortError") return;
         console.warn("Failed to load today snapshot:", err);
         dispatch({ type: "DISMISS_TOAST", id: "debt-load-error" });
@@ -471,7 +500,9 @@ export default function App() {
           },
         });
       });
-    return () => controller.abort();
+    return () => {
+      cancelled = true;
+    };
   }, [state.activeClassroom, activeRole]);
 
   useEffect(() => {
@@ -666,10 +697,17 @@ export default function App() {
   const { activeClassroom, activeTab, activeTool, authPrompt, debtCounts, initError } = state;
   const activePageAnchors = PAGE_ANCHORS[activeTab];
   const pageRailAvailable =
-    state.classrooms.length > 0 &&
     !initError &&
     Boolean(activePageAnchors) &&
     PAGE_RAIL_TABS.has(activeTab);
+  const showShellLoading =
+    state.classrooms.length === 0 &&
+    !initError &&
+    activeTab !== "today";
+  const showAppFooter =
+    state.classrooms.length > 0 &&
+    !initError &&
+    (activeTab !== "today" || Boolean(state.latestTodaySnapshot));
   const profile = state.classrooms.find((entry) => entry.classroom_id === activeClassroom);
   const students = profile?.students ?? [];
   const roleForNav: ClassroomRole = activeRole;
@@ -981,15 +1019,10 @@ export default function App() {
               onToggleCollapsed={() => setPageRailCollapsed((value) => !value)}
             />
           ) : null}
-          {state.classrooms.length === 0 && !initError ? (
+          {showShellLoading ? (
             <div className="branded-loading">
-              <img
+              <BrandMark
                 className="branded-loading__mark"
-                src="/brand/prairieclassroom-mark.png"
-                alt=""
-                width="512"
-                height="512"
-                aria-hidden="true"
               />
               <div className="skeleton-stack">
                 <div className="skeleton-card">
@@ -1051,10 +1084,12 @@ export default function App() {
             <ReviewPanel onFollowupClick={handleFollowupClick} onInterventionClick={handleInterventionClick} />,
           )}
 
-          <AppFooter
-            onOpenShortcuts={() => setShortcutSheetOpen(true)}
-            classroomId={state.activeClassroom || undefined}
-          />
+          {showAppFooter ? (
+            <AppFooter
+              onOpenShortcuts={() => setShortcutSheetOpen(true)}
+              classroomId={state.activeClassroom || undefined}
+            />
+          ) : null}
         </main>
 
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />

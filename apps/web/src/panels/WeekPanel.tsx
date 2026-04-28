@@ -166,6 +166,7 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
         metricGroups={heroMetricGroups}
         statusRows={heroStatusRows}
         variant="week"
+        density="utility"
         actions={
           <>
             <ActionButton size="sm" variant="soft" onClick={() => onTabChange("tomorrow")}>

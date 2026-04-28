@@ -139,6 +139,12 @@
   color: var(--color-text);
 }
 
+@media (pointer: coarse), (max-width: 640px) {
+  .popover-menu-item {
+    min-height: var(--control-h-md);
+  }
+}
+
 .popover-menu-item:disabled,
 .popover-menu-item[aria-disabled="true"] {
   opacity: 0.45;

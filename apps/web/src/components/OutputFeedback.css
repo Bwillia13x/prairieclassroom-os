@@ -129,6 +129,12 @@
     align-items: stretch;
   }
 
+  .output-feedback-note-input,
+  .output-feedback-submit,
+  .output-feedback-skip {
+    min-height: var(--control-h-md);
+  }
+
   .output-feedback-note-row .output-feedback-submit,
   .output-feedback-note-row .output-feedback-skip {
     width: 100%;
