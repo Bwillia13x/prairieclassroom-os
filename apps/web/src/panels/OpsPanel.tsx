@@ -69,6 +69,21 @@ export default function OpsPanel({ prefillIntervention }: Props) {
             </p>
           </div>
 
+          <dl className="ops-command-workflow__metrics" aria-label="Ops readiness">
+            <div>
+              <dt>Threads</dt>
+              <dd>{watchThreads}</dd>
+            </div>
+            <div>
+              <dt>EA moves</dt>
+              <dd>{eaActions || "—"}</dd>
+            </div>
+            <div>
+              <dt>Blocks</dt>
+              <dd>{forecastBlocks || "—"}</dd>
+            </div>
+          </dl>
+
           <aside className="ops-command-workflow__queue" aria-label="Ops coordination queue">
             <span className="ops-command-workflow__queue-value">{staleFollowups}</span>
             <span className="ops-command-workflow__queue-label">
@@ -85,7 +100,7 @@ export default function OpsPanel({ prefillIntervention }: Props) {
           </aside>
         </header>
 
-        <OpsWorkflowStepper activeTool={currentTool} />
+        <OpsWorkflowStepper activeTool={currentTool} variant="compact" />
 
         <section className="ops-workflow-stage" aria-label="Active ops workflow">
           <header className="ops-workflow-stage__header">

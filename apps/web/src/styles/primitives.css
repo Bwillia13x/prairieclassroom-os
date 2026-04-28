@@ -1119,7 +1119,7 @@ label.form-label {
 @media (min-width: 960px) {
   .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] {
     grid-template-columns: minmax(430px, 58%) minmax(340px, 1fr);
-    min-height: min(780px, calc(100vh - 210px));
+    min-height: min(660px, calc(100vh - 180px));
   }
 
   .workspace-layout.workspace-layout--ops-workflow[data-layout="split"][data-split-state="output"] {
@@ -1127,7 +1127,7 @@ label.form-label {
   }
 
   .app-main[data-section="ops"] .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-rail {
-    padding: var(--space-5);
+    padding: var(--space-4);
     border-right: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
     background:
       linear-gradient(
@@ -1138,7 +1138,7 @@ label.form-label {
   }
 
   .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-canvas {
-    padding: var(--space-5);
+    padding: var(--space-4);
     background:
       radial-gradient(
         ellipse at 80% 8%,
@@ -1221,7 +1221,7 @@ label.form-label {
 @media (min-width: 960px) {
   .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] {
     grid-template-columns: minmax(370px, 37%) minmax(0, 1fr);
-    min-height: min(820px, calc(100vh - 190px));
+    min-height: min(720px, calc(100vh - 165px));
   }
 
   .workspace-layout.workspace-layout--prep-canvas[data-layout="split"][data-split-state="output"] {
@@ -1229,7 +1229,7 @@ label.form-label {
   }
 
   .app-main[data-section="prep"] .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] > .workspace-rail {
-    padding: var(--space-5);
+    padding: var(--space-4);
     border-right: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
     background:
       linear-gradient(
@@ -1240,7 +1240,7 @@ label.form-label {
   }
 
   .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] > .workspace-canvas {
-    padding: var(--space-5);
+    padding: var(--space-4);
     background:
       radial-gradient(
         ellipse at 72% 0%,

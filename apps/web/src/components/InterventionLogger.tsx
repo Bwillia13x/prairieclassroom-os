@@ -168,7 +168,7 @@ export default function InterventionLogger({
 
         {prefill && (
           <div className="logger-context">
-            <div className="logger-context-label">From Tomorrow's Plan</div>
+            <div className="logger-context-label">Suggested context</div>
             <p>
               <strong>{prefill.student_ref}</strong>: {prefill.reason}
               <br />
@@ -214,7 +214,7 @@ export default function InterventionLogger({
           </div>
         ) : null}
 
-        <div className={`field${touched && selectedStudents.length === 0 ? " field--error" : ""}`}>
+        <div className={`field intervention-logger__student-field${touched && selectedStudents.length === 0 ? " field--error" : ""}`}>
           <label className="form-label">Student(s) <span className="field-required" aria-hidden="true">*</span></label>
           <div
             className={`student-checkboxes${isOpsWorkflow ? " student-checkboxes--ops" : ""}`}
@@ -241,7 +241,7 @@ export default function InterventionLogger({
           )}
         </div>
 
-        <div className={`field${touched && !teacherNote.trim() ? " field--error" : ""}`}>
+        <div className={`field intervention-logger__note-field${touched && !teacherNote.trim() ? " field--error" : ""}`}>
           <label htmlFor="int-note" className="form-label">
             {isOpsWorkflow ? "Evidence note (what happened?)" : "What happened?"}
             {" "}
@@ -249,7 +249,7 @@ export default function InterventionLogger({
           </label>
           <textarea
             id="int-note"
-            rows={isOpsWorkflow ? 6 : 4}
+            rows={4}
             placeholder="e.g. 'Ari needed 1:1 support during writing block — used sentence starters and word bank, was able to complete 3 of 5 questions independently by end of period.'"
             value={teacherNote}
             onChange={(e) => setTeacherNote(e.target.value)}

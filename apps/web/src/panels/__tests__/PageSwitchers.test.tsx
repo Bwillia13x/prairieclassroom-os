@@ -116,11 +116,23 @@ describe("multi-tool page switchers", () => {
       { activeTab: "prep", activeTool: "differentiate" },
     );
 
+    expect(screen.getByRole("region", { name: /prep command/i })).toBeInTheDocument();
+    expect(screen.getByText("Differentiate surface")).toBeInTheDocument();
     const switcher = screen.getByRole("tablist", { name: /prep tool/i });
     expect(within(switcher).getByRole("tab", { name: /differentiate/i })).toHaveAttribute("aria-selected", "true");
 
     fireEvent.click(within(switcher).getByRole("tab", { name: /language tools/i }));
     expect(setActiveTool).toHaveBeenCalledWith("language-tools");
+  });
+
+  it("defaults Prep to the artifact intake workspace when no tool is selected", () => {
+    renderWithContext(
+      <PrepPanel />,
+      { activeTab: "prep", activeTool: null },
+    );
+
+    expect(screen.getByText("Differentiate surface")).toBeInTheDocument();
+    expect(screen.getByRole("tab", { name: /differentiate/i })).toHaveAttribute("aria-selected", "true");
   });
 
   it("renders and updates the Ops page switcher", () => {
@@ -134,6 +146,17 @@ describe("multi-tool page switchers", () => {
 
     fireEvent.click(within(switcher).getByRole("tab", { name: /sub packet/i }));
     expect(setActiveTool).toHaveBeenCalledWith("survival-packet");
+  });
+
+  it("defaults Ops to intervention logging when no tool is selected", () => {
+    renderWithContext(
+      <OpsPanel />,
+      { activeTab: "ops", activeTool: null },
+    );
+
+    expect(screen.getByText("Intervention surface")).toBeInTheDocument();
+    const switcher = screen.getByRole("navigation", { name: /ops workflow/i });
+    expect(within(switcher).getByRole("tab", { name: /log intervention/i })).toHaveAttribute("aria-selected", "true");
   });
 
   it("renders and updates the Review page switcher", () => {

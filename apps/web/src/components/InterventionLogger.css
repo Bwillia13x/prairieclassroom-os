@@ -51,6 +51,20 @@
   line-height: 1.5;
 }
 
+.intervention-logger--ops-workflow .logger-context {
+  margin-bottom: 0;
+  padding: var(--space-2) var(--space-3);
+  background: color-mix(in srgb, var(--color-bg-slate) 32%, var(--color-surface));
+}
+
+.intervention-logger--ops-workflow .logger-context p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
 .student-checkboxes {
   display: flex;
   flex-wrap: wrap;
@@ -87,9 +101,18 @@
 }
 
 .intervention-logger--ops-workflow form {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  gap: var(--space-3);
+}
+
+.intervention-logger--ops-workflow .intervention-logger__header,
+.intervention-logger--ops-workflow .draft-restore-chip,
+.intervention-logger--ops-workflow .logger-context,
+.intervention-logger--ops-workflow .intervention-logger__selected-strip,
+.intervention-logger--ops-workflow .intervention-logger__coordination-grid,
+.intervention-logger--ops-workflow .intervention-logger__actions {
+  grid-column: 1 / -1;
 }
 
 .intervention-logger--ops-workflow h2 {
@@ -113,7 +136,7 @@
 }
 
 .intervention-logger--ops-workflow .field textarea {
-  min-height: 10.75rem;
+  min-height: 9.25rem;
   border-radius: var(--radius-lg);
   background:
     linear-gradient(
@@ -129,7 +152,7 @@
   grid-template-columns: auto 1fr;
   gap: var(--space-3);
   align-items: center;
-  padding: var(--space-3);
+  padding: var(--space-2-5) var(--space-3);
   border: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-surface-elevated) 52%, transparent);
@@ -187,11 +210,24 @@
   min-height: var(--control-h-md);
 }
 
+.intervention-logger--ops-workflow .intervention-logger__search-field {
+  grid-column: 1;
+}
+
+.intervention-logger--ops-workflow .intervention-logger__student-field {
+  grid-column: 1;
+}
+
+.intervention-logger--ops-workflow .intervention-logger__note-field {
+  grid-column: 2;
+  grid-row: span 2;
+}
+
 .student-checkboxes--ops {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
   gap: var(--space-2);
-  max-height: 12.25rem;
+  max-height: 8.75rem;
   overflow: auto;
   padding: var(--space-2);
   border: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
@@ -200,8 +236,8 @@
 }
 
 .student-checkboxes--ops .student-checkbox {
-  min-height: var(--control-h-lg);
-  padding: var(--space-2) var(--space-3);
+  min-height: var(--control-h-md);
+  padding: var(--space-1-5) var(--space-2-5);
   border: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
   border-radius: var(--radius-md);
   background: color-mix(in srgb, var(--color-surface-elevated) 42%, transparent);
@@ -257,6 +293,17 @@
   .intervention-logger__selected-strip,
   .intervention-logger__coordination-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .intervention-logger--ops-workflow form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .intervention-logger--ops-workflow .intervention-logger__search-field,
+  .intervention-logger--ops-workflow .intervention-logger__student-field,
+  .intervention-logger--ops-workflow .intervention-logger__note-field {
+    grid-column: 1;
+    grid-row: auto;
   }
 
   .intervention-logger--ops-workflow .intervention-logger__actions {

@@ -6,13 +6,6 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
-import PageHero, {
-  type PageHeroPulse,
-  type PageHeroMetricGroup,
-  type PageHeroStatusRow,
-} from "../components/shared/PageHero";
-import SectionMarker from "../components/shared/SectionMarker";
-import ToolSwitcherStepper from "../components/ToolSwitcherStepper";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
 
@@ -35,7 +28,7 @@ const PREP_TOOL_TITLE: Partial<Record<ActiveTool, string>> = {
   "language-tools": "Prepare language supports",
 };
 
-function derivePulse(ealCount: number, languageCount: number): PageHeroPulse {
+function derivePulse(ealCount: number, languageCount: number) {
   if (ealCount > 6) {
     return {
       tone: "warning",
@@ -75,73 +68,42 @@ export default function PrepPanel() {
   const pulse = derivePulse(ealCount, languageCount);
   const activeTitle = PREP_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
 
-  // Group metrics into "Roster" and "Toolset" so the prep header reads
-  // as a tool inventory plus the student demographics that drive prep
-  // decisions, instead of a flat list.
-  const heroMetricGroups: PageHeroMetricGroup[] = [
-    {
-      label: "Roster",
-      metrics: [
-        { value: profile?.students.length ?? "—", label: "Students" },
-        {
-          value: ealCount || "—",
-          label: "EAL",
-          tone: ealCount > 6 ? "warning" : undefined,
-        },
-        {
-          value: languageCount || "—",
-          label: "Languages",
-        },
-      ],
-    },
-    {
-      label: "Toolset",
-      metrics: [
-        { value: PREP_TOOLS.length, label: "Tools" },
-        {
-          value: currentTool === "differentiate" ? "Lesson" : "Language",
-          label: "Active lane",
-          tone: "neutral",
-        },
-      ],
-    },
-  ];
-
-  const heroStatusRows: PageHeroStatusRow[] = [
-    {
-      label: "Active tool",
-      value: TOOL_META[currentTool]?.label ?? "—",
-    },
-  ];
-
   return (
     <section className="workspace-page multi-tool-page prep-page" id="prep-top" data-active-tool={currentTool}>
-      <PageHero
+      <section
         id="prep-command"
-        ariaLabel="Prep command, lesson adaptation, and language supports"
-        eyebrow="Prep command"
-        title="Prepare the material before it reaches the room."
-        description={
-          <>
-            Choose the right prep lane, then work from one active canvas. Lesson
-            variants and language supports stay grouped here so planning does
-            not fragment across tools.
-          </>
-        }
-        metricGroups={heroMetricGroups}
-        statusRows={heroStatusRows}
-        pulse={pulse}
-        variant="prep"
-        density="utility"
-      />
+        className="prep-command-strip"
+        aria-label="Prep command, lesson adaptation, and language supports"
+      >
+        <div className="prep-command-strip__copy">
+          <span className="prep-command-strip__eyebrow">Prep command</span>
+          <h1>Prepare the material before it reaches the room.</h1>
+          <p>
+            Start with the artifact, classroom context, and readiness lane. The
+            active canvas stays visible while the teacher chooses the prep mode.
+          </p>
+        </div>
+        <dl className="prep-command-strip__metrics" aria-label="Prep readiness">
+          <div>
+            <dt>Students</dt>
+            <dd>{profile?.students.length ?? "—"}</dd>
+          </div>
+          <div>
+            <dt>EAL</dt>
+            <dd>{ealCount || "—"}</dd>
+          </div>
+          <div>
+            <dt>Languages</dt>
+            <dd>{languageCount || "—"}</dd>
+          </div>
+          <div className={`prep-command-strip__pulse prep-command-strip__pulse--${pulse.tone}`}>
+            <dt>{pulse.state}</dt>
+            <dd>{pulse.meta}</dd>
+          </div>
+        </dl>
+      </section>
 
-      <SectionMarker
-        number="02"
-        title="Active prep lane"
-        subtitle="Two lanes, one memory."
-      />
-
-      <div id="prep-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Prep tool">
+      <div id="prep-tools" className="page-tool-switcher page-tool-switcher--segmented prep-lane-segment" role="tablist" aria-label="Prep tool">
         {PREP_TOOLS.map((tool) => {
           const copy = PREP_TOOL_COPY[tool];
           return (
@@ -155,20 +117,14 @@ export default function PrepPanel() {
             >
               <span className="page-tool-switcher__btn-kicker">{copy?.kicker ?? "Prep lane"}</span>
               <span className="page-tool-switcher__btn-title">{TOOL_META[tool].label}</span>
-              <span className="page-tool-switcher__btn-description">{copy?.description ?? "Open this prep surface."}</span>
               <span className="page-tool-switcher__btn-status">{copy?.status ?? "Ready"}</span>
+              <span className="sr-only">{copy?.description ?? "Open this prep surface."}</span>
             </button>
           );
         })}
       </div>
 
-      <ToolSwitcherStepper
-        total={PREP_TOOLS.length}
-        activeIndex={PREP_TOOLS.indexOf(currentTool)}
-        label="Prep tool progress"
-      />
-
-      <section className="multi-tool-workspace-section" aria-label="Active workspace">
+      <section className="multi-tool-workspace-section multi-tool-workspace-section--prep" aria-label="Active workspace">
         <header className="multi-tool-workspace-section__header">
           <span className="multi-tool-workspace-section__eyebrow">Active workspace</span>
           <span className="multi-tool-workspace-section__title">{activeTitle}</span>

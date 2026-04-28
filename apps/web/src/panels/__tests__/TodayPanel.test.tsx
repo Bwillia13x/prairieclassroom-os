@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import TodayPanel from "../TodayPanel";
-import type { ClassroomHealth, StudentThread, TodaySnapshot } from "../../types";
+import type { ClassroomHealth, InterventionPrefill, StudentThread, TodaySnapshot } from "../../types";
 import * as TodayWorkflowModule from "../../utils/todayWorkflow";
 
 vi.mock("../../api", async (importOriginal) => {
@@ -219,6 +219,7 @@ function renderTodayPanel(
   snapshot: TodaySnapshot,
   health = makeHealth(),
   sessionSummary = makeSessionSummary(),
+  props: { onInterventionPrefill?: (prefill: InterventionPrefill) => void } = {},
 ) {
   mockedFetchTodaySnapshot.mockResolvedValue(snapshot);
   mockedFetchClassroomHealth.mockResolvedValue(health);
@@ -228,16 +229,17 @@ function renderTodayPanel(
   mockedFetchMessageHistoryForStudent.mockResolvedValue([]);
 
   const onTabChange = vi.fn();
+  const onInterventionPrefill = props.onInterventionPrefill ?? vi.fn();
   const appContext = makeAppContext(snapshot);
   const user = userEvent.setup();
 
   render(
     <AppContext.Provider value={appContext}>
-      <TodayPanel onTabChange={onTabChange} />
+      <TodayPanel onTabChange={onTabChange} onInterventionPrefill={onInterventionPrefill} />
     </AppContext.Provider>,
   );
 
-  return { onTabChange, user };
+  return { onTabChange, onInterventionPrefill, user };
 }
 
 describe("TodayPanel", () => {
@@ -251,7 +253,7 @@ describe("TodayPanel", () => {
   });
 
   it("renders the populated triage flow and uses family message as the primary action", async () => {
-    const { onTabChange, user } = renderTodayPanel(makeSnapshot());
+    const { onTabChange, onInterventionPrefill, user } = renderTodayPanel(makeSnapshot());
 
     expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
     expect(screen.getByText("4 open items")).toBeInTheDocument();
@@ -259,6 +261,54 @@ describe("TodayPanel", () => {
 
     await user.click(screen.getByRole("button", { name: "Open Family Message" }));
     expect(onTabChange).toHaveBeenCalledWith("family-message");
+    expect(onInterventionPrefill).not.toHaveBeenCalled();
+  });
+
+  it("prefills Ops intervention from the Today primary CTA without writing teacher evidence", async () => {
+    const snapshot = makeSnapshot({
+      debt_register: {
+        ...makeSnapshot().debt_register,
+        items: [
+          {
+            category: "stale_followup",
+            student_refs: ["Brody"],
+            description: "Follow-up still needs logging",
+            source_record_id: "int-1",
+            age_days: 5,
+            suggested_action: "Log follow-up",
+          },
+        ],
+        item_count_by_category: {
+          unapproved_message: 0,
+          stale_followup: 1,
+          unaddressed_pattern: 0,
+          approaching_review: 0,
+        },
+      } as TodaySnapshot["debt_register"],
+    });
+    const onInterventionPrefill = vi.fn();
+    const { onTabChange, user } = renderTodayPanel(
+      snapshot,
+      makeHealth(),
+      makeSessionSummary(),
+      { onInterventionPrefill },
+    );
+
+    expect(await screen.findByRole("button", { name: "Open Intervention Log" })).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Open Intervention Log" }));
+
+    expect(onInterventionPrefill).toHaveBeenCalledWith({
+      student_ref: "Brody",
+      suggested_action: "Log follow-up",
+      reason: "Follow-up still needs logging",
+    });
+    expect(Object.keys(onInterventionPrefill.mock.calls[0][0])).toEqual([
+      "student_ref",
+      "suggested_action",
+      "reason",
+    ]);
+    expect(onTabChange).not.toHaveBeenCalled();
   });
 
   it("renders the weekly workflow nudge and jumps to the suggested panel", async () => {

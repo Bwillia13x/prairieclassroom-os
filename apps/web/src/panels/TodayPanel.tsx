@@ -39,7 +39,9 @@ import type {
   ComplexityBlock,
   ComplexityForecast,
   ClassroomHealth,
+  DebtItem,
   StudentSummary,
+  TodaySnapshot,
   DrillDownContext,
   InterventionPrefill,
   FamilyMessagePrefill,
@@ -123,6 +125,17 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   const studentsToCheckFirst = useMemo(
     () => getStudentsToCheckFirst(result),
     [result],
+  );
+  const interventionCtaPrefill = useMemo(
+    () =>
+      buildInterventionCtaPrefill({
+        snapshot: result,
+        recommendedTab: recommendedAction?.tab,
+        firstStudent: studentsToCheckFirst[0],
+        studentReasons,
+        fallbackReason: recommendedAction?.description,
+      }),
+    [recommendedAction?.description, recommendedAction?.tab, result, studentReasons, studentsToCheckFirst],
   );
 
   const peakBlock = useMemo(
@@ -267,7 +280,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
                 : null
             }
             onCtaClick={() => {
-              if (recommendedAction) onTabChange(recommendedAction.tab);
+              if (!recommendedAction) return;
+              if (interventionCtaPrefill && onInterventionPrefill) {
+                onInterventionPrefill(interventionCtaPrefill);
+                return;
+              }
+              onTabChange(recommendedAction.tab);
             }}
             onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
           />
@@ -514,6 +532,42 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
       />
     </section>
   );
+}
+
+function buildInterventionCtaPrefill({
+  snapshot,
+  recommendedTab,
+  firstStudent,
+  studentReasons,
+  fallbackReason,
+}: {
+  snapshot: TodaySnapshot | null;
+  recommendedTab?: NavTarget;
+  firstStudent?: string;
+  studentReasons: Record<string, string>;
+  fallbackReason?: string;
+}): InterventionPrefill | null {
+  if (recommendedTab !== "log-intervention" || !snapshot || !firstStudent) {
+    return null;
+  }
+
+  const matchingDebt = pickInterventionDebtItem(snapshot.debt_register.items, firstStudent);
+  return {
+    student_ref: firstStudent,
+    suggested_action: matchingDebt?.suggested_action || "Log follow-up from Today",
+    reason: studentReasons[firstStudent] || matchingDebt?.description || fallbackReason || "Follow-up from Today",
+  };
+}
+
+function pickInterventionDebtItem(items: DebtItem[], studentRef: string): DebtItem | undefined {
+  return items
+    .filter((item) => item.student_refs.includes(studentRef))
+    .sort((a, b) => {
+      const aStale = a.category === "stale_followup" ? 0 : 1;
+      const bStale = b.category === "stale_followup" ? 0 : 1;
+      if (aStale !== bStale) return aStale - bStale;
+      return b.age_days - a.age_days;
+    })[0];
 }
 
 function TodayPanelLoading() {
