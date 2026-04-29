@@ -584,6 +584,20 @@
   color-scheme: dark;
 }
 
+/* Mobile first paint: keep the desktop premium type stack, but avoid making
+   strict mobile LCP compete with multiple self-hosted font files. System UI
+   and platform monospace are close enough at phone sizes and prevent font
+   transfer from joining the critical rendering path. */
+@media (max-width: 699px) {
+  :root {
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-serif: var(--font-display);
+    --font-editorial: Georgia, "Times New Roman", serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+  }
+}
+
 /* ------------------------------------------------------------
    Accessibility preference overrides
    See docs/dark-mode-contract.md for the rationale and scope.
