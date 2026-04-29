@@ -5,10 +5,10 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-04-29T18:30:07.457Z
+**Run date:** 2026-04-29T20:54:30.848Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
-**Raw artifacts:** `output/release-gate/2026-04-29T18-27-57-105Z-77741`
+**Raw artifacts:** `output/release-gate/2026-04-29T20-52-48-860Z-94788`
 
 ### Commands
 
@@ -22,7 +22,7 @@ npm run release:gate
 
 **Status:** Blocked before evals — Ollama preflight failed.
 **Backend:** `ollama`
-**Raw artifacts:** `output/host-preflight/2026-04-12T16-10-14-124Z.json`
+**Raw artifacts:** `output/host-preflight/2026-04-29T18-59-02-929Z.json`
 
 ### Commands
 
@@ -38,7 +38,7 @@ npm run release:gate:ollama
 - Ollama CLI is not available or `ollama list` failed.
 - Required models: `gemma4:4b`, `gemma4:27b`
 - Available models: none
-- Available disk on host: 6.76 GiB
+- Available disk on host: 8.95 GiB
 - Total host memory: 8.00 GiB
 
 ## Hosted Gemini API Baseline

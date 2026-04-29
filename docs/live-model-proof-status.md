@@ -7,7 +7,7 @@ _This document is generated from zero-cost host-preflight and release-gate artif
 - Hosted Gemma 4 proof: Passing on synthetic/demo data through the guarded Gemini lane.
 - Zero-cost school-deployment proof: Blocked pending a viable zero-cost Ollama host.
 - Zero-cost enforcement: mock and Ollama remain the default no-spend lanes; hosted Gemini is explicit opt-in only.
-- Latest passed mock gate: `output/release-gate/2026-04-29T18-27-57-105Z-77741`
+- Latest passed mock gate: `output/release-gate/2026-04-29T20-52-48-860Z-94788`
 - Latest passed hosted Gemini gate: `output/release-gate/2026-04-27T01-26-45-190Z-87424`
 - Latest passed Ollama gate: _none recorded_
 
@@ -41,6 +41,7 @@ _None recorded_
 
 | Host | Block | Artifacts |
 | --- | --- | --- |
+| macbookair.ucalgary.ca (darwin arm64, Apple M1, 8.00 GiB) | Ollama CLI is not available or `ollama list` failed. | `output/host-preflight/2026-04-29T18-59-02-929Z.json` |
 | Benjamins-MacBook-Air.local (darwin arm64, Apple M1, 8.00 GiB) | Ollama CLI is not available or `ollama list` failed. | `output/host-preflight/2026-04-12T16-10-14-124Z.json` |
 
 ## Artifact Locations

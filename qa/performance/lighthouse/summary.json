@@ -1,9 +1,9 @@
 {
-  "generated_at": "2026-04-28T00:32:59.389Z",
+  "generated_at": "2026-04-29T20:34:00.494Z",
   "tool": "lighthouse 13.1.0",
   "preview": {
-    "app_url": "http://localhost:4173",
-    "api_url": "http://localhost:3101/api",
+    "app_url": "http://127.0.0.1:4173",
+    "api_url": "/api via Vite preview proxy to http://localhost:3101",
     "inference_url": "http://127.0.0.1:3200",
     "inference_mode": "mock"
   },
@@ -16,8 +16,8 @@
   "routes": [
     {
       "name": "desktop",
-      "url": "http://localhost:4173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
-      "fetch_time": "2026-04-28T00:32:21.727Z",
+      "url": "http://127.0.0.1:4173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-29T20:33:18.328Z",
       "scores": {
         "performance": 100,
         "accessibility": 92,
@@ -25,15 +25,15 @@
         "seo": 91
       },
       "metrics": {
-        "first_contentful_paint_ms": 408,
-        "largest_contentful_paint_ms": 741,
+        "first_contentful_paint_ms": 410,
+        "largest_contentful_paint_ms": 786,
         "total_blocking_time_ms": 0,
-        "cumulative_layout_shift": 0.007446,
-        "speed_index_ms": 408,
-        "transfer_kb": 407,
+        "cumulative_layout_shift": 0.001715,
+        "speed_index_ms": 674,
+        "transfer_kb": 468,
         "console_errors": 0
       },
-      "lcp_element": "div.shell-classroom-anchor > button#shell-classroom-trigger > span.shell-classroom-pill__copy > span.shell-classroom-pill__label",
+      "lcp_element": null,
       "pass": {
         "performance_score_90": true,
         "lcp_2500": true,
@@ -43,24 +43,24 @@
     },
     {
       "name": "mobile",
-      "url": "http://localhost:4173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
-      "fetch_time": "2026-04-28T00:31:25.724Z",
+      "url": "http://127.0.0.1:4173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-29T20:32:22.157Z",
       "scores": {
-        "performance": 90,
+        "performance": 93,
         "accessibility": 100,
         "best_practices": 100,
         "seo": 91
       },
       "metrics": {
-        "first_contentful_paint_ms": 1957,
-        "largest_contentful_paint_ms": 3418,
-        "total_blocking_time_ms": 44,
-        "cumulative_layout_shift": 0.000447,
-        "speed_index_ms": 1957,
-        "transfer_kb": 407,
+        "first_contentful_paint_ms": 2259,
+        "largest_contentful_paint_ms": 2784,
+        "total_blocking_time_ms": 18,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 2259,
+        "transfer_kb": 468,
         "console_errors": 0
       },
-      "lcp_element": "div.shell-classroom-anchor > button#shell-classroom-trigger > span.shell-classroom-pill__copy > span.shell-classroom-pill__label",
+      "lcp_element": null,
       "pass": {
         "performance_score_90": true,
         "lcp_2500": false,
@@ -70,24 +70,24 @@
     },
     {
       "name": "today-desktop",
-      "url": "http://localhost:4173/?demo=true&tab=today&classroom=demo-okafor-grade34",
-      "fetch_time": "2026-04-28T00:32:33.620Z",
+      "url": "http://127.0.0.1:4173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-29T20:33:30.445Z",
       "scores": {
         "performance": 100,
-        "accessibility": 94,
+        "accessibility": 91,
         "best_practices": 100,
         "seo": 91
       },
       "metrics": {
-        "first_contentful_paint_ms": 407,
-        "largest_contentful_paint_ms": 730,
+        "first_contentful_paint_ms": 408,
+        "largest_contentful_paint_ms": 652,
         "total_blocking_time_ms": 0,
-        "cumulative_layout_shift": 0.006031,
-        "speed_index_ms": 413,
-        "transfer_kb": 379,
+        "cumulative_layout_shift": 0.000004,
+        "speed_index_ms": 408,
+        "transfer_kb": 392,
         "console_errors": 0
       },
-      "lcp_element": "div.operational-preview__group > div.operational-preview__evidence > div.preview-evidence-row > span.preview-evidence-row__label",
+      "lcp_element": null,
       "pass": {
         "performance_score_90": true,
         "lcp_2500": true,
@@ -97,24 +97,24 @@
     },
     {
       "name": "today-mobile",
-      "url": "http://localhost:4173/?demo=true&tab=today&classroom=demo-okafor-grade34",
-      "fetch_time": "2026-04-28T00:31:40.147Z",
+      "url": "http://127.0.0.1:4173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "fetch_time": "2026-04-29T20:32:34.487Z",
       "scores": {
         "performance": 90,
-        "accessibility": 99,
+        "accessibility": 100,
         "best_practices": 100,
         "seo": 91
       },
       "metrics": {
-        "first_contentful_paint_ms": 1956,
-        "largest_contentful_paint_ms": 3369,
-        "total_blocking_time_ms": 38,
-        "cumulative_layout_shift": 0.000447,
-        "speed_index_ms": 1956,
-        "transfer_kb": 379,
+        "first_contentful_paint_ms": 2262,
+        "largest_contentful_paint_ms": 3237,
+        "total_blocking_time_ms": 0,
+        "cumulative_layout_shift": 0,
+        "speed_index_ms": 2262,
+        "transfer_kb": 371,
         "console_errors": 0
       },
-      "lcp_element": "div.shell-classroom-anchor > button#shell-classroom-trigger > span.shell-classroom-pill__copy > span.shell-classroom-pill__label",
+      "lcp_element": null,
       "pass": {
         "performance_score_90": true,
         "lcp_2500": false,

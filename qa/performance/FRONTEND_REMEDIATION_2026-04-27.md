@@ -29,6 +29,9 @@ This pass addressed the highest-confidence frontend issues from `qa/PERFORMANCE_
 - The `StudentCoverageStrip` sentinel is ordered with the coverage strip on Today, so its 1px in-flow marker no longer creates a 40px flex gap above the command center.
 - The shell wordmark now stays on the already-preloaded Inter path; the extra display-face preload was removed from `index.html`.
 - Recurring phone/coarse-pointer controls now use the shared `44px` medium control height across shell actions, the classroom switcher pill, page-intro info, contextual hints, popover rows, output feedback, visualization actions, recency rows, and dense chart calendar cells.
+- 2026-04-29 follow-up: the production preview now supports a same-origin `/api` proxy via `PRAIRIE_PREVIEW_API_TARGET`, so Lighthouse can measure the app without local cross-port CORS preflights.
+- 2026-04-29 follow-up: multi-tool page CSS, collapsed Classroom intelligence charts, roster detail, health trends, student detail drawer charts, and DataVisualization CSS are deferred behind lazy route/interaction boundaries instead of blocking Classroom/Today first paint.
+- 2026-04-29 follow-up: the Inter preload is desktop-only (`min-width: 700px`) so strict mobile first paint is not competing with font transfer before CSS/JS.
 
 ## Validation
 
@@ -41,11 +44,12 @@ source ~/.nvm/nvm.sh && nvm use >/dev/null && npx vitest run apps/web/src/styles
 source ~/.nvm/nvm.sh && nvm use >/dev/null && npm --prefix apps/web run build
 source ~/.nvm/nvm.sh && nvm use >/dev/null && npm run lint
 source ~/.nvm/nvm.sh && nvm use >/dev/null && npm run smoke:browser
-source ~/.nvm/nvm.sh && nvm use >/dev/null && VITE_API_URL=http://localhost:3101/api npm run build -w @prairie/web
-npx lighthouse 'http://localhost:4173/?demo=true' --preset=desktop --output=json --output=html --output-path=qa/performance/lighthouse/desktop
-npx lighthouse 'http://localhost:4173/?demo=true' --output=json --output=html --output-path=qa/performance/lighthouse/mobile
-npx lighthouse 'http://localhost:4173/?demo=true&tab=today&classroom=demo-okafor-grade34' --preset=desktop --output=json --output=html --output-path=qa/performance/lighthouse/today-desktop
-npx lighthouse 'http://localhost:4173/?demo=true&tab=today&classroom=demo-okafor-grade34' --output=json --output=html --output-path=qa/performance/lighthouse/today-mobile
+source ~/.nvm/nvm.sh && nvm use >/dev/null && VITE_API_URL=/api npm run build -w @prairie/web
+PRAIRIE_PREVIEW_API_TARGET=http://localhost:3101 npm run preview -w @prairie/web -- --host 127.0.0.1 --port 4173
+npx lighthouse 'http://127.0.0.1:4173/?demo=true&classroom=demo-okafor-grade34&tab=classroom' --preset=desktop --output=json --output=html --output-path=qa/performance/lighthouse/desktop
+npx lighthouse 'http://127.0.0.1:4173/?demo=true&classroom=demo-okafor-grade34&tab=classroom' --output=json --output=html --output-path=qa/performance/lighthouse/mobile
+npx lighthouse 'http://127.0.0.1:4173/?demo=true&classroom=demo-okafor-grade34&tab=today' --preset=desktop --output=json --output=html --output-path=qa/performance/lighthouse/today-desktop
+npx lighthouse 'http://127.0.0.1:4173/?demo=true&classroom=demo-okafor-grade34&tab=today' --output=json --output=html --output-path=qa/performance/lighthouse/today-mobile
 ```
 
 Results:
@@ -56,13 +60,14 @@ Results:
 - `npm --prefix apps/web run build`: pass
 - `npm run lint`: pass
 - `npm run smoke:browser`: pass
-- Production-preview Lighthouse matrix: pass for performance score `>= 90`, CLS `< 0.1`, and console errors `0` on all four tested runs
+- Production-preview Lighthouse matrix: pass for performance score `>= 90`, CLS `< 0.1`, and console errors `0` on all four tested runs. Mobile LCP remains above the strict `2.5s` target.
 
 Production build evidence:
 
-- Initial HTML now preloads `react` and `visualizations`, but not a global `panels` JS/CSS chunk.
+- Initial HTML now preloads `react`, but not global `panels` or `visualizations` JS/CSS chunks.
 - Deferred panel chunks are emitted separately, including `TomorrowPanel`, `PrepPanel`, `OpsPanel`, `ReviewPanel`, and `WeekPanel`.
-- Main JS entry is about `231 KiB` raw / `63 KiB` gzip after deferring inactive panel surfaces and no-DSN Sentry.
+- Deferred interaction chunks are emitted separately for `HealthBar`, `StudentRoster`, `StudentDetailView`, `ClassroomIntelligenceGrid`, and the DataVisualization submodules.
+- Main JS entry is about `237 KiB` raw / `65 KiB` gzip after deferring inactive panel surfaces, chart surfaces, and no-DSN Sentry.
 
 Runtime browser check:
 
@@ -76,9 +81,9 @@ Runtime browser check:
 
 | Route | Mode | Performance | LCP | CLS | Console |
 |---|---:|---:|---:|---:|---:|
-| Demo default | Desktop | 100 | 0.7s | 0.007446 | 0 |
-| Demo default | Mobile | 90 | 3.4s | 0.000447 | 0 |
-| Today | Desktop | 100 | 0.7s | 0.006031 | 0 |
-| Today | Mobile | 90 | 3.4s | 0.000447 | 0 |
+| Classroom | Desktop | 100 | 0.8s | 0.001715 | 0 |
+| Classroom | Mobile | 93 | 2.8s | 0 | 0 |
+| Today | Desktop | 100 | 0.7s | 0.000004 | 0 |
+| Today | Mobile | 90 | 3.2s | 0 | 0 |
 
-The original CLS blocker is closed. The remaining performance caveat is mobile Lighthouse LCP above `2.5s`; the current LCP element is the shell classroom switcher label, not the Today content.
+The original CLS blocker is closed. The 2026-04-29 pass also removed cross-port CORS preflights from the preview run and deferred chart CSS/JS from the first paint path. The remaining strict performance caveat is mobile Lighthouse LCP above `2.5s`: Classroom is close at `2.8s`, while Today remains `3.2s` because its data-complete command hero becomes the largest contentful element. A placeholder-first hero experiment reduced no real user work and caused measurable CLS, so it was not kept.

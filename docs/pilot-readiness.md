@@ -8,7 +8,7 @@ This document separates demo proof from real classroom readiness. PrairieClassro
 
 - Synthetic/demo proof: ready.
 - Local technical pilot rehearsal with fake or de-identified records: ready when `npm run release:gate` passes on the target machine.
-- Real classroom data pilot: not ready until the blockers below are closed.
+- Real classroom data pilot: still blocked by human-process items, not by missing local scripts: a real teacher/EA validation session and pilot-coordinator countersign remain required.
 - Hosted Gemini with real classroom or student data: prohibited.
 
 ## Operating Modes
@@ -25,13 +25,13 @@ This document separates demo proof from real classroom readiness. PrairieClassro
 
 Do not enter `local-pilot-real-data` until all of these are true:
 
-- Each classroom has an explicit data-retention setting.
-- Operators can run and verify the classroom memory lifecycle commands for export, anonymize, purge, backup, and restore.
+- Each real pilot classroom has an explicit data-retention setting. The demo classroom policy was verified on 2026-04-29 (`default_days: 730`, sessions `90`, feedback `180`).
+- Operators can run and verify the classroom memory lifecycle commands for export, anonymize, purge, backup, and restore. The demo rehearsal completed on 2026-04-29 with artifacts under `output/memory-admin/`; destructive commands still require explicit confirmation.
 - Anonymized exports receive manual free-text review before they are shared outside the pilot boundary.
 - Pilot participants have written expectations for what the system can and cannot do.
 - Safety review artifacts exist for family messages, support patterns, forecasts, survival packets, and scaffold-decay outputs — see `docs/pilot/safety-artifact-review-template.md` and the 5 completed reviews under `docs/pilot/safety-artifacts/`. Each review's §8 "Approval" section states whether the real-data pilot gate is open for that prompt class.
 - A human validation evidence plan is active, with teacher and EA rubrics.
-- Incident response steps exist for accidental sensitive-data exposure, incorrect output, or unauthorized access — see `docs/pilot/incident-drills/` for the 5 drill scripts and the `drill-NN` outcomes in the README's history section. Each of drills 1-5 must have been rehearsed at least once against the demo classroom before real-data sessions begin.
+- Incident response steps exist for accidental sensitive-data exposure, incorrect output, or unauthorized access — see `docs/pilot/incident-drills/` for the 5 drill scripts and the `drill-NN` outcomes in the README's history section. The 2026-04-29 maintainer rehearsal ran each drill path against the demo classroom with pass-with-note outcomes; pilot-coordinator countersign is still required before real-data sessions.
 - Hosted lanes are technically and operationally blocked from real classroom data.
 
 ## Pilot Evidence Artifacts
@@ -49,6 +49,10 @@ Create these artifacts before making any product claims from a pilot:
 ### Synthetic walkthrough baseline
 
 `docs/structured-walkthrough-v1.md` is a maintainer-run walkthrough of 8 product scenarios against the demo classroom in mock mode. It is **not** human validation — it is a synthetic friction log that surfaces design gaps at hackathon pace without claiming real-teacher use. It is the durable design-quality baseline the project re-runs each sprint, and it contains an explicit checklist of what would need to change for a walkthrough like this to count as real pilot evidence.
+
+### 2026-04-29 synthetic teacher-day rehearsal
+
+`docs/pilot/sessions/2026-04-29-synthetic-teacher-day.md` records a fresh maintainer rehearsal of the 8 cold-start scenarios after render-deck closeout. It used `npm run pilot:reset`, `npm run pilot:start`, the demo classroom, mock inference, the memory lifecycle CLI, and the drill runbooks. The run fixed one small Ops comprehension defect: the intervention logger now explains which required field is missing before `Save note & continue` becomes available. This artifact supports local workflow readiness only; usefulness, time-saved, and teacher-validation claims remain unsupported until a real teacher/EA session produces rubrics.
 
 ## Minimum Pilot Loop
 

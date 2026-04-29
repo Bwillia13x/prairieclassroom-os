@@ -30,7 +30,7 @@
 | **G-11** | Database migration framework | **Closed** | Versioned SQL migrations in `services/memory/migrations/`. Tracked in per-database `_migrations` table. Runs inside transactions with rollback. Current schema is migration 001. Backward-compatible with pre-existing databases. |
 | **G-12** | Teacher dashboard structural gaps | **Closed** | Health Bar (success states), sparkline trends, student roster, drill-down drawer — all four structural gaps from the frontend design audit are now implemented. See details below. |
 | **G-13** | Canonical system inventory drift | **Closed for current surface** | `npm run system:inventory` now generates `docs/system-inventory.md` and `docs/api-surface.md`, while `npm run system:inventory:check` catches panel, prompt, tier, and exact endpoint drift across canonical docs. |
-| **G-14** | Pilot readiness and real-data governance | **Mostly closed** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) cover operating modes, memory lifecycle, teacher/EA/substitute/reviewer boundaries, per-request access evidence, and the paperwork a first real pilot session would need. **2026-04-17 (round 4):** dedicated substitute and reviewer bounded views shipped (scope matrix locked by `services/orchestrator/__tests__/auth.test.ts`, per-route enforcement added to the pre-existing mount-level pattern, frontend tab visibility + capability hooks + teacher-downgrade confirmation). **2026-04-17 (round 5):** reusable safety-artifact review template + 5 completed per-prompt-class reviews (`docs/pilot/safety-artifacts/`) + 5 rehearsable incident-response drill scripts (`docs/pilot/incident-drills/`) all landed. The remaining blockers are all human-process: at least one real teacher walkthrough, pilot-coordinator countersign on each safety-artifact review, and at least one rehearsal of each of drills 1-5 before the first real-data session. |
+| **G-14** | Pilot readiness and real-data governance | **Mostly closed** | `docs/pilot-readiness.md`, expanded safety governance, `npm run memory:admin` (including `prune` with tombstone audit artifacts and per-classroom `retention_policy`), `npm run audit:log` (classroom/role/outcome queries + JSON artifact snapshots of access history), API role scopes, and the complete `docs/pilot/` paperwork set (participant brief, observation template, usefulness rubric, session log template, claims ledger, incident log) cover operating modes, memory lifecycle, teacher/EA/substitute/reviewer boundaries, per-request access evidence, and the paperwork a first real pilot session would need. **2026-04-17 (round 4):** dedicated substitute and reviewer bounded views shipped. **2026-04-17 (round 5):** reusable safety-artifact review template + 5 completed per-prompt-class reviews (`docs/pilot/safety-artifacts/`) + 5 rehearsable incident-response drill scripts (`docs/pilot/incident-drills/`) all landed. **2026-04-29:** maintainer rehearsal ran the five drill paths and memory lifecycle against the demo classroom with pass-with-note outcomes. Remaining blockers are human-process: at least one real teacher/EA walkthrough and pilot-coordinator countersign on safety artifacts/drill outcomes before real-data use. |
 | **G-15** | Synthetic classroom fixture convention drift | **Closed** | Cross-fixture EAL tag vocabulary unified 2026-04-25: non-demo classrooms (`alpha/bravo/charlie/delta/echo`) migrated from `emerging_english`/`eal_for_academic_vocabulary` to `eal_level_N`. |
 | **G-16** | Wire clickable chart drill-downs on Tomorrow Plan, Differentiate, Support Patterns, and Intervention panels | **Closed 2026-04-24** | All five previously-unwired chart components now pass click callbacks from their parent panels into `DrillDownDrawer`: `PlanCoverageRadar`, `VariantSummaryStrip`, `SupportPatternRadar`, `FollowUpSuccessRate`, and `InterventionTimeline`. |
 | **G-17** | Intervention capture velocity | **Closed** | `QuickCaptureTray` chip-first flow shipped 2026-04-14. Legacy `InterventionLogger` preserved in a `<details>` expansion; auto-opens on Tomorrow-Plan prefill. No schema or API changes — frontend-only addition on top of the existing `logIntervention` contract. |
@@ -91,14 +91,14 @@ No remaining G-16 implementation work is tracked here.
 - `host:preflight:ollama` now writes machine-readable host checks under `output/host-preflight/`.
 - The gate checks for `gemma4:4b` and `gemma4:27b` before trying to run.
 - `docs/eval-baseline.md` is now structured around mock, Ollama, hosted Gemini, and paid Vertex sections.
-- `host:preflight:ollama` ran non-destructively on the maintenance host on 2026-04-12 (artifact `output/host-preflight/2026-04-12T16-10-14-124Z.json`) and produced a clean, honest diagnostic: Ollama CLI missing, 8 GiB total RAM, 0.11 GiB free RAM, 6.76 GiB free disk.
+- `host:preflight:ollama` ran non-destructively on the maintenance host again on 2026-04-29 (artifact `output/host-preflight/2026-04-29T18-59-02-929Z.json`) and produced a clean, honest diagnostic: Ollama CLI missing, no required models, 8 GiB total RAM, 0.09 GiB free RAM, 8.95 GiB free disk.
 
-**Hardware feasibility finding (2026-04-12)**
+**Hardware feasibility finding (confirmed 2026-04-29)**
 
 The preflight revealed a structural block on the current maintenance host that was previously framed only as "Ollama isn't installed":
 
 - The planning-tier `gemma4:27b` model requires substantially more than 8 GiB RAM for any reasonable quantization — the maintenance host (Apple M1, 8 GiB RAM) cannot run it regardless of whether Ollama is installed.
-- The `gemma4:27b` weights also exceed the 6.76 GiB of free disk available on the maintenance host.
+- The `gemma4:27b` weights also exceed the 8.95 GiB of free disk available on the maintenance host.
 - The `gemma4:4b` live-tier model may still be feasible on this host if Ollama is installed and a few GiB of disk is freed; the dual-speed architecture would then run in "live-only" mode on this host with no planning tier.
 
 This means the Ollama lane as a full release gate cannot run on the maintenance host at all. It requires a different target machine with ≥ 16 GiB RAM and ≥ 40 GiB free disk for the full dual-speed lane, or it must be reduced to a live-tier-only configuration on the current host (which would only exercise 7 of the 13 prompt classes).
@@ -252,8 +252,8 @@ future browser-sweep cycle but the structural CSS contract is intact.
 
 **What remains**
 
-- Extend the initial teacher/EA API role scopes into dedicated substitute and reviewer views before those roles use real classroom records.
-- Add structured human-validation artifacts: de-identified observation notes, teacher/EA usefulness rubrics, consent assumptions, friction logs, and a public claims ledger.
+- Run a real teacher/EA walkthrough on synthetic or de-identified data and collect completed session/rubric artifacts.
+- Obtain pilot-coordinator countersign on the safety-artifact reviews and the 2026-04-29 drill rehearsal outcomes before any real-data session.
 
 ### G-15 — Synthetic classroom fixture convention drift
 

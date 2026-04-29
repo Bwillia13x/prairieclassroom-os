@@ -4,57 +4,57 @@
 
 **Log files analysed:** 5
 **Date range:** 2026-04-25 to 2026-04-29
-**Total requests:** 13772
+**Total requests:** 15944
 
 ## Reliability
 
-- Success rate (2xx/3xx): **97.3%** (13406 / 13772)
-- Client/server errors: 366
+- Success rate (2xx/3xx): **97.3%** (15518 / 15944)
+- Client/server errors: 426
 - Injection attempts detected: 6
 
 ## Error Codes
 
 | Status | Count |
 |--------|-------|
-| 401 | 175 |
-| 429 | 101 |
-| 403 | 72 |
+| 401 | 180 |
+| 429 | 152 |
+| 403 | 75 |
 | 404 | 16 |
-| 400 | 1 |
+| 400 | 2 |
 | 502 | 1 |
 
 ## Latency (ms)
 
 | Metric | Value |
 |--------|-------|
-| Average | 301 |
+| Average | 262 |
 | P50 | 3 |
-| P95 | 27 |
-| P99 | 113 |
+| P95 | 25 |
+| P99 | 102 |
 
 ## Top Routes
 
 | Route | Count |
 |-------|-------|
-| GET /api/classrooms/ | 3168 |
-| POST /api/sessions/ | 2840 |
-| GET /api/today/:classroomId | 2231 |
-| GET /api/classrooms/:id/health | 1307 |
-| GET /api/sessions/summary/:classroomId | 751 |
-| GET /api/classrooms/:id/student-summary | 633 |
-| GET /api/classrooms/:id/messages | 610 |
-| GET /api/classrooms/:id/plans | 536 |
-| GET /api/classrooms/:id/runs | 443 |
-| GET /api/classrooms/:id/interventions | 419 |
-| POST /api/family-message/ | 86 |
-| POST /api/tomorrow-plan/stream | 66 |
-| GET /api/tomorrow-plan/stream/:streamId/events | 66 |
-| POST /api/differentiate/ | 62 |
-| GET /health | 61 |
+| GET /api/classrooms/ | 3637 |
+| POST /api/sessions/ | 3196 |
+| GET /api/today/:classroomId | 2572 |
+| GET /api/classrooms/:id/health | 1560 |
+| GET /api/sessions/summary/:classroomId | 931 |
+| GET /api/classrooms/:id/student-summary | 784 |
+| GET /api/classrooms/:id/messages | 696 |
+| GET /api/classrooms/:id/plans | 627 |
+| GET /api/classrooms/:id/runs | 496 |
+| GET /api/classrooms/:id/interventions | 476 |
+| POST /api/family-message/ | 101 |
+| POST /api/tomorrow-plan/stream | 75 |
+| GET /api/tomorrow-plan/stream/:streamId/events | 75 |
+| POST /api/differentiate/ | 71 |
+| GET /health | 64 |
 
 ## Inference Providers
 
 | Provider | Count |
 |----------|-------|
-| mock | 13454 |
+| mock | 15626 |
 | gemini | 318 |

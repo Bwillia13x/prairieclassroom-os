@@ -49,7 +49,13 @@ After any drill:
 
 *Append one line per drill run. Keep the newest on top. Format: `YYYY-MM-DD — drill-NN — coordinator role — outcome (pass / pass-with-note / fail) — log ref`*
 
-- *No drills have been run yet. The first entry lands when the first drill is executed.*
+- 2026-04-29 — drill-05 — maintainer rehearsal — pass-with-note — memory lifecycle rehearsal: export/anonymize/backup/prune/purge-refusal/restore under `output/memory-admin/`; session summary `docs/pilot/sessions/2026-04-29-synthetic-teacher-day.md`
+- 2026-04-29 — drill-04 — maintainer rehearsal — pass-with-note — EA direct-approve attempt returned `403 classroom_role_forbidden`; access audit `output/access-audit/2026-04-29T19-19-26-544Z-access-audit.json`
+- 2026-04-29 — drill-03 — maintainer rehearsal — pass-with-note — prompt-safety and auth regression tests passed (`243` tests); no generated diagnostic-language leak observed in mock rehearsal
+- 2026-04-29 — drill-02 — maintainer rehearsal — pass-with-note — hosted lane remained disabled/missing key via `npm run gemini:readycheck`; no hosted process started and no real data used
+- 2026-04-29 — drill-01 — maintainer rehearsal — pass-with-note — substitute direct access to `/api/classrooms/demo-okafor-grade34/plans` returned `403 classroom_role_forbidden`; access audit `output/access-audit/2026-04-29T19-19-26-544Z-access-audit.json`
+
+These 2026-04-29 entries are synthetic maintainer rehearsals against the demo classroom. They close the "run the runbooks once" code/operator rehearsal gap, but they do **not** replace pilot-coordinator countersign or real teacher/EA validation.
 
 ---
 
