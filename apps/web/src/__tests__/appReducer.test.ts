@@ -101,6 +101,62 @@ describe("appReducer — SET_CLASSROOM_ROLE", () => {
   });
 });
 
+describe("appReducer — SET_ACTIVE_CLASSROOM", () => {
+  beforeEach(() => {
+    installLocalStorage();
+    localStorage.clear();
+    setUrl("/");
+  });
+
+  it("preserves loaded Today state when selecting the already-active classroom", () => {
+    const snapshot = {
+      debt_register: {
+        items: [],
+        item_count_by_category: { stale_followup: 1 },
+      },
+    } as unknown as AppState["latestTodaySnapshot"];
+    const initial = baseState({
+      activeClassroom: "demo-okafor-grade34",
+      latestTodaySnapshot: snapshot,
+      latestDebtRegister: snapshot?.debt_register ?? null,
+      debtCounts: { stale_followup: 1 },
+    });
+
+    const next = appReducer(initial, {
+      type: "SET_ACTIVE_CLASSROOM",
+      classroomId: "demo-okafor-grade34",
+    });
+
+    expect(next.latestTodaySnapshot).toBe(snapshot);
+    expect(next.latestDebtRegister).toBe(snapshot?.debt_register);
+    expect(next.debtCounts).toEqual({ stale_followup: 1 });
+  });
+
+  it("clears loaded Today state when changing classrooms", () => {
+    const snapshot = {
+      debt_register: {
+        items: [],
+        item_count_by_category: { stale_followup: 1 },
+      },
+    } as unknown as AppState["latestTodaySnapshot"];
+    const initial = baseState({
+      activeClassroom: "demo-okafor-grade34",
+      latestTodaySnapshot: snapshot,
+      latestDebtRegister: snapshot?.debt_register ?? null,
+      debtCounts: { stale_followup: 1 },
+    });
+
+    const next = appReducer(initial, {
+      type: "SET_ACTIVE_CLASSROOM",
+      classroomId: "classroom-b",
+    });
+
+    expect(next.latestTodaySnapshot).toBeNull();
+    expect(next.latestDebtRegister).toBeNull();
+    expect(next.debtCounts).toEqual({});
+  });
+});
+
 describe("createInitialState — classroomRoles hydration", () => {
   beforeEach(() => {
     installLocalStorage();
@@ -164,7 +220,14 @@ describe("createInitialState — judge/demo first-run modals", () => {
     setUrl("/?demo=true&tab=today&classroom=demo-okafor-grade34");
     const state = createInitialState();
     expect(state.showOnboarding).toBe(false);
+    expect(state.activeClassroom).toBe("demo-okafor-grade34");
     expect(shouldSuppressFirstRunModalsFromUrl()).toBe(true);
+  });
+
+  it("preloads the demo classroom id when only the demo query flag is present", () => {
+    setUrl("/?demo=true&tab=today");
+    const state = createInitialState();
+    expect(state.activeClassroom).toBe("demo-okafor-grade34");
   });
 
   it("also supports explicit presentation and judge query flags", () => {

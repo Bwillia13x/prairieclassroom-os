@@ -177,6 +177,20 @@ function renderPanel(
   return { onTabChange, user };
 }
 
+async function openClassroomIntelligence(user: ReturnType<typeof userEvent.setup>) {
+  const summaryTitle = await screen.findByText("Patterns & composition");
+  const summary = summaryTitle.closest("summary");
+  const details = summaryTitle.closest("details");
+  expect(summary).toBeTruthy();
+  expect(details).toBeTruthy();
+
+  if (!(details as HTMLDetailsElement).open) {
+    await user.click(summary!);
+  }
+
+  return screen.findByTestId("viz-composition-segment-eal-eal_level_1");
+}
+
 describe("TodayPanel drill-down integration", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -206,13 +220,8 @@ describe("TodayPanel drill-down integration", () => {
   it("clicking an EAL segment on ClassroomCompositionRings (now on the Classroom page) opens the student-tag-group drawer", async () => {
     const { user } = renderPanel(makeSnapshot(), makeHealth(), ClassroomPanel);
 
-    await waitFor(() => {
-      expect(
-        screen.getByTestId("viz-composition-segment-eal-eal_level_1"),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByTestId("viz-composition-segment-eal-eal_level_1"));
+    const ealSegment = await openClassroomIntelligence(user);
+    await user.click(ealSegment);
 
     expect(
       await screen.findByRole("dialog", { name: /EAL Level 1 — 2 students/i }),
@@ -222,13 +231,8 @@ describe("TodayPanel drill-down integration", () => {
   it("clicking a student inside the tag-group view replaces drawer content with StudentDetailView without closing", async () => {
     const { user } = renderPanel(makeSnapshot(), makeHealth(), ClassroomPanel);
 
-    await waitFor(() => {
-      expect(
-        screen.getByTestId("viz-composition-segment-eal-eal_level_1"),
-      ).toBeInTheDocument();
-    });
-
-    await user.click(screen.getByTestId("viz-composition-segment-eal-eal_level_1"));
+    const ealSegment = await openClassroomIntelligence(user);
+    await user.click(ealSegment);
 
     const tagGroupDialog = await screen.findByRole("dialog", { name: /EAL Level 1 — 2 students/i });
     expect(tagGroupDialog).toBeInTheDocument();

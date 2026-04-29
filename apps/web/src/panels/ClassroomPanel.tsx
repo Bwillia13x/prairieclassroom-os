@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState, type CSSProperties } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -13,20 +13,12 @@ import type { NavTarget } from "../appReducer";
 import SectionSkeleton from "../components/SectionSkeleton";
 import CohortSparklineGrid from "../components/CohortSparklineGrid";
 import ErrorBanner from "../components/ErrorBanner";
-import HealthBar from "../components/HealthBar";
-import StudentRoster from "../components/StudentRoster";
 import OperatingDashboard from "../components/OperatingDashboard";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
 import PageHero from "../components/shared/PageHero";
 import SectionMarker from "../components/shared/SectionMarker";
 import { useZoneDisclosure } from "../hooks/useZoneDisclosure";
-import {
-  ClassroomCompositionRings,
-  InterventionRecencyTimeline,
-  StudentPriorityMatrix,
-  ComplexityDebtGauge,
-} from "../components/DataVisualizations";
 import { countActionableThreads } from "./ClassroomPanel.helpers";
 import type {
   ClassroomHealth,
@@ -38,6 +30,10 @@ import type {
 } from "../types";
 import "./TodayPanel.css";
 import "./ClassroomPanel.css";
+
+const ClassroomIntelligenceGrid = lazy(() => import("../components/ClassroomIntelligenceGrid"));
+const HealthBar = lazy(() => import("../components/HealthBar"));
+const StudentRoster = lazy(() => import("../components/StudentRoster"));
 
 interface Props {
   onTabChange: (target: NavTarget) => void;
@@ -399,12 +395,14 @@ export default function ClassroomPanel({
         </div>
         <div className="classroom-pulse__body">
           {health.result ? (
-            <HealthBar
-              health={health.result ?? null}
-              loading={false}
-              pendingActionCount={pendingActionCount}
-              onTrendClick={(payload) => setDrillDown({ type: "trend", ...payload })}
-            />
+            <Suspense fallback={<SectionSkeleton label="Loading health trends" variant="health" lines={2} />}>
+              <HealthBar
+                health={health.result ?? null}
+                loading={false}
+                pendingActionCount={pendingActionCount}
+                onTrendClick={(payload) => setDrillDown({ type: "trend", ...payload })}
+              />
+            </Suspense>
           ) : health.error ? (
             <div className="today-health-error" role="alert">
               Couldn&apos;t load health summary: {health.error}
@@ -522,51 +520,18 @@ export default function ClassroomPanel({
           <span id="classroom-insights-title" className="classroom-zone__summary-title">Patterns &amp; composition</span>
           <span className="classroom-zone__summary-hint">{intelDisclosure.open ? "Collapse" : "Expand"}</span>
         </summary>
-        <div className="classroom-intelligence__grid">
-          {result && result.debt_register.items.length > 0 ? (
-            <ComplexityDebtGauge
-              debtItems={result.debt_register.items}
-              previousTotal={previousDebtTotal}
-              onSegmentClick={(payload) =>
-                setDrillDown({
-                  type: "trend",
-                  trendKey: payload.trendKey,
-                  data: health.result?.trends?.debt_total_14d ?? payload.data,
-                  label: payload.label,
-                })
-              }
+        {intelDisclosure.open ? (
+          <Suspense fallback={<SectionSkeleton label="Loading pattern intelligence" variant="story" lines={2} />}>
+            <ClassroomIntelligenceGrid
+              debtItems={result?.debt_register.items ?? []}
+              previousDebtTotal={previousDebtTotal}
+              debtTrendData={health.result?.trends?.debt_total_14d}
+              students={studentSummaries.result ?? []}
+              profileStudents={profile?.students ?? []}
+              onOpenContext={setDrillDown}
             />
-          ) : null}
-
-          {studentSummaries.result && studentSummaries.result.length > 0 ? (
-            <StudentPriorityMatrix
-              students={studentSummaries.result}
-              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            />
-          ) : null}
-
-          {studentSummaries.result && studentSummaries.result.length > 0 ? (
-            <InterventionRecencyTimeline
-              students={studentSummaries.result}
-              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-            />
-          ) : null}
-
-          {profile && profile.students.length > 0 ? (
-            <ClassroomCompositionRings
-              students={profile.students}
-              onSegmentClick={(payload) =>
-                setDrillDown({
-                  type: "student-tag-group",
-                  groupKind: payload.groupKind,
-                  tag: payload.tag,
-                  label: payload.label,
-                  students: payload.students,
-                })
-              }
-            />
-          ) : null}
-        </div>
+          </Suspense>
+        ) : null}
       </details>
 
       {/* ============================================================
@@ -593,11 +558,13 @@ export default function ClassroomPanel({
           <span className="classroom-zone__summary-hint">{rosterDisclosure.open ? "Collapse" : "Expand"}</span>
         </summary>
         <div className="classroom-roster__body">
-          {result ? (
-            <StudentRoster
-              attentionCount={attentionStudents.size}
-              onDrillDown={(context) => setDrillDown(context)}
-            />
+          {rosterDisclosure.open && result ? (
+            <Suspense fallback={<SectionSkeleton label="Loading roster" variant="story" lines={2} />}>
+              <StudentRoster
+                attentionCount={attentionStudents.size}
+                onDrillDown={(context) => setDrillDown(context)}
+              />
+            </Suspense>
           ) : null}
         </div>
       </details>

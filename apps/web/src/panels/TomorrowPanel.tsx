@@ -18,6 +18,8 @@ import OperationalPreview, {
 } from "../components/shared/OperationalPreview";
 import SectionMarker from "../components/shared/SectionMarker";
 import type { FamilyMessagePrefill, InterventionPrefill } from "../types";
+import "../styles/page-tool-switcher.css";
+import "../styles/multi-tool-page.css";
 
 const TOMORROW_TOOLS = TOOLS_BY_TAB.tomorrow ?? (["tomorrow-plan", "complexity-forecast"] as ActiveTool[]);
 

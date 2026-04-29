@@ -86,6 +86,11 @@ function describeClassroom(classroom: ClassroomProfile) {
   return `Grade ${classroom.grade_band} ${classroom.subject_focus.replace(/_/g, " ")}`;
 }
 
+function describeClassroomFallback(classroomId: string) {
+  if (classroomId === DEMO_CLASSROOM_ID) return "Grade 3-4 cross curricular";
+  return classroomId ? classroomId : "Choose classroom";
+}
+
 function renderPanel(
   activeTab: ActiveTab,
   targetTab: ActiveTab,
@@ -529,9 +534,9 @@ export default function App() {
     params.set("classroom", state.activeClassroom);
 
     const profile = state.classrooms.find((entry) => entry.classroom_id === state.activeClassroom);
-    if (profile?.is_demo) {
+    if (profile?.is_demo || (!profile && state.activeClassroom === DEMO_CLASSROOM_ID)) {
       params.set("demo", "true");
-    } else {
+    } else if (profile) {
       params.delete("demo");
     }
 
@@ -713,7 +718,7 @@ export default function App() {
   const roleForNav: ClassroomRole = activeRole;
   const visibleTabs = useMemo(() => getVisibleTabs(roleForNav), [roleForNav]);
   const accessSaved = Boolean(activeClassroom && state.classroomAccessCodes[activeClassroom]);
-  const activeClassroomLabel = profile ? describeClassroom(profile) : "Choose classroom";
+  const activeClassroomLabel = profile ? describeClassroom(profile) : describeClassroomFallback(activeClassroom);
   const activeClassroomMeta = profile?.subject_focus.replace(/_/g, " ") ?? "";
   const suppressFirstRunModals = shouldSuppressFirstRunModalsFromUrl();
 
@@ -864,6 +869,7 @@ export default function App() {
                   className={`shell-classroom-pill${classroomMenuOpen ? " shell-classroom-pill--open" : ""}`}
                   type="button"
                   onClick={() => setClassroomMenuOpen((open) => !open)}
+                  aria-label={`Active classroom: ${activeClassroomLabel}`}
                   aria-expanded={classroomMenuOpen}
                   aria-haspopup="dialog"
                   aria-controls="shell-classroom-panel"

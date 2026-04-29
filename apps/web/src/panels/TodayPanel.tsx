@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
@@ -22,7 +22,6 @@ import OperationalPreview, {
   type OperationalPreviewGroup,
 } from "../components/shared/OperationalPreview";
 import SectionMarker from "../components/shared/SectionMarker";
-import { ComplexityDebtGauge } from "../components/DataVisualizations";
 import DayArc from "../components/DayArc";
 import TodayHero from "../components/TodayHero";
 import PageFreshness from "../components/PageFreshness";
@@ -47,6 +46,11 @@ import type {
   FamilyMessagePrefill,
 } from "../types";
 import "./TodayPanel.css";
+
+const ComplexityDebtGauge = lazy(async () => {
+  const module = await import("../components/DataVisualizations");
+  return { default: module.ComplexityDebtGauge };
+});
 
 interface Props {
   onTabChange: (target: NavTarget) => void;
@@ -412,18 +416,20 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
             {result.debt_register.items.length > 0 ? (
               <div id="complexity-debt" className="today-anchor-target">
-                <ComplexityDebtGauge
-                  debtItems={result.debt_register.items}
-                  previousTotal={previousDebtTotal}
-                  onSegmentClick={(payload) =>
-                    setDrillDown({
-                      type: "trend",
-                      trendKey: payload.trendKey,
-                      data: health.result?.trends?.debt_total_14d ?? payload.data,
-                      label: payload.label,
-                    })
-                  }
-                />
+                <Suspense fallback={<SectionSkeleton label="Loading debt trend" variant="story" lines={1} />}>
+                  <ComplexityDebtGauge
+                    debtItems={result.debt_register.items}
+                    previousTotal={previousDebtTotal}
+                    onSegmentClick={(payload) =>
+                      setDrillDown({
+                        type: "trend",
+                        trendKey: payload.trendKey,
+                        data: health.result?.trends?.debt_total_14d ?? payload.data,
+                        label: payload.label,
+                      })
+                    }
+                  />
+                </Suspense>
               </div>
             ) : null}
           </div>

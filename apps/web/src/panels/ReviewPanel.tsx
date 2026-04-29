@@ -20,6 +20,8 @@ import FamilyMessagePanel from "./FamilyMessagePanel";
 import SupportPatternsPanel from "./SupportPatternsPanel";
 import UsageInsightsPanel from "./UsageInsightsPanel";
 import type { FamilyMessagePrefill, InterventionPrefill } from "../types";
+import "../styles/page-tool-switcher.css";
+import "../styles/multi-tool-page.css";
 
 const REVIEW_TOOLS = TOOLS_BY_TAB.review ?? ([
   "family-message",

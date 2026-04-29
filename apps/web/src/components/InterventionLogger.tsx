@@ -55,7 +55,7 @@ export default function InterventionLogger({
   const [studentQuery, setStudentQuery] = useState("");
   const [followUpNeeded, setFollowUpNeeded] = useState(true);
   const [followUpTiming, setFollowUpTiming] = useState("Tomorrow morning");
-  const [memoryDestination, setMemoryDestination] = useState("Classroom memory + student thread");
+  const [memoryDestination, setMemoryDestination] = useState("Classroom + student thread");
   const [touched, setTouched] = useState(false);
 
   const {
@@ -134,7 +134,7 @@ export default function InterventionLogger({
     );
     setFollowUpNeeded(true);
     setFollowUpTiming("Tomorrow morning");
-    setMemoryDestination("Classroom memory + student thread");
+    setMemoryDestination("Classroom + student thread");
     setTouched(false);
     clearDraft();
   }
@@ -145,6 +145,15 @@ export default function InterventionLogger({
     student.alias.toLowerCase().includes(studentQuery.trim().toLowerCase()),
   );
   const isOpsWorkflow = variant === "ops-workflow";
+  const submitHelp = !canSubmitProp
+    ? "Only teachers, EAs, and substitutes can save intervention notes here."
+    : selectedStudents.length === 0 && !teacherNote.trim()
+      ? "Select at least one student and add an evidence note to save."
+      : selectedStudents.length === 0
+        ? "Select at least one student to save this note."
+        : !teacherNote.trim()
+          ? "Add an evidence note to save."
+          : "Ready to save to classroom memory.";
 
   return (
     <FormCard className={`intervention-logger intervention-logger--${variant}`} as="section">
@@ -299,7 +308,7 @@ export default function InterventionLogger({
                 value={memoryDestination}
                 onChange={(event) => setMemoryDestination(event.target.value)}
               >
-                <option>Classroom memory + student thread</option>
+                <option>Classroom + student thread</option>
                 <option>Follow-up queue only</option>
                 <option>EA briefing context</option>
                 <option>Sub packet watchpoint</option>
@@ -309,6 +318,14 @@ export default function InterventionLogger({
         ) : null}
 
         <div className="intervention-logger__actions">
+          {isOpsWorkflow ? (
+            <p
+              id="intervention-submit-help"
+              className={`intervention-logger__submit-help${submitDisabled ? "" : " intervention-logger__submit-help--ready"}`}
+            >
+              {submitHelp}
+            </p>
+          ) : null}
           {isOpsWorkflow ? (
             <ActionButton
               variant="ghost"
@@ -324,6 +341,7 @@ export default function InterventionLogger({
             type="submit"
             loading={loading}
             disabled={submitDisabled}
+            aria-describedby={isOpsWorkflow ? "intervention-submit-help" : undefined}
           >
             {loading
               ? "Structuring note…"

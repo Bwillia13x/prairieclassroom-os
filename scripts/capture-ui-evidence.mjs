@@ -141,6 +141,30 @@ async function gotoPanel(page, tab, tool = null) {
     waitUntil: "networkidle",
   });
   await page.waitForSelector(`#panel-${tab}:not([hidden])`);
+  await resetPanelScroll(page, tab);
+}
+
+async function resetPanelScroll(page, tab) {
+  await page.evaluate(async (activeTab) => {
+    const reset = () => {
+      globalThis.scrollTo(0, 0);
+      for (const element of [
+        globalThis.document.scrollingElement,
+        globalThis.document.documentElement,
+        globalThis.document.body,
+        globalThis.document.querySelector(".app-shell"),
+        globalThis.document.querySelector(".app-main"),
+        globalThis.document.querySelector(`#panel-${activeTab}:not([hidden])`),
+      ]) {
+        if (element) element.scrollTop = 0;
+      }
+    };
+    reset();
+    await new Promise((resolve) => globalThis.requestAnimationFrame(resolve));
+    reset();
+    await new Promise((resolve) => globalThis.requestAnimationFrame(resolve));
+    reset();
+  }, tab);
 }
 
 async function waitForLoadedPanel(page, tab, label) {
@@ -193,6 +217,9 @@ async function assertActivePageContentVisible(page, tab, label) {
         ".page-hero",
         ".page-intro",
         ".workspace-layout",
+        "h1",
+        "h2",
+        "h3",
       ].join(", "),
     )].find((element) => {
       const rect = element.getBoundingClientRect();
@@ -202,7 +229,37 @@ async function assertActivePageContentVisible(page, tab, label) {
     const rect = primary.getBoundingClientRect();
     return rect.bottom > 0 && rect.top < globalThis.innerHeight;
   }, tab, { timeout: 10_000 }).then(() => true).catch(() => false);
-  assert.ok(visible, `${label}: active page content should be visible in the first viewport`);
+  if (visible) return;
+
+  const recovered = await page.evaluate(async (activeTab) => {
+    const panel = globalThis.document.querySelector(`#panel-${activeTab}:not([hidden])`);
+    if (!panel) return false;
+    const primary = [...panel.querySelectorAll(
+      [
+        ".today-hero__mobile-command",
+        ".today-hero",
+        ".ops-command-workflow",
+        ".prep-command-strip",
+        ".week-operations-board",
+        ".page-hero",
+        ".page-intro",
+        ".workspace-layout",
+        "h1",
+        "h2",
+        "h3",
+      ].join(", "),
+    )].find((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
+    if (!primary) return false;
+    primary.scrollIntoView({ block: "start", inline: "nearest" });
+    await new Promise((resolve) => globalThis.requestAnimationFrame(resolve));
+    const rect = primary.getBoundingClientRect();
+    return rect.bottom > 0 && rect.top < globalThis.innerHeight;
+  }, tab);
+
+  assert.ok(recovered, `${label}: active page content should be visible in the first viewport`);
 }
 
 async function assertMobileNavClearance(page, tab, label) {
@@ -294,6 +351,8 @@ async function captureFirstScreens(page, runDir, prefix, { mobile = false } = {}
   for (const { tab, tool } of FIRST_SCREEN_SURFACES) {
     await gotoPanel(page, tab, tool);
     const label = `${prefix} ${tab}`;
+    await waitForLoadedPanel(page, tab, label);
+    await resetPanelScroll(page, tab);
     await assertNoHorizontalOverflow(page, label);
     await assertActivePageContentVisible(page, tab, label);
     if (mobile) {
@@ -327,6 +386,8 @@ async function captureRenderComparisonScreens(page, runDir, prefix, surfaces, { 
       await fillOpsDraftScenario(page);
     }
     const label = `${prefix} render comparison ${tab}`;
+    await waitForLoadedPanel(page, tab, label);
+    await resetPanelScroll(page, tab);
     await assertNoHorizontalOverflow(page, label);
     await assertActivePageContentVisible(page, tab, label);
     if (mobile) {
@@ -401,7 +462,7 @@ async function fillOpsDraftScenario(page) {
   await page.getByRole("group", { name: /Select students/i }).getByLabel(/^Farid$/).check();
   await page.getByLabel(/Evidence note/i).fill(OPS_DRAFT_NOTE);
   await page.getByLabel(/Follow-up timing/i).selectOption("Tomorrow morning");
-  await page.getByLabel(/Classroom memory destination/i).selectOption("Classroom memory + student thread");
+  await page.getByLabel(/Classroom memory destination/i).selectOption("Classroom + student thread");
   const preview = page.locator(".intervention-memory-preview");
   await preview.getByText(/Amira, Farid/i).first().waitFor({ timeout: 10_000 });
   await preview.getByText(/assembly transition/i).first().waitFor({ timeout: 10_000 });

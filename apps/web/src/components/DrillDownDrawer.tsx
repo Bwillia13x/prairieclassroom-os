@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { lazy, Suspense, useState, useEffect, useRef, useCallback } from "react";
 import { useApp } from "../AppContext";
 import { useFocusTrap } from "../hooks/useFocusTrap";
 import type { DrillDownContext } from "../types";
 import type { NavTarget } from "../appReducer";
-import StudentDetailView from "./StudentDetailView";
 import ForecastBlockView from "./ForecastBlockView";
 import DebtCategoryView from "./DebtCategoryView";
 import TrendDetailView from "./TrendDetailView";
@@ -20,6 +19,8 @@ import {
   WeekDayView,
 } from "./TriageDrawerViews";
 import "./DrillDownDrawer.css";
+
+const StudentDetailView = lazy(() => import("./StudentDetailView"));
 
 interface Props {
   context: DrillDownContext | null;
@@ -172,13 +173,15 @@ export default function DrillDownDrawer({
 
         <div className="drill-down-drawer__body">
           {context.type === "student" && (
-            <StudentDetailView
-              context={context}
-              classroomId={activeClassroom}
-              onInterventionPrefill={onInterventionPrefill}
-              onMessagePrefill={onMessagePrefill}
-              onNavigate={onNavigate}
-            />
+            <Suspense fallback={<div className="drill-down-drawer__loading">Loading student detail</div>}>
+              <StudentDetailView
+                context={context}
+                classroomId={activeClassroom}
+                onInterventionPrefill={onInterventionPrefill}
+                onMessagePrefill={onMessagePrefill}
+                onNavigate={onNavigate}
+              />
+            </Suspense>
           )}
 
           {context.type === "forecast-block" && (

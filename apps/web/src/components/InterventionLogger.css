@@ -269,7 +269,10 @@
 }
 
 .intervention-logger--ops-workflow .intervention-logger__actions {
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  justify-content: initial;
   margin-top: 0;
   padding-top: var(--space-2);
   border-top: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent);
@@ -291,6 +294,18 @@
   align-items: center;
   gap: var(--space-3);
   margin-top: var(--space-4);
+}
+
+.intervention-logger__submit-help {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+}
+
+.intervention-logger__submit-help--ready {
+  color: var(--color-text-success);
+  font-weight: var(--font-weight-medium);
 }
 
 .intervention-logger__submit-instrument {
@@ -340,7 +355,8 @@
   }
 
   .intervention-logger--ops-workflow .intervention-logger__actions {
-    flex-direction: column-reverse;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: stretch;
   }
 
   .intervention-logger--ops-workflow .intervention-logger__actions .btn {

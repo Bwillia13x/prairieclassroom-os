@@ -8,6 +8,8 @@ import {
 } from "../appReducer";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
+import "../styles/page-tool-switcher.css";
+import "../styles/multi-tool-page.css";
 
 const PREP_TOOLS = TOOLS_BY_TAB.prep ?? (["differentiate", "language-tools"] as ActiveTool[]);
 const PREP_TOOL_COPY: Partial<Record<ActiveTool, { kicker: string; description: string; status: string }>> = {

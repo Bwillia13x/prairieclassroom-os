@@ -22,6 +22,8 @@
 import type { ClassroomProfile, ComplexityDebtRegister, FamilyMessagePrefill, InterventionPrefill, TodaySnapshot, TomorrowNote } from "./types";
 import type { SectionIconName } from "./components/SectionIcon";
 
+const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+
 // ─── Active Tab (top-level) ───
 
 export type ActiveTab =
@@ -624,13 +626,29 @@ export function shouldSuppressFirstRunModalsFromUrl(): boolean {
   }
 }
 
+function restoreClassroomFromUrl(): string {
+  if (typeof window === "undefined") return "";
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const requestedClassroom = params.get("classroom");
+    if (requestedClassroom) return requestedClassroom;
+    const demoFlag = params.get("demo");
+    if (["1", "true", "yes", "on"].includes((demoFlag ?? "").toLowerCase())) {
+      return DEMO_CLASSROOM_ID;
+    }
+  } catch {
+    return "";
+  }
+  return "";
+}
+
 export function createInitialState(): AppState {
   const nav = restoreNavFromUrl();
   return {
     classrooms: [],
     activeTab: nav.tab,
     activeTool: nav.tool,
-    activeClassroom: "",
+    activeClassroom: restoreClassroomFromUrl(),
     messagePrefill: null,
     interventionPrefill: null,
     initError: null,
@@ -665,6 +683,12 @@ export function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, classrooms: action.classrooms };
 
     case "SET_ACTIVE_CLASSROOM":
+      if (action.classroomId === state.activeClassroom) {
+        return {
+          ...state,
+          activeClassroom: action.classroomId,
+        };
+      }
       return {
         ...state,
         activeClassroom: action.classroomId,

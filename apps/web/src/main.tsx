@@ -26,8 +26,6 @@ import "./styles/base.css";
 import "./styles/typography.css";
 import "./styles/primitives.css";
 import "./styles/shell.css";
-import "./styles/page-tool-switcher.css";
-import "./styles/multi-tool-page.css";
 import "./motion.css";
 import "./styles/nothing-theme.css";
 import "./styles/ambient.css";

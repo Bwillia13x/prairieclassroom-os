@@ -12,6 +12,8 @@ import EABriefingPanel from "./EABriefingPanel";
 import EALoadPanel from "./EALoadPanel";
 import SurvivalPacketPanel from "./SurvivalPacketPanel";
 import type { InterventionPrefill } from "../types";
+import "../styles/page-tool-switcher.css";
+import "../styles/multi-tool-page.css";
 
 const OPS_TOOLS = TOOLS_BY_TAB.ops ?? ([
   "log-intervention",
