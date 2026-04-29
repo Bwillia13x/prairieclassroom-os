@@ -162,7 +162,7 @@
   font-size: var(--text-md);
   font-weight: var(--font-weight-medium);
   color: var(--color-text);
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
 }
 
 .today-hero__directive-arrow {
@@ -325,7 +325,7 @@
   font-weight: var(--font-weight-medium);
   font-optical-sizing: auto;
   line-height: var(--leading-display);
-  letter-spacing: -0.025em;
+  letter-spacing: 0;
   color: var(--color-text);
   text-wrap: balance;
   margin: 0;
@@ -1964,6 +1964,41 @@
   .today-hero__flow,
   .today-hero__side,
   .today-hero__debt-band.today-hero__debt-band {
+    display: none;
+  }
+}
+
+/* Closeout polish: keep the cockpit decisive by trimming supporting copy
+   before it competes with the next-action module. */
+.today-hero__copy,
+.today-hero__next-footer p,
+.today-hero__flow-header p,
+.today-hero__flow-next {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.today-hero__copy {
+  -webkit-line-clamp: 2;
+}
+
+.today-hero__next-footer p,
+.today-hero__flow-header p,
+.today-hero__flow-next {
+  -webkit-line-clamp: 2;
+}
+
+@media (max-width: 640px) {
+  .today-hero__title {
+    font-size: clamp(1.9rem, 9.2vw, 2.3rem);
+  }
+
+  .today-hero__copy {
+    -webkit-line-clamp: 2;
+  }
+
+  .today-hero__meta-row {
     display: none;
   }
 }

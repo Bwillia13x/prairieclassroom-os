@@ -316,7 +316,7 @@
   font-size: var(--text-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text);
-  letter-spacing: -0.005em;
+  letter-spacing: 0;
 }
 
 .shell-classroom-pill__caret {
@@ -398,7 +398,7 @@
   font-size: var(--text-lg);
   font-weight: var(--font-weight-bold);
   color: var(--color-text);
-  letter-spacing: -0.015em;
+  letter-spacing: 0;
 }
 
 .shell-classroom-panel__id {
@@ -532,6 +532,10 @@
   padding: 0;
   border-top: 0;
   min-height: var(--control-h-lg);
+}
+
+.shell-nav__meta {
+  display: none;
 }
 
 /* When no sub-tabs, groups take the full width — left-aligned, calmer.
@@ -1476,7 +1480,7 @@
     font-family: var(--font-editorial);
     font-size: clamp(1.05rem, 1.25vw, 1.35rem);
     font-weight: var(--font-weight-normal);
-    letter-spacing: -0.018em;
+    letter-spacing: 0;
   }
 
   .brand-mark__badge {
@@ -1487,7 +1491,7 @@
     font-family: var(--font-display);
     font-size: clamp(1.02rem, 1.1vw, 1.22rem);
     font-weight: var(--font-weight-medium);
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 
   .shell-bar {
@@ -1636,6 +1640,7 @@
   }
 
   .shell-nav__meta {
+    display: block;
     margin-top: auto;
     padding: var(--space-4) var(--space-4) 0;
     border-top: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
@@ -1706,23 +1711,110 @@
 }
 
 @media (min-width: 961px) and (max-width: 1180px) {
+  .app-shell {
+    --shell-side-rail-width: clamp(11.25rem, 15.5vw, 12.75rem);
+    --shell-commandbar-height: 4.95rem;
+    --shell-page-rail-width: 1.9rem;
+    --shell-page-rail-collapsed-width: 1.45rem;
+  }
+
+  .shell-brand {
+    padding: 0 var(--space-3);
+  }
+
+  .brand-mark__glyph {
+    width: 1.45rem;
+    height: 1.45rem;
+  }
+
+  .brand-mark__wordmark {
+    font-size: var(--text-base);
+    letter-spacing: 0;
+  }
+
+  .brand-mark__badge {
+    display: none;
+  }
+
   .shell-bar {
-    grid-template-columns: minmax(14rem, 1fr) auto;
+    grid-template-columns: minmax(12rem, 18rem) auto;
+    padding: 0 var(--space-4);
+  }
+
+  .shell-command-key {
+    display: none;
   }
 
   .shell-classroom-anchor {
+    width: min(100%, 18rem);
     justify-self: start;
   }
 
   .shell-bar__actions {
-    gap: var(--space-2);
+    gap: var(--space-1);
+  }
+
+  .role-pill {
+    min-height: 2.55rem;
+    padding-inline: var(--space-2);
+  }
+
+  .role-pill__label {
+    font-size: var(--text-xs);
+  }
+
+  .theme-toggle-instrument.nothing-btn,
+  .shell-bar__actions .header-action,
+  .app-help-btn {
+    min-width: 2.55rem;
+    min-height: 2.55rem;
+  }
+
+  .theme-toggle-instrument.nothing-btn {
+    --nib-size: 2.55rem;
   }
 
   .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
-    min-width: var(--control-h-md);
+    width: 2.55rem;
+    min-width: 2.55rem;
+    padding-inline: 0;
   }
 
   .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .shell-nav {
+    padding: var(--space-3) var(--space-2);
+  }
+
+  .shell-nav__group {
+    min-height: 2.65rem;
+    padding: 0 var(--space-3);
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .shell-nav__group-icon {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .shell-nav__meta {
+    padding: var(--space-3) var(--space-3) 0;
+    font-size: var(--text-2xs);
+  }
+
+  .app-main {
+    padding: var(--space-4);
+  }
+
+  .page-anchor-rail {
     display: none;
   }
 }

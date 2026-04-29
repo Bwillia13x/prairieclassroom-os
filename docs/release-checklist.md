@@ -48,7 +48,7 @@ After a passing gate, capture current UI review artifacts with:
 npm run ui:evidence
 ```
 
-The evidence script writes eight screenshots plus a manifest under `output/playwright/ui-evidence/`.
+The evidence script writes the current desktop, mobile, and render-comparison screenshots plus a manifest under `output/playwright/ui-evidence/`. For dense local screenshot runs, start the local orchestrator with `PRAIRIE_TEST_DISABLE_RATE_LIMITS=true`; the flag is ignored in production and is only for local proof capture.
 
 ## Real inference baseline
 

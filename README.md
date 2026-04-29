@@ -180,6 +180,7 @@ npm run ui:evidence
 ```
 
 This writes the current desktop and mobile screenshots under `output/playwright/ui-evidence/`.
+For dense local screenshot runs, start the local orchestrator with `PRAIRIE_TEST_DISABLE_RATE_LIMITS=true`; the flag is a proof helper only, and the server ignores it in production.
 
 ### Release Gate
 

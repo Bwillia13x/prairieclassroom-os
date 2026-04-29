@@ -149,6 +149,10 @@
 
 @media (min-width: 960px) {
   .page-hero--week.page-hero--density-utility {
+    padding-block: var(--space-2-5);
+  }
+
+  .page-hero--week.page-hero--density-utility {
     grid-template-columns: minmax(0, 1fr);
   }
 
@@ -171,6 +175,14 @@
     justify-content: flex-end;
     align-self: end;
     max-width: 22rem;
+  }
+
+  .page-hero--week .page-hero__title {
+    max-width: 18ch;
+  }
+
+  .page-hero--week .page-hero__caption {
+    max-width: 52ch;
   }
 }
 

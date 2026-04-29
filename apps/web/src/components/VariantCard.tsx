@@ -102,7 +102,8 @@ export default function VariantCard({ variant, artifactTitle, modelId, preview =
         <span className="variant-card__preview-kicker">{copy.confidence}</span>
         <strong>{copy.label.replace(" lane", "")}</strong>
         <p>{previewExcerpt}{previewExcerpt ? "..." : ""}</p>
-        <div className="variant-card__preview-meter">
+        <div className="variant-card__preview-page">
+          <span />
           <span />
           <span />
           <span />
@@ -110,9 +111,9 @@ export default function VariantCard({ variant, artifactTitle, modelId, preview =
       </div>
 
       <div className="variant-card__actions">
-        <button type="button">Preview</button>
-        <button type="button">Edit</button>
-        <button type="button" aria-label={`More actions for ${copy.label}`}>...</button>
+        <button type="button">Preview lane</button>
+        <button type="button">Edit copy</button>
+        <button type="button" aria-label={`More actions for ${copy.label}`}>More</button>
       </div>
     </article>
   );

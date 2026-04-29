@@ -7,13 +7,14 @@ import { chromium } from "playwright";
 
 const WEB_BASE = process.env.PRAIRIE_WEB_BASE ?? "http://localhost:5173";
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
-const FRACTIONS_WORKSHEET = `Fractions Review Worksheet
+const COMMUNITY_HELPERS_PASSAGE = `Community Helpers Reading Passage
 
-1. Circle the larger fraction: 1/4 or 1/3?
-2. Show 2/3 on the number line below.
-3. Solve: 1/2 + 1/4 = ___
-4. Write a fraction that is equal to 1/2.`;
-const DIFFERENTIATION_GOAL = "Support Amira and Daniyal with EAL language scaffolds, keep Elena concrete with manipulatives, and add extension for Chantal.";
+Community helpers make our town safer, healthier, and easier to understand. Firefighters help when there is danger. Nurses help people feel better and explain what care they need. Librarians help families find books, technology, and quiet spaces to learn.
+
+Good readers notice what each helper does and why the job matters. As you read, underline one detail about each helper. Then write one sentence explaining which helper your community needs most this week and why.`;
+const COMMUNITY_HELPERS_GOAL = "Reading: Understand and respond to text";
+const FORECAST_SCENARIO_NOTES = "Assembly at 10:00; math follows recess; EA available morning only; writing block has unfinished threads for Hannah and Marco.";
+const OPS_DRAFT_NOTE = "During math block after the assembly transition, Amira and Farid needed repeated side-conversation reminders. Used proximity and a quiet reset; both rejoined the fraction task after three minutes.";
 const TOMORROW_REFLECTION = "The visual timer helped Brody transition during math. Elena was more confident with fraction strips. Tomorrow's math block comes after lunch and the EA is only available in the morning.";
 const FAMILY_MESSAGE_CONTEXT = "Amira finished her reading block with strong effort and used her vocabulary card independently.";
 const ROOT_OUTPUT_DIR = path.resolve(
@@ -32,9 +33,53 @@ const FIRST_SCREEN_SURFACES = [
   { tab: "ops", tool: "log-intervention" },
   { tab: "review", tool: "family-message" },
 ];
+const RENDER_COMPARISON_SURFACES = [
+  { tab: "classroom", tool: null },
+  { tab: "today", tool: null },
+  { tab: "week", tool: null },
+  { tab: "prep", tool: "differentiate" },
+  { tab: "ops", tool: "log-intervention" },
+];
 
 function timestampLabel() {
   return new Date().toISOString().replace(/[:.]/g, "-");
+}
+
+async function assertEvidenceApiReady(label = "UI evidence preflight") {
+  const checks = [
+    { name: "classroom list", url: `${WEB_BASE}/api/classrooms`, headers: {} },
+    {
+      name: "Today snapshot",
+      url: `${WEB_BASE}/api/today/${DEMO_CLASSROOM_ID}`,
+      headers: { "X-Classroom-Role": "teacher" },
+    },
+  ];
+
+  for (const check of checks) {
+    let response;
+    try {
+      response = await fetch(check.url, { headers: check.headers });
+    } catch (error) {
+      throw new Error(
+        `${label}: ${check.name} request failed at ${check.url}. ` +
+        `Start the web/orchestrator services before running ui:evidence. ${error instanceof Error ? error.message : String(error)}`,
+        { cause: error },
+      );
+    }
+
+    if (response.status === 429) {
+      throw new Error(
+        `${label}: ${check.name} returned 429 from ${check.url}. ` +
+        `Restart the local orchestrator with PRAIRIE_TEST_DISABLE_RATE_LIMITS=true for screenshot/evidence capture.`,
+      );
+    }
+    if (!response.ok) {
+      const body = await response.text().catch(() => "");
+      throw new Error(
+        `${label}: ${check.name} returned HTTP ${response.status} from ${check.url}. ${body.slice(0, 240)}`,
+      );
+    }
+  }
 }
 
 async function prepareContext(browser, viewport, theme = "auto") {
@@ -98,6 +143,33 @@ async function gotoPanel(page, tab, tool = null) {
   await page.waitForSelector(`#panel-${tab}:not([hidden])`);
 }
 
+async function waitForLoadedPanel(page, tab, label) {
+  const panel = page.locator(`#panel-${tab}:not([hidden])`);
+  await panel.waitFor({ state: "visible", timeout: 15_000 });
+  const loaded = await page.waitForFunction((activeTab) => {
+    const activePanel = globalThis.document.querySelector(`#panel-${activeTab}:not([hidden])`);
+    if (!activePanel) return false;
+    const hasBlockingLoader = !!globalThis.document.querySelector(".branded-loading");
+    const hasPanelLoader = !!activePanel.querySelector("[role='status']");
+    const hasPrimaryContent = !!activePanel.querySelector(
+      [
+        ".today-hero",
+        ".ops-command-workflow",
+        ".prep-command-strip",
+        ".week-operations-board",
+        ".page-hero",
+        ".workspace-layout",
+      ].join(", "),
+    );
+    return !hasBlockingLoader && (!hasPanelLoader || hasPrimaryContent);
+  }, tab, { timeout: 20_000 }).then(() => true).catch(() => false);
+
+  if (!loaded) {
+    await assertEvidenceApiReady(label);
+    throw new Error(`${label}: ${tab} panel did not finish loading expected content.`);
+  }
+}
+
 async function assertNoHorizontalOverflow(page, label) {
   const overflow = await page.evaluate(() => {
     const root = globalThis.document.documentElement;
@@ -108,11 +180,20 @@ async function assertNoHorizontalOverflow(page, label) {
 }
 
 async function assertActivePageContentVisible(page, tab, label) {
-  const visible = await page.evaluate((activeTab) => {
+  const visible = await page.waitForFunction((activeTab) => {
     const panel = globalThis.document.querySelector(`#panel-${activeTab}:not([hidden])`);
     if (!panel) return false;
     const primary = [...panel.querySelectorAll(
-      ".today-hero__mobile-command, .today-hero, .page-hero, .page-intro, .workspace-layout",
+      [
+        ".today-hero__mobile-command",
+        ".today-hero",
+        ".ops-command-workflow",
+        ".prep-command-strip",
+        ".week-operations-board",
+        ".page-hero",
+        ".page-intro",
+        ".workspace-layout",
+      ].join(", "),
     )].find((element) => {
       const rect = element.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
@@ -120,7 +201,7 @@ async function assertActivePageContentVisible(page, tab, label) {
     if (!primary) return false;
     const rect = primary.getBoundingClientRect();
     return rect.bottom > 0 && rect.top < globalThis.innerHeight;
-  }, tab);
+  }, tab, { timeout: 10_000 }).then(() => true).catch(() => false);
   assert.ok(visible, `${label}: active page content should be visible in the first viewport`);
 }
 
@@ -132,7 +213,17 @@ async function assertMobileNavClearance(page, tab, label) {
 
     const navRect = nav.getBoundingClientRect();
     const primary = [...panel.querySelectorAll(
-      ".today-hero__mobile-command, .page-hero, .page-intro, .workspace-layout",
+      [
+        ".today-hero__next-action",
+        ".today-hero",
+        ".today-hero__mobile-command",
+        ".ops-command-workflow",
+        ".prep-command-strip",
+        ".week-operations-board",
+        ".page-hero",
+        ".page-intro",
+        ".workspace-layout",
+      ].join(", "),
     )].find((element) => {
       const rect = element.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
@@ -177,12 +268,17 @@ async function assertMobileTodayHero(page) {
   assert.ok(mobileRailHidden, "Mobile Today page anchor rail should be hidden");
 
   const mobileCommandAboveNav = await page.evaluate(() => {
-    const command = globalThis.document.querySelector(".today-hero__mobile-command");
+    const command = [...globalThis.document.querySelectorAll(
+      ".today-hero__next-action, .today-hero__mobile-command",
+    )].find((element) => {
+      const rect = element.getBoundingClientRect();
+      return rect.width > 0 && rect.height > 0;
+    });
     const nav = globalThis.document.querySelector(".mobile-nav");
     if (!command || !nav) return false;
     return command.getBoundingClientRect().bottom <= nav.getBoundingClientRect().top;
   });
-  assert.ok(mobileCommandAboveNav, "Mobile Today command card should appear above mobile nav");
+  assert.ok(mobileCommandAboveNav, "Mobile Today next-action surface should appear above mobile nav");
 
   const mobileCtaAboveNav = await page.evaluate(() => {
     const cta = globalThis.document.querySelector(".today-hero__cta");
@@ -219,13 +315,106 @@ async function captureFirstScreens(page, runDir, prefix, { mobile = false } = {}
   return files;
 }
 
+async function captureRenderComparisonScreens(page, runDir, prefix, surfaces, { mobile = false } = {}) {
+  const files = [];
+  for (const { tab, tool } of surfaces) {
+    if (tab === "prep" && tool === "differentiate") {
+      await fillPrepGeneratedScenario(page);
+    } else {
+      await gotoPanel(page, tab, tool);
+    }
+    if (tab === "ops" && tool === "log-intervention") {
+      await fillOpsDraftScenario(page);
+    }
+    const label = `${prefix} render comparison ${tab}`;
+    await assertNoHorizontalOverflow(page, label);
+    await assertActivePageContentVisible(page, tab, label);
+    if (mobile) {
+      await page.waitForSelector(".mobile-nav");
+      await assertMobileNavClearance(page, tab, label);
+      if (tab === "today") {
+        await assertMobileTodayHero(page);
+      }
+    }
+    const filename = `render-${prefix}-${tab}${tool ? `-${tool}` : ""}.png`;
+    await page.screenshot({
+      path: path.join(runDir, filename),
+      fullPage: false,
+      animations: "disabled",
+    });
+    files.push(filename);
+    await sleep(300);
+  }
+  return files;
+}
+
+async function generateForecastScenario(page) {
+  await gotoPanel(page, "tomorrow", "complexity-forecast");
+  await page.getByLabel(/Optional notes for tomorrow/i).fill(FORECAST_SCENARIO_NOTES);
+  await page.getByRole("button", { name: /Generate forecast/i }).click();
+  await page.getByText(/Forecast generated/i).first().waitFor({ timeout: 45_000 });
+  await page.locator(".forecast-viewer, .forecast-timeline").first().waitFor({ timeout: 10_000 });
+  await assertNoHorizontalOverflow(page, "Desktop Forecast scenario");
+}
+
+async function selectPasteArtifactSource(page) {
+  const prepPanel = page.locator("#panel-prep:not([hidden])");
+  const workspace = prepPanel.locator(".workspace-layout--prep-canvas").first();
+  await waitForLoadedPanel(page, "prep", "Prep scenario setup");
+  try {
+    await workspace.waitFor({ state: "visible", timeout: 20_000 });
+  } catch {
+    await assertEvidenceApiReady("Prep scenario setup");
+    await page.reload({ waitUntil: "networkidle" });
+    await waitForLoadedPanel(page, "prep", "Prep scenario setup after reload");
+    await workspace.waitFor({ state: "visible", timeout: 45_000 });
+  }
+  const intake = prepPanel.locator(".artifact-upload").first();
+  try {
+    await intake.waitFor({ state: "visible", timeout: 20_000 });
+  } catch {
+    await assertEvidenceApiReady("Prep artifact intake setup");
+    await page.reload({ waitUntil: "networkidle" });
+    await waitForLoadedPanel(page, "prep", "Prep artifact intake setup after reload");
+    await workspace.waitFor({ state: "visible", timeout: 45_000 });
+    await intake.waitFor({ state: "visible", timeout: 45_000 });
+  }
+  await intake.getByRole("tab", { name: /Paste text/i }).click();
+  await page.locator("#raw-text").waitFor({ state: "visible", timeout: 10_000 });
+}
+
+async function fillPrepGeneratedScenario(page) {
+  await gotoPanel(page, "prep", "differentiate");
+  await selectPasteArtifactSource(page);
+  await page.getByLabel(/Artifact title/i).fill("Community Helpers Reading Passage");
+  await page.getByLabel(/^Subject$/i).fill("Literacy");
+  await page.locator("#raw-text").fill(COMMUNITY_HELPERS_PASSAGE);
+  await page.getByLabel(/Outcome focus/i).fill(COMMUNITY_HELPERS_GOAL);
+  await page.getByRole("button", { name: /Generate variants/i }).click();
+  await page.getByText(/variants generated/i).first().waitFor({ timeout: 30_000 });
+  await page.locator(".variant-grid-wrapper").first().waitFor({ timeout: 10_000 });
+  await page.locator("#prep-command").scrollIntoViewIfNeeded();
+}
+
+async function fillOpsDraftScenario(page) {
+  await page.getByRole("group", { name: /Select students/i }).getByLabel(/^Amira$/).check();
+  await page.getByRole("group", { name: /Select students/i }).getByLabel(/^Farid$/).check();
+  await page.getByLabel(/Evidence note/i).fill(OPS_DRAFT_NOTE);
+  await page.getByLabel(/Follow-up timing/i).selectOption("Tomorrow morning");
+  await page.getByLabel(/Classroom memory destination/i).selectOption("Classroom memory + student thread");
+  const preview = page.locator(".intervention-memory-preview");
+  await preview.getByText(/Amira, Farid/i).first().waitFor({ timeout: 10_000 });
+  await preview.getByText(/assembly transition/i).first().waitFor({ timeout: 10_000 });
+  await page.locator(".ops-command-workflow").scrollIntoViewIfNeeded();
+}
+
 async function captureDifferentiatedOutput(page, filename) {
   await gotoPanel(page, "prep", "differentiate");
-  await page.getByRole("tab", { name: /Paste/i }).click();
-  await page.getByLabel(/Artifact title/i).fill("Fractions Review Worksheet");
-  await page.getByLabel(/^Subject$/i).fill("Math");
-  await page.locator("#raw-text").fill(FRACTIONS_WORKSHEET);
-  await page.getByLabel(/Instructional focus/i).fill(DIFFERENTIATION_GOAL);
+  await selectPasteArtifactSource(page);
+  await page.getByLabel(/Artifact title/i).fill("Community Helpers Reading Passage");
+  await page.getByLabel(/^Subject$/i).fill("Literacy");
+  await page.locator("#raw-text").fill(COMMUNITY_HELPERS_PASSAGE);
+  await page.getByLabel(/Outcome focus/i).fill(COMMUNITY_HELPERS_GOAL);
   await page.getByRole("button", { name: /Generate variants/i }).click();
   await page.getByText(/variants generated/i).first().waitFor({ timeout: 30_000 });
   await page.locator(".variant-grid-wrapper").scrollIntoViewIfNeeded();
@@ -278,6 +467,8 @@ async function captureFamilyApproval(page, filename) {
 }
 
 async function main() {
+  await assertEvidenceApiReady();
+
   const runDir = path.join(ROOT_OUTPUT_DIR, timestampLabel());
   await mkdir(runDir, { recursive: true });
 
@@ -325,6 +516,20 @@ async function main() {
     darkPageErrors.push(error.message);
   });
 
+  const midDarkContext = await prepareContext(browser, { width: 1120, height: 900 }, "dark");
+  const midDarkPage = await midDarkContext.newPage();
+  const midDarkConsoleErrors = [];
+  const midDarkPageErrors = [];
+
+  midDarkPage.on("console", (message) => {
+    if (message.type() === "error") {
+      midDarkConsoleErrors.push(message.text());
+    }
+  });
+  midDarkPage.on("pageerror", (error) => {
+    midDarkPageErrors.push(error.message);
+  });
+
   const mobileContext = await prepareContext(browser, { width: 393, height: 852 });
   const mobilePage = await mobileContext.newPage();
   const mobileConsoleErrors = [];
@@ -337,6 +542,20 @@ async function main() {
   });
   mobilePage.on("pageerror", (error) => {
     mobilePageErrors.push(error.message);
+  });
+
+  const mobileDarkContext = await prepareContext(browser, { width: 393, height: 852 }, "dark");
+  const mobileDarkPage = await mobileDarkContext.newPage();
+  const mobileDarkConsoleErrors = [];
+  const mobileDarkPageErrors = [];
+
+  mobileDarkPage.on("console", (message) => {
+    if (message.type() === "error") {
+      mobileDarkConsoleErrors.push(message.text());
+    }
+  });
+  mobileDarkPage.on("pageerror", (error) => {
+    mobileDarkPageErrors.push(error.message);
   });
 
   try {
@@ -389,6 +608,34 @@ async function main() {
     files.push("family-message-dark-desktop.png");
     await captureFamilyApproval(darkPage, path.join(runDir, "family-message-dark-desktop.png"));
 
+    await generateForecastScenario(darkPage);
+
+    files.push(...await captureRenderComparisonScreens(
+      darkPage,
+      runDir,
+      "dark-desktop",
+      RENDER_COMPARISON_SURFACES,
+    ));
+
+    await gotoPanel(midDarkPage, "ops", "log-intervention");
+    await fillOpsDraftScenario(midDarkPage);
+    await assertNoHorizontalOverflow(midDarkPage, "Dark mid-width Ops");
+    await assertActivePageContentVisible(midDarkPage, "ops", "Dark mid-width Ops");
+    files.push("render-dark-midwidth-ops-1120x900.png");
+    await midDarkPage.screenshot({
+      path: path.join(runDir, "render-dark-midwidth-ops-1120x900.png"),
+      fullPage: false,
+      animations: "disabled",
+    });
+
+    files.push(...await captureRenderComparisonScreens(
+      mobileDarkPage,
+      runDir,
+      "dark-mobile",
+      [{ tab: "today", tool: null }],
+      { mobile: true },
+    ));
+
     const reviewParams = new URLSearchParams({
       demo: "true",
       tab: "review",
@@ -411,7 +658,9 @@ async function main() {
     await assertNoRuntimeErrors(desktopPage, desktopConsoleErrors, desktopPageErrors);
     await assertNoRuntimeErrors(tabletPage, tabletConsoleErrors, tabletPageErrors);
     await assertNoRuntimeErrors(darkPage, darkConsoleErrors, darkPageErrors);
+    await assertNoRuntimeErrors(midDarkPage, midDarkConsoleErrors, midDarkPageErrors);
     await assertNoRuntimeErrors(mobilePage, mobileConsoleErrors, mobilePageErrors);
+    await assertNoRuntimeErrors(mobileDarkPage, mobileDarkConsoleErrors, mobileDarkPageErrors);
 
     const manifest = {
       created_at: new Date().toISOString(),
@@ -426,13 +675,15 @@ async function main() {
       "utf8",
     );
 
-    assert.equal(manifest.files.length, 22, "Expected 22 evidence screenshots");
+    assert.equal(manifest.files.length, 29, "Expected 29 evidence screenshots");
     console.log(`PASS ui evidence captured at ${runDir}`);
   } finally {
     await desktopContext.close();
     await tabletContext.close();
     await darkContext.close();
+    await midDarkContext.close();
     await mobileContext.close();
+    await mobileDarkContext.close();
     await browser.close();
   }
 }

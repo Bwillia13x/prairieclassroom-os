@@ -121,7 +121,7 @@
   font-size: clamp(1.45rem, 2.2vw, 2rem);
   font-weight: var(--font-weight-semibold);
   line-height: var(--leading-tight);
-  letter-spacing: -0.018em;
+  letter-spacing: 0;
 }
 
 .intervention-logger--ops-workflow .logger-description {
@@ -178,10 +178,12 @@
   display: inline-flex;
   align-items: center;
   min-height: var(--control-h-xs);
-  padding: 0 var(--space-2);
+  padding: 0 var(--space-2-5);
   border: 1px solid color-mix(in srgb, var(--color-border-accent) 45%, transparent);
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, var(--color-bg-slate) 48%, var(--color-surface));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-highlight) 12%, transparent), transparent 62%),
+    color-mix(in srgb, var(--color-bg-slate) 58%, var(--color-surface));
   color: var(--color-text);
   cursor: pointer;
   font-size: var(--text-xs);
@@ -225,7 +227,7 @@
 
 .student-checkboxes--ops {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(8.75rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(9.6rem, 1fr));
   gap: var(--space-2);
   max-height: 8.75rem;
   overflow: auto;
@@ -236,7 +238,7 @@
 }
 
 .student-checkboxes--ops .student-checkbox {
-  min-height: var(--control-h-md);
+  min-height: 2.75rem;
   padding: var(--space-1-5) var(--space-2-5);
   border: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
   border-radius: var(--radius-md);
@@ -249,8 +251,11 @@
 }
 
 .student-checkboxes--ops .student-checkbox:has(input:checked) {
-  border-color: color-mix(in srgb, var(--color-border-accent) 62%, transparent);
-  background: color-mix(in srgb, var(--color-bg-slate) 54%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-brand-highlight) 68%, var(--color-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-highlight) 14%, transparent), transparent 62%),
+    color-mix(in srgb, var(--color-bg-slate) 58%, var(--color-surface));
+  color: var(--color-text);
 }
 
 .intervention-logger__coordination-grid {
@@ -270,6 +275,17 @@
   border-top: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent);
 }
 
+.intervention-logger--ops-workflow .intervention-logger__actions .btn--primary {
+  min-width: 12rem;
+  border-color: color-mix(in srgb, var(--color-brand-highlight) 58%, var(--color-border));
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-brand-highlight) 30%, transparent), transparent),
+    var(--color-accent);
+  box-shadow:
+    0 14px 28px color-mix(in srgb, var(--color-brand-highlight) 18%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
+}
+
 .intervention-logger__actions {
   display: flex;
   align-items: center;
@@ -279,6 +295,23 @@
 
 .intervention-logger__submit-instrument {
   flex-shrink: 0;
+}
+
+@media (max-width: 900px) {
+  .intervention-logger--ops-workflow form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .intervention-logger--ops-workflow .intervention-logger__search-field,
+  .intervention-logger--ops-workflow .intervention-logger__student-field,
+  .intervention-logger--ops-workflow .intervention-logger__note-field {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .student-checkboxes--ops {
+    max-height: 12rem;
+  }
 }
 
 @media (max-width: 640px) {

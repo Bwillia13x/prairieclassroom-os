@@ -70,6 +70,10 @@
   flex-direction: column;
   gap: var(--space-3);
   min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-elevated) 30%, transparent);
 }
 
 .artifact-upload__section-heading {
@@ -282,8 +286,10 @@
 }
 
 .artifact-upload__context {
-  padding-top: var(--space-2);
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-elevated) 28%, transparent);
 }
 
 .artifact-upload__context-grid {
@@ -353,8 +359,10 @@
 
 .artifact-readiness,
 .artifact-output-includes {
-  padding-top: var(--space-2);
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-elevated) 26%, transparent);
 }
 
 .artifact-readiness__grid {

@@ -79,8 +79,8 @@ export default function PrepPanel() {
           <span className="prep-command-strip__eyebrow">Prep command</span>
           <h1>Prepare the material before it reaches the room.</h1>
           <p>
-            Start with the artifact, classroom context, and readiness lane. The
-            active canvas stays visible while the teacher chooses the prep mode.
+            Start with artifact, context, and readiness. Keep the canvas visible
+            while choosing the prep mode.
           </p>
         </div>
         <dl className="prep-command-strip__metrics" aria-label="Prep readiness">

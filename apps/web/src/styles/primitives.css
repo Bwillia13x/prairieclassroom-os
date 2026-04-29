@@ -260,7 +260,7 @@
   font-feature-settings: "kern" 1, "liga" 1, "onum" 1;
   font-size: var(--text-md);
   line-height: var(--leading-loose);
-  letter-spacing: -0.003em;
+  letter-spacing: 0;
   color: var(--color-text);
 }
 
@@ -1148,6 +1148,23 @@ label.form-label {
   }
 }
 
+@media (min-width: 960px) and (max-width: 1180px) {
+  .workspace-layout.workspace-layout--ops-workflow[data-layout="split"],
+  .workspace-layout.workspace-layout--ops-workflow[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
+  }
+
+  .app-main[data-section="ops"] .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-rail {
+    border-right: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+  }
+
+  .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-canvas {
+    border-top: 0;
+  }
+}
+
 @media (max-width: 959px) {
   .workspace-layout.workspace-layout--ops-workflow {
     border-radius: var(--radius-md);
@@ -1220,12 +1237,12 @@ label.form-label {
 
 @media (min-width: 960px) {
   .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] {
-    grid-template-columns: minmax(370px, 37%) minmax(0, 1fr);
+    grid-template-columns: minmax(360px, 35%) minmax(0, 1fr);
     min-height: min(720px, calc(100vh - 165px));
   }
 
   .workspace-layout.workspace-layout--prep-canvas[data-layout="split"][data-split-state="output"] {
-    grid-template-columns: minmax(330px, 31%) minmax(0, 1fr);
+    grid-template-columns: minmax(320px, 29%) minmax(0, 1fr);
   }
 
   .app-main[data-section="prep"] .workspace-layout.workspace-layout--prep-canvas[data-layout="split"] > .workspace-rail {
@@ -1247,6 +1264,13 @@ label.form-label {
         color-mix(in srgb, var(--color-accent) 7%, transparent),
         transparent 42%
       );
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1180px) {
+  .workspace-layout.workspace-layout--prep-canvas[data-layout="split"],
+  .workspace-layout.workspace-layout--prep-canvas[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: minmax(320px, 0.46fr) minmax(0, 0.54fr);
   }
 }
 

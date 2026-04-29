@@ -173,6 +173,7 @@ From `.env.example` and current scripts:
 - `PRAIRIE_MEMORY_DIR`
 - `PRAIRIE_PYTHON`
 - `PRAIRIE_DEBUG_PROMPTS`
+- `PRAIRIE_TEST_DISABLE_RATE_LIMITS` — local screenshot/evidence capture only; ignored in production and not for pilot traffic
 - `PRAIRIE_ENABLE_GEMINI_RUNS`
 - `PRAIRIE_GEMINI_API_KEY`
 - `PRAIRIE_ALLOW_PAID_SERVICES`

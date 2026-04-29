@@ -11,6 +11,12 @@
   justify-content: space-between;
   gap: var(--space-4);
   min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-sage) 24%, transparent), transparent 58%),
+    color-mix(in srgb, var(--color-surface-elevated) 42%, transparent);
 }
 
 .variant-grid-header__copy {
@@ -31,8 +37,8 @@
 .variant-grid-header h2 {
   margin: 0;
   color: var(--color-text);
-  font-family: var(--font-serif);
-  font-size: clamp(var(--text-2xl), 2.3vw, var(--text-display-xs));
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-xl), 2vw, var(--text-3xl));
   font-weight: var(--font-weight-semibold);
   line-height: var(--leading-tight);
 }
@@ -80,7 +86,7 @@
 .variant-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2-5);
   min-width: 0;
 }
 
@@ -122,6 +128,18 @@
 .variant-grid-alignment button {
   margin-left: auto;
   white-space: nowrap;
+}
+
+@media (max-width: 1180px) {
+  .variant-grid-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .variant-grid-header__actions {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 720px) {
