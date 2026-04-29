@@ -33,6 +33,7 @@ This pass addressed the highest-confidence frontend issues from `qa/PERFORMANCE_
 - 2026-04-29 follow-up: multi-tool page CSS, collapsed Classroom intelligence charts, roster detail, health trends, student detail drawer charts, and DataVisualization CSS are deferred behind lazy route/interaction boundaries instead of blocking Classroom/Today first paint.
 - 2026-04-29 follow-up: the Inter preload is desktop-only (`min-width: 700px`) so strict mobile first paint is not competing with font transfer before CSS/JS.
 - 2026-04-29 late follow-up: sub-700px mobile now uses platform sans/mono font tokens on the critical path. Desktop/tablet retain the self-hosted premium font stack, while phone Lighthouse runs no longer request font files before first paint.
+- 2026-04-29 closeout slice: hidden shell overlays (`CommandPalette`, `ShortcutSheet`, onboarding, role prompt, and classroom access dialog) now mount through lazy boundaries only when opened, reducing default mobile startup work without changing the seven-view shell or role behavior.
 
 ## Validation
 
@@ -90,3 +91,10 @@ Runtime browser check:
 The original CLS blocker is closed. The 2026-04-29 pass also removed cross-port CORS preflights from the preview run and deferred chart CSS/JS from the first paint path. The remaining strict performance caveat is mobile Lighthouse LCP above `2.5s`: Classroom is close at `2.8s`, while Today remains `3.2s` because its data-complete command hero becomes the largest contentful element. A placeholder-first hero experiment reduced no real user work and caused measurable CLS, so it was not kept.
 
 Late mobile-font experiment artifacts are under `output/performance-lcp-2026-04-29/`. The kept patch removes mobile font requests and improved first contentful paint in local production-preview runs, but it did **not** close strict mobile LCP; deferred global CSS and content-visibility experiments were rejected because they worsened LCP or accessibility scores.
+
+Focused closeout artifacts are under `output/performance-lcp-2026-04-29-closeout/`. The kept lazy-overlay patch improved the current production-preview mobile run from:
+
+- Classroom mobile: performance `87` / LCP `3.09s` / CLS `0` to performance `93` / LCP `2.37s` / CLS `0`.
+- Today mobile: performance `91` / LCP `2.97s` / CLS `0` to performance `92` / LCP `2.79s` / CLS `0`.
+
+Classroom now clears the strict mobile LCP target in the focused run. Today remains the live strict-LCP caveat: its data-complete command hero is still the measured largest contentful element, so the next pass should target the Today hero render path specifically rather than shell overlays or hidden modal code.

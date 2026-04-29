@@ -27,23 +27,18 @@ import ErrorBoundary from "./components/ErrorBoundary";
 import SectionSkeleton from "./components/SectionSkeleton";
 import ToastQueue from "./components/ToastQueue";
 import StatusChip from "./components/StatusChip";
-import ClassroomAccessDialog from "./components/ClassroomAccessDialog";
 import RoleContextPill from "./components/RoleContextPill";
 import { Popover } from "./components/popover";
 import RoleEscapeBanner from "./components/RoleEscapeBanner";
-import RolePromptDialog from "./components/RolePromptDialog";
 import ClassroomPanel from "./panels/ClassroomPanel";
 import TodayPanel from "./panels/TodayPanel";
 import BrandMark from "./components/BrandMark";
 import MobileNav from "./components/MobileNav";
-import OnboardingOverlay from "./components/OnboardingOverlay";
 import ThemeToggle from "./components/ThemeToggle";
 import HeaderAction from "./components/shared/HeaderAction";
 import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
 import PageAnchorRail from "./components/PageAnchorRail";
-import ShortcutSheet from "./components/ShortcutSheet";
-import CommandPalette from "./components/CommandPalette";
 import { usePaletteEntries } from "./hooks/usePaletteEntries";
 import { useNothingButtonPressAnimation } from "./hooks/useNothingButtonPressAnimation";
 import { useAmbientCursorGlow } from "./hooks/useAmbientCursorGlow";
@@ -67,6 +62,12 @@ const WeekPanel = lazy(() => import("./panels/WeekPanel"));
 const PrepPanel = lazy(() => import("./panels/PrepPanel"));
 const OpsPanel = lazy(() => import("./panels/OpsPanel"));
 const ReviewPanel = lazy(() => import("./panels/ReviewPanel"));
+const ClassroomAccessDialog = lazy(() => import("./components/ClassroomAccessDialog"));
+const CommandPalette = lazy(() => import("./components/CommandPalette"));
+const OnboardingOverlay = lazy(() => import("./components/OnboardingOverlay"));
+const RolePromptDialog = lazy(() => import("./components/RolePromptDialog"));
+const ShortcutSheet = lazy(() => import("./components/ShortcutSheet"));
+
 const todaySnapshotRequestCache = new Map<string, ReturnType<typeof fetchTodaySnapshot>>();
 
 function loadTodaySnapshotOnce(classroomId: string) {
@@ -1109,31 +1110,49 @@ export default function App() {
 
         <MobileNav activeTab={activeTab} onTabChange={setActiveTab} debtCounts={debtCounts} />
 
-        <ShortcutSheet open={shortcutSheetOpen} onClose={() => setShortcutSheetOpen(false)} />
-        <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} entries={paletteEntries} />
-
-        {state.showOnboarding ? <OnboardingOverlay onDismiss={handleDismissOnboarding} /> : null}
-        {state.rolePrompt ? (
-          <RolePromptDialog classroomId={state.rolePrompt.classroomId} />
+        {shortcutSheetOpen ? (
+          <Suspense fallback={null}>
+            <ShortcutSheet open={shortcutSheetOpen} onClose={() => setShortcutSheetOpen(false)} />
+          </Suspense>
         ) : null}
-        <ClassroomAccessDialog
-          open={Boolean(authPrompt) && !state.rolePrompt && !state.showOnboarding}
-          classroomId={authPrompt?.classroomId ?? activeClassroom}
-          message={authPrompt?.message ?? ""}
-          initialValue={authPrompt ? state.classroomAccessCodes[authPrompt.classroomId] : ""}
-          onClose={closeAuthPrompt}
-          onSubmit={handleAuthSubmit}
-          onUseDemo={
-            authPrompt && authPrompt.classroomId !== DEMO_CLASSROOM_ID &&
-            state.classrooms.some((c) => c.classroom_id === DEMO_CLASSROOM_ID || c.is_demo)
-              ? () => {
-                  closeAuthPrompt();
-                  const demo = state.classrooms.find((c) => c.is_demo || c.classroom_id === DEMO_CLASSROOM_ID);
-                  if (demo) setActiveClassroom(demo.classroom_id);
-                }
-              : undefined
-          }
-        />
+        {paletteOpen ? (
+          <Suspense fallback={null}>
+            <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} entries={paletteEntries} />
+          </Suspense>
+        ) : null}
+
+        {state.showOnboarding ? (
+          <Suspense fallback={null}>
+            <OnboardingOverlay onDismiss={handleDismissOnboarding} />
+          </Suspense>
+        ) : null}
+        {state.rolePrompt ? (
+          <Suspense fallback={null}>
+            <RolePromptDialog classroomId={state.rolePrompt.classroomId} />
+          </Suspense>
+        ) : null}
+        {authPrompt ? (
+          <Suspense fallback={null}>
+            <ClassroomAccessDialog
+              open={!state.rolePrompt && !state.showOnboarding}
+              classroomId={authPrompt.classroomId}
+              message={authPrompt.message}
+              initialValue={state.classroomAccessCodes[authPrompt.classroomId] ?? ""}
+              onClose={closeAuthPrompt}
+              onSubmit={handleAuthSubmit}
+              onUseDemo={
+                authPrompt.classroomId !== DEMO_CLASSROOM_ID &&
+                state.classrooms.some((c) => c.classroom_id === DEMO_CLASSROOM_ID || c.is_demo)
+                  ? () => {
+                      closeAuthPrompt();
+                      const demo = state.classrooms.find((c) => c.is_demo || c.classroom_id === DEMO_CLASSROOM_ID);
+                      if (demo) setActiveClassroom(demo.classroom_id);
+                    }
+                  : undefined
+              }
+            />
+          </Suspense>
+        ) : null}
       </div>
       </SessionProvider>
     </AppContext.Provider>
