@@ -25,7 +25,7 @@ This plan implements **everything that is not Ollama-blocked first**, then resum
 | Phase | Window | Scope | Status |
 |---|---|---|---|
 | **A — Doc hardening** | 2026-04-26 → 2026-04-28 | Writeup, video shot list, judge summary, submission checklist, plan docs | in progress |
-| **B — Production prep** | 2026-04-29 → 2026-05-03 | Hero-shot capture checklist, teacher session prep, deploy plan, media gallery selection | pending |
+| **B — Production prep** | 2026-04-29 → 2026-05-03 | Hero-shot capture checklist, teacher session prep, deploy plan, media gallery selection | in progress |
 | **C — Teacher session** | 2026-05-04 → 2026-05-10 | Recruit, schedule, conduct, capture quote and observation notes | pending (host external) |
 | **D — Ollama lane** | resumes when viable host arrives | Install Ollama, pull weights, run `release:gate:ollama`, capture offline footage | gated on host |
 | **E — Video production** | 2026-05-11 → 2026-05-13 | Edit, voiceover, captions, upload to YouTube | pending |
@@ -88,15 +88,17 @@ Run anytime with `npm run submission:final-check`; pass `--skip-release-gate` to
 - Schedule for window 2026-05-04 → 2026-05-10.
 
 **B3 — Live-demo deploy plan**
-- Backend: choose between Render (free tier), Fly.io (free tier), or $5/mo Hetzner.
-- Frontend: Vercel free tier; create `apps/web/vercel.json` (currently absent).
-- Inference: hosted Gemma 4 mode with synthetic-only data; budget cap reaffirmed at $20/day.
-- Smoke checklist already exists at [docs/public-demo-operations.md](../public-demo-operations.md).
+- Backend: Render free tier selected for the no-spend public demo path; root `render.yaml` defines the orchestrator and hosted-Gemini inference services.
+- Frontend: Vercel free tier; `apps/web/vercel.json` exists and carries SPA rewrites, security headers, and immutable asset caching.
+- Inference: hosted Gemma 4 mode with synthetic-only data; API key must be entered as a Render secret and must not be committed.
+- Smoke checklist exists at [docs/public-demo-operations.md](../public-demo-operations.md); external service creation and cellular smoke remain pending.
 
 **B4 — Media gallery selection**
 - Cover image candidate: `output/playwright/ui-evidence/2026-04-24T12-11-06-752Z/differentiate-desktop.png` or fresh capture mid-generation.
 - Supporting images: Today, Tomorrow Plan, Family Message approval dialog, EA Briefing, mobile shell.
 - Closed-loop architecture diagram: render the ASCII version as a clean PNG.
+
+**Update 2026-04-30:** Vercel frontend config already existed; Render free tier is now the selected backend path with a committed `render.yaml` blueprint and Gemini-only inference requirements. Remaining Phase B deployment work is external: create the Render services, enter secrets, link Vercel `VITE_API_URL`, and complete external/cellular smoke.
 
 ### Go/No-Go Gate
 

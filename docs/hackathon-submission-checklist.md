@@ -6,9 +6,9 @@ The submission window is owned by [plans/2026-05-18-submission-plan.md](./plans/
 
 ## Current status
 
-Checked against the repo on 2026-04-27, refreshed 2026-04-26 strategic pass.
+Checked against the repo on 2026-04-30, refreshed for submission-delta closure.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-28T00-38-53-468Z-24492`
+- Mock structural gate: passing at `output/release-gate/2026-04-30T23-55-13-933Z-61434`
 - Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-27T01-26-45-190Z-87424`
 - Ollama proof on this machine: **not proven; deferred until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available** (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D)
 - Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,412 (within 1,500-word limit)
@@ -17,7 +17,7 @@ Checked against the repo on 2026-04-27, refreshed 2026-04-26 strategic pass.
 - Judge/demo URL: `?demo=true` skips first-run onboarding and role-selection modals for the demo classroom
 - Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
 - Strategic posture: lead with multimodal magic + teacher voice; treat offline-Ollama as the third WOW lever, capturable the moment a viable host arrives
-- Live demo deploy: NOT YET DEPLOYED — `apps/web/vercel.json` does not exist; backend deploy target not yet selected (Render free / Fly free / Hetzner $5)
+- Live demo deploy: NOT YET DEPLOYED — frontend config exists at `apps/web/vercel.json`; backend target is selected as Render free via `render.yaml`; external service creation, secret entry, and cellular smoke are still pending.
 
 ## Completed safely in repo
 
@@ -34,6 +34,8 @@ Checked against the repo on 2026-04-27, refreshed 2026-04-26 strategic pass.
 - Added a judge-safe `?demo=true` first-run path that skips onboarding and role-selection modals for the demo classroom.
 - Split the Vite production bundle into React, panel, and visualization chunks so the current web build no longer emits the large-entry-chunk warning.
 - Added [public demo operations](./public-demo-operations.md) with the deployment shape and judge-safe smoke checklist.
+- Added `render.yaml` and `services/inference/requirements-gemini.txt` so the selected no-spend public-demo backend path is concrete without installing local/torch dependencies on the hosted Gemma service.
+- Added Render private-network inference wiring through `INFERENCE_HOSTPORT`, while retaining `INFERENCE_URL` as the local/manual override.
 
 ## Existing media candidates
 
@@ -59,7 +61,7 @@ These are required for an actual competition submission but cannot be completed 
 1. Send 3 teacher recruitment messages (target: 1 K-6 teacher, 1 EA, 1 retired teacher / consultant; $100 honorarium; 60-90 minute session).
 2. Print a real Grade 3/4 fractions worksheet for the multimodal hero shot.
 3. Identify a host with ≥16 GiB RAM and ≥40 GiB free disk for the eventual Ollama lane (borrow or order refurb Mac Mini).
-4. Select live-demo backend target (Render free / Fly free / Hetzner $5/mo) and create `apps/web/vercel.json`.
+4. Create the external Render blueprint services from `render.yaml`, set `CORS_ORIGIN` and `PRAIRIE_GEMINI_API_KEY` as hosting secrets, then link Vercel production `VITE_API_URL` to the Render orchestrator. The orchestrator receives Render's private `INFERENCE_HOSTPORT` reference from the inference service.
 
 **Phase C — teacher session (target window 2026-05-04 → 2026-05-10):**
 
