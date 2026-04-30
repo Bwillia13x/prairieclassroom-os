@@ -12,13 +12,14 @@ Every workflow in the product participates in one shared loop. Today's classroom
 
 ```mermaid
 flowchart LR
-    Signal["Classroom signal<br/><sub>worksheet, note,<br/>intervention, photo</sub>"] --> Synthesis
-    Synthesis["Gemma 4 synthesis<br/><sub>live tier or planning tier<br/>+ retrieval + tool calls</sub>"] --> Action
-    Action["Teacher / EA action<br/><sub>differentiate, log,<br/>brief, plan, approve</sub>"] --> Memory
-    Memory["Classroom memory<br/><sub>SQLite per classroom:<br/>plans · interventions · patterns ·<br/>messages · forecasts</sub>"] -.->|retrieval| Synthesis
-    Memory -->|"informs the next signal"| Signal
+    Signal["Classroom signal<br/><sub>note · artifact · intervention</sub>"] --> Synthesis
+    Synthesis["Gemma 4 synthesis<br/><sub>routing · retrieval · tools</sub>"] --> Action
+    Action["Teacher / EA action<br/><sub>adapt · brief · log · approve</sub>"] --> Memory
+    Memory["Classroom memory<br/><sub>plans · interventions · patterns · forecasts</sub>"] -.->|retrieval| Synthesis
+    Memory -->|"next signal"| Signal
 
-    classDef nodeStyle fill:#f5f3ee,stroke:#3b3b3b,color:#1d1d1d,rx:8,ry:8
+    classDef nodeStyle fill:#FFFFFF,stroke:#C9D3DF,color:#0B2545,rx:8,ry:8
+    linkStyle default stroke:#1F5E9E,stroke-width:1.5px
     class Signal,Synthesis,Action,Memory nodeStyle
 ```
 

@@ -252,6 +252,44 @@ describe("TodayPanel", () => {
     vi.useRealTimers();
   });
 
+  it("auto-opens the day-detail collapse when an in-page anchor link inside the detail is clicked", async () => {
+    const { user } = renderTodayPanel(makeSnapshot());
+    await screen.findByText("Needs Attention Now");
+
+    // Day-detail starts collapsed — toggle reads "Show day detail".
+    const toggle = screen.getByRole("button", { name: /show day detail/i });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+
+    // Simulate a PageAnchorRail click by dispatching a click on an
+    // anchor link whose href targets one of the inner sections. The
+    // delegated listener on TodayPanel should flip detailOpen to true.
+    const link = document.createElement("a");
+    link.setAttribute("href", "#carry-forward");
+    document.body.appendChild(link);
+    await user.click(link);
+    document.body.removeChild(link);
+
+    expect(
+      screen.getByRole("button", { name: /hide day detail/i }),
+    ).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("auto-opens the day-detail collapse when the URL hash deep-links to an inner anchor", async () => {
+    const originalHash = window.location.hash;
+    window.history.replaceState(null, "", "#day-arc");
+    try {
+      renderTodayPanel(makeSnapshot());
+      await screen.findByText("Needs Attention Now");
+      // Initial mount runs the hash check synchronously, so the toggle
+      // should already report the open state.
+      expect(
+        screen.getByRole("button", { name: /hide day detail/i }),
+      ).toHaveAttribute("aria-expanded", "true");
+    } finally {
+      window.history.replaceState(null, "", originalHash || " ");
+    }
+  });
+
   it("renders the populated triage flow and uses family message as the primary action", async () => {
     const { onTabChange, onInterventionPrefill, user } = renderTodayPanel(makeSnapshot());
 

@@ -29,6 +29,7 @@ import "./styles/shell.css";
 import "./motion.css";
 import "./styles/nothing-theme.css";
 import "./styles/ambient.css";
+import "./styles/proof-trace.css";
 import "./print.css";
 
 /* Global handlers for errors that escape React's boundary */

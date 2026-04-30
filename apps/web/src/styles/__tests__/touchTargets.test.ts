@@ -17,8 +17,8 @@ const popoverCss = read("components/popover/Popover.css");
 const indexHtml = readFileSync(resolve(stylesDir, "../../index.html"), "utf8");
 
 describe("mobile release polish", () => {
-  it("keeps the shell wordmark on the already-preloaded Inter path", () => {
-    expect(indexHtml).toMatch(/href="\/fonts\/inter-variable\.woff2"/);
+  it("keeps the shell wordmark on the preloaded accessible reading face", () => {
+    expect(indexHtml).toMatch(/href="\/fonts\/atkinson-hyperlegible-400\.ttf"/);
     expect(indexHtml).not.toMatch(/instrument-sans-500\.woff2/);
     expect(shellCss).toMatch(
       /\.brand-mark__wordmark\s*{[^}]*font-family:\s*var\(--font-sans\)[^}]*letter-spacing:\s*0/s,

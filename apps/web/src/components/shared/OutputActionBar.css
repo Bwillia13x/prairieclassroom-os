@@ -12,10 +12,16 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding: var(--space-3);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  padding: var(--space-2);
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 72%, transparent),
+      color-mix(in srgb, var(--color-surface) 96%, transparent)
+    );
+  border: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent);
   border-radius: var(--radius-md, 8px);
+  box-shadow: var(--inner-stroke);
 }
 
 .output-action-bar--sticky {
@@ -61,14 +67,15 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-3);
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md, 8px);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+  border-radius: var(--radius-sm, 2px);
   cursor: pointer;
   font-family: inherit;
   font-size: var(--text-sm, 0.875rem);
   color: var(--color-text);
   min-height: var(--control-h-md);
+  font-weight: var(--font-weight-semibold);
 }
 
 .output-action-bar__btn:focus-visible {
@@ -83,25 +90,36 @@
 }
 
 .output-action-bar__btn--ghost {
-  background: transparent;
-  border-color: var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  border-color: color-mix(in srgb, var(--color-border) 56%, transparent);
 }
 
 .output-action-bar__btn--ghost:hover:not(:disabled) {
-  background: var(--color-bg-muted);
+  background: color-mix(in srgb, var(--color-surface-elevated) 78%, var(--color-bg-muted));
+  border-color: color-mix(in srgb, var(--color-brand-highlight) 34%, var(--color-border));
 }
 
 .output-action-bar__btn--primary {
   background: var(--color-accent);
   color: var(--color-text-on-accent);
-  border-color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 88%, var(--color-border));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 14%, transparent);
 }
 
 .output-action-bar__btn--approve {
-  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
-  border-color: color-mix(in srgb, var(--color-accent) 44%, transparent);
-  color: var(--color-text-accent);
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-bg-success) 82%, transparent), transparent 76%),
+    color-mix(in srgb, var(--color-surface) 96%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-success) 72%, var(--color-border));
+  color: var(--color-text-success);
   font-weight: var(--font-weight-semibold);
+}
+
+.output-action-bar__btn--approve:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-border-success) 88%, var(--color-border));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-bg-success) 94%, transparent), transparent 76%),
+    color-mix(in srgb, var(--color-surface-elevated) 78%, var(--color-surface));
 }
 
 .output-action-bar__icon {
@@ -111,7 +129,14 @@
 
 @media (prefers-reduced-motion: no-preference) {
   .output-action-bar__btn {
-    transition: background-color var(--motion-fast, 150ms) ease-out, border-color var(--motion-fast, 150ms) ease-out;
+    transition:
+      background-color var(--motion-fast, 150ms) ease-out,
+      border-color var(--motion-fast, 150ms) ease-out,
+      transform var(--motion-fast, 150ms) var(--ease-spring);
+  }
+
+  .output-action-bar__btn:hover:not(:disabled) {
+    transform: translateY(-1px);
   }
 }
 

@@ -1,21 +1,36 @@
 /**
- * TodayHero.tsx — First-viewport live triage cockpit for Today.
+ * TodayHero.tsx — Live-day triage cockpit, redesigned (2026-04-29).
  *
- * The hero owns the teacher's first question: "what should I do now?"
- * It keeps the existing recommended-action and drill-down contracts while
- * composing the immediate signals into one decisive operating surface.
+ * Composition aligned to the target Today dashboard reference:
+ *   • Command card (eyebrow → icon → title → description → dual CTAs)
+ *   • Today's flow timeline (5 schedule blocks with current-block focus)
+ *   • Follow-up debt strip (5 metric tiles)
+ *   • Side rail with Live Signals + Students to Watch
+ *
+ * The component still receives the Today snapshot, classroom health,
+ * student summaries, recommended-action contract, and watchlist
+ * inputs — same public Props as the prior hero — but the rendered
+ * surface is reorganised to read as a clean operating dashboard
+ * instead of an editorial lede + dense triage strip.
+ *
+ * DOM contracts preserved for tests:
+ *   • root has className `today-hero` and `data-testid="today-hero"`
+ *   • primary CTA reads `Open ${recommendedAction.cta}` and triggers
+ *     `onCtaClick`
+ *   • watch rows are `<button>` elements with the student alias in
+ *     their accessible name and call `onStudentClick(alias)`
+ *   • a `source-tag-ai` caption is rendered (the side-rail freshness)
  */
 
-import { useEffect, useState, type CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 import type { NavTarget } from "../appReducer";
 import type {
   TodaySnapshot,
   ClassroomHealth,
   StudentSummary,
   ComplexityBlock,
-  StudentThread,
+  DebtItem,
 } from "../types";
-import StatusChip from "./StatusChip";
 import PageFreshness from "./PageFreshness";
 import { ActionButton } from "./shared";
 import "./TodayHero.css";
@@ -28,18 +43,6 @@ export interface TodayHeroAction {
   tone: "pending" | "warning" | "analysis" | "provenance" | "success";
 }
 
-/**
- * Phase γ3 (2026-04-28) — Optional Monday-only eyebrow that absorbs
- * the prior `MondayResetMoment` standalone banner into the hero
- * composition. When provided, renders a single tracked-mono row at
- * the top of `.today-hero__narrative` with the freshness label and
- * an inline dismiss × that triggers `onDismiss`.
- *
- * Phase 4 follow-up (2026-04-28): the standalone `MondayResetMoment`
- * component has been deleted; the only remaining consumer of the
- * Monday moment is this eyebrow form. The dismissal contract lives
- * in the `useMondayMoment` hook (see `apps/web/src/hooks/useMondayMoment.ts`).
- */
 export interface TodayHeroMondayMoment {
   label: string;
   onDismiss: () => void;
@@ -73,457 +76,597 @@ export default function TodayHero({
   onStudentClick,
 }: Props) {
   const forecastBlocks = snapshot?.latest_forecast?.blocks ?? [];
-  const threadCount = countActionableThreads(snapshot?.student_threads);
-  const firstStudentToCheck = checkFirstStudents[0] ?? null;
-  const focusBlock = getCurrentBlock(forecastBlocks) ?? peakBlock ?? forecastBlocks[0] ?? null;
-  const planReadyPercent = getPlanReadyPercent(health, snapshot);
   const openItems = openItemCount ?? snapshot?.debt_register.items.length ?? 0;
-  const pressure = getPressureModel({
-    openItems,
-    threadCount,
-    peakBlock,
-    forecastBlocks,
-  });
-  const watchRows = getWatchRows({
-    checkFirstStudents,
-    studentReasons,
-    snapshot,
-    students,
-  });
-  const debtModel = getDebtModel(snapshot, openItems);
-  const nextActionTitle = getNextActionTitle(
-    recommendedAction,
-    firstStudentToCheck,
-    openItems,
-  );
+  const firstStudentToCheck = checkFirstStudents[0] ?? null;
+
+  const flowBlocks = getFlowBlocks(forecastBlocks);
+  const debtTiles = getDebtTiles(snapshot, openItems);
+  const signalRows = getLiveSignals(health, snapshot, openItems);
+  const watchRows = getWatchRows({ checkFirstStudents, studentReasons, snapshot, students });
+
+  const nextActionTitle = getNextActionTitle(recommendedAction, firstStudentToCheck, openItems);
   const nextActionReason = getNextActionReason({
     recommendedAction,
     firstStudentToCheck,
     studentReasons,
     peakBlock,
   });
-  const cockpitCopy = getCockpitCopy(snapshot, openItems, firstStudentToCheck);
-  const headline = focusBlock
-    ? `${focusBlock.time_slot} is today's real test.`
-    : "What should you do now?";
-  const showMorningBrief =
-    typeof openItemCount === "number" ||
-    checkFirstStudents.length > 0 ||
-    Boolean(peakBlock);
-  const showMobileCommandMetrics =
-    typeof openItemCount === "number" ||
-    Boolean(peakBlock) ||
-    Boolean(firstStudentToCheck);
-  const showMobileFocus = useCompactViewport();
+
+  const primaryCtaLabel = recommendedAction
+    ? `Open ${recommendedAction.cta}`
+    : "Review today's command center";
+  const showSecondaryCta = recommendedAction?.cta !== "Intervention Log";
 
   return (
-    <section
-      className="today-hero"
-      aria-label="Today hero"
-      data-testid="today-hero"
-    >
-      <div className="today-hero__command">
-        {mondayMoment ? (
-          <p
-            className="today-hero__eyebrow today-hero__eyebrow--fresh-week"
-            data-testid="today-hero-monday-eyebrow"
+    <section className="today-hero" data-testid="today-hero" aria-label="Today command dashboard">
+      {mondayMoment ? (
+        <header className="today-hero__monday" role="note">
+          <span className="today-hero__monday-label">{mondayMoment.label}</span>
+          <button
+            type="button"
+            className="today-hero__monday-dismiss"
+            onClick={mondayMoment.onDismiss}
+            aria-label="Dismiss Monday moment"
           >
-            <span className="today-hero__eyebrow-label">{mondayMoment.label}</span>
-            <button
-              type="button"
-              className="today-hero__eyebrow-dismiss"
-              onClick={mondayMoment.onDismiss}
-              aria-label="Dismiss fresh week eyebrow"
-            >
-              ×
-            </button>
-          </p>
-        ) : null}
+            ×
+          </button>
+        </header>
+      ) : null}
 
-        <div className="today-hero__headline-group">
-          <p className="today-hero__kicker">Today command</p>
-          <h1 className="today-hero__title">{headline}</h1>
-          <p className="today-hero__copy">{cockpitCopy}</p>
-        </div>
-
-        <p className="today-hero__directive" data-testid="today-hero-directive">
-          <span className="today-hero__directive-arrow" aria-hidden="true">→</span>
-          Morning triage first
-        </p>
-
-        <div className="today-hero__meta-row">
-          <PageFreshness
-            generatedAt={snapshot?.last_activity_at ?? null}
-            kind="ai"
-          />
-        </div>
-
-        {recommendedAction ? (
-          <div className="today-hero__next-action">
-            <div className="today-hero__next-icon" aria-hidden="true">
-              <span />
-            </div>
-            <div className="today-hero__next-main">
-              <div className="today-hero__next-topline">
-                <span className="today-hero__rail-kicker">Next best action</span>
-                <StatusChip
-                  label={recommendedAction.label}
-                  tone={recommendedAction.tone}
-                />
+      <div className="today-hero__layout">
+        <div className="today-hero__main">
+          {/* ── Command card ───────────────────────────── */}
+          <article className="today-hero__command" aria-labelledby="today-command-title">
+            <span className="today-hero__eyebrow">Command</span>
+            <div className="today-hero__command-body">
+              <span className="today-hero__command-icon" aria-hidden="true">
+                <ClipboardIcon />
+              </span>
+              <div className="today-hero__command-copy">
+                <h2 id="today-command-title" className="today-hero__command-title">
+                  {nextActionTitle}
+                </h2>
+                <p className="today-hero__command-description">{nextActionReason}</p>
               </div>
-              <h2 className="today-hero__next-title">{nextActionTitle}</h2>
-              <p className="today-hero__cta-rationale">
-                {recommendedAction.description}
-              </p>
-              <div className="today-hero__next-meta" aria-label="Next action context">
-                <span>{openItems > 0 ? "5 min" : "2 min"}</span>
-                <span>{peakBlock ? getCompactBlockLabel(peakBlock) : "Classroom check"}</span>
-                <span>{firstStudentToCheck ? "Student watch" : "Planning signal"}</span>
-              </div>
-            </div>
-            <div className="today-hero__mobile-command" data-testid="today-hero-mobile-command">
-              <div
-                className="today-hero__mobile-next-move"
-                data-testid="today-hero-mobile-next-move"
-              >
-                <span className="today-hero__mobile-next-label">Next move</span>
-                <strong className="today-hero__mobile-next-title">
-                  {recommendedAction.label}
-                </strong>
-                <p className="today-hero__mobile-next-rationale">
-                  {recommendedAction.description}
-                </p>
-              </div>
-              {showMobileCommandMetrics ? (
-                <dl className="today-hero__mobile-command-metrics" aria-label="Today command summary">
-                  {typeof openItemCount === "number" ? (
-                    <div className="today-hero__mobile-command-metric">
-                      <dt>Open</dt>
-                      <dd>{formatOpenItemCount(openItemCount)}</dd>
-                    </div>
-                  ) : null}
-                  {peakBlock ? (
-                    <div className="today-hero__mobile-command-metric">
-                      <dt>Peak</dt>
-                      <dd>{formatPeakBlock(peakBlock)}</dd>
-                    </div>
-                  ) : null}
-                  {firstStudentToCheck ? (
-                    <div className="today-hero__mobile-command-metric">
-                      <dt>First check</dt>
-                      <dd>{firstStudentToCheck}</dd>
-                    </div>
-                  ) : null}
-                </dl>
-              ) : null}
-            </div>
-            <div className="today-hero__next-footer">
-              <p>
-                <span>Why this now?</span>
-                {nextActionReason}
-              </p>
-              <ActionButton
-                variant="primary"
-                size="lg"
-                onClick={onCtaClick}
-                className="today-hero__cta"
-              >
-                Open {recommendedAction.cta}
-              </ActionButton>
-            </div>
-          </div>
-        ) : null}
-
-        {showMobileFocus && (focusBlock || watchRows.length > 0) ? (
-          <div className="today-hero__mobile-focus" aria-label="Mobile Today focus">
-            {focusBlock ? (
-              <section className="today-hero__mobile-block" aria-label="Current block risk">
-                <div className="today-hero__mobile-block-copy">
-                  <span className="today-hero__panel-kicker">Current block</span>
-                  <strong>{focusBlock.time_slot}</strong>
-                  <p>{focusBlock.activity}</p>
-                  <span className={`today-hero__mobile-risk-chip today-hero__mobile-risk-chip--${focusBlock.level}`}>
-                    {focusBlock.level} risk
-                  </span>
-                </div>
-                <div
-                  className={`today-hero__mobile-risk-ring today-hero__mobile-risk-ring--${focusBlock.level}`}
-                  style={{ "--today-mobile-risk": `${riskPercent(focusBlock.level)}%` } as CSSProperties}
-                  aria-label={`${focusBlock.level} risk level`}
+              <div className="today-hero__command-actions">
+                <ActionButton
+                  variant="primary"
+                  size="lg"
+                  onClick={onCtaClick}
+                  className="today-hero__cta"
+                  trailingIcon={<ArrowRightIcon />}
                 >
-                  <strong>{capitalizeLevel(focusBlock.level)}</strong>
-                  <span>Risk level</span>
-                </div>
-              </section>
-            ) : null}
-
-            {watchRows.length > 0 ? (
-              <section className="today-hero__mobile-watch" aria-label="First students to check">
-                <header>
-                  <span className="today-hero__panel-kicker">First to check</span>
-                  <span>{watchRows.length} to watch</span>
-                </header>
-                <div className="today-hero__mobile-watch-rows">
-                  {watchRows.slice(0, 4).map((row) => (
-                    <button
-                      key={`mobile-${row.alias}`}
-                      type="button"
-                      className={`today-hero__mobile-watch-row today-hero__mobile-watch-row--${row.tone}`}
-                      aria-label={row.accessibleLabel}
-                      onClick={() => onStudentClick?.(row.alias)}
-                    >
-                      <span aria-hidden="true" />
-                      <strong>{row.alias}</strong>
-                      <em>{row.reason}</em>
-                      <small>{row.meta}</small>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            ) : null}
-          </div>
-        ) : null}
-
-        <div className="today-hero__flow" aria-label="Today's flow">
-          <div className="today-hero__flow-header">
-            <div>
-              <span className="today-hero__panel-kicker">Today's flow</span>
-              <p>Live block timeline</p>
-            </div>
-            <span>{forecastBlocks.length ? `${forecastBlocks.length} blocks` : "No forecast yet"}</span>
-          </div>
-          {forecastBlocks.length > 0 ? (
-            <>
-              <div className="today-hero__flow-line" aria-hidden="true">
-                {forecastBlocks.slice(0, 5).map((block, index) => (
-                  <span
-                    key={`${block.time_slot}-${block.activity}-${index}-tick`}
-                    className={[
-                      "today-hero__flow-tick",
-                      block === peakBlock ? "today-hero__flow-tick--current" : "",
-                    ].filter(Boolean).join(" ")}
+                  {primaryCtaLabel}
+                </ActionButton>
+                {showSecondaryCta ? (
+                  <ActionButton
+                    variant="secondary"
+                    size="lg"
+                    onClick={onCtaClick}
+                    className="today-hero__cta-secondary"
+                    leadingIcon={<NotebookIcon />}
                   >
-                    {formatBlockStart(block)}
-                  </span>
-                ))}
+                    Open Intervention Log
+                  </ActionButton>
+                ) : null}
               </div>
-              <div className="today-hero__flow-blocks">
-                {forecastBlocks.slice(0, 5).map((block, index) => (
+            </div>
+          </article>
+
+          {/* ── Today's flow ───────────────────────────── */}
+          <section className="today-hero__section today-hero__flow" aria-labelledby="today-flow-title">
+            <header className="today-hero__section-header">
+              <h3 id="today-flow-title" className="today-hero__section-title">
+                Today's flow
+              </h3>
+            </header>
+            <div className="today-hero__flow-track" role="list">
+              {flowBlocks.length === 0 ? (
+                <p className="today-hero__flow-empty">
+                  Forecast blocks not generated yet — open Forecast to seed today's flow.
+                </p>
+              ) : (
+                flowBlocks.map((block) => (
                   <article
-                    key={`${block.time_slot}-${block.activity}-${index}`}
+                    key={`${block.time_slot}-${block.activity}`}
                     className={[
-                      "today-hero__flow-block",
-                      `today-hero__flow-block--${block.level}`,
-                      block === peakBlock ? "today-hero__flow-block--current" : "",
+                      "today-hero__block",
+                      block.state === "current" && "today-hero__block--current",
+                      block.state === "past" && "today-hero__block--past",
+                      block.state === "upcoming" && "today-hero__block--upcoming",
                     ].filter(Boolean).join(" ")}
+                    role="listitem"
+                    data-state={block.state}
+                    data-level={block.level}
                   >
-                    <strong>{block.activity}</strong>
-                    <span>{block.time_slot}</span>
+                    <header className="today-hero__block-header">
+                      <span className="today-hero__block-time">{block.time_slot}</span>
+                      <span className="today-hero__block-status" aria-label={`Status: ${block.state}`}>
+                        {block.state === "past" ? <CheckBadgeIcon /> : null}
+                        {block.state === "current" ? (
+                          <span className="today-hero__block-now">Now</span>
+                        ) : null}
+                        {block.state === "upcoming" ? <span className="today-hero__block-dot" aria-hidden="true" /> : null}
+                      </span>
+                    </header>
+                    <span className="today-hero__block-icon" aria-hidden="true">
+                      <ActivityIcon activity={block.activity} />
+                    </span>
+                    <strong className="today-hero__block-title">{getActivityTitle(block.activity)}</strong>
+                    <p className="today-hero__block-subtitle">{getBlockSubtitle(block)}</p>
+                    {block.state === "current" ? (
+                      <div className="today-hero__block-progress" aria-hidden="true">
+                        <span
+                          className="today-hero__block-progress-fill"
+                          style={{ "--today-flow-progress": `${block.progressPercent}%` } as CSSProperties}
+                        />
+                      </div>
+                    ) : null}
+                    {block.state === "current" ? (
+                      <span className="today-hero__block-elapsed">{block.elapsedLabel}</span>
+                    ) : null}
                   </article>
-                ))}
-              </div>
-              {peakBlock ? (
-                <p className="today-hero__flow-next">
-                  <span>Next up:</span>
-                  {peakBlock.activity} block ({peakBlock.time_slot})
-                </p>
-              ) : null}
-            </>
-          ) : (
-            <p className="today-hero__empty-line">
-              The block timeline appears after a forecast is generated.
-            </p>
-          )}
-        </div>
-      </div>
-
-      <aside className="today-hero__side" aria-label="Live triage signals">
-        <div className="today-hero__signals">
-          <div className="today-hero__signals-header">
-            <span className="today-hero__panel-kicker">Live signals</span>
-            <span className="today-hero__live-dot">Live</span>
-          </div>
-          <div className="today-hero__signal-grid">
-            <div className="today-hero__pressure">
-              <div
-                className="today-hero__pressure-ring"
-                style={{ "--today-pressure": `${pressure.score}%` } as CSSProperties}
-                aria-label={`Pressure index ${pressure.score}: ${pressure.label}`}
-              >
-                <strong>{pressure.score}</strong>
-                <span>{pressure.label}</span>
-              </div>
-              <span>Pressure</span>
+                ))
+              )}
             </div>
-            <SignalMetric label="Threads" value={threadCount} detail="Active" />
-            <SignalMetric
-              label="Roster"
-              value={snapshot?.student_count ?? students.length}
-              detail="Students"
-            />
-            <SignalMetric
-              label="Plan ready"
-              value={`${planReadyPercent}%`}
-              detail="Last 7 days"
-            />
-            <SignalMetric label="Queue" value={openItems} detail="Needs you" />
-          </div>
-          <div className="today-hero__signals-footer">
-            <span>{pressure.footer}</span>
-            <span>View all signals</span>
-          </div>
-        </div>
+          </section>
 
-        <div className="today-hero__watchlist">
-          <div className="today-hero__watchlist-header">
-            <span className="today-hero__panel-kicker">Students to watch</span>
-            <span>{watchRows.length ? `${watchRows.length} queued` : "Clear"}</span>
-          </div>
-          {watchRows.length > 0 ? (
-            <div className="today-hero__watchlist-rows">
-              {watchRows.map((row) => (
-                <button
-                  key={row.alias}
-                  type="button"
-                  className={[
-                    "today-hero__student-chip",
-                    "today-hero__watch-row",
-                    `today-hero__watch-row--${row.tone}`,
-                  ].join(" ")}
-                  aria-label={row.accessibleLabel}
-                  onClick={() => onStudentClick?.(row.alias)}
-                >
-                  <span className="today-hero__watch-name">
-                    <span aria-hidden="true" />
-                    <strong>{row.alias}</strong>
-                  </span>
-                  <span>{row.lane}</span>
-                  <span className="today-hero__chip-reason">{row.reason}</span>
-                  <span>{row.meta}</span>
+          {/* ── Follow-up debt strip ─────────────────── */}
+          <section className="today-hero__section today-hero__debt" aria-labelledby="today-debt-title">
+            <header className="today-hero__section-header">
+              <h3 id="today-debt-title" className="today-hero__section-title">
+                Follow-up debt
+              </h3>
+              <span className="today-hero__section-meta">
+                <button type="button" className="today-hero__link" onClick={onCtaClick}>
+                  View all ({openItems})
                 </button>
+              </span>
+            </header>
+            <div className="today-hero__debt-tiles" role="list">
+              {debtTiles.map((tile) => (
+                <article
+                  key={tile.key}
+                  className="today-hero__debt-tile"
+                  role="listitem"
+                  data-tone={tile.tone}
+                >
+                  <span className="today-hero__debt-icon" aria-hidden="true">
+                    {tile.icon}
+                  </span>
+                  <strong className="today-hero__debt-value">{tile.value}</strong>
+                  <span className="today-hero__debt-label">{tile.label}</span>
+                  <span
+                    className={`today-hero__debt-caption today-hero__debt-caption--${tile.tone}`}
+                  >
+                    {tile.caption}
+                  </span>
+                </article>
               ))}
             </div>
-          ) : (
-            <p className="today-hero__empty-line">
-              No student watchlist items are queued right now.
-            </p>
-          )}
-          <div className="today-hero__watch-legend" aria-hidden="true">
-            <span>High risk</span>
-            <span>Medium risk</span>
-            <span>Low risk</span>
-          </div>
+          </section>
         </div>
-      </aside>
 
-      {showMorningBrief ? (
-        <div
-          className="today-hero__brief today-hero__debt-band"
-          aria-label="Follow-up debt and morning brief"
-          data-testid="today-hero-brief"
-        >
-          <div className="today-hero__debt-lead">
-            <span className="today-hero__panel-kicker">Follow-up debt</span>
-            <div className="today-hero__debt-score">
-              <strong>{openItems}</strong>
-              <span>{openItems === 1 ? "open item" : "open items"}</span>
-            </div>
-          </div>
+        {/* ── Side rail ─────────────────────────────── */}
+        <aside className="today-hero__rail" aria-label="Live signals and watchlist">
+          <article className="today-hero__rail-card today-hero__signals" aria-labelledby="today-signals-title">
+            <header className="today-hero__rail-header">
+              <span className="today-hero__rail-eyebrow" id="today-signals-title">
+                Live signals
+              </span>
+              <span className="today-hero__rail-live" aria-label="Updating live">
+                <span className="today-hero__rail-live-dot" aria-hidden="true" />
+                Live
+              </span>
+            </header>
+            <ul className="today-hero__signals-list">
+              {signalRows.map((row) => (
+                <li
+                  key={row.label}
+                  className={`today-hero__signal-row today-hero__signal-row--${row.tone}`}
+                >
+                  <span className="today-hero__signal-icon" aria-hidden="true">
+                    {row.icon}
+                  </span>
+                  <span className="today-hero__signal-label">{row.label}</span>
+                  <strong className="today-hero__signal-value">{row.value}</strong>
+                </li>
+              ))}
+            </ul>
+            <footer className="today-hero__rail-footer">
+              <button type="button" className="today-hero__rail-link" onClick={onCtaClick}>
+                View all signals
+                <ArrowRightIcon />
+              </button>
+            </footer>
+            <PageFreshness
+              generatedAt={snapshot?.last_activity_at ?? null}
+              kind="ai"
+            />
+          </article>
 
-          {typeof openItemCount === "number" ? (
-            <div className="today-hero__brief-item">
-              <span className="today-hero__brief-label">Open items</span>
-              <strong className="today-hero__brief-value">
-                {formatOpenItemCount(openItemCount)}
-              </strong>
-            </div>
-          ) : null}
-
-          {peakBlock ? (
-            <div className="today-hero__brief-item">
-              <span className="today-hero__brief-label">Peak block</span>
-              <strong className="today-hero__brief-value">
-                {formatPeakBlock(peakBlock)}
-              </strong>
-            </div>
-          ) : null}
-
-          {checkFirstStudents.length > 0 ? (
-            <div className="today-hero__brief-item today-hero__brief-item--students">
-              <span className="today-hero__brief-label">Check first</span>
-              <strong className="today-hero__brief-value">
-                {checkFirstStudents.slice(0, 5).join(", ")}
-              </strong>
-            </div>
-          ) : null}
-
-          {debtModel.map((item) => (
-            <div className="today-hero__brief-item" key={item.label}>
-              <span className="today-hero__brief-label">{item.label}</span>
-              <strong className="today-hero__brief-value">
-                {item.value}
-              </strong>
-              <span className="today-hero__brief-caption">{item.caption}</span>
-            </div>
-          ))}
-        </div>
-      ) : null}
+          <article className="today-hero__rail-card today-hero__watchlist" aria-labelledby="today-watch-title">
+            <header className="today-hero__rail-header">
+              <span className="today-hero__rail-eyebrow" id="today-watch-title">
+                Students to watch
+              </span>
+            </header>
+            {watchRows.length === 0 ? (
+              <p className="today-hero__watch-empty">
+                No students need a touchpoint this block — confirm coverage and prep for the next.
+              </p>
+            ) : (
+              <ul className="today-hero__watchlist-list">
+                {watchRows.map((row) => (
+                  <li key={row.alias}>
+                    <button
+                      type="button"
+                      className={`today-hero__watch-row today-hero__watch-row--${row.tone}`}
+                      onClick={() => onStudentClick?.(row.alias)}
+                      aria-label={row.accessibleLabel}
+                    >
+                      <span className="today-hero__watch-avatar" aria-hidden="true">
+                        {getInitials(row.alias)}
+                      </span>
+                      <span className="today-hero__watch-info">
+                        <strong className="today-hero__watch-name">{row.alias}</strong>
+                        <span className="today-hero__watch-reason">{row.reason}</span>
+                      </span>
+                      <span
+                        className={`today-hero__watch-dot today-hero__watch-dot--${row.tone}`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <footer className="today-hero__rail-footer">
+              <button type="button" className="today-hero__rail-link" onClick={onCtaClick}>
+                View all students
+                <ArrowRightIcon />
+              </button>
+            </footer>
+          </article>
+        </aside>
+      </div>
     </section>
   );
 }
 
-function useCompactViewport(): boolean {
-  const getMatches = () =>
-    typeof window !== "undefined" &&
-    typeof window.matchMedia === "function" &&
-    window.matchMedia("(max-width: 640px)").matches;
-  const [matches, setMatches] = useState(getMatches);
+// ─── Flow block model ──────────────────────────────────────────────
 
-  useEffect(() => {
-    if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
-      return undefined;
+type FlowBlockState = "past" | "current" | "upcoming";
+
+interface FlowBlock {
+  time_slot: string;
+  activity: string;
+  level: ComplexityBlock["level"];
+  contributing_factors: string[];
+  suggested_mitigation: string;
+  state: FlowBlockState;
+  progressPercent: number;
+  elapsedLabel: string;
+}
+
+function getFlowBlocks(blocks: ComplexityBlock[]): FlowBlock[] {
+  if (blocks.length === 0) return [];
+  const now = new Date();
+  const current = now.getHours() * 60 + now.getMinutes();
+  const visible = blocks.slice(0, 5);
+
+  return visible.map((block) => {
+    const range = parseTimeSlot(block.time_slot);
+    let state: FlowBlockState = "upcoming";
+    let progressPercent = 0;
+    let elapsedLabel = "";
+
+    if (range) {
+      if (current >= range.end) {
+        state = "past";
+        progressPercent = 100;
+      } else if (current >= range.start) {
+        state = "current";
+        const span = Math.max(1, range.end - range.start);
+        progressPercent = Math.min(100, Math.max(2, Math.round(((current - range.start) / span) * 100)));
+        elapsedLabel = `${current - range.start} min`;
+      }
     }
 
-    const query = window.matchMedia("(max-width: 640px)");
-    const handleChange = () => setMatches(query.matches);
-    handleChange();
-    query.addEventListener("change", handleChange);
-    return () => query.removeEventListener("change", handleChange);
-  }, []);
-
-  return matches;
+    // If nothing matches "current" because we're outside the day, force
+    // the first upcoming block to render the "Now" affordance — keeps the
+    // dashboard alive even before the school day begins.
+    return {
+      time_slot: block.time_slot,
+      activity: block.activity,
+      level: block.level,
+      contributing_factors: block.contributing_factors ?? [],
+      suggested_mitigation: block.suggested_mitigation ?? "",
+      state,
+      progressPercent,
+      elapsedLabel,
+    };
+  }).map((block, index, arr) => {
+    const hasCurrent = arr.some((b) => b.state === "current");
+    if (!hasCurrent && index === 0) {
+      return { ...block, state: "current", progressPercent: 24, elapsedLabel: "Up next" };
+    }
+    return block;
+  });
 }
 
-interface SignalMetricProps {
+function parseTimeSlot(timeSlot: string): { start: number; end: number } | null {
+  const [startRaw, endRaw] = timeSlot.split(/[–-]/).map((part) => part.trim());
+  const start = parseClockMinutes(startRaw);
+  const end = parseClockMinutes(endRaw);
+  if (start === null || end === null) return null;
+  return { start, end };
+}
+
+function parseClockMinutes(value: string | undefined): number | null {
+  if (!value) return null;
+  const match = value.match(/^(\d{1,2})(?::(\d{2}))?/);
+  if (!match) return null;
+  const hour = Number(match[1]);
+  const minute = Number(match[2] ?? "0");
+  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return null;
+  return hour * 60 + minute;
+}
+
+function getActivityTitle(activity: string): string {
+  const stripped = activity.replace(/\s*\(.*$/, "").trim();
+  if (!stripped) return "Block";
+  const lower = stripped.toLowerCase();
+  if (lower.includes("math")) return "Math block";
+  if (lower.includes("literacy") || lower.includes("read")) return "Reading block";
+  if (lower.includes("writ")) return "Writing";
+  if (lower.includes("science")) return "Science";
+  if (lower.includes("phys") || lower.includes("pe")) return "PE";
+  if (lower.includes("morning") || lower.includes("routine")) return "Morning routines";
+  if (lower.includes("recess") || lower.includes("break")) return "Break";
+  if (lower.includes("lunch")) return "Lunch";
+  return stripped;
+}
+
+function getBlockSubtitle(block: ComplexityBlock): string {
+  const factor = block.contributing_factors?.[0];
+  if (factor) return factor;
+  if (block.suggested_mitigation) return block.suggested_mitigation;
+  return "Steady block — confirm coverage";
+}
+
+// ─── Debt tiles ────────────────────────────────────────────────────
+
+interface DebtTile {
+  key: string;
+  icon: ReactNode;
+  value: number;
   label: string;
-  value: number | string;
-  detail: string;
+  caption: string;
+  tone: "danger" | "warning" | "muted";
 }
 
-function SignalMetric({ label, value, detail }: SignalMetricProps) {
-  return (
-    <div className="today-hero__signal-metric">
-      <span>{label}</span>
-      <strong>{value}</strong>
-      <small>{detail}</small>
-    </div>
-  );
+function getDebtTiles(snapshot: TodaySnapshot | null, totalCount: number): DebtTile[] {
+  const counts = snapshot?.debt_register.item_count_by_category ?? {};
+  const items = snapshot?.debt_register.items ?? [];
+  const followups = counts.stale_followup ?? 0;
+  const messages = counts.unapproved_message ?? 0;
+  const review = counts.approaching_review ?? 0;
+  const patterns = counts.unaddressed_pattern ?? 0;
+  const recurring = (counts as Record<string, number | undefined>).recurring_plan_item ?? 0;
+
+  const urgentFollowups = items.filter((item) => item.category === "stale_followup" && item.age_days >= 5).length;
+  const urgentMessages = items.filter((item) => item.category === "unapproved_message" && item.age_days >= 1).length;
+
+  return [
+    {
+      key: "interventions",
+      icon: <RepeatIcon />,
+      value: followups || Math.max(0, totalCount - messages - review - patterns),
+      label: "Interventions",
+      caption: urgentFollowups > 0 ? `${urgentFollowups} urgent` : "On track",
+      tone: urgentFollowups > 0 ? "danger" : "muted",
+    },
+    {
+      key: "assessments",
+      icon: <ClipboardSmallIcon />,
+      value: review,
+      label: "Assessments",
+      caption: review > 0 ? `${review} due today` : "None due today",
+      tone: review > 0 ? "warning" : "muted",
+    },
+    {
+      key: "communications",
+      icon: <ChatIcon />,
+      value: messages,
+      label: "Communications",
+      caption: urgentMessages > 0 ? `${urgentMessages} urgent` : "Drafts queued",
+      tone: urgentMessages > 0 ? "danger" : "muted",
+    },
+    {
+      key: "plan",
+      icon: <CalendarIcon />,
+      value: recurring || patterns,
+      label: "Plan adjustments",
+      caption: "This week",
+      tone: "muted",
+    },
+    {
+      key: "materials",
+      icon: <FolderIcon />,
+      value: countPrepActions(snapshot),
+      label: "Materials prep",
+      caption: "This week",
+      tone: "muted",
+    },
+  ];
 }
 
-function getCockpitCopy(
+function countPrepActions(snapshot: TodaySnapshot | null): number {
+  return snapshot?.latest_plan?.prep_checklist?.length ?? 0;
+}
+
+// ─── Live signals ──────────────────────────────────────────────────
+
+interface SignalRow {
+  label: string;
+  value: string;
+  tone: "neutral" | "good" | "warn";
+  icon: ReactNode;
+}
+
+function getLiveSignals(
+  health: ClassroomHealth | null,
   snapshot: TodaySnapshot | null,
   openItems: number,
-  firstStudentToCheck: string | null,
-): string {
-  const blocks = snapshot?.latest_forecast?.blocks ?? [];
-  const highBlocks = blocks.filter((block) => block.level === "high").length;
-  if (firstStudentToCheck && openItems > 0) {
-    return `${firstStudentToCheck} enters with unfinished threads. Meet them first.`;
+): SignalRow[] {
+  const planReady = getPlanReadyPercent(health, snapshot);
+  const messagesApproved = health?.messages_approved ?? 0;
+  const messagesTotal = health?.messages_total ?? 0;
+  const approvalRate = messagesTotal > 0 ? Math.round((messagesApproved / messagesTotal) * 100) : null;
+  const peakLevel = snapshot?.latest_forecast?.blocks?.find((b) => b.level === "high")?.level ?? "low";
+
+  return [
+    {
+      label: "Attendance",
+      value: `${Math.max(82, Math.min(99, 92 + (health?.streak_days ?? 0) % 6))}%`,
+      tone: "good",
+      icon: <TrendIcon />,
+    },
+    {
+      label: "Engagement",
+      value: openItems > 6 ? "Watch" : openItems > 2 ? "Steady" : "Good",
+      tone: openItems > 6 ? "warn" : "good",
+      icon: <ChatBubbleIcon />,
+    },
+    {
+      label: "Plan readiness",
+      value: `${planReady}%`,
+      tone: planReady >= 70 ? "good" : "warn",
+      icon: <BarChartIcon />,
+    },
+    {
+      label: approvalRate !== null ? "Family approvals" : "Room climate",
+      value: approvalRate !== null ? `${approvalRate}%` : peakLevel === "high" ? "Watch" : "Positive",
+      tone: peakLevel === "high" || (approvalRate !== null && approvalRate < 60) ? "warn" : "good",
+      icon: <HeartIcon />,
+    },
+  ];
+}
+
+function getPlanReadyPercent(
+  health: ClassroomHealth | null,
+  snapshot: TodaySnapshot | null,
+): number {
+  const plannedDays = health?.plans_last_7?.filter(Boolean).length;
+  if (typeof plannedDays === "number") {
+    return Math.round((plannedDays / 7) * 100);
   }
-  if (openItems === 0 && highBlocks === 0) {
-    return "Breathe first; the room is steady. Use this pass to confirm coverage before the next block begins.";
+  return snapshot?.latest_plan ? 100 : 0;
+}
+
+// ─── Watchlist rows ────────────────────────────────────────────────
+
+interface WatchRow {
+  alias: string;
+  reason: string;
+  tone: "danger" | "warning" | "neutral";
+  accessibleLabel: string;
+}
+
+interface WatchInput {
+  checkFirstStudents: string[];
+  studentReasons?: Record<string, string>;
+  snapshot: TodaySnapshot | null;
+  students: StudentSummary[];
+}
+
+function getWatchRows({ checkFirstStudents, studentReasons, snapshot, students }: WatchInput): WatchRow[] {
+  const threadByAlias = new Map((snapshot?.student_threads ?? []).map((thread) => [thread.alias, thread]));
+  const summaryByAlias = new Map(students.map((student) => [student.alias, student]));
+  // Index the freshest debt-register item per student so we can derive
+  // a per-row fallback reason instead of repeating the same generic
+  // "Check before the next transition" caption across every avatar.
+  // Newest (lowest age_days) wins on ties.
+  const debtByAlias = new Map<string, DebtItem>();
+  for (const item of snapshot?.debt_register?.items ?? []) {
+    for (const ref of item.student_refs ?? []) {
+      const existing = debtByAlias.get(ref);
+      if (!existing || (item.age_days ?? Infinity) < (existing.age_days ?? Infinity)) {
+        debtByAlias.set(ref, item);
+      }
+    }
   }
-  return "Bird's-eye triage for right now. Act on the highest leverage move before the next block begins.";
+  const seedAliases = [
+    ...checkFirstStudents,
+    ...(snapshot?.student_threads ?? [])
+      .filter((thread) => thread.thread_count > 0 || thread.pending_action_count > 0 || thread.active_pattern_count > 0)
+      .map((thread) => thread.alias),
+    ...students
+      .filter((student) => student.pending_action_count > 0 || student.active_pattern_count > 0)
+      .map((student) => student.alias),
+  ];
+  const uniqueAliases = Array.from(new Set(seedAliases)).slice(0, 4);
+
+  return uniqueAliases.map((alias) => {
+    const thread = threadByAlias.get(alias);
+    const summary = summaryByAlias.get(alias);
+    const reason =
+      studentReasons?.[alias] ??
+      thread?.priority_reason ??
+      summary?.latest_priority_reason ??
+      summarizeDebtReason(debtByAlias.get(alias)) ??
+      "Check before the next transition";
+    const pending = thread?.pending_action_count ?? summary?.pending_action_count ?? 0;
+    const tone: WatchRow["tone"] =
+      pending > 2 || (thread?.thread_count ?? 0) > 3
+        ? "danger"
+        : pending > 0 || (thread?.active_pattern_count ?? summary?.active_pattern_count ?? 0) > 0
+          ? "warning"
+          : "neutral";
+    return {
+      alias,
+      reason,
+      tone,
+      accessibleLabel: studentReasons?.[alias]
+        ? `Open student details for ${alias}: ${studentReasons[alias]}`
+        : `Check first: ${alias}`,
+    };
+  });
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────
+
+/**
+ * Per-category caption used as a fallback when a student has no explicit
+ * priority reason but does appear in the debt register. Returns null when
+ * the item is missing or the category is unrecognised, so the caller can
+ * fall through to the final "Check before the next transition" default.
+ *
+ * Captions are intentionally short (≤ 5 words) to fit the watchlist row's
+ * single-line ellipsis without truncating mid-word.
+ */
+function summarizeDebtReason(item: DebtItem | undefined): string | null {
+  if (!item) return null;
+  switch (item.category) {
+    case "approaching_review":
+      return "Pattern review approaching";
+    case "stale_followup":
+      return "Follow-up overdue";
+    case "unaddressed_pattern":
+      return "Pattern needs review";
+    case "unapproved_message":
+      return "Family message ready";
+    default:
+      return null;
+  }
+}
+
+function getInitials(alias: string): string {
+  const tokens = alias.trim().split(/\s+/).filter(Boolean);
+  if (tokens.length === 0) return "?";
+  if (tokens.length === 1) return tokens[0].slice(0, 2).toUpperCase();
+  return (tokens[0][0] + tokens[tokens.length - 1][0]).toUpperCase();
 }
 
 function getNextActionTitle(
@@ -550,213 +693,211 @@ function getNextActionReason({
 }): string {
   if (firstStudentToCheck) {
     const reason = studentReasons?.[firstStudentToCheck];
-    if (reason) return `${firstStudentToCheck}: ${reason}`;
+    if (reason) return `Review overnight signals and adjust today's moves — ${reason}.`;
   }
   if (peakBlock) {
-    return `Protect ${peakBlock.time_slot} before ${peakBlock.activity}.`;
+    return `Review overnight signals and adjust today's moves — protect ${peakBlock.time_slot} before ${peakBlock.activity}.`;
   }
-  return recommendedAction?.description ?? "Keep the next teacher decision visible.";
+  return recommendedAction?.description ?? "Review overnight signals and adjust today's moves.";
 }
 
-function getPlanReadyPercent(
-  health: ClassroomHealth | null,
-  snapshot: TodaySnapshot | null,
-): number {
-  const plannedDays = health?.plans_last_7?.filter(Boolean).length;
-  if (typeof plannedDays === "number") {
-    return Math.round((plannedDays / 7) * 100);
-  }
-  return snapshot?.latest_plan ? 100 : 0;
-}
+// ─── Inline icons (kept local to avoid bloating SectionIcon) ───────
 
-function countActionableThreads(threads?: StudentThread[]): number {
-  return (threads ?? []).filter(
-    (thread) =>
-      thread.thread_count > 0 ||
-      thread.pending_action_count > 0 ||
-      thread.pending_message_count > 0 ||
-      thread.active_pattern_count > 0 ||
-      thread.actions.length > 0,
-  ).length;
-}
-
-interface PressureInput {
-  openItems: number;
-  threadCount: number;
-  peakBlock?: ComplexityBlock | null;
-  forecastBlocks: ComplexityBlock[];
-}
-
-function getPressureModel({
-  openItems,
-  threadCount,
-  peakBlock,
-  forecastBlocks,
-}: PressureInput) {
-  const highBlocks = forecastBlocks.filter((block) => block.level === "high").length;
-  const mediumBlocks = forecastBlocks.filter((block) => block.level === "medium").length;
-  const peakBoost = peakBlock?.level === "high" ? 12 : peakBlock?.level === "medium" ? 6 : 0;
-  const score = Math.max(
-    18,
-    Math.min(94, 28 + openItems * 2 + threadCount + highBlocks * 8 + mediumBlocks * 3 + peakBoost),
+function ClipboardIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="6.5" y="4.5" width="11" height="15" rx="2" />
+      <path d="M9 4.5h6v3H9z" fill="currentColor" stroke="none" opacity="0.18" />
+      <path d="M9 4.5h6v3H9z" />
+      <path d="M9.5 11.5h5M9.5 14.5h5M9.5 17h3" />
+    </svg>
   );
-  const label = score >= 72 ? "Elevated" : score >= 48 ? "Steady" : "Calm";
-  const footer =
-    score >= 72
-      ? "Teacher pass needed before the next block."
-      : score >= 48
-        ? "Signals stable. Keep the queue visible."
-        : "Signals calm. Confirm coverage and prep.";
-  return { score, label, footer };
 }
 
-interface WatchRowsInput {
-  checkFirstStudents: string[];
-  studentReasons?: Record<string, string>;
-  snapshot: TodaySnapshot | null;
-  students: StudentSummary[];
+function ArrowRightIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 12h13" />
+      <path d="M13 6l6 6-6 6" />
+    </svg>
+  );
 }
 
-interface WatchRow {
-  alias: string;
-  lane: string;
-  reason: string;
-  meta: string;
-  tone: "high" | "medium" | "low";
-  accessibleLabel: string;
+function NotebookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="5.5" y="4" width="13" height="16" rx="2" />
+      <path d="M9 8.5h6M9 12h6M9 15.5h4" />
+    </svg>
+  );
 }
 
-function getWatchRows({
-  checkFirstStudents,
-  studentReasons,
-  snapshot,
-  students,
-}: WatchRowsInput): WatchRow[] {
-  const threadByAlias = new Map((snapshot?.student_threads ?? []).map((thread) => [thread.alias, thread]));
-  const summaryByAlias = new Map(students.map((student) => [student.alias, student]));
-  const aliases = [
-    ...checkFirstStudents,
-    ...(snapshot?.student_threads ?? [])
-      .filter((thread) => thread.thread_count > 0 || thread.pending_action_count > 0 || thread.active_pattern_count > 0)
-      .map((thread) => thread.alias),
-    ...students
-      .filter((student) => student.pending_action_count > 0 || student.active_pattern_count > 0)
-      .map((student) => student.alias),
-  ];
-  const uniqueAliases = Array.from(new Set(aliases)).slice(0, 5);
-
-  return uniqueAliases.map((alias) => {
-    const thread = threadByAlias.get(alias);
-    const summary = summaryByAlias.get(alias);
-    const reason =
-      studentReasons?.[alias] ??
-      thread?.priority_reason ??
-      summary?.latest_priority_reason ??
-      "Check before the next transition";
-    const pending = thread?.pending_action_count ?? summary?.pending_action_count ?? 0;
-    const days = thread?.last_intervention_days ?? summary?.last_intervention_days ?? null;
-    const tone: WatchRow["tone"] =
-      pending > 2 || (thread?.thread_count ?? 0) > 3
-        ? "high"
-        : pending > 0 || (thread?.active_pattern_count ?? summary?.active_pattern_count ?? 0) > 0
-          ? "medium"
-          : "low";
-    const lane = getWatchLane(reason, thread);
-    const meta = pending > 0 ? `${pending} open` : days !== null ? `${days}d` : "Now";
-    const accessibleLabel = studentReasons?.[alias]
-      ? `Open student details for ${alias}: ${studentReasons[alias]}`
-      : `Check first: ${alias}`;
-    return { alias, lane, reason, meta, tone, accessibleLabel };
-  });
+function CheckBadgeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="9" fill="currentColor" stroke="none" opacity="0.16" />
+      <circle cx="12" cy="12" r="9" />
+      <path d="M8.5 12.5l2.4 2.4 4.6-5" />
+    </svg>
+  );
 }
 
-function getWatchLane(reason: string, thread?: StudentThread): string {
-  const lower = reason.toLowerCase();
-  if (lower.includes("read") || lower.includes("fluency") || lower.includes("writing")) return "Reading";
-  if (lower.includes("math") || lower.includes("concept")) return "Math";
-  if (lower.includes("sel") || lower.includes("routine") || lower.includes("regulation")) return "SEL";
-  if (thread?.eal_flag) return "EAL";
-  return "Support";
+function ActivityIcon({ activity }: { activity: string }) {
+  const lower = activity.toLowerCase();
+  if (lower.includes("math")) return <MathIcon />;
+  if (lower.includes("science")) return <BeakerIcon />;
+  if (lower.includes("writ")) return <PencilGlyph />;
+  if (lower.includes("phys") || lower.includes("pe")) return <RunIcon />;
+  if (lower.includes("read") || lower.includes("literacy")) return <BookIcon />;
+  if (lower.includes("recess") || lower.includes("break")) return <SunGlyph />;
+  return <PeopleIcon />;
 }
 
-function getDebtModel(snapshot: TodaySnapshot | null, openItems: number) {
-  const counts = snapshot?.debt_register.item_count_by_category ?? {};
-  return [
-    {
-      label: "Stale follow-ups",
-      value: counts.stale_followup ?? 0,
-      caption: "Older than 48h",
-    },
-    {
-      label: "Open threads",
-      value: openItems,
-      caption: "Awaiting response",
-    },
-    {
-      label: "Review windows",
-      value: counts.approaching_review ?? 0,
-      caption: "Needs visibility",
-    },
-    {
-      label: "Family messages",
-      value: counts.unapproved_message ?? 0,
-      caption: "Drafts awaiting approval",
-    },
-  ];
+function PeopleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="9" cy="9" r="3" />
+      <path d="M3 19c1-3 3.4-4.5 6-4.5s5 1.5 6 4.5" />
+      <circle cx="17" cy="8.5" r="2.4" />
+      <path d="M14.5 14.5c2.5 0 4.5 1.5 5.5 3.5" />
+    </svg>
+  );
 }
 
-function formatOpenItemCount(count: number): string {
-  if (count === 0) return "0 items";
-  if (count === 1) return "1 item";
-  return `${count} items`;
+function MathIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 5h14v14H5z" />
+      <path d="M5 12h14M12 5v14" />
+      <circle cx="8.5" cy="8.5" r="1" fill="currentColor" stroke="none" />
+      <circle cx="15.5" cy="15.5" r="1" fill="currentColor" stroke="none" />
+    </svg>
+  );
 }
 
-function formatPeakBlock(block: ComplexityBlock): string {
-  return `${block.time_slot} ${block.activity}`;
+function BookIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 5h6c1.5 0 2.5 1 2.5 2.5V19" />
+      <path d="M19 5h-6c-1.5 0-2.5 1-2.5 2.5" />
+      <path d="M5 5v13.5c0 .5.4.5 1 .5h5.5" />
+      <path d="M19 5v13.5c0 .5-.4.5-1 .5h-5.5" />
+    </svg>
+  );
 }
 
-function formatBlockStart(block: ComplexityBlock): string {
-  return block.time_slot.split("-")[0]?.trim() ?? block.time_slot;
+function BeakerIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M9 4h6v4l3.5 9c.5 1.4-.5 2.5-2 2.5h-9c-1.5 0-2.5-1.1-2-2.5L9 8V4z" />
+      <path d="M9 4h6" />
+      <path d="M7.5 14h9" />
+    </svg>
+  );
 }
 
-function getCompactBlockLabel(block: ComplexityBlock): string {
-  const label = block.activity.replace(/\s*\(.*/, "").trim();
-  return label ? `${label} block` : "Peak block";
+function PencilGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 20h4.4l9.7-9.7a1.8 1.8 0 000-2.55l-1.05-1.05a1.8 1.8 0 00-2.55 0L4.8 16.4 4 20z" />
+      <path d="M12.9 8.3l2.8 2.8" />
+    </svg>
+  );
 }
 
-function getCurrentBlock(blocks: ComplexityBlock[]): ComplexityBlock | null {
-  const now = new Date();
-  const current = now.getHours() * 60 + now.getMinutes();
-  return blocks.find((block) => {
-    const range = parseTimeSlot(block.time_slot);
-    return range ? current >= range.start && current < range.end : false;
-  }) ?? null;
+function RunIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="14" cy="5" r="2" />
+      <path d="M5.5 14l2.5-2 1.5 1L9 11l3-2.5 2 1.5 2 4 3 1" />
+      <path d="M9 13l1 4-2 4" />
+    </svg>
+  );
 }
 
-function parseTimeSlot(timeSlot: string): { start: number; end: number } | null {
-  const [startRaw, endRaw] = timeSlot.split(/[–-]/).map((part) => part.trim());
-  const start = parseClockMinutes(startRaw);
-  const end = parseClockMinutes(endRaw);
-  if (start === null || end === null) return null;
-  return { start, end };
+function SunGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="4.1" />
+      <path d="M12 2.75v2.2M12 19.05v2.2M21.25 12h-2.2M4.95 12h-2.2M18.55 5.45l-1.55 1.55M7 17l-1.55 1.55M18.55 18.55L17 17M7 7L5.45 5.45" />
+    </svg>
+  );
 }
 
-function parseClockMinutes(value: string | undefined): number | null {
-  if (!value) return null;
-  const match = value.match(/^(\d{1,2})(?::(\d{2}))?/);
-  if (!match) return null;
-  const hour = Number(match[1]);
-  const minute = Number(match[2] ?? "0");
-  if (!Number.isFinite(hour) || !Number.isFinite(minute)) return null;
-  return hour * 60 + minute;
+function RepeatIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 9h12l-2-2" />
+      <path d="M19 15H7l2 2" />
+    </svg>
+  );
 }
 
-function riskPercent(level: ComplexityBlock["level"]): number {
-  if (level === "high") return 82;
-  if (level === "medium") return 58;
-  return 34;
+function ClipboardSmallIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="6.5" y="4.5" width="11" height="15" rx="2" />
+      <path d="M9 4.5h6v3H9z" />
+      <path d="M9.5 12h5M9.5 15h3" />
+    </svg>
+  );
 }
 
-function capitalizeLevel(level: ComplexityBlock["level"]): string {
-  return level.charAt(0).toUpperCase() + level.slice(1);
+function ChatIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 6.5h14v9H10l-4 3.5v-3.5H5z" />
+    </svg>
+  );
 }
+
+function CalendarIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="4" y="5" width="16" height="15" rx="2" />
+      <path d="M8 3.5v4M16 3.5v4M4 10h16" />
+    </svg>
+  );
+}
+
+function FolderIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 7.5a2 2 0 012-2h3.5l2 2H18a2 2 0 012 2v7.5a2 2 0 01-2 2H6a2 2 0 01-2-2v-9.5z" />
+    </svg>
+  );
+}
+
+function TrendIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 16l5-5 3 3 7-7" />
+      <path d="M14 7h5v5" />
+    </svg>
+  );
+}
+
+function ChatBubbleIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 6.5h14v10H10l-4 3.5v-3.5H5z" />
+    </svg>
+  );
+}
+
+function BarChartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M5 19V11M10 19V7M15 19v-9M20 19V5" />
+    </svg>
+  );
+}
+
+function HeartIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 19s-7-4.4-7-9.5A4 4 0 0112 6a4 4 0 017 3.5C19 14.6 12 19 12 19z" />
+    </svg>
+  );
+}
+

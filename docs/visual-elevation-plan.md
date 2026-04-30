@@ -17,6 +17,21 @@ Outside the dashboard, only 3 panels have any DataVisualization integration:
 
 ---
 
+## Figure-System Migration Guardrails
+
+Use the cognitive-twin figure-system rules for PrairieClassroomOS explanatory assets, documentation diagrams, marketing-video diagram panels, and imagegen target prompts. These rules do not replace the product UI theme, but they do apply whenever a visual is embedded as a paper-like diagram, architecture figure, proof snapshot, or standalone explanatory asset.
+
+- Use pure white `#FFFFFF` for the full visual canvas.
+- Keep the palette restrained: deep navy text, graphite body text, neutral blue-gray rules, and at most three semantic accents from blue, green, amber, and violet.
+- Prefer 3-5 primary nodes, one main relationship, and short noun-phrase labels.
+- Avoid beige, cream, sand, gray, or tinted full-canvas backgrounds for docs/assets.
+- Avoid page-sized gradients, decorative shadows, glow, stock-style illustration, dense slide layouts, and card stacks inside card stacks.
+- Keep detailed caveats, examples, and evidence notes in the surrounding prose or caption instead of inside the image.
+
+For app-native operational dashboards, preserve PrairieClassroom's teacher-realistic workflow conventions. Apply these guardrails only where they reduce visual noise or improve explanatory asset consistency.
+
+---
+
 ## Prioritized Implementation Tiers
 
 Priority is scored by: (1) data already available in the panel's API response, (2) visual impact / pattern-breaking differentiation from text, (3) teacher decision-support value, and (4) implementation cost (reusing an existing viz component vs. building new).

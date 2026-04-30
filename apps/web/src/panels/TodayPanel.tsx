@@ -74,7 +74,62 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   const studentSummaries = useAsyncAction<StudentSummary[]>();
   const sessionSummary = useAsyncAction<SessionSummary>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
+  // Lower detail (operational preview, coverage strip, what-to-watch grid,
+  // plan recap, risk windows, end-of-Today footer) is collapsed by default
+  // so the page reads as the simplified hero dashboard. Expansion uses a
+  // CSS-only collapse — content stays in the DOM and accessibility tree
+  // so deep linkers, screen readers, and tests can still reach it.
+  const [detailOpen, setDetailOpen] = useState(false);
   const mondayMoment = useMondayMoment(activeClassroom ?? "");
+
+  // PageAnchorRail anchors 02–07 (`classroom-pulse`, `day-arc`,
+  // `complexity-debt`, `planning-health`, `carry-forward`, `end-of-today`)
+  // all live inside the collapsed `.today-detail` wrapper. If the user
+  // clicks one of them — or arrives via a deep link with `#carry-forward`
+  // in the URL — auto-expand the detail so the in-page nav doesn't
+  // dead-end. The shell-level command center (`#command-center`) and the
+  // workspace top (`#today-top`) stay visible at all times, so we ignore
+  // those.
+  //
+  // Note: `PageAnchorRail` updates the URL with `history.replaceState`,
+  // which does NOT fire `hashchange`. We therefore listen on both
+  // `hashchange` (for browser-level deep links) and a delegated `click`
+  // capture (for the rail's in-page links).
+  useEffect(() => {
+    const detailAnchors = new Set([
+      "classroom-pulse",
+      "day-arc",
+      "complexity-debt",
+      "planning-health",
+      "carry-forward",
+      "end-of-today",
+      "today-preview",
+      "pending-actions",
+      "today-detail",
+    ]);
+    const maybeOpenForHash = () => {
+      const hash = window.location.hash.replace(/^#/, "");
+      if (hash && detailAnchors.has(hash)) {
+        setDetailOpen(true);
+      }
+    };
+    const onAnchorClick = (event: Event) => {
+      const target = event.target as HTMLElement | null;
+      const link = target?.closest?.('a[href^="#"]') as HTMLAnchorElement | null;
+      if (!link) return;
+      const id = link.getAttribute("href")?.replace(/^#/, "") ?? "";
+      if (id && detailAnchors.has(id)) {
+        setDetailOpen(true);
+      }
+    };
+    maybeOpenForHash();
+    window.addEventListener("hashchange", maybeOpenForHash);
+    document.addEventListener("click", onAnchorClick, true);
+    return () => {
+      window.removeEventListener("hashchange", maybeOpenForHash);
+      document.removeEventListener("click", onAnchorClick, true);
+    };
+  }, []);
 
   useEffect(() => {
     session.recordPanelVisit("today");
@@ -250,8 +305,18 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
 
   if (!profile) return <TodayPanelLoading />;
 
+  // Slim header subtitle — promotes the day's "real test" block when
+  // the forecast surfaces a peak, otherwise falls back to a neutral
+  // grade-band tag so the header still reads as a single utility line.
+  const headerSubtitle = peakBlock
+    ? `${peakBlock.time_slot} is today's real test.`
+    : `Same-day triage for Grade ${profile.grade_band}.`;
+
   return (
     <section className="workspace-page today-panel" id="today-top">
+      {/* Legacy PageIntro retained (and hidden via TodayPanel.css) so any
+          deep links / page-anchor offsets that depend on it still resolve.
+          The visible header below replaces it for the operating dashboard. */}
       <PageIntro
         eyebrow="Today"
         title="Today"
@@ -263,6 +328,11 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           { label: `${profile.students.length} students`, tone: "sun" },
         ]}
       />
+
+      <header className="today-page-header" aria-labelledby="today-page-header-title">
+        <h1 id="today-page-header-title" className="today-page-header__title">Today</h1>
+        <p className="today-page-header__subtitle">{headerSubtitle}</p>
+      </header>
 
       <div id="command-center" className="today-anchor-target">
         {result ? (
@@ -298,6 +368,26 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         )}
       </div>
 
+      <div className="today-detail-toggle">
+        <button
+          type="button"
+          className="today-detail-toggle__button"
+          aria-expanded={detailOpen}
+          aria-controls="today-detail"
+          onClick={() => setDetailOpen((open) => !open)}
+        >
+          {detailOpen ? "Hide day detail" : "Show day detail"}
+          <span className="today-detail-toggle__chevron" aria-hidden="true">
+            {detailOpen ? "−" : "+"}
+          </span>
+        </button>
+      </div>
+
+      <div
+        id="today-detail"
+        className={`today-detail${detailOpen ? " today-detail--open" : " today-detail--closed"}`}
+        data-state={detailOpen ? "open" : "closed"}
+      >
       {hasPreviewContent ? (
         <OperationalPreview
           ariaLabel="Today operational preview"
@@ -527,6 +617,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
           />
         </footer>
       ) : null}
+      </div>
 
       <DrillDownDrawer
         context={drillDown}

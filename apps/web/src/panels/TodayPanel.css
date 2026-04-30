@@ -2395,3 +2395,179 @@
   transform: none;
   box-shadow: none;
 }
+
+/* =================================================================
+   Today page header (operating-dashboard variant, 2026-04-29)
+   =================================================================
+   Replaces the heavy PageIntro on the Today panel with a single
+   utility row: an h1 title plus a dynamic peak-block subtitle. The
+   legacy PageIntro stays mounted (and hidden) higher up the tree so
+   page-anchor offsets and any deep links that target it still work.
+   ================================================================= */
+
+.today-page-header {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-3);
+  padding: 0;
+  /* Header sits above the hero in the workspace flow but uses the
+     same explicit ordering as command-center to avoid being shoved
+     behind it by the panel's flex order rules. */
+  order: 0;
+}
+
+.today-page-header__title {
+  margin: 0;
+  font-family: var(--font-display, var(--font-sans));
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+
+.today-page-header__subtitle {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--text-md);
+  line-height: 1.4;
+  color: var(--color-text-secondary);
+  letter-spacing: 0;
+}
+
+@media (max-width: 720px) {
+  .today-page-header {
+    margin-bottom: var(--space-2);
+  }
+  .today-page-header__subtitle {
+    font-size: var(--text-sm);
+  }
+}
+
+/* =================================================================
+   Today detail collapse (2026-04-29)
+   =================================================================
+   The Today page now defaults to the simplified hero dashboard. All
+   secondary surfaces (operational preview, coverage strip, workflow
+   nudge, "What to watch next" grid, plan recap, risk windows, and
+   the End-of-Today footer) live behind a single "Show day detail"
+   toggle.
+
+   Accessibility intent:
+     • Collapse is CSS-only (max-height + opacity). The detail tree
+       stays in the DOM and accessibility tree so screen readers,
+       deep links, and tests can still reach the inner nodes.
+     • We deliberately avoid `display: none`, the `hidden` attribute,
+       and `aria-hidden="true"` on the wrapper — those would remove
+       focusable buttons (Open Forecast, follow-ups, workflow nudge,
+       drill-down chips) from the accessibility tree and break the
+       existing testing-library assertions.
+   ================================================================= */
+
+.today-detail-toggle {
+  /* Sits between the hero and the collapse, as a lightweight utility
+     row. Order 7 keeps it after every legacy ordered section above. */
+  order: 7;
+  display: flex;
+  justify-content: flex-start;
+  margin: var(--space-3) 0 0;
+}
+
+.today-detail-toggle__button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 8px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard);
+}
+
+.today-detail-toggle__button:hover {
+  color: var(--color-text);
+  border-color: var(--color-text);
+  background: color-mix(in srgb, var(--color-text) 4%, var(--color-surface));
+}
+
+.today-detail-toggle__button:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: 2px;
+}
+
+.today-detail-toggle__chevron {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-text) 8%, transparent);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+}
+
+/* The collapse wrapper. Order 8 so it always trails the toggle. We
+   override the inner section orders (.today-pulse, .today-end-marker,
+   etc.) so they no longer fight the panel-level ordering rules. */
+.today-detail {
+  order: 8;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 100%;
+}
+
+.today-detail--closed {
+  /* CSS-only collapse — keeps content in DOM and accessibility tree.
+     We avoid display:none / hidden / aria-hidden on purpose. */
+  max-height: 0;
+  margin-top: 0;
+  opacity: 0;
+  overflow: hidden;
+  pointer-events: none;
+  transition:
+    max-height var(--motion-base) var(--ease-standard),
+    opacity var(--motion-base) var(--ease-standard),
+    margin var(--motion-base) var(--ease-standard);
+}
+
+.today-detail--open {
+  max-height: none;
+  margin-top: var(--space-3);
+  opacity: 1;
+  pointer-events: auto;
+  transition:
+    opacity var(--motion-base) var(--ease-standard),
+    margin var(--motion-base) var(--ease-standard);
+}
+
+/* Children inside the collapse used to rely on the panel-level
+   `.today-panel .today-pulse { order: 5 }` rule. Now that they live
+   inside `.today-detail`, the order rules cascade unnecessarily —
+   reset to default so DOM order is the visual order. */
+.today-detail > * {
+  order: initial;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .today-detail--closed,
+  .today-detail--open {
+    transition: none;
+  }
+}

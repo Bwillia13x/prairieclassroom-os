@@ -16,9 +16,8 @@ html {
   font-optical-sizing: auto;
 }
 
-/* Display headings pick up the Instrument Sans display face + tightened
-   tracking. h1/h2/h3 were already heading elements; this gives them a
-   visible typographic personality without requiring per-component edits. */
+/* Display headings use the readable proof-trace display face. Dot-matrix
+   type is reserved for decorative accent classes, never the heading itself. */
 h1,
 h2,
 h3 {
@@ -246,7 +245,7 @@ a {
 }
 
 /* Grain texture overlay — light mode only.
-   Dark mode is black-first graphite; decorative noise lowers legibility
+   Dark mode is a near-black neutral cockpit; decorative noise lowers legibility
    and conflicts with the material hierarchy. */
 body::before {
   content: "";

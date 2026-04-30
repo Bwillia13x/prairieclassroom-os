@@ -16,9 +16,9 @@
     <meta name="twitter:image" content="/brand/og-preview.png" />
     <!-- Typography is self-hosted — see apps/web/src/styles/fonts.css.
          Mobile uses font-display: swap so CSS/JS stay ahead of font transfer
-         on the first paint path; wider viewports preload Inter for chrome
-         stability. Display faces load through CSS only when needed. -->
-    <link rel="preload" as="font" type="font/woff2" href="/fonts/inter-variable.woff2" crossorigin media="(min-width: 700px)" />
+         on the first paint path; wider viewports preload the accessible
+         reading face that carries body, headings, and app chrome. -->
+    <link rel="preload" as="font" type="font/ttf" href="/fonts/atkinson-hyperlegible-400.ttf" crossorigin media="(min-width: 700px)" />
     <title>PrairieClassroom OS</title>
   </head>
   <body>

@@ -33,7 +33,7 @@
 
 /* ---- Display tier ----
    Hero moments only — TodayHero, PageHero, brand-statement intros.
-   Fluid clamp scale. Display family + tightened tracking + tight leading. */
+   Fixed rem scale. Readable display family + neutral tracking. */
 .t-display-lg,
 .t-display-md,
 .t-display-sm {

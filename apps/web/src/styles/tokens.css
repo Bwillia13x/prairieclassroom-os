@@ -2,13 +2,16 @@
   color-scheme: light dark;
 
   /* ------------------------------------------------------------
-     Institutional Prairie palette — 2026-04-17 repositioning,
-     with a 2026-04-17 black-first dark-mode retune.
-     Light mode remains neutral + Alberta-institutional navy.
-     Dark mode is near-black graphite with sparse navy affordances.
-     Prairie cognac is retained as a brand-highlight accent only.
-     Full rationale: docs/decision-log.md 2026-04-17 entries and
-     docs/dark-mode-contract.md §1.
+     PrairieClassroom brand palette — 2026-04-30 color-system
+     migration.
+
+     Deep prairie navy anchors the brand rail, wheat-gold marks
+     judgment/action/evidence emphasis, warm light-mode neutrals carry
+     workspace surfaces, sage-green signals healthy/live states, and
+     rust/red is reserved for critical/error/destructive states.
+
+     The proof-trace structure can stay, but the prior black/ivory/red
+     palette cannot be the dominant app identity.
      ------------------------------------------------------------ */
 
   /* ------------------------------------------------------------
@@ -23,42 +26,108 @@
        Layer 2 — --color-surface   (individual cards on the workspace)
 
      Each layer is lighter than the one below in light mode. In
-     dark mode, the stack stays black-first: graphite tonal steps
-     create depth while navy is reserved for controls and state.
+     dark mode follows the reference board: near-black/neutral surfaces
+     create depth, Prairie blue is concentrated in the brand rail and
+     inverse surfaces, and gold, green, teal, and rust remain low-area
+     signals.
      ------------------------------------------------------------ */
-  --color-bg: light-dark(#eef1f5, #020305);
-  --color-workspace: light-dark(#f7f9fc, #08090c);
-  --color-surface: light-dark(#ffffff, #101114);
-  --color-surface-elevated: light-dark(#ffffff, #17191e);
-  --color-surface-muted: light-dark(#f1f4f8, #0b0c10);
-  --color-surface-glass: light-dark(rgba(255, 255, 255, 0.78), rgba(16, 17, 20, 0.86));
-  --color-border: light-dark(#d7dde7, #252932);
-  --color-border-strong: light-dark(#a8b2c0, #3b4048);
-  --color-border-input: light-dark(#6b7280, #777f8c);
-  --color-text: light-dark(#111827, #f2f5f8);
-  --color-text-secondary: light-dark(#47505c, #b9c0ca);
-  --color-text-tertiary: light-dark(#56606d, #9098a4);
+  --pc-blue-900: #081d33;
+  --pc-blue-700: #173a63;
+  --pc-blue-500: #2563e8;
+  --pc-blue-300: #a5c4e6;
+  --pc-blue-100: #e7f0fa;
+  --pc-gold-900: #b85a09;
+  --pc-gold-700: #b7791f;
+  --pc-gold-500: #d4a333;
+  --pc-gold-300: #ead9b3;
+  --pc-gold-100: #f7f2e6;
+  --pc-green-900: #0f4d3e;
+  --pc-green-700: #1e7a5e;
+  --pc-green-500: #2fb67c;
+  --pc-green-300: #a9dcc2;
+  --pc-green-100: #e6f4ee;
+  --pc-neutral-900: #111827;
+  --pc-neutral-700: #374151;
+  --pc-neutral-500: #6b7280;
+  --pc-neutral-300: #9ca3af;
+  --pc-neutral-200: #d1d5db;
+  --pc-neutral-100: #e5e7eb;
+  --pc-neutral-50: #f8fafc;
+  --pc-neutral-0: #ffffff;
+  --pc-accent-rust: #c2410c;
+  --pc-accent-purple: #7c3aed;
+  --pc-accent-teal: #0891b2;
+  --pc-accent-sky: #0ea5e9;
+  --pc-error-subtle: #fee2e2;
+  --pc-info-subtle: #e0f2fe;
 
-  /* Primary accent — navy affordance color only in dark mode.
-     Structural dark surfaces stay black/graphite. */
-  --color-accent: light-dark(#1b4b80, #426990);
-  --color-accent-hover: light-dark(#143a65, #4a74a1);
-  --color-accent-soft: light-dark(#e7ecf4, #070d15);
+  --prairie-navy: var(--pc-blue-900);
+  --prairie-navy-deep: #020b12;
+  --prairie-navy-elevated: var(--pc-blue-700);
+  --prairie-cream: #fbf6ea;
+  --prairie-cream-bright: #fffaf1;
+  --prairie-sand: #efe3d0;
+  --prairie-line: #dcccb4;
+  --prairie-ink: #092542;
+  --prairie-muted: #63758b;
+  --prairie-gold: var(--pc-gold-500);
+  --prairie-gold-light: var(--pc-gold-300);
+  --prairie-gold-wash: var(--pc-gold-100);
+  --prairie-green: var(--pc-green-500);
+  --prairie-red: var(--pc-accent-rust);
 
-  /* Prairie cognac retained for brand-highlight role only (logos,
-     limited editorial emphasis). Not used as a primary UI accent. */
-  --color-brand-highlight: light-dark(#ae671a, #d4a15c);
+  --paper: light-dark(#fbf6ea, #020b12);
+  --paper-warm: light-dark(#f5ecdd, #061421);
+  --paper-light: light-dark(#fffaf1, #0f1e2d);
+  --surface: light-dark(#fffaf1, #0b1622);
+  --surface-line: light-dark(#efe3d0, #374151);
+  --ink: light-dark(#092542, #f8fafc);
+  --ink-soft: light-dark(#43576d, #d1d5db);
+  --text-primary: light-dark(#092542, #f8fafc);
+  --text-secondary: light-dark(#43576d, #e5e7eb);
+  --text-disabled: light-dark(#7f8d9f, #9ca3af);
+  --line: light-dark(#dcccb4, #374151);
+  --line-muted: light-dark(#efe3d0, #263241);
+  --hairline: light-dark(#b7a78f, #9ca3af);
+  --ghost-line: light-dark(#dcccb4, #374151);
+  --ghost-red: light-dark(#f3dad6, #34130b);
+  --proof-mark: var(--color-brand-highlight);
+  --proof-mark-dark: var(--color-brand-highlight-strong);
+  --proof-mark-soft: var(--color-brand-highlight-soft);
+  --proof-critical: var(--color-danger);
+  --proof-critical-dark: var(--color-text-danger);
+  --proof-critical-soft: var(--color-bg-danger);
+  --proof-red: var(--proof-critical);
+  --proof-red-dark: var(--proof-critical-dark);
+  --proof-red-soft: var(--proof-critical-soft);
+
+  --color-bg: light-dark(#fbf6ea, #020b12);
+  --color-workspace: light-dark(#f5ecdd, #061421);
+  --color-surface: light-dark(#fffaf1, #0b1622);
+  --color-surface-elevated: light-dark(#fffdf6, #0f1e2d);
+  --color-surface-muted: light-dark(#f3eadc, #162331);
+  --color-surface-glass: light-dark(rgba(255, 250, 241, 0.86), rgba(15, 30, 45, 0.88));
+  --color-border: light-dark(#dcccb4, #374151);
+  --color-border-strong: light-dark(#9c8b72, #9ca3af);
+  --color-border-input: light-dark(#766650, #9ca3af);
+  --color-text: light-dark(#092542, #f8fafc);
+  --color-text-secondary: light-dark(#43576d, #e5e7eb);
+  --color-text-tertiary: light-dark(#5c6f83, #d1d5db);
+
+  /* Primary accent: navy for institutional action in light mode,
+     lifted wheat-gold for active/focus affordance in dark mode. */
+  --color-accent: light-dark(#081d33, #d4a333);
+  --color-accent-hover: light-dark(#173a63, #ead9b3);
+  --color-accent-soft: light-dark(#e7f0fa, #221908);
+
+  /* Gold is the Prairie judgment/action/evidence mark. */
+  --color-brand-highlight: light-dark(#b7791f, #d4a333);
 
   /* ------------------------------------------------------------
      Brand-highlight extensions (2026-04-22).
-     These tokens extend the retained cognac family with a wheat-soft
-     decorative tone and a deeper cognac for hover-state warmth, and
-     introduce a second brand color — prairie-green — for brand-mark
-     reinforcement and editorial emphasis. Values derived from the
-     pixel-perfect-replica prairie palette (wheat 40 60% 58%, wheat-soft
-     42 55% 75%, prairie-deep 145 40% 16%) and retuned to the institutional
-     light-dark() pattern with dark-mode values that read as sparse
-     affordances, not ambient washes (dark-mode contract §1 round 6).
+     These tokens extend the gold family with a pale wheat wash and a
+     deeper gold for hover/state warmth, and introduce sage-green for
+     live, healthy, and achieved-coverage signals.
 
      Use rules (decision-log 2026-04-22 — "Prairie brand-affordance
      expansion"):
@@ -66,12 +135,12 @@
        - Never use for page/workspace/card backgrounds.
        - Allowed placements: decorative rules, section eyebrows,
          brand-mark marks, hero underlines, hover-state warmth.
-       - `--color-accent` (navy) remains the primary UI affordance.
+       - `--color-accent` remains the primary institutional affordance.
      ------------------------------------------------------------ */
-  --color-brand-highlight-soft: light-dark(#e8d096, #2a2418);
-  --color-brand-highlight-strong: light-dark(#8a4f12, #e8b87a);
-  --color-brand-green: light-dark(#184030, #6d9481);
-  --color-brand-green-soft: light-dark(#e6ede8, #0e1a14);
+  --color-brand-highlight-soft: light-dark(#f7f2e6, #241a09);
+  --color-brand-highlight-strong: light-dark(#b85a09, #ead9b3);
+  --color-brand-green: light-dark(#1e7a5e, #2fb67c);
+  --color-brand-green-soft: light-dark(#e6f4ee, #123126);
 
   /* Modal scrims — neutral black overlays behind drawers, dialogs, and
      onboarding. Read identically in both modes (the dark-mode contract
@@ -85,21 +154,20 @@
   --scrim-soft: rgba(0, 0, 0, 0.35);
   --scrim-strong: rgba(0, 0, 0, 0.55);
 
-  /* Brand-signal critical — vivid red used on Nothing-design alert badges
+  /* Brand-signal critical — red used only for must-see critical badges
      (mobile-nav badge, shell-nav alert badge). Intentionally consistent
      across modes because it functions as a brand affordance, not a state
      color: state semantics live on --color-danger / --color-text-danger;
      this token is reserved for must-see notification chrome only.
-     White-on-this-red measures 5.18:1 (AA for normal text) on both modes.
      Decision-log 2026-04-25 — color-system audit remediation, promoted
      out of nothing-theme.css to honor the dark-mode contract. */
-  --color-signal-critical: light-dark(#d71921, #d71921);
+  --color-signal-critical: light-dark(#c2410c, #c2410c);
 
   /* ------------------------------------------------------------
      Prairie-horizon atmospheric backdrop (2026-04-22 Tier C,
      retuned in the 2026-04-22 de-beige pass).
      Dual-radial-gradient hero backdrop for the single atmospheric
-     moment in the product — the TodayHero. A warm cognac glow rises
+     moment in the product — the TodayHero. A warm gold glow rises
      from the bottom paired with a cooler prairie-green sky wash
      from the upper-left corner. The original Tier-C sanction set
      intensities at 12%/8%, which the subsequent de-beige directive
@@ -119,14 +187,14 @@
      limited to the single hero moment.
      ------------------------------------------------------------ */
   /* 2026-04-22 de-beige retune: the original 12%/8% percentages paired
-     cognac with prairie-green at intensities that read as a warm sand
+     gold with prairie-green at intensities that read as a warm sand
      band over the light institutional canvas (and a sepia wash over
-     the dark graphite canvas). The directive was to remove the beige
-     wherever it appears. Percentages drop to 4% cognac / 3% green,
+     the dark neutral canvas). The directive was to remove the beige
+     wherever it appears. Percentages drop to 4% gold / 3% green,
      unified across both modes — still the sanctioned single atmospheric
      moment, but sub-5% contribution keeps the Prairie identity as a
      whisper under the hero composition rather than a broad wash. The
-     cognac-first bottom glow and the green upper-left wash are both
+     gold-first bottom glow and the green upper-left wash are both
      retained for compositional structure; only the intensity is
      tightened. Since both colors are themselves `light-dark()` tokens,
      this gradient continues to resolve to mode-appropriate values
@@ -147,7 +215,7 @@
      Classroom-lume vertical wash (2026-04-27 Phase A1).
      The second sanctioned atmospheric moment in the product,
      scoped exclusively to the Classroom command-block hero
-     (.page-hero--classroom). A 3% cognac-tinted vertical wash
+     (.page-hero--classroom). A 3% gold-tinted vertical wash
      descending from the top of the hero — quieter than the
      retired prairie-horizon (which sat at 4%/3% on Today) and
      directionally distinct: prairie-horizon was a bottom-up
@@ -177,68 +245,68 @@
       transparent 55%
     );
 
-  /* Semantic status family — conservative education-sector palette */
-  --color-success: light-dark(#1f7a44, #6cc38f);
-  --color-warning: light-dark(#a66a00, #e7b35c);
-  --color-danger: light-dark(#a62f26, #ef8a81);
-  --color-analysis: light-dark(#4a5c80, #9fb2d6);
-  --color-provenance: light-dark(#3f6a6d, #8fbec0);
-  --color-pending: light-dark(#a66a00, #e7b35c);
+  /* Semantic status family — reference-board signals */
+  --color-success: light-dark(#1e7a5e, #2fb67c);
+  --color-warning: light-dark(#b7791f, #d4a333);
+  --color-danger: light-dark(#c2410c, #e97733);
+  --color-analysis: light-dark(#0891b2, #0ea5e9);
+  --color-provenance: light-dark(#374151, #9ca3af);
+  --color-pending: light-dark(#b7791f, #d4a333);
 
-  /* Semantic tinted backgrounds — dark mode is black-first. Hue appears
-     as low-area text, borders, icons, and small state fills instead of
-     broad blue or color-washed panels. */
-  --color-bg-muted: light-dark(#f1f3f6, #0b0c10);
-  --color-bg-info: light-dark(#eef1f6, #0b0d12);
-  --color-bg-success: light-dark(#e9f3ec, #0a100d);
-  --color-bg-warning: light-dark(#faf0dc, #100d07);
-  --color-bg-danger: light-dark(#f7e8e5, #120909);
-  --color-bg-accent: light-dark(#e7ecf4, #070d15);
-  --color-bg-analysis: light-dark(#ecf0f7, #0b0d12);
-  --color-bg-provenance: light-dark(#e8f0f1, #091011);
-  --color-bg-pending: light-dark(#faf0dc, #100d07);
-  --color-bg-sun: light-dark(#faf0dc, #100d07);
-  --color-bg-sage: light-dark(#e9f2ea, #09100b);
-  --color-bg-slate: light-dark(#eaeef5, #0b0d12);
-  --color-bg-forest: light-dark(#e6f0e9, #09100b);
+  /* Semantic tinted backgrounds — dark mode is near-black/neutral with
+     only a trace of hue. Blue belongs to the brand rail and inverse
+     surfaces, not every card or status wash. */
+  --color-bg-muted: light-dark(#f3eadc, #162331);
+  --color-bg-info: light-dark(#e0f2fe, #062431);
+  --color-bg-success: light-dark(#e6f4ee, #123126);
+  --color-bg-warning: light-dark(#f7f2e6, #2a210f);
+  --color-bg-danger: light-dark(#fee2e2, #34130b);
+  --color-bg-accent: light-dark(#e7f0fa, #221908);
+  --color-bg-analysis: light-dark(#e0f2fe, #062431);
+  --color-bg-provenance: light-dark(#f1f5f9, #17212d);
+  --color-bg-pending: light-dark(#f7f2e6, #2a210f);
+  --color-bg-sun: light-dark(#f7f2e6, #2a210f);
+  --color-bg-sage: light-dark(#e6f4ee, #123126);
+  --color-bg-slate: light-dark(#f1f5f9, #17212d);
+  --color-bg-forest: light-dark(#e6f4ee, #123126);
 
   /* Semantic borders */
-  --color-border-info: light-dark(#c4cddb, #303642);
-  --color-border-success: light-dark(#b3d4be, #2c4334);
-  --color-border-warning: light-dark(#d9b878, #564018);
-  --color-border-danger: light-dark(#d5a79f, #5e2c28);
-  --color-border-accent: light-dark(#b4c3dc, #253b57);
-  --color-border-analysis: light-dark(#bcc6d9, #303642);
-  --color-border-provenance: light-dark(#b4c4c6, #2c4547);
-  --color-border-pending: light-dark(#d9b878, #564018);
-  --color-border-sun: light-dark(#d9b878, #564018);
-  --color-border-sage: light-dark(#b8cbbb, #2d4233);
-  --color-border-slate: light-dark(#bbc4d3, #303642);
-  --color-border-forest: light-dark(#b0c6b7, #2d4233);
+  --color-border-info: light-dark(#9bc9dd, #0891b2);
+  --color-border-success: light-dark(#9acdb8, #1e7a5e);
+  --color-border-warning: light-dark(#d8bd75, #b7791f);
+  --color-border-danger: light-dark(#e9b39d, #c2410c);
+  --color-border-accent: light-dark(#a5c4e6, #b7791f);
+  --color-border-analysis: light-dark(#9bc9dd, #0891b2);
+  --color-border-provenance: light-dark(#cbd5e1, #6b7280);
+  --color-border-pending: light-dark(#d8bd75, #b7791f);
+  --color-border-sun: light-dark(#d8bd75, #b7791f);
+  --color-border-sage: light-dark(#9acdb8, #1e7a5e);
+  --color-border-slate: light-dark(#cbd5e1, #6b7280);
+  --color-border-forest: light-dark(#9acdb8, #1e7a5e);
 
   /* Semantic text — tuned for WCAG AA on matching tinted bg */
-  --color-text-info: light-dark(#34445c, #c2cad7);
-  --color-text-success: light-dark(#18583a, #b4d6c1);
-  --color-text-warning: light-dark(#7a4e02, #e2bf7f);
-  --color-text-danger: light-dark(#7a241d, #efaaa3);
-  --color-text-accent: light-dark(#143a65, #b8cbe2);
-  --color-text-analysis: light-dark(#3a4663, #c3cad9);
-  --color-text-provenance: light-dark(#2d4f51, #afd0d2);
-  --color-text-pending: light-dark(#7a4e02, #e2bf7f);
-  --color-text-sun: light-dark(#7a4e02, #e2bf7f);
-  --color-text-sage: light-dark(#2a5038, #b3d0bc);
-  --color-text-slate: light-dark(#364760, #c2cad7);
-  --color-text-forest: light-dark(#265238, #b3d0bc);
+  --color-text-info: light-dark(#075b72, #9be7ff);
+  --color-text-success: light-dark(#0f4d3e, #a9dcc2);
+  --color-text-warning: light-dark(#755114, #ead9b3);
+  --color-text-danger: light-dark(#9a3412, #ffc2a3);
+  --color-text-accent: light-dark(#081d33, #f7f2e6);
+  --color-text-analysis: light-dark(#075b72, #9be7ff);
+  --color-text-provenance: light-dark(#374151, #e5e7eb);
+  --color-text-pending: light-dark(#755114, #ead9b3);
+  --color-text-sun: light-dark(#755114, #ead9b3);
+  --color-text-sage: light-dark(#0f4d3e, #a9dcc2);
+  --color-text-slate: light-dark(#374151, #e5e7eb);
+  --color-text-forest: light-dark(#0f4d3e, #a9dcc2);
 
-  /* Section border colors — low-area signals on the black-first stack. */
-  --color-section-watchpoint: light-dark(#a66a00, #e2bf7f);
-  --color-section-priority: light-dark(#1b4b80, #426990);
-  --color-section-ea: light-dark(#4a5c80, #8f98a8);
-  --color-section-family: light-dark(#1f7a44, #6cc38f);
-  --color-section-theme: light-dark(#4a5c80, #8f98a8);
-  --color-section-gap: light-dark(#a62f26, #efaaa3);
-  --color-section-trend: light-dark(#1f7a44, #6cc38f);
-  --color-section-focus: light-dark(#1b4b80, #426990);
+  /* Section border colors — low-area signals on the Prairie stack. */
+  --color-section-watchpoint: light-dark(#b7791f, #d4a333);
+  --color-section-priority: light-dark(#081d33, #d4a333);
+  --color-section-ea: light-dark(#0891b2, #0ea5e9);
+  --color-section-family: light-dark(#1e7a5e, #2fb67c);
+  --color-section-theme: light-dark(#b85a09, #ead9b3);
+  --color-section-gap: light-dark(#c2410c, #e97733);
+  --color-section-trend: light-dark(#1e7a5e, #2fb67c);
+  --color-section-focus: light-dark(#081d33, #d4a333);
 
   /* Compatibility aliases — legacy component names mapped to the
      canonical theme roles so old call sites cannot fall back to
@@ -257,77 +325,76 @@
   --color-border-subtle: var(--color-border);
 
   /* Variant type badge colors */
-  --color-variant-core: light-dark(#3f5a7a, #8f98a8);
-  --color-variant-eal: light-dark(#5a4a7a, #b0a0d6);
-  --color-variant-chunked: light-dark(#8a5a14, #d0a25a);
-  --color-variant-ea-group: light-dark(#2a5a3a, #7fc090);
-  --color-variant-extension: light-dark(#8a3630, #c97b73);
+  --color-variant-core: light-dark(#173a63, #a5c4e6);
+  --color-variant-eal: light-dark(#6b5b8a, #c0b2df);
+  --color-variant-chunked: light-dark(#b7791f, #d4a333);
+  --color-variant-ea-group: light-dark(#1e7a5e, #2fb67c);
+  --color-variant-extension: light-dark(#c2410c, #e97733);
 
   /* Chart tonal palette (2026-04-23 Phase 5).
      Calm gradient for data visualization — used where chart color is
      encoding a scalar, not an alert. Low -> medium -> high runs
      navy -> amber -> rust. For true alerts, continue to use
      --color-danger / --color-success. */
-  --chart-tone-low: light-dark(#3f5a7a, #8f98a8);
-  --chart-tone-low-bg: light-dark(#eaeef5, #0b0d12);
-  --chart-tone-medium: light-dark(#a66a00, #d4a15c);
-  --chart-tone-medium-bg: light-dark(#faf0dc, #100d07);
-  --chart-tone-high: light-dark(#8a3630, #c97b73);
-  --chart-tone-high-bg: light-dark(#f7e8e5, #120909);
+  --chart-tone-low: light-dark(#173a63, #2563e8);
+  --chart-tone-low-bg: light-dark(#e7f0fa, #0f1e2d);
+  --chart-tone-medium: light-dark(#b7791f, #d4a333);
+  --chart-tone-medium-bg: light-dark(#f7f2e6, #2a210f);
+  --chart-tone-high: light-dark(#1e7a5e, #2fb67c);
+  --chart-tone-high-bg: light-dark(#e6f4ee, #123126);
 
   /* Forecast colors — compatibility aliases mapped to the chart-tone
      scale so existing consumers inherit the calmer ordinal palette. */
   --color-forecast-low: var(--chart-tone-low);
   --color-forecast-low-bg: var(--chart-tone-low-bg);
-  --color-forecast-low-text: light-dark(#35486a, #c2cad9);
+  --color-forecast-low-text: light-dark(#173a63, #a5c4e6);
   --color-forecast-medium: var(--chart-tone-medium);
   --color-forecast-medium-bg: var(--chart-tone-medium-bg);
-  --color-forecast-medium-text: light-dark(#7a4e02, #e2bf7f);
+  --color-forecast-medium-text: light-dark(#755114, #ead9b3);
   --color-forecast-high: var(--chart-tone-high);
   --color-forecast-high-bg: var(--chart-tone-high-bg);
-  --color-forecast-high-text: light-dark(#6a2a24, #d9a098);
+  --color-forecast-high-text: light-dark(#0f4d3e, #a9dcc2);
 
-  --color-approve: light-dark(#1f7a44, #6cc38f);
-  --color-approve-hover: light-dark(#18583a, #8fd3ab);
-  --color-text-on-accent: light-dark(#ffffff, #f8fbff);
+  --color-approve: light-dark(#1e7a5e, #2fb67c);
+  --color-approve-hover: light-dark(#0f4d3e, #a9dcc2);
+  --color-text-on-accent: light-dark(#fff8ec, #081d33);
   /* Text on a saturated danger/alert background. White-on-red is the
      canonical contrast pairing across both themes. */
   --color-text-on-danger: light-dark(#ffffff, #ffffff);
 
   /* Role identity chip colors */
-  --color-role-teacher: light-dark(#1f7a44, #6cc38f);
-  --color-role-ea: light-dark(#4a5c80, #8f98a8);
-  --color-role-sub: light-dark(#a66a00, #e7b35c);
-  --color-role-reviewer: light-dark(#3f6a6d, #8fbec0);
+  --color-role-teacher: light-dark(#1e7a5e, #2fb67c);
+  --color-role-ea: light-dark(#173a63, #a5c4e6);
+  --color-role-sub: light-dark(#b7791f, #d4a333);
+  --color-role-reviewer: light-dark(#0891b2, #0ea5e9);
 
   /* Elevation — neutral institutional shadow stack.
      Black-alpha ambient occlusion. Three-layer model preserved:
      contact shadow (tight), penumbra (mid), ambient (diffuse). */
-  --_shadow-xs-a: light-dark(rgba(17, 24, 39, 0.025), rgba(0, 0, 0, 0.06));
-  --_shadow-sm-a: light-dark(rgba(17, 24, 39, 0.03), rgba(0, 0, 0, 0.07));
-  --_shadow-sm-b: light-dark(rgba(17, 24, 39, 0.015), rgba(0, 0, 0, 0.04));
-  --_shadow-md-a: light-dark(rgba(17, 24, 39, 0.03), rgba(0, 0, 0, 0.07));
-  --_shadow-md-b: light-dark(rgba(17, 24, 39, 0.05), rgba(0, 0, 0, 0.09));
-  --_shadow-md-c: light-dark(rgba(17, 24, 39, 0.02), rgba(0, 0, 0, 0.05));
-  --_shadow-lg-a: light-dark(rgba(17, 24, 39, 0.03), rgba(0, 0, 0, 0.07));
-  --_shadow-lg-b: light-dark(rgba(17, 24, 39, 0.07), rgba(0, 0, 0, 0.11));
-  --_shadow-lg-c: light-dark(rgba(17, 24, 39, 0.025), rgba(0, 0, 0, 0.05));
+  --_shadow-xs-a: light-dark(rgba(7, 35, 62, 0.035), rgba(0, 0, 0, 0.12));
+  --_shadow-sm-a: light-dark(rgba(7, 35, 62, 0.045), rgba(0, 0, 0, 0.16));
+  --_shadow-sm-b: light-dark(rgba(7, 35, 62, 0.025), rgba(0, 0, 0, 0.10));
+  --_shadow-md-a: light-dark(rgba(7, 35, 62, 0.04), rgba(0, 0, 0, 0.18));
+  --_shadow-md-b: light-dark(rgba(7, 35, 62, 0.065), rgba(0, 0, 0, 0.24));
+  --_shadow-md-c: light-dark(rgba(7, 35, 62, 0.025), rgba(0, 0, 0, 0.14));
+  --_shadow-lg-a: light-dark(rgba(7, 35, 62, 0.045), rgba(0, 0, 0, 0.20));
+  --_shadow-lg-b: light-dark(rgba(7, 35, 62, 0.08), rgba(0, 0, 0, 0.30));
+  --_shadow-lg-c: light-dark(rgba(7, 35, 62, 0.035), rgba(0, 0, 0, 0.18));
 
   --shadow-xs:
     0 0.5px 1px var(--_shadow-xs-a),
     0 0 0.5px var(--_shadow-xs-a);
   --shadow-sm:
     0 1px 2px var(--_shadow-sm-a),
-    0 3px 6px var(--_shadow-sm-b),
-    0 0 0.5px var(--_shadow-sm-b);
+    0 5px 14px var(--_shadow-sm-b);
   --shadow-md:
     0 1px 2px var(--_shadow-md-a),
-    0 4px 12px var(--_shadow-md-b),
-    0 12px 32px var(--_shadow-md-c);
+    0 12px 30px var(--_shadow-md-b),
+    0 24px 46px var(--_shadow-md-c);
   --shadow-lg:
     0 2px 4px var(--_shadow-lg-a),
-    0 8px 24px var(--_shadow-lg-b),
-    0 24px 48px var(--_shadow-lg-c);
+    0 18px 46px var(--_shadow-lg-b),
+    0 32px 70px var(--_shadow-lg-c);
 
   /* Inner stroke — elevated-surface rim */
   --_inner-stroke-top: light-dark(
@@ -338,7 +405,7 @@
     color-mix(in srgb, white 8%, transparent),
     color-mix(in srgb, var(--color-surface-elevated) 16%, transparent)
   );
-  --inner-stroke: inset 0 1px 0 var(--_inner-stroke-top), inset 0 0 0 0.5px var(--_inner-stroke-ring);
+  --inner-stroke: inset 0 1px 0 var(--_inner-stroke-top), inset 0 0 0 1px var(--surface-line);
 
   /* Spacing */
   --space-1: 0.25rem;
@@ -399,46 +466,51 @@
 
   /* Radius — conservative institutional scale.
      Slightly tightened vs editorial-display previous scale. */
-  --radius-xs: 6px;
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
-  --radius-pill: 999px;
+  --radius-xs: 1px;
+  --radius-sm: 2px;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 6px;
+  --radius-pill: 2px;
   --radius: var(--radius-sm);
 
-  --radius-btn: 8px;
-  --radius-btn-sm: 6px;
-  --radius-btn-lg: 10px;
+  --radius-btn: 2px;
+  --radius-btn-sm: 2px;
+  --radius-btn-lg: 2px;
 
   /* ------------------------------------------------------------
-     Typography — 2026-04-17 repositioning, Tier-1 display refinement.
+     Typography — accessible proof-trace system (2026-04-30).
 
-     Two sans families by design:
-       --font-sans    Inter Variable — body, UI, data. Self-hosted from
-                      apps/web/public/fonts and preloaded in index.html.
-       --font-display Instrument Sans — display scale, hero/page titles,
-                      metric figures. Still a humanist sans (no editorial
-                      serif return), but distinct enough from Inter to
-                      carry hierarchy of voice. Decision-log 2026-04-17.
+     The prior proof-trace pass promoted Doto into --font-display, which
+     made real workflow headings render as dot-matrix texture. The app
+     keeps the measured proof-trace structure, but readable text is now
+     the default:
 
-     --font-serif is retained as a compatibility alias so the 18+ files
-     that still reference it (TodayStory, DayArc, PageIntro titles, etc.)
-     automatically inherit the display upgrade without per-file edits.
-     --font-editorial is the narrow opt-in editorial serif for generated
-     long-form content only. Decision-log 2026-04-23.
+       --font-reading  Atkinson Hyperlegible first, then existing local
+                       humanist/system fallbacks for headings, body,
+                       navigation, forms, and workflow-critical text.
+       --font-mono     Space Mono for short instrument labels, counters,
+                       trace IDs, and compact metadata only.
+       --font-dot      Doto for optional decorative calibration marks.
+
+     --font-serif remains a compatibility alias for older title call
+     sites; it intentionally resolves to the readable display stack.
      ------------------------------------------------------------ */
-  --font-sans: "Inter", "Inter Variable", "Public Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-display: "Instrument Sans", "Inter", "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-reading: "Atkinson Hyperlegible", "Instrument Sans", "Inter", "Inter Variable", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: var(--font-reading);
+  --font-display: var(--font-reading);
   --font-serif: var(--font-display);
-  --font-editorial: "Source Serif 4", Georgia, "Times New Roman", serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
+  --font-editorial: var(--font-reading);
+  --font-mono: "Space Mono", "JetBrains Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
+  --font-instrument: var(--font-mono);
+  --font-dot: "Doto", var(--font-mono);
+  --font-ui: var(--font-sans);
 
   /* OpenType feature sets. Applied globally in base.css for kern+liga;
      display and numeric variants are opt-in via .metric and display
      selectors so body text keeps default figures for reading. */
   --font-feature-base: "kern" 1, "liga" 1, "calt" 1;
-  --font-feature-display: "kern" 1, "liga" 1, "ss01" 1, "cv11" 1;
+  --font-feature-display: "kern" 1, "liga" 1;
   --font-feature-numeric: "tnum" 1, "zero" 1, "ss01" 1;
 
   --text-2xs: 0.6875rem; /* 11px — eyebrow, metric label, breadcrumb, dense caption */
@@ -454,21 +526,21 @@
   /* Display scale — used only on hero/page titles and metric figures.
      Intentionally larger than the UI scale so the typographic moment
      reads, but still conservative enough to stay institutional. */
-  --text-display-sm: clamp(1.6rem, 1.4vw + 1rem, 2rem);
-  --text-display-md: clamp(2rem, 2.2vw + 1rem, 2.75rem);
-  --text-display-lg: clamp(2.5rem, 3vw + 1rem, 3.75rem);
+  --text-display-sm: 2rem;
+  --text-display-md: 2.75rem;
+  --text-display-lg: 3.5rem;
 
   --leading-tight: 1.2;
   --leading-snug: 1.35;
   --leading-base: 1.55;
   --leading-loose: 1.72;
-  --leading-display: 1.02;
+  --leading-display: 1.08;
 
-  /* Tracking — negative on display sizes to pull large glyphs together;
-     neutral on body. Values tuned for Instrument Sans optical behavior. */
-  --tracking-display: -0.032em;
-  --tracking-display-tight: -0.04em;
-  --tracking-eyebrow: 0.14em;
+  /* Tracking — accessible proof-trace defaults. Keep neutral; do not
+     force slide-like compression or wide all-caps tracking into the app. */
+  --tracking-display: 0;
+  --tracking-display-tight: 0;
+  --tracking-eyebrow: 0;
 
   --font-weight-normal: 400;
   --font-weight-medium: 500;
@@ -543,10 +615,10 @@
 
   --shadow-press: 0 0.5px 1px var(--_shadow-sm-a);
 
-  /* Focus ring — navy affordance on both modes */
-  --focus-ring-outline: 3px solid color-mix(in srgb, var(--color-accent) 72%, white);
+  /* Focus ring — gold action affordance on the reference-board dark stack */
+  --focus-ring-outline: 2px solid var(--color-brand-highlight);
   --focus-ring-offset: 2px;
-  --focus-ring-halo: 0 0 0 4px color-mix(in srgb, var(--color-accent) 10%, transparent);
+  --focus-ring-halo: 0 0 0 3px color-mix(in srgb, var(--color-brand-highlight) 18%, transparent);
 
   /* ------------------------------------------------------------
      Command-block surface tokens (2026-04-24).
@@ -556,24 +628,24 @@
      above .surface-panel--atmospheric: more presence on the page, but
      never a wash. The wheat-soft accent is the warm brand affordance,
      used on the left rail and the eyebrow only. Body remains
-     graphite/black-first in dark mode per the dark-mode contract.
+     near-black/neutral in dark mode per the reference-board contract.
      Consumers: PageHero, Operational Preview strip. Do not use for
      ordinary cards — the command-block aesthetic is reserved for the
      page-anchoring header surfaces.
      ------------------------------------------------------------ */
-  --color-command-surface: light-dark(#ffffff, #0d0e12);
+  --color-command-surface: light-dark(#fffaf1, #0f1e2d);
   --color-command-rule: light-dark(
-    color-mix(in srgb, #ae671a 60%, #a8b2c0),
-    color-mix(in srgb, #d4a15c 50%, #3b4048)
+    color-mix(in srgb, #b7791f 58%, #dcccb4),
+    color-mix(in srgb, #d4a333 54%, #374151)
   );
-  --color-command-eyebrow: light-dark(#8a4f12, #d4a15c);
-  --color-command-border: light-dark(#cdd5e2, #1f222a);
+  --color-command-eyebrow: light-dark(#b85a09, #ead9b3);
+  --color-command-border: light-dark(#dcccb4, #374151);
 
   /* Operational-preview strip — dense below-hero metric/chip tiles.
      Quieter than command-block but strongly framed on dark mode. */
-  --color-preview-surface: light-dark(#fafbfd, #0a0b0f);
-  --color-preview-tile: light-dark(#ffffff, #14161b);
-  --color-preview-border: light-dark(#dde2eb, #1d2026);
+  --color-preview-surface: light-dark(#fbf6ea, #061421);
+  --color-preview-tile: light-dark(#fffaf1, #0b1622);
+  --color-preview-border: light-dark(#dcccb4, #374151);
 }
 
 :root[data-theme="light"] {
@@ -584,17 +656,23 @@
   color-scheme: dark;
 }
 
-/* Mobile first paint: keep the desktop premium type stack, but avoid making
-   strict mobile LCP compete with multiple self-hosted font files. System UI
-   and platform monospace are close enough at phone sizes and prevent font
-   transfer from joining the critical rendering path. */
+/* Mobile first paint: keep the readable proof-trace stack, but avoid making
+   strict mobile LCP compete with every decorative font file. Doto remains an
+   accent fallback only; workflow text stays on the reading face. */
 @media (max-width: 699px) {
   :root {
-    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --font-display: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-reading: "Atkinson Hyperlegible", "Instrument Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-sans: var(--font-reading);
+    --font-display: var(--font-reading);
     --font-serif: var(--font-display);
-    --font-editorial: Georgia, "Times New Roman", serif;
-    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
+    --font-editorial: var(--font-reading);
+    --font-mono: "Space Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
+    --font-instrument: var(--font-mono);
+    --font-dot: "Doto", var(--font-mono);
+    --font-ui: var(--font-sans);
+    --text-display-sm: 1.75rem;
+    --text-display-md: 2.25rem;
+    --text-display-lg: 2.75rem;
   }
 }
 
@@ -605,13 +683,13 @@
 
 @media (prefers-contrast: more) {
   :root {
-    --color-text-secondary: light-dark(#384050, #d3d8df);
-    --color-text-tertiary: light-dark(#424c5c, #bcc4ce);
-    --color-border: light-dark(#a8b0bc, #4d535e);
-    --color-border-strong: light-dark(#525a68, #c8ced6);
-    --color-border-input: light-dark(#4a5260, #d0d6de);
-    --color-accent: light-dark(#123a68, #4a74a1);
-    --color-accent-hover: light-dark(#0a2a4e, #547fac);
+    --color-text-secondary: light-dark(#384050, #f8fafc);
+    --color-text-tertiary: light-dark(#424c5c, #e5e7eb);
+    --color-border: light-dark(#a8b0bc, #6b7280);
+    --color-border-strong: light-dark(#525a68, #d1d5db);
+    --color-border-input: light-dark(#4a5260, #e5e7eb);
+    --color-accent: light-dark(#081d33, #ead9b3);
+    --color-accent-hover: light-dark(#173a63, #f7f2e6);
   }
 }
 

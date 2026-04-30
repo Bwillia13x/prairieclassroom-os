@@ -994,7 +994,6 @@ export default function App() {
                       role="tab"
                       aria-selected={activeTab === tab}
                       aria-controls={`panel-${tab}`}
-                      aria-pressed={activeTab === tab}
                     >
                       <SectionIcon name={meta.icon} className="shell-nav__group-icon" />
                       <span>{meta.label}</span>

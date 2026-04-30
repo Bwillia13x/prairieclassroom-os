@@ -1100,6 +1100,12 @@
   }
 }
 
+@media (max-width: 960px) {
+  .shell-command-key {
+    display: none;
+  }
+}
+
 @media (max-width: 600px) {
   .app-shell {
     padding: var(--space-1) var(--space-2) 0;
@@ -1347,6 +1353,10 @@
     white-space: nowrap;
   }
 
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__kbd {
+    display: none;
+  }
+
   .shell-bar__actions .header-action[data-testid="shell-help-trigger"] {
     display: none;
   }
@@ -1498,7 +1508,7 @@
     grid-column: 2;
     grid-row: 1;
     display: grid;
-    grid-template-columns: auto minmax(16rem, 22rem) minmax(0, 1fr);
+    grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
     align-items: center;
     min-height: 0;
     padding: 0 var(--space-6);
@@ -1513,8 +1523,10 @@
   }
 
   .shell-classroom-anchor {
+    grid-column: 1;
+    grid-row: 1;
     width: min(100%, 22rem);
-    justify-self: center;
+    justify-self: start;
   }
 
   .shell-classroom-pill,
@@ -1535,11 +1547,17 @@
     padding-right: var(--space-3);
   }
 
+  .shell-command-key {
+    display: none;
+  }
+
   .shell-classroom-pill__switcher::after {
     background: color-mix(in srgb, var(--color-border) 44%, transparent);
   }
 
   .shell-bar__actions {
+    grid-column: 2;
+    grid-row: 1;
     justify-self: end;
     gap: var(--space-3);
     flex-wrap: nowrap;
@@ -1746,11 +1764,15 @@
   }
 
   .shell-classroom-anchor {
+    grid-column: 1;
+    grid-row: 1;
     width: min(100%, 18rem);
     justify-self: start;
   }
 
   .shell-bar__actions {
+    grid-column: 2;
+    grid-row: 1;
     gap: var(--space-1);
   }
 
@@ -1778,6 +1800,8 @@
     width: 2.55rem;
     min-width: 2.55rem;
     padding-inline: 0;
+    gap: 0;
+    justify-content: center;
   }
 
   .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__label {
@@ -1787,6 +1811,15 @@
     overflow: hidden;
     clip: rect(0 0 0 0);
     white-space: nowrap;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__kbd {
+    display: none;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__icon {
+    color: var(--color-text-secondary);
+    opacity: 1;
   }
 
   .shell-nav {

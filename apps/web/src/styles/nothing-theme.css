@@ -1121,10 +1121,9 @@
 
 /* Feedback collector (rating + comment affordance at the bottom of
    AI outputs). Flat hairline frame. */
-.workspace-page .feedback-collector,
-.workspace-page [class*="feedback-collector"] {
-  background: transparent;
-  border: 1px solid var(--color-border);
+.workspace-page .feedback-collector {
+  background: color-mix(in srgb, var(--color-surface-elevated) 54%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
   border-radius: 2px;
   box-shadow: none;
 }
@@ -1134,7 +1133,7 @@
 .workspace-page .output-action-bar {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-left: 2px solid var(--color-text-analysis);
+  border-left: 2px solid var(--color-brand-highlight);
   box-shadow: none;
   color: var(--color-text);
   isolation: isolate;

@@ -1,15 +1,49 @@
 .message-composer {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  --message-composer-accent: var(--color-section-family);
+
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 82%, transparent),
+      color-mix(in srgb, var(--color-surface) 96%, transparent)
+    );
+  border: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent);
   border-radius: var(--radius-md);
-  padding: var(--space-6);
-  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+  box-shadow:
+    var(--inner-stroke),
+    var(--shadow-sm);
+}
+
+.message-composer::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--message-composer-accent),
+    color-mix(in srgb, var(--color-brand-highlight) 62%, transparent),
+    transparent 78%
+  );
+}
+
+.message-composer form {
+  display: flex;
+  flex-direction: column;
+}
+
+.message-composer .field:last-of-type {
+  margin-bottom: var(--space-3);
 }
 
 .message-composer h2 {
   font-size: var(--text-lg);
-  margin-bottom: var(--space-1);
+  margin: 0 0 var(--space-1);
   color: var(--color-text);
+  line-height: var(--leading-tight);
 }
 
 .composer-description {
@@ -23,39 +57,62 @@
   flex-wrap: wrap;
   gap: var(--space-2);
   padding: var(--space-2);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface-elevated) 58%, var(--color-bg));
+  border: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent);
   border-radius: var(--radius);
   max-height: 160px;
   overflow-y: auto;
+  scrollbar-width: thin;
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
 }
 
 .student-checkbox {
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-1);
-  padding: var(--space-1) var(--space-2);
+  gap: var(--space-1-5);
+  min-height: var(--control-h-sm);
+  padding: var(--space-1) var(--space-2-5);
   border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
   font-size: var(--text-sm);
   font: inherit;
   color: var(--color-text-secondary);
-  background: var(--color-surface);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
   cursor: pointer;
   border-radius: calc(var(--radius) / 2);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 5%, transparent);
   transition:
     background var(--motion-fast) var(--ease-standard),
     border-color var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard);
+    color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-spring);
 }
 
 .student-checkbox:hover {
-  background: var(--color-bg-muted);
+  background: color-mix(in srgb, var(--color-surface-elevated) 78%, var(--color-bg-muted));
+  border-color: color-mix(in srgb, var(--color-brand-highlight) 34%, var(--color-border));
+  color: var(--color-text);
+}
+
+.student-checkbox:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: 2px;
+  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+  box-shadow:
+    var(--focus-ring-halo),
+    inset 0 1px 0 color-mix(in srgb, white 5%, transparent);
 }
 
 .student-checkbox[aria-pressed="true"] {
-  background: color-mix(in srgb, var(--color-accent-soft) 64%, var(--color-surface));
-  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--color-bg-success) 78%, transparent), transparent 72%),
+    color-mix(in srgb, var(--color-surface) 96%, transparent);
+  border-color: color-mix(in srgb, var(--color-border-success) 72%, var(--color-border));
   color: var(--color-text);
+  box-shadow:
+    inset 3px 0 0 var(--message-composer-accent),
+    inset 0 1px 0 color-mix(in srgb, white 5%, transparent);
 }
 
 .student-checkbox[aria-pressed="true"]::before {
@@ -63,5 +120,31 @@
   width: 0.45rem;
   height: 0.45rem;
   border-radius: var(--radius-pill);
-  background: var(--color-accent);
+  background: var(--message-composer-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--message-composer-accent) 16%, transparent);
+}
+
+.message-composer .btn[type="submit"] {
+  align-self: flex-start;
+  min-width: min(100%, 14rem);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .student-checkbox:hover {
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 620px) {
+  .message-composer {
+    padding: var(--space-3);
+  }
+
+  .student-checkbox-list {
+    max-height: 220px;
+  }
+
+  .message-composer .btn[type="submit"] {
+    width: 100%;
+  }
 }

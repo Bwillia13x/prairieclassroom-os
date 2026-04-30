@@ -233,20 +233,28 @@
 }
 
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn {
+  isolation: isolate;
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
   gap: var(--space-2);
-  min-height: 8.4rem !important;
-  padding: var(--space-3) !important;
-  border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent) !important;
-  border-left: 2px solid transparent !important;
+  min-height: 9rem !important;
+  padding: var(--space-3) var(--space-3) var(--space-2-5) !important;
+  border: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent) !important;
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent) !important;
   border-radius: var(--radius-sm) !important;
-  background: color-mix(in srgb, var(--color-surface-elevated) 58%, transparent) !important;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 82%, transparent),
+      color-mix(in srgb, var(--color-surface) 94%, transparent)
+    ) !important;
   text-align: left !important;
   white-space: normal !important;
   overflow: visible;
-  box-shadow: var(--inner-stroke);
+  box-shadow:
+    var(--inner-stroke),
+    0 10px 28px -26px color-mix(in srgb, var(--color-text) 28%, transparent);
   transition:
     border-color var(--motion-fast) var(--ease-standard),
     background-color var(--motion-fast) var(--ease-standard),
@@ -254,33 +262,72 @@
     transform var(--motion-fast) var(--ease-spring);
 }
 
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn::before {
+  content: "";
+  position: absolute;
+  inset: var(--space-2) auto var(--space-2) var(--space-2);
+  z-index: -1;
+  width: 2px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-border) 56%, transparent);
+  opacity: 0.7;
+}
+
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn + .page-tool-switcher__btn {
-  border-left: 2px solid transparent !important;
-  border-top: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent) !important;
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent) !important;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 56%, transparent) !important;
 }
 
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn:hover:not(.page-tool-switcher__btn--active) {
-  border-color: color-mix(in srgb, var(--color-border) 68%, transparent) !important;
-  background: color-mix(in srgb, var(--color-surface-elevated) 76%, transparent) !important;
+  border-color: color-mix(in srgb, var(--color-brand-highlight) 35%, var(--color-border)) !important;
+  background:
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--color-surface-elevated) 92%, transparent),
+      color-mix(in srgb, var(--color-surface) 98%, transparent)
+    ) !important;
   box-shadow:
     var(--inner-stroke),
-    0 10px 20px -18px color-mix(in srgb, var(--color-text) 28%, transparent);
+    0 14px 34px -28px color-mix(in srgb, var(--color-text) 34%, transparent);
   transform: translateY(-1px);
+}
+
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn:hover:not(.page-tool-switcher__btn--active)::before {
+  background: color-mix(in srgb, var(--color-brand-highlight) 48%, var(--color-border));
+  opacity: 1;
 }
 
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn:active {
   transform: translateY(0.5px) scale(0.992);
 }
 
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: 3px;
+  box-shadow:
+    var(--inner-stroke),
+    var(--focus-ring-halo),
+    0 16px 36px -28px color-mix(in srgb, var(--color-text) 36%, transparent);
+}
+
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn--active {
-  border-left-color: color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 80%, var(--color-border)) !important;
+  border-color: color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 72%, var(--color-border)) !important;
+  border-left-color: color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 88%, var(--color-border)) !important;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--page-command-bg, var(--color-bg-sun)) 34%, transparent), transparent 58%),
+    linear-gradient(135deg, color-mix(in srgb, var(--page-command-bg, var(--color-bg-sun)) 42%, transparent), transparent 60%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 90%, transparent), transparent 72%),
     var(--color-surface) !important;
   color: var(--color-text) !important;
   box-shadow:
     var(--inner-stroke),
-    inset 0 0 0 1px color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 20%, transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 24%, transparent),
+    0 14px 36px -30px color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 42%, transparent);
+}
+
+.multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn--active::before {
+  width: 3px;
+  background: color-mix(in srgb, var(--page-command-border, var(--color-border-sun)) 88%, var(--color-brand-highlight));
+  opacity: 1;
 }
 
 .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn--active::after {
@@ -288,7 +335,7 @@
 }
 
 .page-tool-switcher--cards .page-tool-switcher__btn-kicker {
-  color: var(--color-text-tertiary);
+  color: color-mix(in srgb, var(--page-command-text, var(--color-text-tertiary)) 74%, var(--color-text-tertiary));
 }
 
 .page-tool-switcher--cards .page-tool-switcher__btn-title {
@@ -306,8 +353,39 @@
 }
 
 .page-tool-switcher--cards .page-tool-switcher__btn-status {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h-xs);
   margin-top: auto;
+  padding: 0 var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--page-command-border, var(--color-border-sage)) 42%, var(--color-border));
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--page-command-bg, var(--color-bg-sage)) 58%, transparent);
   color: var(--page-command-text, var(--color-text-sage));
+  line-height: 1;
+}
+
+.page-tool-switcher--cards .page-tool-switcher__btn--active .page-tool-switcher__btn-status {
+  border-color: color-mix(in srgb, var(--page-command-border, var(--color-border-sage)) 64%, var(--color-border));
+  background: color-mix(in srgb, var(--page-command-bg, var(--color-bg-sage)) 78%, var(--color-surface));
+}
+
+@media (max-width: 720px) {
+  .multi-tool-page .page-tool-switcher.page-tool-switcher--cards {
+    grid-auto-flow: row !important;
+    grid-auto-columns: auto !important;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn {
+    min-height: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .multi-tool-page .page-tool-switcher--cards .page-tool-switcher__btn {
+    transition: none;
+  }
 }
 
 .tomorrow-queue-strip {

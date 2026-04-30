@@ -46,8 +46,8 @@ const scenes: Scene[] = [
     image: "screenshots/01-today-hero.png",
     imageMode: "wide",
     visual: "screenshot",
-    accent: "#0f4c9e",
-    background: "#f7f8fa",
+    accent: "#1F5E9E",
+    background: "#FFFFFF",
     callouts: ["Built for Alberta K-6", "Teacher and EA workflow", "Not a student chatbot"],
   },
   {
@@ -58,8 +58,8 @@ const scenes: Scene[] = [
     image: "screenshots/02-today-day-arc.png",
     imageMode: "wide",
     visual: "screenshot",
-    accent: "#1f7a44",
-    background: "#eef1f6",
+    accent: "#1F7A4D",
+    background: "#FFFFFF",
     callouts: ["Block-level risk", "Student-specific cues", "Before-the-bell planning"],
   },
   {
@@ -70,8 +70,8 @@ const scenes: Scene[] = [
     image: "screenshots/04-today-complexity-debt.png",
     imageMode: "wide",
     visual: "screenshot",
-    accent: "#5f4bb6",
-    background: "#f1f3f6",
+    accent: "#6B3FA0",
+    background: "#FFFFFF",
     callouts: ["Prioritize what compounds", "Close loops sooner", "Keep teacher judgment central"],
   },
   {
@@ -80,8 +80,8 @@ const scenes: Scene[] = [
     body: "The app routes structured teacher requests through validation, safety checks, classroom memory, model-tier selection, and tool calls before returning reviewable artifacts.",
     metric: "Web UI · orchestrator · Gemma tiers · SQLite memory",
     visual: "architecture",
-    accent: "#3f6a6d",
-    background: "#f7f8fa",
+    accent: "#1F5E9E",
+    background: "#FFFFFF",
     callouts: ["Validated inputs", "Retrieval-backed context", "Persisted outputs"],
   },
   {
@@ -92,8 +92,8 @@ const scenes: Scene[] = [
     image: "screenshots/08b-differentiate-generated-full.png",
     imageMode: "tall",
     visual: "screenshot",
-    accent: "#4a5c80",
-    background: "#eef1f6",
+    accent: "#1F5E9E",
+    background: "#FFFFFF",
     callouts: ["Same goal, different access routes", "Fast live-tier generation", "Curriculum grounding available"],
   },
   {
@@ -104,8 +104,8 @@ const scenes: Scene[] = [
     image: "screenshots/10b-family-message-generated-full.png",
     imageMode: "tall",
     visual: "screenshot",
-    accent: "#a66a00",
-    background: "#f7f8fa",
+    accent: "#B76E00",
+    background: "#FFFFFF",
     callouts: ["Plain-language drafts", "Multilingual support path", "No autonomous sends"],
   },
   {
@@ -116,8 +116,8 @@ const scenes: Scene[] = [
     image: "screenshots/15b-ea-load-full.png",
     imageMode: "tall",
     visual: "screenshot",
-    accent: "#346751",
-    background: "#f1f3f6",
+    accent: "#1F7A4D",
+    background: "#FFFFFF",
     callouts: ["Morning-only EA coverage", "Cognitive load balancing", "Concrete next actions"],
   },
   {
@@ -128,8 +128,8 @@ const scenes: Scene[] = [
     image: "screenshots/17b-forecast-full.png",
     imageMode: "tall",
     visual: "screenshot",
-    accent: "#a62f26",
-    background: "#eef1f6",
+    accent: "#B76E00",
+    background: "#FFFFFF",
     callouts: ["Green, amber, red blocks", "Pattern-informed planning", "Teacher-facing warning"],
   },
   {
@@ -140,8 +140,8 @@ const scenes: Scene[] = [
     image: "screenshots/18b-usage-insights-full.png",
     imageMode: "tall",
     visual: "screenshot",
-    accent: "#755c1b",
-    background: "#f7f8fa",
+    accent: "#6B3FA0",
+    background: "#FFFFFF",
     callouts: ["Teacher-facing insights", "Local SQLite storage", "Pilot-ready artifacts"],
   },
   {
@@ -150,8 +150,8 @@ const scenes: Scene[] = [
     body: "PrairieClassroom is not a diagnostic engine, discipline score, or student-surveillance tool. It uses observational language, role-aware access, prompt-injection checks, and approval gates.",
     metric: "No diagnosis · no autonomous sends · no surveillance",
     visual: "safety",
-    accent: "#8d3f64",
-    background: "#f1f3f6",
+    accent: "#1F7A4D",
+    background: "#FFFFFF",
     callouts: ["15 forbidden diagnostic terms", "Classroom-code access", "Audit trail on model-routed outputs"],
   },
   {
@@ -160,8 +160,8 @@ const scenes: Scene[] = [
     body: "Live prompt classes handle immediate classroom tasks. Planning prompt classes use retrieval and thinking mode for forecasts, tomorrow plans, support patterns, scaffold reviews, and load balancing.",
     metric: "7 live classes · 6 planning classes · deterministic debt register",
     visual: "proof",
-    accent: "#0f4c9e",
-    background: "#eef1f6",
+    accent: "#1F5E9E",
+    background: "#FFFFFF",
     callouts: ["Hosted Gemma proof lane passing", "42/42 final evals in baseline", "Local-first deployment target"],
   },
   {
@@ -170,8 +170,8 @@ const scenes: Scene[] = [
     body: "The north star is simple: reduce coordination load, preserve privacy, keep professionals in control, and help each student receive the support they need at the right moment.",
     metric: "Classroom memory · teacher control · practical next actions",
     visual: "final",
-    accent: "#0f4c9e",
-    background: "#f7f8fa",
+    accent: "#1F5E9E",
+    background: "#FFFFFF",
     callouts: ["Runs in the demo classroom today", "Mobile and desktop UI", "Ready for cinematic treatment"],
   },
 ];
@@ -182,9 +182,10 @@ const clamp = {
 };
 
 const ease = Easing.bezier(0.16, 1, 0.3, 1);
-const textColor = "#111827";
-const mutedText = "#47505c";
-const border = "#dfe3ea";
+const textColor = "#0B2545";
+const mutedText = "#5B6673";
+const bodyText = "#263238";
+const border = "#C9D3DF";
 
 const fadeForScene = (frame: number, start: number, duration: number, isFirst: boolean, isLast: boolean) => {
   const fade = 20;
@@ -206,7 +207,7 @@ export const MarketingVideo = () => {
   const { fps } = useVideoConfig();
 
   return (
-    <AbsoluteFill style={{ backgroundColor: "#f7f8fa", fontFamily: "Inter, Public Sans, system-ui, sans-serif" }}>
+    <AbsoluteFill style={{ backgroundColor: "#FFFFFF", fontFamily: "Inter, Public Sans, system-ui, sans-serif" }}>
       {scenes.map((scene, index) => {
         const start = sceneStarts[index];
         const duration = sceneSeconds[index] * fps;
@@ -246,8 +247,8 @@ const MarketingScene = ({
         style={{
           position: "absolute",
           inset: 0,
-          background:
-            "linear-gradient(120deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.58) 46%, rgba(255,255,255,0.18) 100%)",
+          background: "#FFFFFF",
+          opacity: 0.72,
         }}
       />
       <div
@@ -292,7 +293,7 @@ const MarketingScene = ({
             borderLeft: `8px solid ${scene.accent}`,
             background: "#fff",
             borderRadius: 8,
-            boxShadow: "0 12px 36px rgba(17, 24, 39, 0.08)",
+            boxShadow: "none",
             color: textColor,
             fontSize: 26,
             lineHeight: 1.25,
@@ -394,7 +395,7 @@ const CalloutList = ({
             gap: 12,
             opacity: reveal,
             transform: `translateY(${interpolate(reveal, [0, 1], [12, 0], clamp)}px)`,
-            color: "#384252",
+            color: bodyText,
             fontSize: 23,
             fontWeight: 700,
             lineHeight: 1.18,
@@ -446,7 +447,7 @@ const ScreenshotWindow = ({ scene, progress }: { scene: Scene; progress: number 
         borderRadius: 8,
         border: `1px solid ${border}`,
         background: "#ffffff",
-        boxShadow: "0 26px 80px rgba(17, 24, 39, 0.16)",
+        boxShadow: "none",
         overflow: "hidden",
       }}
     >
@@ -524,11 +525,11 @@ const BrowserChrome = ({ accent }: { accent: string }) => (
 
 const ArchitectureVisual = ({ accent, progress }: { accent: string; progress: number }) => {
   const layers = [
-    { title: "Teacher UI", body: "Panels, forms, uploads, role-aware classroom access" },
-    { title: "Orchestrator", body: "Zod validation, auth, sanitization, prompt routing" },
-    { title: "Gemma 4 Tiers", body: "Live classes for speed, planning classes for depth" },
-    { title: "Memory Layer", body: "Plans, interventions, forecasts, feedback, sessions" },
-    { title: "Safety Layer", body: "No diagnosis, approval gates, audit trail" },
+    { title: "Teacher UI", body: "Panels, uploads, role-aware access" },
+    { title: "Orchestrator", body: "Validation, auth, routing" },
+    { title: "Gemma 4 Tiers", body: "Live speed, planning depth" },
+    { title: "Memory Layer", body: "Plans, interventions, forecasts" },
+    { title: "Safety Layer", body: "Approval gates, audit trail" },
   ];
 
   return (
@@ -561,7 +562,7 @@ const ArchitectureVisual = ({ accent, progress }: { accent: string; progress: nu
                   lineHeight: 1.08,
                   fontWeight: 850,
                   border: `1px solid ${index === 2 ? accent : border}`,
-                  boxShadow: "0 12px 28px rgba(17, 24, 39, 0.08)",
+                  boxShadow: "none",
                 }}
               >
                 {layer.title}
@@ -572,7 +573,7 @@ const ArchitectureVisual = ({ accent, progress }: { accent: string; progress: nu
                   background: "#ffffff",
                   border: `1px solid ${border}`,
                   padding: "22px 24px",
-                  color: "#384252",
+                  color: bodyText,
                   fontSize: 27,
                   lineHeight: 1.22,
                   fontWeight: 660,
@@ -590,10 +591,10 @@ const ArchitectureVisual = ({ accent, progress }: { accent: string; progress: nu
 
 const SafetyVisual = ({ accent, progress }: { accent: string; progress: number }) => {
   const boundaries = [
-    ["No diagnostic claims", "The system uses observational language and blocks clinical labels."],
-    ["No autonomous sending", "Family messages remain drafts until the teacher takes action."],
-    ["No surveillance posture", "It supports adult coordination instead of scoring children."],
-    ["No hidden data sprawl", "Classroom memory is local-first and classroom-scoped."],
+    ["No diagnostic claims", "Observational language only."],
+    ["No autonomous sending", "Teacher approval stays required."],
+    ["No surveillance posture", "Adult coordination, not child scoring."],
+    ["No hidden data sprawl", "Classroom-scoped memory."],
   ];
 
   return (
@@ -615,7 +616,7 @@ const SafetyVisual = ({ accent, progress }: { accent: string; progress: number }
                 padding: 30,
                 opacity: reveal,
                 transform: `translateY(${interpolate(reveal, [0, 1], [30, 0], clamp)}px)`,
-                boxShadow: "0 18px 44px rgba(17, 24, 39, 0.08)",
+                boxShadow: "none",
               }}
             >
               <div
@@ -680,7 +681,7 @@ const ProofVisual = ({ accent, progress }: { accent: string; progress: number })
                 }}
               >
                 <div style={{ color: accent, fontSize: 64, lineHeight: 1, fontWeight: 900 }}>{number}</div>
-                <div style={{ color: "#384252", fontSize: 25, lineHeight: 1.17, fontWeight: 720, marginTop: 18 }}>
+                <div style={{ color: bodyText, fontSize: 25, lineHeight: 1.17, fontWeight: 720, marginTop: 18 }}>
                   {label}
                 </div>
               </div>
@@ -690,8 +691,9 @@ const ProofVisual = ({ accent, progress }: { accent: string; progress: number })
         <div
           style={{
             borderRadius: 8,
-            background: "#111827",
-            color: "#ffffff",
+            background: "#ffffff",
+            color: bodyText,
+            border: `1px solid ${border}`,
             padding: 32,
             display: "flex",
             flexDirection: "column",
@@ -699,7 +701,7 @@ const ProofVisual = ({ accent, progress }: { accent: string; progress: number })
           }}
         >
           <div>
-            <div style={{ color: "#c7d2fe", fontSize: 22, fontWeight: 820, textTransform: "uppercase" }}>
+            <div style={{ color: accent, fontSize: 22, fontWeight: 820, textTransform: "uppercase" }}>
               Dual-speed routing
             </div>
             <h2 style={{ marginTop: 18, marginBottom: 0, fontSize: 43, lineHeight: 1.04 }}>
@@ -715,8 +717,8 @@ const ProofVisual = ({ accent, progress }: { accent: string; progress: number })
               return (
                 <div key={route}>
                   <div style={{ fontSize: 22, fontWeight: 760, marginBottom: 7 }}>{route}</div>
-                  <div style={{ height: 10, borderRadius: 5, background: "rgba(255,255,255,0.18)" }}>
-                    <div style={{ width: `${width}%`, height: "100%", borderRadius: 5, background: "#93c5fd" }} />
+                  <div style={{ height: 10, borderRadius: 5, background: "#E8EEF4" }}>
+                    <div style={{ width: `${width}%`, height: "100%", borderRadius: 5, background: accent }} />
                   </div>
                 </div>
               );
@@ -744,8 +746,8 @@ const PanelShell = ({
       height: "100%",
       borderRadius: 8,
       border: `1px solid ${border}`,
-      background: "#f8fafc",
-      boxShadow: "0 26px 80px rgba(17, 24, 39, 0.16)",
+      background: "#ffffff",
+      boxShadow: "none",
       overflow: "hidden",
     }}
   >
@@ -809,8 +811,9 @@ const FinalDeviceShot = ({ accent, progress }: { accent: string; progress: numbe
           height: 620,
           borderRadius: 34,
           padding: 12,
-          background: "#111827",
-          boxShadow: "0 28px 72px rgba(17, 24, 39, 0.28)",
+          background: "#ffffff",
+          border: `1px solid ${border}`,
+          boxShadow: "none",
         }}
       >
         <div
@@ -835,13 +838,15 @@ const FinalDeviceShot = ({ accent, progress }: { accent: string; progress: numbe
           bottom: 40,
           width: 770,
           borderRadius: 8,
-          background: "#111827",
-          color: "#ffffff",
+          background: "#ffffff",
+          color: textColor,
           padding: "26px 30px",
-          boxShadow: "0 20px 52px rgba(17, 24, 39, 0.22)",
+          border: `1px solid ${border}`,
+          borderLeft: `8px solid ${accent}`,
+          boxShadow: "none",
         }}
       >
-        <div style={{ color: "#93c5fd", fontSize: 22, fontWeight: 820, textTransform: "uppercase" }}>
+        <div style={{ color: accent, fontSize: 22, fontWeight: 820, textTransform: "uppercase" }}>
           Closing thesis
         </div>
         <div style={{ marginTop: 12, fontSize: 36, lineHeight: 1.14, fontWeight: 850 }}>
@@ -863,14 +868,14 @@ const GlobalProgress = ({ frame }: { frame: number }) => {
         right: 0,
         bottom: 0,
         height: 10,
-        background: "#dfe3ea",
+        background: "#E8EEF4",
       }}
     >
       <div
         style={{
           width: `${progress * 100}%`,
           height: "100%",
-          background: "#0f4c9e",
+          background: "#1F5E9E",
         }}
       />
     </div>

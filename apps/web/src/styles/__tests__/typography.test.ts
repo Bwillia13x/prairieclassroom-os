@@ -58,12 +58,19 @@ describe("Typography cascade — Phase α regression", () => {
     }
   });
 
-  it("preserves the 7-step tracking scale tokens", () => {
-    // If the tokens go missing, panel-level tracking rules silently no-op
-    // because they all reference these custom properties.
-    expect(tokens).toMatch(/--tracking-display\s*:\s*-0\.032em/);
-    expect(tokens).toMatch(/--tracking-display-tight\s*:\s*-0\.04em/);
-    expect(tokens).toMatch(/--tracking-eyebrow\s*:\s*0\.14em/);
+  it("keeps the accessible proof-trace font roles readable-first", () => {
+    expect(tokens).toMatch(/--font-reading\s*:\s*"Atkinson Hyperlegible"/);
+    expect(tokens).toMatch(/--font-sans\s*:\s*var\(--font-reading\)/);
+    expect(tokens).toMatch(/--font-display\s*:\s*var\(--font-reading\)/);
+    expect(tokens).toMatch(/--font-dot\s*:\s*"Doto",\s*var\(--font-mono\)/);
+  });
+
+  it("keeps tracking neutral for readable headings and labels", () => {
+    // The accessible proof-trace migration keeps Doto as accent texture
+    // and avoids negative or wide tracking on real workflow text.
+    expect(tokens).toMatch(/--tracking-display\s*:\s*0/);
+    expect(tokens).toMatch(/--tracking-display-tight\s*:\s*0/);
+    expect(tokens).toMatch(/--tracking-eyebrow\s*:\s*0/);
   });
 
   it("retains the .t-mono-untracked opt-in escape hatch", () => {

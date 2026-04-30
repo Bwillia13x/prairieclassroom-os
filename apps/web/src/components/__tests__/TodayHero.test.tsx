@@ -1,5 +1,17 @@
+/**
+ * TodayHero.test.tsx — Contract tests for the redesigned Today
+ * command dashboard (2026-04-29).
+ *
+ * The hero composition was rebuilt to match the target dashboard
+ * reference: command card → Today's flow timeline → Follow-up debt
+ * strip, with a side rail (Live Signals + Students to Watch). These
+ * tests assert the public DOM contract that the rest of the app
+ * (and snapshot consumers) depend on, plus the visible behaviour
+ * teachers see when the snapshot is populated.
+ */
+
 import { describe, it, expect, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import TodayHero from "../TodayHero";
 import type {
@@ -20,17 +32,38 @@ function makeForecast(
     schema_version: "1.0",
     blocks: [
       {
-        time_slot: "09:00-09:45",
-        activity: "Literacy",
-        level: "medium",
-        contributing_factors: [],
+        time_slot: "08:00-08:45",
+        activity: "Morning routines",
+        level: "low",
+        contributing_factors: ["Attendance, readiness, quick writes"],
         suggested_mitigation: "",
       },
       {
         time_slot: "10:00-10:45",
         activity: "Math",
         level: peak,
-        contributing_factors: [],
+        contributing_factors: ["Fractions on a number line"],
+        suggested_mitigation: "Stage the first task before students arrive.",
+      },
+      {
+        time_slot: "11:00-11:45",
+        activity: "Science",
+        level: "medium",
+        contributing_factors: ["Plant life cycles"],
+        suggested_mitigation: "",
+      },
+      {
+        time_slot: "13:00-13:45",
+        activity: "Writing",
+        level: "low",
+        contributing_factors: ["Informational draft"],
+        suggested_mitigation: "",
+      },
+      {
+        time_slot: "14:00-14:45",
+        activity: "PE",
+        level: "low",
+        contributing_factors: ["Fitness & games"],
         suggested_mitigation: "",
       },
     ],
@@ -80,7 +113,7 @@ const calmAction = {
 };
 
 describe("TodayHero", () => {
-  it("renders the TodayStory lede inside the hero shell", () => {
+  it("renders the command card with the recommended-action title", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
@@ -90,25 +123,13 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    expect(screen.getByText(/breathe/i)).toBeInTheDocument();
+    // "Command" eyebrow anchors the top of the dashboard.
+    expect(screen.getByText(/^command$/i)).toBeInTheDocument();
+    // Title falls back to the recommended-action label.
+    expect(screen.getByRole("heading", { name: /prep ready/i })).toBeInTheDocument();
   });
 
-  it("renders the primary CTA with 'Open {cta}' label", () => {
-    render(
-      <TodayHero
-        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
-        health={makeHealth(5, true)}
-        students={[]}
-        recommendedAction={calmAction}
-        onCtaClick={() => {}}
-      />,
-    );
-    expect(
-      screen.getByRole("button", { name: /open differentiate/i }),
-    ).toBeInTheDocument();
-  });
-
-  it("invokes onCtaClick when the primary button is pressed", async () => {
+  it("renders the primary CTA with 'Open {cta}' label and fires onCtaClick", async () => {
     const user = userEvent.setup();
     const handler = vi.fn();
     render(
@@ -120,39 +141,13 @@ describe("TodayHero", () => {
         onCtaClick={handler}
       />,
     );
-    await user.click(screen.getByRole("button", { name: /open differentiate/i }));
+    const cta = screen.getByRole("button", { name: /open differentiate/i });
+    expect(cta).toBeInTheDocument();
+    await user.click(cta);
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
-  it("surfaces the recommended-action label chip inside the hero", () => {
-    const { container } = render(
-      <TodayHero
-        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
-        health={makeHealth(5, true)}
-        students={[]}
-        recommendedAction={calmAction}
-        onCtaClick={() => {}}
-      />,
-    );
-    expect(container.querySelector(".status-chip")).toHaveTextContent("Prep ready");
-  });
-
-  it("renders the recommended-action rationale sentence so the teacher sees why this is the next move", () => {
-    render(
-      <TodayHero
-        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
-        health={makeHealth(5, true)}
-        students={[]}
-        recommendedAction={calmAction}
-        onCtaClick={() => {}}
-      />,
-    );
-    // Desktop rationale + mobile next-move both contain this text.
-    const matches = screen.getAllByText(/core planning is up to date/i);
-    expect(matches.length).toBeGreaterThanOrEqual(1);
-  });
-
-  it("omits the CTA row when recommendedAction is null", () => {
+  it("falls back to a neutral title when recommendedAction is null", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
@@ -165,25 +160,12 @@ describe("TodayHero", () => {
     expect(
       screen.queryByRole("button", { name: /open differentiate/i }),
     ).not.toBeInTheDocument();
-  });
-
-  it("exposes a landmark region labelled 'Today hero'", () => {
-    const { container } = render(
-      <TodayHero
-        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
-        health={makeHealth(5, true)}
-        students={[]}
-        recommendedAction={calmAction}
-        onCtaClick={() => {}}
-      />,
-    );
-    expect(container.querySelector(".today-hero")).toBeInTheDocument();
     expect(
-      container.querySelector('[aria-label="Today hero"]'),
+      screen.getByRole("heading", { name: /review today's command center/i }),
     ).toBeInTheDocument();
   });
 
-  it("renders the morning triage directive prominently (not as a tag chip)", () => {
+  it("exposes a today-hero landmark with data-testid for downstream consumers", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
@@ -193,13 +175,49 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    const directive = screen.getByTestId("today-hero-directive");
-    expect(directive).toHaveTextContent(/morning triage first/i);
-    // It must NOT live in a .pill or .chip or .badge element (elevation check).
-    expect(directive.className).not.toMatch(/pill|chip|badge/i);
+    const hero = screen.getByTestId("today-hero");
+    expect(hero).toBeInTheDocument();
+    expect(hero).toHaveClass("today-hero");
   });
 
-  it("mounts PageFreshness with the snapshot's last_activity_at as AI-snapshot", () => {
+  it("renders Today's flow as a 5-card timeline driven by forecast blocks", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("high") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+    const flowSection = screen.getByRole("region", { name: /today's flow/i });
+    // Block titles map common subjects to short labels.
+    expect(within(flowSection).getByText(/morning routines/i)).toBeInTheDocument();
+    expect(within(flowSection).getByText(/math block/i)).toBeInTheDocument();
+    expect(within(flowSection).getByText(/science/i)).toBeInTheDocument();
+    expect(within(flowSection).getByText(/writing/i)).toBeInTheDocument();
+    expect(within(flowSection).getByText(/^pe$/i)).toBeInTheDocument();
+  });
+
+  it("renders the Follow-up debt strip with five metric tiles", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+    expect(screen.getByText(/follow-up debt/i)).toBeInTheDocument();
+    expect(screen.getByText(/interventions/i)).toBeInTheDocument();
+    expect(screen.getByText(/assessments/i)).toBeInTheDocument();
+    expect(screen.getByText(/communications/i)).toBeInTheDocument();
+    expect(screen.getByText(/plan adjustments/i)).toBeInTheDocument();
+    expect(screen.getByText(/materials prep/i)).toBeInTheDocument();
+  });
+
+  it("renders the Live Signals rail with a Live indicator and AI source tag", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({
@@ -212,11 +230,13 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    const freshness = screen.getByTestId("page-freshness");
-    expect(freshness).toHaveTextContent(/AI SNAPSHOT/i);
+    expect(screen.getByText(/live signals/i)).toBeInTheDocument();
+    expect(screen.getByText(/^live$/i)).toBeInTheDocument();
+    // AI freshness tag is required by the source-tag contract.
+    expect(screen.getByTestId("source-tag-ai")).toBeInTheDocument();
   });
 
-  it("renders the compact morning brief and opens student drill-down chips", async () => {
+  it("renders Students to Watch buttons that route through onStudentClick", async () => {
     const user = userEvent.setup();
     const onStudentClick = vi.fn();
     render(
@@ -233,47 +253,15 @@ describe("TodayHero", () => {
       />,
     );
 
-    const brief = screen.getByTestId("today-hero-brief");
-    expect(brief).toHaveTextContent(/open items/i);
-    expect(brief).toHaveTextContent(/4 items/i);
-    expect(brief).toHaveTextContent(/peak block/i);
-    expect(brief).toHaveTextContent(/10:00-10:45 Math/i);
-    // Max 5 students rendered despite 6 passed in.
-    expect(screen.queryByRole("button", { name: /Liam/ })).not.toBeInTheDocument();
+    // Watchlist clamps to a max of four rows so the rail stays scannable.
+    expect(screen.getByText(/students to watch/i)).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /Kiana/i })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /Amira/ }));
     expect(onStudentClick).toHaveBeenCalledWith("Amira");
   });
 
-  it("renders student names with visible reasons when studentReasons are provided", () => {
-    const reasons: Record<string, string> = {
-      Amira: "Pending follow-up",
-      Brody: "Stale math intervention (4 days)",
-    };
-    render(
-      <TodayHero
-        snapshot={makeSnapshot({ latest_forecast: makeForecast("high") })}
-        health={makeHealth(5, true)}
-        students={[]}
-        recommendedAction={calmAction}
-        openItemCount={4}
-        checkFirstStudents={["Amira", "Brody", "Farid"]}
-        studentReasons={reasons}
-        peakBlock={makeForecast("high").blocks[1]}
-        onCtaClick={() => {}}
-      />,
-    );
-
-    // Reason text is visible in the chip, not just a title tooltip.
-    expect(screen.getByText("Pending follow-up")).toBeInTheDocument();
-    expect(screen.getByText("Stale math intervention (4 days)")).toBeInTheDocument();
-    // Student without a reason shows just the name.
-    const faridChip = screen.getByRole("button", { name: /Farid/ });
-    expect(faridChip).toBeInTheDocument();
-    expect(faridChip).not.toHaveTextContent(/follow-up|intervention/i);
-  });
-
-  it("uses accessible aria-labels on student chips with reasons", () => {
+  it("uses accessible aria-labels on watchlist rows when reasons are provided", () => {
     const reasons: Record<string, string> = { Amira: "Pending follow-up" };
     render(
       <TodayHero
@@ -286,15 +274,32 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-
-    const amiraChip = screen.getByRole("button", { name: /Open student details for Amira: Pending follow-up/ });
-    expect(amiraChip).toBeInTheDocument();
-    // Student without a reason gets "Check first" context.
-    const brodyChip = screen.getByRole("button", { name: /Check first: Brody/ });
-    expect(brodyChip).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Open student details for Amira: Pending follow-up/ }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Check first: Brody/ }),
+    ).toBeInTheDocument();
   });
 
-  it("renders a Monday freshness eyebrow with a working dismiss button when mondayMoment is provided", async () => {
+  it("personalises the command title when a check-first student is in scope", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("high") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        openItemCount={3}
+        checkFirstStudents={["Amira"]}
+        onCtaClick={() => {}}
+      />,
+    );
+    expect(
+      screen.getByRole("heading", { name: /start morning triage with amira/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders a Monday eyebrow with a working dismiss when mondayMoment is supplied", async () => {
     const user = userEvent.setup();
     const onDismiss = vi.fn();
     render(
@@ -310,10 +315,8 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    const eyebrow = screen.getByTestId("today-hero-monday-eyebrow");
-    expect(eyebrow).toHaveTextContent(/monday/i);
-    expect(eyebrow).toHaveTextContent(/fresh week/i);
-    await user.click(screen.getByRole("button", { name: /dismiss fresh week eyebrow/i }));
+    expect(screen.getByText(/monday — a fresh week/i)).toBeInTheDocument();
+    await user.click(screen.getByRole("button", { name: /dismiss monday moment/i }));
     expect(onDismiss).toHaveBeenCalledTimes(1);
   });
 
@@ -328,33 +331,116 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    expect(screen.queryByTestId("today-hero-monday-eyebrow")).not.toBeInTheDocument();
+    expect(screen.queryByText(/monday — a fresh week/i)).not.toBeInTheDocument();
   });
 
-  it("renders a mobile command card with the recommended move and compact context", () => {
+  it("hides the secondary 'Open Intervention Log' CTA when the primary already routes there", () => {
+    const interventionAction = {
+      ...calmAction,
+      cta: "Intervention Log",
+      tab: "log-intervention" as const,
+      label: "Follow-up needed",
+    };
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={interventionAction}
+        onCtaClick={() => {}}
+      />,
+    );
+    const buttons = screen.getAllByRole("button", { name: /open intervention log/i });
+    // Exactly one — the primary CTA. No duplicate secondary.
+    expect(buttons).toHaveLength(1);
+  });
+
+  it("shows the secondary 'Open Intervention Log' CTA alongside the primary by default", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
         health={makeHealth(5, true)}
         students={[]}
         recommendedAction={calmAction}
-        openItemCount={2}
-        checkFirstStudents={["Amira"]}
-        peakBlock={makeForecast("high").blocks[1]}
+        onCtaClick={() => {}}
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: /open intervention log/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("highlights a current block in the flow timeline with a 'Now' affordance", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("medium") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+    // The component falls back to the first block as "current" when the
+    // wall-clock falls outside any range, so the "Now" pill is always
+    // present given a populated forecast.
+    const flowSection = screen.getByRole("region", { name: /today's flow/i });
+    expect(within(flowSection).getByText(/^now$/i)).toBeInTheDocument();
+  });
+
+  it("derives a per-student watchlist caption from the debt register when no explicit reason is supplied", () => {
+    // Two students appear only via debt-register items; neither has a
+    // priority_reason, latest_priority_reason, or studentReasons entry.
+    // Without the debt-derived fallback every row would read the same
+    // "Check before the next transition" caption — which we no longer
+    // accept in the watchlist UI.
+    const snapshot = makeSnapshot({
+      latest_forecast: makeForecast("medium"),
+      debt_register: {
+        register_id: "r-fallback",
+        classroom_id: "demo",
+        items: [
+          {
+            category: "approaching_review",
+            student_refs: ["Hannah"],
+            description: "Hannah pattern review window approaching",
+            source_record_id: "student-1",
+            age_days: 14,
+            suggested_action: "Log a touchpoint",
+          },
+          {
+            category: "stale_followup",
+            student_refs: ["Marco"],
+            description: "Marco follow-up overdue",
+            source_record_id: "student-2",
+            age_days: 6,
+            suggested_action: "Close the loop",
+          },
+        ],
+        item_count_by_category: { approaching_review: 1, stale_followup: 1 },
+        generated_at: "2026-04-13T00:00:00Z",
+        schema_version: "1.0",
+      },
+    });
+
+    render(
+      <TodayHero
+        snapshot={snapshot}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        checkFirstStudents={["Hannah", "Marco"]}
         onCtaClick={() => {}}
       />,
     );
 
-    const command = screen.getByTestId("today-hero-mobile-command");
-    expect(command).toHaveTextContent(/open/i);
-    expect(command).toHaveTextContent(/2 items/i);
-    expect(command).toHaveTextContent(/peak/i);
-    expect(command).toHaveTextContent(/first check/i);
-    expect(command).toHaveTextContent(/Amira/i);
-    const nextMove = screen.getByTestId("today-hero-mobile-next-move");
-    expect(nextMove).toHaveTextContent(/next move/i);
-    expect(nextMove).toHaveTextContent(/differentiate/i);
-    expect(nextMove).toHaveTextContent(/core planning is up to date/i);
+    // Each row shows a category-specific caption rather than the
+    // generic fallback. The text is short on purpose so it fits the
+    // single-line ellipsis in the rail.
+    expect(screen.getByText(/pattern review approaching/i)).toBeInTheDocument();
+    expect(screen.getByText(/follow-up overdue/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/check before the next transition/i),
+    ).not.toBeInTheDocument();
   });
 });
 

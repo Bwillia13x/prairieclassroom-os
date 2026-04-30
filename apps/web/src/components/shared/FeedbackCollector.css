@@ -2,8 +2,10 @@
 
 .feedback-collector {
   margin-top: var(--space-3);
-  padding: var(--space-2) var(--space-2-5);
-  border-top: 1px solid var(--color-border);
+  padding: var(--space-2-5);
+  border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--color-surface-elevated) 54%, transparent);
 }
 
 .feedback-collector--done {
@@ -35,8 +37,9 @@
 }
 
 .feedback-collector__star {
-  background: none;
-  border: none;
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+  border: 1px solid transparent;
+  border-radius: var(--radius-xs);
   font-size: var(--text-lg);
   cursor: pointer;
   padding: 0.15rem 0.1rem;
@@ -52,7 +55,16 @@
 }
 
 .feedback-collector__star:hover {
+  border-color: color-mix(in srgb, var(--color-brand-highlight) 36%, var(--color-border));
+  color: var(--color-accent);
   transform: scale(1.25) rotate(-8deg);
+}
+
+.feedback-collector__star:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: 2px;
+  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+  box-shadow: var(--focus-ring-halo);
 }
 
 .feedback-collector__star:active {
@@ -62,6 +74,8 @@
 
 .feedback-collector__star--filled {
   color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-brand-highlight) 42%, transparent);
+  background: color-mix(in srgb, var(--color-bg-warning) 72%, var(--color-surface));
   animation: success-pop 0.35s var(--ease-spring) both;
 }
 
@@ -102,8 +116,10 @@
 }
 
 .feedback-collector__comment-input:focus {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 1px;
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+  box-shadow: var(--focus-ring-halo);
 }
 
 .feedback-collector__submit {
@@ -124,6 +140,24 @@
 
 .feedback-collector__skip:hover {
   color: var(--color-text);
+}
+
+.feedback-collector__skip:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-xs);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback-collector__star,
+  .feedback-collector__star--filled {
+    animation: none;
+    transition: none;
+  }
+
+  .feedback-collector__star:hover {
+    transform: none;
+  }
 }
 
 @media (max-width: 600px) {

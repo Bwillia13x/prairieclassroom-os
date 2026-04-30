@@ -16,6 +16,88 @@
    conditions it keeps TTI clean.
    ============================================================ */
 
+/* Accessible Proof-Trace migration faces — self-hosted to keep the
+   local-first runtime contract while matching the N0thing/Beyond Text
+   slide system. Atkinson Hyperlegible is the readable heading/body face;
+   Doto remains available only for short decorative calibration marks. */
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-700.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Doto";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/doto-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Doto";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/doto-700.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Doto";
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url("/fonts/doto-900.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-300.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-500.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Grotesk";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/space-grotesk-600.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/space-mono-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Space Mono";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/space-mono-700.ttf") format("truetype");
+}
+
 /* Inter Variable — body, UI, data. Covers 100..900 weight axis. */
 @font-face {
   font-family: "Inter";
