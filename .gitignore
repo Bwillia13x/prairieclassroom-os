@@ -63,6 +63,16 @@ output/contrast-report.md
 output/evidence-snapshots/
 output/prairieclassroom-logo-header-*.png
 output/ui-touchpoints/
+output/hyperframes/
+output/nav-inspection-*/
+output/performance-lcp-*/
+output/prairie-brand-migration-*/
+output/proof-trace-*/
+output/proof-trace-*.png
+output/remotion/
+output/ui-audit-*/
+output/ui-ux-design-audit-*/
+tmp/
 apps/web/tsconfig.tsbuildinfo
 
 # SQLite classroom memory

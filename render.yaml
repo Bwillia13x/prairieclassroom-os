@@ -1,0 +1,43 @@
+services:
+  - type: web
+    name: prairieclassroom-orchestrator
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run rebuild:memory
+    startCommand: npm run start -w @prairie/orchestrator
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_VERSION
+        value: 25.8.2
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
+      - key: INFERENCE_HOSTPORT
+        fromService:
+          type: web
+          name: prairieclassroom-inference-gemini
+          property: hostport
+      - key: CORS_ORIGIN
+        sync: false
+      - key: PRAIRIE_MEMORY_DIR
+        value: /tmp/prairie-memory
+      - key: PRAIRIE_DATA_DIR
+        value: /opt/render/project/src/data/synthetic_classrooms
+
+  - type: web
+    name: prairieclassroom-inference-gemini
+    runtime: python
+    plan: free
+    buildCommand: pip install -r services/inference/requirements-gemini.txt
+    startCommand: python services/inference/server.py --mode gemini --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHONUNBUFFERED
+        value: "1"
+      - key: PRAIRIE_ENABLE_GEMINI_RUNS
+        value: "true"
+      - key: PRAIRIE_GEMINI_API_KEY
+        sync: false
+      - key: PRAIRIE_GEMINI_MODEL_ID_LIVE
+        value: gemma-4-26b-a4b-it
+      - key: PRAIRIE_GEMINI_MODEL_ID_PLANNING
+        value: gemma-4-31b-it

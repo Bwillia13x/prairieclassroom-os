@@ -60,11 +60,14 @@ if (Number.isNaN(PORT) || PORT < 1 || PORT > 65535) {
   process.exit(1);
 }
 
-const INFERENCE_URL = process.env.INFERENCE_URL ?? "http://127.0.0.1:3200";
+const INFERENCE_URL = process.env.INFERENCE_URL
+  ?? (process.env.INFERENCE_HOSTPORT ? `http://${process.env.INFERENCE_HOSTPORT}` : "http://127.0.0.1:3200");
 try {
   new URL(INFERENCE_URL);
 } catch {
-  console.error(`Invalid INFERENCE_URL: ${INFERENCE_URL}. Must be a valid URL (e.g. http://127.0.0.1:3200).`);
+  console.error(
+    `Invalid inference endpoint: ${INFERENCE_URL}. Set INFERENCE_URL to a valid URL or INFERENCE_HOSTPORT to host:port.`,
+  );
   process.exit(1);
 }
 

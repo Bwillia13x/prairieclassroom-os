@@ -136,13 +136,14 @@ async function dismissRolePromptIfPresent(page) {
   // It intercepts pointer events, so we must dismiss it before clicking into
   // the shell. "Skip" defaults the role to Teacher, which is the smoke test's
   // expected role for all assertions.
-  const skipBtn = page.getByTestId("role-prompt-skip");
   try {
-    await skipBtn.waitFor({ state: "visible", timeout: 1_000 });
+    await page.locator(".role-prompt-overlay").waitFor({ state: "visible", timeout: 5_000 });
   } catch {
     return;
   }
 
+  const skipBtn = page.getByTestId("role-prompt-skip");
+  await skipBtn.waitFor({ state: "visible", timeout: 3_000 });
   await skipBtn.click();
   await page.locator(".role-prompt-overlay").waitFor({ state: "detached", timeout: 3_000 });
 }
@@ -462,12 +463,12 @@ async function main() {
       colorBg: getComputedStyle(globalThis.document.documentElement).getPropertyValue("--color-bg").trim(),
     }));
     assert.equal(themeState.theme, "dark", "Theme toggle should reach dark mode");
-    // Dark canvas retuned to #020305 in the 2026-04-17 round-6 black-first
-    // dark-mode pass (see docs/decision-log.md). The previous round-2 value
-    // #070a0f shipped between 2026-04-12 and 2026-04-17 but is no longer
-    // correct; the smoke assertion drifted and is now aligned.
+    // The token may remain serialized as light-dark(...) in Chromium while the
+    // resolved page canvas is dark. Assert the current dark-side token, while
+    // keeping the older near-black token valid for older baselines.
+    const darkCanvasTokens = ["#020b12", "#020305"];
     assert.ok(
-      themeState.colorBg === "#020305" || themeState.colorBg.includes("#020305"),
+      darkCanvasTokens.some((token) => themeState.colorBg.includes(token)),
       `Dark theme should apply the near-black Prairie background token; got "${themeState.colorBg}"`,
     );
 

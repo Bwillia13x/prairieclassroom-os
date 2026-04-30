@@ -4,13 +4,19 @@ This is the deployment-side checklist for turning the local PrairieClassroom OS 
 
 The submission window for this work is Phase F of [plans/2026-05-18-submission-plan.md](./plans/2026-05-18-submission-plan.md), targeting 2026-05-11 → 2026-05-12.
 
-## Deploy Targets (selected 2026-04-26)
+## Deployment Status (updated 2026-04-30)
+
+- **Configured:** frontend Vercel config is committed at `apps/web/vercel.json`.
+- **Configured:** backend Render blueprint is committed at `render.yaml`.
+- **Not yet complete:** services have not been created in external hosting, production secrets have not been set, and the public URL has not been smoked from a non-local network.
+
+## Deploy Targets (selected 2026-04-30)
 
 - **Frontend:** Vercel free tier. `apps/web/vercel.json` is committed and configures SPA rewrites, security headers, and immutable asset caching for the production build.
-- **Orchestrator + inference:** TBD — choose one before Phase F begins:
-  - Render free tier (sleeps after 15 min idle; cold-start latency ~30s — acceptable for judge demos)
-  - Fly.io free tier (3 shared-cpu VMs; no idle sleep on free; needs Dockerfile)
-  - Hetzner CX11 ($5/mo; always on; manual systemd setup)
+- **Orchestrator + inference:** Render free tier, via the root `render.yaml` blueprint.
+  - `prairieclassroom-orchestrator`: Node service running the Express API.
+  - `prairieclassroom-inference-gemini`: Python Flask service running hosted Gemma mode.
+  - Expected tradeoff: free-tier cold starts are acceptable for a judge demo if the URL is warmed before review; if cellular smoke is unreliable, submit the recorded demo as the primary demo artifact.
 
 ## Pre-deploy Setup (Phase B/F)
 
@@ -22,19 +28,19 @@ npx vercel link
 npx vercel env add VITE_API_URL production
 ```
 
-For the backend (Render example):
+For the backend (Render blueprint):
 
 ```bash
-# render.yaml at repo root would define two services (orchestrator + inference)
-# Orchestrator env vars:
-#   PORT (set by Render)
-#   INFERENCE_URL=https://<inference-service>.onrender.com
-#   CORS_ORIGIN=https://<vercel-frontend-url>
-# Inference env vars:
-#   PRAIRIE_INFERENCE_HOST=0.0.0.0
-#   PRAIRIE_INFERENCE_PORT=$PORT
-#   PRAIRIE_GEMINI_API_KEY (secret)
-#   PRAIRIE_ENABLE_GEMINI_RUNS=true
+# Create the blueprint from render.yaml in the Render dashboard.
+# Then set the sync:false values:
+#   prairieclassroom-orchestrator:
+#     CORS_ORIGIN=https://<vercel-frontend-url>
+#   prairieclassroom-inference-gemini:
+#     PRAIRIE_GEMINI_API_KEY=<secret>
+#
+# The orchestrator receives INFERENCE_HOSTPORT from the inference service through
+# Render's private service reference. Set INFERENCE_URL manually only if you are
+# intentionally overriding that private-network route.
 ```
 
 ## Demo URL
@@ -53,7 +59,7 @@ For public judging, prefer a fast synthetic demo lane:
 
 - Web: production Vite build.
 - API: Express orchestrator.
-- Inference: mock mode or guarded hosted Gemma 4 mode with pre-generated artifacts.
+- Inference: guarded hosted Gemma 4 mode using the Render inference service.
 - Data: `data/synthetic_classrooms/` only.
 - Memory: demo SQLite memory only.
 
@@ -70,7 +76,7 @@ PRAIRIE_INFERENCE_HOST=0.0.0.0 PRAIRIE_INFERENCE_PORT=$PORT \
 python services/inference/server.py --mode mock
 ```
 
-For hosted Gemma 4 proof runs, add:
+For hosted Gemma 4 proof runs or the Render inference service, add:
 
 ```bash
 PRAIRIE_ENABLE_GEMINI_RUNS=true
@@ -86,6 +92,8 @@ INFERENCE_URL=https://<inference-service-host> \
 CORS_ORIGIN=https://<web-demo-host> \
 npx tsx services/orchestrator/server.ts
 ```
+
+On Render, `render.yaml` sets `INFERENCE_HOSTPORT` from the inference service's private network reference, so `INFERENCE_URL` is not required unless overriding that route manually.
 
 3. Web build
 
@@ -110,6 +118,7 @@ Before attaching the URL to Kaggle:
 4. Generate or open at least one output on the public demo path.
 5. Confirm no browser console errors.
 6. Confirm the visible footer says the app is built for the Gemma 4 Good Hackathon.
+7. If generation is slow on first load, warm the Render services and repeat the smoke from a new private/incognito window.
 
 ## Submission Boundaries
 

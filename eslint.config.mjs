@@ -8,6 +8,8 @@ export default tseslint.config(
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
+      "output/**",
+      "tmp/**",
       "**/.venv*/**",
       "**/*.js",
       "**/*.cjs",
