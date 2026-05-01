@@ -432,6 +432,11 @@ export default function ClassroomPanel({
   const openItemCount = result?.debt_register.items.length ?? null;
   const plannedDays = health.result?.plans_last_7.filter(Boolean).length ?? null;
   const watchCount = openThreadCount ?? 0;
+  const cohortCount = studentSummaries.result?.length ?? profile?.students.length ?? 0;
+  const cohortActiveCount = studentSummaries.result?.filter((student) =>
+    student.intervention_history_14d.some((count) => count > 0),
+  ).length ?? 0;
+  const forecastBlockCount = result?.latest_forecast?.blocks.length ?? 0;
 
   const pulse = derivePulse(health.result ?? null, pendingActionCount);
 
@@ -537,7 +542,11 @@ export default function ClassroomPanel({
       {/* ============================================================
           ZONE 3 — WATCHLIST
           ============================================================ */}
-      <section className="classroom-section" id="classroom-watchlist" aria-label="Top students to watch">
+      <section
+        className="classroom-section classroom-section--surface classroom-section--watchlist"
+        id="classroom-watchlist"
+        aria-label="Top students to watch"
+      >
         <div className="classroom-section__header">
           <div className="classroom-section__header-text">
             <span className="classroom-section__eyebrow">Watchlist</span>
@@ -557,6 +566,7 @@ export default function ClassroomPanel({
             threads={result.student_threads}
             title="Top students to watch"
             selectedAlias={null}
+            sticky={false}
             onSelectThread={(thread) => setDrillDown({ type: "student-thread", thread })}
           />
         ) : (
@@ -570,7 +580,11 @@ export default function ClassroomPanel({
           Pre-attentive outlier scan that complements the top-N
           Watchlist with an everyone-at-once view.
           ============================================================ */}
-      <section className="classroom-section" aria-labelledby="classroom-cohort-pulse-heading">
+      <section
+        className="classroom-section classroom-section--surface classroom-section--cohort"
+        id="classroom-cohort-pulse"
+        aria-labelledby="classroom-cohort-pulse-heading"
+      >
         <div className="classroom-section__header">
           <div>
             <span className="classroom-section__eyebrow">Cohort pulse</span>
@@ -578,15 +592,26 @@ export default function ClassroomPanel({
               14-day intervention pulse
             </h3>
           </div>
-          <p className="classroom-section__caption">
-            Each cell is one student. Tall recent peaks = active attention this week. Faint dashed line = cohort average.
-          </p>
+          <div className="classroom-section__chips" aria-label="Cohort pulse summary">
+            <span className="classroom-section__chip">
+              <strong>{cohortCount}</strong> students
+            </span>
+            <span className="classroom-section__chip classroom-section__chip--warning">
+              <strong>{cohortActiveCount}</strong> active traces
+            </span>
+            <span className="classroom-section__chip">14 days</span>
+          </div>
         </div>
+        <p className="classroom-section__caption classroom-section__caption--lede">
+          Each cell is one student. Tall recent peaks mark active attention this week; the faint dashed line is the cohort average.
+        </p>
         {studentSummaries.result && studentSummaries.result.length > 0 ? (
-          <CohortSparklineGrid
-            students={studentSummaries.result}
-            onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
-          />
+          <div className="classroom-section__content classroom-section__content--cohort">
+            <CohortSparklineGrid
+              students={studentSummaries.result}
+              onStudentClick={(alias) => setDrillDown({ type: "student", alias })}
+            />
+          </div>
         ) : studentSummaries.error ? (
           <div className="today-health-error" role="alert">
             Couldn&apos;t load cohort pulse: {studentSummaries.error}
@@ -599,16 +624,31 @@ export default function ClassroomPanel({
       {/* ============================================================
           ZONE 4 — OPERATIONS (week / coverage / queues)
           ============================================================ */}
-      <section className="classroom-section" id="classroom-dashboard" aria-label="Operating board">
+      <section
+        className="classroom-section classroom-section--operations"
+        id="classroom-dashboard"
+        aria-label="Operating board"
+      >
         <div className="classroom-section__header">
           <div className="classroom-section__header-text">
             <span className="classroom-section__eyebrow">Operations</span>
             <h3 className="classroom-section__title">Week, coverage, queues</h3>
           </div>
-          <p className="classroom-section__caption">
-            Five-day view, student × support coverage, and pending teacher actions.
-          </p>
+          <div className="classroom-section__chips" aria-label="Operations summary">
+            <span className="classroom-section__chip">
+              <strong>{forecastBlockCount}</strong> forecast blocks
+            </span>
+            <span className="classroom-section__chip classroom-section__chip--warning">
+              <strong>{openItemCount ?? "—"}</strong> queue
+            </span>
+            <span className="classroom-section__chip">
+              <strong>{watchCount}</strong> watch
+            </span>
+          </div>
         </div>
+        <p className="classroom-section__caption classroom-section__caption--lede">
+          Five-day view, student x support coverage, and pending teacher actions.
+        </p>
         {result ? (
           <OperatingDashboard
             snapshot={result}
@@ -626,11 +666,12 @@ export default function ClassroomPanel({
 
       {/* ============================================================
           ZONE 5 — INTELLIGENCE (was the broken display:contents bug)
-          Now a real CSS grid: 2x2 at >=1180px, 1-col below.
-          Each viz is height-capped so no single chart can dominate.
+          A real CSS grid: 2x2 at >=1180px, 1-col below.
+          The card owns the frame; each visualization manages its own
+          internal density and clipping.
           ============================================================ */}
       <details
-        className="classroom-section classroom-zone--collapsible"
+        className="classroom-section classroom-section--surface classroom-zone--collapsible classroom-zone--insights"
         id="classroom-insights"
         aria-labelledby="classroom-insights-eyebrow classroom-insights-title"
         open={intelDisclosure.open}
@@ -659,7 +700,7 @@ export default function ClassroomPanel({
           ZONE 6 — ROSTER
           ============================================================ */}
       <details
-        className="classroom-section classroom-zone--collapsible"
+        className="classroom-section classroom-section--surface classroom-zone--collapsible classroom-zone--roster"
         id="classroom-roster"
         aria-label="Full student roster"
         open={rosterDisclosure.open}

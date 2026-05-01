@@ -669,6 +669,92 @@
 .classroom-section__chip--warning { color: var(--color-text-warning); border-color: var(--color-border-warning); background: color-mix(in srgb, var(--color-bg-warning) 80%, transparent); }
 .classroom-section__chip--danger  { color: var(--color-text-danger);  border-color: var(--color-border-danger);  background: color-mix(in srgb, var(--color-bg-danger)  80%, transparent); }
 
+.classroom-section--surface {
+  position: relative;
+  isolation: isolate;
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 20%, var(--color-border));
+  border-radius: 6px;
+  background: var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 5%, transparent),
+    0 18px 42px -34px color-mix(in srgb, var(--color-accent) 48%, transparent);
+}
+
+.classroom-section--surface::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-green) 6%, transparent), transparent 44%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 34%, transparent), transparent 64%);
+  pointer-events: none;
+}
+
+.classroom-section--surface > * {
+  position: relative;
+  z-index: 1;
+}
+
+.classroom-section--surface > .classroom-section__header {
+  padding: var(--space-5);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+}
+
+.classroom-section__caption--lede {
+  max-width: 72ch;
+  padding: var(--space-3) var(--space-5) 0;
+}
+
+.classroom-section__content {
+  padding: var(--space-4) var(--space-5) var(--space-5);
+}
+
+.classroom-section--watchlist .student-coverage {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  margin: 0;
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.classroom-section--watchlist .student-coverage__header {
+  display: none;
+}
+
+.classroom-section--watchlist .student-coverage__filters {
+  padding-bottom: var(--space-2);
+}
+
+.classroom-section--watchlist .student-coverage__rail::before {
+  background: linear-gradient(
+    to right,
+    var(--color-surface),
+    color-mix(in srgb, var(--color-surface) 0%, transparent)
+  );
+}
+
+.classroom-section--watchlist .student-coverage__rail::after {
+  background: linear-gradient(
+    to left,
+    var(--color-surface),
+    color-mix(in srgb, var(--color-surface) 0%, transparent)
+  );
+}
+
+.classroom-section--operations > .classroom-section__header {
+  padding-inline: var(--space-1);
+}
+
+.classroom-section--operations > .classroom-section__caption--lede {
+  padding: 0 var(--space-1);
+}
+
 /* ----------------------------------------------------------------
    2. Pulse — HealthBar lives in a slim card right under the hero
    so the planning-streak + debt-trend + complexity calendar are
@@ -758,16 +844,6 @@
    screen reader, Ctrl+F find-in-text all work for free).
    ---------------------------------------------------------------- */
 
-.classroom-zone--collapsible {
-  border: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-}
-
-.classroom-zone--collapsible[open] {
-  background: color-mix(in srgb, var(--color-surface-elevated) 92%, transparent);
-}
-
 .classroom-zone__summary {
   display: flex;
   align-items: center;
@@ -784,7 +860,7 @@
 }
 
 .classroom-zone__summary:hover {
-  background: color-mix(in srgb, var(--color-bg-muted) 40%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 5%, transparent);
 }
 
 .classroom-zone__summary-eyebrow {
@@ -819,8 +895,60 @@
   text-transform: uppercase;
 }
 
-.classroom-zone--collapsible[open] > :not(.classroom-zone__summary) {
-  padding: 0 var(--space-5) var(--space-5);
+.classroom-zone--collapsible.classroom-section--surface > .classroom-zone__summary {
+  padding: var(--space-5);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+}
+
+.classroom-zone--collapsible.classroom-section--surface[open] > :not(.classroom-zone__summary) {
+  padding: var(--space-4) var(--space-5) var(--space-5);
+}
+
+.classroom-zone--insights .classroom-intelligence__grid {
+  gap: var(--space-3);
+}
+
+.classroom-zone--insights .classroom-intelligence__grid > * {
+  max-height: none;
+  overflow: hidden;
+}
+
+.classroom-zone--insights .viz-priority-matrix__body,
+.classroom-zone--insights .viz-composition__body,
+.classroom-zone--insights .viz-recency__body {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.classroom-zone--insights .viz-priority-matrix__watchlist,
+.classroom-zone--insights .viz-composition__profile {
+  align-content: start;
+}
+
+.classroom-zone--insights .viz-priority-matrix__stats,
+.classroom-zone--insights .viz-composition__stats {
+  justify-content: flex-start;
+}
+
+.classroom-zone--roster .student-roster {
+  margin-top: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.classroom-zone--roster .student-roster--banded {
+  border-top-width: 0;
+}
+
+.classroom-zone--roster .student-roster__toggle {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.classroom-zone--roster .student-card-grid {
+  padding-inline: 0;
 }
 
 @media (max-width: 1100px) {
@@ -862,6 +990,21 @@
 @media (max-width: 720px) {
   .classroom-command-card__command,
   .classroom-command-card__rail {
+    padding: var(--space-3);
+  }
+
+  .classroom-section--surface > .classroom-section__header,
+  .classroom-zone--collapsible.classroom-section--surface > .classroom-zone__summary {
+    padding: var(--space-3);
+  }
+
+  .classroom-section__caption--lede {
+    padding: var(--space-3) var(--space-3) 0;
+  }
+
+  .classroom-section__content,
+  .classroom-section--watchlist .student-coverage,
+  .classroom-zone--collapsible.classroom-section--surface[open] > :not(.classroom-zone__summary) {
     padding: var(--space-3);
   }
 
