@@ -38,25 +38,16 @@ import ThemeToggle from "./components/ThemeToggle";
 import HeaderAction from "./components/shared/HeaderAction";
 import SectionIcon from "./components/SectionIcon";
 import AppFooter from "./components/AppFooter";
-import PageAnchorRail from "./components/PageAnchorRail";
 import { usePaletteEntries } from "./hooks/usePaletteEntries";
 import { useNothingButtonPressAnimation } from "./hooks/useNothingButtonPressAnimation";
 import { useAmbientCursorGlow } from "./hooks/useAmbientCursorGlow";
 import { reportError } from "./errorReporter";
 import { flushFeedbackQueue } from "./hooks/useFeedback";
 import { flushSessionQueue } from "./hooks/useSessionContext";
-import { PAGE_ANCHORS } from "./pageAnchors";
 import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, TomorrowNote } from "./types";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
-const PAGE_RAIL_COLLAPSED_KEY = "prairie:page-rail-collapsed";
-const LEGACY_TODAY_RAIL_COLLAPSED_KEY = "prairie:today-rail-collapsed";
-const PAGE_RAIL_TABS: ReadonlySet<ActiveTab> = new Set([
-  "classroom",
-  "today",
-  "tomorrow",
-  "week",
-]);
+const SHELL_NAV_COLLAPSED_KEY = "prairie:shell-nav-collapsed";
 const TomorrowPanel = lazy(() => import("./panels/TomorrowPanel"));
 const WeekPanel = lazy(() => import("./panels/WeekPanel"));
 const PrepPanel = lazy(() => import("./panels/PrepPanel"));
@@ -145,13 +136,10 @@ export default function App() {
   const [classroomMenuOpen, setClassroomMenuOpen] = useState(false);
   const [shortcutSheetOpen, setShortcutSheetOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
-  const [pageRailCollapsed, setPageRailCollapsed] = useState<boolean>(() => {
+  const [shellNavCollapsed, setShellNavCollapsed] = useState<boolean>(() => {
     if (typeof window === "undefined") return false;
     try {
-      return (
-        window.localStorage.getItem(PAGE_RAIL_COLLAPSED_KEY) === "1" ||
-        window.localStorage.getItem(LEGACY_TODAY_RAIL_COLLAPSED_KEY) === "1"
-      );
+      return window.localStorage.getItem(SHELL_NAV_COLLAPSED_KEY) === "1";
     } catch {
       return false;
     }
@@ -170,13 +158,13 @@ export default function App() {
     if (typeof window === "undefined") return;
     try {
       window.localStorage.setItem(
-        PAGE_RAIL_COLLAPSED_KEY,
-        pageRailCollapsed ? "1" : "0",
+        SHELL_NAV_COLLAPSED_KEY,
+        shellNavCollapsed ? "1" : "0",
       );
     } catch {
-      /* Ignore quota / privacy-mode failures; the drawer still works in memory. */
+      /* Ignore quota / privacy-mode failures; the rail still works in memory. */
     }
-  }, [pageRailCollapsed]);
+  }, [shellNavCollapsed]);
 
   useLayoutEffect(() => {
     const shell = appShellRef.current;
@@ -701,11 +689,6 @@ export default function App() {
   });
 
   const { activeClassroom, activeTab, activeTool, authPrompt, debtCounts, initError } = state;
-  const activePageAnchors = PAGE_ANCHORS[activeTab];
-  const pageRailAvailable =
-    !initError &&
-    Boolean(activePageAnchors) &&
-    PAGE_RAIL_TABS.has(activeTab);
   const showShellLoading =
     state.classrooms.length === 0 &&
     !initError &&
@@ -846,11 +829,45 @@ export default function App() {
   return (
     <AppContext.Provider value={ctxValue}>
       <SessionProvider classroomId={activeClassroom} enabled={activeRole !== "reviewer"}>
-      <div className="app-shell" ref={appShellRef}>
+      <div
+        className="app-shell"
+        data-shell-nav-state={shellNavCollapsed ? "collapsed" : "expanded"}
+        ref={appShellRef}
+      >
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
         <ToastQueue />
+
+        <button
+          className="shell-nav__collapse-toggle"
+          type="button"
+          onClick={() => setShellNavCollapsed((collapsed) => !collapsed)}
+          aria-label={shellNavCollapsed ? "Expand navigation rail" : "Collapse navigation rail"}
+          aria-controls="primary-shell-nav"
+          aria-expanded={!shellNavCollapsed}
+          aria-pressed={shellNavCollapsed}
+          title={shellNavCollapsed ? "Expand navigation" : "Collapse navigation"}
+        >
+          <svg
+            className="shell-nav__collapse-icon"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path
+              d={shellNavCollapsed ? "M8 5l5 5-5 5" : "M12 5l-5 5 5 5"}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+          <span className="shell-nav__collapse-copy">
+            {shellNavCollapsed ? "Expand" : "Collapse"}
+          </span>
+        </button>
 
         <header className="app-header" ref={headerRef}>
           <div className="app-header__inner">
@@ -974,8 +991,10 @@ export default function App() {
             </div>
 
             <nav
+              id="primary-shell-nav"
               className="shell-nav shell-nav--solo"
               aria-label="PrairieClassroom OS navigation"
+              aria-hidden={shellNavCollapsed}
               data-active-section={activeTab}
             >
               <div className="shell-nav__groups" role="tablist" aria-label="Primary navigation">
@@ -992,11 +1011,16 @@ export default function App() {
                       onClick={() => setActiveTab(tab)}
                       type="button"
                       role="tab"
+                      aria-label={`${meta.label}: ${meta.taskLabel}`}
                       aria-selected={activeTab === tab}
+                      tabIndex={shellNavCollapsed ? -1 : 0}
                       aria-controls={`panel-${tab}`}
                     >
                       <SectionIcon name={meta.icon} className="shell-nav__group-icon" />
-                      <span>{meta.label}</span>
+                      <span className="shell-nav__label-stack">
+                        <span className="shell-nav__label-primary">{meta.label}</span>
+                        <span className="shell-nav__label-task">{meta.taskLabel}</span>
+                      </span>
                       {badgeCount > 0 ? (
                         <span
                           className={`shell-nav__badge shell-nav__badge--${badgeTone}`}
@@ -1022,18 +1046,7 @@ export default function App() {
           id="main-content"
           className="app-main"
           data-section={activeTab}
-          data-page-rail={pageRailAvailable ? activeTab : undefined}
-          data-page-rail-state={pageRailAvailable ? (pageRailCollapsed ? "collapsed" : "expanded") : undefined}
         >
-          {pageRailAvailable ? (
-            <PageAnchorRail
-              anchors={activePageAnchors.anchors}
-              topAnchorId={activePageAnchors.topAnchorId}
-              label={activePageAnchors.label}
-              collapsed={pageRailCollapsed}
-              onToggleCollapsed={() => setPageRailCollapsed((value) => !value)}
-            />
-          ) : null}
           {showShellLoading ? (
             <div className="branded-loading">
               <BrandMark

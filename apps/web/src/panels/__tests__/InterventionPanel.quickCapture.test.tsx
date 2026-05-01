@@ -1,4 +1,4 @@
-import { render, screen, waitForElementToBeRemoved } from "@testing-library/react";
+import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
@@ -103,7 +103,7 @@ function renderPanel(prefill: InterventionPrefill | null = null) {
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
-describe("InterventionPanel — QuickCaptureTray integration", () => {
+describe("InterventionPanel — single note capture path", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     mockedFetchInterventionHistory.mockResolvedValue([]);
@@ -121,18 +121,19 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
       model_id: "mock",
       latency_ms: 100,
     };
-    // Stub both endpoints: hallway quick-capture uses the quick path, and
-    // the structured-details disclosure still exercises the full path.
     mockedLogIntervention.mockResolvedValue(fixtureResponse);
     mockedLogInterventionQuick.mockResolvedValue(fixtureResponse);
   });
 
-  it("Quick capture renders first — heading is present in the document", async () => {
+  it("renders the required evidence path first and does not show competing quick capture", async () => {
     renderPanel();
-    expect(await screen.findByText("Quick capture")).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /Log Intervention Notes/i })).toBeInTheDocument();
+    expect(screen.getByLabelText(/Evidence note/i)).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /Save note & continue/i })).toBeInTheDocument();
+    expect(screen.queryByText("Quick capture")).not.toBeInTheDocument();
   });
 
-  it("Structured details is collapsed by default", async () => {
+  it("Optional structured detail is collapsed by default", async () => {
     renderPanel();
     const summary = await screen.findByText(/Add structured detail/i);
     const details = summary.closest("details");
@@ -140,7 +141,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
     expect(details?.hasAttribute("open")).toBe(false);
   });
 
-  it("Structured form becomes reachable after clicking summary", async () => {
+  it("Optional structured detail explains that the required path is already in the primary workspace", async () => {
     const { user } = renderPanel();
     const summary = await screen.findByText(/Add structured detail/i);
 
@@ -152,9 +153,7 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
 
     // After clicking the summary, the details element is open.
     expect(details?.hasAttribute("open")).toBe(true);
-
-    // The legacy form's textarea is reachable.
-    expect(await screen.findByLabelText(/What happened/i)).toBeInTheDocument();
+    expect(screen.getByText(/required student and evidence fields are in the primary workspace/i)).toBeInTheDocument();
   });
 
   it("auto-opens the structured details panel when a prefill is present", () => {
@@ -164,44 +163,25 @@ describe("InterventionPanel — QuickCaptureTray integration", () => {
       reason: "Frequent off-task moments in math block",
     };
     renderPanel(prefill);
-    // The details element should be open so the legacy form (and its prefill ingestion) is visible.
+    // The details element should be open so the prefilled workflow context is visible.
     const details = screen.getByText(/Add structured detail/i).closest("details");
     expect(details).not.toBeNull();
     expect(details).toHaveAttribute("open");
   });
 
-  it("QuickCaptureTray submit routes through the fast-path logInterventionQuick api", async () => {
+  it("primary note capture routes through the persisted logIntervention api", async () => {
     const { appContext, user } = renderPanel();
 
-    // Wait for the tray to be mounted
-    await screen.findByText("Quick capture");
-
-    // 1. Select a student avatar
-    const amiraButton = screen.getByRole("button", { name: /Amira/i });
-    await user.click(amiraButton);
-
-    // 2. Select a chip — "Praise" produces a non-empty starter note
-    const praiseChip = screen.getByRole("button", { name: /Praise/i });
-    await user.click(praiseChip);
-
-    // 3. Submit — target the QuickCaptureTray button (type="button", not type="submit")
-    //    The new PageIntro ⓘ info trigger also has aria-label "About Log Intervention",
-    //    so filter to buttons inside the quick-capture-tray.
-    const submitButtons = screen.getAllByRole("button", { name: /Log intervention/i });
-    const trayButton = submitButtons.find(
-      (btn) =>
-        btn.getAttribute("type") === "button" &&
-        btn.closest(".quick-capture-tray") !== null,
+    await user.click(await screen.findByRole("checkbox", { name: /Amira/i }));
+    await user.type(
+      screen.getByLabelText(/Evidence note/i),
+      "Amira used the sentence starter, completed the first response, and needs a morning check-in.",
     );
-    if (!trayButton) throw new Error("QuickCaptureTray submit button not found");
-    await user.click(trayButton);
+    await user.click(screen.getByRole("button", { name: /Save note & continue/i }));
 
-    // 4. Hallway-grade capture must route through the deterministic quick
-    // endpoint. The full model-enriched path is reserved for the structured
-    // details disclosure (exercised separately).
-    expect(mockedLogInterventionQuick).toHaveBeenCalledTimes(1);
-    expect(mockedLogIntervention).not.toHaveBeenCalled();
-    const [payload] = mockedLogInterventionQuick.mock.calls[0];
+    await waitFor(() => expect(mockedLogIntervention).toHaveBeenCalledTimes(1));
+    expect(mockedLogInterventionQuick).not.toHaveBeenCalled();
+    const [payload] = mockedLogIntervention.mock.calls[0];
     expect(payload.student_refs).toContain("Amira");
     expect(payload.teacher_note.length).toBeGreaterThan(0);
     expect(payload.classroom_id).toBe("demo-classroom");

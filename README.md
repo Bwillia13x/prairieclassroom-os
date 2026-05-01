@@ -132,8 +132,8 @@ cd services/inference && python server.py --mode api --port 3200
 Navigate to **http://localhost:5173/?demo=true** for the demo classroom (Mrs. Okafor's Grade 3/4 split, pre-loaded with 2 weeks of classroom memory).
 
 The shell exposes seven standalone top-level pages in this fixed
-order: **classroom → today → tomorrow → week → prep → ops → review**.
-`classroom` is the default landing page. Prep, Tomorrow, Ops, and
+order: **today → classroom → tomorrow → week → prep → ops → review**.
+`today` is the default landing page. Prep, Tomorrow, Ops, and
 Review each host multiple embedded tools behind a local tool switcher.
 
 The shell also supports stable deep links:

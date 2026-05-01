@@ -8,21 +8,22 @@ describe("ThemeToggle", () => {
     document.documentElement.removeAttribute("data-theme");
   });
 
-  it("renders an icon-only button with descriptive aria-label", () => {
+  it("renders a dark mode action with descriptive aria-label", () => {
     render(<ThemeToggle />);
-    const btn = screen.getByRole("button", { name: /color theme/i });
+    const btn = screen.getByRole("button", { name: /switch to dark mode/i });
     expect(btn).toBeInTheDocument();
-    expect(btn.textContent?.trim()).toMatch(/^$/);
+    expect(btn).toHaveTextContent(/dark/i);
     expect(btn.querySelector("svg")).not.toBeNull();
   });
 
-  it("cycles system → light → dark and updates icon role", () => {
+  it("toggles dark and light mode", () => {
     render(<ThemeToggle />);
-    const btn = screen.getByRole("button", { name: /color theme/i });
-    expect(btn.getAttribute("aria-label")).toMatch(/auto/i);
+    const btn = screen.getByRole("button", { name: /switch to dark mode/i });
     fireEvent.click(btn);
+    expect(document.documentElement.getAttribute("data-theme")).toBe("dark");
     expect(btn.getAttribute("aria-label")).toMatch(/light/i);
     fireEvent.click(btn);
+    expect(document.documentElement.getAttribute("data-theme")).toBe("light");
     expect(btn.getAttribute("aria-label")).toMatch(/dark/i);
   });
 });

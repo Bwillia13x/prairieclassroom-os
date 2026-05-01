@@ -262,40 +262,21 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
     expect(rail.querySelector(".shell-nav__kbd")).toBeNull();
   });
 
-  it("mounts the collapsible page drawer on long-form pages and keeps dense tool workspaces clear", async () => {
+  it("does not mount a secondary page-section drawer on app workspaces", async () => {
     await renderShellWithDemo();
 
-    const railPages = [
-      ["classroom", "Classroom sections", /01.*Command/i],
-      ["today", "Today sections", /01.*Command Center/i],
-      ["tomorrow", "Tomorrow sections", /01.*Planning Hub/i],
-      ["week", "Week sections", /01.*Week Command/i],
-    ] as const;
+    const primaryPages = ["classroom", "today", "tomorrow", "week", "prep", "ops", "review"] as const;
 
-    for (const [tab, label, firstAnchor] of railPages) {
+    for (const tab of primaryPages) {
       fireEvent.click(screen.getByTestId(`shell-nav-group-${tab}`));
       await waitFor(() => {
-        expect(screen.getByRole("navigation", { name: label })).toBeInTheDocument();
+        expect(screen.getByTestId(`shell-nav-group-${tab}`)).toHaveAttribute("aria-selected", "true");
       });
-      expect(screen.getByRole("link", { name: firstAnchor })).toBeInTheDocument();
+      expect(screen.queryByRole("navigation", { name: /sections/i })).not.toBeInTheDocument();
+      expect(document.querySelector(".page-anchor-rail")).not.toBeInTheDocument();
     }
 
-    const collapse = screen.getByRole("button", { name: /collapse week sections navigation/i });
-    fireEvent.click(collapse);
-
-    expect(screen.getByRole("button", { name: /expand week sections navigation/i })).toHaveAttribute(
-      "aria-expanded",
-      "false",
-    );
-    expect(localStorage.getItem("prairie:page-rail-collapsed")).toBe("1");
-    expect(screen.queryByRole("link", { name: /01.*Week Command/i })).not.toBeInTheDocument();
-
-    for (const tab of ["prep", "ops", "review"] as const) {
-      fireEvent.click(screen.getByTestId(`shell-nav-group-${tab}`));
-      await waitFor(() => {
-        expect(screen.queryByRole("navigation", { name: /sections/i })).not.toBeInTheDocument();
-      });
-    }
+    expect(localStorage.getItem("prairie:page-rail-collapsed")).toBeNull();
   });
 
   it("feeds Today debt into the command palette for per-student actions", async () => {

@@ -292,6 +292,7 @@ async function main() {
     await page.keyboard.press("Escape");
 
     // Cohort Pulse zone: at least one cohort-cell must render on the demo classroom.
+    await navigateToSurface(page, "classroom");
     await page.waitForSelector('[data-testid="cohort-cell"]', { timeout: 5000 });
     const cohortCellCount = await page.locator('[data-testid="cohort-cell"]').count();
     assert.ok(
@@ -456,8 +457,7 @@ async function main() {
     assert.equal(await mobilePage.locator(".mobile-nav-group--active").count(), 1, "Expected one active mobile nav group");
     await mobileContext.close();
 
-    await page.getByRole("button", { name: /Color theme/i }).click();
-    await page.getByRole("button", { name: /Color theme/i }).click();
+    await page.getByRole("button", { name: /Switch to dark mode/i }).click();
     const themeState = await page.evaluate(() => ({
       theme: globalThis.document.documentElement.dataset.theme ?? "",
       colorBg: getComputedStyle(globalThis.document.documentElement).getPropertyValue("--color-bg").trim(),
@@ -466,7 +466,7 @@ async function main() {
     // The token may remain serialized as light-dark(...) in Chromium while the
     // resolved page canvas is dark. Assert the current dark-side token, while
     // keeping the older near-black token valid for older baselines.
-    const darkCanvasTokens = ["#020b12", "#020305"];
+    const darkCanvasTokens = ["#000000", "#020b12", "#020305"];
     assert.ok(
       darkCanvasTokens.some((token) => themeState.colorBg.includes(token)),
       `Dark theme should apply the near-black Prairie background token; got "${themeState.colorBg}"`,

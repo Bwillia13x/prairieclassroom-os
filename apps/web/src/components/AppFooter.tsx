@@ -82,56 +82,59 @@ export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) 
           </div>
         </div>
       ) : null}
-      <div className="app-footer__meta">
-        <button
-          type="button"
-          className="app-footer__toggle"
-          onClick={() => setExpanded((v) => !v)}
-          aria-expanded={expanded}
-          aria-controls="app-footer-shortcuts"
-          title={expanded ? "Hide shortcut map" : "Show shortcut map"}
-        >
-          <span className="app-footer__toggle-caret" aria-hidden="true">{expanded ? "▾" : "▸"}</span>
-          <span>Shortcuts</span>
-        </button>
-        <span className="app-footer__sep" aria-hidden="true">·</span>
-        <span className="app-footer__brand">PrairieClassroom OS</span>
-        <span className="app-footer__sep" aria-hidden="true">·</span>
-        <span className="app-footer__context">Built for the Gemma 4 Good Hackathon</span>
-        {onOpenShortcuts && (
-          <button
-            type="button"
-            className="app-footer__shortcuts-btn"
-            onClick={onOpenShortcuts}
-            aria-label="Keyboard shortcuts"
-            title="Keyboard shortcuts (press ?)"
-          >
-            ?
-          </button>
-        )}
-      </div>
-      {/* Phase E1 (2026-04-27) — mono identity rail. Three quiet
-          slots (classroom code · runtime env · version) anchored to
-          the bottom of the footer. Reads as a build-stamp / status
-          rail, not as user-facing copy. The rail is rendered when
-          at least one slot has a value; when classroomId is missing
-          we still show the env + version so the build context is
-          always legible to teachers, support, and judges. */}
-      <div className="app-footer__rail" role="group" aria-label="Build context">
-        {classroomId ? (
-          <span className="app-footer__rail-slot" data-rail-slot="classroom">
-            <span className="app-footer__rail-key">classroom</span>
-            <span className="app-footer__rail-value">{classroomId}</span>
+      <div className="app-footer__body">
+        <div className="app-footer__meta">
+          <div className="app-footer__identity" aria-label="Application context">
+            <span className="app-footer__brand">PrairieClassroom OS</span>
+            <span className="app-footer__context">Gemma 4 Good Hackathon demo build</span>
+          </div>
+          <div className="app-footer__actions">
+            <button
+              type="button"
+              className="app-footer__toggle"
+              onClick={() => setExpanded((v) => !v)}
+              aria-expanded={expanded}
+              aria-controls="app-footer-shortcuts"
+              title={expanded ? "Hide shortcut map" : "Show shortcut map"}
+            >
+              <span className="app-footer__toggle-caret" aria-hidden="true">{expanded ? "▾" : "▸"}</span>
+              <span>Shortcuts</span>
+            </button>
+            {onOpenShortcuts && (
+              <button
+                type="button"
+                className="app-footer__shortcuts-btn"
+                onClick={onOpenShortcuts}
+                aria-label="Keyboard shortcuts"
+                title="Keyboard shortcuts (press ?)"
+              >
+                ?
+              </button>
+            )}
+          </div>
+        </div>
+        {/* Phase E1 (2026-04-27) — mono identity rail. Three quiet
+            slots (classroom code, runtime env, version) anchor the bottom
+            of the footer as a build-stamp / status rail. The rail renders
+            when at least one slot has a value; when classroomId is missing
+            we still show env + version so support and judging contexts
+            stay legible. */}
+        <div className="app-footer__rail" role="group" aria-label="Build context">
+          {classroomId ? (
+            <span className="app-footer__rail-slot" data-rail-slot="classroom">
+              <span className="app-footer__rail-key">classroom</span>
+              <span className="app-footer__rail-value">{classroomId}</span>
+            </span>
+          ) : null}
+          <span className="app-footer__rail-slot" data-rail-slot="env">
+            <span className="app-footer__rail-key">env</span>
+            <span className="app-footer__rail-value">{RUNTIME_ENV}</span>
           </span>
-        ) : null}
-        <span className="app-footer__rail-slot" data-rail-slot="env">
-          <span className="app-footer__rail-key">env</span>
-          <span className="app-footer__rail-value">{RUNTIME_ENV}</span>
-        </span>
-        <span className="app-footer__rail-slot" data-rail-slot="version">
-          <span className="app-footer__rail-key">v</span>
-          <span className="app-footer__rail-value">{APP_VERSION}</span>
-        </span>
+          <span className="app-footer__rail-slot" data-rail-slot="version">
+            <span className="app-footer__rail-key">v</span>
+            <span className="app-footer__rail-value">{APP_VERSION}</span>
+          </span>
+        </div>
       </div>
     </footer>
   );

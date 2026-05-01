@@ -66,8 +66,8 @@ describe("MobileNav", () => {
       </AppContext.Provider>,
     );
 
-    expect(screen.getByRole("button", { name: /ops\s*8/i })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /review\s*4/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /ops: log note, 8 pending/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /review: message family, 4 pending/i })).toBeInTheDocument();
   });
 
   it("surfaces queued Tomorrow notes as the Tomorrow tab badge and keeps routing intact", () => {
@@ -88,7 +88,7 @@ describe("MobileNav", () => {
       </AppContext.Provider>,
     );
 
-    const tomorrow = screen.getByRole("button", { name: /tomorrow\s*1/i });
+    const tomorrow = screen.getByRole("button", { name: /tomorrow: plan tomorrow, 1 pending/i });
     expect(tomorrow).toBeInTheDocument();
 
     fireEvent.click(screen.getByTestId("mobile-nav-group-tomorrow"));

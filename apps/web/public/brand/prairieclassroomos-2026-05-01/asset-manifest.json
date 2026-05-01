@@ -1,0 +1,54 @@
+{
+  "created": "2026-05-01",
+  "source_direction": "PrairieClassroomOS option 1 lightest glass edge, notebook and field lines",
+  "background": "transparent PNG alpha, generated via magenta chroma-key removal",
+  "master_assets": [
+    {
+      "file": "prairieclassroomos-app-icon-use.png",
+      "use": "large app icon / app tile"
+    },
+    {
+      "file": "prairieclassroomos-wordmark-lockup-use.png",
+      "use": "horizontal wordmark lockup"
+    },
+    {
+      "file": "prairieclassroomos-favicon-use.png",
+      "use": "favicon/app-header small mark"
+    },
+    {
+      "file": "prairieclassroomos-header-pill-dark-use.png",
+      "use": "dark header pill lockup"
+    }
+  ],
+  "derived_sizes": [
+    {
+      "file": "prairieclassroomos-app-icon-512.png",
+      "size": "512x512"
+    },
+    {
+      "file": "prairieclassroomos-app-icon-256.png",
+      "size": "256x256"
+    },
+    {
+      "file": "prairieclassroomos-apple-touch-icon-180.png",
+      "size": "180x180"
+    },
+    {
+      "file": "prairieclassroomos-favicon-64.png",
+      "size": "64x64"
+    },
+    {
+      "file": "prairieclassroomos-favicon-128.png",
+      "size": "128x128"
+    },
+    {
+      "file": "prairieclassroomos-favicon-32.png",
+      "size": "32x32"
+    }
+  ],
+  "notes": [
+    "Integrated into conventional app-facing files: /favicon.png, /apple-touch-icon.png, /prairieclassroom-logo.png, and /brand/prairieclassroom-mark.png.",
+    "Raw untrimmed transparent masters are retained with -transparent filenames.",
+    "Chroma-key source renders and checker preview are archived under output/brand-assets/prairieclassroomos-2026-05-01/."
+  ]
+}

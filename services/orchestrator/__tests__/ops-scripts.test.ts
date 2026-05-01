@@ -419,7 +419,7 @@ describe("system inventory helpers", () => {
     const rootDir = path.resolve(__dirname, "../../..");
     const inventory = await buildSystemInventory(rootDir);
 
-    expect(inventory.ui.panel_count).toBe(12);
+    expect(inventory.ui.panel_count).toBe(11);
     expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("Usage Insights");
     // 2026-04-19 OPS audit phase 1.1: "EA Load" → "EA Load Balance" (full nav label).
     expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("EA Load Balance");
@@ -498,7 +498,7 @@ describe("system inventory helpers", () => {
     const markdown = formatInventoryMarkdown(inventory);
 
     expect(markdown).toContain("# System Inventory");
-    expect(markdown).toContain("- Primary panels: 12");
+    expect(markdown).toContain("- Primary panels: 11");
     expect(markdown).toContain("- Exact endpoints: 52");
     expect(markdown).toContain("| `prepare_tomorrow_plan` | planning | yes | yes | yes |");
   });

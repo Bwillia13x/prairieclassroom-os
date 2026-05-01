@@ -5,6 +5,14 @@
   min-width: 0;
 }
 
+.variant-grid-wrapper--preview .variant-grid-header {
+  border-style: dashed;
+}
+
+.variant-grid-wrapper--preview .variant-grid-eyebrow {
+  color: var(--color-text-warning);
+}
+
 .variant-grid-header {
   display: flex;
   align-items: flex-start;
@@ -128,6 +136,10 @@
 .variant-grid-alignment button {
   margin-left: auto;
   white-space: nowrap;
+}
+
+.variant-grid-wrapper--preview .variant-grid-alignment {
+  border-style: dashed;
 }
 
 @media (max-width: 1180px) {

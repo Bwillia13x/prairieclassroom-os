@@ -102,6 +102,38 @@
   color: var(--color-text-provenance);
 }
 
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .card,
+  :root:not([data-theme="light"]) .card--raised,
+  :root:not([data-theme="light"]) .card--floating,
+  :root:not([data-theme="light"]) .card--inset,
+  :root:not([data-theme="light"]) .card--tone-sun,
+  :root:not([data-theme="light"]) .card--tone-sage,
+  :root:not([data-theme="light"]) .card--tone-slate,
+  :root:not([data-theme="light"]) .card--tone-forest,
+  :root:not([data-theme="light"]) .card--tone-priority,
+  :root:not([data-theme="light"]) .card--tone-watchpoint,
+  :root:not([data-theme="light"]) .card--tone-analysis,
+  :root:not([data-theme="light"]) .card--tone-provenance {
+    background: var(--color-surface);
+  }
+}
+
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .card--raised,
+:root[data-theme="dark"] .card--floating,
+:root[data-theme="dark"] .card--inset,
+:root[data-theme="dark"] .card--tone-sun,
+:root[data-theme="dark"] .card--tone-sage,
+:root[data-theme="dark"] .card--tone-slate,
+:root[data-theme="dark"] .card--tone-forest,
+:root[data-theme="dark"] .card--tone-priority,
+:root[data-theme="dark"] .card--tone-watchpoint,
+:root[data-theme="dark"] .card--tone-analysis,
+:root[data-theme="dark"] .card--tone-provenance {
+  background: var(--color-surface);
+}
+
 /* Accent stripe — left margin rule */
 
 .card--accent {

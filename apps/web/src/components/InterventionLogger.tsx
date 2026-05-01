@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useFormPersistence } from "../hooks/useFormPersistence";
 import DraftRestoreChip from "./DraftRestoreChip";
 import SectionIcon from "./SectionIcon";
@@ -57,6 +57,8 @@ export default function InterventionLogger({
   const [followUpTiming, setFollowUpTiming] = useState("Tomorrow morning");
   const [memoryDestination, setMemoryDestination] = useState("Classroom + student thread");
   const [touched, setTouched] = useState(false);
+  const noteRef = useRef<HTMLTextAreaElement | null>(null);
+  const selectedStripRef = useRef<HTMLDivElement | null>(null);
 
   const {
     clear: clearDraft,
@@ -75,6 +77,11 @@ export default function InterventionLogger({
   useEffect(() => {
     if (prefill) {
       setSelectedStudents([prefill.student_ref]);
+      const focusTimer = window.setTimeout(() => {
+        (selectedStripRef.current ?? noteRef.current)?.scrollIntoView?.({ block: "start" });
+        noteRef.current?.focus({ preventScroll: true });
+      }, 0);
+      return () => window.clearTimeout(focusTimer);
     }
   }, [prefill]);
 
@@ -148,12 +155,12 @@ export default function InterventionLogger({
   const submitHelp = !canSubmitProp
     ? "Only teachers, EAs, and substitutes can save intervention notes here."
     : selectedStudents.length === 0 && !teacherNote.trim()
-      ? "Select at least one student and add an evidence note to save."
+      ? "Select a student and add a note."
       : selectedStudents.length === 0
-        ? "Select at least one student to save this note."
+        ? "Select a student to save."
         : !teacherNote.trim()
-          ? "Add an evidence note to save."
-          : "Ready to save to classroom memory.";
+          ? "Add a note to save."
+          : "Ready to save.";
 
   return (
     <FormCard className={`intervention-logger intervention-logger--${variant}`} as="section">
@@ -187,8 +194,8 @@ export default function InterventionLogger({
         )}
 
         {isOpsWorkflow ? (
-          <div className="intervention-logger__selected-strip" aria-live="polite">
-            <span className="intervention-logger__selected-label">Roster selection</span>
+          <div ref={selectedStripRef} className="intervention-logger__selected-strip" aria-live="polite">
+            <span className="intervention-logger__selected-label">Selected student</span>
             <div className="intervention-logger__selected-list">
               {selectedStudents.length > 0 ? (
                 selectedStudents.map((alias) => (
@@ -257,6 +264,7 @@ export default function InterventionLogger({
             <span className="field-required" aria-hidden="true">*</span>
           </label>
           <textarea
+            ref={noteRef}
             id="int-note"
             rows={4}
             placeholder="e.g. 'Ari needed 1:1 support during writing block — used sentence starters and word bank, was able to complete 3 of 5 questions independently by end of period.'"
@@ -271,51 +279,6 @@ export default function InterventionLogger({
             <span id="int-note-error" className="field-error-hint" role="alert">An observation is required</span>
           )}
         </div>
-
-        {isOpsWorkflow ? (
-          <div className="intervention-logger__coordination-grid">
-            <div className="field">
-              <label htmlFor="int-follow-up-needed" className="form-label">Follow-up needed</label>
-              <select
-                id="int-follow-up-needed"
-                value={followUpNeeded ? "yes" : "no"}
-                onChange={(event) => setFollowUpNeeded(event.target.value === "yes")}
-              >
-                <option value="yes">Yes, keep it visible</option>
-                <option value="no">No, record only</option>
-              </select>
-            </div>
-
-            <div className="field">
-              <label htmlFor="int-follow-up-timing" className="form-label">Follow-up timing</label>
-              <select
-                id="int-follow-up-timing"
-                value={followUpTiming}
-                onChange={(event) => setFollowUpTiming(event.target.value)}
-                disabled={!followUpNeeded}
-              >
-                <option>Tomorrow morning</option>
-                <option>Next class block</option>
-                <option>Before dismissal</option>
-                <option>Within the week</option>
-              </select>
-            </div>
-
-            <div className="field intervention-logger__destination-field">
-              <label htmlFor="int-memory-destination" className="form-label">Classroom memory destination</label>
-              <select
-                id="int-memory-destination"
-                value={memoryDestination}
-                onChange={(event) => setMemoryDestination(event.target.value)}
-              >
-                <option>Classroom + student thread</option>
-                <option>Follow-up queue only</option>
-                <option>EA briefing context</option>
-                <option>Sub packet watchpoint</option>
-              </select>
-            </div>
-          </div>
-        ) : null}
 
         <div className="intervention-logger__actions">
           {isOpsWorkflow ? (
@@ -366,6 +329,51 @@ export default function InterventionLogger({
             </NothingInstrumentButton>
           ) : null}
         </div>
+
+        {isOpsWorkflow ? (
+          <div className="intervention-logger__coordination-grid" aria-label="Optional follow-up details">
+            <div className="field">
+              <label htmlFor="int-follow-up-needed" className="form-label">Follow-up needed</label>
+              <select
+                id="int-follow-up-needed"
+                value={followUpNeeded ? "yes" : "no"}
+                onChange={(event) => setFollowUpNeeded(event.target.value === "yes")}
+              >
+                <option value="yes">Yes, keep it visible</option>
+                <option value="no">No, record only</option>
+              </select>
+            </div>
+
+            <div className="field">
+              <label htmlFor="int-follow-up-timing" className="form-label">Follow-up timing</label>
+              <select
+                id="int-follow-up-timing"
+                value={followUpTiming}
+                onChange={(event) => setFollowUpTiming(event.target.value)}
+                disabled={!followUpNeeded}
+              >
+                <option>Tomorrow morning</option>
+                <option>Next class block</option>
+                <option>Before dismissal</option>
+                <option>Within the week</option>
+              </select>
+            </div>
+
+            <div className="field intervention-logger__destination-field">
+              <label htmlFor="int-memory-destination" className="form-label">Classroom memory destination</label>
+              <select
+                id="int-memory-destination"
+                value={memoryDestination}
+                onChange={(event) => setMemoryDestination(event.target.value)}
+              >
+                <option>Classroom + student thread</option>
+                <option>Follow-up queue only</option>
+                <option>EA briefing context</option>
+                <option>Sub packet watchpoint</option>
+              </select>
+            </div>
+          </div>
+        ) : null}
       </form>
     </FormCard>
   );

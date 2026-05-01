@@ -123,13 +123,13 @@ describe("TodayHero", () => {
         onCtaClick={() => {}}
       />,
     );
-    // "Command" eyebrow anchors the top of the dashboard.
-    expect(screen.getByText(/^command$/i)).toBeInTheDocument();
+    // The action-first eyebrow anchors the top of the dashboard.
+    expect(screen.getByText(/^do this now$/i)).toBeInTheDocument();
     // Title falls back to the recommended-action label.
     expect(screen.getByRole("heading", { name: /prep ready/i })).toBeInTheDocument();
   });
 
-  it("renders the primary CTA with 'Open {cta}' label and fires onCtaClick", async () => {
+  it("renders the primary CTA with a task label and fires onCtaClick", async () => {
     const user = userEvent.setup();
     const handler = vi.fn();
     render(
@@ -141,28 +141,59 @@ describe("TodayHero", () => {
         onCtaClick={handler}
       />,
     );
-    const cta = screen.getByRole("button", { name: /open differentiate/i });
+    const cta = screen.getByRole("button", { name: /adapt lesson/i });
     expect(cta).toBeInTheDocument();
     await user.click(cta);
     expect(handler).toHaveBeenCalledTimes(1);
   });
 
-  it("falls back to a neutral title when recommendedAction is null", () => {
+  it("falls back to a phase-aware title when recommendedAction is null", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
         health={makeHealth(5, true)}
         students={[]}
         recommendedAction={null}
+        currentHour={8}
         onCtaClick={() => {}}
       />,
     );
     expect(
-      screen.queryByRole("button", { name: /open differentiate/i }),
+      screen.queryByRole("button", { name: /do this now: differentiate/i }),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole("heading", { name: /review today's command center/i }),
+      screen.getByRole("heading", { name: /start morning triage/i }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /review today's command center/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("surfaces the action evidence in the command card", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("medium") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        checkFirstStudents={["Hannah"]}
+        openItemCount={7}
+        peakBlock={{
+          time_slot: "10:00-10:45",
+          activity: "Literacy block",
+          level: "medium",
+          contributing_factors: ["Independent writing"],
+          suggested_mitigation: "Check in early",
+        }}
+        onCtaClick={() => {}}
+      />,
+    );
+    const facts = screen.getByRole("group", { name: /why this action is first/i });
+    expect(facts).toBeInTheDocument();
+    expect(within(facts).getByText("Student")).toBeInTheDocument();
+    expect(within(facts).getByText("Hannah")).toBeInTheDocument();
+    expect(within(facts).getByText("10:00-10:45")).toBeInTheDocument();
+    expect(within(facts).getByText("7")).toBeInTheDocument();
   });
 
   it("exposes a today-hero landmark with data-testid for downstream consumers", () => {
@@ -291,12 +322,32 @@ describe("TodayHero", () => {
         recommendedAction={calmAction}
         openItemCount={3}
         checkFirstStudents={["Amira"]}
+        currentHour={8}
         onCtaClick={() => {}}
       />,
     );
     expect(
       screen.getByRole("heading", { name: /start morning triage with amira/i }),
     ).toBeInTheDocument();
+  });
+
+  it("pivots the student-first command to closeout after school", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("high") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        openItemCount={3}
+        checkFirstStudents={["Amira"]}
+        currentHour={18}
+        onCtaClick={() => {}}
+      />,
+    );
+    expect(
+      screen.getByRole("heading", { name: /close today's loop for amira/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/end-of-day closeout/i)).toBeInTheDocument();
   });
 
   it("renders a Monday eyebrow with a working dismiss when mondayMoment is supplied", async () => {
@@ -334,7 +385,7 @@ describe("TodayHero", () => {
     expect(screen.queryByText(/monday — a fresh week/i)).not.toBeInTheDocument();
   });
 
-  it("hides the secondary 'Open Intervention Log' CTA when the primary already routes there", () => {
+  it("uses a student-specific log-note CTA when the primary routes to the intervention log", () => {
     const interventionAction = {
       ...calmAction,
       cta: "Intervention Log",
@@ -347,15 +398,17 @@ describe("TodayHero", () => {
         health={makeHealth(5, true)}
         students={[]}
         recommendedAction={interventionAction}
+        checkFirstStudents={["Hannah"]}
         onCtaClick={() => {}}
       />,
     );
-    const buttons = screen.getAllByRole("button", { name: /open intervention log/i });
-    // Exactly one — the primary CTA. No duplicate secondary.
+    const buttons = screen.getAllByRole("button", { name: /log hannah note/i });
     expect(buttons).toHaveLength(1);
+    expect(screen.queryByRole("button", { name: /view all signals/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /view all students/i })).not.toBeInTheDocument();
   });
 
-  it("shows the secondary 'Open Intervention Log' CTA alongside the primary by default", () => {
+  it("does not show a competing secondary intervention CTA by default", () => {
     render(
       <TodayHero
         snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
@@ -366,8 +419,8 @@ describe("TodayHero", () => {
       />,
     );
     expect(
-      screen.getByRole("button", { name: /open intervention log/i }),
-    ).toBeInTheDocument();
+      screen.queryByRole("button", { name: /open intervention log/i }),
+    ).not.toBeInTheDocument();
   });
 
   it("highlights a current block in the flow timeline with a 'Now' affordance", () => {

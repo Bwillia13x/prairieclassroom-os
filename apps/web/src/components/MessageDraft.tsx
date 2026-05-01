@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { FamilyMessageDraft } from "../types";
 import OutputMetaRow from "./OutputMetaRow";
 import { buildModelMetaItems, type ModelMetaInput } from "./buildModelMetaItems";
+import { formatLanguageLabel } from "./messageLanguage";
 import "./MessageDraft.css";
 
 // Languages PrairieClassroom generates family messages in that read
@@ -10,7 +11,6 @@ import "./MessageDraft.css";
 // instead of as left-to-right chunks. Bilingual eval coverage includes
 // Arabic (ar) under `msg-lang-*`.
 const RTL_LANGUAGES: ReadonlySet<string> = new Set(["ar", "he", "ur", "fa", "ps"]);
-
 function isRtlLanguage(code: string | undefined): boolean {
   if (!code) return false;
   return RTL_LANGUAGES.has(code.toLowerCase().slice(0, 2));
@@ -37,7 +37,7 @@ export default function MessageDraft({ draft, meta }: Props) {
       <header className="draft-header">
         <h2>Draft Message</h2>
         <p className="draft-meta">
-          {draft.student_refs.join(", ")} · {draft.message_type.replace(/_/g, " ")} · {draft.target_language}
+          {draft.student_refs.join(", ")} · {draft.message_type.replace(/_/g, " ")} · {formatLanguageLabel(draft.target_language)}
         </p>
         <OutputMetaRow
           items={[

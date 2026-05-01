@@ -1,9 +1,9 @@
-import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import "./InterventionPanel.css";
 import { useApp } from "../AppContext";
 import { useSession } from "../SessionContext";
 import { useAsyncAction } from "../useAsyncAction";
-import { logIntervention, logInterventionQuick, fetchInterventionHistory } from "../api";
+import { logIntervention, fetchInterventionHistory } from "../api";
 import InterventionLogger, { type InterventionLoggerDraft } from "../components/InterventionLogger";
 import InterventionCard from "../components/InterventionCard";
 import SkeletonLoader from "../components/SkeletonLoader";
@@ -19,7 +19,6 @@ import { FeedbackCollector } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
 import { useHistory } from "../hooks/useHistory";
 import { useRole } from "../hooks/useRole";
-import QuickCaptureTray from "../components/quickCapture/QuickCaptureTray";
 import type { DebtItem, DrillDownContext, InterventionResponse, InterventionRecord, InterventionPrefill, InterventionRequest } from "../types";
 
 interface Props {
@@ -27,9 +26,10 @@ interface Props {
 }
 
 /**
- * Intervention capture uses a dual-path design: the structured log note
- * is the primary workflow, while QuickCaptureTray remains available as the
- * fast hallway path.
+ * Intervention capture now uses one primary path: select the student,
+ * type the evidence note, and save it to classroom memory. Fast hallway
+ * capture remains available at the API/component layer, but this page no
+ * longer presents it as a competing workflow.
  */
 export default function InterventionPanel({ prefill }: Props) {
   const { classrooms, activeClassroom, students, showSuccess, showError, setActiveTab } = useApp();
@@ -69,34 +69,6 @@ export default function InterventionPanel({ prefill }: Props) {
   const displayResult = result ?? historicalResult;
   const activePrefill = prefill ?? drawerPrefill;
 
-  // 2026-04-19 OPS audit phase 7.1: derive per-student follow-up flags
-  // from intervention history so the avatar row surfaces who still needs
-  // a touchpoint. Graceful degradation: when history is empty or loading,
-  // the map is empty and StudentAvatar renders without a dot.
-  //   priority  — any open follow_up_needed record.
-  //   stale     — follow_up_needed record older than 5 days.
-  const studentFlags = useMemo<Record<string, { priority?: boolean; staleFollowupDays?: number }>>(() => {
-    const now = Date.now();
-    const dayMs = 86_400_000;
-    const flags: Record<string, { priority?: boolean; staleFollowupDays?: number }> = {};
-    for (const rec of history.items) {
-      if (!rec.follow_up_needed) continue;
-      const createdAt = rec.created_at ? new Date(rec.created_at).getTime() : NaN;
-      const ageDays = Number.isFinite(createdAt)
-        ? Math.floor((now - createdAt) / dayMs)
-        : 0;
-      for (const alias of rec.student_refs) {
-        const prev = flags[alias] ?? {};
-        const nextAge = Math.max(prev.staleFollowupDays ?? 0, ageDays);
-        flags[alias] = {
-          priority: true,
-          staleFollowupDays: nextAge >= 5 ? nextAge : prev.staleFollowupDays,
-        };
-      }
-    }
-    return flags;
-  }, [history.items]);
-
   useEffect(() => {
     if (prefill) {
       reset();
@@ -114,16 +86,9 @@ export default function InterventionPanel({ prefill }: Props) {
 
   if (classrooms.length === 0) return null;
 
-  async function submitIntervention(
-    request: InterventionRequest,
-    // Hallway-grade capture: the quick path saves a deterministic record
-    // server-side in <100ms. Structured-details submissions continue to use
-    // the full model-enriched path so action_taken + follow-up stay accurate.
-    path: "quick" | "full",
-  ) {
+  async function submitIntervention(request: InterventionRequest) {
     setHistoricalResult(null);
-    const call = path === "quick" ? logInterventionQuick : logIntervention;
-    const resp = await execute((signal) => call(request, signal));
+    const resp = await execute((signal) => logIntervention(request, signal));
     if (resp) {
       showSuccess("Intervention logged");
       session.recordGeneration("log-intervention", "log_intervention");
@@ -147,12 +112,7 @@ export default function InterventionPanel({ prefill }: Props) {
         teacher_note: teacherNote,
         context,
       },
-      "full",
     );
-  }
-
-  function handleQuickSubmit(request: InterventionRequest) {
-    return submitIntervention(request, "quick");
   }
 
   function handleHistorySelect(record: InterventionRecord) {
@@ -203,16 +163,6 @@ export default function InterventionPanel({ prefill }: Props) {
             </div>
 
             <div className="intervention-workflow-secondary" aria-label="Supporting capture tools">
-              {role.canLogInterventions ? (
-                <QuickCaptureTray
-                  classroomId={activeClassroom}
-                  students={students}
-                  loading={loading}
-                  onSubmit={handleQuickSubmit}
-                  studentFlags={studentFlags}
-                  prefillAliases={selectedAlias ? [selectedAlias] : undefined}
-                />
-              ) : null}
               <HistoryDrawer<InterventionRecord>
                 items={history.items}
                 loading={history.loading}
@@ -244,9 +194,9 @@ export default function InterventionPanel({ prefill }: Props) {
               <details ref={detailsRef} className="intervention-structured-details">
                 <summary>Add structured detail (duration · outcome · next step)</summary>
                 <p className="intervention-structured-details__note">
-                  The structured note fields are now the primary workspace above.
-                  Use quick capture for fast hallway notes, then continue here when the
-                  note needs follow-up timing or a memory destination.
+                  The required student and evidence fields are in the primary workspace
+                  above. Use the optional follow-up controls there when the note needs
+                  timing or a memory destination.
                 </p>
               </details>
             </div>

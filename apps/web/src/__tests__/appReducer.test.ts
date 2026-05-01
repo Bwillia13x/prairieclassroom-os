@@ -285,19 +285,19 @@ describe("seven-view top-level navigation — per-role visibility", () => {
 
   it("teacher sees every top-level page in the fixed canonical order", () => {
     expect(getVisibleTabs("teacher")).toEqual([
-      "classroom", "today", "tomorrow", "week", "prep", "ops", "review",
+      "today", "classroom", "tomorrow", "week", "prep", "ops", "review",
     ]);
   });
 
-  it("ea sees classroom, today, ops, review (no prep / no tomorrow / no week)", () => {
+  it("ea sees today, classroom, ops, review (no prep / no tomorrow / no week)", () => {
     expect(getVisibleTabs("ea")).toEqual([
-      "classroom", "today", "ops", "review",
+      "today", "classroom", "ops", "review",
     ]);
   });
 
-  it("substitute sees classroom, today, tomorrow, week, ops (no prep / no review)", () => {
+  it("substitute sees today, classroom, tomorrow, week, ops (no prep / no review)", () => {
     expect(getVisibleTabs("substitute")).toEqual([
-      "classroom", "today", "tomorrow", "week", "ops",
+      "today", "classroom", "tomorrow", "week", "ops",
     ]);
   });
 
@@ -384,8 +384,8 @@ describe("URL restore — default + legacy + canonical", () => {
     setUrl("/");
   });
 
-  it("lands on the classroom page when no ?tab= is present", () => {
-    expect(restoreNavFromUrl()).toEqual({ tab: "classroom", tool: null });
+  it("lands on the Today page when no ?tab= is present", () => {
+    expect(restoreNavFromUrl()).toEqual({ tab: "today", tool: null });
   });
 
   it("accepts a canonical top-level tab and defaults to its first tool", () => {

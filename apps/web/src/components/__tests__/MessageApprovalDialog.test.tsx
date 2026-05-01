@@ -21,7 +21,7 @@ const DRAFT: FamilyMessageDraft = {
   draft_id: "d1",
   classroom_id: "c1",
   student_refs: ["Ari", "Bea"],
-  target_language: "English",
+  target_language: "tl",
   message_type: "routine_update",
   plain_language_text: "Your child had a good day at school.",
   simplified_student_text: undefined,
@@ -55,6 +55,8 @@ describe("MessageApprovalDialog", () => {
       />,
     );
     expect(screen.getByText(/2 recipients/i)).toBeInTheDocument();
+    expect(screen.getByText(/Tagalog/i)).toBeInTheDocument();
+    expect(screen.queryByText(/^tl$/i)).not.toBeInTheDocument();
     // The draft text is now in an editable textarea, not a static <p>.
     expect(screen.getByDisplayValue(/good day at school/i)).toBeInTheDocument();
   });

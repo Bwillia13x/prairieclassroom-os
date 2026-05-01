@@ -295,9 +295,9 @@ describe("TodayPanel", () => {
 
     expect(await screen.findByText("Needs Attention Now")).toBeInTheDocument();
     expect(screen.getByText("4 open items")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Open Family Message" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Draft Amira message" })).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Open Family Message" }));
+    await user.click(screen.getByRole("button", { name: "Draft Amira message" }));
     expect(onTabChange).toHaveBeenCalledWith("family-message");
     expect(onInterventionPrefill).not.toHaveBeenCalled();
   });
@@ -332,9 +332,9 @@ describe("TodayPanel", () => {
       { onInterventionPrefill },
     );
 
-    expect(await screen.findByRole("button", { name: "Open Intervention Log" })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: "Log Brody note" })).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Open Intervention Log" }));
+    await user.click(screen.getByRole("button", { name: "Log Brody note" }));
 
     expect(onInterventionPrefill).toHaveBeenCalledWith({
       student_ref: "Brody",
@@ -470,7 +470,7 @@ describe("TodayPanel", () => {
 
     // Hero chip for Amira — rendered inside TodayHero, not the lower PendingActionsCard.
     const heroEl = await screen.findByTestId("today-hero");
-    await user.click(within(heroEl).getByRole("button", { name: /Amira/ }));
+    await user.click(within(heroEl).getByRole("button", { name: "Check first: Amira" }));
 
     expect(await screen.findByRole("dialog", { name: /Amira/i })).toBeInTheDocument();
     await waitFor(() => {
@@ -659,26 +659,12 @@ describe("TodayPanel", () => {
     ).toBeTruthy();
   });
 
-  it("keeps the shared page rail offset in the PageAnchorRail stylesheet", async () => {
-    const fs = await import("node:fs");
-    const path = await import("node:path");
-    const cssPath = path.resolve(
-      __dirname,
-      "..",
-      "..",
-      "components",
-      "PageAnchorRail.css",
-    );
-    const css = fs.readFileSync(cssPath, "utf8");
-    expect(css).toMatch(/\.page-anchor-rail\s*{[^}]*position:\s*fixed/s);
-    expect(css).toMatch(/\.app-main\[data-page-rail\]\s*>\s*\[role="tabpanel"\]:not\(\[hidden\]\)/s);
-  });
-
-  it("leaves the collapsible page drawer to the app shell", async () => {
+  it("does not render a secondary page section navigation rail", async () => {
     renderTodayPanel(makeSnapshot());
 
     await screen.findByText("Needs Attention Now");
     expect(screen.queryByRole("navigation", { name: /today sections/i })).not.toBeInTheDocument();
+    expect(document.querySelector(".page-anchor-rail")).not.toBeInTheDocument();
     expect(document.querySelector(".today-panel")).not.toHaveAttribute("data-rail-collapsed");
   });
 

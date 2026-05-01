@@ -6,12 +6,11 @@ import {
 } from "./shared";
 
 type Theme = "system" | "light" | "dark";
+type ThemeTarget = "light" | "dark";
 
 const STORAGE_KEY = "prairie-theme";
-const LABELS: Record<Theme, string> = { light: "Light", dark: "Dark", system: "Auto" };
-const CYCLE: Theme[] = ["system", "light", "dark"];
-const ICON_NAME: Record<Theme, SectionIconName> = {
-  system: "refresh",
+const LABELS: Record<ThemeTarget, string> = { light: "Light", dark: "Dark" };
+const ICON_NAME: Record<ThemeTarget, SectionIconName> = {
   light: "sun",
   dark: "moon",
 };
@@ -22,8 +21,7 @@ const ICON_NAME: Record<Theme, SectionIconName> = {
  *   light  → `spark`   (warm flash on)
  *   dark   → `pulse`   (quiet night settle)
  */
-const FIRE_ANIM: Record<Theme, NothingInstrumentAnim> = {
-  system: "refresh",
+const FIRE_ANIM: Record<ThemeTarget, NothingInstrumentAnim> = {
   light: "spark",
   dark: "pulse",
 };
@@ -47,14 +45,15 @@ function applyTheme(theme: Theme) {
 
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(loadTheme);
+  const nextTheme: ThemeTarget = theme === "dark" ? "light" : "dark";
 
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
 
-  const cycle = useCallback(() => {
+  const toggle = useCallback(() => {
     setTheme((current) => {
-      const next = CYCLE[(CYCLE.indexOf(current) + 1) % CYCLE.length];
+      const next: ThemeTarget = current === "dark" ? "light" : "dark";
       try { localStorage.setItem(STORAGE_KEY, next); } catch { /* noop */ }
       return next;
     });
@@ -67,12 +66,13 @@ export default function ThemeToggle() {
     <NothingInstrumentButton
       size="sm"
       tone="accent"
-      fireAnim={FIRE_ANIM[theme]}
-      onClick={cycle}
-      aria-label={`Color theme: ${LABELS[theme]}. Click to change.`}
+      fireAnim={FIRE_ANIM[nextTheme]}
+      onClick={toggle}
+      aria-label={`Switch to ${LABELS[nextTheme].toLowerCase()} mode.`}
       className="theme-toggle-instrument"
     >
-      <SectionIcon name={ICON_NAME[theme]} className="theme-toggle__icon" />
+      <SectionIcon name={ICON_NAME[nextTheme]} className="theme-toggle__icon" />
+      <span className="theme-toggle__label">{LABELS[nextTheme]}</span>
     </NothingInstrumentButton>
   );
 }

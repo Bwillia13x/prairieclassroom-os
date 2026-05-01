@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { FamilyMessageDraft } from "../types";
 import type { CopyStatus } from "../hooks/useCopyToClipboard";
+import { formatLanguageLabel } from "./messageLanguage";
 import "./MessageApprovalDialog.css";
 
 interface Props {
@@ -80,7 +81,7 @@ export default function MessageApprovalDialog({ open, draft, onConfirm, onCancel
       <div className="message-approval-dialog__meta">
         <span>{draft.student_refs.length} {draft.student_refs.length === 1 ? "recipient" : "recipients"}</span>
         <span>·</span>
-        <span>{draft.target_language}</span>
+        <span>{formatLanguageLabel(draft.target_language)}</span>
         <span>·</span>
         <span>{draft.message_type}</span>
         {editedDiffersFromDraft && (

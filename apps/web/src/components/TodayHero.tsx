@@ -2,7 +2,7 @@
  * TodayHero.tsx — Live-day triage cockpit, redesigned (2026-04-29).
  *
  * Composition aligned to the target Today dashboard reference:
- *   • Command card (eyebrow → icon → title → description → dual CTAs)
+ *   • Command card (eyebrow → title → evidence facts → one CTA)
  *   • Today's flow timeline (5 schedule blocks with current-block focus)
  *   • Follow-up debt strip (5 metric tiles)
  *   • Side rail with Live Signals + Students to Watch
@@ -15,7 +15,7 @@
  *
  * DOM contracts preserved for tests:
  *   • root has className `today-hero` and `data-testid="today-hero"`
- *   • primary CTA reads `Open ${recommendedAction.cta}` and triggers
+ *   • primary CTA is task-specific and triggers
  *     `onCtaClick`
  *   • watch rows are `<button>` elements with the student alias in
  *     their accessible name and call `onStudentClick(alias)`
@@ -58,6 +58,7 @@ interface Props {
   studentReasons?: Record<string, string>;
   peakBlock?: ComplexityBlock | null;
   mondayMoment?: TodayHeroMondayMoment | null;
+  currentHour?: number;
   onCtaClick: () => void;
   onStudentClick?: (studentRef: string) => void;
 }
@@ -72,6 +73,7 @@ export default function TodayHero({
   studentReasons,
   peakBlock,
   mondayMoment,
+  currentHour,
   onCtaClick,
   onStudentClick,
 }: Props) {
@@ -83,19 +85,26 @@ export default function TodayHero({
   const debtTiles = getDebtTiles(snapshot, openItems);
   const signalRows = getLiveSignals(health, snapshot, openItems);
   const watchRows = getWatchRows({ checkFirstStudents, studentReasons, snapshot, students });
+  const dayPhase = getDayPhase(currentHour ?? new Date().getHours());
+  const currentBlock = flowBlocks.find((block) => block.state === "current") ?? flowBlocks[0] ?? null;
+  const currentFlowSummary = currentBlock?.time_slot ?? "Forecast pending";
 
-  const nextActionTitle = getNextActionTitle(recommendedAction, firstStudentToCheck, openItems);
+  const nextActionTitle = getNextActionTitle(recommendedAction, firstStudentToCheck, openItems, dayPhase);
   const nextActionReason = getNextActionReason({
     recommendedAction,
     firstStudentToCheck,
     studentReasons,
     peakBlock,
+    dayPhase,
+  });
+  const commandFacts = getCommandFacts({
+    firstStudentToCheck,
+    currentBlock,
+    peakBlock,
+    openItems,
   });
 
-  const primaryCtaLabel = recommendedAction
-    ? `Open ${recommendedAction.cta}`
-    : "Review today's command center";
-  const showSecondaryCta = recommendedAction?.cta !== "Intervention Log";
+  const primaryCtaLabel = getPrimaryCtaLabel(recommendedAction, firstStudentToCheck);
 
   return (
     <section className="today-hero" data-testid="today-hero" aria-label="Today command dashboard">
@@ -117,7 +126,12 @@ export default function TodayHero({
         <div className="today-hero__main">
           {/* ── Command card ───────────────────────────── */}
           <article className="today-hero__command" aria-labelledby="today-command-title">
-            <span className="today-hero__eyebrow">Command</span>
+            <div className="today-hero__command-kicker">
+              <span className="today-hero__eyebrow">Do this now</span>
+              <span className={`today-hero__phase today-hero__phase--${dayPhase.kind}`}>
+                {dayPhase.label}
+              </span>
+            </div>
             <div className="today-hero__command-body">
               <span className="today-hero__command-icon" aria-hidden="true">
                 <ClipboardIcon />
@@ -138,18 +152,17 @@ export default function TodayHero({
                 >
                   {primaryCtaLabel}
                 </ActionButton>
-                {showSecondaryCta ? (
-                  <ActionButton
-                    variant="secondary"
-                    size="lg"
-                    onClick={onCtaClick}
-                    className="today-hero__cta-secondary"
-                    leadingIcon={<NotebookIcon />}
-                  >
-                    Open Intervention Log
-                  </ActionButton>
-                ) : null}
               </div>
+              {commandFacts.length > 0 ? (
+                <dl className="today-hero__command-facts" role="group" aria-label="Why this action is first">
+                  {commandFacts.map((fact) => (
+                    <div key={fact.label} className="today-hero__command-fact">
+                      <dt>{fact.label}</dt>
+                      <dd>{fact.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
             </div>
           </article>
 
@@ -159,6 +172,10 @@ export default function TodayHero({
               <h3 id="today-flow-title" className="today-hero__section-title">
                 Today's flow
               </h3>
+              <span className="today-hero__section-meta today-hero__section-meta--flow">
+                <span>Current</span>
+                <strong>{currentFlowSummary}</strong>
+              </span>
             </header>
             <div className="today-hero__flow-track" role="list">
               {flowBlocks.length === 0 ? (
@@ -186,25 +203,33 @@ export default function TodayHero({
                         {block.state === "current" ? (
                           <span className="today-hero__block-now">Now</span>
                         ) : null}
-                        {block.state === "upcoming" ? <span className="today-hero__block-dot" aria-hidden="true" /> : null}
+                        {block.state === "upcoming" ? <span className="today-hero__block-next">Next</span> : null}
                       </span>
                     </header>
-                    <span className="today-hero__block-icon" aria-hidden="true">
-                      <ActivityIcon activity={block.activity} />
-                    </span>
-                    <strong className="today-hero__block-title">{getActivityTitle(block.activity)}</strong>
-                    <p className="today-hero__block-subtitle">{getBlockSubtitle(block)}</p>
-                    {block.state === "current" ? (
-                      <div className="today-hero__block-progress" aria-hidden="true">
-                        <span
-                          className="today-hero__block-progress-fill"
-                          style={{ "--today-flow-progress": `${block.progressPercent}%` } as CSSProperties}
-                        />
+                    <div className="today-hero__block-main">
+                      <span className="today-hero__block-icon" aria-hidden="true">
+                        <ActivityIcon activity={block.activity} />
+                      </span>
+                      <div className="today-hero__block-copy">
+                        <strong className="today-hero__block-title">{getActivityTitle(block.activity)}</strong>
+                        <p className="today-hero__block-subtitle">{getBlockSubtitle(block)}</p>
                       </div>
-                    ) : null}
-                    {block.state === "current" ? (
-                      <span className="today-hero__block-elapsed">{block.elapsedLabel}</span>
-                    ) : null}
+                    </div>
+                    <footer className="today-hero__block-footer">
+                      {block.state === "current" ? (
+                        <>
+                          <div className="today-hero__block-progress" aria-hidden="true">
+                            <span
+                              className="today-hero__block-progress-fill"
+                              style={{ "--today-flow-progress": `${block.progressPercent}%` } as CSSProperties}
+                            />
+                          </div>
+                          <span className="today-hero__block-elapsed">{block.elapsedLabel}</span>
+                        </>
+                      ) : (
+                        <span className="today-hero__block-elapsed">{getFlowStateLabel(block.state)}</span>
+                      )}
+                    </footer>
                   </article>
                 ))
               )}
@@ -217,11 +242,7 @@ export default function TodayHero({
               <h3 id="today-debt-title" className="today-hero__section-title">
                 Follow-up debt
               </h3>
-              <span className="today-hero__section-meta">
-                <button type="button" className="today-hero__link" onClick={onCtaClick}>
-                  View all ({openItems})
-                </button>
-              </span>
+              <span className="today-hero__section-meta">{openItems} open</span>
             </header>
             <div className="today-hero__debt-tiles" role="list">
               {debtTiles.map((tile) => (
@@ -234,13 +255,15 @@ export default function TodayHero({
                   <span className="today-hero__debt-icon" aria-hidden="true">
                     {tile.icon}
                   </span>
-                  <strong className="today-hero__debt-value">{tile.value}</strong>
-                  <span className="today-hero__debt-label">{tile.label}</span>
-                  <span
-                    className={`today-hero__debt-caption today-hero__debt-caption--${tile.tone}`}
-                  >
-                    {tile.caption}
-                  </span>
+                  <div className="today-hero__debt-copy">
+                    <strong className="today-hero__debt-value">{tile.value}</strong>
+                    <span className="today-hero__debt-label">{tile.label}</span>
+                    <span
+                      className={`today-hero__debt-caption today-hero__debt-caption--${tile.tone}`}
+                    >
+                      {tile.caption}
+                    </span>
+                  </div>
                 </article>
               ))}
             </div>
@@ -265,20 +288,17 @@ export default function TodayHero({
                   key={row.label}
                   className={`today-hero__signal-row today-hero__signal-row--${row.tone}`}
                 >
-                  <span className="today-hero__signal-icon" aria-hidden="true">
-                    {row.icon}
-                  </span>
+                  <header className="today-hero__signal-head">
+                    <span className="today-hero__signal-icon" aria-hidden="true">
+                      {row.icon}
+                    </span>
+                    <strong className="today-hero__signal-value">{row.value}</strong>
+                  </header>
                   <span className="today-hero__signal-label">{row.label}</span>
-                  <strong className="today-hero__signal-value">{row.value}</strong>
+                  <span className="today-hero__signal-caption">{row.caption}</span>
                 </li>
               ))}
             </ul>
-            <footer className="today-hero__rail-footer">
-              <button type="button" className="today-hero__rail-link" onClick={onCtaClick}>
-                View all signals
-                <ArrowRightIcon />
-              </button>
-            </footer>
             <PageFreshness
               generatedAt={snapshot?.last_activity_at ?? null}
               kind="ai"
@@ -290,6 +310,9 @@ export default function TodayHero({
               <span className="today-hero__rail-eyebrow" id="today-watch-title">
                 Students to watch
               </span>
+              {watchRows.length > 0 ? (
+                <span className="today-hero__watch-count">{watchRows.length} active</span>
+              ) : null}
             </header>
             {watchRows.length === 0 ? (
               <p className="today-hero__watch-empty">
@@ -308,25 +331,23 @@ export default function TodayHero({
                       <span className="today-hero__watch-avatar" aria-hidden="true">
                         {getInitials(row.alias)}
                       </span>
-                      <span className="today-hero__watch-info">
-                        <strong className="today-hero__watch-name">{row.alias}</strong>
+                      <span className="today-hero__watch-copy">
+                        <span className="today-hero__watch-topline">
+                          <strong className="today-hero__watch-name">{row.alias}</strong>
+                          <span className={`today-hero__watch-status today-hero__watch-status--${row.tone}`}>
+                            {row.statusLabel}
+                          </span>
+                        </span>
                         <span className="today-hero__watch-reason">{row.reason}</span>
                       </span>
-                      <span
-                        className={`today-hero__watch-dot today-hero__watch-dot--${row.tone}`}
-                        aria-hidden="true"
-                      />
+                      <span className="today-hero__watch-action" aria-hidden="true">
+                        <ArrowRightIcon />
+                      </span>
                     </button>
                   </li>
                 ))}
               </ul>
             )}
-            <footer className="today-hero__rail-footer">
-              <button type="button" className="today-hero__rail-link" onClick={onCtaClick}>
-                View all students
-                <ArrowRightIcon />
-              </button>
-            </footer>
           </article>
         </aside>
       </div>
@@ -338,6 +359,72 @@ export default function TodayHero({
 
 type FlowBlockState = "past" | "current" | "upcoming";
 
+type DayPhaseKind = "morning" | "midday" | "afternoon" | "closeout" | "staging";
+
+interface DayPhase {
+  kind: DayPhaseKind;
+  label: string;
+}
+
+interface CommandFact {
+  label: string;
+  value: string;
+}
+
+function getDayPhase(hour: number): DayPhase {
+  if (hour >= 5 && hour < 11) return { kind: "morning", label: "Morning triage" };
+  if (hour >= 11 && hour < 14) return { kind: "midday", label: "Mid-day recovery" };
+  if (hour >= 14 && hour < 17) return { kind: "afternoon", label: "After-school closeout" };
+  if (hour >= 17 && hour < 21) return { kind: "closeout", label: "End-of-day closeout" };
+  return { kind: "staging", label: "Tomorrow staging" };
+}
+
+function getPrimaryCtaLabel(
+  recommendedAction: TodayHeroAction | null,
+  firstStudentToCheck: string | null,
+): string {
+  if (!recommendedAction) return "Review today's command center";
+  if (recommendedAction.tab === "log-intervention") {
+    return firstStudentToCheck ? `Log ${firstStudentToCheck} note` : "Log note";
+  }
+  if (recommendedAction.tab === "family-message") {
+    return firstStudentToCheck ? `Draft ${firstStudentToCheck} message` : "Draft family message";
+  }
+  if (recommendedAction.tab === "tomorrow-plan" || recommendedAction.tab === "tomorrow") {
+    return "Plan tomorrow";
+  }
+  if (recommendedAction.tab === "differentiate") {
+    return "Adapt lesson";
+  }
+  return `Do this now: ${recommendedAction.cta}`;
+}
+
+function getCommandFacts({
+  firstStudentToCheck,
+  currentBlock,
+  peakBlock,
+  openItems,
+}: {
+  firstStudentToCheck: string | null;
+  currentBlock: FlowBlock | null;
+  peakBlock?: ComplexityBlock | null;
+  openItems: number;
+}): CommandFact[] {
+  const facts: CommandFact[] = [];
+  if (firstStudentToCheck) {
+    facts.push({ label: "Student", value: firstStudentToCheck });
+  }
+  const riskWindow = peakBlock?.time_slot ?? currentBlock?.time_slot;
+  if (riskWindow) {
+    facts.push({ label: "Window", value: riskWindow });
+  }
+  facts.push({ label: "Open", value: String(openItems) });
+  if (currentBlock?.activity) {
+    facts.push({ label: "Now", value: getActivityTitle(currentBlock.activity) });
+  }
+  return facts.slice(0, 4);
+}
+
 interface FlowBlock {
   time_slot: string;
   activity: string;
@@ -347,6 +434,12 @@ interface FlowBlock {
   state: FlowBlockState;
   progressPercent: number;
   elapsedLabel: string;
+}
+
+function getFlowStateLabel(state: FlowBlockState): string {
+  if (state === "past") return "Complete";
+  if (state === "current") return "Active";
+  return "Queued";
 }
 
 function getFlowBlocks(blocks: ComplexityBlock[]): FlowBlock[] {
@@ -389,7 +482,7 @@ function getFlowBlocks(blocks: ComplexityBlock[]): FlowBlock[] {
   }).map((block, index, arr) => {
     const hasCurrent = arr.some((b) => b.state === "current");
     if (!hasCurrent && index === 0) {
-      return { ...block, state: "current", progressPercent: 24, elapsedLabel: "Up next" };
+      return { ...block, state: "current", progressPercent: 24, elapsedLabel: "Current focus" };
     }
     return block;
   });
@@ -511,6 +604,7 @@ function countPrepActions(snapshot: TodaySnapshot | null): number {
 interface SignalRow {
   label: string;
   value: string;
+  caption: string;
   tone: "neutral" | "good" | "warn";
   icon: ReactNode;
 }
@@ -530,24 +624,30 @@ function getLiveSignals(
     {
       label: "Attendance",
       value: `${Math.max(82, Math.min(99, 92 + (health?.streak_days ?? 0) % 6))}%`,
+      caption: "Room baseline steady",
       tone: "good",
       icon: <TrendIcon />,
     },
     {
       label: "Engagement",
       value: openItems > 6 ? "Watch" : openItems > 2 ? "Steady" : "Good",
+      caption: openItems > 6 ? "Follow-ups may drag transitions" : "No immediate drag",
       tone: openItems > 6 ? "warn" : "good",
       icon: <ChatBubbleIcon />,
     },
     {
       label: "Plan readiness",
       value: `${planReady}%`,
+      caption: planReady >= 70 ? "Coverage ready for the day" : "Prep coverage below target",
       tone: planReady >= 70 ? "good" : "warn",
       icon: <BarChartIcon />,
     },
     {
       label: approvalRate !== null ? "Family approvals" : "Room climate",
       value: approvalRate !== null ? `${approvalRate}%` : peakLevel === "high" ? "Watch" : "Positive",
+      caption: approvalRate !== null
+        ? approvalRate < 60 ? "Messages need review" : "Message queue healthy"
+        : peakLevel === "high" ? "High-complexity block ahead" : "No acute concern",
       tone: peakLevel === "high" || (approvalRate !== null && approvalRate < 60) ? "warn" : "good",
       icon: <HeartIcon />,
     },
@@ -571,6 +671,7 @@ interface WatchRow {
   alias: string;
   reason: string;
   tone: "danger" | "warning" | "neutral";
+  statusLabel: string;
   accessibleLabel: string;
 }
 
@@ -628,11 +729,21 @@ function getWatchRows({ checkFirstStudents, studentReasons, snapshot, students }
       alias,
       reason,
       tone,
+      statusLabel: getWatchStatusLabel({ reason, tone }),
       accessibleLabel: studentReasons?.[alias]
         ? `Open student details for ${alias}: ${studentReasons[alias]}`
         : `Check first: ${alias}`,
     };
   });
+}
+
+function getWatchStatusLabel({ reason, tone }: Pick<WatchRow, "reason" | "tone">): string {
+  const normalizedReason = reason.toLowerCase();
+  if (normalizedReason.includes("overdue")) return "Overdue";
+  if (normalizedReason.includes("ready")) return "Ready";
+  if (tone === "danger") return "Urgent";
+  if (tone === "warning") return "Watch";
+  return "Monitor";
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────
@@ -673,11 +784,33 @@ function getNextActionTitle(
   recommendedAction: TodayHeroAction | null,
   firstStudentToCheck: string | null,
   openItems: number,
+  dayPhase: DayPhase,
 ): string {
   if (firstStudentToCheck && openItems > 0) {
-    return `Start morning triage with ${firstStudentToCheck}`;
+    switch (dayPhase.kind) {
+      case "morning":
+        return `Start morning triage with ${firstStudentToCheck}`;
+      case "midday":
+        return `Do a mid-day recovery check with ${firstStudentToCheck}`;
+      case "afternoon":
+      case "closeout":
+        return `Close today's loop for ${firstStudentToCheck}`;
+      case "staging":
+        return `Carry ${firstStudentToCheck} forward into tomorrow`;
+    }
   }
-  return recommendedAction?.label ?? "Review today's command center";
+  if (recommendedAction) return recommendedAction.label;
+  switch (dayPhase.kind) {
+    case "morning":
+      return "Start morning triage";
+    case "midday":
+      return "Recover the day";
+    case "afternoon":
+    case "closeout":
+      return "Close today's follow-through";
+    case "staging":
+      return "Stage tomorrow from today";
+  }
 }
 
 function getNextActionReason({
@@ -685,20 +818,25 @@ function getNextActionReason({
   firstStudentToCheck,
   studentReasons,
   peakBlock,
+  dayPhase,
 }: {
   recommendedAction: TodayHeroAction | null;
   firstStudentToCheck: string | null;
   studentReasons?: Record<string, string>;
   peakBlock?: ComplexityBlock | null;
+  dayPhase: DayPhase;
 }): string {
   if (firstStudentToCheck) {
     const reason = studentReasons?.[firstStudentToCheck];
-    if (reason) return `Review overnight signals and adjust today's moves — ${reason}.`;
+    if (reason) return `${dayPhase.label}: capture the evidence and next move — ${reason}.`;
   }
   if (peakBlock) {
-    return `Review overnight signals and adjust today's moves — protect ${peakBlock.time_slot} before ${peakBlock.activity}.`;
+    if (dayPhase.kind === "afternoon" || dayPhase.kind === "closeout" || dayPhase.kind === "staging") {
+      return `${dayPhase.label}: record what happened around ${peakBlock.time_slot} and carry the right support into tomorrow.`;
+    }
+    return `${dayPhase.label}: protect ${peakBlock.time_slot} before ${peakBlock.activity}.`;
   }
-  return recommendedAction?.description ?? "Review overnight signals and adjust today's moves.";
+  return recommendedAction?.description ?? `${dayPhase.label}: make the next classroom move explicit.`;
 }
 
 // ─── Inline icons (kept local to avoid bloating SectionIcon) ───────
@@ -719,15 +857,6 @@ function ArrowRightIcon() {
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
       <path d="M5 12h13" />
       <path d="M13 6l6 6-6 6" />
-    </svg>
-  );
-}
-
-function NotebookIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="5.5" y="4" width="13" height="16" rx="2" />
-      <path d="M9 8.5h6M9 12h6M9 15.5h4" />
     </svg>
   );
 }
@@ -900,4 +1029,3 @@ function HeartIcon() {
     </svg>
   );
 }
-

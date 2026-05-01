@@ -29,14 +29,14 @@ describe("InterventionLogger", () => {
 
     const saveButton = screen.getByRole("button", { name: /save note & continue/i });
     expect(saveButton).toBeDisabled();
-    expect(screen.getByText(/select at least one student and add an evidence note to save/i)).toBeInTheDocument();
+    expect(screen.getByText(/select a student and add a note/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole("checkbox", { name: /brody/i }));
-    expect(screen.getByText(/add an evidence note to save/i)).toBeInTheDocument();
+    expect(screen.getByText(/add a note to save/i)).toBeInTheDocument();
     expect(saveButton).toBeDisabled();
 
     await user.type(screen.getByLabelText(/evidence note/i), "Used calm corner before joining group; settled in 6 minutes.");
-    expect(screen.getByText(/ready to save to classroom memory/i)).toBeInTheDocument();
+    expect(screen.getByText(/ready to save/i)).toBeInTheDocument();
     expect(saveButton).toBeEnabled();
   });
 

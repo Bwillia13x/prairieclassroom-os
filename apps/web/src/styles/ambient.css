@@ -606,8 +606,8 @@
 /* ================================================================
    8. NEXT-MOVE INVITATION — first-paint accent glow (2026-04-25)
    ================================================================
-   When the demo classroom lands, the "Open Intervention Log"
-   recommended CTA should feel like the OS is offering it — a
+   When the demo classroom lands, the task-specific Today CTA
+   ("Log Hannah note" in the seeded room) should feel like the OS is offering it — a
    one-time soft accent halo that crests after the hero settles
    (~800ms), pulses for one cycle (~1400ms), and decays. Single
    iteration, no infinite loop, fill-mode `both` so the resting
@@ -761,15 +761,14 @@
 }
 
 .brand-mark__glyph {
-  /* Phase D1 (2026-04-27) — pinned to 1.5rem (24px). The
-     `!important` is preserved because this rule sits in the late
-     ambient cascade specifically to defeat external skin layers.
-     The size value is the single source of design-discipline
-     truth; if a future variant needs a larger logomark, override
-     it via a wrapper class rather than reintroducing clamp here. */
-  width: 1.5rem !important;
-  height: 1.5rem !important;
+  /* Keep the production PNG mark fixed-size in the late ambient
+     cascade so external skin layers do not shrink it below
+     notebook-field legibility. */
+  width: 1.9rem !important;
+  height: 1.9rem !important;
   flex-shrink: 0 !important;
+  display: block !important;
+  object-fit: contain !important;
   color: var(--shell-control-accent) !important;
   filter: drop-shadow(0 0 18px color-mix(in srgb, var(--shell-control-accent) 18%, transparent)) !important;
 }
@@ -1107,29 +1106,41 @@
 .page-anchor-rail__toggle {
   height: 2.75rem !important;
   min-width: 2.75rem !important;
-  border: var(--shell-control-border) !important;
+  border: 1px solid color-mix(in srgb, var(--shell-control-accent) 30%, transparent) !important;
   border-radius: var(--shell-control-radius) !important;
-  background: var(--shell-control-bg) !important;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--shell-control-accent) 5%, transparent), transparent 72%),
+    var(--color-bg) !important;
   color: var(--color-text) !important;
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--shell-control-accent) 12%, transparent),
-    0 8px 18px color-mix(in srgb, black 12%, transparent) !important;
+    inset 0 0 0 1px color-mix(in srgb, var(--shell-control-accent) 6%, transparent),
+    0 16px 30px -24px color-mix(in srgb, var(--shell-control-accent) 62%, transparent) !important;
 }
 
 .page-anchor-rail__toggle:hover {
-  background: var(--shell-control-bg-hover) !important;
-  border-color: color-mix(in srgb, var(--color-border-accent) 58%, transparent) !important;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--shell-control-accent) 10%, transparent), transparent 78%),
+    var(--color-bg) !important;
+  border-color: color-mix(in srgb, var(--shell-control-accent) 58%, transparent) !important;
   color: var(--shell-control-accent) !important;
+  transform: translateX(1px) !important;
 }
 
 .page-anchor-rail--collapsed .page-anchor-rail__toggle {
   width: var(--shell-page-rail-collapsed-width) !important;
+  height: 2.45rem !important;
+  padding: 0 !important;
+  gap: 0 !important;
+  border-color: color-mix(in srgb, var(--shell-control-accent) 42%, transparent) !important;
   border-left: 0 !important;
-  border-radius: 0 var(--shell-control-radius) var(--shell-control-radius) 0 !important;
+  border-radius: 0 0.45rem 0.45rem 0 !important;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--shell-control-accent) 12%, transparent), transparent 68%),
+    var(--color-bg) !important;
   box-shadow:
     inset 2px 0 0 var(--shell-control-accent),
-    0 0 0 1px color-mix(in srgb, var(--shell-control-accent) 16%, transparent),
-    0 0 14px color-mix(in srgb, var(--shell-control-accent) 22%, transparent) !important;
+    inset 0 0 0 1px color-mix(in srgb, var(--shell-control-accent) 12%, transparent),
+    0 16px 30px -24px color-mix(in srgb, var(--shell-control-accent) 72%, transparent) !important;
 }
 
 .page-anchor-rail__link--active::before,
@@ -1239,8 +1250,8 @@
   }
 
   .brand-mark__glyph {
-    width: 1.85rem !important;
-    height: 1.85rem !important;
+    width: 2.1rem !important;
+    height: 2.1rem !important;
   }
 
   .brand-mark__wordmark {
@@ -1351,40 +1362,41 @@
     display: flex !important;
     flex-direction: column !important;
     min-height: 0 !important;
-    padding: var(--space-4) !important;
-    border-right: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent) !important;
+    padding: var(--space-4) var(--space-3) var(--space-4) var(--space-4) !important;
+    border-right: 1px solid color-mix(in srgb, var(--color-accent) 34%, transparent) !important;
     background:
-      linear-gradient(
-        180deg,
-        color-mix(in srgb, var(--color-surface) 76%, transparent),
-        color-mix(in srgb, var(--color-surface-muted) 48%, transparent)
-      ) !important;
+      linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent 44%),
+      var(--color-bg) !important;
     overflow-y: auto !important;
   }
 
   .shell-nav__groups {
+    align-self: flex-start !important;
     display: flex !important;
     min-height: 0 !important;
     width: 100% !important;
     flex-direction: column !important;
-    gap: var(--space-1) !important;
+    gap: 0.2rem !important;
     padding: 0 !important;
     border: 0 !important;
     border-radius: 0 !important;
     background: transparent !important;
+    box-shadow: none !important;
     overflow: visible !important;
   }
 
   .shell-nav__group {
+    width: 100% !important;
     justify-content: flex-start !important;
     gap: var(--space-3) !important;
     min-height: 3rem !important;
-    padding: 0 var(--space-4) !important;
+    padding: 0 var(--space-3) !important;
     border-radius: var(--radius-sm) !important;
     color: var(--color-text-secondary) !important;
     font-size: var(--text-base) !important;
     font-weight: var(--font-weight-medium) !important;
     letter-spacing: 0 !important;
+    text-align: left !important;
   }
 
   .shell-nav__group + .shell-nav__group {
@@ -1392,17 +1404,18 @@
   }
 
   .shell-nav__group:hover:not(.shell-nav__group--active) {
-    background: color-mix(in srgb, var(--color-surface-elevated) 34%, transparent) !important;
+    background: color-mix(in srgb, var(--color-accent) 7%, transparent) !important;
   }
 
   .shell-nav__group--active {
     color: var(--color-brand-highlight) !important;
     background:
-      linear-gradient(90deg, color-mix(in srgb, var(--color-brand-highlight) 14%, transparent), transparent 76%),
-      color-mix(in srgb, var(--color-surface-elevated) 44%, transparent) !important;
+      linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 24%, transparent), transparent 82%),
+      color-mix(in srgb, var(--color-accent) 10%, transparent) !important;
     box-shadow:
-      inset 3px 0 0 var(--color-brand-highlight),
-      inset 0 1px 0 color-mix(in srgb, white 5%, transparent) !important;
+      inset 3px 0 0 var(--color-accent),
+      inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 20%, transparent),
+      0 14px 30px -24px color-mix(in srgb, var(--color-accent) 70%, transparent) !important;
   }
 
   .shell-nav__group--active::after {
@@ -1414,6 +1427,11 @@
     height: 1.1rem !important;
   }
 
+  .shell-nav__label-stack {
+    align-items: flex-start !important;
+    flex: 1 1 auto !important;
+  }
+
   .shell-nav__badge {
     margin-left: auto !important;
   }
@@ -1423,7 +1441,7 @@
     flex-direction: column !important;
     gap: 0.25rem !important;
     margin-top: auto !important;
-    padding: var(--space-4) var(--space-4) 0 !important;
+    padding: var(--space-4) 0 0 !important;
     border-top: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent) !important;
     color: var(--color-text-tertiary) !important;
     font-size: var(--text-xs) !important;
@@ -1460,10 +1478,24 @@
     padding: calc(var(--page-rail-toggle-h) + var(--space-2)) var(--space-1) var(--space-2) !important;
   }
 
+  .page-anchor-rail.page-anchor-rail--collapsed {
+    background: transparent !important;
+    border-color: transparent !important;
+    box-shadow: none !important;
+  }
+
   .page-anchor-rail__toggle {
     left: var(--space-1) !important;
     width: calc(var(--shell-page-rail-width) - var(--space-1)) !important;
     min-width: calc(var(--shell-page-rail-width) - var(--space-1)) !important;
+    padding: 0 !important;
+  }
+
+  .page-anchor-rail--collapsed .page-anchor-rail__toggle {
+    left: calc(var(--shell-page-rail-width) - var(--shell-page-rail-collapsed-width)) !important;
+    width: var(--shell-page-rail-collapsed-width) !important;
+    min-width: var(--shell-page-rail-collapsed-width) !important;
+    height: 2.45rem !important;
     padding: 0 !important;
   }
 

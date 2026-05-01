@@ -26,10 +26,9 @@
        Layer 2 — --color-surface   (individual cards on the workspace)
 
      Each layer is lighter than the one below in light mode. In
-     dark mode follows the reference board: near-black/neutral surfaces
-     create depth, Prairie blue is concentrated in the brand rail and
-     inverse surfaces, and gold, green, teal, and rust remain low-area
-     signals.
+     dark mode follows the OLED board: card surfaces stay pitch black;
+     blue carries borders, active accents, glow, and shadow. Status
+     colors remain low-area text/icon signals only.
      ------------------------------------------------------------ */
   --pc-blue-900: #081d33;
   --pc-blue-700: #173a63;
@@ -62,7 +61,7 @@
   --pc-info-subtle: #e0f2fe;
 
   --prairie-navy: var(--pc-blue-900);
-  --prairie-navy-deep: #020b12;
+  --prairie-navy-deep: #000000;
   --prairie-navy-elevated: var(--pc-blue-700);
   --prairie-cream: #fbf6ea;
   --prairie-cream-bright: #fffaf1;
@@ -76,21 +75,21 @@
   --prairie-green: var(--pc-green-500);
   --prairie-red: var(--pc-accent-rust);
 
-  --paper: light-dark(#fbf6ea, #020b12);
-  --paper-warm: light-dark(#f5ecdd, #061421);
-  --paper-light: light-dark(#fffaf1, #0f1e2d);
-  --surface: light-dark(#fffaf1, #0b1622);
-  --surface-line: light-dark(#efe3d0, #374151);
+  --paper: light-dark(#fbf6ea, #000000);
+  --paper-warm: light-dark(#f5ecdd, #000000);
+  --paper-light: light-dark(#fffaf1, #000000);
+  --surface: light-dark(#fffaf1, #000000);
+  --surface-line: light-dark(#efe3d0, #123a66);
   --ink: light-dark(#092542, #f8fafc);
   --ink-soft: light-dark(#43576d, #d1d5db);
   --text-primary: light-dark(#092542, #f8fafc);
   --text-secondary: light-dark(#43576d, #e5e7eb);
   --text-disabled: light-dark(#7f8d9f, #9ca3af);
-  --line: light-dark(#dcccb4, #374151);
-  --line-muted: light-dark(#efe3d0, #263241);
-  --hairline: light-dark(#b7a78f, #9ca3af);
-  --ghost-line: light-dark(#dcccb4, #374151);
-  --ghost-red: light-dark(#f3dad6, #34130b);
+  --line: light-dark(#dcccb4, #123a66);
+  --line-muted: light-dark(#efe3d0, #061a30);
+  --hairline: light-dark(#c9c3b7, #38bdf8);
+  --ghost-line: light-dark(#f1eee8, #0f3158);
+  --ghost-red: light-dark(#f3dad6, #02050a);
   --proof-mark: var(--color-brand-highlight);
   --proof-mark-dark: var(--color-brand-highlight-strong);
   --proof-mark-soft: var(--color-brand-highlight-soft);
@@ -101,27 +100,28 @@
   --proof-red-dark: var(--proof-critical-dark);
   --proof-red-soft: var(--proof-critical-soft);
 
-  --color-bg: light-dark(#fbf6ea, #020b12);
-  --color-workspace: light-dark(#f5ecdd, #061421);
-  --color-surface: light-dark(#fffaf1, #0b1622);
-  --color-surface-elevated: light-dark(#fffdf6, #0f1e2d);
-  --color-surface-muted: light-dark(#f3eadc, #162331);
-  --color-surface-glass: light-dark(rgba(255, 250, 241, 0.86), rgba(15, 30, 45, 0.88));
-  --color-border: light-dark(#dcccb4, #374151);
-  --color-border-strong: light-dark(#9c8b72, #9ca3af);
-  --color-border-input: light-dark(#766650, #9ca3af);
+  --color-bg: light-dark(#ffffff, #000000);
+  --color-workspace: light-dark(#ffffff, #000000);
+  --color-surface: light-dark(#fffdfa, #000000);
+  --color-surface-elevated: light-dark(#ffffff, #000000);
+  --color-surface-muted: light-dark(#f4f2ec, #000000);
+  --color-surface-glass: light-dark(rgba(255, 253, 250, 0.9), rgba(0, 0, 0, 0.92));
+  --color-border: light-dark(#d9d6ce, #123a66);
+  --color-border-strong: light-dark(#8d877a, #38bdf8);
+  --color-border-input: light-dark(#6b665e, #60a5fa);
   --color-text: light-dark(#092542, #f8fafc);
   --color-text-secondary: light-dark(#43576d, #e5e7eb);
   --color-text-tertiary: light-dark(#5c6f83, #d1d5db);
 
   /* Primary accent: navy for institutional action in light mode,
-     lifted wheat-gold for active/focus affordance in dark mode. */
-  --color-accent: light-dark(#081d33, #d4a333);
-  --color-accent-hover: light-dark(#173a63, #ead9b3);
-  --color-accent-soft: light-dark(#e7f0fa, #221908);
+     electric blue for borders, focus, and active chrome in dark mode. */
+  --color-accent: light-dark(#081d33, #38bdf8);
+  --color-accent-hover: light-dark(#173a63, #7dd3fc);
+  --color-accent-soft: light-dark(#e7f0fa, #03111f);
 
-  /* Gold is the Prairie judgment/action/evidence mark. */
-  --color-brand-highlight: light-dark(#b7791f, #d4a333);
+  /* Gold is the Prairie judgment/action/evidence mark in light mode;
+     dark mode folds the mark into the blue OLED accent system. */
+  --color-brand-highlight: light-dark(#b7791f, #38bdf8);
 
   /* ------------------------------------------------------------
      Brand-highlight extensions (2026-04-22).
@@ -137,10 +137,10 @@
          brand-mark marks, hero underlines, hover-state warmth.
        - `--color-accent` remains the primary institutional affordance.
      ------------------------------------------------------------ */
-  --color-brand-highlight-soft: light-dark(#f7f2e6, #241a09);
-  --color-brand-highlight-strong: light-dark(#b85a09, #ead9b3);
-  --color-brand-green: light-dark(#1e7a5e, #2fb67c);
-  --color-brand-green-soft: light-dark(#e6f4ee, #123126);
+  --color-brand-highlight-soft: light-dark(#f7f2e6, #03111f);
+  --color-brand-highlight-strong: light-dark(#b85a09, #7dd3fc);
+  --color-brand-green: light-dark(#1e7a5e, #38bdf8);
+  --color-brand-green-soft: light-dark(#e6f4ee, #000000);
 
   /* Modal scrims — neutral black overlays behind drawers, dialogs, and
      onboarding. Read identically in both modes (the dark-mode contract
@@ -253,43 +253,42 @@
   --color-provenance: light-dark(#374151, #9ca3af);
   --color-pending: light-dark(#b7791f, #d4a333);
 
-  /* Semantic tinted backgrounds — dark mode is near-black/neutral with
-     only a trace of hue. Blue belongs to the brand rail and inverse
-     surfaces, not every card or status wash. */
-  --color-bg-muted: light-dark(#f3eadc, #162331);
-  --color-bg-info: light-dark(#e0f2fe, #062431);
-  --color-bg-success: light-dark(#e6f4ee, #123126);
-  --color-bg-warning: light-dark(#f7f2e6, #2a210f);
-  --color-bg-danger: light-dark(#fee2e2, #34130b);
-  --color-bg-accent: light-dark(#e7f0fa, #221908);
-  --color-bg-analysis: light-dark(#e0f2fe, #062431);
-  --color-bg-provenance: light-dark(#f1f5f9, #17212d);
-  --color-bg-pending: light-dark(#f7f2e6, #2a210f);
-  --color-bg-sun: light-dark(#f7f2e6, #2a210f);
-  --color-bg-sage: light-dark(#e6f4ee, #123126);
-  --color-bg-slate: light-dark(#f1f5f9, #17212d);
-  --color-bg-forest: light-dark(#e6f4ee, #123126);
+  /* Semantic tinted backgrounds — dark mode keeps card fills black.
+     Tone is carried by text/icons plus blue borders and shader accents. */
+  --color-bg-muted: light-dark(#f4f2ec, #000000);
+  --color-bg-info: light-dark(#e0f2fe, #000000);
+  --color-bg-success: light-dark(#e6f4ee, #000000);
+  --color-bg-warning: light-dark(#f7f4ec, #000000);
+  --color-bg-danger: light-dark(#fee2e2, #000000);
+  --color-bg-accent: light-dark(#e7f0fa, #000000);
+  --color-bg-analysis: light-dark(#e0f2fe, #000000);
+  --color-bg-provenance: light-dark(#f1f5f9, #000000);
+  --color-bg-pending: light-dark(#f7f4ec, #000000);
+  --color-bg-sun: light-dark(#f7f4ec, #000000);
+  --color-bg-sage: light-dark(#e6f4ee, #000000);
+  --color-bg-slate: light-dark(#f5f7f8, #000000);
+  --color-bg-forest: light-dark(#e6f4ee, #000000);
 
   /* Semantic borders */
-  --color-border-info: light-dark(#9bc9dd, #0891b2);
-  --color-border-success: light-dark(#9acdb8, #1e7a5e);
-  --color-border-warning: light-dark(#d8bd75, #b7791f);
-  --color-border-danger: light-dark(#e9b39d, #c2410c);
-  --color-border-accent: light-dark(#a5c4e6, #b7791f);
-  --color-border-analysis: light-dark(#9bc9dd, #0891b2);
-  --color-border-provenance: light-dark(#cbd5e1, #6b7280);
-  --color-border-pending: light-dark(#d8bd75, #b7791f);
-  --color-border-sun: light-dark(#d8bd75, #b7791f);
-  --color-border-sage: light-dark(#9acdb8, #1e7a5e);
-  --color-border-slate: light-dark(#cbd5e1, #6b7280);
-  --color-border-forest: light-dark(#9acdb8, #1e7a5e);
+  --color-border-info: light-dark(#9bc9dd, #38bdf8);
+  --color-border-success: light-dark(#9acdb8, #38bdf8);
+  --color-border-warning: light-dark(#d8bd75, #38bdf8);
+  --color-border-danger: light-dark(#e9b39d, #38bdf8);
+  --color-border-accent: light-dark(#a5c4e6, #38bdf8);
+  --color-border-analysis: light-dark(#9bc9dd, #38bdf8);
+  --color-border-provenance: light-dark(#cbd5e1, #1d4ed8);
+  --color-border-pending: light-dark(#d8bd75, #38bdf8);
+  --color-border-sun: light-dark(#d8bd75, #38bdf8);
+  --color-border-sage: light-dark(#9acdb8, #38bdf8);
+  --color-border-slate: light-dark(#cbd5e1, #1d4ed8);
+  --color-border-forest: light-dark(#9acdb8, #38bdf8);
 
   /* Semantic text — tuned for WCAG AA on matching tinted bg */
   --color-text-info: light-dark(#075b72, #9be7ff);
   --color-text-success: light-dark(#0f4d3e, #a9dcc2);
   --color-text-warning: light-dark(#755114, #ead9b3);
   --color-text-danger: light-dark(#9a3412, #ffc2a3);
-  --color-text-accent: light-dark(#081d33, #f7f2e6);
+  --color-text-accent: light-dark(#081d33, #bae6fd);
   --color-text-analysis: light-dark(#075b72, #9be7ff);
   --color-text-provenance: light-dark(#374151, #e5e7eb);
   --color-text-pending: light-dark(#755114, #ead9b3);
@@ -299,14 +298,14 @@
   --color-text-forest: light-dark(#0f4d3e, #a9dcc2);
 
   /* Section border colors — low-area signals on the Prairie stack. */
-  --color-section-watchpoint: light-dark(#b7791f, #d4a333);
-  --color-section-priority: light-dark(#081d33, #d4a333);
-  --color-section-ea: light-dark(#0891b2, #0ea5e9);
-  --color-section-family: light-dark(#1e7a5e, #2fb67c);
-  --color-section-theme: light-dark(#b85a09, #ead9b3);
-  --color-section-gap: light-dark(#c2410c, #e97733);
-  --color-section-trend: light-dark(#1e7a5e, #2fb67c);
-  --color-section-focus: light-dark(#081d33, #d4a333);
+  --color-section-watchpoint: light-dark(#b7791f, #38bdf8);
+  --color-section-priority: light-dark(#081d33, #38bdf8);
+  --color-section-ea: light-dark(#0891b2, #38bdf8);
+  --color-section-family: light-dark(#1e7a5e, #38bdf8);
+  --color-section-theme: light-dark(#b85a09, #38bdf8);
+  --color-section-gap: light-dark(#c2410c, #38bdf8);
+  --color-section-trend: light-dark(#1e7a5e, #38bdf8);
+  --color-section-focus: light-dark(#081d33, #38bdf8);
 
   /* Compatibility aliases — legacy component names mapped to the
      canonical theme roles so old call sites cannot fall back to
@@ -337,11 +336,11 @@
      navy -> amber -> rust. For true alerts, continue to use
      --color-danger / --color-success. */
   --chart-tone-low: light-dark(#173a63, #2563e8);
-  --chart-tone-low-bg: light-dark(#e7f0fa, #0f1e2d);
+  --chart-tone-low-bg: light-dark(#e7f0fa, #000000);
   --chart-tone-medium: light-dark(#b7791f, #d4a333);
-  --chart-tone-medium-bg: light-dark(#f7f2e6, #2a210f);
+  --chart-tone-medium-bg: light-dark(#f7f2e6, #000000);
   --chart-tone-high: light-dark(#1e7a5e, #2fb67c);
-  --chart-tone-high-bg: light-dark(#e6f4ee, #123126);
+  --chart-tone-high-bg: light-dark(#e6f4ee, #000000);
 
   /* Forecast colors — compatibility aliases mapped to the chart-tone
      scale so existing consumers inherit the calmer ordinal palette. */
@@ -357,7 +356,7 @@
 
   --color-approve: light-dark(#1e7a5e, #2fb67c);
   --color-approve-hover: light-dark(#0f4d3e, #a9dcc2);
-  --color-text-on-accent: light-dark(#fff8ec, #081d33);
+  --color-text-on-accent: light-dark(#fff8ec, #001018);
   /* Text on a saturated danger/alert background. White-on-red is the
      canonical contrast pairing across both themes. */
   --color-text-on-danger: light-dark(#ffffff, #ffffff);
@@ -368,18 +367,16 @@
   --color-role-sub: light-dark(#b7791f, #d4a333);
   --color-role-reviewer: light-dark(#0891b2, #0ea5e9);
 
-  /* Elevation — neutral institutional shadow stack.
-     Black-alpha ambient occlusion. Three-layer model preserved:
-     contact shadow (tight), penumbra (mid), ambient (diffuse). */
-  --_shadow-xs-a: light-dark(rgba(7, 35, 62, 0.035), rgba(0, 0, 0, 0.12));
-  --_shadow-sm-a: light-dark(rgba(7, 35, 62, 0.045), rgba(0, 0, 0, 0.16));
-  --_shadow-sm-b: light-dark(rgba(7, 35, 62, 0.025), rgba(0, 0, 0, 0.10));
-  --_shadow-md-a: light-dark(rgba(7, 35, 62, 0.04), rgba(0, 0, 0, 0.18));
-  --_shadow-md-b: light-dark(rgba(7, 35, 62, 0.065), rgba(0, 0, 0, 0.24));
-  --_shadow-md-c: light-dark(rgba(7, 35, 62, 0.025), rgba(0, 0, 0, 0.14));
-  --_shadow-lg-a: light-dark(rgba(7, 35, 62, 0.045), rgba(0, 0, 0, 0.20));
-  --_shadow-lg-b: light-dark(rgba(7, 35, 62, 0.08), rgba(0, 0, 0, 0.30));
-  --_shadow-lg-c: light-dark(rgba(7, 35, 62, 0.035), rgba(0, 0, 0, 0.18));
+  /* Elevation — dark mode uses blue shader glow around black panels. */
+  --_shadow-xs-a: light-dark(rgba(7, 35, 62, 0.035), rgba(56, 189, 248, 0.10));
+  --_shadow-sm-a: light-dark(rgba(7, 35, 62, 0.045), rgba(56, 189, 248, 0.12));
+  --_shadow-sm-b: light-dark(rgba(7, 35, 62, 0.025), rgba(14, 165, 233, 0.08));
+  --_shadow-md-a: light-dark(rgba(7, 35, 62, 0.04), rgba(56, 189, 248, 0.12));
+  --_shadow-md-b: light-dark(rgba(7, 35, 62, 0.065), rgba(14, 165, 233, 0.14));
+  --_shadow-md-c: light-dark(rgba(7, 35, 62, 0.025), rgba(29, 78, 216, 0.10));
+  --_shadow-lg-a: light-dark(rgba(7, 35, 62, 0.045), rgba(56, 189, 248, 0.14));
+  --_shadow-lg-b: light-dark(rgba(7, 35, 62, 0.08), rgba(14, 165, 233, 0.16));
+  --_shadow-lg-c: light-dark(rgba(7, 35, 62, 0.035), rgba(29, 78, 216, 0.12));
 
   --shadow-xs:
     0 0.5px 1px var(--_shadow-xs-a),
@@ -626,26 +623,26 @@
      bird's-eye context blocks that anchor each top-level page (Classroom,
      Today, Tomorrow, Week, Prep, Ops, Review). Sits one elevation step
      above .surface-panel--atmospheric: more presence on the page, but
-     never a wash. The wheat-soft accent is the warm brand affordance,
-     used on the left rail and the eyebrow only. Body remains
-     near-black/neutral in dark mode per the reference-board contract.
+     never a wash. The wheat-soft accent is the warm brand affordance
+     in light mode; dark mode follows the blue OLED accent contract.
+     Body remains pitch black in dark mode.
      Consumers: PageHero, Operational Preview strip. Do not use for
      ordinary cards — the command-block aesthetic is reserved for the
      page-anchoring header surfaces.
      ------------------------------------------------------------ */
-  --color-command-surface: light-dark(#fffaf1, #0f1e2d);
+  --color-command-surface: light-dark(#fffaf1, #000000);
   --color-command-rule: light-dark(
     color-mix(in srgb, #b7791f 58%, #dcccb4),
-    color-mix(in srgb, #d4a333 54%, #374151)
+    color-mix(in srgb, #38bdf8 58%, #123a66)
   );
-  --color-command-eyebrow: light-dark(#b85a09, #ead9b3);
-  --color-command-border: light-dark(#dcccb4, #374151);
+  --color-command-eyebrow: light-dark(#b85a09, #7dd3fc);
+  --color-command-border: light-dark(#dcccb4, #123a66);
 
   /* Operational-preview strip — dense below-hero metric/chip tiles.
      Quieter than command-block but strongly framed on dark mode. */
-  --color-preview-surface: light-dark(#fbf6ea, #061421);
-  --color-preview-tile: light-dark(#fffaf1, #0b1622);
-  --color-preview-border: light-dark(#dcccb4, #374151);
+  --color-preview-surface: light-dark(#fbf6ea, #000000);
+  --color-preview-tile: light-dark(#fffaf1, #000000);
+  --color-preview-border: light-dark(#dcccb4, #123a66);
 }
 
 :root[data-theme="light"] {
@@ -685,11 +682,11 @@
   :root {
     --color-text-secondary: light-dark(#384050, #f8fafc);
     --color-text-tertiary: light-dark(#424c5c, #e5e7eb);
-    --color-border: light-dark(#a8b0bc, #6b7280);
-    --color-border-strong: light-dark(#525a68, #d1d5db);
-    --color-border-input: light-dark(#4a5260, #e5e7eb);
-    --color-accent: light-dark(#081d33, #ead9b3);
-    --color-accent-hover: light-dark(#173a63, #f7f2e6);
+    --color-border: light-dark(#a8b0bc, #60a5fa);
+    --color-border-strong: light-dark(#525a68, #bae6fd);
+    --color-border-input: light-dark(#4a5260, #bae6fd);
+    --color-accent: light-dark(#081d33, #7dd3fc);
+    --color-accent-hover: light-dark(#173a63, #bae6fd);
   }
 }
 

@@ -82,19 +82,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   const [detailOpen, setDetailOpen] = useState(false);
   const mondayMoment = useMondayMoment(activeClassroom ?? "");
 
-  // PageAnchorRail anchors 02–07 (`classroom-pulse`, `day-arc`,
-  // `complexity-debt`, `planning-health`, `carry-forward`, `end-of-today`)
-  // all live inside the collapsed `.today-detail` wrapper. If the user
-  // clicks one of them — or arrives via a deep link with `#carry-forward`
-  // in the URL — auto-expand the detail so the in-page nav doesn't
+  // Detail anchors 02–07 (`classroom-pulse`, `day-arc`, `complexity-debt`,
+  // `planning-health`, `carry-forward`, `end-of-today`) live inside the
+  // collapsed `.today-detail` wrapper. If the user arrives via a deep link
+  // such as `#carry-forward`, auto-expand the detail so the anchor doesn't
   // dead-end. The shell-level command center (`#command-center`) and the
-  // workspace top (`#today-top`) stay visible at all times, so we ignore
-  // those.
-  //
-  // Note: `PageAnchorRail` updates the URL with `history.replaceState`,
-  // which does NOT fire `hashchange`. We therefore listen on both
-  // `hashchange` (for browser-level deep links) and a delegated `click`
-  // capture (for the rail's in-page links).
+  // workspace top (`#today-top`) stay visible at all times, so we ignore those.
   useEffect(() => {
     const detailAnchors = new Set([
       "classroom-pulse",
@@ -308,9 +301,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   // Slim header subtitle — promotes the day's "real test" block when
   // the forecast surfaces a peak, otherwise falls back to a neutral
   // grade-band tag so the header still reads as a single utility line.
-  const headerSubtitle = peakBlock
-    ? `${peakBlock.time_slot} is today's real test.`
-    : `Same-day triage for Grade ${profile.grade_band}.`;
+  const headerSubtitle = buildTodayHeaderSubtitle(currentHour, profile.grade_band, peakBlock);
 
   return (
     <section className="workspace-page today-panel" id="today-top">
@@ -345,6 +336,7 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
             checkFirstStudents={studentsToCheckFirst}
             studentReasons={studentReasons}
             peakBlock={peakBlock}
+            currentHour={currentHour}
             mondayMoment={
               mondayMoment.active
                 ? {
@@ -629,6 +621,26 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
       />
     </section>
   );
+}
+
+function buildTodayHeaderSubtitle(
+  hour: number,
+  gradeBand: string,
+  peakBlock: ComplexityBlock | null,
+): string {
+  if (hour >= 17 || hour < 5) {
+    return "End-of-day closeout: carry forward what will matter tomorrow.";
+  }
+  if (hour >= 14) {
+    return "After-school closeout: capture notes, messages, and tomorrow's first move.";
+  }
+  if (hour >= 11) {
+    return "Mid-day recovery: log the fresh evidence before the afternoon shift.";
+  }
+  if (peakBlock) {
+    return `${peakBlock.time_slot} is today's real test.`;
+  }
+  return `Same-day triage for Grade ${gradeBand}.`;
 }
 
 function buildInterventionCtaPrefill({

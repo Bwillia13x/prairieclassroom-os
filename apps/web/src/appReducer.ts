@@ -5,7 +5,7 @@
  * uses the grouped `Today / Prep / Ops / Review` model. The teacher-facing
  * top-level navigation is a flat row of seven standalone views:
  *
- *   classroom · today · tomorrow · week · prep · ops · review
+ *   today · classroom · tomorrow · week · prep · ops · review
  *
  * A page may host multiple embedded tools (Prep hosts Differentiate +
  * Language Tools, Tomorrow hosts Plan + Forecast, Ops hosts the four
@@ -41,8 +41,8 @@ export type ActiveTab =
  * the corresponding tests and docs.
  */
 export const TAB_ORDER: ActiveTab[] = [
-  "classroom",
   "today",
+  "classroom",
   "tomorrow",
   "week",
   "prep",
@@ -177,6 +177,7 @@ export type SectionTone = "sun" | "sage" | "slate" | "forest" | "muted";
 export interface TabMeta {
   label: string;
   shortLabel: string;
+  taskLabel: string;
   icon: SectionIconName;
   sectionTone: SectionTone;
   /** Roles that should see this tab in the nav. */
@@ -198,7 +199,8 @@ export interface TabMeta {
 export const TAB_META: Record<ActiveTab, TabMeta> = {
   classroom: {
     label: "Classroom",
-    shortLabel: "Classroom",
+    shortLabel: "Room",
+    taskLabel: "Room view",
     icon: "grid",
     sectionTone: "sun",
     roles: ["teacher", "ea", "substitute"],
@@ -206,7 +208,8 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   },
   today: {
     label: "Today",
-    shortLabel: "Today",
+    shortLabel: "Do now",
+    taskLabel: "Do this now",
     icon: "sun",
     sectionTone: "sun",
     roles: ["teacher", "ea", "substitute"],
@@ -214,7 +217,8 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   },
   tomorrow: {
     label: "Tomorrow",
-    shortLabel: "Tomorrow",
+    shortLabel: "Plan",
+    taskLabel: "Plan tomorrow",
     icon: "calendar",
     sectionTone: "slate",
     roles: ["teacher", "substitute", "reviewer"],
@@ -223,6 +227,7 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   week: {
     label: "Week",
     shortLabel: "Week",
+    taskLabel: "Week map",
     // Phase D2 (2026-04-27) — five-column day-strip glyph replaces
     // the prior `grid` so the Week tab no longer collides with
     // Classroom and Ops, which also used `grid`.
@@ -233,7 +238,8 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   },
   prep: {
     label: "Prep",
-    shortLabel: "Prep",
+    shortLabel: "Adapt",
+    taskLabel: "Adapt lesson",
     icon: "pencil",
     sectionTone: "sage",
     roles: ["teacher"],
@@ -241,7 +247,8 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   },
   ops: {
     label: "Ops",
-    shortLabel: "Ops",
+    shortLabel: "Log",
+    taskLabel: "Log note",
     // Phase D2 (2026-04-27) — compass glyph replaces the prior
     // `grid`. Ops is adult coordination, not a dashboard, so the
     // cardinal-marker compass reads as "coordinate" not "view."
@@ -252,7 +259,8 @@ export const TAB_META: Record<ActiveTab, TabMeta> = {
   },
   review: {
     label: "Review",
-    shortLabel: "Review",
+    shortLabel: "Message",
+    taskLabel: "Message family",
     icon: "bars",
     sectionTone: "forest",
     roles: ["teacher", "ea", "reviewer"],
@@ -578,7 +586,7 @@ function loadTomorrowNotes(): TomorrowNote[] {
 /**
  * Restore the active tab + optional embedded tool from the URL.
  *
- * - Missing `?tab=` lands on `classroom` (teacher default).
+ * - Missing `?tab=` lands on `today` (teacher default).
  * - Top-level new-world tab ids (classroom/today/tomorrow/…) land
  *   directly on that page.
  * - Legacy panel ids (tomorrow-plan, log-intervention, differentiate, …)
@@ -590,7 +598,7 @@ function loadTomorrowNotes(): TomorrowNote[] {
  */
 export function restoreNavFromUrl(): { tab: ActiveTab; tool: ActiveTool | null } {
   if (typeof window === "undefined") {
-    return { tab: "classroom", tool: null };
+    return { tab: "today", tool: null };
   }
   try {
     const params = new URLSearchParams(window.location.search);
@@ -598,7 +606,7 @@ export function restoreNavFromUrl(): { tab: ActiveTab; tool: ActiveTool | null }
     const toolParam = params.get("tool");
 
     if (!tabParam) {
-      return { tab: "classroom", tool: null };
+      return { tab: "today", tool: null };
     }
 
     const resolvedFromTab = resolveLegacyPanel(tabParam);
@@ -611,7 +619,7 @@ export function restoreNavFromUrl(): { tab: ActiveTab; tool: ActiveTool | null }
     // so panels that key off `activeTool` render their landing surface.
     return { tab: resolved.tab, tool: defaultToolForTab(resolved.tab) };
   } catch {
-    return { tab: "classroom", tool: null };
+    return { tab: "today", tool: null };
   }
 }
 
