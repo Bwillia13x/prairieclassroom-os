@@ -31,7 +31,7 @@ import type {
   TodaySnapshot,
   UpcomingEvent,
 } from "../types";
-import "./TodayPanel.css";
+import "./WeekPanel.css";
 
 interface Props {
   onTabChange: (target: NavTarget) => void;
