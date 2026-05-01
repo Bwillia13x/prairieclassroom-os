@@ -626,6 +626,7 @@ export default function OperatingDashboard({
   const fallbackQueue = [...dashboard.communication_queue, ...dashboard.prep_queue]
     .filter((queue) => queue.count > 0 || queue.state !== "clear")
     .slice(0, 3);
+  const summaryQueueCount = debtQueue.length || fallbackQueue.length;
 
   function navigateIfVisible(tabRaw: string | null) {
     const target = targetFromString(tabRaw);
@@ -641,54 +642,88 @@ export default function OperatingDashboard({
         className="operating-dashboard operating-dashboard--summary"
         aria-labelledby="operating-dashboard-summary-heading"
       >
-        <h2 id="operating-dashboard-summary-heading" className="sr-only">
-          Classroom operating bands
-        </h2>
-        <div className="operating-dashboard__summary-grid">
+        <header className="operating-summary__top">
+          <div className="operating-summary__lede">
+            <span className="operating-summary__eyebrow">Classroom operating bands</span>
+            <h2 id="operating-dashboard-summary-heading">Watch, cover, clear.</h2>
+            <p>Three signals that decide whether to stay in the room view or pivot into action.</p>
+          </div>
+          <dl className="operating-summary__metrics" aria-label="Operating band metrics">
+            <div>
+              <dt>Watch</dt>
+              <dd>{summaryWatchlist.length}</dd>
+            </div>
+            <div>
+              <dt>Coverage</dt>
+              <dd>{coverageValue}%</dd>
+            </div>
+            <div>
+              <dt>Queue</dt>
+              <dd>{summaryQueueCount}</dd>
+            </div>
+          </dl>
+        </header>
+
+        <div className="operating-summary__layout">
           <section className="operating-summary-card operating-summary-card--watchlist" aria-label="Watchlist">
             <div className="operating-summary-card__header">
-              <h3>Watchlist</h3>
+              <div>
+                <span>01</span>
+                <h3>Watchlist</h3>
+              </div>
               <button type="button" onClick={() => onNavigate("today")}>
                 View all
               </button>
             </div>
             <div className="operating-watchlist">
-              {summaryWatchlist.map((row) => (
-                <button
-                  key={row.alias}
-                  type="button"
-                  className="operating-watchlist__item"
-                  onClick={() => {
-                    if (row.thread) onOpenContext({ type: "student-thread", thread: row.thread });
-                    else onOpenContext({ type: "student", alias: row.alias });
-                  }}
-                >
-                  <span
-                    className={`operating-watchlist__dot operating-watchlist__dot--${
-                      row.cells.some((cell) => cell.state === "open")
-                        ? "open"
-                        : row.cells.some((cell) => cell.state === "watch")
-                          ? "watch"
-                          : "covered"
-                    }`}
-                    aria-hidden="true"
-                  />
-                  <span className="operating-watchlist__name">{row.alias}</span>
-                  <span className="operating-watchlist__reason">
-                    {row.priority_reason
-                      ?? (row.support_tags && row.support_tags.length > 0
-                        ? row.support_tags.slice(0, 2).map(formatSupportTag).join(", ")
-                        : `${row.thread_count} active threads`)}
-                  </span>
-                </button>
-              ))}
+              {summaryWatchlist.map((row) => {
+                const openCellCount = row.cells.filter((cell) => cell.state === "open").length;
+                const watchCellCount = row.cells.filter((cell) => cell.state === "watch").length;
+                const rowTone = openCellCount > 0 ? "open" : watchCellCount > 0 ? "watch" : "covered";
+                const rowStatus =
+                  openCellCount > 0
+                    ? `${openCellCount} open`
+                    : watchCellCount > 0
+                      ? `${watchCellCount} watch`
+                      : `${row.thread_count} signals`;
+
+                return (
+                  <button
+                    key={row.alias}
+                    type="button"
+                    className="operating-watchlist__item"
+                    onClick={() => {
+                      if (row.thread) onOpenContext({ type: "student-thread", thread: row.thread });
+                      else onOpenContext({ type: "student", alias: row.alias });
+                    }}
+                  >
+                    <span
+                      className={`operating-watchlist__dot operating-watchlist__dot--${rowTone}`}
+                      aria-hidden="true"
+                    />
+                    <span className="operating-watchlist__copy">
+                      <strong className="operating-watchlist__name">{row.alias}</strong>
+                      <span className="operating-watchlist__reason">
+                        {row.priority_reason
+                          ?? (row.support_tags && row.support_tags.length > 0
+                            ? row.support_tags.slice(0, 2).map(formatSupportTag).join(", ")
+                            : `${row.thread_count} active threads`)}
+                      </span>
+                    </span>
+                    <span className="operating-watchlist__status">{rowStatus}</span>
+                  </button>
+                );
+              })}
             </div>
           </section>
 
           <section className="operating-summary-card operating-summary-card--coverage" aria-label="Coverage">
             <div className="operating-summary-card__header">
-              <h3>Coverage</h3>
-              <span>This week</span>
+              <div>
+                <span>02</span>
+                <h3>Coverage</h3>
+              </div>
+              <span>{openCoverageCount} open cells</span>
             </div>
             <button
               type="button"
@@ -706,16 +741,22 @@ export default function OperatingDashboard({
               <strong>{coverageValue}%</strong>
               <span>Core coverage</span>
             </button>
-            <p className={`operating-coverage-status operating-coverage-status--${coverageValue >= 80 ? "steady" : "needs"}`}>
-              <span aria-hidden="true" />
-              {coverageValue >= 80 ? "On track for outcomes" : "Coverage needs a teacher pass"}
-            </p>
+            <div className="operating-coverage-facts" aria-label="Coverage facts">
+              <span className={`operating-coverage-status operating-coverage-status--${coverageValue >= 80 ? "steady" : "needs"}`}>
+                <span aria-hidden="true" />
+                {coverageValue >= 80 ? "On track" : "Needs pass"}
+              </span>
+              <span>{highRiskCount} high-risk blocks</span>
+            </div>
           </section>
 
           <section className="operating-summary-card operating-summary-card--queue" aria-label="Prairie queue">
             <div className="operating-summary-card__header">
-              <h3>Prairie queue</h3>
-              <span>{debtQueue.length || fallbackQueue.length} items</span>
+              <div>
+                <span>03</span>
+                <h3>Prairie queue</h3>
+              </div>
+              <span>{summaryQueueCount} items</span>
             </div>
             <div className="operating-queue-list">
               {debtQueue.length > 0

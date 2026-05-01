@@ -16,7 +16,8 @@ import ErrorBanner from "../components/ErrorBanner";
 import OperatingDashboard from "../components/OperatingDashboard";
 import DrillDownDrawer from "../components/DrillDownDrawer";
 import { StudentCoverageStrip } from "../components/TriageSurfaces";
-import PageHero from "../components/shared/PageHero";
+import SectionIcon, { type SectionIconName } from "../components/SectionIcon";
+import { ActionButton } from "../components/shared";
 import SectionMarker from "../components/shared/SectionMarker";
 import { useZoneDisclosure } from "../hooks/useZoneDisclosure";
 import { countActionableThreads } from "./ClassroomPanel.helpers";
@@ -138,14 +139,14 @@ function ClassroomCommandInstrument({
       aria-label="Classroom health and operating pressure"
     >
       <div className="classroom-command-instrument__header">
-        <span>Classroom health</span>
+        <span>Room health</span>
         <span className="classroom-command-instrument__live">
           <span aria-hidden="true" />
           Live
         </span>
       </div>
 
-      <div className="classroom-command-instrument__body">
+      <div className="classroom-command-instrument__summary">
         <div className="classroom-command-instrument__pressure">
           <div
             className="classroom-command-instrument__ring"
@@ -158,44 +159,207 @@ function ClassroomCommandInstrument({
               <em>{pulse.label}</em>
             </span>
           </div>
-          <span className="classroom-command-instrument__pressure-label">Pressure</span>
         </div>
+        <div className="classroom-command-instrument__pulse">
+          <span className="classroom-command-instrument__pulse-label">{pulse.label}</span>
+          <p>{pulse.meta}</p>
+          <span className="classroom-command-instrument__pressure-label">Pressure index</span>
+        </div>
+      </div>
 
-        <div className="classroom-command-instrument__stats">
-          <div className="classroom-command-instrument__stat">
-            <span>Threads</span>
-            <strong>{openThreadCount ?? "—"}</strong>
-            <em>Active</em>
-          </div>
-          <div className="classroom-command-instrument__stat">
-            <span>Roster</span>
-            <strong>{studentCount}</strong>
-            <em>{ealCount} EAL</em>
-          </div>
-          <div className="classroom-command-instrument__stat">
-            <span>Plan filed</span>
-            <strong>{planValue}</strong>
-            <em>{streakDays > 0 ? `${streakDays}d streak` : "No streak"}</em>
-          </div>
-          <div className="classroom-command-instrument__stat">
-            <span>Queue</span>
-            <strong>{openItemCount ?? "—"}</strong>
-            <em>Needs you</em>
-          </div>
+      <div className="classroom-command-instrument__stats">
+        <div className="classroom-command-instrument__stat">
+          <span>Threads</span>
+          <strong>{openThreadCount ?? "—"}</strong>
+          <em>Active conversations</em>
+        </div>
+        <div className="classroom-command-instrument__stat">
+          <span>Roster</span>
+          <strong>{studentCount}</strong>
+          <em>{ealCount} EAL supports</em>
+        </div>
+        <div className="classroom-command-instrument__stat">
+          <span>Plans</span>
+          <strong>{planValue}</strong>
+          <em>{streakDays > 0 ? `${streakDays}d streak` : "No streak"}</em>
+        </div>
+        <div className="classroom-command-instrument__stat">
+          <span>Queue</span>
+          <strong>{openItemCount ?? "—"}</strong>
+          <em>Need teacher action</em>
         </div>
       </div>
 
       <div className="classroom-command-instrument__footer">
         <span>
           <span aria-hidden="true" />
-          {pulse.meta}
+          {openItemCount ?? "—"} open · plans filed {planValue}
         </span>
         <span>{lastActivityLabel}</span>
         <button type="button" onClick={onViewSignals}>
-          View all signals
+          View signals
         </button>
       </div>
     </div>
+  );
+}
+
+interface ClassroomCommandCardProps {
+  gradeBand: string;
+  pulse: { tone: PulseTone; label: string; meta: string };
+  pressure: number;
+  openThreadCount: number | null;
+  openItemCount: number | null;
+  studentCount: number;
+  ealCount: number;
+  plannedDays: number | null;
+  streakDays: number;
+  lastActivityLabel: string;
+  onTabChange: (target: NavTarget) => void;
+}
+
+interface ClassroomCommandFact {
+  label: string;
+  value: string | number;
+  caption: string;
+}
+
+interface ClassroomCommandPivot {
+  eyebrow: string;
+  label: string;
+  icon: SectionIconName;
+  target: NavTarget;
+}
+
+function ClassroomCommandCard({
+  gradeBand,
+  pulse,
+  pressure,
+  openThreadCount,
+  openItemCount,
+  studentCount,
+  ealCount,
+  plannedDays,
+  streakDays,
+  lastActivityLabel,
+  onTabChange,
+}: ClassroomCommandCardProps) {
+  const planValue = plannedDays !== null ? `${plannedDays}/7` : "—";
+  const planCaption = streakDays > 0 ? `${streakDays}d streak` : "No streak";
+  const facts: ClassroomCommandFact[] = [
+    {
+      label: "Open work",
+      value: openItemCount ?? "—",
+      caption: "Queue items",
+    },
+    {
+      label: "Threads",
+      value: openThreadCount ?? "—",
+      caption: "Active student signals",
+    },
+    {
+      label: "Roster",
+      value: studentCount,
+      caption: `${ealCount} EAL supports`,
+    },
+    {
+      label: "Plan coverage",
+      value: planValue,
+      caption: planCaption,
+    },
+  ];
+  const pivots: ClassroomCommandPivot[] = [
+    { eyebrow: "Live", label: "Today triage", icon: "sun", target: "today" },
+    { eyebrow: "Stage", label: "Tomorrow plan", icon: "clock", target: "tomorrow" },
+    { eyebrow: "Forecast", label: "Week map", icon: "trend", target: "week" },
+  ];
+
+  return (
+    <section
+      className={`classroom-command-card classroom-command-card--${pulse.tone}`}
+      id="classroom-command"
+      aria-label="Classroom command and temporal pivots"
+    >
+      <div className="classroom-command-card__layout">
+        <article className="classroom-command-card__command" aria-labelledby="classroom-command-title">
+          <div className="classroom-command-card__kicker">
+            <span className="classroom-command-card__eyebrow">Classroom command</span>
+            <span className="classroom-command-card__phase">Room view</span>
+          </div>
+          <div className="classroom-command-card__body">
+            <span className="classroom-command-card__icon" aria-hidden="true">
+              <SectionIcon name="grid" />
+            </span>
+            <div className="classroom-command-card__copy">
+              <h1 id="classroom-command-title" className="classroom-command-card__title">
+                Read the room, then choose the lens.
+              </h1>
+              <p className="classroom-command-card__description">
+                Grade {gradeBand} is showing <strong>{pulse.label.toLowerCase()}</strong>.
+                Start with the live queue, stage tomorrow&apos;s support, or step back to the
+                weekly pressure map.
+              </p>
+            </div>
+            <div className="classroom-command-card__actions">
+              <ActionButton
+                variant="primary"
+                size="lg"
+                onClick={() => onTabChange("today")}
+                className="classroom-command-card__primary"
+                trailingIcon={<span className="classroom-command-card__arrow">→</span>}
+              >
+                Open Today triage
+              </ActionButton>
+            </div>
+            <dl className="classroom-command-card__facts" aria-label="Classroom command facts">
+              {facts.map((fact) => (
+                <div className="classroom-command-card__fact" key={fact.label}>
+                  <dt>{fact.label}</dt>
+                  <dd>{fact.value}</dd>
+                  <span>{fact.caption}</span>
+                </div>
+              ))}
+            </dl>
+          </div>
+
+          <div className="classroom-command-card__pivots" role="group" aria-label="Temporal pivots">
+            {pivots.map((pivot) => (
+              <button
+                key={pivot.label}
+                type="button"
+                className="classroom-command-card__pivot"
+                data-pivot={pivot.target}
+                onClick={() => onTabChange(pivot.target)}
+                aria-label={`${pivot.eyebrow}: ${pivot.label}`}
+              >
+                <span className="classroom-command-card__pivot-icon" aria-hidden="true">
+                  <SectionIcon name={pivot.icon} />
+                </span>
+                <span className="classroom-command-card__pivot-body">
+                  <span className="classroom-command-card__pivot-eyebrow">{pivot.eyebrow}</span>
+                  <span className="classroom-command-card__pivot-label">{pivot.label}</span>
+                </span>
+              </button>
+            ))}
+          </div>
+        </article>
+
+        <aside className="classroom-command-card__rail" aria-label="Classroom health rail">
+          <ClassroomCommandInstrument
+            pulse={pulse}
+            pressure={pressure}
+            openThreadCount={openThreadCount}
+            openItemCount={openItemCount}
+            studentCount={studentCount}
+            ealCount={ealCount}
+            plannedDays={plannedDays}
+            streakDays={streakDays}
+            lastActivityLabel={lastActivityLabel}
+            onViewSignals={() => onTabChange("today")}
+          />
+        </aside>
+      </div>
+    </section>
   );
 }
 
@@ -294,61 +458,18 @@ export default function ClassroomPanel({
           ZONE 1 — HERO
           Command + status pulse + temporal pivots + metrics row.
           ============================================================ */}
-      <PageHero
-        id="classroom-command"
-        ariaLabel="Classroom command and temporal pivots"
-        eyebrow="Classroom command"
-        title={<>Read the room before choosing the <em>lens.</em></>}
-        description={
-          <>
-            Bird&apos;s-eye health, coverage, and queue signal for{" "}
-            <strong>Grade {profile.grade_band}</strong>. Pivot into{" "}
-            <strong>Today</strong> for live triage,{" "}
-            <strong>Tomorrow</strong> to stage the next block, or{" "}
-            <strong>Week</strong> to forecast pressure.
-          </>
-        }
-        instrument={
-          <ClassroomCommandInstrument
-            pulse={pulse}
-            pressure={pressure}
-            openThreadCount={openThreadCount}
-            openItemCount={openItemCount}
-            studentCount={profile.students.length}
-            ealCount={ealCount}
-            plannedDays={plannedDays}
-            streakDays={streakDays}
-            lastActivityLabel={lastActivityLabel}
-            onViewSignals={() => onTabChange("today")}
-          />
-        }
-        pivots={[
-          {
-            eyebrow: "Live",
-            label: "Today",
-            icon: "sun",
-            onClick: () => onTabChange("today"),
-          },
-          {
-            eyebrow: "Stage",
-            label: "Tomorrow",
-            icon: "clock",
-            onClick: () => onTabChange("tomorrow"),
-          },
-          {
-            eyebrow: "Forecast",
-            label: "Week",
-            // Phase D2 (2026-04-27) — `trend` glyph (rising sparkline
-            // + dashed baseline) replaces the prior `grid` so the
-            // FORECAST card reads as a forward-looking measurement,
-            // not as another dashboard. Destination tint stays green
-            // via the `data-pivot-icon` cascade in PageHero.css.
-            icon: "trend",
-            onClick: () => onTabChange("week"),
-          },
-        ]}
-        variant="classroom"
-        density="command"
+      <ClassroomCommandCard
+        gradeBand={profile.grade_band}
+        pulse={pulse}
+        pressure={pressure}
+        openThreadCount={openThreadCount}
+        openItemCount={openItemCount}
+        studentCount={profile.students.length}
+        ealCount={ealCount}
+        plannedDays={plannedDays}
+        streakDays={streakDays}
+        lastActivityLabel={lastActivityLabel}
+        onTabChange={onTabChange}
       />
 
       {/* ============================================================
