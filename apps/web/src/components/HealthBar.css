@@ -1,73 +1,334 @@
-/* HealthBar — the telemetry strip at the foot of the home page.
-   Nothing-design: flat surface, hairline border, no shadow, no gradient.
-   Dots are technical 7px ticks on a 1px track; filled dots invert to
-   text color rather than the accent so the strip reads monochrome. */
+/* HealthBar - record-derived planning, debt, and complexity pulse. */
 .health-bar {
+  --health-tone: var(--color-accent);
+  --health-tone-soft: color-mix(in srgb, var(--health-tone) 8%, transparent);
+
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid var(--color-border);
+  flex-direction: column;
+  gap: 0;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--health-tone) 18%, var(--color-border));
   border-radius: var(--radius-sm);
   background: var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--health-tone) 4%, transparent),
+    0 18px 42px -34px color-mix(in srgb, var(--health-tone) 42%, transparent);
+}
+
+.health-bar--success {
+  --health-tone: var(--color-success);
+}
+
+.health-bar--pending {
+  --health-tone: var(--color-accent);
+}
+
+.health-bar--warning {
+  --health-tone: var(--color-danger);
 }
 
 .health-bar--empty {
+  align-items: center;
   justify-content: center;
+  min-height: var(--control-h-lg);
+  padding: var(--space-4);
+}
+
+.health-bar__summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: end;
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+  background:
+    linear-gradient(135deg, var(--health-tone-soft), transparent 44%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 34%, transparent), transparent 70%);
+}
+
+.health-bar__summary-copy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.health-bar__eyebrow,
+.health-bar__module-header > div > span,
+.health-bar__module-header > span,
+.health-bar__planning-label,
+.health-bar__planning-subnote {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.health-bar__summary-copy strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-display-sm);
+  font-weight: var(--font-weight-semibold);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.health-bar__summary-copy > span:last-child {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.health-bar__summary-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  min-width: 13rem;
+}
+
+.health-bar__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(16rem, 0.72fr);
+  grid-template-areas:
+    "planning state"
+    "debt complexity";
+  gap: var(--space-2);
+  padding: var(--space-3);
+}
+
+.health-bar__module {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2-5);
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--health-tone) 14%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 36%, var(--color-surface));
+}
+
+.health-bar__module--planning {
+  grid-area: planning;
+}
+
+.health-bar__module--state {
+  grid-area: state;
+}
+
+.health-bar__module--debt {
+  grid-area: debt;
+}
+
+.health-bar__module--complexity {
+  grid-area: complexity;
+}
+
+.health-bar__module-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.health-bar__module-header > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  min-width: 0;
+}
+
+.health-bar__module-header h4 {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.health-bar__module-header > span {
+  min-height: var(--control-h-xs);
+  padding: 0 var(--space-2-5);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--health-tone) 7%, transparent);
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.health-bar__planning-group {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  align-items: start;
 }
 
 .health-bar__planning {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  min-width: 0;
 }
 
 .health-bar__dot {
   display: inline-block;
-  width: 7px;
-  height: 7px;
+  width: 0.58rem;
+  height: 0.58rem;
+  flex: 0 0 auto;
+  border: 1px solid color-mix(in srgb, var(--color-border-strong) 78%, transparent);
   border-radius: 999px;
   background: transparent;
-  border: 1px solid var(--color-border-strong);
   transition:
     background var(--motion-base) var(--ease-spring),
-    border-color var(--motion-base) var(--ease-spring);
+    border-color var(--motion-base) var(--ease-spring),
+    transform var(--motion-fast) var(--ease-standard);
 }
 
 .health-bar__dot--filled {
-  background: var(--color-text);
   border-color: var(--color-text);
+  background: var(--color-text);
 }
 
 .health-bar__planning-label {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-tertiary);
-  font-variant-numeric: tabular-nums slashed-zero;
-  font-feature-settings: "tnum" 1, "zero" 1;
-  text-transform: uppercase;
-  letter-spacing: var(--tracking-eyebrow);
-}
-
-/* Audit #23: group the 7-dot strip + 14-day calendar so the denominator
-   lives in exactly one place (the calendar). The weekly strip becomes
-   a silent visual, scoped by a "this week" caption. */
-.health-bar__planning-group {
   display: inline-flex;
-  align-items: center;
-  gap: var(--space-3);
-  flex-wrap: wrap;
+  gap: var(--space-1);
+  align-items: baseline;
 }
 
 .health-bar__planning-subnote {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+}
+
+.health-bar .viz-plan-streak {
+  align-items: flex-start;
+  justify-self: start;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+}
+
+.health-bar .viz-plan-streak__header {
+  margin-bottom: var(--space-2);
+}
+
+.health-bar .viz-plan-streak__count {
+  color: var(--color-text-secondary);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
   font-weight: var(--font-weight-semibold);
-  color: var(--color-text-tertiary);
+  letter-spacing: 0;
   text-transform: uppercase;
-  letter-spacing: var(--tracking-eyebrow);
+}
+
+.health-bar__state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-1);
+  min-height: 6rem;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--health-tone) 18%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--health-tone) 5%, var(--color-surface));
+}
+
+.health-bar__state strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--leading-tight);
+}
+
+.health-bar__state span,
+.health-bar__trend-note,
+.health-bar__empty-note {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+}
+
+.health-bar .viz-debt-trend,
+.health-bar .viz-debt-trend.viz-debt-trend--clickable,
+.health-bar .viz-complexity-cal {
+  min-height: 6.75rem;
+  padding: var(--space-2-5);
+  border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  box-shadow: none;
+}
+
+.health-bar .viz-debt-trend:hover,
+.health-bar .viz-debt-trend.viz-debt-trend--clickable:hover {
+  border-color: color-mix(in srgb, var(--health-tone) 46%, var(--color-border));
+  box-shadow: var(--shadow-xs);
+  transform: translateY(-1px);
+}
+
+.health-bar .viz-debt-trend:focus-visible,
+.health-bar .viz-debt-trend.viz-debt-trend--clickable:focus-visible {
+  outline: var(--focus-ring-outline);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.health-bar .viz-debt-trend .viz-svg {
+  width: 100%;
+  height: 3.45rem;
+}
+
+.health-bar .viz-debt-trend__range {
+  margin-top: var(--space-2);
+}
+
+.health-bar .viz-debt-trend__label,
+.health-bar .viz-debt-trend__range,
+.health-bar .viz-complexity-cal__legend {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.health-bar .viz-complexity-cal__grid {
+  display: grid;
+  grid-template-columns: repeat(14, minmax(0.65rem, 1fr));
+  gap: var(--space-1);
+}
+
+.health-bar .viz-complexity-cal__cell {
+  width: 100%;
+  min-width: 0;
+  height: 1rem;
+}
+
+.health-bar .viz-complexity-cal__legend {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.health-bar .viz-complexity-cal__legend-item {
+  min-width: 0;
+}
+
+.health-bar__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2-5) var(--space-4);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  color: var(--color-text-tertiary);
+  font-size: var(--text-xs);
 }
 
 .health-bar--loading {
@@ -94,15 +355,54 @@
   to { background-position: -200% 0; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .health-bar__shimmer {
-    animation: none;
+@media (max-width: 980px) {
+  .health-bar__summary,
+  .health-bar__grid,
+  .health-bar__planning-group {
+    grid-template-columns: 1fr;
+  }
+
+  .health-bar__grid {
+    grid-template-areas:
+      "planning"
+      "state"
+      "debt"
+      "complexity";
+  }
+
+  .health-bar__summary-chips {
+    justify-content: flex-start;
+    min-width: 0;
+  }
+
+  .health-bar .viz-complexity-cal__legend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 600px) {
-  .health-bar {
-    padding: var(--space-2);
-    gap: var(--space-1);
+  .health-bar__summary,
+  .health-bar__grid {
+    padding: var(--space-3);
+  }
+
+  .health-bar__module {
+    padding: var(--space-3);
+  }
+
+  .health-bar__footer {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .health-bar__shimmer,
+  .health-bar .viz-debt-trend,
+  .health-bar .viz-debt-trend.viz-debt-trend--clickable,
+  .health-bar__dot {
+    animation: none;
+    transition: none;
   }
 }
