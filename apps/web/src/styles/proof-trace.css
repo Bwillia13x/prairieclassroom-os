@@ -1004,6 +1004,146 @@ textarea:focus,
   }
 }
 
+/* Responsive bridge: 601-960px browser windows are usually tablets,
+   split-screen desktops, or short projector panes. Keep command controls
+   in one row and use the bottom navigation rail so the workspace keeps
+   most of the viewport. */
+@media (min-width: 601px) and (max-width: 960px) {
+  .app-shell {
+    padding: var(--space-2) var(--space-3) 0 !important;
+  }
+
+  .app-header {
+    padding-top: 0 !important;
+  }
+
+  .app-header__inner {
+    display: grid !important;
+    grid-template-columns: minmax(8.75rem, auto) minmax(12rem, 1fr) auto !important;
+    align-items: center !important;
+    gap: var(--space-2) !important;
+    padding: var(--space-1) 0 var(--space-2) !important;
+  }
+
+  .shell-bar {
+    display: contents !important;
+  }
+
+  .shell-brand {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-width: 0 !important;
+  }
+
+  .app-logo {
+    height: 2.35rem !important;
+    max-width: min(10.5rem, 24vw) !important;
+  }
+
+  .brand-mark__glyph {
+    width: 1.35rem !important;
+    height: 1.35rem !important;
+  }
+
+  .brand-mark__wordmark {
+    font-size: 0.9rem !important;
+  }
+
+  .brand-mark__badge,
+  .shell-command-key,
+  .app-shell .shell-nav,
+  .shell-nav,
+  .shell-nav--solo,
+  .shell-bar__actions .header-action[data-testid="shell-help-trigger"] {
+    display: none !important;
+  }
+
+  .shell-classroom-anchor {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    width: min(100%, 23rem) !important;
+    justify-self: center !important;
+  }
+
+  .shell-classroom-pill {
+    min-height: 2.5rem !important;
+    padding: 0 var(--space-2) 0 0 !important;
+  }
+
+  .shell-classroom-pill__switcher {
+    width: 2.5rem !important;
+    margin-right: var(--space-2) !important;
+  }
+
+  .shell-classroom-pill__label {
+    font-size: var(--text-xs) !important;
+  }
+
+  .shell-bar__actions {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    justify-self: end !important;
+    width: auto !important;
+    gap: var(--space-1) !important;
+  }
+
+  .role-pill {
+    min-height: 2.5rem !important;
+    padding-inline: var(--space-2) !important;
+  }
+
+  .role-pill__eyebrow,
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__label,
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__kbd,
+  .theme-toggle__label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
+  }
+
+  .role-pill__label {
+    font-size: var(--text-xs) !important;
+  }
+
+  .shell-bar__actions .header-action,
+  .theme-toggle-instrument.nothing-btn {
+    min-width: 2.5rem !important;
+    min-height: 2.5rem !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
+    width: 2.5rem !important;
+    padding: 0 !important;
+    justify-content: center !important;
+  }
+
+  .theme-toggle-instrument.nothing-btn {
+    --nib-size: 2.5rem !important;
+    min-width: 2.5rem !important;
+    padding-inline: 0 !important;
+  }
+
+  .mobile-nav {
+    display: block !important;
+  }
+
+  .app-main {
+    margin: 0 !important;
+    padding: var(--space-3) !important;
+    padding-bottom: calc(var(--space-3) + 4.9rem + env(safe-area-inset-bottom)) !important;
+    border-radius: 0 !important;
+  }
+
+  .app-main[data-section="today"] {
+    padding-top: var(--space-2) !important;
+  }
+}
+
 /* ---------- mobile instrument rail ---------- */
 
 .mobile-nav {

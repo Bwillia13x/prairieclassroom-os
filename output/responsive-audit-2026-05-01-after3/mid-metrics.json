@@ -1,0 +1,152 @@
+[
+  {
+    "name": "mid640",
+    "viewport": {
+      "w": 640,
+      "h": 700
+    },
+    "docOverflow": 0,
+    "header": {
+      "x": 16,
+      "y": 8,
+      "w": 608,
+      "h": 57,
+      "display": "block"
+    },
+    "brand": {
+      "x": 16,
+      "y": 15,
+      "w": 147,
+      "h": 38,
+      "display": "flex"
+    },
+    "classroom": {
+      "x": 171,
+      "y": 12,
+      "w": 258,
+      "h": 44,
+      "display": "block"
+    },
+    "actions": {
+      "x": 437,
+      "y": 12,
+      "w": 187,
+      "h": 44,
+      "display": "flex"
+    },
+    "main": {
+      "x": 16,
+      "y": 65,
+      "w": 608,
+      "h": 635,
+      "display": "flex"
+    },
+    "mobileNav": {
+      "x": 0,
+      "y": 633,
+      "w": 640,
+      "h": 67,
+      "display": "block"
+    }
+  },
+  {
+    "name": "mid760",
+    "viewport": {
+      "w": 760,
+      "h": 700
+    },
+    "docOverflow": 0,
+    "header": {
+      "x": 16,
+      "y": 8,
+      "w": 728,
+      "h": 57,
+      "display": "block"
+    },
+    "brand": {
+      "x": 16,
+      "y": 15,
+      "w": 147,
+      "h": 38,
+      "display": "flex"
+    },
+    "classroom": {
+      "x": 176,
+      "y": 12,
+      "w": 368,
+      "h": 44,
+      "display": "block"
+    },
+    "actions": {
+      "x": 557,
+      "y": 12,
+      "w": 187,
+      "h": 44,
+      "display": "flex"
+    },
+    "main": {
+      "x": 16,
+      "y": 65,
+      "w": 728,
+      "h": 635,
+      "display": "flex"
+    },
+    "mobileNav": {
+      "x": 0,
+      "y": 633,
+      "w": 760,
+      "h": 67,
+      "display": "block"
+    }
+  },
+  {
+    "name": "mid820",
+    "viewport": {
+      "w": 820,
+      "h": 620
+    },
+    "docOverflow": 0,
+    "header": {
+      "x": 16,
+      "y": 8,
+      "w": 788,
+      "h": 57,
+      "display": "block"
+    },
+    "brand": {
+      "x": 16,
+      "y": 15,
+      "w": 147,
+      "h": 38,
+      "display": "flex"
+    },
+    "classroom": {
+      "x": 206,
+      "y": 12,
+      "w": 368,
+      "h": 44,
+      "display": "block"
+    },
+    "actions": {
+      "x": 617,
+      "y": 12,
+      "w": 187,
+      "h": 44,
+      "display": "flex"
+    },
+    "main": {
+      "x": 16,
+      "y": 65,
+      "w": 788,
+      "h": 555,
+      "display": "flex"
+    },
+    "mobileNav": {
+      "x": 0,
+      "y": 553,
+      "w": 820,
+      "h": 67,
+      "display": "block"
+    }
+  }
+]

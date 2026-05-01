@@ -22,6 +22,201 @@
   overflow: hidden;
 }
 
+/* Final visual hardening: Week needs to read as a planning map at desktop
+   widths even when the shell rail is expanded and the content column narrows. */
+.week-panel .week-operations-board {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.week-panel .week-operations-board__header {
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(18rem, 1fr);
+  gap: var(--space-4);
+  align-items: end;
+}
+
+.week-panel .week-ops-horizon {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)) !important;
+  gap: var(--space-3) !important;
+  align-items: stretch;
+}
+
+.week-panel .week-ops-day {
+  position: relative;
+  display: flex !important;
+  min-width: 0;
+  min-height: 100%;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 82%, transparent), transparent 54%),
+    color-mix(in srgb, var(--color-surface) 94%, transparent);
+  box-shadow:
+    var(--inner-stroke),
+    0 16px 36px -32px color-mix(in srgb, var(--color-text) 32%, transparent);
+}
+
+.week-panel .week-ops-day--high {
+  border-color: color-mix(in srgb, var(--chart-tone-high) 42%, var(--color-border));
+}
+
+.week-panel .week-ops-day__header,
+.week-panel .week-ops-day__signals,
+.week-panel .week-ops-day__rhythm {
+  display: flex;
+  min-width: 0;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.week-panel .week-ops-day__date {
+  display: grid;
+  gap: 0.08rem;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  text-align: left;
+}
+
+.week-panel .week-ops-day__date span,
+.week-panel .week-ops-badge,
+.week-panel .week-risk-pill,
+.week-panel .week-event-load em,
+.week-panel .week-ops-block__source,
+.week-panel .week-ops-day__rhythm span {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.week-panel .week-ops-day__date strong {
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  line-height: var(--leading-tight);
+}
+
+.week-panel .week-ops-day__badges,
+.week-panel .week-ops-day__signals {
+  flex-wrap: wrap;
+}
+
+.week-panel .week-ops-badge,
+.week-panel .week-risk-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  min-height: 1.55rem;
+  padding: 0 var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--color-surface-elevated) 62%, transparent);
+  color: var(--color-text-secondary);
+}
+
+.week-panel .week-event-load {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--space-1);
+  color: var(--color-text-secondary);
+}
+
+.week-panel .week-event-load strong {
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+}
+
+.week-panel .week-ops-day__blocks {
+  display: grid !important;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.week-panel .week-ops-block {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-elevated) 42%, transparent);
+  color: var(--color-text);
+  text-align: left;
+}
+
+.week-panel .week-ops-block:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-accent) 38%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent);
+}
+
+.week-panel .week-ops-block__time {
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  white-space: nowrap;
+}
+
+.week-panel .week-ops-block strong {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.week-panel .week-ops-block__source {
+  min-width: fit-content;
+  color: var(--color-text-tertiary);
+}
+
+.week-panel .week-ops-day__rhythm {
+  margin-top: auto;
+  padding-top: var(--space-2);
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent);
+}
+
+.week-panel .week-ops-day__rhythm {
+  flex-direction: column;
+}
+
+.week-panel .week-ops-day__rhythm p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+@media (max-width: 1100px) {
+  .week-panel .week-operations-board__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .week-panel .week-ops-block {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .week-panel .week-ops-block strong {
+    white-space: normal;
+  }
+}
+
 .page-tool-switcher__btn {
   position: relative;
   display: inline-flex;
@@ -1327,5 +1522,192 @@
 
   .upcoming-event__impacts {
     grid-column: 1;
+  }
+}
+
+/* Final visual hardening, late cascade: Week planning map. */
+.week-panel .week-operations-board {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: var(--space-4) !important;
+}
+
+.week-panel .week-operations-board__header {
+  display: grid !important;
+  grid-template-columns: minmax(0, 0.72fr) minmax(18rem, 1fr) !important;
+  gap: var(--space-4) !important;
+  align-items: end !important;
+}
+
+.week-panel .week-ops-horizon {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)) !important;
+  gap: var(--space-3) !important;
+  align-items: stretch !important;
+}
+
+.week-panel .week-ops-day {
+  position: relative !important;
+  display: flex !important;
+  min-width: 0 !important;
+  min-height: 100% !important;
+  flex-direction: column !important;
+  gap: var(--space-3) !important;
+  padding: var(--space-3) !important;
+  overflow: hidden !important;
+  border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent) !important;
+  border-radius: var(--radius-md) !important;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 82%, transparent), transparent 54%), color-mix(in srgb, var(--color-surface) 94%, transparent) !important;
+  box-shadow: var(--inner-stroke), 0 16px 36px -32px color-mix(in srgb, var(--color-text) 32%, transparent) !important;
+}
+
+.week-panel .week-ops-day--high {
+  border-color: color-mix(in srgb, var(--chart-tone-high) 42%, var(--color-border)) !important;
+}
+
+.week-panel .week-ops-day__header,
+.week-panel .week-ops-day__signals,
+.week-panel .week-ops-day__rhythm {
+  display: flex !important;
+  min-width: 0 !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+  gap: var(--space-2) !important;
+}
+
+.week-panel .week-ops-day__date {
+  display: grid !important;
+  gap: 0.08rem !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  color: var(--color-text) !important;
+  text-align: left !important;
+}
+
+.week-panel .week-ops-day__date span,
+.week-panel .week-ops-badge,
+.week-panel .week-risk-pill,
+.week-panel .week-event-load em,
+.week-panel .week-ops-block__source,
+.week-panel .week-ops-day__rhythm span {
+  font-family: var(--font-mono) !important;
+  font-size: var(--text-2xs) !important;
+  font-weight: var(--font-weight-semibold) !important;
+  letter-spacing: var(--tracking-eyebrow) !important;
+  text-transform: uppercase !important;
+}
+
+.week-panel .week-ops-day__date strong {
+  font-family: var(--font-display) !important;
+  font-size: var(--text-md) !important;
+  line-height: var(--leading-tight) !important;
+}
+
+.week-panel .week-ops-day__badges,
+.week-panel .week-ops-day__signals {
+  flex-wrap: wrap !important;
+}
+
+.week-panel .week-ops-badge,
+.week-panel .week-risk-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: var(--space-1) !important;
+  min-height: 1.55rem !important;
+  padding: 0 var(--space-2) !important;
+  border: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent) !important;
+  border-radius: var(--radius-pill) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 62%, transparent) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.week-panel .week-event-load {
+  display: inline-flex !important;
+  align-items: baseline !important;
+  gap: var(--space-1) !important;
+  color: var(--color-text-secondary) !important;
+}
+
+.week-panel .week-event-load strong {
+  color: var(--color-text) !important;
+  font-family: var(--font-display) !important;
+  font-size: var(--text-lg) !important;
+}
+
+.week-panel .week-ops-day__blocks {
+  display: grid !important;
+  gap: var(--space-2) !important;
+  min-width: 0 !important;
+}
+
+.week-panel .week-ops-block {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto !important;
+  gap: var(--space-2) !important;
+  align-items: center !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  padding: var(--space-2) !important;
+  border: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent) !important;
+  border-radius: var(--radius-sm) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 42%, transparent) !important;
+  color: var(--color-text) !important;
+  text-align: left !important;
+}
+
+.week-panel .week-ops-block:hover {
+  transform: translateY(-1px) !important;
+  border-color: color-mix(in srgb, var(--color-accent) 38%, var(--color-border)) !important;
+  background: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent) !important;
+}
+
+.week-panel .week-ops-block__time {
+  color: var(--color-text-tertiary) !important;
+  font-family: var(--font-mono) !important;
+  font-size: var(--text-2xs) !important;
+  white-space: nowrap !important;
+}
+
+.week-panel .week-ops-block strong {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  font-size: var(--text-xs) !important;
+  line-height: var(--leading-snug) !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.week-panel .week-ops-block__source {
+  min-width: fit-content !important;
+  color: var(--color-text-tertiary) !important;
+}
+
+.week-panel .week-ops-day__rhythm {
+  margin-top: auto !important;
+  padding-top: var(--space-2) !important;
+  flex-direction: column !important;
+  border-top: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent) !important;
+}
+
+.week-panel .week-ops-day__rhythm p {
+  margin: 0 !important;
+  color: var(--color-text-secondary) !important;
+  font-size: var(--text-xs) !important;
+  line-height: var(--leading-snug) !important;
+}
+
+@media (max-width: 1100px) {
+  .week-panel .week-operations-board__header {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .week-panel .week-ops-block {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .week-panel .week-ops-block strong {
+    white-space: normal !important;
   }
 }

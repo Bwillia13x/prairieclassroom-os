@@ -1,21 +1,20 @@
 /**
  * validate-today-layout.mjs — Playwright check for Today desktop/mobile layouts.
  *
- * Architecture note: the Today rail is `<nav class="page-anchor-rail"
- * aria-label="Today sections">`, rendered as a sibling of the tabpanel
- * (not a child of `.today-panel`). Layout clearance is handled via
- * `.app-main[data-page-rail]` left-padding on its tabpanel children above
- * `min-width: 961px`; the rail is `display:none` at `max-width: 960px`.
+ * Architecture note: Today now uses its purpose-built command-center hero
+ * inside `.workspace-page.today-panel`. The old sibling
+ * `.page-anchor-rail` was removed; section navigation is handled by the
+ * global shell rail on desktop and mobile navigation at compact widths.
  *
  * Assertions:
  *   Desktop (1440×1100):
  *     - `.workspace-page.today-panel` tabpanel is rendered
- *     - `.app-main[data-page-rail]` wiring is present
- *     - the anchor rail (`nav[aria-label="Today sections"]`) is visible
- *     - the Today hero content sits right of the rail (no overlap)
+ *     - stale Today anchor-rail wiring is absent
+ *     - command, flow, debt, live-signal, and watchlist surfaces are visible
+ *     - the Today hero stays inside `.app-main` with no document overflow
  *   Mobile (393×852):
- *     - rail is hidden
- *     - `.today-hero__brief` is visible above `.mobile-nav`
+ *     - stale Today anchor-rail wiring is absent
+ *     - `.today-hero__command` is visible above `.mobile-nav`
  *     - the primary hero CTA is above `.mobile-nav`
  *
  * Run: node scripts/validate-today-layout.mjs
@@ -73,36 +72,48 @@ async function validateDesktop(browser) {
   );
   assert.ok(panelVisible, "Desktop: .workspace-page.today-panel must be visible");
 
-  // 2. App-main has page-rail wiring that offsets tabpanel content
-  const hasPageRailAttr = await page.locator(".app-main").evaluate(
-    (el) => el.hasAttribute("data-page-rail"),
-  );
-  assert.ok(hasPageRailAttr, "Desktop: .app-main must have data-page-rail attribute for rail offset");
+  // 2. Stale page-rail wiring is absent.
+  const staleRailState = await page.locator(".app-main").evaluate((el) => ({
+    hasPageRailAttr: el.hasAttribute("data-page-rail"),
+    railCount: document.querySelectorAll('nav[aria-label="Today sections"].page-anchor-rail').length,
+  }));
+  assert.equal(staleRailState.hasPageRailAttr, false, "Desktop: stale data-page-rail wiring must stay removed");
+  assert.equal(staleRailState.railCount, 0, "Desktop: stale Today anchor rail must not render");
 
-  // 3. Rail is visible
-  const railVisible = await page.locator('nav[aria-label="Today sections"].page-anchor-rail').evaluate(
-    (el) => {
+  // 3. The current command-center surfaces are present and visible.
+  for (const selector of [
+    ".today-hero__command",
+    ".today-hero__flow",
+    ".today-hero__debt",
+    ".today-hero__signals",
+    ".today-hero__watchlist",
+  ]) {
+    const visible = await page.locator(selector).evaluate((el) => {
+      const rect = el.getBoundingClientRect();
       const style = globalThis.getComputedStyle(el);
-      return style.display !== "none" && style.visibility !== "hidden";
-    },
-  );
-  assert.ok(railVisible, "Desktop: anchor rail must be visible");
+      return rect.width > 0 && rect.height > 0 && style.display !== "none" && style.visibility !== "hidden";
+    });
+    assert.ok(visible, `Desktop: ${selector} must be visible`);
+  }
 
-  // 4. Hero content sits right of the rail (no overlap)
-  const railBox = await page.locator('nav[aria-label="Today sections"].page-anchor-rail').evaluate(
-    (el) => {
-      const r = el.getBoundingClientRect();
-      return { left: r.left, right: r.right };
-    },
-  );
-  const heroBox = await page.locator(".today-hero").evaluate((el) => {
-    const r = el.getBoundingClientRect();
-    return { left: r.left };
+  // 4. Hero content stays inside the main workspace and does not force document-level horizontal scroll.
+  const desktopLayout = await page.evaluate(() => {
+    const main = document.querySelector(".app-main")?.getBoundingClientRect();
+    const hero = document.querySelector(".today-hero")?.getBoundingClientRect();
+    return {
+      main: main ? { left: main.left, right: main.right, top: main.top } : null,
+      hero: hero ? { left: hero.left, right: hero.right, top: hero.top } : null,
+      overflowX: document.documentElement.scrollWidth - window.innerWidth,
+    };
   });
+  assert.ok(desktopLayout.main, "Desktop: .app-main must be present");
+  assert.ok(desktopLayout.hero, "Desktop: .today-hero must be present");
   assert.ok(
-    heroBox.left >= railBox.right,
-    `Desktop: .today-hero left (${heroBox.left}) must be at or right of rail right (${railBox.right})`,
+    desktopLayout.hero.left >= desktopLayout.main.left && desktopLayout.hero.right <= desktopLayout.main.right,
+    `Desktop: .today-hero must stay inside .app-main (${JSON.stringify(desktopLayout)})`,
   );
+  assert.ok(desktopLayout.hero.top >= desktopLayout.main.top, "Desktop: .today-hero must start below shell chrome");
+  assert.ok(desktopLayout.overflowX <= 1, `Desktop: document horizontal overflow must be <= 1px, got ${desktopLayout.overflowX}`);
 
   await page.screenshot({
     path: path.join(OUTPUT_DIR, "today-desktop.png"),
@@ -128,17 +139,14 @@ async function validateMobile(browser) {
   await page.goto(DEMO_URL, { waitUntil: "networkidle" });
   await page.waitForSelector(".today-hero", { timeout: 10_000 });
 
-  // 1. Rail is hidden on mobile
-  const railHidden = await page.locator('nav[aria-label="Today sections"].page-anchor-rail').evaluate(
-    (el) => {
-      const style = globalThis.getComputedStyle(el);
-      return style.display === "none" || style.visibility === "hidden";
-    },
+  // 1. Stale page-rail wiring is absent on mobile too.
+  const staleRailCount = await page.locator(".app-main").evaluate(
+    () => document.querySelectorAll('nav[aria-label="Today sections"].page-anchor-rail').length,
   );
-  assert.ok(railHidden, "Mobile: anchor rail must be hidden");
+  assert.equal(staleRailCount, 0, "Mobile: stale Today anchor rail must not render");
 
-  // 2. .today-hero__brief is visible above .mobile-nav
-  const briefBox = await page.locator(".today-hero__brief").evaluate((el) => {
+  // 2. .today-hero__command is visible above .mobile-nav
+  const commandBox = await page.locator(".today-hero__command").evaluate((el) => {
     const r = el.getBoundingClientRect();
     return { bottom: r.bottom };
   });
@@ -147,8 +155,8 @@ async function validateMobile(browser) {
     return { top: r.top };
   });
   assert.ok(
-    briefBox.bottom < mobileNavBox.top,
-    `Mobile: .today-hero__brief bottom (${briefBox.bottom}) must be above .mobile-nav top (${mobileNavBox.top})`,
+    commandBox.bottom < mobileNavBox.top,
+    `Mobile: .today-hero__command bottom (${commandBox.bottom}) must be above .mobile-nav top (${mobileNavBox.top})`,
   );
 
   // 3. Primary hero CTA is above .mobile-nav
@@ -160,6 +168,9 @@ async function validateMobile(browser) {
     ctaBox.bottom < mobileNavBox.top,
     `Mobile: hero CTA bottom (${ctaBox.bottom}) must be above .mobile-nav top (${mobileNavBox.top})`,
   );
+
+  const mobileOverflowX = await page.evaluate(() => document.documentElement.scrollWidth - window.innerWidth);
+  assert.ok(mobileOverflowX <= 1, `Mobile: document horizontal overflow must be <= 1px, got ${mobileOverflowX}`);
 
   await page.screenshot({
     path: path.join(OUTPUT_DIR, "today-mobile.png"),

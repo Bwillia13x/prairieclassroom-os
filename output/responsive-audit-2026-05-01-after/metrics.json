@@ -1,0 +1,632 @@
+[
+  {
+    "case": "narrow",
+    "tab": "today",
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "block"
+      },
+      "headerInner": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "grid"
+      },
+      "brand": {
+        "x": 24,
+        "y": 26,
+        "w": 211,
+        "h": 41,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 266,
+        "y": 24,
+        "w": 368,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 665,
+        "y": 24,
+        "w": 211,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 24,
+        "y": 84,
+        "w": 211,
+        "h": 52,
+        "display": "block"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 633,
+        "w": 900,
+        "h": 67,
+        "display": "block"
+      },
+      "main": {
+        "x": 24,
+        "y": 145,
+        "w": 852,
+        "h": 555,
+        "display": "flex"
+      },
+      "todayHero": {
+        "x": 41,
+        "y": 240,
+        "w": 818,
+        "h": 311,
+        "display": "block"
+      }
+    },
+    "headerHeight": 129,
+    "mainClient": 554,
+    "mainScroll": 1972,
+    "offenders": 19,
+    "maxOutside": 182,
+    "maxHorizontal": 257
+  },
+  {
+    "case": "narrow",
+    "tab": "classroom",
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "block"
+      },
+      "headerInner": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "grid"
+      },
+      "brand": {
+        "x": 24,
+        "y": 26,
+        "w": 211,
+        "h": 41,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 266,
+        "y": 24,
+        "w": 368,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 665,
+        "y": 24,
+        "w": 211,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 24,
+        "y": 84,
+        "w": 211,
+        "h": 52,
+        "display": "block"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 633,
+        "w": 900,
+        "h": 67,
+        "display": "block"
+      },
+      "main": {
+        "x": 24,
+        "y": 145,
+        "w": 852,
+        "h": 555,
+        "display": "flex"
+      },
+      "todayHero": null
+    },
+    "headerHeight": 129,
+    "mainClient": 554,
+    "mainScroll": 6886,
+    "offenders": 202,
+    "maxOutside": 2998,
+    "maxHorizontal": 3040
+  },
+  {
+    "case": "narrow",
+    "tab": "ops",
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "block"
+      },
+      "headerInner": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "grid"
+      },
+      "brand": {
+        "x": 24,
+        "y": 26,
+        "w": 211,
+        "h": 41,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 266,
+        "y": 24,
+        "w": 368,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 665,
+        "y": 24,
+        "w": 211,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 24,
+        "y": 84,
+        "w": 211,
+        "h": 52,
+        "display": "block"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 633,
+        "w": 900,
+        "h": 67,
+        "display": "block"
+      },
+      "main": {
+        "x": 24,
+        "y": 145,
+        "w": 852,
+        "h": 555,
+        "display": "flex"
+      },
+      "todayHero": null
+    },
+    "headerHeight": 129,
+    "mainClient": 554,
+    "mainScroll": 3259,
+    "offenders": 4,
+    "maxOutside": 0,
+    "maxHorizontal": 46
+  },
+  {
+    "case": "narrow",
+    "tab": "review",
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "block"
+      },
+      "headerInner": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 129,
+        "display": "grid"
+      },
+      "brand": {
+        "x": 24,
+        "y": 26,
+        "w": 211,
+        "h": 41,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 266,
+        "y": 24,
+        "w": 368,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 665,
+        "y": 24,
+        "w": 211,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 24,
+        "y": 84,
+        "w": 211,
+        "h": 52,
+        "display": "block"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 633,
+        "w": 900,
+        "h": 67,
+        "display": "block"
+      },
+      "main": {
+        "x": 24,
+        "y": 145,
+        "w": 852,
+        "h": 555,
+        "display": "flex"
+      },
+      "todayHero": null
+    },
+    "headerHeight": 129,
+    "mainClient": 554,
+    "mainScroll": 3625,
+    "offenders": 181,
+    "maxOutside": 2998,
+    "maxHorizontal": 3040
+  },
+  {
+    "case": "tablet",
+    "tab": "today",
+    "viewport": {
+      "w": 1024,
+      "h": 768
+    },
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents"
+      },
+      "headerInner": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 180,
+        "h": 88,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 288,
+        "y": 22,
+        "w": 352,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 711,
+        "y": 22,
+        "w": 273,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 180,
+        "h": 680,
+        "display": "flex"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "display": "flex"
+      },
+      "todayHero": {
+        "x": 288,
+        "y": 215,
+        "w": 696,
+        "h": 324,
+        "display": "block"
+      }
+    },
+    "headerHeight": 0,
+    "mainClient": 680,
+    "mainScroll": 2302,
+    "offenders": 64,
+    "maxOutside": 244,
+    "maxHorizontal": 318
+  },
+  {
+    "case": "short",
+    "tab": "today",
+    "viewport": {
+      "w": 1280,
+      "h": 560
+    },
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents"
+      },
+      "headerInner": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 288,
+        "y": 22,
+        "w": 352,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 703,
+        "y": 22,
+        "w": 537,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 472,
+        "display": "flex"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "display": "flex"
+      },
+      "todayHero": {
+        "x": 288,
+        "y": 221,
+        "w": 952,
+        "h": 289,
+        "display": "block"
+      }
+    },
+    "headerHeight": 0,
+    "mainClient": 472,
+    "mainScroll": 1868,
+    "offenders": 30,
+    "maxOutside": 124,
+    "maxHorizontal": 333
+  },
+  {
+    "case": "phone",
+    "tab": "today",
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block"
+      },
+      "headerInner": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "grid"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 8,
+        "y": 69,
+        "w": 374,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 247,
+        "y": 17,
+        "w": 135,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 777,
+        "w": 390,
+        "h": 67,
+        "display": "block"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 721,
+        "display": "flex"
+      },
+      "todayHero": {
+        "x": 25,
+        "y": 253,
+        "w": 340,
+        "h": 477,
+        "display": "block"
+      }
+    },
+    "headerHeight": 115,
+    "mainClient": 720,
+    "mainScroll": 3397,
+    "offenders": 7,
+    "maxOutside": 0,
+    "maxHorizontal": 120
+  },
+  {
+    "case": "phone-short",
+    "tab": "today",
+    "viewport": {
+      "w": 390,
+      "h": 640
+    },
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "docOverflow": 0,
+    "rects": {
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block"
+      },
+      "headerInner": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "grid"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex"
+      },
+      "classroom": {
+        "x": 8,
+        "y": 69,
+        "w": 374,
+        "h": 44,
+        "display": "block"
+      },
+      "actions": {
+        "x": 247,
+        "y": 17,
+        "w": 135,
+        "h": 44,
+        "display": "flex"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 573,
+        "w": 390,
+        "h": 67,
+        "display": "block"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 517,
+        "display": "flex"
+      },
+      "todayHero": {
+        "x": 25,
+        "y": 253,
+        "w": 340,
+        "h": 477,
+        "display": "block"
+      }
+    },
+    "headerHeight": 115,
+    "mainClient": 516,
+    "mainScroll": 3397,
+    "offenders": 7,
+    "maxOutside": 0,
+    "maxHorizontal": 120
+  }
+]

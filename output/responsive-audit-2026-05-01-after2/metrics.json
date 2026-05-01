@@ -1,0 +1,71 @@
+{
+  "docOverflow": 0,
+  "rects": {
+    "header": {
+      "x": 24,
+      "y": 16,
+      "w": 852,
+      "h": 129,
+      "display": "block"
+    },
+    "headerInner": {
+      "x": 24,
+      "y": 16,
+      "w": 852,
+      "h": 129,
+      "display": "grid"
+    },
+    "brand": {
+      "x": 24,
+      "y": 26,
+      "w": 211,
+      "h": 41,
+      "display": "flex"
+    },
+    "classroom": {
+      "x": 266,
+      "y": 24,
+      "w": 368,
+      "h": 44,
+      "display": "block"
+    },
+    "actions": {
+      "x": 665,
+      "y": 24,
+      "w": 211,
+      "h": 44,
+      "display": "flex"
+    },
+    "nav": {
+      "x": 24,
+      "y": 84,
+      "w": 211,
+      "h": 52,
+      "display": "block"
+    },
+    "mobileNav": {
+      "x": 0,
+      "y": 633,
+      "w": 900,
+      "h": 67,
+      "display": "block"
+    },
+    "main": {
+      "x": 24,
+      "y": 145,
+      "w": 852,
+      "h": 555,
+      "display": "flex"
+    },
+    "hero": {
+      "x": 41,
+      "y": 240,
+      "w": 818,
+      "h": 311,
+      "display": "block"
+    }
+  },
+  "headerHeight": 129,
+  "mainClient": 554,
+  "mainScroll": 1972
+}

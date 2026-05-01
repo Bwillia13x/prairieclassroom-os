@@ -1,0 +1,7010 @@
+[
+  {
+    "viewport": {
+      "w": 1728,
+      "h": 980
+    },
+    "tab": "today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1728,
+      "docScrollWidth": 1728,
+      "bodyClientWidth": 1728
+    },
+    "shellState": "expanded",
+    "activeSection": "today",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1728,
+        "h": 980,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 284,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 284,
+        "y": 0,
+        "w": 1444,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 284,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 324,
+        "y": 128,
+        "w": 1240,
+        "h": 1361,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": {
+        "x": 324,
+        "y": 224,
+        "w": 1240,
+        "h": 1134,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "pageIntro": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 892,
+      "mainScroll": 1825,
+      "pageClient": 1361,
+      "pageScroll": 1361,
+      "headerHeight": 0
+    },
+    "offenderCount": 11,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Post-lunch transition is consistently the hardest period for this clas",
+        "x": 1318,
+        "y": 3383,
+        "w": 170,
+        "h": 19,
+        "horizontal": 189,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Amira's peer buddy absent today — will need alternative pairing",
+        "x": 1318,
+        "y": 3232,
+        "w": 157,
+        "h": 19,
+        "horizontal": 177,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immedi",
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "horizontal": 142,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 142,
+        "y": 1657,
+        "w": 1728,
+        "h": 216,
+        "horizontal": 0,
+        "outside": 142
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Assembly at 10am will shorten and disrupt the math block",
+        "x": 1318,
+        "y": 3307,
+        "w": 170,
+        "h": 19,
+        "horizontal": 135,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge__body",
+        "text": "23open itemsLargest sourceApproaching review15 itemsDebt severity tier",
+        "x": 805,
+        "y": 2272,
+        "w": 338,
+        "h": 554,
+        "horizontal": 116,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge.viz-debt-gauge--mounted.viz-debt-gauge--clickable",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 772,
+        "y": 2162,
+        "w": 404,
+        "h": 697,
+        "horizontal": 84,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "today-anchor-target",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 772,
+        "y": 2162,
+        "w": 404,
+        "h": 697,
+        "horizontal": 83,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-activity",
+        "text": "Math block (post-assembly transition)",
+        "x": 1318,
+        "y": 3284,
+        "w": 170,
+        "h": 22,
+        "horizontal": 62,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "forecast-timeline.forecast-timeline--compact",
+        "text": "9:00–9:4510:00–10:4511:00–11:4512:45–13:30",
+        "x": 1193,
+        "y": 3101,
+        "w": 338,
+        "h": 58,
+        "horizontal": 46,
+        "outside": 0
+      },
+      {
+        "tag": "strong",
+        "cls": "",
+        "text": "Approaching review",
+        "x": 805,
+        "y": 2539,
+        "w": 157,
+        "h": 19,
+        "horizontal": 12,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1728,
+      "h": 980
+    },
+    "tab": "classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1728,
+      "docScrollWidth": 1728,
+      "bodyClientWidth": 1728
+    },
+    "shellState": "expanded",
+    "activeSection": "classroom",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1728,
+        "h": 980,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 284,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 284,
+        "y": 0,
+        "w": 1444,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 284,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 4120,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 892,
+      "mainScroll": 4584,
+      "pageClient": 4120,
+      "pageScroll": 4120,
+      "headerHeight": 0
+    },
+    "offenderCount": 157,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage",
+        "text": "RosterTop students to watch20 active · 26 totalAll26Urgent20Stale13Mor",
+        "x": 324,
+        "y": 1545,
+        "w": 1364,
+        "h": 199,
+        "horizontal": 2494,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 4120,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.classroom-panel",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 4120,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "classroom-section",
+        "text": "WatchlistStudents to watch20 activeof 26 totalRosterTop students to wa",
+        "x": 324,
+        "y": 1450,
+        "w": 1364,
+        "h": 310,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "horizontal": 2453,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 341,
+        "y": 1656,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 2448
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4151,
+        "y": 1676,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 2453
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterTop students to watch20 active · 26 total",
+        "x": 341,
+        "y": 1562,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 2448
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4075,
+        "y": 1574,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 2448
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 341,
+        "y": 1613,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 2448
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__more",
+        "text": "More▾",
+        "x": 4119,
+        "y": 1616,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 2448
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__more-toggle",
+        "text": "More▾",
+        "x": 4119,
+        "y": 1616,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 2448
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1728,
+      "h": 980
+    },
+    "tab": "prep",
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "doc": {
+      "bodyScrollWidth": 1728,
+      "docScrollWidth": 1728,
+      "bodyClientWidth": 1728
+    },
+    "shellState": "expanded",
+    "activeSection": "prep",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1728,
+        "h": 980,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 284,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 284,
+        "y": 0,
+        "w": 1444,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 284,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 2001,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 324,
+        "y": 409,
+        "w": 1364,
+        "h": 1720,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 325,
+        "y": 410,
+        "w": 477,
+        "h": 1718,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 802,
+        "y": 410,
+        "w": 885,
+        "h": 1718,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 892,
+      "mainScroll": 2465,
+      "pageClient": 2001,
+      "pageScroll": 2001,
+      "headerHeight": 0
+    },
+    "offenderCount": 2,
+    "offenders": [
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Prep commandPrepare the material before it reaches the room.Start with",
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "horizontal": 142,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 142,
+        "y": 2297,
+        "w": 1728,
+        "h": 216,
+        "horizontal": 0,
+        "outside": 142
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1728,
+      "h": 980
+    },
+    "tab": "ops",
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "doc": {
+      "bodyScrollWidth": 1728,
+      "docScrollWidth": 1728,
+      "bodyClientWidth": 1728
+    },
+    "shellState": "expanded",
+    "activeSection": "ops",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1728,
+        "h": 980,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 284,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 284,
+        "y": 0,
+        "w": 1444,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 284,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 1635,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 349,
+        "y": 450,
+        "w": 1314,
+        "h": 1288,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 350,
+        "y": 451,
+        "w": 761,
+        "h": 1286,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 1111,
+        "y": 451,
+        "w": 551,
+        "h": 1286,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 892,
+      "mainScroll": 2099,
+      "pageClient": 1635,
+      "pageScroll": 1635,
+      "headerHeight": 0
+    },
+    "offenderCount": 2,
+    "offenders": [
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Ops commandCoordinate the adults without losing the thread.Capture tod",
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "horizontal": 142,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 142,
+        "y": 1931,
+        "w": 1728,
+        "h": 216,
+        "horizontal": 0,
+        "outside": 142
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1728,
+      "h": 980
+    },
+    "tab": "review",
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "doc": {
+      "bodyScrollWidth": 1728,
+      "docScrollWidth": 1728,
+      "bodyClientWidth": 1728
+    },
+    "shellState": "expanded",
+    "activeSection": "review",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1728,
+        "h": 980,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 284,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 284,
+        "y": 0,
+        "w": 1444,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 284,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 2835,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 324,
+        "y": 1751,
+        "w": 1364,
+        "h": 1212,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceRail": {
+        "x": 324,
+        "y": 1751,
+        "w": 1364,
+        "h": 1073,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceCanvas": {
+        "x": 324,
+        "y": 2864,
+        "w": 1364,
+        "h": 98,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": {
+        "x": 324,
+        "y": 1281,
+        "w": 1364,
+        "h": 174,
+        "display": "grid",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 892,
+      "mainScroll": 3299,
+      "pageClient": 2835,
+      "pageScroll": 2835,
+      "headerHeight": 0
+    },
+    "offenderCount": 151,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage.student-coverage--static",
+        "text": "RosterFamily follow-up coverage20 active · 26 totalAll26Urgent20Stale1",
+        "x": 324,
+        "y": 1495,
+        "w": 1364,
+        "h": 199,
+        "horizontal": 2494,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 2835,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.multi-tool-page.review-page",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 324,
+        "y": 128,
+        "w": 1364,
+        "h": 2835,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "multi-tool-workspace-section",
+        "text": "Active workspaceDraft family messagesReview WorkspaceDraft Family Mess",
+        "x": 324,
+        "y": 1231,
+        "w": 1364,
+        "h": 1732,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "page-tool-surface",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 324,
+        "y": 1281,
+        "w": 1364,
+        "h": 1682,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 324,
+        "y": 1281,
+        "w": 1364,
+        "h": 1682,
+        "horizontal": 2493,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 284,
+        "y": 88,
+        "w": 1444,
+        "h": 892,
+        "horizontal": 2453,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 341,
+        "y": 1607,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 2448
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4151,
+        "y": 1627,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 2453
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterFamily follow-up coverage20 active · 26 total",
+        "x": 341,
+        "y": 1512,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 2448
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4075,
+        "y": 1525,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 2448
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 341,
+        "y": 1564,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 2448
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1366,
+      "h": 768
+    },
+    "tab": "today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1366,
+      "docScrollWidth": 1366,
+      "bodyClientWidth": 1366
+    },
+    "shellState": "expanded",
+    "activeSection": "today",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1366,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1118,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 1390,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": {
+        "x": 288,
+        "y": 223,
+        "w": 1038,
+        "h": 1163,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "pageIntro": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 1822,
+      "pageClient": 1390,
+      "pageScroll": 1390,
+      "headerHeight": 0
+    },
+    "offenderCount": 32,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Post-lunch transition is consistently the hardest period for this clas",
+        "x": 1181,
+        "y": 3561,
+        "w": 69,
+        "h": 19,
+        "horizontal": 290,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Amira's peer buddy absent today — will need alternative pairing",
+        "x": 1181,
+        "y": 3411,
+        "w": 56,
+        "h": 19,
+        "horizontal": 278,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Assembly at 10am will shorten and disrupt the math block",
+        "x": 1181,
+        "y": 3486,
+        "w": 69,
+        "h": 19,
+        "horizontal": 236,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge__body",
+        "text": "23open itemsLargest sourceApproaching review15 itemsDebt severity tier",
+        "x": 697,
+        "y": 2370,
+        "w": 270,
+        "h": 613,
+        "horizontal": 184,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-activity",
+        "text": "Math block (post-assembly transition)",
+        "x": 1181,
+        "y": 3462,
+        "w": 69,
+        "h": 22,
+        "horizontal": 163,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge.viz-debt-gauge--mounted.viz-debt-gauge--clickable",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 664,
+        "y": 2260,
+        "w": 336,
+        "h": 756,
+        "horizontal": 152,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "today-anchor-target",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 664,
+        "y": 2260,
+        "w": 336,
+        "h": 756,
+        "horizontal": 151,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "forecast-timeline.forecast-timeline--compact",
+        "text": "9:00–9:4510:00–10:4511:00–11:4512:45–13:30",
+        "x": 1056,
+        "y": 3280,
+        "w": 237,
+        "h": 58,
+        "horizontal": 147,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immedi",
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 1673,
+        "w": 1366,
+        "h": 197,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-activity",
+        "text": "Morning literacy block",
+        "x": 1181,
+        "y": 3387,
+        "w": 56,
+        "h": 22,
+        "horizontal": 79,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__body",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 172,
+        "y": 1674,
+        "w": 1270,
+        "h": 196,
+        "horizontal": 0,
+        "outside": 76
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1366,
+      "h": 768
+    },
+    "tab": "classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1366,
+      "docScrollWidth": 1366,
+      "bodyClientWidth": 1366
+    },
+    "shellState": "expanded",
+    "activeSection": "classroom",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1366,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1118,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 4625,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 5057,
+      "pageClient": 4625,
+      "pageScroll": 4625,
+      "headerHeight": 0
+    },
+    "offenderCount": 195,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage",
+        "text": "RosterTop students to watch20 active · 26 totalAll26Urgent20Stale13Mor",
+        "x": 288,
+        "y": 1748,
+        "w": 1038,
+        "h": 199,
+        "horizontal": 2820,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 4625,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.classroom-panel",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 4625,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "classroom-section",
+        "text": "WatchlistStudents to watch20 activeof 26 totalRosterTop students to wa",
+        "x": 288,
+        "y": 1653,
+        "w": 1038,
+        "h": 310,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "horizontal": 2779,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 305,
+        "y": 1859,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 2774
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4115,
+        "y": 1880,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 2779
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterTop students to watch20 active · 26 total",
+        "x": 305,
+        "y": 1765,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 2774
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4039,
+        "y": 1777,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 2774
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 305,
+        "y": 1816,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 2774
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__more",
+        "text": "More▾",
+        "x": 4083,
+        "y": 1820,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 2774
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__more-toggle",
+        "text": "More▾",
+        "x": 4083,
+        "y": 1820,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 2774
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1366,
+      "h": 768
+    },
+    "tab": "prep",
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "doc": {
+      "bodyScrollWidth": 1366,
+      "docScrollWidth": 1366,
+      "bodyClientWidth": 1366
+    },
+    "shellState": "expanded",
+    "activeSection": "prep",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1366,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1118,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 2115,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 288,
+        "y": 400,
+        "w": 1038,
+        "h": 1844,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 289,
+        "y": 401,
+        "w": 363,
+        "h": 1842,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 652,
+        "y": 401,
+        "w": 673,
+        "h": 1842,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 2547,
+      "pageClient": 2115,
+      "pageScroll": 2115,
+      "headerHeight": 0
+    },
+    "offenderCount": 28,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 902,
+        "y": 828,
+        "w": 86,
+        "h": 24,
+        "horizontal": 173,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 902,
+        "y": 1218,
+        "w": 86,
+        "h": 24,
+        "horizontal": 173,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 902,
+        "y": 1565,
+        "w": 86,
+        "h": 24,
+        "horizontal": 173,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 902,
+        "y": 1950,
+        "w": 86,
+        "h": 24,
+        "horizontal": 173,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Prep commandPrepare the material before it reaches the room.Start with",
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 2398,
+        "w": 1366,
+        "h": 197,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__body",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 172,
+        "y": 2399,
+        "w": 1270,
+        "h": 196,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__meta",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?",
+        "x": 172,
+        "y": 2448,
+        "w": 1270,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__actions",
+        "text": "▸Shortcuts?",
+        "x": 1283,
+        "y": 2448,
+        "w": 159,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__shortcuts-btn",
+        "text": "?",
+        "x": 1410,
+        "y": 2448,
+        "w": 32,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__rail",
+        "text": "classroomdemo-okafor-grade34envmockv0.1.0",
+        "x": 172,
+        "y": 2504,
+        "w": 1270,
+        "h": 41,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-slot",
+        "text": "v0.1.0",
+        "x": 1114,
+        "y": 2521,
+        "w": 329,
+        "h": 24,
+        "horizontal": 0,
+        "outside": 76
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1366,
+      "h": 768
+    },
+    "tab": "ops",
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "doc": {
+      "bodyScrollWidth": 1366,
+      "docScrollWidth": 1366,
+      "bodyClientWidth": 1366
+    },
+    "shellState": "expanded",
+    "activeSection": "ops",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1366,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1118,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 1616,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 313,
+        "y": 433,
+        "w": 988,
+        "h": 1286,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 314,
+        "y": 434,
+        "w": 572,
+        "h": 1284,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 886,
+        "y": 434,
+        "w": 414,
+        "h": 1284,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 2048,
+      "pageClient": 1616,
+      "pageScroll": 1616,
+      "headerHeight": 0
+    },
+    "offenderCount": 11,
+    "offenders": [
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Ops commandCoordinate the adults without losing the thread.Capture tod",
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 1899,
+        "w": 1366,
+        "h": 197,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__body",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 172,
+        "y": 1900,
+        "w": 1270,
+        "h": 196,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__meta",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?",
+        "x": 172,
+        "y": 1949,
+        "w": 1270,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__actions",
+        "text": "▸Shortcuts?",
+        "x": 1283,
+        "y": 1949,
+        "w": 159,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__shortcuts-btn",
+        "text": "?",
+        "x": 1410,
+        "y": 1949,
+        "w": 32,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__rail",
+        "text": "classroomdemo-okafor-grade34envmockv0.1.0",
+        "x": 172,
+        "y": 2005,
+        "w": 1270,
+        "h": 41,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-slot",
+        "text": "v0.1.0",
+        "x": 1114,
+        "y": 2022,
+        "w": 329,
+        "h": 24,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-value",
+        "text": "0.1.0",
+        "x": 1409,
+        "y": 2029,
+        "w": 34,
+        "h": 11,
+        "horizontal": 0,
+        "outside": 76
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__toggle",
+        "text": "▸Shortcuts",
+        "x": 1283,
+        "y": 1949,
+        "w": 119,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 36
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "text": "Shortcuts",
+        "x": 1310,
+        "y": 1956,
+        "w": 79,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 23
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1366,
+      "h": 768
+    },
+    "tab": "review",
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "doc": {
+      "bodyScrollWidth": 1366,
+      "docScrollWidth": 1366,
+      "bodyClientWidth": 1366
+    },
+    "shellState": "expanded",
+    "activeSection": "review",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1366,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1118,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 2893,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 288,
+        "y": 1765,
+        "w": 1038,
+        "h": 1256,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceRail": {
+        "x": 288,
+        "y": 1765,
+        "w": 1038,
+        "h": 1117,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceCanvas": {
+        "x": 288,
+        "y": 2922,
+        "w": 1038,
+        "h": 98,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": {
+        "x": 288,
+        "y": 1295,
+        "w": 1038,
+        "h": 174,
+        "display": "grid",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 3325,
+      "pageClient": 2893,
+      "pageScroll": 2893,
+      "headerHeight": 0
+    },
+    "offenderCount": 176,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage.student-coverage--static",
+        "text": "RosterFamily follow-up coverage20 active · 26 totalAll26Urgent20Stale1",
+        "x": 288,
+        "y": 1510,
+        "w": 1038,
+        "h": 199,
+        "horizontal": 2820,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 2893,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.multi-tool-page.review-page",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 288,
+        "y": 128,
+        "w": 1038,
+        "h": 2893,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "multi-tool-workspace-section",
+        "text": "Active workspaceDraft family messagesReview WorkspaceDraft Family Mess",
+        "x": 288,
+        "y": 1245,
+        "w": 1038,
+        "h": 1776,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "page-tool-surface",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 288,
+        "y": 1295,
+        "w": 1038,
+        "h": 1726,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 288,
+        "y": 1295,
+        "w": 1038,
+        "h": 1726,
+        "horizontal": 2819,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 248,
+        "y": 88,
+        "w": 1118,
+        "h": 680,
+        "horizontal": 2779,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 305,
+        "y": 1621,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 2774
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4115,
+        "y": 1641,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 2779
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterFamily follow-up coverage20 active · 26 total",
+        "x": 305,
+        "y": 1527,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 2774
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4039,
+        "y": 1539,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 2774
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 305,
+        "y": 1578,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 2774
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1280,
+      "h": 560
+    },
+    "tab": "today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1280,
+      "docScrollWidth": 1280,
+      "bodyClientWidth": 1280
+    },
+    "shellState": "expanded",
+    "activeSection": "today",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 560,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1032,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 1558,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": {
+        "x": 288,
+        "y": 221,
+        "w": 952,
+        "h": 1334,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "pageIntro": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 472,
+      "mainScroll": 1976,
+      "pageClient": 1558,
+      "pageScroll": 1558,
+      "headerHeight": 0
+    },
+    "offenderCount": 30,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Post-lunch transition is consistently the hardest period for this clas",
+        "x": 1138,
+        "y": 3752,
+        "w": 26,
+        "h": 19,
+        "horizontal": 333,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Amira's peer buddy absent today — will need alternative pairing",
+        "x": 1138,
+        "y": 3601,
+        "w": 13,
+        "h": 19,
+        "horizontal": 321,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-factor",
+        "text": "Assembly at 10am will shorten and disrupt the math block",
+        "x": 1138,
+        "y": 3676,
+        "w": 26,
+        "h": 19,
+        "horizontal": 279,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge__body",
+        "text": "23open itemsLargest sourceApproaching review15 itemsDebt severity tier",
+        "x": 667,
+        "y": 2538,
+        "w": 240,
+        "h": 613,
+        "horizontal": 214,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-activity",
+        "text": "Math block (post-assembly transition)",
+        "x": 1138,
+        "y": 3653,
+        "w": 26,
+        "h": 22,
+        "horizontal": 206,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "forecast-timeline.forecast-timeline--compact",
+        "text": "9:00–9:4510:00–10:4511:00–11:4512:45–13:30",
+        "x": 1013,
+        "y": 3470,
+        "w": 194,
+        "h": 58,
+        "horizontal": 190,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge.viz-debt-gauge--mounted.viz-debt-gauge--clickable",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 634,
+        "y": 2428,
+        "w": 306,
+        "h": 756,
+        "horizontal": 182,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "today-anchor-target",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 634,
+        "y": 2428,
+        "w": 306,
+        "h": 756,
+        "horizontal": 181,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immedi",
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 1834,
+        "w": 1280,
+        "h": 191,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-activity",
+        "text": "Morning literacy block",
+        "x": 1138,
+        "y": 3577,
+        "w": 13,
+        "h": 22,
+        "horizontal": 122,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "risk-windows__row-activity",
+        "text": "Afternoon writing block",
+        "x": 1138,
+        "y": 3728,
+        "w": 26,
+        "h": 22,
+        "horizontal": 117,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1280,
+      "h": 560
+    },
+    "tab": "classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1280,
+      "docScrollWidth": 1280,
+      "bodyClientWidth": 1280
+    },
+    "shellState": "expanded",
+    "activeSection": "classroom",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 560,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1032,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 4809,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 472,
+      "mainScroll": 5227,
+      "pageClient": 4809,
+      "pageScroll": 4809,
+      "headerHeight": 0
+    },
+    "offenderCount": 212,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage",
+        "text": "RosterTop students to watch20 active · 26 totalAll26Urgent20Stale13Mor",
+        "x": 288,
+        "y": 1808,
+        "w": 952,
+        "h": 199,
+        "horizontal": 2906,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 4809,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.classroom-panel",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 4809,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "classroom-section",
+        "text": "WatchlistStudents to watch20 activeof 26 totalRosterTop students to wa",
+        "x": 288,
+        "y": 1713,
+        "w": 952,
+        "h": 310,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "horizontal": 2865,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 305,
+        "y": 1919,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 2860
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4115,
+        "y": 1939,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 2865
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterTop students to watch20 active · 26 total",
+        "x": 305,
+        "y": 1825,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 2860
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4039,
+        "y": 1837,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 2860
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 305,
+        "y": 1876,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 2860
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__more",
+        "text": "More▾",
+        "x": 4083,
+        "y": 1880,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 2860
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__more-toggle",
+        "text": "More▾",
+        "x": 4083,
+        "y": 1880,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 2860
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1280,
+      "h": 560
+    },
+    "tab": "prep",
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "doc": {
+      "bodyScrollWidth": 1280,
+      "docScrollWidth": 1280,
+      "bodyClientWidth": 1280
+    },
+    "shellState": "expanded",
+    "activeSection": "prep",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 560,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1032,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 2413,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 288,
+        "y": 395,
+        "w": 952,
+        "h": 2145,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 289,
+        "y": 396,
+        "w": 360,
+        "h": 2143,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 649,
+        "y": 396,
+        "w": 590,
+        "h": 2143,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 472,
+      "mainScroll": 2830,
+      "pageClient": 2413,
+      "pageScroll": 2413,
+      "headerHeight": 0
+    },
+    "offenderCount": 55,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 899,
+        "y": 922,
+        "w": 18,
+        "h": 24,
+        "horizontal": 241,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 899,
+        "y": 1393,
+        "w": 18,
+        "h": 24,
+        "horizontal": 241,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 899,
+        "y": 1821,
+        "w": 18,
+        "h": 24,
+        "horizontal": 241,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 899,
+        "y": 2308,
+        "w": 18,
+        "h": 24,
+        "horizontal": 241,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Prep commandPrepare the material before it reaches the room.Start with",
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 2688,
+        "w": 1280,
+        "h": 191,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "div",
+        "cls": "variant-card__body",
+        "text": "Core laneBalanced support with clear structure and visuals to build co",
+        "x": 874,
+        "y": 624,
+        "w": 28,
+        "h": 409,
+        "horizontal": 95,
+        "outside": 0
+      },
+      {
+        "tag": "p",
+        "cls": "",
+        "text": "Balanced support with clear structure and visuals to build comprehensi",
+        "x": 899,
+        "y": 665,
+        "w": 3,
+        "h": 217,
+        "horizontal": 95,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "variant-card__body",
+        "text": "EAL Supported laneLanguage supports and vocabulary focus to build comp",
+        "x": 874,
+        "y": 1993,
+        "w": 28,
+        "h": 426,
+        "horizontal": 92,
+        "outside": 0
+      },
+      {
+        "tag": "p",
+        "cls": "",
+        "text": "Language supports and vocabulary focus to build comprehension and conf",
+        "x": 899,
+        "y": 2051,
+        "w": 3,
+        "h": 217,
+        "horizontal": 92,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "variant-card__body",
+        "text": "Chunked laneSmaller steps, sentence stems, and visual supports to buil",
+        "x": 874,
+        "y": 1095,
+        "w": 28,
+        "h": 409,
+        "horizontal": 87,
+        "outside": 0
+      },
+      {
+        "tag": "p",
+        "cls": "",
+        "text": "Smaller steps, sentence stems, and visual supports to build independen",
+        "x": 899,
+        "y": 1136,
+        "w": 3,
+        "h": 217,
+        "horizontal": 87,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1280,
+      "h": 560
+    },
+    "tab": "ops",
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "doc": {
+      "bodyScrollWidth": 1280,
+      "docScrollWidth": 1280,
+      "bodyClientWidth": 1280
+    },
+    "shellState": "expanded",
+    "activeSection": "ops",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 560,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1032,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 1609,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 313,
+        "y": 429,
+        "w": 902,
+        "h": 1284,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 314,
+        "y": 430,
+        "w": 522,
+        "h": 1282,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 836,
+        "y": 430,
+        "w": 378,
+        "h": 1282,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 472,
+      "mainScroll": 2027,
+      "pageClient": 1609,
+      "pageScroll": 1609,
+      "headerHeight": 0
+    },
+    "offenderCount": 12,
+    "offenders": [
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Ops commandCoordinate the adults without losing the thread.Capture tod",
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 1885,
+        "w": 1280,
+        "h": 191,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__body",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 169,
+        "y": 1886,
+        "w": 1190,
+        "h": 190,
+        "horizontal": 0,
+        "outside": 79
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__meta",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?",
+        "x": 169,
+        "y": 1932,
+        "w": 1190,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 79
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__actions",
+        "text": "▸Shortcuts?",
+        "x": 1200,
+        "y": 1932,
+        "w": 159,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 79
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__shortcuts-btn",
+        "text": "?",
+        "x": 1327,
+        "y": 1932,
+        "w": 32,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 79
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__rail",
+        "text": "classroomdemo-okafor-grade34envmockv0.1.0",
+        "x": 169,
+        "y": 1988,
+        "w": 1190,
+        "h": 41,
+        "horizontal": 0,
+        "outside": 79
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-slot",
+        "text": "v0.1.0",
+        "x": 1051,
+        "y": 2005,
+        "w": 308,
+        "h": 24,
+        "horizontal": 0,
+        "outside": 79
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-value",
+        "text": "0.1.0",
+        "x": 1326,
+        "y": 2011,
+        "w": 34,
+        "h": 11,
+        "horizontal": 0,
+        "outside": 79
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__toggle",
+        "text": "▸Shortcuts",
+        "x": 1200,
+        "y": 1932,
+        "w": 119,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 39
+      },
+      {
+        "tag": "span",
+        "cls": "",
+        "text": "Shortcuts",
+        "x": 1227,
+        "y": 1938,
+        "w": 79,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 26
+      },
+      {
+        "tag": "span",
+        "cls": "btn__label",
+        "text": "Save note & continue",
+        "x": 658,
+        "y": 862,
+        "w": 136,
+        "h": 12,
+        "horizontal": 11,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1280,
+      "h": 560
+    },
+    "tab": "review",
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "doc": {
+      "bodyScrollWidth": 1280,
+      "docScrollWidth": 1280,
+      "bodyClientWidth": 1280
+    },
+    "shellState": "expanded",
+    "activeSection": "review",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1280,
+        "h": 560,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 248,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 1032,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 248,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 2890,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 288,
+        "y": 1762,
+        "w": 952,
+        "h": 1256,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceRail": {
+        "x": 288,
+        "y": 1762,
+        "w": 952,
+        "h": 1117,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceCanvas": {
+        "x": 288,
+        "y": 2920,
+        "w": 952,
+        "h": 98,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": {
+        "x": 288,
+        "y": 1293,
+        "w": 952,
+        "h": 174,
+        "display": "grid",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 472,
+      "mainScroll": 3308,
+      "pageClient": 2890,
+      "pageScroll": 2890,
+      "headerHeight": 0
+    },
+    "offenderCount": 182,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage.student-coverage--static",
+        "text": "RosterFamily follow-up coverage20 active · 26 totalAll26Urgent20Stale1",
+        "x": 288,
+        "y": 1507,
+        "w": 952,
+        "h": 199,
+        "horizontal": 2906,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 2890,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.multi-tool-page.review-page",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 288,
+        "y": 128,
+        "w": 952,
+        "h": 2890,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "multi-tool-workspace-section",
+        "text": "Active workspaceDraft family messagesReview WorkspaceDraft Family Mess",
+        "x": 288,
+        "y": 1243,
+        "w": 952,
+        "h": 1776,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "page-tool-surface",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 288,
+        "y": 1293,
+        "w": 952,
+        "h": 1726,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 288,
+        "y": 1293,
+        "w": 952,
+        "h": 1726,
+        "horizontal": 2905,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 248,
+        "y": 88,
+        "w": 1032,
+        "h": 472,
+        "horizontal": 2865,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 305,
+        "y": 1618,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 2860
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4115,
+        "y": 1639,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 2865
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterFamily follow-up coverage20 active · 26 total",
+        "x": 305,
+        "y": 1524,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 2860
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4039,
+        "y": 1537,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 2860
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 305,
+        "y": 1576,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 2860
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1024,
+      "h": 768
+    },
+    "tab": "today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1024,
+      "docScrollWidth": 1024,
+      "bodyClientWidth": 1024
+    },
+    "shellState": "expanded",
+    "activeSection": "today",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 180,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 776,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 180,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 1925,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": {
+        "x": 288,
+        "y": 215,
+        "w": 696,
+        "h": 1707,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "pageIntro": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 2302,
+      "pageClient": 1925,
+      "pageScroll": 1925,
+      "headerHeight": 0
+    },
+    "offenderCount": 64,
+    "offenders": [
+      {
+        "tag": "div",
+        "cls": "forecast-timeline.forecast-timeline--compact",
+        "text": "9:00–9:4510:00–10:4511:00–11:4512:45–13:30",
+        "x": 885,
+        "y": 4448,
+        "w": 66,
+        "h": 58,
+        "horizontal": 318,
+        "outside": 0
+      },
+      {
+        "tag": "button",
+        "cls": "forecast-timeline-segment.forecast-timeline-segment--high",
+        "text": "12:45–13:30",
+        "x": 1171,
+        "y": 4449,
+        "w": 97,
+        "h": 56,
+        "horizontal": 0,
+        "outside": 244
+      },
+      {
+        "tag": "span",
+        "cls": "forecast-timeline-time",
+        "text": "12:45–13:30",
+        "x": 1179,
+        "y": 4467,
+        "w": 81,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 236
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge__body",
+        "text": "23open itemsLargest sourceApproaching review15 itemsDebt severity tier",
+        "x": 681,
+        "y": 3061,
+        "w": 270,
+        "h": 258,
+        "horizontal": 184,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "viz-debt-gauge.viz-debt-gauge--mounted.viz-debt-gauge--clickable",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 648,
+        "y": 2951,
+        "w": 336,
+        "h": 401,
+        "horizontal": 152,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "today-pulse",
+        "text": "02What to watch nextWhat to triage now. Where the day stands.Today's S",
+        "x": 288,
+        "y": 2838,
+        "w": 696,
+        "h": 2553,
+        "horizontal": 151,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "today-grid.motion-stagger",
+        "text": "Today's Shape4 blocks·7 students watching·23 open threadsPeak10:00–10:",
+        "x": 288,
+        "y": 2951,
+        "w": 696,
+        "h": 2440,
+        "horizontal": 151,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "today-grid__hero-row",
+        "text": "Today's Shape4 blocks·7 students watching·23 open threadsPeak10:00–10:",
+        "x": 288,
+        "y": 2951,
+        "w": 696,
+        "h": 954,
+        "horizontal": 151,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "today-anchor-target",
+        "text": "Complexity Debt RECORD▼ 13Critical23open itemsLargest sourceApproachin",
+        "x": 648,
+        "y": 2951,
+        "w": 336,
+        "h": 401,
+        "horizontal": 151,
+        "outside": 0
+      },
+      {
+        "tag": "button",
+        "cls": "forecast-timeline-segment.forecast-timeline-segment--low",
+        "text": "11:00–11:45",
+        "x": 1071,
+        "y": 4449,
+        "w": 97,
+        "h": 56,
+        "horizontal": 0,
+        "outside": 144
+      },
+      {
+        "tag": "button",
+        "cls": "risk-windows__peak.risk-windows__peak--high",
+        "text": "10:00–10:45high",
+        "x": 885,
+        "y": 4005,
+        "w": 66,
+        "h": 44,
+        "horizontal": 143,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "risk-windows__content",
+        "text": "Peak block10:00–10:45highYour records show two high-complexity blocks ",
+        "x": 885,
+        "y": 3962,
+        "w": 66,
+        "h": 801,
+        "horizontal": 142,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1024,
+      "h": 768
+    },
+    "tab": "classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 1024,
+      "docScrollWidth": 1024,
+      "bodyClientWidth": 1024
+    },
+    "shellState": "expanded",
+    "activeSection": "classroom",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 180,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 776,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 180,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 5329,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 5705,
+      "pageClient": 5329,
+      "pageScroll": 5329,
+      "headerHeight": 0
+    },
+    "offenderCount": 266,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage",
+        "text": "RosterTop students to watch20 active · 26 totalAll26Urgent20Stale13Mor",
+        "x": 288,
+        "y": 2088,
+        "w": 696,
+        "h": 199,
+        "horizontal": 3162,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 5329,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.classroom-panel",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 5329,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "classroom-section",
+        "text": "WatchlistStudents to watch20 activeof 26 totalRosterTop students to wa",
+        "x": 288,
+        "y": 1993,
+        "w": 696,
+        "h": 310,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Classroom commandRead the room before choosing the lens.Bird's-eye hea",
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "horizontal": 3121,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 305,
+        "y": 2199,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 3116
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4115,
+        "y": 2220,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 3121
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterTop students to watch20 active · 26 total",
+        "x": 305,
+        "y": 2105,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 3116
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4039,
+        "y": 2118,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 3116
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 305,
+        "y": 2157,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 3116
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__more",
+        "text": "More▾",
+        "x": 4083,
+        "y": 2160,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 3116
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__more-toggle",
+        "text": "More▾",
+        "x": 4083,
+        "y": 2160,
+        "w": 57,
+        "h": 28,
+        "horizontal": 0,
+        "outside": 3116
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1024,
+      "h": 768
+    },
+    "tab": "prep",
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "doc": {
+      "bodyScrollWidth": 1024,
+      "docScrollWidth": 1024,
+      "bodyClientWidth": 1024
+    },
+    "shellState": "expanded",
+    "activeSection": "prep",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 180,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 776,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 180,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 4152,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 288,
+        "y": 432,
+        "w": 696,
+        "h": 3848,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 289,
+        "y": 433,
+        "w": 320,
+        "h": 3846,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 609,
+        "y": 433,
+        "w": 202,
+        "h": 3846,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 4528,
+      "pageClient": 4152,
+      "pageScroll": 4152,
+      "headerHeight": 0
+    },
+    "offenderCount": 35,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 658,
+        "y": 1214,
+        "w": 104,
+        "h": 24,
+        "horizontal": 155,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 658,
+        "y": 2016,
+        "w": 104,
+        "h": 24,
+        "horizontal": 155,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 658,
+        "y": 2809,
+        "w": 104,
+        "h": 24,
+        "horizontal": 155,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "variant-card__tag",
+        "text": "Source: Community Helpers Reading Passage",
+        "x": 658,
+        "y": 3648,
+        "w": 104,
+        "h": 24,
+        "horizontal": 155,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Prep commandPrepare the material before it reaches the room.Start with",
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 4404,
+        "w": 1024,
+        "h": 172,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__body",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 160,
+        "y": 4405,
+        "w": 952,
+        "h": 171,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__meta",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?",
+        "x": 160,
+        "y": 4442,
+        "w": 952,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__actions",
+        "text": "▸Shortcuts?",
+        "x": 953,
+        "y": 4442,
+        "w": 159,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__shortcuts-btn",
+        "text": "?",
+        "x": 1080,
+        "y": 4442,
+        "w": 32,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__rail",
+        "text": "classroomdemo-okafor-grade34envmockv0.1.0",
+        "x": 160,
+        "y": 4498,
+        "w": 952,
+        "h": 41,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-slot",
+        "text": "v0.1.0",
+        "x": 866,
+        "y": 4515,
+        "w": 246,
+        "h": 24,
+        "horizontal": 0,
+        "outside": 88
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1024,
+      "h": 768
+    },
+    "tab": "ops",
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "doc": {
+      "bodyScrollWidth": 1024,
+      "docScrollWidth": 1024,
+      "bodyClientWidth": 1024
+    },
+    "shellState": "expanded",
+    "activeSection": "ops",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 180,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 776,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 180,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 2400,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 305,
+        "y": 583,
+        "w": 662,
+        "h": 1927,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "workspaceRail": {
+        "x": 306,
+        "y": 584,
+        "w": 660,
+        "h": 1277,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "workspaceCanvas": {
+        "x": 306,
+        "y": 1861,
+        "w": 660,
+        "h": 649,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 2776,
+      "pageClient": 2400,
+      "pageScroll": 2400,
+      "headerHeight": 0
+    },
+    "offenderCount": 17,
+    "offenders": [
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Ops commandCoordinate the adults without losing the thread.Capture tod",
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "horizontal": 124,
+        "outside": 0
+      },
+      {
+        "tag": "footer",
+        "cls": "app-footer",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 124,
+        "y": 2652,
+        "w": 1024,
+        "h": 172,
+        "horizontal": 0,
+        "outside": 124
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__body",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classro",
+        "x": 160,
+        "y": 2653,
+        "w": 952,
+        "h": 171,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__meta",
+        "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?",
+        "x": 160,
+        "y": 2690,
+        "w": 952,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__actions",
+        "text": "▸Shortcuts?",
+        "x": 953,
+        "y": 2690,
+        "w": 159,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__shortcuts-btn",
+        "text": "?",
+        "x": 1080,
+        "y": 2690,
+        "w": 32,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "div",
+        "cls": "app-footer__rail",
+        "text": "classroomdemo-okafor-grade34envmockv0.1.0",
+        "x": 160,
+        "y": 2746,
+        "w": 952,
+        "h": 41,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-slot",
+        "text": "v0.1.0",
+        "x": 866,
+        "y": 2763,
+        "w": 246,
+        "h": 24,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "span",
+        "cls": "app-footer__rail-value",
+        "text": "0.1.0",
+        "x": 1078,
+        "y": 2770,
+        "w": 34,
+        "h": 11,
+        "horizontal": 0,
+        "outside": 88
+      },
+      {
+        "tag": "button",
+        "cls": "app-footer__toggle",
+        "text": "▸Shortcuts",
+        "x": 953,
+        "y": 2690,
+        "w": 119,
+        "h": 32,
+        "horizontal": 0,
+        "outside": 48
+      },
+      {
+        "tag": "div",
+        "cls": "shell-brand",
+        "text": "PrairieClassroomOS",
+        "x": 0,
+        "y": 0,
+        "w": 180,
+        "h": 88,
+        "horizontal": 47,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Message family",
+        "x": 66,
+        "y": 446,
+        "w": 45,
+        "h": 12,
+        "horizontal": 37,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 1024,
+      "h": 768
+    },
+    "tab": "review",
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "doc": {
+      "bodyScrollWidth": 1024,
+      "docScrollWidth": 1024,
+      "bodyClientWidth": 1024
+    },
+    "shellState": "expanded",
+    "activeSection": "review",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 1024,
+        "h": 768,
+        "display": "grid",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 0,
+        "y": 0,
+        "w": 180,
+        "h": 88,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 248,
+        "y": 0,
+        "w": 776,
+        "h": 88,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 88,
+        "w": 180,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "main": {
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "auto"
+      },
+      "page": {
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 3023,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": {
+        "x": 288,
+        "y": 1828,
+        "w": 696,
+        "h": 1322,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceRail": {
+        "x": 288,
+        "y": 1828,
+        "w": 696,
+        "h": 1184,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceCanvas": {
+        "x": 288,
+        "y": 3052,
+        "w": 696,
+        "h": 98,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": {
+        "x": 288,
+        "y": 1359,
+        "w": 696,
+        "h": 174,
+        "display": "grid",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 680,
+      "mainScroll": 3399,
+      "pageClient": 3023,
+      "pageScroll": 3023,
+      "headerHeight": 0
+    },
+    "offenderCount": 198,
+    "offenders": [
+      {
+        "tag": "section",
+        "cls": "student-coverage.student-coverage--static",
+        "text": "RosterFamily follow-up coverage20 active · 26 totalAll26Urgent20Stale1",
+        "x": 288,
+        "y": 1573,
+        "w": 696,
+        "h": 199,
+        "horizontal": 3162,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 3023,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page.multi-tool-page.review-page",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 288,
+        "y": 128,
+        "w": 696,
+        "h": 3023,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "multi-tool-workspace-section",
+        "text": "Active workspaceDraft family messagesReview WorkspaceDraft Family Mess",
+        "x": 288,
+        "y": 1309,
+        "w": 696,
+        "h": 1842,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "page-tool-surface",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 288,
+        "y": 1359,
+        "w": 696,
+        "h": 1792,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "section",
+        "cls": "workspace-page",
+        "text": "Review WorkspaceDraft Family MessagesBuild a plain-language family upd",
+        "x": 288,
+        "y": 1359,
+        "w": 696,
+        "h": 1792,
+        "horizontal": 3161,
+        "outside": 0
+      },
+      {
+        "tag": "main",
+        "cls": "app-main",
+        "text": "Review commandTurn classroom memory into accountable follow-through.Mo",
+        "x": 248,
+        "y": 88,
+        "w": 776,
+        "h": 680,
+        "horizontal": 3121,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__rail",
+        "text": "‹Amira44 threadsFarid44 threadsBrody33 threadsHannah22 threadsMarco22 ",
+        "x": 305,
+        "y": 1684,
+        "w": 3835,
+        "h": 71,
+        "horizontal": 5,
+        "outside": 3116
+      },
+      {
+        "tag": "button",
+        "cls": "student-coverage__scroll-btn.student-coverage__scroll-btn--right",
+        "text": "›",
+        "x": 4115,
+        "y": 1705,
+        "w": 30,
+        "h": 30,
+        "horizontal": 0,
+        "outside": 3121
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__header",
+        "text": "RosterFamily follow-up coverage20 active · 26 total",
+        "x": 305,
+        "y": 1590,
+        "w": 3835,
+        "h": 43,
+        "horizontal": 0,
+        "outside": 3116
+      },
+      {
+        "tag": "span",
+        "cls": "student-coverage__meta",
+        "text": "20 active · 26 total",
+        "x": 4039,
+        "y": 1603,
+        "w": 102,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 3116
+      },
+      {
+        "tag": "div",
+        "cls": "student-coverage__filters",
+        "text": "All26Urgent20Stale13More▾",
+        "x": 305,
+        "y": 1642,
+        "w": 3835,
+        "h": 35,
+        "horizontal": 0,
+        "outside": 3116
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "tab": "today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 900,
+      "docScrollWidth": 900,
+      "bodyClientWidth": 900
+    },
+    "shellState": "expanded",
+    "activeSection": "today",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 900,
+        "h": 700,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 246,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 24,
+        "y": 32,
+        "w": 852,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 24,
+        "y": 89,
+        "w": 852,
+        "h": 96,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 24,
+        "y": 201,
+        "w": 852,
+        "h": 52,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 24,
+        "y": 262,
+        "w": 852,
+        "h": 438,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 65,
+        "y": 286,
+        "w": 770,
+        "h": 1724,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": {
+        "x": 65,
+        "y": 373,
+        "w": 770,
+        "h": 1506,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "pageIntro": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "clip",
+        "overflowX": "clip"
+      }
+    },
+    "scroll": {
+      "mainClient": 437,
+      "mainScroll": 2072,
+      "pageClient": 1724,
+      "pageScroll": 1724,
+      "headerHeight": 245.796875
+    },
+    "offenderCount": 23,
+    "offenders": [
+      {
+        "tag": "div",
+        "cls": "forecast-timeline.forecast-timeline--compact",
+        "text": "9:00–9:4510:00–10:4511:00–11:4512:45–13:30",
+        "x": 699,
+        "y": 4494,
+        "w": 103,
+        "h": 58,
+        "horizontal": 281,
+        "outside": 0
+      },
+      {
+        "tag": "button",
+        "cls": "forecast-timeline-segment.forecast-timeline-segment--high",
+        "text": "12:45–13:30",
+        "x": 985,
+        "y": 4495,
+        "w": 97,
+        "h": 56,
+        "horizontal": 0,
+        "outside": 182
+      },
+      {
+        "tag": "span",
+        "cls": "forecast-timeline-time",
+        "text": "12:45–13:30",
+        "x": 993,
+        "y": 4513,
+        "w": 81,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 174
+      },
+      {
+        "tag": "button",
+        "cls": "risk-windows__peak.risk-windows__peak--high",
+        "text": "10:00–10:45high",
+        "x": 699,
+        "y": 4202,
+        "w": 103,
+        "h": 44,
+        "horizontal": 106,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "risk-windows__content",
+        "text": "Peak block10:00–10:45highYour records show two high-complexity blocks ",
+        "x": 699,
+        "y": 4177,
+        "w": 103,
+        "h": 632,
+        "horizontal": 105,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "risk-windows__peak-group",
+        "text": "Peak block10:00–10:45high",
+        "x": 699,
+        "y": 4177,
+        "w": 103,
+        "h": 69,
+        "horizontal": 105,
+        "outside": 0
+      },
+      {
+        "tag": "button",
+        "cls": "forecast-timeline-segment.forecast-timeline-segment--low",
+        "text": "11:00–11:45",
+        "x": 885,
+        "y": 4495,
+        "w": 97,
+        "h": 56,
+        "horizontal": 0,
+        "outside": 82
+      },
+      {
+        "tag": "div",
+        "cls": "risk-windows__ledger",
+        "text": "9:00–9:45Morning literacy blockAmira's peer buddy absent today — will ",
+        "x": 699,
+        "y": 4584,
+        "w": 103,
+        "h": 226,
+        "horizontal": 78,
+        "outside": 0
+      },
+      {
+        "tag": "button",
+        "cls": "risk-windows__row.risk-windows__row--medium",
+        "text": "9:00–9:45Morning literacy blockAmira's peer buddy absent today — will ",
+        "x": 699,
+        "y": 4585,
+        "w": 103,
+        "h": 74,
+        "horizontal": 78,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "forecast-timeline-time",
+        "text": "11:00–11:45",
+        "x": 893,
+        "y": 4513,
+        "w": 81,
+        "h": 19,
+        "horizontal": 0,
+        "outside": 74
+      },
+      {
+        "tag": "div",
+        "cls": "card.card--flat.card--tone-neutral.today-forecast-section",
+        "text": "Risk Windows AI SNAPSHOT2high blocksStage supports before 10:00–10:45.",
+        "x": 466,
+        "y": 4144,
+        "w": 369,
+        "h": 1113,
+        "horizontal": 73,
+        "outside": 0
+      },
+      {
+        "tag": "div",
+        "cls": "card__body.risk-windows__body",
+        "text": "Risk Windows AI SNAPSHOT2high blocksStage supports before 10:00–10:45.",
+        "x": 467,
+        "y": 4145,
+        "w": 367,
+        "h": 813,
+        "horizontal": 73,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "tab": "classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 900,
+      "docScrollWidth": 900,
+      "bodyClientWidth": 900
+    },
+    "shellState": "expanded",
+    "activeSection": "classroom",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 900,
+        "h": 700,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 246,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 24,
+        "y": 32,
+        "w": 852,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 24,
+        "y": 89,
+        "w": 852,
+        "h": 96,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 24,
+        "y": 201,
+        "w": 852,
+        "h": 52,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 24,
+        "y": 262,
+        "w": 852,
+        "h": 438,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": null,
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 437,
+      "mainScroll": 525,
+      "pageClient": null,
+      "pageScroll": null,
+      "headerHeight": 245.796875
+    },
+    "offenderCount": 8,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Message family",
+        "x": 796,
+        "y": 230,
+        "w": 30,
+        "h": 13,
+        "horizontal": 59,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Review",
+        "x": 796,
+        "y": 211,
+        "w": 30,
+        "h": 17,
+        "horizontal": 25,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Classroom",
+        "x": 188,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Plan tomorrow",
+        "x": 310,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Tomorrow",
+        "x": 310,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Adapt lesson",
+        "x": 553,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Log note",
+        "x": 674,
+        "y": 230,
+        "w": 37,
+        "h": 13,
+        "horizontal": 12,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Do this now",
+        "x": 66,
+        "y": 230,
+        "w": 60,
+        "h": 13,
+        "horizontal": 7,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "tab": "prep",
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "doc": {
+      "bodyScrollWidth": 900,
+      "docScrollWidth": 900,
+      "bodyClientWidth": 900
+    },
+    "shellState": "expanded",
+    "activeSection": "prep",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 900,
+        "h": 700,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 246,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 24,
+        "y": 32,
+        "w": 852,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 24,
+        "y": 89,
+        "w": 852,
+        "h": 96,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 24,
+        "y": 201,
+        "w": 852,
+        "h": 52,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 24,
+        "y": 262,
+        "w": 852,
+        "h": 438,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 65,
+        "y": 381,
+        "w": 770,
+        "h": 414,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 437,
+      "mainScroll": 574,
+      "pageClient": 414,
+      "pageScroll": 414,
+      "headerHeight": 245.796875
+    },
+    "offenderCount": 6,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Message family",
+        "x": 796,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 30,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Classroom",
+        "x": 188,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Plan tomorrow",
+        "x": 310,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Tomorrow",
+        "x": 310,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Adapt lesson",
+        "x": 553,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Do this now",
+        "x": 66,
+        "y": 230,
+        "w": 60,
+        "h": 13,
+        "horizontal": 7,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "tab": "ops",
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "doc": {
+      "bodyScrollWidth": 900,
+      "docScrollWidth": 900,
+      "bodyClientWidth": 900
+    },
+    "shellState": "expanded",
+    "activeSection": "ops",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 900,
+        "h": 700,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 246,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 24,
+        "y": 32,
+        "w": 852,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 24,
+        "y": 89,
+        "w": 852,
+        "h": 96,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 24,
+        "y": 201,
+        "w": 852,
+        "h": 52,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 24,
+        "y": 262,
+        "w": 852,
+        "h": 438,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 65,
+        "y": 381,
+        "w": 770,
+        "h": 633,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 437,
+      "mainScroll": 793,
+      "pageClient": 633,
+      "pageScroll": 633,
+      "headerHeight": 245.796875
+    },
+    "offenderCount": 12,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "ops-stepper__copy",
+        "text": "Log Intervention",
+        "x": 146,
+        "y": 863,
+        "w": 34,
+        "h": 37,
+        "horizontal": 36,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "ops-stepper__label",
+        "text": "Log Intervention",
+        "x": 146,
+        "y": 863,
+        "w": 34,
+        "h": 37,
+        "horizontal": 36,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Message family",
+        "x": 796,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 30,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Classroom",
+        "x": 188,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Plan tomorrow",
+        "x": 310,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Tomorrow",
+        "x": 310,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Adapt lesson",
+        "x": 553,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "ops-stepper__copy",
+        "text": "EA Briefing",
+        "x": 324,
+        "y": 863,
+        "w": 34,
+        "h": 37,
+        "horizontal": 11,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "ops-stepper__label",
+        "text": "EA Briefing",
+        "x": 324,
+        "y": 863,
+        "w": 34,
+        "h": 37,
+        "horizontal": 11,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Do this now",
+        "x": 66,
+        "y": 230,
+        "w": 60,
+        "h": 13,
+        "horizontal": 7,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "ops-stepper__copy",
+        "text": "Sub Packet",
+        "x": 679,
+        "y": 863,
+        "w": 34,
+        "h": 37,
+        "horizontal": 4,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "ops-stepper__label",
+        "text": "Sub Packet",
+        "x": 679,
+        "y": 863,
+        "w": 34,
+        "h": 37,
+        "horizontal": 4,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 900,
+      "h": 700
+    },
+    "tab": "review",
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "doc": {
+      "bodyScrollWidth": 900,
+      "docScrollWidth": 900,
+      "bodyClientWidth": 900
+    },
+    "shellState": "expanded",
+    "activeSection": "review",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 900,
+        "h": 700,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 24,
+        "y": 16,
+        "w": 852,
+        "h": 246,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 24,
+        "y": 32,
+        "w": 852,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 24,
+        "y": 89,
+        "w": 852,
+        "h": 96,
+        "display": "grid",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 24,
+        "y": 201,
+        "w": 852,
+        "h": 52,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 24,
+        "y": 262,
+        "w": 852,
+        "h": 438,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 65,
+        "y": 381,
+        "w": 770,
+        "h": 1452,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 437,
+      "mainScroll": 1612,
+      "pageClient": 1452,
+      "pageScroll": 1452,
+      "headerHeight": 245.796875
+    },
+    "offenderCount": 6,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Message family",
+        "x": 796,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 30,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Classroom",
+        "x": 188,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Plan tomorrow",
+        "x": 310,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 23,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-primary",
+        "text": "Tomorrow",
+        "x": 310,
+        "y": 211,
+        "w": 59,
+        "h": 17,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Adapt lesson",
+        "x": 553,
+        "y": 230,
+        "w": 59,
+        "h": 13,
+        "horizontal": 16,
+        "outside": 0
+      },
+      {
+        "tag": "span",
+        "cls": "shell-nav__label-task",
+        "text": "Do this now",
+        "x": 66,
+        "y": 230,
+        "w": 60,
+        "h": 13,
+        "horizontal": 7,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "tab": "today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "today",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 721,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 236,
+        "w": 340,
+        "h": 544,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 777,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 720,
+      "mainScroll": 720,
+      "pageClient": 544,
+      "pageScroll": 544,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "tab": "classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "classroom",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 721,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": null,
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 777,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 720,
+      "mainScroll": 720,
+      "pageClient": null,
+      "pageScroll": null,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "tab": "prep",
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "prep",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 721,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 248,
+        "w": 340,
+        "h": 487,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 777,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 720,
+      "mainScroll": 720,
+      "pageClient": 487,
+      "pageScroll": 487,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "tab": "ops",
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "ops",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 721,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 248,
+        "w": 340,
+        "h": 905,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 777,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 720,
+      "mainScroll": 1046,
+      "pageClient": 905,
+      "pageScroll": 905,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 844
+    },
+    "tab": "review",
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "review",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 844,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 721,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 248,
+        "w": 340,
+        "h": 1499,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 777,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 720,
+      "mainScroll": 1640,
+      "pageClient": 1499,
+      "pageScroll": 1499,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 640
+    },
+    "tab": "today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "today",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 640,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 517,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 236,
+        "w": 340,
+        "h": 544,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 573,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 516,
+      "mainScroll": 673,
+      "pageClient": 544,
+      "pageScroll": 544,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 640
+    },
+    "tab": "classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "classroom",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 640,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 517,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": null,
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 573,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 516,
+      "mainScroll": 516,
+      "pageClient": null,
+      "pageScroll": null,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 640
+    },
+    "tab": "prep",
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "prep",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 640,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 517,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 248,
+        "w": 340,
+        "h": 487,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 573,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 516,
+      "mainScroll": 628,
+      "pageClient": 487,
+      "pageScroll": 487,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 640
+    },
+    "tab": "ops",
+    "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "ops",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 640,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 517,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 248,
+        "w": 340,
+        "h": 905,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 573,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 516,
+      "mainScroll": 1046,
+      "pageClient": 905,
+      "pageScroll": 905,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  },
+  {
+    "viewport": {
+      "w": 390,
+      "h": 640
+    },
+    "tab": "review",
+    "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+    "doc": {
+      "bodyScrollWidth": 390,
+      "docScrollWidth": 390,
+      "bodyClientWidth": 390
+    },
+    "shellState": "expanded",
+    "activeSection": "review",
+    "rects": {
+      "shell": {
+        "x": 0,
+        "y": 0,
+        "w": 390,
+        "h": 640,
+        "display": "flex",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "header": {
+        "x": 8,
+        "y": 8,
+        "w": 374,
+        "h": 115,
+        "display": "block",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "brand": {
+        "x": 8,
+        "y": 18,
+        "w": 231,
+        "h": 41,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "bar": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "contents",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "nav": {
+        "x": 0,
+        "y": 0,
+        "w": 0,
+        "h": 0,
+        "display": "none",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "main": {
+        "x": 8,
+        "y": 123,
+        "w": 374,
+        "h": 517,
+        "display": "flex",
+        "overflowY": "auto",
+        "overflowX": "hidden"
+      },
+      "page": {
+        "x": 25,
+        "y": 248,
+        "w": 340,
+        "h": 1499,
+        "display": "flex",
+        "overflowY": "visible",
+        "overflowX": "visible"
+      },
+      "workspaceLayout": null,
+      "workspaceRail": null,
+      "workspaceCanvas": null,
+      "mobileNav": {
+        "x": 0,
+        "y": 573,
+        "w": 390,
+        "h": 67,
+        "display": "block",
+        "overflowY": "hidden",
+        "overflowX": "hidden"
+      },
+      "todayHero": null,
+      "pageIntro": null
+    },
+    "scroll": {
+      "mainClient": 516,
+      "mainScroll": 1640,
+      "pageClient": 1499,
+      "pageScroll": 1499,
+      "headerHeight": 114.59375
+    },
+    "offenderCount": 1,
+    "offenders": [
+      {
+        "tag": "span",
+        "cls": "nothing-btn__icon",
+        "text": "Dark",
+        "x": 353,
+        "y": 32,
+        "w": 14,
+        "h": 14,
+        "horizontal": 8,
+        "outside": 0
+      }
+    ]
+  }
+]
