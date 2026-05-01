@@ -1,0 +1,447 @@
+/* Tomorrow card finishing pass.
+   Scoped to the Tomorrow page so shared Prep/Ops/Review tool hosts keep their
+   existing contracts while this page adopts the finalized Classroom card grammar. */
+
+.tomorrow-page {
+  --tomorrow-rule: color-mix(in srgb, var(--color-brand-highlight) 58%, var(--color-border-strong));
+  --tomorrow-rule-soft: color-mix(in srgb, var(--color-brand-highlight) 14%, var(--color-border));
+  --tomorrow-stage: var(--color-accent);
+  --tomorrow-success: var(--color-brand-green);
+  gap: var(--space-5);
+}
+
+.tomorrow-page .page-hero--tomorrow {
+  border-radius: 6px;
+  border-color: var(--tomorrow-rule-soft);
+  border-left-width: 2px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-highlight) 5%, transparent), transparent 48%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 38%, transparent), transparent 64%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-brand-highlight) 5%, transparent),
+    0 18px 42px -34px color-mix(in srgb, var(--color-brand-highlight) 48%, transparent);
+}
+
+.tomorrow-page .page-hero--tomorrow .page-hero__caption {
+  max-width: 64ch;
+}
+
+.tomorrow-page .page-hero--tomorrow .page-hero__pulse {
+  align-self: start;
+}
+
+.tomorrow-page .page-hero--tomorrow .page-hero__status-rows {
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 46%, transparent);
+}
+
+.tomorrow-page .page-hero--tomorrow .page-hero__metric-groups {
+  gap: var(--space-2);
+}
+
+.tomorrow-page .page-hero--tomorrow .page-hero__metric-group {
+  min-height: 5.8rem;
+  justify-content: space-between;
+  padding: var(--space-2-5);
+  border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 40%, var(--color-surface));
+}
+
+.tomorrow-page .page-hero--tomorrow .page-hero__metric-group--critical {
+  border-color: color-mix(in srgb, var(--color-border-warning) 58%, var(--color-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-warning) 34%, transparent), transparent 68%),
+    var(--color-surface);
+}
+
+.tomorrow-operational-preview {
+  padding: 0;
+  border-radius: 6px;
+  border-color: var(--tomorrow-rule-soft);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-green) 5%, transparent), transparent 50%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-brand-highlight) 5%, transparent),
+    0 16px 38px -34px color-mix(in srgb, var(--color-brand-highlight) 46%, transparent);
+}
+
+.tomorrow-operational-preview::before {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--tomorrow-rule) 44%, transparent), transparent);
+}
+
+.tomorrow-operational-preview .operational-preview__body {
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.92fr);
+  gap: 0;
+}
+
+.tomorrow-operational-preview .operational-preview__group {
+  padding: var(--space-4);
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.tomorrow-operational-preview .operational-preview__group:first-child {
+  border-left: 0;
+}
+
+.tomorrow-operational-preview .preview-evidence-row {
+  min-height: 2.05rem;
+}
+
+.tomorrow-tool-switcher {
+  margin-bottom: 0 !important;
+}
+
+.tomorrow-tool-switcher.page-tool-switcher--cards .page-tool-switcher__btn {
+  min-height: 8.25rem !important;
+  border-radius: 6px !important;
+}
+
+.tomorrow-tool-switcher.page-tool-switcher--cards .page-tool-switcher__btn--active {
+  border-color: color-mix(in srgb, var(--tomorrow-stage) 42%, var(--tomorrow-rule-soft)) !important;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--tomorrow-stage) 7%, transparent), transparent 58%),
+    var(--color-surface) !important;
+}
+
+.tomorrow-tool-switcher.page-tool-switcher--cards .page-tool-switcher__btn--active::before {
+  background: var(--tomorrow-stage);
+}
+
+.tomorrow-workspace-section {
+  gap: 0;
+  overflow: hidden;
+  border: 1px solid var(--tomorrow-rule-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-green) 4%, transparent), transparent 48%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-brand-highlight) 4%, transparent),
+    0 18px 42px -34px color-mix(in srgb, var(--color-brand-highlight) 44%, transparent);
+}
+
+.tomorrow-workspace-section__header {
+  padding: var(--space-4);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+}
+
+.tomorrow-workspace-section__copy {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.tomorrow-workspace-section__status {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h-xs);
+  padding: 0 var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--tomorrow-rule) 34%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 62%, transparent);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.tomorrow-tool-surface {
+  gap: 0;
+}
+
+.tomorrow-tool-surface > .workspace-page {
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.tomorrow-tool-surface .page-intro {
+  padding-inline: var(--space-1);
+}
+
+.tomorrow-plan-workspace .coverage-timeline,
+.tomorrow-forecast-workspace .coverage-timeline,
+.tomorrow-stage-layout {
+  overflow: hidden;
+  border-radius: 6px;
+  border-color: color-mix(in srgb, var(--tomorrow-rule) 18%, var(--color-border));
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-green) 4%, transparent), transparent 50%),
+    var(--color-surface);
+}
+
+.tomorrow-plan-workspace .coverage-timeline,
+.tomorrow-forecast-workspace .coverage-timeline {
+  gap: 0;
+  padding: 0;
+}
+
+.tomorrow-plan-workspace .coverage-timeline__header,
+.tomorrow-forecast-workspace .coverage-timeline__header {
+  padding: var(--space-4);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.tomorrow-plan-workspace .coverage-timeline__scroll,
+.tomorrow-forecast-workspace .coverage-timeline__scroll {
+  padding: var(--space-3) var(--space-4) var(--space-4);
+}
+
+.tomorrow-plan-workspace .coverage-timeline__rail,
+.tomorrow-forecast-workspace .coverage-timeline__rail {
+  grid-auto-columns: minmax(12.5rem, 1fr);
+}
+
+.tomorrow-plan-workspace .coverage-timeline__card,
+.tomorrow-forecast-workspace .coverage-timeline__card {
+  min-height: 7.4rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 34%, var(--color-surface));
+}
+
+.tomorrow-stage-layout {
+  border: 1px solid color-mix(in srgb, var(--tomorrow-rule) 18%, var(--color-border));
+}
+
+.tomorrow-stage-layout .workspace-rail,
+.tomorrow-stage-layout .workspace-canvas {
+  min-width: 0;
+}
+
+.tomorrow-stage-layout .workspace-canvas {
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+}
+
+.tomorrow-stage-layout .workspace-result {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.tomorrow-plan-result > .viz-plan-radar,
+.tomorrow-forecast-result > .viz-complexity-cal,
+.tomorrow-forecast-result > .forecast-trend-sparkline {
+  border-radius: 6px;
+  border-color: color-mix(in srgb, var(--tomorrow-rule) 18%, var(--color-border));
+}
+
+.tomorrow-plan-result > .viz-plan-radar {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.tomorrow-plan-result .empty-state--preview {
+  padding: var(--space-3);
+  border: 1px dashed color-mix(in srgb, var(--tomorrow-rule) 28%, var(--color-border));
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-green) 4%, transparent), transparent 60%),
+    color-mix(in srgb, var(--color-surface-muted) 22%, var(--color-surface));
+}
+
+.tomorrow-plan-result .empty-state__skeleton-grid {
+  gap: var(--space-2);
+  opacity: 1;
+}
+
+.tomorrow-plan-result .empty-state__skeleton-card {
+  min-height: 4.8rem;
+  border-radius: var(--radius-xs);
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0,
+      transparent 1rem,
+      color-mix(in srgb, var(--tomorrow-rule) 22%, transparent) 1rem,
+      color-mix(in srgb, var(--tomorrow-rule) 22%, transparent) calc(1rem + 1px),
+      transparent calc(1rem + 1px)
+    ),
+    var(--color-surface);
+}
+
+.tomorrow-plan-workspace .plan-viewer,
+.tomorrow-forecast-workspace .forecast-viewer {
+  overflow: hidden;
+  padding: 0;
+  border-radius: 6px !important;
+  border-color: color-mix(in srgb, var(--tomorrow-rule) 22%, var(--color-border));
+  background: var(--color-surface);
+}
+
+.tomorrow-plan-workspace .plan-header,
+.tomorrow-forecast-workspace .forecast-header {
+  padding: var(--space-5);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+}
+
+.tomorrow-plan-workspace .plan-thinking,
+.tomorrow-forecast-workspace .forecast-thinking,
+.tomorrow-plan-workspace .plan-section,
+.tomorrow-forecast-workspace .forecast-section {
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 36%, transparent);
+}
+
+.tomorrow-plan-workspace .plan-section:last-of-type,
+.tomorrow-forecast-workspace .forecast-section:last-of-type {
+  border-bottom: 0;
+}
+
+.tomorrow-plan-workspace .plan-section h3,
+.tomorrow-forecast-workspace .forecast-section h3 {
+  margin-bottom: var(--space-3);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.tomorrow-plan-workspace .plan-cards,
+.tomorrow-forecast-workspace .forecast-blocks {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-2);
+}
+
+.tomorrow-plan-workspace .plan-card,
+.tomorrow-forecast-workspace .forecast-block {
+  min-height: 100%;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 28%, var(--color-surface));
+}
+
+.tomorrow-plan-workspace .plan-checklist {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-2);
+}
+
+.tomorrow-plan-workspace .plan-checklist li {
+  border: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 28%, var(--color-surface));
+}
+
+@media (min-width: 960px) {
+  .tomorrow-page .page-hero--tomorrow {
+    grid-template-columns: minmax(0, 1fr) minmax(26rem, 0.86fr);
+    align-items: start;
+  }
+
+  .tomorrow-page .page-hero--tomorrow .page-hero__metric-groups {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-2);
+    padding: var(--space-2-5);
+  }
+
+  .tomorrow-page .page-hero--tomorrow .page-hero__metric-group {
+    min-height: 0;
+  }
+
+  .tomorrow-page .page-hero--tomorrow .page-hero__metric-group-tiles {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-main[data-section="tomorrow"] .tomorrow-stage-layout[data-layout="split"] > .workspace-rail {
+    overflow: visible;
+    padding: var(--space-4);
+    border-right-color: color-mix(in srgb, var(--tomorrow-rule) 28%, var(--color-border));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--color-bg-sun) 46%, transparent), transparent 58%),
+      color-mix(in srgb, var(--color-surface-muted) 34%, transparent);
+  }
+
+  .tomorrow-stage-layout[data-layout="split"] {
+    flex: 0 0 auto;
+  }
+
+  .tomorrow-stage-layout[data-layout="split"] > .workspace-canvas {
+    overflow: visible;
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 720px) {
+  .tomorrow-page {
+    gap: var(--space-4);
+  }
+
+  .tomorrow-operational-preview .operational-preview__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tomorrow-operational-preview .operational-preview__group {
+    padding: var(--space-3);
+    border-left: 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+  }
+
+  .tomorrow-operational-preview .operational-preview__group:first-child {
+    border-top: 0;
+  }
+
+  .tomorrow-page .page-hero--tomorrow .page-hero__pulse {
+    gap: var(--space-2);
+    padding: var(--space-2);
+  }
+
+  .tomorrow-page .page-hero--tomorrow .page-hero__metric-group {
+    min-height: auto;
+    padding: var(--space-2);
+  }
+
+  .tomorrow-workspace-section__header {
+    align-items: stretch;
+    padding: var(--space-3);
+  }
+
+  .tomorrow-workspace-section__status {
+    align-self: flex-start;
+    white-space: normal;
+  }
+
+  .tomorrow-tool-surface > .workspace-page {
+    padding: var(--space-3);
+  }
+
+  .tomorrow-plan-workspace .coverage-timeline__header,
+  .tomorrow-forecast-workspace .coverage-timeline__header,
+  .tomorrow-plan-workspace .coverage-timeline__scroll,
+  .tomorrow-forecast-workspace .coverage-timeline__scroll,
+  .tomorrow-plan-workspace .plan-header,
+  .tomorrow-forecast-workspace .forecast-header,
+  .tomorrow-plan-workspace .plan-thinking,
+  .tomorrow-forecast-workspace .forecast-thinking,
+  .tomorrow-plan-workspace .plan-section,
+  .tomorrow-forecast-workspace .forecast-section {
+    padding: var(--space-3);
+  }
+
+  .tomorrow-stage-layout {
+    border: 0;
+    background: transparent;
+  }
+
+  .tomorrow-plan-result .viz-plan-radar__stage {
+    width: calc(100% - var(--space-3));
+  }
+
+  .tomorrow-plan-result .viz-plan-radar__label {
+    min-width: 52px;
+    max-width: 62px;
+  }
+
+  .tomorrow-plan-result .viz-plan-radar__label--featured {
+    min-width: 64px;
+    max-width: 68px;
+  }
+}

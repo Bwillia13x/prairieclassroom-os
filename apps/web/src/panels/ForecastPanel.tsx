@@ -150,7 +150,7 @@ export default function ForecastPanel() {
   }
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page tomorrow-forecast-workspace">
       <PageIntro
         title="Forecast Tomorrow's Complexity"
         sectionTone="slate"
@@ -183,6 +183,8 @@ export default function ForecastPanel() {
       />
 
       <WorkspaceLayout
+        className="tomorrow-stage-layout tomorrow-stage-layout--forecast"
+        surface="tomorrow-forecast"
         splitState={result ? "output" : "input"}
         rail={(
           role.canGenerate ? (
@@ -194,7 +196,7 @@ export default function ForecastPanel() {
           ) : null
         )}
         canvas={(
-          <div className="workspace-result" aria-live="polite" aria-busy={loading && result === null}>
+          <div className="workspace-result tomorrow-forecast-result" aria-live="polite" aria-busy={loading && result === null}>
             {error && result === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
             {loading && result === null ? (
               streaming.phase !== "idle"

@@ -20,6 +20,7 @@ import SectionMarker from "../components/shared/SectionMarker";
 import type { FamilyMessagePrefill, InterventionPrefill } from "../types";
 import "../styles/page-tool-switcher.css";
 import "../styles/multi-tool-page.css";
+import "./TomorrowPanel.css";
 
 const TOMORROW_TOOLS = TOOLS_BY_TAB.tomorrow ?? (["tomorrow-plan", "complexity-forecast"] as ActiveTool[]);
 
@@ -182,6 +183,16 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
     currentTool === "tomorrow-plan"
       ? !!latestPlan || tomorrowNotes.length > 0 || unresolvedFollowups > 0
       : !!latestForecast;
+  const activeWorkspace =
+    currentTool === "tomorrow-plan"
+      ? {
+          title: "Tomorrow Plan",
+          description: "Convert today's signal into watchpoints, priorities, EA actions, prep, and family follow-ups.",
+        }
+      : {
+          title: "Complexity Forecast",
+          description: "Stress-test the next school day block by block before coverage and transitions are committed.",
+        };
 
   return (
     <div className="multi-tool-page tomorrow-page" id="tomorrow-top" data-active-tool={currentTool}>
@@ -207,6 +218,7 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
           ariaLabel="Tomorrow operational preview"
           id="tomorrow-preview"
           groups={planPreviewGroups}
+          className="tomorrow-operational-preview"
         />
       ) : null}
 
@@ -230,7 +242,12 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
         subtitle="What to stage. What to forecast. What lands tomorrow."
       />
 
-      <div id="tomorrow-tools" className="page-tool-switcher page-tool-switcher--cards" role="tablist" aria-label="Tomorrow tool">
+      <div
+        id="tomorrow-tools"
+        className="page-tool-switcher page-tool-switcher--cards tomorrow-tool-switcher"
+        role="tablist"
+        aria-label="Tomorrow tool"
+      >
         {TOMORROW_TOOLS.map((tool) => {
           const copy = TOMORROW_TOOL_COPY[tool];
           return (
@@ -251,12 +268,28 @@ export default function TomorrowPanel({ onFollowupClick, onInterventionClick }: 
         })}
       </div>
 
-      <div id="tomorrow-workspace" className="page-tool-surface">
-        {currentTool === "tomorrow-plan" ? (
-          <TomorrowPlanPanel onFollowupClick={onFollowupClick} onInterventionClick={onInterventionClick} />
-        ) : null}
-        {currentTool === "complexity-forecast" ? <ForecastPanel /> : null}
-      </div>
+      <section
+        className="multi-tool-workspace-section tomorrow-workspace-section"
+        aria-labelledby="tomorrow-workspace-heading"
+      >
+        <header className="multi-tool-workspace-section__header tomorrow-workspace-section__header">
+          <div className="tomorrow-workspace-section__copy">
+            <span className="multi-tool-workspace-section__eyebrow">Active workspace</span>
+            <h2 id="tomorrow-workspace-heading" className="multi-tool-workspace-section__title">
+              {activeWorkspace.title}
+            </h2>
+            <p className="multi-tool-workspace-section__caption">{activeWorkspace.description}</p>
+          </div>
+          <span className="tomorrow-workspace-section__status">{statusForTool(currentTool)}</span>
+        </header>
+
+        <div id="tomorrow-workspace" className="page-tool-surface tomorrow-tool-surface">
+          {currentTool === "tomorrow-plan" ? (
+            <TomorrowPlanPanel onFollowupClick={onFollowupClick} onInterventionClick={onInterventionClick} />
+          ) : null}
+          {currentTool === "complexity-forecast" ? <ForecastPanel /> : null}
+        </div>
+      </section>
     </div>
   );
 }

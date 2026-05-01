@@ -182,7 +182,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
   }
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page tomorrow-plan-workspace">
       <PageIntro
         title="Plan Tomorrow's Support"
         sectionTone="slate"
@@ -215,6 +215,8 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
       />
 
       <WorkspaceLayout
+        className="tomorrow-stage-layout tomorrow-stage-layout--plan"
+        surface="tomorrow-plan"
         splitState={displayResult ? "output" : "input"}
         rail={(
           <>
@@ -234,7 +236,7 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
           </>
         )}
         canvas={(
-          <div className="workspace-result" aria-live="polite" aria-busy={loading && displayResult === null}>
+          <div className="workspace-result tomorrow-plan-result" aria-live="polite" aria-busy={loading && displayResult === null}>
             {error && displayResult === null ? <ErrorBanner message={error} onDismiss={reset} /> : null}
             {loading && displayResult === null ? (
               streaming.phase !== "idle"
