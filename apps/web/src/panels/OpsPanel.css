@@ -1,0 +1,671 @@
+/* Ops route finishing pass.
+   The Ops page needs one adult-coordination grammar across the command card,
+   workflow rail, timeline, and embedded generation tools. */
+
+.ops-page {
+  --ops-rule: color-mix(in srgb, var(--color-border-slate) 76%, var(--color-border));
+  --ops-rule-soft: color-mix(in srgb, var(--color-border-slate) 26%, var(--color-border));
+  --ops-accent: color-mix(in srgb, var(--color-brand-highlight) 64%, var(--color-border));
+  --ops-wash: color-mix(in srgb, var(--color-bg-slate) 18%, transparent);
+  --ops-forest-wash: color-mix(in srgb, var(--color-bg-forest) 10%, transparent);
+  width: 100%;
+  max-width: min(100%, 1280px);
+  gap: var(--space-4);
+}
+
+.ops-page,
+.ops-page *,
+.ops-page *::before,
+.ops-page *::after {
+  min-width: 0;
+}
+
+.ops-command-workflow {
+  gap: var(--space-3);
+  padding: 0;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ops-command-workflow__header {
+  position: relative;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.72fr) minmax(10.25rem, 0.34fr);
+  gap: var(--space-4);
+  align-items: stretch;
+  padding: var(--space-4);
+  overflow: hidden;
+  border: 1px solid var(--ops-rule-soft);
+  border-left: 2px solid var(--ops-accent);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, var(--ops-wash), transparent 46%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 42%, transparent), transparent 70%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-bg-slate) 4%, transparent),
+    0 18px 42px -34px color-mix(in srgb, var(--color-text) 34%, transparent);
+}
+
+.ops-command-workflow__header::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-top: 2px solid var(--ops-accent);
+  border-left: 2px solid var(--ops-accent);
+  border-radius: 6px 0 0 0;
+  pointer-events: none;
+}
+
+.ops-command-workflow__identity {
+  justify-content: center;
+  gap: var(--space-2-5);
+  padding-left: var(--space-1);
+}
+
+.ops-command-workflow__eyebrow,
+.ops-workflow-stage__eyebrow,
+.ops-page .coverage-timeline__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-tertiary);
+}
+
+.ops-command-workflow__eyebrow::before,
+.ops-workflow-stage__eyebrow::before,
+.ops-page .coverage-timeline__eyebrow::before {
+  content: "";
+  width: 13px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.62;
+}
+
+.ops-command-workflow__identity h1 {
+  max-width: 22ch;
+  color: var(--color-text);
+  font-size: clamp(1.8rem, 2.75vw, 2.8rem);
+  line-height: 1.02;
+  letter-spacing: 0;
+}
+
+.ops-command-workflow__identity p {
+  max-width: 58ch;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  line-height: var(--leading-base);
+}
+
+.ops-command-workflow__metrics {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-self: center;
+  align-content: center;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.ops-command-workflow__metrics div {
+  position: relative;
+  display: grid;
+  min-height: 5.35rem;
+  align-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 28%, var(--color-surface));
+  box-shadow: none;
+}
+
+.ops-command-workflow__metrics div::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: color-mix(in srgb, var(--ops-rule) 55%, transparent);
+  opacity: 0.72;
+}
+
+.ops-command-workflow__metrics dt {
+  margin: 0;
+  color: var(--color-text-tertiary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+.ops-command-workflow__metrics dd {
+  font-size: var(--text-2xl);
+  letter-spacing: 0;
+}
+
+.ops-command-workflow__queue {
+  position: relative;
+  align-self: center;
+  min-height: 9.1rem;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-warning) 34%, var(--color-border));
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-sun) 18%, transparent), transparent 64%),
+    color-mix(in srgb, var(--color-surface-muted) 34%, var(--color-surface));
+  box-shadow: none;
+}
+
+.ops-command-workflow__queue::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: color-mix(in srgb, var(--color-warning) 72%, transparent);
+}
+
+.ops-command-workflow__queue-value {
+  color: var(--color-text);
+  font-size: clamp(2rem, 3.2vw, 3rem);
+}
+
+.ops-command-workflow__queue-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 1.85rem;
+  padding: 0 var(--space-2);
+  border: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent);
+  border-radius: var(--radius-xs);
+  color: var(--color-text);
+  text-decoration: none;
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.ops-command-workflow__queue-link:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-warning) 48%, var(--color-border));
+  background: color-mix(in srgb, var(--color-bg-sun) 18%, transparent);
+}
+
+.ops-page .ops-command-workflow > .ops-stepper,
+.ops-page .ops-command-workflow > .ops-stepper--compact {
+  margin: 0;
+}
+
+.ops-page .ops-stepper--compact .ops-stepper__list {
+  display: grid;
+  grid-auto-flow: initial;
+  grid-auto-columns: initial;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--ops-rule-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-slate) 6%, transparent), transparent 62%),
+    var(--color-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-bg-slate) 4%, transparent);
+}
+
+.ops-page .ops-stepper__step + .ops-stepper__step::before {
+  content: none;
+}
+
+.ops-page .ops-stepper--compact .ops-stepper__btn,
+.ops-page .ops-stepper--compact .ops-stepper__indicator {
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 4.2rem;
+  gap: var(--space-2);
+  padding: var(--space-2-5) var(--space-3);
+  border-radius: 0;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.ops-page .ops-stepper__step + .ops-stepper__step .ops-stepper__btn,
+.ops-page .ops-stepper__step + .ops-stepper__step .ops-stepper__indicator {
+  border-left-color: color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.ops-page .ops-stepper__btn:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--ops-rule) 40%, transparent);
+  background: color-mix(in srgb, var(--color-surface-elevated) 62%, transparent);
+  box-shadow: none;
+}
+
+.ops-page .ops-stepper__step--active .ops-stepper__indicator {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-highlight) 9%, transparent), transparent 64%),
+    color-mix(in srgb, var(--color-surface-elevated) 62%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--ops-rule) 58%, transparent);
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--ops-accent) 72%, transparent);
+}
+
+.ops-page .ops-stepper__number {
+  width: 1.65rem;
+  height: 1.65rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+}
+
+.ops-page .ops-stepper__step--active .ops-stepper__number {
+  background: var(--color-text);
+  border-color: var(--color-text);
+}
+
+.ops-page .ops-stepper__label {
+  font-size: var(--text-xs);
+}
+
+.ops-page .ops-stepper__badge {
+  min-width: 2.35rem;
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--color-surface-muted) 70%, transparent);
+}
+
+.ops-workflow-stage {
+  gap: var(--space-3);
+  padding: var(--space-4);
+  overflow: hidden;
+  border: 1px solid var(--ops-rule-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-slate) 5%, transparent), transparent 56%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-bg-slate) 4%, transparent),
+    0 18px 42px -36px color-mix(in srgb, var(--color-text) 28%, transparent);
+}
+
+.ops-workflow-stage__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: end;
+  gap: var(--space-3);
+  padding: 0 0 var(--space-3);
+  border-top: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent);
+}
+
+.ops-workflow-stage__header div {
+  align-items: baseline;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  text-align: right;
+}
+
+.ops-workflow-stage__header h2 {
+  color: var(--color-text);
+  font-size: var(--text-xl);
+  letter-spacing: 0;
+}
+
+.ops-workflow-stage__header p {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+}
+
+#ops-workspace.ops-workflow-surface {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ops-workflow-surface > .workspace-page {
+  gap: var(--space-3);
+}
+
+.ops-page .coverage-timeline {
+  overflow: hidden;
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-border) 44%, transparent);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-slate) 7%, transparent), transparent 58%),
+    color-mix(in srgb, var(--color-surface-elevated) 34%, var(--color-surface));
+}
+
+.ops-page .coverage-timeline__header {
+  align-items: end;
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 28%, transparent);
+}
+
+.ops-page .coverage-timeline__scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.ops-page .coverage-timeline__rail {
+  grid-auto-columns: minmax(12.5rem, 1fr);
+}
+
+.ops-page .coverage-timeline__card {
+  min-height: 7.15rem;
+  border-radius: var(--radius-sm);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 50%, transparent), transparent),
+    color-mix(in srgb, var(--color-surface) 92%, transparent);
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.ops-page .coverage-timeline__card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--ops-rule) 52%, var(--color-border));
+}
+
+.ops-page .workspace-layout.workspace-layout--ops-workflow {
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--ops-rule) 42%, transparent);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-slate) 7%, transparent), transparent 58%),
+    color-mix(in srgb, var(--color-surface) 96%, transparent);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-bg-slate) 4%, transparent),
+    0 16px 34px -34px color-mix(in srgb, var(--color-text) 30%, transparent);
+}
+
+.app-main[data-section="ops"] .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-rail {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 44%, transparent), transparent 68%),
+    color-mix(in srgb, var(--color-surface-muted) 16%, transparent);
+}
+
+.workspace-layout.workspace-layout--ops-workflow[data-layout="split"] > .workspace-canvas {
+  background:
+    radial-gradient(ellipse at 88% 0%, color-mix(in srgb, var(--color-bg-slate) 18%, transparent), transparent 46%),
+    color-mix(in srgb, var(--color-surface) 54%, transparent);
+}
+
+.ops-page .intervention-workflow-primary,
+.ops-page .ea-briefing-form.form-card,
+.ops-page .ea-load-form.form-card,
+.ops-page .survival-packet-form.form-card {
+  position: relative;
+  overflow: hidden;
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+  border-left: 2px solid color-mix(in srgb, var(--ops-accent) 58%, var(--color-border));
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-slate) 6%, transparent), transparent 62%),
+    color-mix(in srgb, var(--color-surface-elevated) 48%, var(--color-surface));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+}
+
+.ops-page .intervention-logger--ops-workflow.form-card {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ops-page .intervention-logger--ops-workflow form {
+  gap: var(--space-3);
+}
+
+.ops-page .intervention-logger--ops-workflow .field input,
+.ops-page .intervention-logger--ops-workflow .field select,
+.ops-page .intervention-logger--ops-workflow .field textarea,
+.ops-page .ea-briefing-form input,
+.ops-page .ea-briefing-form textarea,
+.ops-page .ea-load-form input,
+.ops-page .ea-load-form textarea {
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+}
+
+.ops-page .student-checkboxes--ops {
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface) 82%, transparent);
+}
+
+.ops-page .intervention-memory-preview,
+.ops-page .empty-state,
+.ops-page .empty-state--sample,
+.ops-page .ea-load-viewer__summary,
+.ops-page .ea-load-viewer__alerts,
+.ops-page .ea-load-viewer__blocks,
+.ops-page .ea-load-block,
+.ops-page .ea-briefing-result,
+.ops-page .survival-packet-card {
+  border-radius: 6px;
+  border-color: color-mix(in srgb, var(--color-border) 40%, transparent);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 44%, transparent), transparent),
+    color-mix(in srgb, var(--color-surface) 94%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+}
+
+.ops-page .intervention-memory-preview {
+  min-height: 100%;
+  padding: var(--space-4);
+}
+
+.ops-page .intervention-memory-preview__record {
+  border-radius: var(--radius-sm);
+}
+
+.ops-page .empty-state--preview {
+  min-height: 13rem;
+  padding: var(--space-3);
+}
+
+.ops-page .empty-state__skeleton-grid {
+  gap: var(--space-3);
+  opacity: 0.34;
+}
+
+.ops-page .empty-state__skeleton-card {
+  min-height: 8.8rem;
+  border-radius: var(--radius-sm);
+}
+
+.ops-page .ea-load-viewer {
+  gap: var(--space-4);
+}
+
+.ops-page .ea-load-viewer__blocks-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--space-3);
+}
+
+.ops-page .ea-load-block {
+  transition:
+    border-color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.ops-page .ea-load-block:hover,
+.ops-page .ea-card:hover,
+.ops-page .survival-packet-card:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--ops-rule) 52%, var(--color-border));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 6%, transparent);
+}
+
+.ops-page .survival-packet {
+  gap: var(--space-5);
+}
+
+.ops-page .survival-packet > section {
+  padding-top: var(--space-1);
+}
+
+@media (min-width: 1181px) {
+  .ops-page .workspace-layout.workspace-layout--ops-workflow[data-layout="split"] {
+    grid-template-columns: minmax(390px, 56%) minmax(320px, 1fr);
+  }
+
+  .ops-page .workspace-layout.workspace-layout--ops-workflow[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: minmax(370px, 47%) minmax(380px, 1fr);
+  }
+}
+
+@media (max-width: 1180px) {
+  .ops-command-workflow__header {
+    grid-template-columns: minmax(0, 1fr) minmax(10rem, 13rem);
+  }
+
+  .ops-command-workflow__identity,
+  .ops-command-workflow__metrics {
+    grid-column: 1;
+  }
+
+  .ops-command-workflow__queue {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: stretch;
+  }
+
+  .ops-page .ops-stepper--compact .ops-stepper__btn,
+  .ops-page .ops-stepper--compact .ops-stepper__indicator {
+    padding: var(--space-2);
+  }
+}
+
+@media (max-width: 900px) {
+  .ops-command-workflow__header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-4);
+  }
+
+  .ops-command-workflow__identity,
+  .ops-command-workflow__metrics,
+  .ops-command-workflow__queue {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .ops-command-workflow__identity h1 {
+    max-width: 15ch;
+    font-size: clamp(2rem, 8.4vw, 3rem);
+  }
+
+  .ops-command-workflow__metrics {
+    width: 100%;
+    max-width: none;
+  }
+
+  .ops-command-workflow__queue {
+    width: 100%;
+    max-width: none;
+    min-height: 8.1rem;
+  }
+
+  .ops-workflow-stage__header,
+  .ops-workflow-stage__header div {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .ops-workflow-stage__header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .ops-page {
+    gap: var(--space-3);
+  }
+
+  .ops-command-workflow {
+    gap: var(--space-2);
+  }
+
+  .ops-command-workflow__header,
+  .ops-workflow-stage {
+    padding: var(--space-3);
+  }
+
+  .ops-command-workflow__metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ops-command-workflow__metrics div {
+    min-height: 4.75rem;
+    padding: var(--space-2-5);
+  }
+
+  .ops-command-workflow__metrics dd {
+    font-size: var(--text-xl);
+  }
+
+  .ops-page .ops-stepper--compact .ops-stepper__list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ops-page .ops-stepper__step + .ops-stepper__step .ops-stepper__btn,
+  .ops-page .ops-stepper__step + .ops-stepper__step .ops-stepper__indicator {
+    border-left-color: transparent;
+    border-top-color: color-mix(in srgb, var(--color-border) 42%, transparent);
+  }
+
+  .ops-page .ops-stepper--compact .ops-stepper__btn,
+  .ops-page .ops-stepper--compact .ops-stepper__indicator {
+    min-height: 3.6rem;
+  }
+
+  .ops-page .workspace-layout.workspace-layout--ops-workflow > .workspace-rail,
+  .ops-page .workspace-layout.workspace-layout--ops-workflow > .workspace-canvas {
+    padding: var(--space-3);
+  }
+
+  .ops-page .intervention-workflow-primary,
+  .ops-page .ea-briefing-form.form-card,
+  .ops-page .ea-load-form.form-card,
+  .ops-page .survival-packet-form.form-card,
+  .ops-page .intervention-memory-preview {
+    padding: var(--space-3);
+  }
+}
+
+@media (max-width: 460px) {
+  .ops-command-workflow__identity h1 {
+    max-width: none;
+  }
+
+  .ops-command-workflow__metrics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ops-command-workflow__metrics div {
+    padding: var(--space-2);
+  }
+
+  .ops-command-workflow__metrics dt {
+    overflow-wrap: anywhere;
+  }
+
+  .ops-command-workflow__queue {
+    min-height: 7rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ops-page .ops-stepper__btn,
+  .ops-page .ops-command-workflow__queue-link,
+  .ops-page .coverage-timeline__card,
+  .ops-page .ea-load-block,
+  .ops-page .ea-card,
+  .ops-page .survival-packet-card {
+    transition: none;
+  }
+}
