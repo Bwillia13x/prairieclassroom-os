@@ -1558,56 +1558,8 @@
   box-shadow: none;
 }
 
-/* App footer — flat, hairline top, mono utility copy */
-.app-footer,
-.app-footer--expanded,
-.app-footer--collapsed {
-  background: transparent;
-  border: 0;
-  border-top: 1px solid var(--color-border);
-  box-shadow: none;
-  padding: var(--space-4) var(--space-5);
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  letter-spacing: 0.12em;
-  color: var(--color-text-tertiary);
-}
-
-.app-footer [class*="__title"] {
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-semibold);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--color-text-tertiary);
-}
-
-.app-footer a,
-.app-footer button {
-  font-family: var(--font-mono);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-text);
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-}
-
-/* Shortcut chips in footer legend (1 Today, 2 Differentiate, ...) */
-.app-footer [class*="shortcut"],
-.app-footer [class*="keybind"] {
-  background: transparent;
-  border: 1px solid var(--color-border);
-  border-radius: 2px;
-  padding: 3px 8px;
-  font-family: var(--font-mono);
-  font-size: var(--text-2xs);
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.1em;
-  color: var(--color-text);
-  box-shadow: none;
-}
+/* AppFooter owns its pane-wide runway and shortcut chip styling in
+   components/AppFooter.css. Keep this theme file from flattening it. */
 
 /* Mobile nav */
 .mobile-nav {
@@ -3527,7 +3479,6 @@ textarea {
   letter-spacing: 0.08em;
 }
 
-.app-footer__toggle,
 .mobile-nav-group,
 .mobile-nav-subtab {
   --nothing-button-signal-color: var(--nothing-button-signal);
@@ -3546,8 +3497,6 @@ textarea {
     color var(--motion-fast) var(--ease-standard) !important;
 }
 
-.app-footer__toggle::before,
-.app-footer__toggle::after,
 .mobile-nav-group::before,
 .mobile-nav-group::after,
 .mobile-nav-subtab::before,
@@ -3565,19 +3514,16 @@ textarea {
     height var(--motion-fast) var(--ease-standard);
 }
 
-.app-footer__toggle::before,
 .mobile-nav-group::before,
 .mobile-nav-subtab::before {
   top: -1px;
 }
 
-.app-footer__toggle::after,
 .mobile-nav-group::after,
 .mobile-nav-subtab::after {
   bottom: -1px;
 }
 
-.app-footer__toggle:hover,
 .mobile-nav-group:hover,
 .mobile-nav-subtab:hover,
 .mobile-nav-group--active,
@@ -3587,8 +3533,6 @@ textarea {
   color: var(--color-text) !important;
 }
 
-.app-footer__toggle:hover::before,
-.app-footer__toggle:hover::after,
 .mobile-nav-group:hover::before,
 .mobile-nav-group:hover::after,
 .mobile-nav-subtab:hover::before,
@@ -3625,62 +3569,9 @@ textarea {
   color: var(--color-text-on-danger) !important;
 }
 
-.app-footer__shortcuts-btn {
-  --nothing-button-signal-color: var(--nothing-button-signal);
-  position: relative;
-  overflow: visible !important;
-  border-radius: 999px !important;
-  border: 1px solid var(--nothing-button-border) !important;
-  background: transparent !important;
-  color: var(--color-text-secondary) !important;
-  box-shadow: none !important;
-  transform: none !important;
-  transform-origin: 50% 50%;
-  transition:
-    border-color var(--motion-fast) var(--ease-standard),
-    background-color var(--motion-fast) var(--ease-standard),
-    color var(--motion-fast) var(--ease-standard) !important;
-}
-
-.app-footer__shortcuts-btn::before,
-.app-footer__shortcuts-btn::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  width: 1px;
-  height: 4px;
-  background: var(--nothing-button-signal-color);
-  opacity: 0;
-  transform: translateX(-50%);
-  pointer-events: none;
-  transition: opacity var(--motion-fast) var(--ease-standard),
-    height var(--motion-fast) var(--ease-standard);
-}
-
-.app-footer__shortcuts-btn::before {
-  top: -1px;
-}
-
-.app-footer__shortcuts-btn::after {
-  bottom: -1px;
-}
-
-.app-footer__shortcuts-btn:hover {
-  border-color: var(--nothing-button-border-hover) !important;
-  background: var(--nothing-button-hover) !important;
-  color: var(--color-text) !important;
-}
-
-.app-footer__shortcuts-btn:hover::before,
-.app-footer__shortcuts-btn:hover::after {
-  opacity: 1;
-}
-
 /* --- Focus-visible: signal-tinted ring for footer/nav buttons --- */
-.app-footer__toggle:focus-visible,
 .mobile-nav-group:focus-visible,
-.mobile-nav-subtab:focus-visible,
-.app-footer__shortcuts-btn:focus-visible {
+.mobile-nav-subtab:focus-visible {
   outline: 2px solid var(--nothing-button-signal) !important;
   outline-offset: 3px !important;
 }

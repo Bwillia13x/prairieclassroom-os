@@ -366,7 +366,11 @@
   }
 }
 
-/* 2026-05-01: full-bleed dark runway footer for the light workspace. */
+/* 2026-05-01: full-pane dark runway footer.
+   The footer lives inside `.app-main`, so it bleeds only to that pane's
+   padded edges. Avoid 100vw here: the sidebar/header shell is not part of
+   this component's containing block, and viewport breakout causes clipped
+   actions on narrower desktop windows. */
 .app-footer {
   --footer-bg: light-dark(#02060b, #000000);
   --footer-bg-deep: light-dark(#000000, #000000);
@@ -378,18 +382,18 @@
   --footer-ink-muted: color-mix(in srgb, #fffdfa 68%, transparent);
   --footer-ink-soft: color-mix(in srgb, #fffdfa 48%, transparent);
   --footer-accent: light-dark(#56a3ca, var(--color-brand-highlight));
-  --footer-content-width: min(88rem, calc(100% - clamp(2rem, 7vw, 7rem)));
+  --footer-bleed-x: var(--space-6);
+  --footer-content-pad: clamp(var(--space-4), 3.2vw, var(--space-7));
 
   isolation: isolate;
-  width: 100vw;
-  width: 100dvw;
-  min-height: clamp(9.5rem, 13vw, 13.5rem);
-  margin-block-start: clamp(5.5rem, 9vw, 8.5rem);
-  margin-inline: calc(50% - 50vw);
-  margin-inline: calc(50% - 50dvw);
+  width: calc(100% + var(--footer-bleed-x) + var(--footer-bleed-x));
+  max-width: none;
+  min-height: 0;
+  margin-block-start: clamp(4rem, 7vw, 6.5rem);
+  margin-inline: calc(0rem - var(--footer-bleed-x));
   border-top: 1px solid color-mix(in srgb, var(--footer-accent) 44%, #fffdfa 10%);
   background:
-    radial-gradient(circle at 14% 0%, color-mix(in srgb, var(--footer-accent) 22%, transparent), transparent 31rem),
+    radial-gradient(ellipse at 16% 0%, color-mix(in srgb, var(--footer-accent) 20%, transparent), transparent 30rem),
     linear-gradient(180deg, color-mix(in srgb, #fffdfa 8%, transparent), transparent 34%),
     linear-gradient(135deg, var(--footer-bg) 0%, #06111d 54%, var(--footer-bg-deep) 100%);
   box-shadow:
@@ -397,6 +401,8 @@
     inset 0 -1px 0 color-mix(in srgb, #000000 70%, transparent),
     0 -38px 90px -72px color-mix(in srgb, var(--footer-accent) 72%, transparent);
   color: var(--footer-ink-muted);
+  overflow: clip;
+  z-index: 80;
 }
 
 .app-footer::before {
@@ -409,29 +415,50 @@
 
 .app-footer__body,
 .app-footer__shortcuts {
-  width: var(--footer-content-width);
-  margin-inline: auto;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: var(--footer-content-pad);
+  min-width: 0;
 }
 
 .app-footer__body {
-  gap: var(--space-4);
-  padding-block: clamp(2rem, 3.6vw, 3.25rem);
+  gap: clamp(var(--space-3), 2vw, var(--space-4));
+  padding-block: clamp(1.35rem, 2.5vw, 2.35rem);
 }
 
 .app-footer__shortcuts {
-  padding-block: clamp(1.15rem, 2.2vw, 1.75rem);
+  gap: var(--space-2);
+  padding-block: clamp(1rem, 2vw, 1.5rem);
   border-bottom-color: var(--footer-line);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, #fffdfa 5%, transparent), transparent 72%);
+}
+
+.app-footer__shortcut-list {
+  grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  gap: var(--space-2);
 }
 
 .app-footer__meta {
-  gap: clamp(1.25rem, 4vw, 4rem);
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(var(--space-3), 3vw, var(--space-6));
   color: var(--footer-ink-soft);
+}
+
+.app-footer__identity {
+  min-width: 0;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-3);
 }
 
 .app-footer__brand {
   color: var(--footer-ink);
   font-size: clamp(0.95rem, 1.05vw, 1.15rem);
   letter-spacing: 0.08em;
+  min-width: 0;
 }
 
 .app-footer__context,
@@ -444,6 +471,12 @@
 .app-footer__rail-value,
 .app-footer__shortcut-name {
   color: var(--footer-ink-muted);
+}
+
+.app-footer__actions {
+  max-width: 100%;
+  min-width: 0;
+  justify-self: end;
 }
 
 .app-footer__toggle,
@@ -462,14 +495,29 @@
 }
 
 .app-footer__rail {
+  grid-template-columns: minmax(0, 1.45fr) minmax(8rem, 0.7fr) minmax(5rem, 0.35fr);
   border-top: 1px solid var(--footer-line);
-  padding-top: var(--space-3);
+  padding-top: var(--space-2);
+  min-width: 0;
 }
 
 .app-footer__rail-slot,
 .app-footer__shortcut {
   border-color: var(--footer-line);
   background: color-mix(in srgb, #fffdfa 4%, transparent);
+}
+
+.app-footer__rail-slot {
+  min-width: 0;
+  padding: 0.58rem var(--space-3);
+}
+
+.app-footer__rail-slot:first-child {
+  padding-left: var(--space-3);
+}
+
+.app-footer__rail-slot:last-child {
+  padding-right: var(--space-3);
 }
 
 .app-footer__key {
@@ -479,10 +527,31 @@
   box-shadow: none;
 }
 
+@media (max-width: 960px) {
+  .app-footer__meta {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-footer__actions {
+    justify-content: flex-start;
+    justify-self: start;
+  }
+
+  .app-footer__rail {
+    grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr));
+  }
+
+  .app-footer__rail-slot {
+    border-right: 0;
+  }
+}
+
 @media (max-width: 760px) {
   .app-footer {
-    --footer-content-width: min(100% - 1.25rem, 88rem);
-    min-height: 11rem;
+    --footer-bleed-x: var(--space-4);
+    --footer-content-pad: var(--space-4);
+    margin-top: var(--space-6);
+    padding-bottom: calc(6.5rem + env(safe-area-inset-bottom, 0px));
   }
 
   .app-footer__meta {
@@ -498,8 +567,23 @@
   .app-footer__actions {
     justify-content: flex-start;
   }
+
+  .app-footer__rail-slot,
+  .app-footer__rail-slot:first-child,
+  .app-footer__rail-slot:last-child {
+    padding-inline: 0;
+  }
 }
 
-.app-footer {
-  z-index: 80;
+@media (max-width: 600px) {
+  .app-footer {
+    --footer-content-pad: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-footer__shortcut,
+  .app-footer__toggle {
+    transition-duration: 1ms;
+  }
 }
