@@ -256,7 +256,7 @@ export default function LanguageToolsPanel() {
   const activeAction = activeTool === "simplify" ? simplify : vocab;
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page language-tools-panel">
       <PageIntro
         eyebrow="Prep Workspace"
         title="Language Support Tools"
@@ -268,6 +268,7 @@ export default function LanguageToolsPanel() {
         <StudentCoverageStrip
           threads={latestTodaySnapshot.student_threads}
           title="Language support coverage"
+          sticky={false}
           selectedAlias={focusStudent?.alias ?? null}
           onSelectThread={(thread) => {
             const match = profile?.students.find((student) => student.alias === thread.alias);

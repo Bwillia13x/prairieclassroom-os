@@ -1,0 +1,559 @@
+/* Prep route finishing pass.
+   Route-local ownership keeps the Prep command, lane switcher, and tool
+   workspaces from inheriting late global card rules meant for other pages. */
+
+.prep-page {
+  --prep-rule: color-mix(in srgb, var(--color-border-sage) 72%, var(--color-border));
+  --prep-rule-soft: color-mix(in srgb, var(--color-border-sage) 24%, var(--color-border));
+  --prep-wash: color-mix(in srgb, var(--color-bg-sage) 18%, transparent);
+  --prep-highlight: color-mix(in srgb, var(--color-brand-highlight) 66%, var(--color-border));
+  width: 100%;
+  max-width: min(100%, 1280px);
+  gap: var(--space-4);
+}
+
+.prep-page,
+.prep-page *,
+.prep-page *::before,
+.prep-page *::after {
+  min-width: 0;
+}
+
+.prep-command-strip {
+  position: relative;
+  grid-template-columns: minmax(0, 0.9fr) minmax(24rem, 0.7fr);
+  gap: var(--space-5);
+  align-items: stretch;
+  margin: 0;
+  padding: var(--space-4);
+  overflow: hidden;
+  border: 1px solid var(--prep-rule-soft);
+  border-left: 2px solid var(--prep-highlight);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-sage) 9%, transparent), transparent 46%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-surface-elevated) 42%, transparent), transparent 70%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-bg-sage) 4%, transparent),
+    0 18px 42px -34px color-mix(in srgb, var(--color-text) 34%, transparent);
+}
+
+.prep-command-strip::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 1.15rem;
+  height: 1.15rem;
+  border-top: 2px solid var(--prep-highlight);
+  border-left: 2px solid var(--prep-highlight);
+  border-radius: 6px 0 0 0;
+  pointer-events: none;
+}
+
+.prep-command-strip__copy {
+  justify-content: center;
+  gap: var(--space-2-5);
+  padding-left: var(--space-1);
+}
+
+.prep-command-strip__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--color-text-tertiary);
+}
+
+.prep-command-strip__eyebrow::before {
+  content: "";
+  width: 13px;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.62;
+}
+
+.prep-command-strip h1,
+.prep-page[data-active-tool="differentiate"] .prep-command-strip h1 {
+  max-width: 22ch;
+  color: var(--color-text);
+  font-size: clamp(1.85rem, 3.2vw, 3rem);
+  letter-spacing: 0;
+  line-height: 0.98;
+}
+
+.prep-command-strip p,
+.prep-page[data-active-tool="differentiate"] .prep-command-strip p {
+  display: block;
+  max-width: 58ch;
+  overflow: visible;
+  color: var(--color-text-secondary);
+  -webkit-line-clamp: unset;
+}
+
+.prep-command-strip__metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-self: center;
+  align-content: center;
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.prep-command-strip__metrics div,
+.prep-page[data-active-tool="differentiate"] .prep-command-strip__metrics div {
+  position: relative;
+  display: grid;
+  min-height: 5.35rem;
+  align-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 28%, var(--color-surface));
+}
+
+.prep-command-strip__metrics div::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: color-mix(in srgb, var(--prep-rule) 55%, transparent);
+  opacity: 0.72;
+}
+
+.prep-command-strip__metrics dt {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+.prep-command-strip__metrics dd {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  letter-spacing: 0;
+}
+
+.prep-command-strip__pulse dd {
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  line-height: var(--leading-snug);
+}
+
+.prep-command-strip__pulse--warning {
+  border-color: color-mix(in srgb, var(--color-warning) 48%, var(--color-border)) !important;
+}
+
+.prep-command-strip__pulse--warning::before {
+  background: color-mix(in srgb, var(--color-warning) 72%, transparent);
+}
+
+.prep-lane-segment.page-tool-switcher {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--prep-rule-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-sage) 5%, transparent), transparent 62%),
+    var(--color-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-bg-sage) 4%, transparent);
+}
+
+.prep-lane-segment .page-tool-switcher__btn {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "kicker status"
+    "title status";
+  gap: var(--space-1) var(--space-3);
+  min-height: 4.35rem;
+  padding: var(--space-2-5) var(--space-3);
+  border-radius: 0;
+  text-align: left;
+  transition:
+    background-color var(--motion-fast) var(--ease-standard),
+    color var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.prep-lane-segment .page-tool-switcher__btn + .page-tool-switcher__btn {
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+  border-top: 0;
+}
+
+.prep-lane-segment .page-tool-switcher__btn:hover {
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--color-surface-elevated) 62%, transparent);
+}
+
+.prep-lane-segment .page-tool-switcher__btn--active {
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-highlight) 9%, transparent), transparent 64%),
+    color-mix(in srgb, var(--color-surface-elevated) 62%, var(--color-surface));
+  box-shadow: inset 0 -2px 0 color-mix(in srgb, var(--prep-highlight) 72%, transparent);
+}
+
+.prep-lane-segment .page-tool-switcher__btn--active::after {
+  content: none;
+}
+
+.prep-lane-segment .page-tool-switcher__btn-kicker {
+  grid-area: kicker;
+}
+
+.prep-lane-segment .page-tool-switcher__btn-title {
+  grid-area: title;
+  color: var(--color-text);
+  font-size: var(--text-md);
+}
+
+.prep-lane-segment .page-tool-switcher__btn-status {
+  grid-area: status;
+  align-self: center;
+  justify-self: end;
+  text-align: right;
+}
+
+.multi-tool-workspace-section--prep {
+  gap: var(--space-3);
+  scroll-margin-top: var(--space-6);
+}
+
+.prep-page[data-active-tool="differentiate"] .multi-tool-workspace-section {
+  gap: var(--space-3);
+}
+
+.prep-page[data-active-tool="differentiate"] .multi-tool-workspace-section__header,
+.prep-page .multi-tool-workspace-section__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-1) var(--space-3);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.prep-page .multi-tool-workspace-section__eyebrow {
+  letter-spacing: var(--tracking-eyebrow);
+}
+
+.prep-page .multi-tool-workspace-section__title {
+  justify-self: end;
+  color: var(--color-text);
+  font-size: var(--text-md);
+}
+
+.prep-page .page-tool-surface {
+  min-width: 0;
+  overflow: visible;
+}
+
+.prep-page .differentiate-panel,
+.prep-page .language-tools-panel {
+  width: 100%;
+  max-width: none;
+  gap: var(--space-4);
+}
+
+.prep-page .workspace-layout--prep-canvas,
+.prep-page .language-tools-panel .workspace-layout {
+  overflow: hidden;
+  border: 1px solid var(--prep-rule-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-sage) 5%, transparent), transparent 50%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-bg-sage) 3%, transparent),
+    0 18px 42px -36px color-mix(in srgb, var(--color-text) 30%, transparent);
+}
+
+.prep-page .workspace-layout--prep-canvas .workspace-rail,
+.prep-page .workspace-layout--prep-canvas .workspace-canvas,
+.prep-page .language-tools-panel .workspace-rail,
+.prep-page .language-tools-panel .workspace-canvas {
+  min-width: 0;
+}
+
+.prep-page .workspace-layout--prep-canvas .workspace-rail {
+  border-right-color: color-mix(in srgb, var(--prep-rule) 38%, var(--color-border));
+}
+
+.prep-page .workspace-layout--prep-canvas .workspace-canvas {
+  background:
+    radial-gradient(ellipse at 80% 0%, color-mix(in srgb, var(--color-bg-sage) 14%, transparent), transparent 46%),
+    transparent;
+}
+
+.prep-page .artifact-upload.form-card,
+.prep-page .workspace-result,
+.prep-page .variant-card,
+.prep-page .lt-empty__block,
+.prep-page .lt-empty__card {
+  border-radius: var(--radius-sm);
+}
+
+.prep-page .artifact-upload.form-card {
+  border-color: color-mix(in srgb, var(--prep-rule) 34%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+}
+
+.prep-page .variant-grid-wrapper--preview .variant-grid-header {
+  padding: var(--space-3);
+  border: 1px dashed color-mix(in srgb, var(--color-border) 48%, transparent);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-surface-muted) 20%, transparent);
+}
+
+.prep-page .variant-card:hover {
+  transform: translateY(-1px);
+}
+
+.prep-page .language-tools-panel .page-intro,
+.prep-page .language-tools-panel .page-intro.page-intro--sage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(13rem, 0.34fr);
+  gap: var(--space-3);
+  align-items: end;
+  padding: var(--space-4);
+  border: 1px solid var(--prep-rule-soft);
+  border-left: 2px solid var(--prep-rule);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-sage) 8%, transparent), transparent 58%),
+    var(--color-surface);
+}
+
+.prep-page .language-tools-panel .page-intro::after {
+  content: "EAL support";
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  justify-self: end;
+  align-self: center;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--prep-rule) 42%, var(--color-border));
+  border-radius: var(--radius-xs);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.prep-page .language-tools-panel .page-intro__eyebrow,
+.prep-page .language-tools-panel .page-intro__title,
+.prep-page .language-tools-panel .page-intro__description {
+  grid-column: 1;
+}
+
+.prep-page .language-tools-panel .page-intro__title {
+  max-width: 18ch;
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0;
+  line-height: var(--leading-tight);
+}
+
+.prep-page .language-tools-panel .page-intro__description {
+  max-width: 62ch;
+  color: var(--color-text-secondary);
+}
+
+.prep-page .language-tools-panel .student-coverage {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: var(--space-3);
+  overflow: hidden;
+  border: 1px solid var(--prep-rule-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-bg-sage) 6%, transparent), transparent 56%),
+    var(--color-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-bg-sage) 3%, transparent);
+}
+
+.prep-page .language-tools-panel .student-coverage__header {
+  align-items: end;
+}
+
+.prep-page .language-tools-panel .student-coverage__rail {
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.prep-page .language-tools-panel .student-coverage__scroll {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.prep-page .language-tools-panel .student-coverage__chip {
+  min-width: 9rem;
+  max-width: 10.5rem;
+  border-radius: var(--radius-sm);
+}
+
+.prep-page .language-tools-panel .workspace-layout[data-layout="split"] {
+  gap: 0;
+}
+
+.prep-page .language-tools-panel .workspace-layout[data-layout="split"] > .workspace-rail {
+  border-right-color: color-mix(in srgb, var(--prep-rule) 40%, var(--color-border));
+}
+
+.prep-page .language-tools-panel .contextual-hint {
+  border-radius: var(--radius-sm);
+}
+
+.prep-page .language-tools-panel .language-tool-toggle {
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.prep-page .language-tools-panel .lt-empty {
+  min-height: 100%;
+  padding: var(--space-4);
+}
+
+.prep-page .language-tools-panel .lt-empty__summary {
+  flex-wrap: wrap;
+}
+
+@media (min-width: 960px) {
+  .prep-page .language-tools-panel .workspace-layout[data-layout="split"] {
+    grid-template-columns: minmax(20rem, 0.82fr) minmax(0, 1fr);
+    min-height: min(660px, calc(100vh - 185px));
+  }
+
+  .prep-page .language-tools-panel .workspace-layout[data-layout="split"] > .workspace-rail,
+  .prep-page .language-tools-panel .workspace-layout[data-layout="split"] > .workspace-canvas {
+    padding: var(--space-4);
+  }
+}
+
+@media (max-width: 1100px) {
+  .prep-command-strip,
+  .prep-page[data-active-tool="differentiate"] .prep-command-strip {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .prep-command-strip h1,
+  .prep-page[data-active-tool="differentiate"] .prep-command-strip h1 {
+    max-width: 24ch;
+  }
+}
+
+@media (max-width: 720px) {
+  .prep-page {
+    gap: var(--space-3);
+  }
+
+  .prep-command-strip,
+  .prep-page[data-active-tool="differentiate"] .prep-command-strip {
+    gap: var(--space-3);
+    padding: var(--space-3);
+  }
+
+  .prep-command-strip h1,
+  .prep-page[data-active-tool="differentiate"] .prep-command-strip h1 {
+    max-width: none;
+    font-size: clamp(1.9rem, 8vw, 2.65rem);
+    line-height: var(--leading-tight);
+  }
+
+  .prep-command-strip__metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .prep-command-strip__metrics div,
+  .prep-page[data-active-tool="differentiate"] .prep-command-strip__metrics div {
+    min-height: 4.8rem;
+    padding: var(--space-2-5);
+  }
+
+  .prep-command-strip__metrics dd {
+    font-size: var(--text-xl);
+  }
+
+  .prep-lane-segment .page-tool-switcher__btn {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "kicker"
+      "title";
+    min-height: 3.65rem;
+    padding: var(--space-2);
+  }
+
+  .prep-lane-segment .page-tool-switcher__btn-status {
+    display: none;
+  }
+
+  .prep-page[data-active-tool="differentiate"] .multi-tool-workspace-section__header,
+  .prep-page .multi-tool-workspace-section__header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+    align-items: start;
+  }
+
+  .prep-page .multi-tool-workspace-section__title {
+    justify-self: start;
+  }
+
+  .prep-page .workspace-layout--prep-canvas > .workspace-rail,
+  .prep-page .workspace-layout--prep-canvas > .workspace-canvas,
+  .prep-page .language-tools-panel .workspace-layout > .workspace-rail,
+  .prep-page .language-tools-panel .workspace-layout > .workspace-canvas {
+    padding: var(--space-3);
+  }
+
+  .prep-page .language-tools-panel .page-intro,
+  .prep-page .language-tools-panel .page-intro.page-intro--sage {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-3);
+  }
+
+  .prep-page .language-tools-panel .page-intro::after {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+
+  .prep-page .language-tools-panel .student-coverage__header,
+  .prep-page .language-tools-panel .student-coverage__filters {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .prep-page .language-tools-panel .student-coverage__segment {
+    width: 100%;
+  }
+
+  .prep-page .language-tools-panel .student-coverage__segment-btn {
+    flex: 1 1 0;
+    justify-content: center;
+  }
+
+  .prep-page .language-tools-panel .lt-empty {
+    padding: var(--space-3);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prep-lane-segment .page-tool-switcher__btn,
+  .prep-lane-segment .page-tool-switcher__btn:hover,
+  .prep-page .variant-card,
+  .prep-page .variant-card:hover {
+    transform: none;
+    transition: none;
+  }
+}
