@@ -72,6 +72,8 @@ output/proof-trace-*.png
 output/remotion/
 output/ui-audit-*/
 output/ui-ux-design-audit-*/
+output/final-*/
+output/plan-compass-polish-*/
 tmp/
 apps/web/tsconfig.tsbuildinfo
 

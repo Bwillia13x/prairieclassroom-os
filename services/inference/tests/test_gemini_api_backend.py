@@ -117,6 +117,32 @@ def test_build_contents_and_config_for_text_prompt() -> None:
     assert config["response_mime_type"] == "application/json"
 
 
+def test_build_config_enables_gemma_thinking_when_requested() -> None:
+    backend = GeminiAPIBackend(api_key="demo-key", client=MagicMock())
+    req = GenerationRequest(
+        prompt="You are a helper.\n\nCLASSROOM MEMORY:\nRecent support records",
+        model_tier=ModelTier.PLANNING,
+        thinking=True,
+    )
+
+    config = backend._build_config(req)
+
+    assert config["thinking_config"] == {"thinking_level": "high"}
+
+
+def test_build_config_omits_gemma_thinking_for_live_requests() -> None:
+    backend = GeminiAPIBackend(api_key="demo-key", client=MagicMock())
+    req = GenerationRequest(
+        prompt="You are a helper.\n\nCLASSROOM CONTEXT:\nGrade 4 split class",
+        model_tier=ModelTier.LIVE,
+        thinking=False,
+    )
+
+    config = backend._build_config(req)
+
+    assert "thinking_config" not in config
+
+
 def test_build_config_forwards_function_declarations() -> None:
     backend = GeminiAPIBackend(api_key="demo-key", client=MagicMock())
     req = GenerationRequest(
@@ -192,6 +218,22 @@ def test_build_contents_for_image_prompt(tmp_path: Path) -> None:
 
     assert parts[0]["inline_data"]["mime_type"] == "image/png"
     assert base64.b64decode(parts[0]["inline_data"]["data"]) == fake_image.read_bytes()
+    assert parts[1] == {"text": "Extract the worksheet text"}
+
+
+def test_build_contents_for_http_image_payload() -> None:
+    data = base64.b64encode(b"worksheet-bytes").decode("ascii")
+    backend = GeminiAPIBackend(api_key="demo-key", client=MagicMock())
+    req = GenerationRequest(
+        prompt="Extract the worksheet text",
+        image_payloads=[{"mime_type": "image/png", "data_base64": data}],
+        model_tier=ModelTier.LIVE,
+    )
+
+    contents = backend._build_contents(req)
+    parts = contents[0]["parts"]
+
+    assert parts[0]["inline_data"] == {"mime_type": "image/png", "data": data}
     assert parts[1] == {"text": "Extract the worksheet text"}
 
 

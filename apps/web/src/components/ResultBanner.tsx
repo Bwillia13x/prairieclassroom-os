@@ -23,6 +23,11 @@ function formatRelativeTime(date: Date): string {
   return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
 }
 
+function formatLatency(latencyMs: number): string {
+  if (latencyMs < 1000) return `${Math.round(latencyMs)} ms`;
+  return `${(latencyMs / 1000).toFixed(1)} s`;
+}
+
 export default function ResultBanner({ label, generatedAt, modelId, latencyMs }: Props) {
   const [, setTick] = useState(0);
 
@@ -54,7 +59,7 @@ export default function ResultBanner({ label, generatedAt, modelId, latencyMs }:
       ) : null}
       {latencyMs != null && latencyMs > 0 ? (
         <span className="result-banner__latency">
-          {latencyMs >= 1000 ? `${(latencyMs / 1000).toFixed(1)}s` : `${latencyMs}ms`}
+          {formatLatency(latencyMs)}
         </span>
       ) : null}
       {modelId ? (

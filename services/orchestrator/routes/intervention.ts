@@ -75,6 +75,8 @@ export function createInterventionRouter(deps: RouteDeps): Router {
         mockContext: {
           classroom_id,
           student_refs,
+          teacher_note,
+          context,
         },
         safetyScanSource: intInput,
       });

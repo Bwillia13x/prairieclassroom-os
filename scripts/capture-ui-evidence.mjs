@@ -14,7 +14,7 @@ Community helpers make our town safer, healthier, and easier to understand. Fire
 Good readers notice what each helper does and why the job matters. As you read, underline one detail about each helper. Then write one sentence explaining which helper your community needs most this week and why.`;
 const COMMUNITY_HELPERS_GOAL = "Reading: Understand and respond to text";
 const FORECAST_SCENARIO_NOTES = "Assembly at 10:00; math follows recess; EA available morning only; writing block has unfinished threads for Hannah and Marco.";
-const OPS_DRAFT_NOTE = "During math block after the assembly transition, Amira and Farid needed repeated side-conversation reminders. Used proximity and a quiet reset; both rejoined the fraction task after three minutes.";
+const OPS_DRAFT_NOTE = "During math block after the assembly transition, Amira needed repeated side-conversation reminders. Used proximity and a quiet reset; she rejoined the fraction task after three minutes.";
 const TOMORROW_REFLECTION = "The visual timer helped Brody transition during math. Elena was more confident with fraction strips. Tomorrow's math block comes after lunch and the EA is only available in the morning.";
 const FAMILY_MESSAGE_CONTEXT = "Amira finished her reading block with strong effort and used her vocabulary card independently.";
 const ROOT_OUTPUT_DIR = path.resolve(
@@ -178,6 +178,7 @@ async function waitForLoadedPanel(page, tab, label) {
     const hasPrimaryContent = !!activePanel.querySelector(
       [
         ".today-hero",
+        ".classroom-command-card",
         ".ops-command-workflow",
         ".prep-command-strip",
         ".week-operations-board",
@@ -211,6 +212,7 @@ async function assertActivePageContentVisible(page, tab, label) {
       [
         ".today-hero__mobile-command",
         ".today-hero",
+        ".classroom-command-card",
         ".ops-command-workflow",
         ".prep-command-strip",
         ".week-operations-board",
@@ -238,6 +240,7 @@ async function assertActivePageContentVisible(page, tab, label) {
       [
         ".today-hero__mobile-command",
         ".today-hero",
+        ".classroom-command-card",
         ".ops-command-workflow",
         ".prep-command-strip",
         ".week-operations-board",
@@ -274,6 +277,7 @@ async function assertMobileNavClearance(page, tab, label) {
         ".today-hero__next-action",
         ".today-hero",
         ".today-hero__mobile-command",
+        ".classroom-command-card",
         ".ops-command-workflow",
         ".prep-command-strip",
         ".week-operations-board",
@@ -326,7 +330,7 @@ async function assertMobileTodayHero(page) {
 
   const mobileCommandAboveNav = await page.evaluate(() => {
     const command = [...globalThis.document.querySelectorAll(
-      ".today-hero__next-action, .today-hero__mobile-command",
+      ".today-hero__command-actions, .today-hero__next-action, .today-hero__mobile-command",
     )].find((element) => {
       const rect = element.getBoundingClientRect();
       return rect.width > 0 && rect.height > 0;
@@ -459,12 +463,11 @@ async function fillPrepGeneratedScenario(page) {
 
 async function fillOpsDraftScenario(page) {
   await page.getByRole("group", { name: /Select students/i }).getByLabel(/^Amira$/).check();
-  await page.getByRole("group", { name: /Select students/i }).getByLabel(/^Farid$/).check();
   await page.getByLabel(/Evidence note/i).fill(OPS_DRAFT_NOTE);
   await page.getByLabel(/Follow-up timing/i).selectOption("Tomorrow morning");
   await page.getByLabel(/Classroom memory destination/i).selectOption("Classroom + student thread");
   const preview = page.locator(".intervention-memory-preview");
-  await preview.getByText(/Amira, Farid/i).first().waitFor({ timeout: 10_000 });
+  await preview.getByText(/Amira/i).first().waitFor({ timeout: 10_000 });
   await preview.getByText(/assembly transition/i).first().waitFor({ timeout: 10_000 });
   await page.locator(".ops-command-workflow").scrollIntoViewIfNeeded();
 }

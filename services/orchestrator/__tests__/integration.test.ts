@@ -88,7 +88,13 @@ function startMockInference(): Promise<{ server: Server; url: string }> {
 
   app.post("/generate", (req, res) => {
     const promptClass = req.body.prompt_class as string;
-    const text = MOCK_RESPONSES[promptClass];
+    let text = MOCK_RESPONSES[promptClass];
+    if (promptClass === "log_intervention" && typeof req.body.mock_context?.teacher_note === "string") {
+      text = JSON.stringify({
+        ...JSON.parse(MOCK_RESPONSES.log_intervention),
+        observation: req.body.mock_context.teacher_note,
+      });
+    }
     if (!text) {
       res.status(400).json({ error: `No mock for prompt_class: ${promptClass}` });
       return;
@@ -287,6 +293,7 @@ describe("Integration: orchestrator → inference round-trip", () => {
 
     expect(body.record).toBeDefined();
     expect(body.record.observation).toContain("Ari");
+    expect(body.record.observation).toContain("fractions today");
     expect(body.record.follow_up_needed).toBe(true);
     expect(body.model_id).toBe("mock-integration");
   });

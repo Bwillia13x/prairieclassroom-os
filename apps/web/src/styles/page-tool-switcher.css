@@ -207,6 +207,12 @@
   line-height: var(--leading-snug);
 }
 
+@media (max-width: 1560px) {
+  .page-command-hub {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 /* Tool-switcher card kicker / status share the same eyebrow typography
    used by the shared PageHero primitive — keep the two consistent so
    tool-switcher cards visually align with the page hero above them. */

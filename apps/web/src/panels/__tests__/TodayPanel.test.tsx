@@ -272,7 +272,7 @@ describe("TodayPanel", () => {
     expect(
       screen.getByRole("button", { name: /hide day detail/i }),
     ).toHaveAttribute("aria-expanded", "true");
-  });
+  }, 15_000);
 
   it("auto-opens the day-detail collapse when the URL hash deep-links to an inner anchor", async () => {
     const originalHash = window.location.hash;

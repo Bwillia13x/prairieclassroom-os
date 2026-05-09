@@ -118,7 +118,11 @@ function makeAppContext(latestTodaySnapshot: TodaySnapshot | null = makeSnapshot
       ],
       is_demo: true,
     },
-    students: [{ alias: "Amira" }, { alias: "Brody" }, { alias: "Farid" }],
+    students: [
+      { alias: "Amira", support_tags: ["eal_level_1"], family_language: "ar" },
+      { alias: "Brody", support_tags: ["eal_level_1"], family_language: "en" },
+      { alias: "Farid", support_tags: ["eal_level_2"], family_language: "ar" },
+    ] as unknown as AppContextValue["students"],
     latestTodaySnapshot,
     classroomAccessCodes: {},
     classroomRoles: {},
@@ -188,7 +192,7 @@ async function openClassroomIntelligence(user: ReturnType<typeof userEvent.setup
     await user.click(summary!);
   }
 
-  return screen.findByTestId("viz-composition-segment-eal-eal_level_1");
+  return screen.findByTestId("viz-composition-segment-eal-eal_level_1", undefined, { timeout: 15_000 });
 }
 
 describe("TodayPanel drill-down integration", () => {
@@ -205,9 +209,12 @@ describe("TodayPanel drill-down integration", () => {
     const { user } = renderPanel(makeSnapshot());
 
     // Wait for the snapshot to load so the gauge renders
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: /complexity debt/i })).toBeInTheDocument();
-    });
+    await waitFor(
+      () => {
+        expect(screen.getByRole("button", { name: /complexity debt/i })).toBeInTheDocument();
+      },
+      { timeout: 15_000 },
+    );
 
     await user.click(screen.getByRole("button", { name: /complexity debt/i }));
 
@@ -215,7 +222,7 @@ describe("TodayPanel drill-down integration", () => {
     expect(
       await screen.findByRole("dialog", { name: /Complexity debt — 14-day trend/i }),
     ).toBeInTheDocument();
-  });
+  }, 15_000);
 
   it("clicking an EAL segment on ClassroomCompositionRings (now on the Classroom page) opens the student-tag-group drawer", async () => {
     const { user } = renderPanel(makeSnapshot(), makeHealth(), ClassroomPanel);

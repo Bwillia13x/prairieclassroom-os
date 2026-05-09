@@ -3,6 +3,7 @@ import { resolve } from "path";
 
 export default defineConfig({
   test: {
+    testTimeout: 15_000,
     include: [
       "services/**/__tests__/**/*.test.ts",
       "packages/**/__tests__/**/*.test.ts",

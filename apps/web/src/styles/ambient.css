@@ -1331,19 +1331,30 @@
   }
 
   .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
-    justify-content: flex-start !important;
-    min-width: min(24vw, 18rem) !important;
-    padding-inline: var(--space-4) !important;
+    justify-content: center !important;
+    width: 2.75rem !important;
+    min-width: 2.75rem !important;
+    padding-inline: 0 !important;
+    gap: 0 !important;
     color: var(--color-text-tertiary) !important;
   }
 
   .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__label {
-    display: inline !important;
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip: rect(0 0 0 0) !important;
+    white-space: nowrap !important;
     color: var(--color-text-tertiary) !important;
     font-family: var(--font-sans) !important;
     font-weight: var(--font-weight-medium) !important;
     letter-spacing: 0 !important;
     text-transform: none !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__kbd {
+    display: none !important;
   }
 
   .role-pill {
@@ -1523,21 +1534,42 @@
   }
 }
 
-@media (min-width: 961px) and (max-width: 1180px) {
+@media (min-width: 961px) and (max-width: 1280px) {
+  .app-main {
+    padding: var(--space-4) !important;
+  }
+
+  .page-anchor-rail {
+    display: none !important;
+  }
+
   .shell-bar {
-    grid-template-columns: minmax(14rem, 1fr) auto !important;
+    grid-template-columns: minmax(12rem, 18rem) auto !important;
+    padding: 0 var(--space-4) !important;
   }
 
   .shell-classroom-anchor {
+    width: min(100%, 18rem) !important;
     justify-self: start !important;
   }
 
   .shell-bar__actions {
-    gap: var(--space-2) !important;
+    gap: var(--space-1) !important;
+    justify-self: start !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-help-trigger"] {
+    display: none !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"],
+  .theme-toggle-instrument.nothing-btn {
+    display: none !important;
   }
 
   .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
-    min-width: var(--control-h-md) !important;
+    width: 2.55rem !important;
+    min-width: 2.55rem !important;
     gap: 0 !important;
     justify-content: center !important;
   }
@@ -1553,5 +1585,38 @@
   .shell-bar__actions .header-action[data-testid="shell-search-trigger"] .header-action__icon {
     color: var(--color-text-secondary) !important;
     opacity: 1 !important;
+  }
+}
+
+@media (min-width: 1281px) and (max-width: 1560px) {
+  .shell-bar {
+    grid-template-columns: minmax(12rem, 18rem) auto !important;
+    padding: 0 var(--space-4) !important;
+  }
+
+  .shell-classroom-anchor {
+    width: min(100%, 18rem) !important;
+  }
+
+  .shell-bar__actions {
+    gap: var(--space-1) !important;
+    justify-self: start !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-help-trigger"] {
+    display: none !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"],
+  .theme-toggle-instrument.nothing-btn {
+    display: none !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
+    width: 2.55rem !important;
+    min-width: 2.55rem !important;
+    padding-inline: 0 !important;
+    gap: 0 !important;
+    justify-content: center !important;
   }
 }

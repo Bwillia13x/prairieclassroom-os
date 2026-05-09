@@ -23,6 +23,12 @@
   gap: var(--space-2-5);
 }
 
+@media (min-width: 961px) and (max-width: 1560px) {
+  .today-panel {
+    max-width: min(100%, 56rem);
+  }
+}
+
 .app-main[data-section="today"] {
   padding-top: var(--space-4);
 }
@@ -37,6 +43,36 @@
 
 .today-panel #today-preview {
   order: 2;
+}
+
+.today-operational-preview {
+  padding: 0;
+  border-color: color-mix(in srgb, var(--color-accent) 18%, var(--color-border));
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent 54%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-accent) 4%, transparent),
+    0 16px 38px -34px color-mix(in srgb, var(--color-accent) 34%, transparent);
+}
+
+.today-operational-preview::before {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-accent) 34%, transparent), transparent);
+}
+
+.today-operational-preview .operational-preview__body {
+  grid-template-columns: minmax(0, 0.88fr) minmax(15rem, 0.8fr) minmax(15rem, 0.82fr);
+  gap: 0;
+}
+
+.today-operational-preview .operational-preview__group {
+  padding: var(--space-3) var(--space-4);
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.today-operational-preview .operational-preview__group:first-child {
+  border-left: 0;
 }
 
 .today-panel .student-coverage__sentinel {
@@ -2450,10 +2486,10 @@
    Today detail collapse (2026-04-29)
    =================================================================
    The Today page now defaults to the simplified hero dashboard. All
-   secondary surfaces (operational preview, coverage strip, workflow
-   nudge, "What to watch next" grid, plan recap, risk windows, and
-   the End-of-Today footer) live behind a single "Show day detail"
-   toggle.
+   secondary surfaces live behind a single "Show day detail" toggle,
+   except for the compact operational preview that stays visible above it.
+   Collapsed surfaces include the coverage strip, workflow nudge, "What to
+   watch next" grid, plan recap, risk windows, and End-of-Today footer.
 
    Accessibility intent:
      • Collapse is CSS-only (max-height + opacity). The detail tree
@@ -2569,5 +2605,21 @@
   .today-detail--closed,
   .today-detail--open {
     transition: none;
+  }
+}
+
+@media (max-width: 920px) {
+  .today-operational-preview .operational-preview__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .today-operational-preview .operational-preview__group {
+    padding: var(--space-3);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent);
+    border-left: 0;
+  }
+
+  .today-operational-preview .operational-preview__group:first-child {
+    border-top: 0;
   }
 }

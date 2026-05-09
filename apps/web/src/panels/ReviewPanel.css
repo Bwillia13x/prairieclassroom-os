@@ -23,7 +23,7 @@
   grid-template-columns: minmax(0, 1.14fr) minmax(20rem, 0.76fr);
   align-items: stretch;
   gap: var(--space-4);
-  padding: var(--space-4);
+  padding: var(--space-3);
   border: 1px solid var(--review-rule-soft);
   border-left: 2px solid var(--review-accent);
   border-radius: 6px;
@@ -256,6 +256,12 @@
 .review-page .tool-switcher-stepper {
   margin: calc(-1 * var(--space-2)) 0 0;
   padding-inline: var(--space-3);
+}
+
+@media (min-width: 721px) {
+  .review-page .tool-switcher-stepper {
+    display: none;
+  }
 }
 
 .review-page .tool-switcher-stepper__dot--complete,
@@ -596,6 +602,14 @@
   .review-page #review-workspace .workspace-layout[data-layout="split"] > .workspace-rail,
   .review-page #review-workspace .workspace-layout[data-layout="split"] > .workspace-canvas {
     padding: var(--space-4);
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1280px) {
+  .review-page #review-workspace .workspace-layout[data-layout="split"],
+  .review-page #review-workspace .workspace-layout[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: minmax(0, 1fr);
+    min-height: auto;
   }
 }
 

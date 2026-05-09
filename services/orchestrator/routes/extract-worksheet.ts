@@ -1,8 +1,4 @@
 import { Router } from "express";
-import { writeFileSync, unlinkSync } from "node:fs";
-import { join } from "node:path";
-import { tmpdir } from "node:os";
-import { randomUUID } from "node:crypto";
 import { getRoute, getModelId } from "../router.js";
 import { buildExtractionPrompt, parseExtractionResponse } from "../extract-worksheet.js";
 import { suggestCurriculumEntries } from "../curriculum-registry.js";
@@ -16,8 +12,6 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
   const router = Router();
 
   router.post("/", validateBody(ExtractWorksheetRequestSchema), async (req, res) => {
-    let tempFilePath: string | null = null;
-
     try {
       const { classroom_id, image_base64, mime_type } = req.body;
 
@@ -35,12 +29,6 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
       // Build prompt
       const prompt = buildExtractionPrompt();
 
-      // Write base64 image to a temp file — inference harness expects file paths
-      const ext = mime_type.split("/")[1] ?? "jpg";
-      const tempFileName = `worksheet-${randomUUID()}.${ext}`;
-      tempFilePath = join(tmpdir(), tempFileName);
-      writeFileSync(tempFilePath, Buffer.from(image_base64, "base64"));
-
       const inferenceData = await callInference({
         deps,
         req,
@@ -49,7 +37,7 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
         prompt,
         maxTokens: 4096,
         mockContext: { classroom_id },
-        images: [tempFilePath],
+        imagePayloads: [{ mime_type, data_base64: image_base64 }],
       });
 
       // Parse extraction response from model output
@@ -72,15 +60,6 @@ export function createExtractWorksheetRouter(deps: RouteDeps): Router {
     } catch (err) {
       console.error("Worksheet extraction error:", err);
       handleRouteError(res, err);
-    } finally {
-      // Clean up temp file
-      if (tempFilePath) {
-        try {
-          unlinkSync(tempFilePath);
-        } catch {
-          // Ignore cleanup errors
-        }
-      }
     }
   });
 

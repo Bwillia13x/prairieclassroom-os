@@ -35,7 +35,13 @@ import type {
   VocabCardsResponse,
 } from "./types";
 
-const API_BASE = import.meta.env.VITE_API_URL || "/api";
+export function normalizeApiBase(value: string | undefined): string {
+  const trimmed = (value || "/api").trim().replace(/\/+$/, "");
+  if (!trimmed) return "/api";
+  return trimmed.endsWith("/api") ? trimmed : `${trimmed}/api`;
+}
+
+const API_BASE = normalizeApiBase(import.meta.env.VITE_API_URL);
 
 interface ApiErrorPayload {
   error?: string;
@@ -313,6 +319,13 @@ async function streamRequestJson<T>(
 
 export function listClassrooms(): Promise<ClassroomProfile[]> {
   return requestJson<ClassroomProfile[]>("/classrooms");
+}
+
+export function fetchClassroomProfile(classroomId: string, signal?: AbortSignal): Promise<ClassroomProfile> {
+  return requestJson<ClassroomProfile>(
+    `/classrooms/${encodeURIComponent(classroomId)}/profile`,
+    { classroomId, signal },
+  );
 }
 
 export async function listCurriculumSubjects(

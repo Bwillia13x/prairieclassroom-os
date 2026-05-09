@@ -88,7 +88,8 @@ async function main() {
   const demo = classrooms.find((classroom) => classroom.classroom_id === DEMO_CLASSROOM_ID);
   assert.ok(demo, `Expected ${DEMO_CLASSROOM_ID} in /api/classrooms`);
 
-  const roster = new Set((demo.students ?? []).map((student) => student.alias));
+  const demoProfile = await getJson(`/api/classrooms/${DEMO_CLASSROOM_ID}/profile`);
+  const roster = new Set((demoProfile.students ?? []).map((student) => student.alias));
   assert.ok(roster.size > 0, "Demo classroom roster must not be empty");
 
   const smokeCases = {

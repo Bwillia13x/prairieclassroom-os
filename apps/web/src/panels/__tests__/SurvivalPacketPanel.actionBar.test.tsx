@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import AppContext, { type AppContextValue } from "../../AppContext";
 import React from "react";
+import type { ClassroomRole } from "../../appReducer";
 
 const MOCK_PACKET = {
   packet_id: "pkt-1",
@@ -46,7 +47,7 @@ vi.mock("../../hooks/useStreamingRequest", () => ({ useStreamingRequest: () => (
 
 import SurvivalPacketPanel from "../SurvivalPacketPanel";
 
-function makeCtx(): AppContextValue {
+function makeCtx(activeRole: ClassroomRole = "teacher"): AppContextValue {
   return {
     classrooms: [{ classroom_id: "demo", grade_band: "3-4", subject_focus: "cross_curricular", classroom_notes: [], students: [], is_demo: true }],
     activeClassroom: "demo",
@@ -58,7 +59,7 @@ function makeCtx(): AppContextValue {
     students: [],
     classroomAccessCodes: {},
     classroomRoles: {},
-    activeRole: "teacher" as const,
+    activeRole,
     setClassroomRole: vi.fn(),
     authPrompt: null,
     showSuccess: vi.fn(),
@@ -106,5 +107,19 @@ describe("SurvivalPacketPanel OutputActionBar", () => {
       </AppContext.Provider>,
     );
     expect(screen.queryByRole("navigation", { name: "Survival packet output" })).not.toBeInTheDocument();
+  });
+
+  it("disables sub-packet generation for restricted roles", () => {
+    mockResult = null;
+    render(
+      <AppContext.Provider value={makeCtx("ea")}>
+        <SurvivalPacketPanel />
+      </AppContext.Provider>,
+    );
+
+    expect(screen.getByText(/Read-only for the active role/i)).toBeInTheDocument();
+    const generateButton = screen.getByTestId("generate-survival-packet-submit");
+    expect(generateButton).toBeDisabled();
+    expect(generateButton.getAttribute("title")).toContain("EA role cannot perform this action");
   });
 });

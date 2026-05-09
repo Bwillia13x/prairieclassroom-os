@@ -1,0 +1,101 @@
+[
+  {
+    "route": "Classroom",
+    "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/01-classroom.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 9,
+    "panelLine": "  - 'tabpanel \"Classroom: Room view\"':"
+  },
+  {
+    "route": "Today",
+    "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/02-today.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Today: Do this now\"':"
+  },
+  {
+    "route": "Tomorrow Plan",
+    "url": "http://localhost:5173/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/03-tomorrow-plan.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Tomorrow: Plan tomorrow\"':"
+  },
+  {
+    "route": "Week",
+    "url": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/04-week.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 9,
+    "panelLine": "  - 'tabpanel \"Week: Week map\"':"
+  },
+  {
+    "route": "Prep Differentiate",
+    "url": "http://localhost:5173/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/05-prep-differentiate.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Prep: Adapt lesson\"':"
+  },
+  {
+    "route": "Prep Language Tools",
+    "url": "http://localhost:5173/?demo=true&tab=prep&tool=language-tools&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/06-prep-language-tools.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Prep: Adapt lesson\"':"
+  },
+  {
+    "route": "Ops Log Intervention",
+    "url": "http://localhost:5173/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/07-ops-log-intervention.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Ops: Log note\"':"
+  },
+  {
+    "route": "Ops EA Briefing",
+    "url": "http://localhost:5173/?demo=true&tab=ops&tool=ea-briefing&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/08-ops-ea-briefing.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Ops: Log note\"':"
+  },
+  {
+    "route": "Ops Sub Packet",
+    "url": "http://localhost:5173/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/09-ops-sub-packet.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Ops: Log note\"':"
+  },
+  {
+    "route": "Review Family Message",
+    "url": "http://localhost:5173/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/10-review-family-message.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 40,
+    "panelLine": "  - 'tabpanel \"Review: Message family\"':"
+  },
+  {
+    "route": "Review Support Patterns",
+    "url": "http://localhost:5173/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/11-review-support-patterns.png",
+    "hasExpectedPanel": true,
+    "visibleErrorText": [],
+    "buttons": 5,
+    "panelLine": "  - 'tabpanel \"Review: Message family\"':"
+  }
+]

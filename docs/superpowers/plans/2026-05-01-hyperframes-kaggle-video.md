@@ -20,7 +20,7 @@
 - [ ] Do not include an offline/Ollama shot unless `npm run release:gate:ollama` has passed on a viable host and the artifact path is recorded.
 - [ ] Keep hosted Gemma proof language scoped to synthetic/demo data.
 - [ ] Use "Gemma 4" in narration and captions because the Kaggle story needs model-specific contribution, not generic AI value.
-- [ ] Use the current proof posture: hosted proof remains canonical at `output/release-gate/2026-04-27T01-26-45-190Z-87424` unless a newer hosted gate passes end-to-end.
+- [ ] Use the current proof posture: the May 8 hosted refresh is blocked at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; preserve the last passing synthetic/demo baseline at `output/release-gate/2026-05-03T17-59-42-981Z-80702` and document the failed refresh separately.
 
 ## Creative Direction
 

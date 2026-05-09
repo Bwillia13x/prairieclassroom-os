@@ -1,0 +1,243 @@
+[
+  {
+    "label": "Classroom",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/01-classroom.png",
+    "expectedMatched": [
+      "Read the room",
+      "Classroom: Room view"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Classroom: Room view\"':",
+    "activeToolLines": []
+  },
+  {
+    "label": "Today",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/02-today.png",
+    "expectedMatched": [
+      "Close today",
+      "Today: Do this now"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Today: Do this now\"':",
+    "activeToolLines": [
+      "        - generic: Current",
+      "          - generic: Current focus"
+    ]
+  },
+  {
+    "label": "Tomorrow Plan",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/03-tomorrow-plan.png",
+    "expectedMatched": [
+      "Tomorrow Plan",
+      "Plan tomorrow"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Tomorrow: Plan tomorrow\"':",
+    "activeToolLines": [
+      "        - generic: Active tool",
+      "      - tab \"01 Planning order Tomorrow Plan Watchpoints, priorities, EA moves, prep, and family follow-ups. 3 priorities ready\" [selected]:"
+    ]
+  },
+  {
+    "label": "Forecast",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=tomorrow&tool=complexity-forecast&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=tomorrow&tool=complexity-forecast&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/04-complexity-forecast.png",
+    "expectedMatched": [
+      "Forecast",
+      "Complexity"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Tomorrow: Plan tomorrow\"':",
+    "activeToolLines": [
+      "        - generic: Active tool",
+      "      - tab \"02 Block risk Forecast Block-by-block risk before coverage and transition decisions. 4 blocks forecast\" [selected]:"
+    ]
+  },
+  {
+    "label": "Week",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/05-week.png",
+    "expectedMatched": [
+      "Week",
+      "Week map"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Week: Week map\"':",
+    "activeToolLines": []
+  },
+  {
+    "label": "Differentiate",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/06-differentiate.png",
+    "expectedMatched": [
+      "Differentiate",
+      "Adapt lesson"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Prep: Adapt lesson\"':",
+    "activeToolLines": [
+      "        - generic: Active tool",
+      "      - tab \"01 Artifact Differentiate Lesson variants Adapt one lesson, worksheet, or passage across readiness levels.\" [selected]:",
+      "          - tab \"Upload file PDF or Word text\" [selected]:"
+    ]
+  },
+  {
+    "label": "Language Tools",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=prep&tool=language-tools&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=prep&tool=language-tools&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/07-language-tools.png",
+    "expectedMatched": [
+      "Language Tools",
+      "Simplify"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Prep: Adapt lesson\"':",
+    "activeToolLines": [
+      "        - generic: Active tool",
+      "      - tab \"02 Language Language Tools EAL support Simplify text and prepare bilingual vocabulary supports.\" [selected]:",
+      "          - tab \"Simplify Text\" [selected]:",
+      "          - option \"Grade 3\" [selected]",
+      "          - option \"Beginner\" [selected]"
+    ]
+  },
+  {
+    "label": "Log Intervention",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/08-log-intervention.png",
+    "expectedMatched": [
+      "Log Intervention",
+      "Log note"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Ops: Log note\"':",
+    "activeToolLines": [
+      "          - generic: Active workflow",
+      "        - generic: Current lane",
+      "          - 'listitem \"Current step 1: Log Intervention. 5 pending · 5 follow-up notes still need a touchpoint\"':",
+      "            - 'tab \"Step 1: Log Intervention\" [selected]':",
+      "        - generic: Active workflow",
+      "          - generic: No students selected",
+      "              - option \"Yes, keep it visible\" [selected]",
+      "              - option \"Tomorrow morning\" [selected]"
+    ]
+  },
+  {
+    "label": "EA Briefing",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=ops&tool=ea-briefing&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=ops&tool=ea-briefing&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/09-ea-briefing.png",
+    "expectedMatched": [
+      "EA Briefing",
+      "Brief EAs"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Ops: Log note\"':",
+    "activeToolLines": [
+      "          - generic: Active workflow",
+      "        - generic: Current lane",
+      "          - 'listitem \"Current step 2: EA Briefing. 3 pending · EA handoff has 3 planned actions\"':",
+      "            - 'tab \"Step 2: EA Briefing\" [selected]':",
+      "        - generic: Active workflow"
+    ]
+  },
+  {
+    "label": "EA Load",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=ops&tool=ea-load&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=ops&tool=ea-load&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/10-ea-load.png",
+    "expectedMatched": [
+      "EA Load",
+      "Balance load"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Ops: Log note\"':",
+    "activeToolLines": [
+      "          - generic: Active workflow",
+      "        - generic: Current lane",
+      "          - 'listitem \"Current step 3: EA Load. 5 pending · EA load can be balanced against tomorrow''s forecast\"':",
+      "            - 'tab \"Step 3: EA Load\" [selected]':",
+      "        - generic: Active workflow"
+    ]
+  },
+  {
+    "label": "Sub Packet",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=ops&tool=survival-packet&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=ops&tool=survival-packet&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/11-survival-packet.png",
+    "expectedMatched": [
+      "Sub Packet",
+      "Sub packet"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Ops: Log note\"':",
+    "activeToolLines": [
+      "          - generic: Active workflow",
+      "        - generic: Current lane",
+      "          - 'listitem \"Current step 4: Sub Packet. 3 pending · Substitute coverage packet is ready to hand off\"':",
+      "            - 'tab \"Step 4: Sub Packet\" [selected]':",
+      "        - generic: Active workflow"
+    ]
+  },
+  {
+    "label": "Family Message",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/12-family-message.png",
+    "expectedMatched": [
+      "Family Message",
+      "Draft family"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Review: Message family\"':",
+    "activeToolLines": [
+      "        - generic: Active tool",
+      "      - tab \"01 Family Family Message Draft family updates and keep human approval explicit. Ready\" [selected]:",
+      "          - option \"Routine Update\" [selected]",
+      "          - option \"English\" [selected]"
+    ]
+  },
+  {
+    "label": "Support Patterns",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/13-support-patterns.png",
+    "expectedMatched": [
+      "Support Patterns",
+      "Inspect support"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Review: Message family\"':",
+    "activeToolLines": [
+      "        - generic: Active tool",
+      "      - tab \"02 Patterns Support Patterns Inspect recurring classroom signals before next actions. 2 signals\" [selected]:",
+      "          - option \"All students\" [selected]",
+      "          - option \"Last 10 records\" [selected]"
+    ]
+  },
+  {
+    "label": "Usage Insights",
+    "requestedUrl": "http://localhost:5173/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34",
+    "finalUrl": "http://localhost:5173/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/final-surfaces/14-usage-insights.png",
+    "expectedMatched": [
+      "Usage Insights",
+      "feedback"
+    ],
+    "visibleErrorText": [],
+    "panelLine": "  - 'tabpanel \"Review: Message family\"':",
+    "activeToolLines": [
+      "        - generic: Active tool",
+      "      - tab \"03 Usage Usage Insights Review feedback and workflow patterns from recent sessions. 14 reviews\" [selected]:"
+    ]
+  }
+]

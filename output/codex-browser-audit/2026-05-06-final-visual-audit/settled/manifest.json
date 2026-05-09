@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "ops-log-intervention",
+    "url": "http://localhost:5173/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/settled/ops-log-intervention.png",
+    "panel": "  - 'tabpanel \"Ops: Log note\"':",
+    "errors": []
+  },
+  {
+    "slug": "ops-ea-briefing",
+    "url": "http://localhost:5173/?demo=true&tab=ops&tool=ea-briefing&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/settled/ops-ea-briefing.png",
+    "panel": "  - 'tabpanel \"Ops: Log note\"':",
+    "errors": []
+  },
+  {
+    "slug": "review-family-message",
+    "url": "http://localhost:5173/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/settled/review-family-message.png",
+    "panel": "  - 'tabpanel \"Review: Message family\"':",
+    "errors": []
+  },
+  {
+    "slug": "review-support-patterns",
+    "url": "http://localhost:5173/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+    "file": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/codex-browser-audit/2026-05-06-final-visual-audit/settled/review-support-patterns.png",
+    "panel": "  - 'tabpanel \"Review: Message family\"':",
+    "errors": []
+  }
+]

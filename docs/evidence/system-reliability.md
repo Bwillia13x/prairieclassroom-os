@@ -1,25 +1,25 @@
 # System Reliability
 
-*Generated 2026-04-29*
+*Generated 2026-05-03*
 
-**Log files analysed:** 5
-**Date range:** 2026-04-25 to 2026-04-29
-**Total requests:** 15944
+**Log files analysed:** 9
+**Date range:** 2026-04-25 to 2026-05-03
+**Total requests:** 25679
 
 ## Reliability
 
-- Success rate (2xx/3xx): **97.3%** (15518 / 15944)
-- Client/server errors: 426
-- Injection attempts detected: 6
+- Success rate (2xx/3xx): **97.1%** (24940 / 25679)
+- Client/server errors: 739
+- Injection attempts detected: 12
 
 ## Error Codes
 
 | Status | Count |
 |--------|-------|
-| 401 | 180 |
-| 429 | 152 |
-| 403 | 75 |
-| 404 | 16 |
+| 401 | 297 |
+| 429 | 296 |
+| 403 | 96 |
+| 404 | 47 |
 | 400 | 2 |
 | 502 | 1 |
 
@@ -27,34 +27,34 @@
 
 | Metric | Value |
 |--------|-------|
-| Average | 262 |
-| P50 | 3 |
-| P95 | 25 |
-| P99 | 102 |
+| Average | 325 |
+| P50 | 4 |
+| P95 | 27 |
+| P99 | 107 |
 
 ## Top Routes
 
 | Route | Count |
 |-------|-------|
-| GET /api/classrooms/ | 3637 |
-| POST /api/sessions/ | 3196 |
-| GET /api/today/:classroomId | 2572 |
-| GET /api/classrooms/:id/health | 1560 |
-| GET /api/sessions/summary/:classroomId | 931 |
-| GET /api/classrooms/:id/student-summary | 784 |
-| GET /api/classrooms/:id/messages | 696 |
-| GET /api/classrooms/:id/plans | 627 |
-| GET /api/classrooms/:id/runs | 496 |
-| GET /api/classrooms/:id/interventions | 476 |
-| POST /api/family-message/ | 101 |
-| POST /api/tomorrow-plan/stream | 75 |
-| GET /api/tomorrow-plan/stream/:streamId/events | 75 |
-| POST /api/differentiate/ | 71 |
-| GET /health | 64 |
+| GET /api/classrooms/ | 5701 |
+| GET /api/today/:classroomId | 4189 |
+| POST /api/sessions/ | 4103 |
+| GET /api/classrooms/:id/health | 3002 |
+| GET /api/sessions/summary/:classroomId | 2021 |
+| GET /api/classrooms/:id/student-summary | 1713 |
+| GET /api/classrooms/:id/messages | 1081 |
+| GET /api/classrooms/:id/plans | 911 |
+| GET /api/classrooms/:id/runs | 788 |
+| GET /api/classrooms/:id/interventions | 719 |
+| POST /api/family-message/ | 132 |
+| GET /health | 108 |
+| POST /api/tomorrow-plan/stream | 95 |
+| GET /api/tomorrow-plan/stream/:streamId/events | 95 |
+| POST /api/differentiate/ | 85 |
 
 ## Inference Providers
 
 | Provider | Count |
 |----------|-------|
-| mock | 15626 |
-| gemini | 318 |
+| mock | 24297 |
+| gemini | 1382 |

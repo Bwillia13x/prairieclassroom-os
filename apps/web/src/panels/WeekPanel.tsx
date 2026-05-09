@@ -18,6 +18,10 @@ import { ActionButton } from "../components/shared";
 import EmptyStateCard from "../components/EmptyStateCard";
 import SectionIcon from "../components/SectionIcon";
 import PageHero from "../components/shared/PageHero";
+import OperationalPreview, {
+  type OperationalPreviewGroup,
+} from "../components/shared/OperationalPreview";
+import SectionMarker from "../components/shared/SectionMarker";
 import type {
   ClassroomHealth,
   DrillDownContext,
@@ -203,6 +207,41 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
       state: highRiskBlockCount > 0 ? "pending" : "done",
     },
   ];
+  const weekPreviewGroups: OperationalPreviewGroup[] = dashboard
+    ? [
+        {
+          eyebrow: "Next decision",
+          evidence: [
+            {
+              label: "Priority",
+              meta: nextHighRiskDay ? `${nextHighRiskDay.label} ${nextHighRiskDay.date_label}` : "No high-risk day",
+            },
+            { label: "Coverage", meta: `${coverageValue}% · ${coverageStatus(coverageValue)}` },
+            { label: "Open items", meta: String(openItems) },
+          ],
+        },
+        {
+          eyebrow: "Staging cues",
+          chips: prepChecklist.map((item) => ({
+            label: item.label,
+            meta: item.detail,
+            tone: item.state === "pending" ? "watch" : "success",
+          })),
+        },
+        {
+          eyebrow: "Day signals",
+          chips: weekDays.slice(0, 5).map((day) => {
+            const level = riskLevelForDay(day);
+            return {
+              label: day.label,
+              meta: LEVEL_LABEL[level],
+              tone: level === "high" ? "danger" : level === "medium" ? "watch" : "neutral",
+              title: teacherRhythmForDay(day, eventLoadForDay(day, upcomingEvents)),
+            };
+          }),
+        },
+      ]
+    : [];
 
   if (!profile) return null;
 
@@ -260,7 +299,22 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
         }
       />
 
+      {dashboard ? (
+        <OperationalPreview
+          ariaLabel="Week operational preview"
+          id="week-preview"
+          groups={weekPreviewGroups}
+          className="week-operational-preview"
+        />
+      ) : null}
+
       {error && !result ? <ErrorBanner message={error} onDismiss={reset} /> : null}
+
+      <SectionMarker
+        number="02"
+        title="Five-day horizon"
+        subtitle="Read risk, events, and coverage signals before the week turns into a daily scramble."
+      />
 
       <section id="week-overview" className="week-operations-board" aria-labelledby="week-overview-heading">
         <div className="week-operations-board__header">

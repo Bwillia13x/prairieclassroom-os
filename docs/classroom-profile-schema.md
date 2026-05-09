@@ -23,7 +23,7 @@ The top-level object representing a single classroom.
 | `routines` | Record<string, string> | **Yes** | Named daily routines. Keys are routine names, values are descriptions. Example: `{ "morning": "bell work journal then calendar math", "after_lunch": "body break then math block" }` |
 | `students` | StudentSupportSummary[] | **Yes** | Array of student entries (see below). At least one student required. |
 | `support_constraints` | string[] | Optional | Operational constraints affecting support delivery. Example: `["EA available 8:30-12:00 only", "No 1:1 aide"]` |
-| `access_code` | string | Optional | If present, the classroom requires this code via `X-Classroom-Code` header for API access. Omit for open classrooms. |
+| `access_code` | string | Optional | Local/demo-only shared code. For hosted or real deployments, omit this field from checked-in profiles and set `PRAIRIE_CLASSROOM_ACCESS_CODES_JSON` instead. |
 | `sub_ready` | boolean | Optional | Whether the classroom has enough data for a survival packet to be generated. Default: `false`. |
 | `schedule` | ScheduleBlock[] | Optional | Daily schedule blocks (see below). Used by forecast, EA briefing, and today panel. |
 | `upcoming_events` | UpcomingEvent[] | Optional | Known upcoming events that may affect classroom complexity. Used by forecast prompt. |
@@ -116,7 +116,7 @@ This policy keeps generated artifacts (plans, variants, messages, interventions,
 }
 ```
 
-## Example: Protected classroom with full schedule
+## Example: Classroom with full schedule
 
 ```json
 {
@@ -134,7 +134,6 @@ This policy keeps generated artifacts (plans, variants, messages, interventions,
   "support_constraints": [
     "EA available 9:00-11:30 only"
   ],
-  "access_code": "maple2026",
   "sub_ready": true,
   "students": [
     {
@@ -169,7 +168,7 @@ This policy keeps generated artifacts (plans, variants, messages, interventions,
 
 1. Create `data/synthetic_classrooms/classroom_{your-id}.json` following the schema above.
 2. Ensure `classroom_id` is unique, lowercase, alphanumeric with hyphens.
-3. If protected, set `access_code`. If open, omit it.
+3. Omit `access_code` from checked-in non-demo profiles. For protected hosted classrooms, provide a JSON object in `PRAIRIE_CLASSROOM_ACCESS_CODES_JSON`, for example `{"mrs-chen-grade5":"<secret-code>"}`.
 4. Run `npm run release:gate` to verify the system recognizes it.
 5. The classroom will appear in `GET /api/classrooms` automatically.
 
@@ -177,5 +176,5 @@ This policy keeps generated artifacts (plans, variants, messages, interventions,
 
 - **Never use real student names.** All `alias` fields must be fictional.
 - **Never use real family contact information.** `communication_notes` should describe preferences, not phone numbers or addresses.
-- **Access codes are stored in plaintext** in the JSON file. For real deployments, move to environment variables or a secrets manager.
+- **Do not commit classroom access codes.** The orchestrator accepts hosted overrides from `PRAIRIE_CLASSROOM_ACCESS_CODES_JSON`; checked-in `access_code` is reserved for explicit demo/local fixtures only.
 - **Synthetic data only** for demo and hosted Gemini runs. See CLAUDE.md cost guardrails.

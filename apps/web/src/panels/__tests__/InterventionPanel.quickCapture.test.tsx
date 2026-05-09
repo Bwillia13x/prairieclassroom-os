@@ -1,4 +1,4 @@
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi, describe, it, beforeEach, expect } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
@@ -173,10 +173,11 @@ describe("InterventionPanel — single note capture path", () => {
     const { appContext, user } = renderPanel();
 
     await user.click(await screen.findByRole("checkbox", { name: /Amira/i }));
-    await user.type(
-      screen.getByLabelText(/Evidence note/i),
-      "Amira used the sentence starter, completed the first response, and needs a morning check-in.",
-    );
+    fireEvent.change(screen.getByLabelText(/Evidence note/i), {
+      target: {
+        value: "Amira used the sentence starter, completed the first response, and needs a morning check-in.",
+      },
+    });
     await user.click(screen.getByRole("button", { name: /Save note & continue/i }));
 
     await waitFor(() => expect(mockedLogIntervention).toHaveBeenCalledTimes(1));
@@ -187,7 +188,7 @@ describe("InterventionPanel — single note capture path", () => {
     expect(payload.classroom_id).toBe("demo-classroom");
     expect(appContext.showSuccess).toHaveBeenCalledWith("Intervention logged");
     expect(appContext.showUndo).not.toHaveBeenCalled();
-  });
+  }, 30_000);
 
   it("opens debt-category and student drill-downs from the intervention history charts", async () => {
     mockedFetchInterventionHistory.mockResolvedValue([

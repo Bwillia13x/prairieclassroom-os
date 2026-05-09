@@ -92,8 +92,10 @@ http://localhost:5173/?demo=true
 
 **Point to artifact-backed proof if needed:**
 
-- Hosted gate: `output/release-gate/2026-04-27T01-26-45-190Z-87424`
-- Hosted eval summary: `output/evals/2026-04-27-gemini/2026-04-27T01-26-45-190Z-87424-gemini-summary.json`
+- Current hosted refresh: failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; do not claim a current clean full hosted gate.
+- Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`)
+- Last passing hosted gate: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
+- Last passing hosted eval summary: `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-summary.json`
 - System inventory: `docs/system-inventory.md`
 
 ## A4. Safety (45 seconds)
@@ -206,7 +208,7 @@ Open **Review -> Usage Insights** if populated, or reference the proof docs dire
 
 **Say clearly:**
 
-> "The proof lane is hosted Gemma 4 on synthetic/demo data. The latest hosted gate passed, the current generated inventory records 12 panels, 13 prompt classes, 52 endpoints, and 134 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
+> "The proof lane is hosted Gemma 4 on synthetic/demo data. The last passing hosted baseline is May 3, and the current May 8 hosted refresh is documented as blocked rather than a clean pass. The current generated inventory records 12 panels, 13 prompt classes, 52 endpoints, and 134 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
 
 ---
 

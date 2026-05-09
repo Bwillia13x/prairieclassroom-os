@@ -64,7 +64,7 @@ Each dimension lists: scope, commands, artifacts, pass criteria, current status,
 - **Scope:** Zod schemas in `packages/shared`, branded domain ID types, prompt request/response contracts, migrations table.
 - **Commands:** `npm run test` (vitest covers schema + builder + parser suites), `npm run test:python` (pytest covers inference-side contracts).
 - **Artifacts:** vitest + pytest summaries inside the release-gate log bundle.
-- **Pass:** 2,058 vitest + 69 pytest cases pass; no skipped schema suites; migration `_migrations` table reflects current schema version.
+- **Pass:** 2,069 vitest + 69 pytest cases pass; no skipped schema suites; migration `_migrations` table reflects current schema version.
 - **Answers to:** [architecture.md](architecture.md), [database-schema.md](database-schema.md), [classroom-profile-schema.md](classroom-profile-schema.md).
 
 ### D3. Prompt Class Coverage (13 model-routed classes)
@@ -88,7 +88,7 @@ Four lanes; they do not carry equal product weight.
 | `api`    | `npm run release:gate:real`  | opt-in only            | out of scope unless the operator explicitly schedules |
 
 - **Pre-hosted gate:** `npm run proof:check` then `npm run gemini:readycheck`. Do not loop on hosted retries.
-- **Ollama posture:** G-02 records that the maintenance host (8 GiB RAM, 6.76 GiB free disk) cannot run `gemma4:27b`. The audit names the target host explicitly or records the lane as "host-infeasible, tracked in G-02."
+- **Ollama posture:** G-02 records that the latest maintenance-host preflight (`output/host-preflight/2026-04-29T18-59-02-929Z.json`) has 8.00 GiB RAM, 0.09 GiB free RAM, 8.95 GiB free disk, no Ollama CLI, and no required models. The full dual-model lane needs a separate host with at least 16 GiB RAM and enough disk for `gemma4:4b` plus `gemma4:27b`; the audit names the target host explicitly or records the lane as "host-infeasible, tracked in G-02."
 - **Sub-skill:** Use `gemma-routing` when revisiting live/planning routing or latency/quality tradeoffs.
 - **Answers to:** [eval-baseline.md](eval-baseline.md), [hackathon-hosted-operations.md](hackathon-hosted-operations.md), [live-model-proof-status.md](live-model-proof-status.md).
 

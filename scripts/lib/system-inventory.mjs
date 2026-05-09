@@ -42,6 +42,31 @@ function extractConstObject(source, constName) {
   throw new Error(`Could not parse object body for ${constName}`);
 }
 
+function parseObjectEntries(objectBody) {
+  const entries = [];
+  const entryPattern = /(?:^|\n)\s*(?:"([^"]+)"|([a-zA-Z0-9_-]+)):\s*\{/g;
+  for (const match of objectBody.matchAll(entryPattern)) {
+    const id = match[1] ?? match[2];
+    const openBrace = objectBody.indexOf("{", match.index ?? 0);
+    if (openBrace === -1) continue;
+
+    let depth = 0;
+    for (let index = openBrace; index < objectBody.length; index += 1) {
+      const char = objectBody[index];
+      if (char === "{") depth += 1;
+      if (char === "}") depth -= 1;
+      if (depth === 0) {
+        entries.push({
+          id,
+          body: objectBody.slice(openBrace, index + 1),
+        });
+        break;
+      }
+    }
+  }
+  return entries;
+}
+
 function parseTabMeta(source) {
   // Post-2026-04-23 reorg: the shell exposes seven standalone pages
   // (classroom, today, tomorrow, week, prep, ops, review); the familiar
@@ -51,15 +76,14 @@ function parseTabMeta(source) {
   // "12 teacher-facing panels" without re-architecting the doc chain.
   const tabMetaBody = extractConstObject(source, "TAB_META");
   const tabs = [];
-  const tabPattern = /^\s*(?:"([^"]+)"|([a-zA-Z0-9_-]+)):\s*\{\s*label:\s*"([^"]+)",\s*shortLabel:\s*"[^"]+",\s*icon:\s*"[^"]+",\s*sectionTone:\s*"[^"]+",/gm;
-  for (const match of tabMetaBody.matchAll(tabPattern)) {
-    const id = match[1] ?? match[2];
+  for (const entry of parseObjectEntries(tabMetaBody)) {
+    const id = entry.id;
     if (id !== "today") continue;
-    tabs.push({ id, label: match[3], group: id });
+    const label = entry.body.match(/\blabel:\s*"([^"]+)"/)?.[1];
+    if (label) tabs.push({ id, label, group: id });
   }
 
   const toolMetaBody = extractConstObject(source, "TOOL_META");
-  const toolPattern = /^\s*(?:"([^"]+)"|([a-zA-Z0-9_-]+)):\s*\{\s*label:\s*"([^"]+)"/gm;
   const toolGroupByTab = {
     differentiate: "prep",
     "language-tools": "prep",
@@ -73,11 +97,13 @@ function parseTabMeta(source) {
     "support-patterns": "review",
     "usage-insights": "review",
   };
-  for (const match of toolMetaBody.matchAll(toolPattern)) {
-    const id = match[1] ?? match[2];
+  for (const entry of parseObjectEntries(toolMetaBody)) {
+    const id = entry.id;
+    const label = entry.body.match(/\blabel:\s*"([^"]+)"/)?.[1];
+    if (!label) continue;
     tabs.push({
       id,
-      label: match[3],
+      label,
       group: toolGroupByTab[id] ?? id,
     });
   }

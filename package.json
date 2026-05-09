@@ -27,6 +27,8 @@
     "claims:check": "node scripts/claims-check.mjs",
     "system:inventory": "node scripts/system-inventory.mjs --write",
     "system:inventory:check": "node scripts/system-inventory.mjs --check",
+    "eval:inventory": "node scripts/eval-inventory.mjs --write",
+    "eval:inventory:check": "node scripts/eval-inventory.mjs --check",
     "ops:status": "node scripts/ops-status.mjs",
     "memory:admin": "node scripts/memory-admin.mjs",
     "pilot:reset": "node scripts/pilot-reset.mjs",

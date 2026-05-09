@@ -54,6 +54,21 @@ function collectMatches(text: string): string[] {
     .map((rule) => rule.key);
 }
 
+function neutralizeInstructionLikeSentences(value: string): string {
+  return value
+    .split(/(\n+)/)
+    .map((block) => {
+      if (/^\n+$/.test(block)) return block;
+      return block.replace(/[^.!?\n]+[.!?]?/g, (sentence) => (
+        collectMatches(sentence).length > 0
+          ? " [instruction-like user text removed]"
+          : sentence
+      ));
+    })
+    .join("")
+    .replace(/(^|\n)\s+\[instruction-like user text removed\]/g, "$1[instruction-like user text removed]");
+}
+
 function stripUnsupportedControlChars(value: string): string {
   let output = "";
   for (const char of value) {
@@ -79,8 +94,11 @@ export function sanitizePromptInput(value: string): string {
 }
 
 export function analyzePromptInput(value: string, label = "teacher_input"): PromptSafetyAnalysis {
-  const sanitized = sanitizePromptInput(value);
-  const matchedRules = collectMatches(sanitized);
+  const normalized = sanitizePromptInput(value);
+  const matchedRules = collectMatches(normalized);
+  const sanitized = matchedRules.length > 0
+    ? neutralizeInstructionLikeSentences(normalized)
+    : normalized;
 
   return {
     injectionSuspected: matchedRules.length > 0,

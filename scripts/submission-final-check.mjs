@@ -15,6 +15,9 @@
  * Optional flags:
  *   --skip-release-gate   Skip the long mock release-gate step (faster, but
  *                         loses the structural-integrity signal).
+ *   --skip-publication-check
+ *                         Skip final public-link placeholder checks for
+ *                         local-only validation before external links exist.
  *   --include-ollama      Also run release:gate:ollama (only meaningful on a
  *                         viable host with gemma4:4b + gemma4:27b pulled).
  */
@@ -22,6 +25,7 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { validatePublicationPlaceholders } from "./lib/submission-final-check.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -29,14 +33,24 @@ const ROOT = path.resolve(__dirname, "..");
 const args = new Set(process.argv.slice(2));
 const SKIP_RELEASE_GATE = args.has("--skip-release-gate");
 const INCLUDE_OLLAMA = args.has("--include-ollama");
+const SKIP_PUBLICATION_CHECK = args.has("--skip-publication-check");
 
 const STEPS = [
   { id: "claims", name: "claims:check", command: "npm", args: ["run", "claims:check"] },
   { id: "proof", name: "proof:check", command: "npm", args: ["run", "proof:check"] },
   { id: "inventory", name: "system:inventory:check", command: "npm", args: ["run", "system:inventory:check"] },
+  { id: "eval-inventory", name: "eval:inventory:check", command: "npm", args: ["run", "eval:inventory:check"] },
   { id: "demo-fixture", name: "demo:fixture:check", command: "npm", args: ["run", "demo:fixture:check"] },
   { id: "contrast", name: "check:contrast", command: "npm", args: ["run", "check:contrast"] },
 ];
+
+if (!SKIP_PUBLICATION_CHECK) {
+  STEPS.push({
+    id: "publication-placeholders",
+    name: "publication placeholder check",
+    run: checkPublicationPlaceholders,
+  });
+}
 
 if (!SKIP_RELEASE_GATE) {
   STEPS.push({
@@ -60,6 +74,28 @@ function runStep(step) {
   return new Promise((resolve) => {
     const startedAt = Date.now();
     process.stdout.write(`\n▶  ${step.name}\n`);
+    if (step.run) {
+      try {
+        const result = step.run();
+        resolve({
+          id: step.id,
+          name: step.name,
+          ok: result.ok,
+          durationMs: Date.now() - startedAt,
+          exitCode: result.ok ? 0 : 1,
+          details: result.details,
+        });
+      } catch (error) {
+        resolve({
+          id: step.id,
+          name: step.name,
+          ok: false,
+          durationMs: Date.now() - startedAt,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+      return;
+    }
     const child = spawn(step.command, step.args, {
       cwd: ROOT,
       stdio: "inherit",
@@ -72,6 +108,23 @@ function runStep(step) {
       resolve({ id: step.id, name: step.name, ok: code === 0, durationMs: Date.now() - startedAt, exitCode: code });
     });
   });
+}
+
+function checkPublicationPlaceholders() {
+  const { ok, issues } = validatePublicationPlaceholders({ rootDir: ROOT });
+
+  if (ok) {
+    console.log("No publication placeholders found in submission-facing docs.");
+    return { ok: true, details: [] };
+  }
+
+  console.log("Publication placeholders still block final publishing:");
+  for (const issue of issues) {
+    console.log(`  - ${issue}`);
+  }
+  console.log("Use --skip-publication-check only for local-only validation before external links exist.");
+
+  return { ok: false, details: issues };
 }
 
 function formatDuration(ms) {
@@ -87,6 +140,7 @@ async function main() {
   console.log(`Submission final check — ${STEPS.length} step${STEPS.length === 1 ? "" : "s"}`);
   if (SKIP_RELEASE_GATE) console.log("  (release:gate skipped via --skip-release-gate)");
   if (INCLUDE_OLLAMA) console.log("  (release:gate:ollama included via --include-ollama)");
+  if (SKIP_PUBLICATION_CHECK) console.log("  (publication placeholder check skipped via --skip-publication-check)");
 
   const results = [];
   for (const step of STEPS) {
@@ -115,7 +169,7 @@ async function main() {
     return;
   }
 
-  console.log("\n" + "✓  All pre-submit gates passed.");
+  console.log("\n" + `✓  All ${SKIP_PUBLICATION_CHECK ? "local " : ""}pre-submit gates passed.`);
   console.log("   Next: complete the external publish steps in docs/hackathon-submission-checklist.md");
   console.log("   (GitHub public, live demo URL, YouTube video, Kaggle attachments).");
 }

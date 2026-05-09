@@ -95,6 +95,16 @@ describe("ActionButton", () => {
     expect(screen.getByRole("button")).toBeDisabled();
   });
 
+  it("uses disabledReason as a title when unavailable", () => {
+    render(
+      <ActionButton disabled disabledReason="Switch to Teacher to proceed." onClick={() => {}}>
+        Generate
+      </ActionButton>,
+    );
+
+    expect(screen.getByRole("button")).toHaveAttribute("title", "Switch to Teacher to proceed.");
+  });
+
   it("disables button and sets aria-busy when loading", () => {
     render(
       <ActionButton loading onClick={() => {}}>

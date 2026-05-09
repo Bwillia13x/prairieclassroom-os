@@ -157,6 +157,46 @@
   text-transform: uppercase;
 }
 
+.week-operational-preview {
+  padding: 0;
+  border-color: var(--week-rule-soft);
+  border-radius: 6px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-brand-green) 5%, transparent), transparent 54%),
+    var(--color-surface);
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--color-brand-highlight) 4%, transparent),
+    0 16px 38px -34px color-mix(in srgb, var(--color-brand-highlight) 44%, transparent);
+}
+
+.week-operational-preview::before {
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--week-rule) 44%, transparent), transparent);
+}
+
+.week-operational-preview .operational-preview__body {
+  grid-template-columns: minmax(0, 0.85fr) minmax(16rem, 0.85fr) minmax(15rem, 0.78fr);
+  gap: 0;
+}
+
+.week-operational-preview .operational-preview__group {
+  padding: var(--space-4);
+  border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
+}
+
+.week-operational-preview .operational-preview__group:first-child {
+  border-left: 0;
+}
+
+.week-panel .section-marker {
+  padding-top: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-color: color-mix(in srgb, var(--color-border) 42%, transparent);
+}
+
+.week-panel .section-marker__subtitle {
+  max-width: 72ch;
+}
+
 .week-operations-board,
 .week-panel__section {
   position: relative;
@@ -812,6 +852,20 @@
 
   .week-command-instrument__tile--lead {
     grid-column: 1 / -1;
+  }
+
+  .week-operational-preview .operational-preview__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .week-operational-preview .operational-preview__group {
+    padding: var(--space-3);
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 34%, transparent);
+    border-left: 0;
+  }
+
+  .week-operational-preview .operational-preview__group:first-child {
+    border-top: 0;
   }
 
   .week-operations-board__header,

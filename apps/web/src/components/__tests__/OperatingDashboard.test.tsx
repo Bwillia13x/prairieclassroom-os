@@ -158,7 +158,7 @@ describe("OperatingDashboard", () => {
 
     await user.click(screen.getByRole("button", { name: /Transition risk 10:00 Math/i }));
     expect(onOpenContext).toHaveBeenCalledWith(expect.objectContaining({ type: "transition-risk" }));
-  });
+  }, 15_000);
 
   it("renders the premium summary bands and opens debt context", async () => {
     const user = userEvent.setup();

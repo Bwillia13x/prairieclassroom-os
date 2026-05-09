@@ -55,6 +55,20 @@ function tableExists(db: Database.Database, name: string): boolean {
   return !!row;
 }
 
+const MAX_WORKFLOW_STEPS_IN_REPORT = 8;
+
+function markdownCell(value: string): string {
+  return value.replace(/\|/g, "\\|").replace(/\s+/g, " ").trim();
+}
+
+function formatWorkflow(panels: string[]): string {
+  const visible = panels.slice(0, MAX_WORKFLOW_STEPS_IN_REPORT);
+  const suffix = panels.length > visible.length
+    ? ` -> ... (+${panels.length - visible.length} more)`
+    : "";
+  return `${visible.join(" -> ")}${suffix}`;
+}
+
 // ---------------------------------------------------------------------------
 // Feedback summary
 // ---------------------------------------------------------------------------
@@ -180,10 +194,14 @@ function generateSessionPatterns(): string {
 
   lines.push(`**Total sessions:** ${allRows.length}`);
   lines.push(``);
+  lines.push(
+    `Evidence note: these records come from local QA, demo, and validation runs unless a linked pilot-session artifact says otherwise. Use this report to verify instrumentation and workflow coverage, not to claim teacher adoption or classroom outcomes.`,
+  );
+  lines.push(``);
 
   // Duration stats
   const durations: number[] = [];
-  const flowCounts = new Map<string, number>();
+  const flowCounts = new Map<string, { count: number; totalSteps: number; maxSteps: number }>();
 
   for (const row of allRows) {
     const start = new Date(row.started_at).getTime();
@@ -195,8 +213,12 @@ function generateSessionPatterns(): string {
     try {
       const panels: string[] = JSON.parse(row.panels_visited);
       if (panels.length >= 2) {
-        const key = panels.join(" -> ");
-        flowCounts.set(key, (flowCounts.get(key) || 0) + 1);
+        const key = formatWorkflow(panels);
+        const entry = flowCounts.get(key) || { count: 0, totalSteps: 0, maxSteps: 0 };
+        entry.count++;
+        entry.totalSteps += panels.length;
+        entry.maxSteps = Math.max(entry.maxSteps, panels.length);
+        flowCounts.set(key, entry);
       }
     } catch { /* skip malformed */ }
   }
@@ -215,16 +237,17 @@ function generateSessionPatterns(): string {
 
   // Common flows
   const topFlows = Array.from(flowCounts.entries())
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => b[1].count - a[1].count)
     .slice(0, 10);
 
   if (topFlows.length > 0) {
     lines.push(`## Common Workflows`);
     lines.push(``);
-    lines.push(`| Flow | Count |`);
-    lines.push(`|------|-------|`);
-    for (const [flow, count] of topFlows) {
-      lines.push(`| ${flow} | ${count} |`);
+    lines.push(`| Flow | Sessions | Avg steps | Max steps |`);
+    lines.push(`|------|----------|-----------|-----------|`);
+    for (const [flow, stats] of topFlows) {
+      const avgSteps = stats.totalSteps / stats.count;
+      lines.push(`| ${markdownCell(flow)} | ${stats.count} | ${avgSteps.toFixed(1)} | ${stats.maxSteps} |`);
     }
     lines.push(``);
   }

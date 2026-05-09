@@ -94,7 +94,10 @@ DEFAULT_GEMINI_HTTP_TIMEOUT_MS_BY_TIER = {
 class GenerationRequest:
     """A single generation request to the harness."""
     prompt: str
-    images: list[str] = field(default_factory=list)  # file paths
+    # Internal/local file paths. These are never accepted from the HTTP API.
+    images: list[str] = field(default_factory=list)
+    # Provider-ready image bytes accepted by the HTTP API.
+    image_payloads: list[dict[str, str]] = field(default_factory=list)
     thinking: bool = False
     tools: list[dict[str, Any]] | None = None
     tool_interactions: list[dict[str, Any]] | None = None
@@ -1365,10 +1368,22 @@ def _mock_family_message_fixture(request: GenerationRequest) -> MockFixture:
 
 
 def _mock_intervention_fixture(request: GenerationRequest) -> MockFixture:
+    context = request.mock_context or {}
     classroom_id = _mock_classroom_id(request)
     student_refs = _mock_student_refs(request)
     defaults = MOCK_CLASSROOM_DEFAULTS[classroom_id]
     student_ref = student_refs[0] if student_refs else defaults["default_student_ref"]
+    teacher_note = str(context.get("teacher_note") or "").strip()
+    note_context = str(context.get("context") or "").lower()
+    follow_up_needed = "follow-up needed: no" not in note_context
+
+    if teacher_note:
+        return MockFixture(text=json.dumps({
+            "observation": teacher_note,
+            "action_taken": "Saved the teacher's documented support action for classroom follow-up.",
+            "follow_up_needed": follow_up_needed,
+        }))
+
     return MockFixture(text=json.dumps({
         "observation": f"{student_ref} needed extra support to start the writing task and hesitated when looking at the blank page.",
         "action_taken": f"Used a quick verbal check-in and scaffold supports with {student_ref}, then modelled the first step before releasing to independent work.",
@@ -1504,7 +1519,7 @@ class MockBackend:
                     thinking_text=fixture.thinking_text,
                     model_id="mock",
                 )
-        if request.images:
+        if request.images or request.image_payloads:
             return GenerationResponse(
                 text=MOCK_RESPONSES["image_text"], model_id="mock"
             )
@@ -1789,9 +1804,29 @@ class GeminiAPIBackend:
         mime_type, _ = mimetypes.guess_type(file_path)
         return mime_type or "image/png"
 
+    @staticmethod
+    def _inline_image_payloads(request: GenerationRequest) -> list[dict[str, str]]:
+        payloads: list[dict[str, str]] = []
+        for payload in request.image_payloads:
+            mime_type = str(payload.get("mime_type") or "image/png")
+            data_base64 = str(payload.get("data_base64") or "")
+            if data_base64:
+                payloads.append({"mime_type": mime_type, "data_base64": data_base64})
+        return payloads
+
     def _build_contents(self, request: GenerationRequest) -> list[dict[str, Any]]:
         _system_instruction, user_text = self._split_prompt(request.prompt)
         parts: list[dict[str, Any]] = []
+
+        for payload in self._inline_image_payloads(request):
+            parts.append(
+                {
+                    "inline_data": {
+                        "mime_type": payload["mime_type"],
+                        "data": payload["data_base64"],
+                    }
+                }
+            )
 
         for img_path in request.images:
             try:
@@ -1828,6 +1863,10 @@ class GeminiAPIBackend:
         # at its source. extract_json() in the harness still defends against
         # legacy markdown-fenced replies from older Gemma builds.
         config["response_mime_type"] = "application/json"
+        if request.thinking:
+            # Gemma 4 hosted through the Gemini API exposes thinking as a
+            # strict on/off control; "high" is the documented way to enable it.
+            config["thinking_config"] = {"thinking_level": "high"}
         declarations = gemini_function_declarations(request.tools)
         if declarations:
             config["tools"] = [{"function_declarations": declarations}]
@@ -2209,6 +2248,16 @@ class VertexAIBackend:
         mime_type, _ = mimetypes.guess_type(file_path)
         return mime_type or "image/png"
 
+    @staticmethod
+    def _inline_image_payloads(request: GenerationRequest) -> list[dict[str, str]]:
+        payloads: list[dict[str, str]] = []
+        for payload in request.image_payloads:
+            mime_type = str(payload.get("mime_type") or "image/png")
+            data_base64 = str(payload.get("data_base64") or "")
+            if data_base64:
+                payloads.append({"mime_type": mime_type, "data_base64": data_base64})
+        return payloads
+
     def _build_chat_messages(self, request: GenerationRequest) -> list[dict[str, Any]]:
         system_instruction, user_text = self._split_prompt(request.prompt)
         messages: list[dict[str, Any]] = []
@@ -2222,6 +2271,14 @@ class VertexAIBackend:
             )
 
         user_content: list[dict[str, Any]] = []
+        for payload in self._inline_image_payloads(request):
+            user_content.append(
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:{payload['mime_type']};base64,{payload['data_base64']}"},
+                }
+            )
+
         for img_path in request.images:
             try:
                 with open(img_path, "rb") as handle:

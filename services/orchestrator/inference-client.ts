@@ -42,8 +42,13 @@ interface InferenceOptions {
   };
   maxTokens: number;
   mockContext?: Record<string, unknown>;
-  images?: string[];
+  imagePayloads?: ImagePayload[];
   safetyScanSource?: unknown;
+}
+
+interface ImagePayload {
+  mime_type: string;
+  data_base64: string;
 }
 
 export interface InferenceResult {
@@ -144,6 +149,11 @@ function isRetryableErrorBody(text: string): boolean {
     "internal error encountered",
     "500 internal",
     "temporarily unavailable",
+    "503 unavailable",
+    "status': 'unavailable'",
+    "\"status\": \"unavailable\"",
+    "high demand",
+    "please try again later",
     // Upstream Gemini API 504s wrapped by the inference service as 502 bodies.
     // Observed 2026-04-25: ea-001-schema returned 504 at 97.7s while the local
     // budget is 130s. With MAX_RETRIES=2 and 500ms→1000ms backoff, the second
@@ -151,6 +161,26 @@ function isRetryableErrorBody(text: string): boolean {
     "deadline_exceeded",
     "deadline exceeded",
   ].some((token) => normalized.includes(token));
+}
+
+function embeddedProviderError(text: string): string | null {
+  const trimmed = text.trim();
+  if (!trimmed.startsWith("{")) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(trimmed) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return null;
+    }
+    const payload = parsed as Record<string, unknown>;
+    return typeof payload.error === "string" && payload.error.trim()
+      ? payload.error
+      : null;
+  } catch {
+    return null;
+  }
 }
 
 function isAbortError(error: unknown): boolean {
@@ -211,10 +241,22 @@ function appendToolResultsToPrompt(basePrompt: string, records: ToolCallRecord[]
   ].join("\n");
 }
 
+function inferenceHeaders(extra?: Record<string, string>): HeadersInit {
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(extra ?? {}),
+  };
+  const token = process.env.PRAIRIE_INFERENCE_AUTH_TOKEN?.trim();
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 function requestBodyForGeneration(options: {
   route: RouteConfig;
   prompt: string;
-  images?: string[];
+  imagePayloads?: ImagePayload[];
   thinkingEnabled: boolean;
   maxTokens: number;
   mockContext: Record<string, unknown>;
@@ -223,7 +265,7 @@ function requestBodyForGeneration(options: {
 }): string {
   const body: Record<string, unknown> = {
     prompt: options.prompt,
-    images: options.images,
+    image_payloads: options.imagePayloads,
     model_tier: options.route.model_tier,
     thinking: options.thinkingEnabled,
     prompt_class: options.route.prompt_class,
@@ -251,7 +293,7 @@ async function performGenerationCall(options: {
   deps: RouteDeps;
   route: RouteConfig;
   prompt: string;
-  images?: string[];
+  imagePayloads?: ImagePayload[];
   thinkingEnabled: boolean;
   maxTokens: number;
   mockContext: Record<string, unknown>;
@@ -276,11 +318,11 @@ async function performGenerationCall(options: {
     try {
       const response = await fetch(`${options.deps.inferenceUrl}/generate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: inferenceHeaders(),
         body: requestBodyForGeneration({
           route: options.route,
           prompt: options.prompt,
-          images: options.images,
+          imagePayloads: options.imagePayloads,
           thinkingEnabled: options.thinkingEnabled,
           maxTokens: options.maxTokens,
           mockContext: options.mockContext,
@@ -337,6 +379,25 @@ async function performGenerationCall(options: {
           detail_code: "inference_response_missing_text",
         }, {
           raw_output: rawBody,
+        });
+      }
+
+      const providerError = embeddedProviderError(parsed.text);
+      if (providerError) {
+        const retryable = isRetryableErrorBody(providerError);
+        if (retryable && attempt < MAX_RETRIES) {
+          attempt += 1;
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          await new Promise((resolve) => setTimeout(resolve, backoffMs));
+          continue;
+        }
+        throw new RouteError(502, {
+          error: `Inference service error: ${providerError}`,
+          category: "inference",
+          retryable,
+          detail_code: retryable ? "inference_service_retryable" : "inference_service_error",
+        }, {
+          raw_output: parsed.text,
         });
       }
 
@@ -503,7 +564,7 @@ async function performGenerationStreamCall(options: {
   deps: RouteDeps;
   route: RouteConfig;
   prompt: string;
-  images?: string[];
+  imagePayloads?: ImagePayload[];
   thinkingEnabled: boolean;
   maxTokens: number;
   mockContext: Record<string, unknown>;
@@ -530,11 +591,11 @@ async function performGenerationStreamCall(options: {
     try {
       const response = await fetch(`${options.deps.inferenceUrl}/generate/stream`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "text/event-stream" },
+        headers: inferenceHeaders({ "Accept": "text/event-stream" }),
         body: requestBodyForGeneration({
           route: options.route,
           prompt: options.prompt,
-          images: options.images,
+          imagePayloads: options.imagePayloads,
           thinkingEnabled: options.thinkingEnabled,
           maxTokens: options.maxTokens,
           mockContext: options.mockContext,
@@ -574,6 +635,23 @@ async function performGenerationStreamCall(options: {
           category: "inference",
           retryable: false,
           detail_code: "inference_response_missing_text",
+        });
+      }
+
+      const providerError = embeddedProviderError(parsed.text);
+      if (providerError) {
+        const retryable = isRetryableErrorBody(providerError);
+        if (retryable && attempt < MAX_RETRIES) {
+          attempt += 1;
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          await new Promise((resolve) => setTimeout(resolve, backoffMs));
+          continue;
+        }
+        throw new RouteError(502, {
+          error: `Inference service error: ${providerError}`,
+          category: "inference",
+          retryable,
+          detail_code: retryable ? "inference_service_retryable" : "inference_service_error",
         });
       }
 
@@ -623,6 +701,22 @@ async function performGenerationStreamCall(options: {
   });
 }
 
+const STREAM_FALLBACK_DETAIL_CODES = new Set([
+  "inference_transport_error",
+  "inference_timeout",
+  "inference_stream_missing_body",
+  "inference_stream_incomplete",
+  "inference_service_retryable",
+]);
+
+function shouldFallbackFromStreamError(error: unknown, abortSignal?: AbortSignal): error is RouteError {
+  if (abortSignal?.aborted || !(error instanceof RouteError)) {
+    return false;
+  }
+  return error.category === "inference"
+    && Boolean(error.detailCode && STREAM_FALLBACK_DETAIL_CODES.has(error.detailCode));
+}
+
 export async function callInference(options: InferenceOptions): Promise<InferenceResult> {
   const timeoutMs = readEvalTimeoutOverride(options.req) ?? resolveTimeoutForRoute(options.route);
   const fastMode = readFastModeOverride(options.req);
@@ -666,7 +760,7 @@ export async function callInference(options: InferenceOptions): Promise<Inferenc
       deps: options.deps,
       route: options.route,
       prompt: basePrompt,
-      images: options.images,
+      imagePayloads: options.imagePayloads,
       thinkingEnabled,
       maxTokens: options.maxTokens,
       mockContext,
@@ -791,20 +885,48 @@ export async function callInferenceStream(
   const executedToolCalls: ToolCallRecord[] = [];
 
   for (let toolTurn = 0; toolTurn <= MAX_TOOL_TURNS; toolTurn += 1) {
-    const generation = await performGenerationStreamCall({
-      deps: options.deps,
-      route: options.route,
-      prompt: basePrompt,
-      images: options.images,
-      thinkingEnabled,
-      maxTokens: options.maxTokens,
-      mockContext,
-      timeoutMs,
-      abortSignal: options.abortSignal,
-      tools: definitions,
-      toolInteractions: toolTurn > 0 ? executedToolCalls : undefined,
-      emit,
-    });
+    let generation: GenerationCallResult;
+    try {
+      generation = await performGenerationStreamCall({
+        deps: options.deps,
+        route: options.route,
+        prompt: basePrompt,
+        imagePayloads: options.imagePayloads,
+        thinkingEnabled,
+        maxTokens: options.maxTokens,
+        mockContext,
+        timeoutMs,
+        abortSignal: options.abortSignal,
+        tools: definitions,
+        toolInteractions: toolTurn > 0 ? executedToolCalls : undefined,
+        emit,
+      });
+    } catch (error) {
+      if (!shouldFallbackFromStreamError(error, options.abortSignal)) {
+        throw error;
+      }
+      await emit({
+        type: "thinking",
+        text: "\nStreaming was interrupted; finishing with stable generation...",
+      });
+      const fallback = await performGenerationCall({
+        deps: options.deps,
+        route: options.route,
+        prompt: basePrompt,
+        imagePayloads: options.imagePayloads,
+        thinkingEnabled,
+        maxTokens: options.maxTokens,
+        mockContext,
+        timeoutMs,
+        abortSignal: options.abortSignal,
+        tools: definitions,
+        toolInteractions: toolTurn > 0 ? executedToolCalls : undefined,
+      });
+      generation = {
+        ...fallback,
+        retryCount: fallback.retryCount + 1,
+      };
+    }
 
     const { parsed } = generation;
     totalRetryCount += generation.retryCount;

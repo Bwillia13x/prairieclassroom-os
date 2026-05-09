@@ -7,11 +7,13 @@ vi.mock("../api", async (importOriginal) => {
   return {
     ...actual,
     listClassrooms: vi.fn(),
+    fetchClassroomProfile: vi.fn(),
     fetchTodaySnapshot: vi.fn(),
     fetchClassroomHealth: vi.fn(),
     fetchStudentSummary: vi.fn(),
     fetchInterventionHistoryForStudent: vi.fn(),
     fetchMessageHistoryForStudent: vi.fn(),
+    generateComplexityForecast: vi.fn().mockResolvedValue({}),
   };
 });
 
@@ -29,10 +31,29 @@ vi.mock("../hooks/useSessionContext", () => ({
   }),
 }));
 
+vi.mock("../components/CommandPalette", () => ({
+  default: ({
+    open,
+    entries,
+  }: {
+    open: boolean;
+    entries: Array<{ id: string; label: string }>;
+  }) => open ? (
+    <div role="dialog" aria-label="Command palette">
+      {entries.map((entry) => (
+        <button key={entry.id} type="button">
+          {entry.label}
+        </button>
+      ))}
+    </div>
+  ) : null,
+}));
+
 import App from "../App";
-import { listClassrooms, fetchTodaySnapshot } from "../api";
+import { listClassrooms, fetchClassroomProfile, fetchTodaySnapshot } from "../api";
 
 const mockedListClassrooms = vi.mocked(listClassrooms);
+const mockedFetchClassroomProfile = vi.mocked(fetchClassroomProfile);
 const mockedFetchTodaySnapshot = vi.mocked(fetchTodaySnapshot);
 
 function makeStorageMock(): Storage {
@@ -134,6 +155,7 @@ async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfil
       : (options as RenderShellOptions);
   const profile = opts.profile ?? makeDemoClassroom();
   mockedListClassrooms.mockResolvedValue([profile]);
+  mockedFetchClassroomProfile.mockResolvedValue(profile);
   if (opts.debtCounts) {
     mockedFetchTodaySnapshot.mockResolvedValue({
       debt_register: {
@@ -165,15 +187,22 @@ async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfil
     await act(async () => {
       await Promise.resolve();
     });
+    if ((opts.debtCounts.stale_followup ?? 0) > 0) {
+      await waitFor(() => {
+        expect(screen.getByTestId("shell-nav-group-ops")).toHaveTextContent(
+          String(opts.debtCounts?.stale_followup),
+        );
+      });
+    }
   }
   return utils;
 }
 
 // App-shell tests mount the full 7-page shell + all panels; under parallel
-// load from 170 test files they can exceed the 5s default. Raise the timeout
+// load from 190+ test files they can exceed the 5s default. Raise the timeout
 // so the heaviest multi-click flows (tab drawer, scroll preservation,
 // region scoping) don't flake under CPU contention. Fast in isolation.
-describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
+describe("App shell — classroom pill trigger", { timeout: 60_000 }, () => {
   beforeEach(() => {
     vi.stubGlobal("localStorage", makeStorageMock());
     vi.stubGlobal("sessionStorage", makeStorageMock());
@@ -281,6 +310,11 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
 
   it("feeds Today debt into the command palette for per-student actions", async () => {
     await renderShellWithDemo({
+      profile: makeDemoClassroom({
+        classroom_id: "shell-command-debt-classroom",
+        requires_access_code: false,
+        is_demo: false,
+      }),
       debtCounts: { stale_followup: 1, unapproved_message: 1 },
       debtItems: [
         { category: "stale_followup", student_refs: ["Brody"], age_days: 5 },
@@ -290,8 +324,11 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
 
     fireEvent.click(screen.getByTestId("shell-search-trigger"));
 
-    expect(await screen.findByText("Log follow-up for Brody")).toBeInTheDocument();
-    expect(screen.getByText("Draft family message for Amira")).toBeInTheDocument();
+    const palette = await screen.findByRole("dialog", { name: /command palette/i }, { timeout: 30_000 });
+    expect(
+      await within(palette).findByText("Log follow-up for Brody", undefined, { timeout: 5_000 }),
+    ).toBeInTheDocument();
+    expect(within(palette).getByText("Draft family message for Amira")).toBeInTheDocument();
   });
 
   it("keeps the global Action Atlas out of the page-owned top-level workspaces", async () => {
@@ -400,7 +437,12 @@ describe("App shell — classroom pill trigger", { timeout: 15_000 }, () => {
       expect(window.location.search).toContain("tab=tomorrow");
     });
 
-    fireEvent.click(await screen.findByRole("button", { name: /tomorrow plan has 1 queued item/i }));
+    const queueRegion = await screen.findByRole(
+      "region",
+      { name: /queued tomorrow plan items/i },
+      { timeout: 30_000 },
+    );
+    fireEvent.click(within(queueRegion).getByRole("button", { name: /tomorrow plan has 1 queued item/i }));
     fireEvent.click(screen.getByRole("button", { name: /review all/i }));
 
     await waitFor(() => {

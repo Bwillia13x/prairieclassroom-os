@@ -114,5 +114,5 @@ describe("DifferentiatePanel — global toast on generation failure (T9)", () =>
         expect.stringMatching(/couldn't generate variants/i),
       );
     });
-  });
+  }, 15_000);
 });

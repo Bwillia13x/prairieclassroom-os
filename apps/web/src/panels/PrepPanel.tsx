@@ -6,6 +6,15 @@ import {
   defaultToolForTab,
   type ActiveTool,
 } from "../appReducer";
+import PageHero, {
+  type PageHeroMetricGroup,
+  type PageHeroPulse,
+  type PageHeroStatusRow,
+} from "../components/shared/PageHero";
+import OperationalPreview, {
+  type OperationalPreviewGroup,
+} from "../components/shared/OperationalPreview";
+import SectionMarker from "../components/shared/SectionMarker";
 import DifferentiatePanel from "./DifferentiatePanel";
 import LanguageToolsPanel from "./LanguageToolsPanel";
 import "../styles/page-tool-switcher.css";
@@ -31,7 +40,25 @@ const PREP_TOOL_TITLE: Partial<Record<ActiveTool, string>> = {
   "language-tools": "Prepare language supports",
 };
 
-function derivePulse(ealCount: number, languageCount: number) {
+const LANGUAGE_LABELS: Record<string, string> = {
+  ar: "Arabic",
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  ko: "Korean",
+  pa: "Punjabi",
+  so: "Somali",
+  tl: "Tagalog",
+  ur: "Urdu",
+  vi: "Vietnamese",
+  zh: "Mandarin",
+};
+
+function displayLanguage(language: string): string {
+  return LANGUAGE_LABELS[language.toLowerCase()] ?? language;
+}
+
+function derivePulse(ealCount: number, languageCount: number): PageHeroPulse {
   if (ealCount > 6) {
     return {
       tone: "warning",
@@ -63,48 +90,106 @@ export default function PrepPanel() {
     () => (activeTool && PREP_TOOLS.includes(activeTool) ? activeTool : defaultToolForTab("prep") ?? "differentiate"),
     [activeTool],
   );
-  const ealCount = profile?.students.filter((student) => student.eal_flag).length ?? 0;
-  const languageCount = new Set(
-    (profile?.students ?? []).map((student) => student.family_language).filter(Boolean),
-  ).size;
+  const students = profile?.students ?? [];
+  const ealCount = students.filter((student) => student.eal_flag).length;
+  const languageEntries = Array.from(new Set(
+    students
+      .map((student) => student.family_language?.trim())
+      .filter((language): language is string => Boolean(language)),
+  ));
+  const languageCount = languageEntries.length;
 
   const pulse = derivePulse(ealCount, languageCount);
   const activeTitle = PREP_TOOL_TITLE[currentTool] ?? TOOL_META[currentTool]?.label ?? "Active workspace";
+  const prepMetricGroups: PageHeroMetricGroup[] = [
+    {
+      label: "Roster",
+      metrics: [
+        { value: students.length || "—", label: "Students" },
+        {
+          value: ealCount || "—",
+          label: "EAL",
+          tone: ealCount > 6 ? "warning" : undefined,
+        },
+      ],
+    },
+    {
+      label: "Language",
+      metrics: [
+        { value: languageCount || "—", label: "Languages" },
+        {
+          value: currentTool === "differentiate" ? "Variants" : "Language",
+          label: "Mode",
+        },
+      ],
+    },
+  ];
+  const prepStatusRows: PageHeroStatusRow[] = [
+    { label: "Active tool", value: TOOL_META[currentTool]?.label ?? "—" },
+  ];
+  const prepPreviewGroups: OperationalPreviewGroup[] = [
+    {
+      eyebrow: "Artifact readiness",
+      evidence: [
+        { label: "Input lane", meta: "upload · paste · web" },
+        { label: "Curriculum", meta: "Alberta program" },
+        { label: "Output", meta: currentTool === "differentiate" ? "variants" : "simplify · vocabulary" },
+      ],
+    },
+    {
+      eyebrow: "Language load",
+      evidence: [
+        { label: "EAL students", meta: String(ealCount) },
+        { label: "Family languages", meta: String(languageCount) },
+      ],
+      chips: languageEntries.slice(0, 6).map((language) => ({
+        label: displayLanguage(language),
+        tone: "watch",
+        title: language,
+      })),
+    },
+    {
+      eyebrow: "Teacher pass",
+      chips: [
+        { label: "Same outcome", tone: "success", meta: "no lowered bar" },
+        { label: "Editable copy", tone: "success", meta: "teacher owned" },
+        { label: "Materials list", tone: "neutral", meta: "ready to stage" },
+      ],
+    },
+  ];
 
   return (
     <section className="workspace-page multi-tool-page prep-page" id="prep-top" data-active-tool={currentTool}>
-      <section
+      <PageHero
         id="prep-command"
-        className="prep-command-strip"
-        aria-label="Prep command, lesson adaptation, and language supports"
-      >
-        <div className="prep-command-strip__copy">
-          <span className="prep-command-strip__eyebrow">Prep command</span>
-          <h1>Prepare the material before it reaches the room.</h1>
-          <p>
+        ariaLabel="Prep command, lesson adaptation, and language supports"
+        eyebrow="Prep command"
+        title="Prepare the material before it reaches the room."
+        description={
+          <>
             Start with artifact, context, and readiness. Keep the canvas visible
             while choosing the prep mode.
-          </p>
-        </div>
-        <dl className="prep-command-strip__metrics" aria-label="Prep readiness">
-          <div>
-            <dt>Students</dt>
-            <dd>{profile?.students.length ?? "—"}</dd>
-          </div>
-          <div>
-            <dt>EAL</dt>
-            <dd>{ealCount || "—"}</dd>
-          </div>
-          <div>
-            <dt>Languages</dt>
-            <dd>{languageCount || "—"}</dd>
-          </div>
-          <div className={`prep-command-strip__pulse prep-command-strip__pulse--${pulse.tone}`}>
-            <dt>{pulse.state}</dt>
-            <dd>{pulse.meta}</dd>
-          </div>
-        </dl>
-      </section>
+          </>
+        }
+        metricGroups={prepMetricGroups}
+        statusRows={prepStatusRows}
+        pulse={pulse}
+        variant="prep"
+        density="utility"
+      />
+
+      <OperationalPreview
+        ariaLabel="Prep operational preview"
+        id="prep-preview"
+        groups={prepPreviewGroups}
+        className="prep-operational-preview"
+      />
+
+      <SectionMarker
+        number="02"
+        title="Prep lane"
+        subtitle="Choose the prep mode, then keep the artifact canvas and output preview in one line of sight."
+      />
 
       <div id="prep-tools" className="page-tool-switcher page-tool-switcher--segmented prep-lane-segment" role="tablist" aria-label="Prep tool">
         {PREP_TOOLS.map((tool) => {

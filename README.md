@@ -13,7 +13,7 @@ The repo ships **12 workflow tools**, **13 model-routed prompt classes**, and **
 ## Why Gemma 4
 
 - **Multimodal:** the `extract_worksheet` route turns a paper artifact into a structured prompt input — base64-encoded into Gemini-API `inline_data` parts or sent through Ollama's vision channel.
-- **Open-weight, local-first:** the same architecture runs on `gemma4:4b` + `gemma4:27b` via Ollama for offline / privacy-preserving deployment to Alberta classrooms.
+- **Open-weight, local-first:** the same architecture is implemented for `gemma4:4b` + `gemma4:27b` via Ollama for offline / privacy-preserving deployment to Alberta classrooms; the current maintenance host still lacks a passing Ollama proof.
 - **Dual-tier with selective thinking:** live tier for fast classroom transformations; planning tier with `thinking: true` only for cross-record synthesis.
 - **Roster-checked function calling:** two bounded local tools (`lookup_curriculum_outcome`, `query_intervention_history`); the intervention-history tool **rejects unknown student aliases** so the model cannot silently confirm a hallucinated student. Tool results round-trip as provider-native `tool_interactions[]`, not prompt injection.
 
@@ -71,6 +71,8 @@ npm run dev -w apps/web
 ```
 
 ### Run with Ollama (privacy-first target — zero cost)
+
+Use a host with enough RAM and disk for both required models. The current maintenance host is documented as blocked in [docs/live-model-proof-status.md](docs/live-model-proof-status.md) and [docs/development-gaps.md](docs/development-gaps.md) G-02.
 
 ```bash
 # Pull Gemma 4 models (one-time)
@@ -155,7 +157,7 @@ http://localhost:5173/?classroom=alpha-grade4&tab=tomorrow
 http://localhost:5173/?tab=tomorrow-plan   # legacy; redirects to tab=tomorrow&tool=tomorrow-plan
 ```
 
-`GET /api/classrooms` now returns non-secret classroom metadata for the shell, including `requires_access_code` and `is_demo`. It never returns the classroom access code itself.
+`GET /api/classrooms` now returns only non-secret classroom selector metadata for the shell, including `requires_access_code` and `is_demo`. Full profile data (notes, roster support tags, schedule, and upcoming events) is fetched from protected classroom-specific endpoints after code auth. It never returns the classroom access code itself.
 
 Protected classrooms now work in the browser UI: the shell prompts for the classroom code, stores it locally in that browser, and retries protected `today`, history, and generation requests automatically. Direct API callers still authenticate with the `X-Classroom-Code` header.
 
@@ -192,10 +194,9 @@ npm run release:gate
 
 If the gate fails because a port is already in use, stop the existing local processes and re-run the command. The gate expects to own `:3200`, `:3100`, and `:5173`.
 
-For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. The checked-in hosted proof is now passing: the curated hosted eval suite passed and the full hosted release gate completed on synthetic/demo data. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present.
-The latest passing hosted artifact is `output/release-gate/2026-04-27T01-26-45-190Z-87424`.
+For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present. The current May 8 hosted refresh failed and did not produce a clean new passing baseline: the latest attempted hosted gate is `output/release-gate/2026-05-08T22-47-12-031Z-43430`. The last passing hosted baseline remains `output/release-gate/2026-05-03T17-59-42-981Z-80702`, where the full hosted release gate completed on synthetic/demo data.
 
-After a future hosted refresh, only one doc needs to change: edit the `Latest passing hosted gate:` line in `docs/hackathon-proof-brief.md`. `npm run proof:check` derives the canonical artifact from that line and verifies every other proof surface references the same value.
+After a future successful hosted refresh, update the `Latest passing hosted gate:` and `Latest attempted hosted gate:` lines in `docs/hackathon-proof-brief.md`. `npm run proof:check` derives the canonical proof artifacts from that file and verifies every proof surface references the same current attempt and last passing baseline.
 
 Before any future hosted rerun, keep the local-only preparation flow separate from live execution:
 
@@ -233,6 +234,8 @@ The no-spend observability and evidence helpers are:
 npm run ops:status
 npm run system:inventory
 npm run system:inventory:check
+npm run eval:inventory
+npm run eval:inventory:check
 npm run memory:admin -- summary --classroom demo-okafor-grade34
 npm run logs:summary
 npm run logs:prune -- --days 14
@@ -243,7 +246,7 @@ npm run eval:summary
 `npm run audit:log` is the access audit query CLI. It reads the orchestrator JSONL request logs and surfaces the governance question "who accessed which classroom record, when, under which role, and was it allowed?". Filters include `--classroom`, `--role`, `--outcome {allowed|denied|demo_bypass|<detail_code>}`, `--from/--to`, and `--only-classroom`. Passing `--artifact` writes a point-in-time audit snapshot (filters, summary, and up to `--limit` matching records) to `output/access-audit/` as pilot evidence.
 
 Request logs are written inside the repo under `output/request-logs/`. Host preflight artifacts land in `output/host-preflight/`. Eval results and failure summaries land in `output/evals/`.
-The generated code-derived surface inventory lives at [docs/system-inventory.md](docs/system-inventory.md), with exact endpoint inventory in [docs/api-surface.md](docs/api-surface.md). Use `npm run system:inventory:check` before updating public proof or operator docs that mention panel counts, prompt-class counts, tier splits, or endpoint tables.
+The generated code-derived surface inventory lives at [docs/system-inventory.md](docs/system-inventory.md), with exact endpoint inventory in [docs/api-surface.md](docs/api-surface.md). The eval corpus inventory is generated at [docs/eval-inventory.md](docs/eval-inventory.md). Use `npm run system:inventory:check` before updating public proof or operator docs that mention panel counts, prompt-class counts, tier splits, or endpoint tables; use `npm run eval:inventory:check` before publishing eval-case counts or category tables.
 Per-classroom memory lifecycle commands are available through `npm run memory:admin -- <summary|export|anonymize|backup|prune|purge|restore> --classroom <id>`. Destructive `prune`, `purge`, and `restore` operations require `--confirm`. `prune` applies the retention policy defined in the classroom profile JSON (or a `--default-days <n>` flag), deletes rows older than the window from every retention-eligible table, and writes a tombstone artifact to `output/memory-admin/` recording the policy source, per-table cutoffs, and rows removed.
 Protected classroom endpoints accept `X-Classroom-Code` plus optional `X-Classroom-Role`. The role defaults to `teacher`; supported values are `teacher`, `ea`, `substitute`, and `reviewer`. Current route scopes are generated in [docs/api-surface.md](docs/api-surface.md).
 
@@ -334,9 +337,9 @@ Flask Inference :3200
 
 ## Evaluation
 
-134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,058 TypeScript / Vitest tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,069 TypeScript / Vitest tests and 69 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
-The hosted Gemma 4 release gate passes 13/13 curated proof cases on synthetic/demo data — including the Punjabi family-message equity case — at `output/release-gate/2026-04-27T01-26-45-190Z-87424` (artifact-backed; see [docs/hackathon-proof-brief.md](docs/hackathon-proof-brief.md) for the full artifact trail).
+The current hosted Gemma 4 refresh did not produce a clean full-gate pass: `output/release-gate/2026-05-08T22-47-12-031Z-43430` failed at the curated hosted eval step after `diff-015-tool-calling-curriculum` passed and a retryable provider `500 INTERNAL` blocked `diff-008-prompt-injection`. The latest completed May 8 hosted eval summary is `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`; provider high-demand block on `fcst-001-demo-schema`), with the refreshed failure summary at `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-failure-summary.json` and cost rollup at `output/cost-rollups/2026-05-08-rollup.json`. The last passing hosted baseline remains `output/release-gate/2026-05-03T17-59-42-981Z-80702`, where the full hosted release gate passed 13/13 curated proof cases on synthetic/demo data with `gemma-4-26b-a4b-it` and `gemma-4-31b-it`. Hosted proof is synthetic/demo only; the privacy-first school deployment path remains local/self-hosted Gemma 4 via Ollama.
 
 ```bash
 # Run evals (requires orchestrator + inference running)

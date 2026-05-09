@@ -3,14 +3,15 @@
 _Generated from `services/orchestrator/server.ts` and `services/orchestrator/routes/*.ts`. Do not edit endpoint rows by hand; run `npm run system:inventory`._
 
 - Mounted Express route bases: 21
-- Exact endpoints: 52
+- Exact endpoints: 53
 
 | Method | Endpoint | Route file | Auth boundary | Role scope |
 |---|---|---|---|---|
 | GET | `/health` | `services/orchestrator/routes/health.ts` | open/demo metadata | none |
 | GET | `/api/health` | `services/orchestrator/routes/health.ts` | open/demo metadata | none |
 | GET | `/api/classrooms` | `services/orchestrator/routes/classrooms.ts` | open/demo metadata | none |
-| GET | `/api/classrooms/:id/schedule` | `services/orchestrator/routes/classrooms.ts` | open/demo metadata | none |
+| GET | `/api/classrooms/:id/profile` | `services/orchestrator/routes/classrooms.ts` | classroom-code | none |
+| GET | `/api/classrooms/:id/schedule` | `services/orchestrator/routes/classrooms.ts` | classroom-code | none |
 | PUT | `/api/classrooms/:id/schedule` | `services/orchestrator/routes/classrooms.ts` | classroom-code | teacher |
 | GET | `/api/curriculum/subjects` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |
 | GET | `/api/curriculum/entries` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |

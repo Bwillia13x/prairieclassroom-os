@@ -17,17 +17,18 @@ The product is still not a student chatbot. It is a classroom operations copilot
 
 ## Current State Of Development
 
-As of 2026-04-27, the practical state of the repo is:
+As of 2026-05-05, the practical state of the repo is:
 
 - `npm run release:gate` passes in mock mode and is the default no-cost structural validation lane.
 - The hosted Gemini hackathon proof lane passes on synthetic/demo data via `npm run release:gate:gemini`.
-- The Ollama privacy-first live-model lane is implemented, but this host is **structurally blocked** for the full dual-speed lane: the 2026-04-12 `host:preflight:ollama` run recorded 8 GiB total RAM and 6.76 GiB free disk, which cannot fit the planning-tier `gemma4:27b` weights regardless of whether Ollama is installed. The `gemma4:4b` live-tier model may still be feasible on this host. See `docs/decision-log.md` (2026-04-12 maintenance host finding) and `docs/development-gaps.md` G-02.
+- The Ollama privacy-first live-model lane is implemented, but this host is **structurally blocked** for the full dual-speed lane: the latest 2026-04-29 `host:preflight:ollama` artifact records an 8.00 GiB Apple M1 host with no Ollama CLI, no required models, 0.09 GiB free RAM, and 8.95 GiB free disk. The full lane still needs a separate host with at least 16 GiB RAM and enough disk for `gemma4:4b` plus `gemma4:27b`. The `gemma4:4b` live-tier model may still be feasible on this host. See `docs/development-gaps.md` G-02 and `docs/pilot/claims-ledger.md`.
 - The paid Vertex lane exists, but it is intentionally gated behind `PRAIRIE_ALLOW_PAID_SERVICES=true` and is not part of the default no-cost proof story.
-- The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 134 eval cases, and broad unit coverage (2,058 vitest + 69 pytest in the latest mock gate) across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
+- The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 134 eval cases, and broad unit coverage (2,069 vitest + 69 pytest in the latest mock gate) across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
 - The web shell exposes a flat seven-view navigation (`classroom / today / tomorrow / week / prep / ops / review`) with URL-backed `tab` + optional `tool` state and a classroom-code prompt that retries protected reads and writes from the UI.
 - Protected classroom APIs now support `X-Classroom-Code` plus optional `X-Classroom-Role`; the role defaults to `teacher`, and generated `docs/api-surface.md` records current teacher-only and teacher/EA scopes.
 - Security hardened: classroomId path traversal validation, rate limiting (global + per-classroom auth), security headers, safe JSON deserialization, atomic schedule writes, prompt injection detection.
 - Documentation current: generated system/API inventory, pilot-readiness gates, memory lifecycle controls, database schema, classroom profiles, and eval inventory.
+- Final submission packaging is guarded by `npm run submission:final-check`, which now fails while public demo, public video, Kaggle writeup, or public repo verification placeholders remain. Use `--skip-publication-check` only for local-only validation before external links exist.
 
 Do not treat this repository like a blank-slate MVP. Treat it like a production-hardened classroom operating system that needs careful incremental changes, regression protection, and documentation hygiene.
 
@@ -78,6 +79,7 @@ Exact endpoint inventory is generated in `docs/api-surface.md`; do not maintain 
 - `GET /api/today/:classroomId`
 - `GET /api/debt-register/:classroomId`
 - `GET /api/classrooms`
+- `GET /api/classrooms/:id/profile`
 - `GET /api/classrooms/:id/schedule`
 - `PUT /api/classrooms/:id/schedule`
 - `GET /api/classrooms/:id/health`
@@ -268,6 +270,7 @@ When you change:
 - runtime commands or setup: update `README.md` and `docs/release-checklist.md`
 - proof-lane behavior or artifacts: update `docs/eval-baseline.md`, `docs/hackathon-hosted-operations.md`, and related proof docs
 - route inventory or prompt routing: update `docs/prompt-contracts.md`, then run `npm run system:inventory` so `docs/system-inventory.md` and `docs/api-surface.md` stay generated from code
+- eval case changes: run `npm run eval:inventory` so `docs/eval-inventory.md` stays generated from `evals/cases/*.json`
 - classroom memory lifecycle behavior: update `docs/database-schema.md`, `docs/pilot-readiness.md`, and `docs/safety-governance.md`
 - color tokens, dark-mode switching, or contrast contracts: update `docs/dark-mode-contract.md`, then run `npm run check:contrast`
 - major product behavior: update `docs/spec.md`, `docs/architecture.md`, or `docs/decision-log.md` as appropriate
@@ -285,6 +288,7 @@ No meaningful change is done until you run the checks that fit the change:
 - end-to-end behavior or release hardening: `npm run release:gate`
 - hosted proof maintenance: `npm run proof:check`, `npm run gemini:readycheck`, then `npm run release:gate:gemini`
 - canonical surface or proof-claim updates: `npm run system:inventory:check`
+- eval corpus updates: `npm run eval:inventory:check`
 - classroom memory lifecycle changes: `npm run memory:admin -- summary --classroom demo-okafor-grade34`
 - color token or dark-mode contrast changes: `npm run check:contrast`
 - evidence portfolio refresh: `npm run evidence:generate`
@@ -296,6 +300,7 @@ Prefer the cheapest validation that actually covers the risk, but do not skip th
 - Classroom-code auth is enforced server-side with `X-Classroom-Code` on protected routes.
 - Adult API scopes are enforced server-side with optional `X-Classroom-Role`; invalid roles return `classroom_role_invalid`, and disallowed roles return `classroom_role_forbidden`.
 - `GET /api/classrooms` exposes only non-secret protection metadata such as `requires_access_code` and `is_demo`.
+- Full classroom profile and schedule reads are behind classroom-code auth via `GET /api/classrooms/:id/profile` and `GET /api/classrooms/:id/schedule`.
 - Demo classroom bypasses auth.
 - Some classrooms are open if they do not define an `access_code`.
 - The UI now prompts for protected classroom codes and retries protected `today`, history, and generation requests after the code is entered.

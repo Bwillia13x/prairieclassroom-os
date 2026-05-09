@@ -6,16 +6,23 @@ The submission window is owned by [plans/2026-05-18-submission-plan.md](./plans/
 
 ## Current status
 
-Checked against the repo on 2026-04-30, refreshed for submission-delta closure.
+Checked against the repo on 2026-05-08, refreshed for Gemma hosted-proof closure.
 
-- Mock structural gate: passing at `output/release-gate/2026-04-30T23-55-13-933Z-61434`
-- Hosted Gemma 4 proof lane: passing on synthetic/demo data at `output/release-gate/2026-04-27T01-26-45-190Z-87424`
+- Mock structural gate: passing at `output/release-gate/2026-05-05T20-58-48-474Z-5247`
+- Hosted Gemma 4 proof lane: current May 8 hosted refresh failed and no current clean full hosted gate was produced. Latest attempted hosted gate: `output/release-gate/2026-05-08T22-47-12-031Z-43430`.
+- Hosted Gemma 4 last passing baseline: passing on synthetic/demo data at `output/release-gate/2026-05-03T17-59-42-981Z-80702`.
+- Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`; provider high-demand block on `fcst-001-demo-schema`).
+- Latest completed May 8 hosted eval failure summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-failure-summary.json`
+- Latest May 8 cost rollup: `output/cost-rollups/2026-05-08-rollup.json`
+- Hosted models: `gemma-4-26b-a4b-it` and `gemma-4-31b-it`; full hosted rerun command is `npm run release:gate:gemini`.
 - Ollama proof on this machine: **not proven; deferred until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available** (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D)
 - Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,412 (within 1,500-word limit)
 - Kaggle paste block: synced to writeup
+- Submission copy pack: [submission-copy-pack.md](./submission-copy-pack.md) now carries pre-publish placeholder and claim guardrails for video, Kaggle, repository, and media-gallery fields.
 - Public-video script: rewritten 2026-04-26 to lead with multimodal hero shot + teacher quote + offline-Ollama shot (gated)
 - Judge/demo URL: `?demo=true` skips first-run onboarding and role-selection modals for the demo classroom
 - Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
+- Local release-ready memo: [evidence/2026-05-05-local-release-ready-memo.md](./evidence/2026-05-05-local-release-ready-memo.md) records the current artifact map and the external lane that is still incomplete.
 - Strategic posture: lead with multimodal magic + teacher voice; treat offline-Ollama as the third WOW lever, capturable the moment a viable host arrives
 - Live demo deploy: NOT YET DEPLOYED — frontend config exists at `apps/web/vercel.json`; backend target is selected as Render free via `render.yaml`; external service creation, secret entry, and cellular smoke are still pending.
 
@@ -24,28 +31,28 @@ Checked against the repo on 2026-04-30, refreshed for submission-delta closure.
 - Trimmed the Kaggle writeup to fit the competition word limit and aligned it to the current proof story.
 - Updated the public-video shot list so it no longer claims unproven Ollama/local behavior on this host.
 - Preserved one consistent story across the writeup, proof brief, README, and proof-status docs:
-  - hosted Gemma 4 is the submission proof lane
+  - hosted Gemma 4 remains synthetic/demo-only proof evidence, but the current hosted refresh is blocked rather than a new passing baseline
   - Ollama is the intended privacy-first deployment path
 - Kept the current proof references anchored to checked-in artifacts.
-- Refreshed the hosted Gemini proof references to the latest passing artifact set and added a judge-facing short summary.
+- Refreshed the hosted Gemini proof references to separate the latest attempted hosted gate from the last passing baseline and added a judge-facing short summary.
 - Added a safe dry-run-first artifact pruning script for reclaiming local disk from old generated outputs.
 - Added roster-scoped memory filtering and reset the demo SQLite memory so stale local test records cannot leak into retrieval citations.
-- Refreshed UI evidence screenshots on 2026-04-20.
+- Refreshed the current shell and workflow evidence bundle on 2026-05-03 with `npm run ui:evidence`.
 - Added a judge-safe `?demo=true` first-run path that skips onboarding and role-selection modals for the demo classroom.
 - Split the Vite production bundle into React, panel, and visualization chunks so the current web build no longer emits the large-entry-chunk warning.
 - Added [public demo operations](./public-demo-operations.md) with the deployment shape and judge-safe smoke checklist.
 - Added `render.yaml` and `services/inference/requirements-gemini.txt` so the selected no-spend public-demo backend path is concrete without installing local/torch dependencies on the hosted Gemma service.
-- Added Render private-network inference wiring through `INFERENCE_HOSTPORT`, while retaining `INFERENCE_URL` as the local/manual override.
+- Added Render service wiring through `INFERENCE_HOSTPORT`, while retaining `INFERENCE_URL` as the local/manual override. The orchestrator and hosted inference service share `PRAIRIE_INFERENCE_AUTH_TOKEN` so `/generate` is not callable anonymously.
 
 ## Existing media candidates
 
-Use the current UI evidence bundle for cover-image and gallery selection:
+Use the May 3 final visual audit plus the refreshed standard workflow evidence bundle for cover-image and gallery selection:
 
-- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/today-desktop.png`
-- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/differentiate-desktop.png`
-- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/tomorrow-plan-desktop.png`
-- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/family-message-desktop.png`
-- `output/playwright/ui-evidence/2026-04-20T18-16-58-840Z/shell-mobile.png`
+- `output/final-visual-audit-2026-05-03/desktop-1440-today-final-polish-v2.png`
+- `output/playwright/ui-evidence/2026-05-03T22-25-59-189Z/differentiate-desktop.png`
+- `output/final-ui-polish-2026-05-03/final-active-tomorrow-plan.png`
+- `output/playwright/ui-evidence/2026-05-03T22-25-59-189Z/family-message-desktop.png`
+- `output/final-visual-audit-2026-05-03/final-polish-pass/today-mobile.png`
 
 Current local video candidate:
 
@@ -61,7 +68,7 @@ These are required for an actual competition submission but cannot be completed 
 1. Send 3 teacher recruitment messages (target: 1 K-6 teacher, 1 EA, 1 retired teacher / consultant; $100 honorarium; 60-90 minute session).
 2. Print a real Grade 3/4 fractions worksheet for the multimodal hero shot.
 3. Identify a host with ≥16 GiB RAM and ≥40 GiB free disk for the eventual Ollama lane (borrow or order refurb Mac Mini).
-4. Create the external Render blueprint services from `render.yaml`, set `CORS_ORIGIN` and `PRAIRIE_GEMINI_API_KEY` as hosting secrets, then link Vercel production `VITE_API_URL` to the Render orchestrator. The orchestrator receives Render's private `INFERENCE_HOSTPORT` reference from the inference service.
+4. Create the external Render blueprint services from `render.yaml`, set `CORS_ORIGIN`, `PRAIRIE_GEMINI_API_KEY`, and `PRAIRIE_CLASSROOM_ACCESS_CODES_JSON` as hosting secrets, then link Vercel production `VITE_API_URL` to the Render orchestrator. The orchestrator receives Render's `INFERENCE_HOSTPORT` reference and shares `PRAIRIE_INFERENCE_AUTH_TOKEN` with the inference service.
 
 **Phase C — teacher session (target window 2026-05-04 → 2026-05-10):**
 
@@ -121,13 +128,28 @@ Do not claim any of the following unless new artifacts exist:
 
 ## Final pre-submit checks
 
-Run these from the repo root before publishing the final links:
+Run the chained final gate from the repo root before publishing the final links:
+
+```bash
+nvm use
+npm run submission:final-check
+```
+
+This command now fails if submission-facing docs still contain public-link placeholders (live demo, video, Kaggle writeup, or public clone-test text). For local-only validation before external links exist, use:
+
+```bash
+npm run submission:final-check -- --skip-publication-check
+```
+
+Equivalent manual checks:
 
 ```bash
 nvm use
 npm run claims:check
 npm run proof:check
 npm run system:inventory:check
+npm run eval:inventory:check
+npm run demo:fixture:check
 npm run check:contrast
 npm run release:gate
 ```

@@ -12,8 +12,10 @@ import EmptyStateCard from "../components/EmptyStateCard";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
 import RetrievalTraceCard from "../components/RetrievalTraceCard";
+import RoleReadOnlyBanner from "../components/RoleReadOnlyBanner";
 import { ActionButton, FeedbackCollector, FormCard, OutputActionBar, type OutputAction } from "../components/shared";
 import { useFeedback } from "../hooks/useFeedback";
+import { roleDisabledReason, useRole } from "../hooks/useRole";
 import { useCopyToClipboard } from "../hooks/useCopyToClipboard";
 import { useDownloadBlob } from "../hooks/useDownloadBlob";
 import { useStreamingRequest } from "../hooks/useStreamingRequest";
@@ -33,6 +35,10 @@ export default function SurvivalPacketPanel() {
   const feedback = useFeedback(activeClassroom, session.sessionId);
   const { copy } = useCopyToClipboard();
   const { download } = useDownloadBlob();
+  const role = useRole();
+  const generateDisabledReason = role.canGenerate
+    ? undefined
+    : roleDisabledReason(role.role, "canGenerate") ?? "Substitute packet generation is not available for the active role.";
 
   const actions = useMemo<OutputAction[]>(() => {
     if (!result) return [];
@@ -82,6 +88,8 @@ export default function SurvivalPacketPanel() {
   if (classrooms.length === 0) return null;
 
   async function handleSubmit() {
+    if (!activeClassroom || !role.canGenerate) return;
+
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     const targetDate = tomorrow.toISOString().split("T")[0];
@@ -100,6 +108,11 @@ export default function SurvivalPacketPanel() {
 
   return (
     <section className="workspace-page">
+      <RoleReadOnlyBanner
+        role={role}
+        required="canGenerate"
+        whatIsBlocked="Generating a substitute packet is reserved for the classroom's permanent teacher."
+      />
       <WorkspaceLayout
         className="workspace-layout--ops-workflow"
         surface="ops-sub-packet"
@@ -114,7 +127,8 @@ export default function SurvivalPacketPanel() {
               <ActionButton
                 variant="primary"
                 loading={loading}
-                disabled={!activeClassroom}
+                disabled={!activeClassroom || !role.canGenerate}
+                disabledReason={generateDisabledReason}
                 onClick={handleSubmit}
                 data-testid="generate-survival-packet-submit"
               >

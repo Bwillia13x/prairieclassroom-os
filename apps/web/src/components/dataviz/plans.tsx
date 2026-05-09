@@ -161,13 +161,12 @@ function computePlanTier(ratios: Record<PlanRadarSection, number>): PlanTierResu
 export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
   const { onSegmentClick, sectionItems, ...countProps } = props;
 
-  // Geometry — bumped from 160 to 240 to give labels real breathing
-  // room and the center readout room to feel heroic. Axis labels live
-  // OUTSIDE the SVG (HTML), so the chart radius can use the full size.
-  const size = 240;
+  // Geometry — sized for the Plan Compass card. The SVG owns the
+  // measurement field; HTML labels sit on a lighter halo around it.
+  const size = 360;
   const cx = size / 2;
   const cy = size / 2;
-  const maxR = size / 2 - 36; // leaves room for value dots + edge label tier marks
+  const maxR = size / 2 - 26; // leaves room for value dots + scale marks
   const n = PLAN_RADAR_AXES.length;
   const step = (Math.PI * 2) / n;
 
@@ -219,13 +218,15 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
       ? `Plan coverage radar; dominant dimension: ${featuredAxisData.axis.label}`
       : "Plan coverage radar";
 
-  // Three tier rings at 33% / 66% / 100% — drawn as dotted hairlines
-  // so the chart background reads as a measured field, not a heavy
-  // grid. Tick labels (1 / 2 / 3) sit on the north spoke for legibility.
+  // Four tier rings at 25% / 50% / 75% / 100% — drawn as dotted
+  // hairlines so the chart background reads as a measured field, not
+  // a heavy grid. Scale labels sit just right of the north spoke so
+  // they avoid both the Watch dot and the perimeter chips.
   const tiers: { ratio: number; mark: string }[] = [
-    { ratio: 0.33, mark: "1" },
-    { ratio: 0.66, mark: "2" },
-    { ratio: 1, mark: "3" },
+    { ratio: 0.25, mark: "25" },
+    { ratio: 0.5, mark: "50" },
+    { ratio: 0.75, mark: "75" },
+    { ratio: 1, mark: "" },
   ];
 
   return (
@@ -262,24 +263,24 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
               r={maxR * ratio}
               fill="none"
               stroke="var(--color-border)"
-              strokeWidth="0.6"
+              strokeWidth="0.8"
               strokeDasharray="1.5 3"
-              opacity="0.7"
+              opacity="0.82"
             />
           ))}
 
-          {/* Tier marks — small numeric ticks on the north spoke */}
-          {tiers.map(({ ratio, mark }) => {
-            const [x, y] = polarXY(0, ratio);
+          {/* Tier marks — right-edge scale labels, kept clear of the polygon */}
+          {tiers.filter(({ mark }) => mark).map(({ ratio, mark }) => {
             return (
               <text
                 key={`tier-${ratio}`}
-                x={x + 6}
-                y={y + 1}
-                fontSize="7"
+                x={cx + 26}
+                y={cy - maxR * ratio + 1}
+                className="viz-plan-radar__ring-label"
+                fontSize="9"
                 fill="var(--color-text-tertiary)"
                 fontFamily="var(--font-mono)"
-                opacity="0.7"
+                opacity="0.62"
                 dominantBaseline="middle">
                 {mark}
               </text>
@@ -297,8 +298,8 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
                 x2={x}
                 y2={y}
                 stroke="var(--color-border)"
-                strokeWidth="0.5"
-                opacity="0.35"
+                strokeWidth="0.65"
+                opacity="0.45"
               />
             );
           })}
@@ -317,7 +318,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
               x2={px}
               y2={py}
               stroke={axis.toneVar}
-              strokeWidth="1.5"
+              strokeWidth="2"
               strokeLinecap="round"
               opacity="0.85"
               className="viz-plan-radar__ribbon"
@@ -340,13 +341,15 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
           <path
             d={shapePath}
             className="viz-plan-radar__shape"
-            fill="var(--color-accent)"
-            fillOpacity="0.12"
+            fill="var(--color-section-ea)"
+            fillOpacity="0.17"
             stroke="var(--color-text)"
-            strokeWidth="1.25"
+            strokeWidth="2"
             strokeLinejoin="round"
             opacity="0.9"
           />
+
+          <circle cx={cx} cy={cy} r="2.5" fill="var(--color-text)" opacity="0.36" />
 
           {/* Value dots — outer hairline ring + inner tone fill so each
               point reads as a calibrated marker, not a generic dot. */}
@@ -355,8 +358,8 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
               key={`dot-${axis.key}`}
               className="viz-plan-radar__dot"
               style={{ "--dot-delay": `${300 + i * 70}ms` } as CSSProperties}>
-              <circle cx={px} cy={py} r="4.5" fill="var(--color-bg)" stroke={axis.toneVar} strokeWidth="1.25" />
-              <circle cx={px} cy={py} r="2.25" fill={axis.toneVar} opacity={ratio === 0 ? 0.25 : 1} />
+              <circle cx={px} cy={py} r="8.25" fill="var(--color-bg)" stroke={axis.toneVar} strokeWidth="2.1" />
+              <circle cx={px} cy={py} r="3.6" fill={axis.toneVar} opacity={ratio === 0 ? 0.25 : 1} />
             </g>
           ))}
 
@@ -372,7 +375,7 @@ export function PlanCoverageRadar(props: PlanCoverageRadarProps) {
                   key={`hit-${axis.key}`}
                   cx={px}
                   cy={py}
-                  r="12"
+                  r="20"
                   fill="transparent"
                   className="viz-plan-radar__axis-hit"
                   role="button"

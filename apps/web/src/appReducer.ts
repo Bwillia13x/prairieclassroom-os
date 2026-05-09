@@ -466,6 +466,7 @@ export interface AppState {
 
 export type AppAction =
   | { type: "SET_CLASSROOMS"; classrooms: ClassroomProfile[] }
+  | { type: "UPSERT_CLASSROOM_PROFILE"; profile: ClassroomProfile }
   | { type: "SET_ACTIVE_CLASSROOM"; classroomId: string }
   | { type: "SET_ACTIVE_TAB"; tab: ActiveTab; tool?: ActiveTool | null }
   | { type: "SET_ACTIVE_TOOL"; tool: ActiveTool | null }
@@ -689,6 +690,20 @@ export function appReducer(state: AppState, action: AppAction): AppState {
   switch (action.type) {
     case "SET_CLASSROOMS":
       return { ...state, classrooms: action.classrooms };
+
+    case "UPSERT_CLASSROOM_PROFILE": {
+      const exists = state.classrooms.some((entry) => entry.classroom_id === action.profile.classroom_id);
+      return {
+        ...state,
+        classrooms: exists
+          ? state.classrooms.map((entry) => (
+            entry.classroom_id === action.profile.classroom_id
+              ? { ...entry, ...action.profile }
+              : entry
+          ))
+          : [...state.classrooms, action.profile],
+      };
+    }
 
     case "SET_ACTIVE_CLASSROOM":
       if (action.classroomId === state.activeClassroom) {

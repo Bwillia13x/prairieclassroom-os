@@ -76,6 +76,31 @@ const DATA_DIR = process.env.PRAIRIE_DATA_DIR
   ? resolve(process.env.PRAIRIE_DATA_DIR)
   : DEFAULT_DATA_DIR;
 
+function parseClassroomAccessCodeOverrides(): Record<string, string> {
+  const raw = process.env.PRAIRIE_CLASSROOM_ACCESS_CODES_JSON?.trim();
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      throw new Error("expected an object mapping classroom_id to access code");
+    }
+    const result: Record<string, string> = {};
+    for (const [classroomId, value] of Object.entries(parsed as Record<string, unknown>)) {
+      if (typeof value === "string" && value.trim()) {
+        result[classroomId] = value.trim();
+      }
+    }
+    return result;
+  } catch (error) {
+    console.error(
+      `Invalid PRAIRIE_CLASSROOM_ACCESS_CODES_JSON: ${error instanceof Error ? error.message : String(error)}`,
+    );
+    process.exit(1);
+  }
+}
+
+const CLASSROOM_ACCESS_CODE_OVERRIDES = parseClassroomAccessCodeOverrides();
+
 // ----- Data loading -----
 
 /**
@@ -104,7 +129,8 @@ function loadClassrooms(): ClassroomProfile[] {
       );
       continue;
     }
-    profiles.push(parsed.data);
+    const accessCodeOverride = CLASSROOM_ACCESS_CODE_OVERRIDES[parsed.data.classroom_id];
+    profiles.push(accessCodeOverride ? { ...parsed.data, access_code: accessCodeOverride } : parsed.data);
   }
   return profiles;
 }

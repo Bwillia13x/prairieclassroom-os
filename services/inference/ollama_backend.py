@@ -96,10 +96,11 @@ class OllamaBackend:
         if tools:
             payload["tools"] = tools
 
+        encoded_images = [p.get("data_base64", "") for p in request.image_payloads if p.get("data_base64")]
         if request.images:
-            encoded_images = self._encode_images(request.images)
-            if encoded_images:
-                payload["images"] = encoded_images
+            encoded_images.extend(self._encode_images(request.images))
+        if encoded_images:
+            payload["images"] = encoded_images
 
         return model, payload
 

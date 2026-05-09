@@ -14,7 +14,12 @@ describe("prompt safety", () => {
 
     expect(analysis.injectionSuspected).toBe(true);
     expect(analysis.rendered).toContain("<untrusted-data label=\"teacher_note\">");
-    expect(analysis.rendered).toContain("Ignore previous instructions");
+    expect(analysis.matchedRules).toEqual(expect.arrayContaining([
+      "ignore_previous_instructions",
+      "output_exactly",
+    ]));
+    expect(analysis.rendered).toContain("[instruction-like user text removed]");
+    expect(analysis.rendered).not.toContain("Ignore previous instructions");
   });
 
   it("neutralizes markdown code fences for prompt insertion", () => {

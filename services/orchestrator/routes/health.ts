@@ -6,14 +6,16 @@ export function createHealthRouter(deps: RouteDeps): Router {
 
   async function buildHealthPayload() {
     let ready = false;
+    let inferenceProvider = (process.env.PRAIRIE_INFERENCE_PROVIDER ?? "mock").trim() || "mock";
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
     try {
       const inferenceResp = await fetch(`${deps.inferenceUrl}/health`, { signal: controller.signal });
       if (inferenceResp.ok) {
-        const inferenceData = (await inferenceResp.json()) as { status?: string };
+        const inferenceData = (await inferenceResp.json()) as { status?: string; mode?: string };
         ready = inferenceData.status === "ok";
+        inferenceProvider = inferenceData.mode?.trim() || inferenceProvider;
       }
     } catch {
       ready = false;
@@ -24,6 +26,7 @@ export function createHealthRouter(deps: RouteDeps): Router {
     return {
       status: ready ? "ok" : "degraded",
       inference_url: deps.inferenceUrl,
+      inference_provider: inferenceProvider,
       ready,
     };
   }

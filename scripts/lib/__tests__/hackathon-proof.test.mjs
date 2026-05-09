@@ -1,6 +1,7 @@
 import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import {
+  CURRENT_HOSTED_ATTEMPT_RUN_DIR,
   HOSTED_PROOF_RUN_DIR,
   PROOF_DOC_PATHS,
   extractHostedProofRunDir,
@@ -10,6 +11,7 @@ import { DEFAULT_GEMINI_MODEL_IDS } from "../gemini-api-preflight.mjs";
 
 function consistentSurfaces({
   artifact = HOSTED_PROOF_RUN_DIR,
+  attemptArtifact = null,
   includeProofBriefLine = true,
   proofBriefLineOverride = null,
 } = {}) {
@@ -21,12 +23,20 @@ function consistentSurfaces({
     `The privacy-first future deployment path remains local/self-hosted Gemma 4 via Ollama.`,
     `Artifact reference: ${artifact}`,
   ];
+  if (attemptArtifact) {
+    sharedClauses.push(
+      `Current hosted refresh failed and did not produce a passing baseline: ${attemptArtifact}`,
+    );
+  }
 
   const proofBriefLines = [...sharedClauses];
   if (proofBriefLineOverride !== null) {
     proofBriefLines.unshift(proofBriefLineOverride);
   } else if (includeProofBriefLine) {
     proofBriefLines.unshift(`- **Latest passing hosted gate:** \`${artifact}\``);
+  }
+  if (attemptArtifact) {
+    proofBriefLines.unshift(`- **Latest attempted hosted gate:** \`${attemptArtifact}\``);
   }
 
   const sharedContent = sharedClauses.join("\n");
@@ -85,6 +95,22 @@ describe("validateProofSurfaces — derives canonical artifact from proof-brief"
     const joined = result.issues.join("\n");
     assert.match(joined, /could not extract canonical hosted artifact/i);
   });
+
+  it("passes when surfaces include both last-passing and current-attempt hosted artifacts", () => {
+    const result = validateProofSurfaces(
+      consistentSurfaces({ attemptArtifact: CURRENT_HOSTED_ATTEMPT_RUN_DIR }),
+    );
+    assert.deepEqual(result, { ok: true, issues: [] });
+  });
+
+  it("flags docs that omit the current attempted hosted artifact when proof-brief declares one", () => {
+    const surfaces = consistentSurfaces({ attemptArtifact: CURRENT_HOSTED_ATTEMPT_RUN_DIR });
+    surfaces["README.md"] = surfaces["README.md"].replace(CURRENT_HOSTED_ATTEMPT_RUN_DIR, "missing-current-attempt");
+
+    const result = validateProofSurfaces(surfaces);
+    assert.equal(result.ok, false);
+    assert.match(result.issues.join("\n"), /README\.md: missing current hosted attempt artifact path/);
+  });
 });
 
 describe("extractHostedProofRunDir — preferred path matches the real proof-brief format", () => {
@@ -111,5 +137,12 @@ describe("extractHostedProofRunDir — preferred path matches the real proof-bri
       canonical,
       "preferred extraction from proof-brief must win over the PROOF_DOC_PATHS-ordered fallback",
     );
+  });
+
+  it("prefers the current attempted hosted gate for readycheck when present", () => {
+    const surfaces = consistentSurfaces({ attemptArtifact: CURRENT_HOSTED_ATTEMPT_RUN_DIR });
+
+    const extracted = extractHostedProofRunDir(surfaces);
+    assert.equal(extracted, CURRENT_HOSTED_ATTEMPT_RUN_DIR);
   });
 });

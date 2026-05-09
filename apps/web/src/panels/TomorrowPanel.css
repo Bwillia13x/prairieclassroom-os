@@ -7,7 +7,7 @@
   --tomorrow-rule-soft: color-mix(in srgb, var(--color-brand-highlight) 14%, var(--color-border));
   --tomorrow-stage: var(--color-accent);
   --tomorrow-success: var(--color-brand-green);
-  gap: var(--space-5);
+  gap: var(--space-4);
 }
 
 .tomorrow-page .page-hero--tomorrow {
@@ -41,9 +41,9 @@
 }
 
 .tomorrow-page .page-hero--tomorrow .page-hero__metric-group {
-  min-height: 5.8rem;
+  min-height: 5rem;
   justify-content: space-between;
-  padding: var(--space-2-5);
+  padding: var(--space-2);
   border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
   border-radius: var(--radius-sm);
   background: color-mix(in srgb, var(--color-surface-muted) 40%, var(--color-surface));
@@ -78,7 +78,7 @@
 }
 
 .tomorrow-operational-preview .operational-preview__group {
-  padding: var(--space-4);
+  padding: var(--space-3);
   border-left: 1px solid color-mix(in srgb, var(--color-border) 38%, transparent);
 }
 
@@ -95,7 +95,7 @@
 }
 
 .tomorrow-tool-switcher.page-tool-switcher--cards .page-tool-switcher__btn {
-  min-height: 8.25rem !important;
+  min-height: 7.25rem !important;
   border-radius: 6px !important;
 }
 

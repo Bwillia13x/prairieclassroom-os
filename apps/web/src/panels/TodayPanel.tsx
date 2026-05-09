@@ -74,11 +74,12 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   const studentSummaries = useAsyncAction<StudentSummary[]>();
   const sessionSummary = useAsyncAction<SessionSummary>();
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
-  // Lower detail (operational preview, coverage strip, what-to-watch grid,
-  // plan recap, risk windows, end-of-Today footer) is collapsed by default
-  // so the page reads as the simplified hero dashboard. Expansion uses a
-  // CSS-only collapse — content stays in the DOM and accessibility tree
-  // so deep linkers, screen readers, and tests can still reach it.
+  // Lower detail (coverage strip, what-to-watch grid, plan recap, risk windows,
+  // end-of-Today footer) is collapsed by default so the page reads as the
+  // simplified hero dashboard. Expansion uses a CSS-only collapse — content
+  // stays in the DOM and accessibility tree so deep linkers, screen readers,
+  // and tests can still reach it. The operational preview stays visible as the
+  // compact first-screen evidence strip.
   const [detailOpen, setDetailOpen] = useState(false);
   const mondayMoment = useMondayMoment(activeClassroom ?? "");
 
@@ -86,8 +87,9 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   // `planning-health`, `carry-forward`, `end-of-today`) live inside the
   // collapsed `.today-detail` wrapper. If the user arrives via a deep link
   // such as `#carry-forward`, auto-expand the detail so the anchor doesn't
-  // dead-end. The shell-level command center (`#command-center`) and the
-  // workspace top (`#today-top`) stay visible at all times, so we ignore those.
+  // dead-end. The shell-level command center (`#command-center`), operational
+  // preview (`#today-preview`), and workspace top (`#today-top`) stay visible
+  // at all times, so we ignore those.
   useEffect(() => {
     const detailAnchors = new Set([
       "classroom-pulse",
@@ -96,7 +98,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
       "planning-health",
       "carry-forward",
       "end-of-today",
-      "today-preview",
       "pending-actions",
       "today-detail",
     ]);
@@ -360,6 +361,15 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         )}
       </div>
 
+      {hasPreviewContent ? (
+        <OperationalPreview
+          ariaLabel="Today operational preview"
+          id="today-preview"
+          groups={todayPreviewGroups}
+          className="today-operational-preview"
+        />
+      ) : null}
+
       <div className="today-detail-toggle">
         <button
           type="button"
@@ -380,14 +390,6 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
         className={`today-detail${detailOpen ? " today-detail--open" : " today-detail--closed"}`}
         data-state={detailOpen ? "open" : "closed"}
       >
-      {hasPreviewContent ? (
-        <OperationalPreview
-          ariaLabel="Today operational preview"
-          id="today-preview"
-          groups={todayPreviewGroups}
-        />
-      ) : null}
-
       {result?.student_threads?.length ? (
         <StudentCoverageStrip
           threads={result.student_threads}

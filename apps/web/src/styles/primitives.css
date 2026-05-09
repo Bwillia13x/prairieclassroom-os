@@ -997,6 +997,16 @@ label.form-label {
   }
 }
 
+@media (min-width: 960px) and (max-width: 1280px) {
+  /* The desktop drawer consumes enough inline space on laptop-width Chrome
+     that split workspaces hide generated canvases to the right. Stack the
+     rail and canvas until the content column can carry both comfortably. */
+  .workspace-layout[data-layout="split"],
+  .workspace-layout[data-layout="split"][data-split-state="output"] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .workspace-rail,
 .workspace-canvas {
   min-width: 0;

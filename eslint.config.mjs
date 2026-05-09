@@ -44,7 +44,11 @@ export default tseslint.config(
     },
   },
   {
-    files: ["scripts/smoke-browser.mjs", "scripts/audit-2026-04-25-sweep.mjs"],
+    files: [
+      "scripts/smoke-browser.mjs",
+      "scripts/audit-2026-04-25-sweep.mjs",
+      "scripts/validate-today-layout.mjs",
+    ],
     languageOptions: {
       globals: {
         document: "readonly",

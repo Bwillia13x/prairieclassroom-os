@@ -30,7 +30,7 @@ This plan implements **everything that is not Ollama-blocked first**, then resum
 | **D — Ollama lane** | resumes when viable host arrives | Install Ollama, pull weights, run `release:gate:ollama`, capture offline footage | gated on host |
 | **E — Video production** | 2026-05-11 → 2026-05-13 | Edit, voiceover, captions, upload to YouTube | pending |
 | **F — Live demo deploy** | 2026-05-11 → 2026-05-12 | Vercel frontend + free-tier backend, smoke from external network | pending |
-| **G — Verification** | 2026-05-14 → 2026-05-16 | Full `release:gate`, `claims:check`, `system:inventory:check`, external smoke | pending |
+| **G — Verification** | 2026-05-14 → 2026-05-16 | Full `release:gate`, `claims:check`, `system:inventory:check`, `eval:inventory:check`, external smoke | pending |
 | **H — Submission** | 2026-05-17 → 2026-05-18 | Submit Kaggle entry early; monitor | pending |
 
 ---
@@ -53,23 +53,24 @@ This plan implements **everything that is not Ollama-blocked first**, then resum
 - [x] [docs/public-demo-operations.md](../public-demo-operations.md) — deploy targets selected (Vercel + TBD backend), pre-deploy setup commands documented.
 - [x] [README.md](../../README.md) — judge-friendly opening rewritten with "Why Gemma 4" section + judge-doc nav links + sprint-history cleanup.
 - [x] [apps/web/vercel.json](../../apps/web/vercel.json) — SPA rewrites, security headers, immutable asset cache; unblocks Phase F deploy.
-- [x] [scripts/submission-final-check.mjs](../../scripts/submission-final-check.mjs) — chained pre-submit gate; new `npm run submission:final-check` (with `--skip-release-gate` and `--include-ollama` flags).
+- [x] [scripts/submission-final-check.mjs](../../scripts/submission-final-check.mjs) — chained pre-submit gate; `npm run submission:final-check` now includes eval-inventory and publication-placeholder checks, with `--skip-publication-check` for local-only iteration, `--skip-release-gate` for faster structural checks, and `--include-ollama` once a viable Ollama host exists.
 - [x] [.gitignore](../../.gitignore) — minor hygiene fix (stray `-e` line); `qa/demo-script/multimodal-hero/` and `qa/demo-script/teacher-quote/` added for Phase B/C capture artifacts.
 
-### Validation (2026-04-26)
+### Validation (local mode before publication)
 
-All six gates passed end-to-end via `npm run submission:final-check`:
+The local structural gates passed end-to-end before the publication-placeholder guard was added. `eval:inventory:check` was added on 2026-05-03 to keep `docs/eval-inventory.md` generated from the authored case files:
 
 | Gate | Status | Duration |
 |---|---|---|
 | `claims:check` | ✓ | 0.4s |
 | `proof:check` | ✓ | 0.2s |
 | `system:inventory:check` | ✓ | 0.2s |
+| `eval:inventory:check` | ✓ | fast |
 | `demo:fixture:check` | ✓ | 1.6s |
 | `check:contrast` | ✓ | 0.2s |
 | `release:gate` (mock) | ✓ | 2m30s |
 
-Run anytime with `npm run submission:final-check`; pass `--skip-release-gate` to skip the slow step during iteration; pass `--include-ollama` once a viable Ollama host is available.
+Current behavior: run the publish gate with `npm run submission:final-check` after public links exist. Before external links exist, use `npm run submission:final-check -- --skip-publication-check`; pass `--skip-release-gate` to skip the slow step during iteration; pass `--include-ollama` once a viable Ollama host is available.
 
 ---
 
@@ -203,6 +204,8 @@ nvm use
 npm run claims:check
 npm run proof:check
 npm run system:inventory:check
+npm run eval:inventory:check
+npm run demo:fixture:check
 npm run check:contrast
 npm run release:gate
 # If on viable Ollama host:
@@ -239,7 +242,7 @@ npm run release:gate:gemini
 | Live demo flaky externally | CORS, env, auth, latency | Submit a *video of the demo running locally* as a "files" attachment per Kaggle rule. |
 | Video runs over 3:00 | Footage too rich | Use 2:40 tight cut as primary. |
 | Word count exceeds 1,500 | Adding teacher quote pushes over | Cut writeup §5 (Safety) to 3 lines; safety detail lives in repo docs. |
-| Hosted Gemini API issue late | Quota / model deprecation | Skip refresh; checked-in 2026-04-27 artifact remains valid. |
+| Hosted Gemini API issue late | Quota / model deprecation | Skip refresh; checked-in 2026-05-03 hosted artifact remains valid. |
 
 ---
 

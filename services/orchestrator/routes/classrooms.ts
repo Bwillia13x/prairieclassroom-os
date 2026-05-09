@@ -11,27 +11,68 @@ export function createClassroomsRouter(deps: RouteDeps): Router {
   const authMiddleware = deps.authMiddleware;
   const teacherOnly = requireRoles(deps, ["teacher"]);
 
+  function publicClassroomSummary(c: ReturnType<RouteDeps["loadClassrooms"]>[number]) {
+    return {
+      classroom_id: c.classroom_id,
+      grade_band: c.grade_band,
+      subject_focus: c.subject_focus,
+      requires_access_code: Boolean(c.access_code),
+      is_demo: isDemoClassroom(c),
+      classroom_notes: [],
+      students: [],
+    };
+  }
+
+  function protectedClassroomProfile(c: ReturnType<RouteDeps["loadClassrooms"]>[number]) {
+    return {
+      classroom_id: c.classroom_id,
+      grade_band: c.grade_band,
+      subject_focus: c.subject_focus,
+      classroom_notes: c.classroom_notes,
+      requires_access_code: Boolean(c.access_code),
+      is_demo: isDemoClassroom(c),
+      students: (c.students ?? []).map((s) => ({
+        alias: s.alias,
+        family_language: s.family_language,
+        eal_flag: s.eal_flag,
+        support_tags: s.support_tags,
+      })),
+      sub_ready: c.sub_ready,
+      schedule: c.schedule ?? [],
+      upcoming_events: c.upcoming_events ?? [],
+    };
+  }
+
   router.get("/", (_req, res) => {
     try {
       const classrooms = deps.loadClassrooms();
-      res.json(
-        classrooms.map((c) => ({
-          classroom_id: c.classroom_id,
-          grade_band: c.grade_band,
-          subject_focus: c.subject_focus,
-          classroom_notes: c.classroom_notes,
-          requires_access_code: Boolean(c.access_code),
-          is_demo: isDemoClassroom(c),
-          students: (c.students ?? []).map((s) => ({ alias: s.alias, family_language: s.family_language, eal_flag: s.eal_flag, support_tags: s.support_tags })),
-        })),
-      );
+      res.json(classrooms.map(publicClassroomSummary));
     } catch (err) {
       console.error("Classrooms list error:", err);
       handleRouteError(res, err);
     }
   });
 
-  router.get("/:id/schedule", (req, res) => {
+  router.get("/:id/profile", authMiddleware, (req, res) => {
+    try {
+      const classroomId = req.params.id as string;
+      if (!isValidClassroomId(classroomId)) {
+        sendRouteError(res, 400, { error: "Invalid classroom ID format", category: "validation", retryable: false, detail_code: "invalid_classroom_id" });
+        return;
+      }
+      const classroom = deps.loadClassroom(classroomId);
+      if (!classroom) {
+        sendClassroomNotFound(res, classroomId);
+        return;
+      }
+      res.json(protectedClassroomProfile(classroom));
+    } catch (err) {
+      console.error("Classroom profile error:", err);
+      handleRouteError(res, err);
+    }
+  });
+
+  router.get("/:id/schedule", authMiddleware, (req, res) => {
     try {
       const classroomId = req.params.id as string;
       if (!isValidClassroomId(classroomId)) {

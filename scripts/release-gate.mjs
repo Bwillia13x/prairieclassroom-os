@@ -1,4 +1,5 @@
 import { spawn } from "node:child_process";
+import { randomBytes } from "node:crypto";
 import { createWriteStream, existsSync } from "node:fs";
 import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import net from "node:net";
@@ -45,6 +46,8 @@ const OPTIONS = parseReleaseGateArgs(process.argv.slice(2));
 const IS_REAL_MODE = OPTIONS.inferenceMode === "api";
 const IS_OLLAMA_MODE = OPTIONS.inferenceMode === "ollama";
 const IS_GEMINI_MODE = OPTIONS.inferenceMode === "gemini";
+const RELEASE_GATE_INFERENCE_AUTH_TOKEN = process.env.PRAIRIE_INFERENCE_AUTH_TOKEN?.trim()
+  || (IS_REAL_MODE || IS_GEMINI_MODE ? randomBytes(32).toString("hex") : "");
 const EVAL_DATE = new Date().toISOString().slice(0, 10);
 const EVAL_MODE_LABEL = releaseGateEvalLabelForMode(OPTIONS.inferenceMode);
 const EVAL_OUTPUT_DIR = path.join(ROOT, "output", "evals", `${EVAL_DATE}-${EVAL_MODE_LABEL}`);
@@ -1589,6 +1592,7 @@ async function main() {
             PRAIRIE_VERTEX_ENDPOINT_PLANNING: process.env.PRAIRIE_VERTEX_ENDPOINT_PLANNING,
             PRAIRIE_VERTEX_MODEL_ID_LIVE: process.env.PRAIRIE_VERTEX_MODEL_ID_LIVE,
             PRAIRIE_VERTEX_MODEL_ID_PLANNING: process.env.PRAIRIE_VERTEX_MODEL_ID_PLANNING,
+            PRAIRIE_INFERENCE_AUTH_TOKEN: RELEASE_GATE_INFERENCE_AUTH_TOKEN,
           }
         : IS_GEMINI_MODE
           ? {
@@ -1597,6 +1601,7 @@ async function main() {
               PRAIRIE_ENABLE_GEMINI_RUNS: process.env.PRAIRIE_ENABLE_GEMINI_RUNS,
               PRAIRIE_GEMINI_MODEL_ID_LIVE: process.env.PRAIRIE_GEMINI_MODEL_ID_LIVE,
               PRAIRIE_GEMINI_MODEL_ID_PLANNING: process.env.PRAIRIE_GEMINI_MODEL_ID_PLANNING,
+              PRAIRIE_INFERENCE_AUTH_TOKEN: RELEASE_GATE_INFERENCE_AUTH_TOKEN,
             }
         : undefined,
     },
@@ -1607,6 +1612,7 @@ async function main() {
     env: {
       INFERENCE_URL,
       PRAIRIE_INFERENCE_PROVIDER: OPTIONS.inferenceMode,
+      ...(RELEASE_GATE_INFERENCE_AUTH_TOKEN ? { PRAIRIE_INFERENCE_AUTH_TOKEN: RELEASE_GATE_INFERENCE_AUTH_TOKEN } : {}),
     },
   });
   await waitForUrl("Orchestrator", `${ORCHESTRATOR_URL}/health`, { processInfo: orchestrator });

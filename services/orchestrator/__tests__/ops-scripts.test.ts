@@ -419,7 +419,8 @@ describe("system inventory helpers", () => {
     const rootDir = path.resolve(__dirname, "../../..");
     const inventory = await buildSystemInventory(rootDir);
 
-    expect(inventory.ui.panel_count).toBe(11);
+    expect(inventory.ui.panel_count).toBe(12);
+    expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("Today");
     expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("Usage Insights");
     // 2026-04-19 OPS audit phase 1.1: "EA Load" → "EA Load Balance" (full nav label).
     expect(inventory.ui.panels.map((panel: { label: string }) => panel.label)).toContain("EA Load Balance");
@@ -428,7 +429,7 @@ describe("system inventory helpers", () => {
     expect(inventory.prompts.planning_count).toBe(6);
     expect(inventory.prompts.classes.map((entry: { name: string }) => entry.name)).toContain("extract_worksheet");
     expect(inventory.prompts.classes.map((entry: { name: string }) => entry.name)).toContain("balance_ea_load");
-    expect(inventory.api.endpoint_count).toBe(52);
+    expect(inventory.api.endpoint_count).toBe(53);
     expect(inventory.api.endpoints).toEqual(expect.arrayContaining([
       expect.objectContaining({ method: "PUT", path: "/api/classrooms/:id/schedule" }),
       expect.objectContaining({ method: "GET", path: "/api/curriculum/subjects", role_scope: null }),
@@ -498,8 +499,8 @@ describe("system inventory helpers", () => {
     const markdown = formatInventoryMarkdown(inventory);
 
     expect(markdown).toContain("# System Inventory");
-    expect(markdown).toContain("- Primary panels: 11");
-    expect(markdown).toContain("- Exact endpoints: 52");
+    expect(markdown).toContain("- Primary panels: 12");
+    expect(markdown).toContain("- Exact endpoints: 53");
     expect(markdown).toContain("| `prepare_tomorrow_plan` | planning | yes | yes | yes |");
   });
 
@@ -509,7 +510,7 @@ describe("system inventory helpers", () => {
     const markdown = formatApiSurfaceMarkdown(inventory);
 
     expect(markdown).toContain("# API Surface Inventory");
-    expect(markdown).toContain("- Exact endpoints: 52");
+    expect(markdown).toContain("- Exact endpoints: 53");
     expect(markdown).toContain("| GET | `/api/curriculum/subjects` | `services/orchestrator/routes/curriculum.ts` | open/demo metadata | none |");
     expect(markdown).toContain("| POST | `/api/family-message/approve` | `services/orchestrator/routes/family-message.ts` | classroom-code | teacher |");
     expect(markdown).toContain("| GET | `/api/today/:classroomId` | `services/orchestrator/routes/today.ts` | classroom-code | teacher, ea, substitute |");

@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import {
   ApiError,
   configureApiClient,
+  fetchClassroomProfile,
   listClassrooms,
   listCurriculumEntries,
   listCurriculumSubjects,
@@ -10,6 +11,7 @@ import {
   generateTomorrowPlan,
   generateSurvivalPacket,
   approveFamilyMessage,
+  normalizeApiBase,
 } from "../api";
 
 // ---------------------------------------------------------------------------
@@ -66,6 +68,13 @@ afterEach(() => {
 // ===========================================================================
 
 describe("API client basics", () => {
+  it("normalizes VITE_API_URL whether it points at the API root or orchestrator root", () => {
+    expect(normalizeApiBase(undefined)).toBe("/api");
+    expect(normalizeApiBase("/api")).toBe("/api");
+    expect(normalizeApiBase("http://localhost:3100")).toBe("http://localhost:3100/api");
+    expect(normalizeApiBase("http://localhost:3100/api/")).toBe("http://localhost:3100/api");
+  });
+
   it("successful GET request returns parsed JSON", async () => {
     const payload = [
       { classroom_id: "c1", grade_band: "3-4", subject_focus: "math", classroom_notes: [], students: [] },
@@ -79,6 +88,29 @@ describe("API client basics", () => {
     const [url, init] = mockFetch.mock.calls[0];
     expect(url).toContain("/classrooms");
     expect(init.method).toBe("GET");
+  });
+
+  it("fetches a protected classroom profile with classroom auth headers", async () => {
+    const payload = {
+      classroom_id: "c1",
+      grade_band: "3-4",
+      subject_focus: "math",
+      classroom_notes: ["private note"],
+      students: [{ alias: "Fern", family_language: "English", eal_flag: false, support_tags: [] }],
+    };
+    configureApiClient({
+      getClassroomCode: () => "room-code",
+      getClassroomRole: () => "teacher",
+    });
+    mockFetch.mockResolvedValueOnce(jsonResponse(200, payload));
+
+    const result = await fetchClassroomProfile("c1");
+
+    expect(result).toEqual(payload);
+    const [url, init] = mockFetch.mock.calls[0];
+    expect(url).toContain("/classrooms/c1/profile");
+    expect(init.headers.get("X-Classroom-Code")).toBe("room-code");
+    expect(init.headers.get("X-Classroom-Role")).toBe("teacher");
   });
 
   it("opens an EventSource stream when stream handlers are provided", async () => {

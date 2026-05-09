@@ -1,3 +1,9 @@
+envVarGroups:
+  - name: prairieclassroom-internal-auth
+    envVars:
+      - key: PRAIRIE_INFERENCE_AUTH_TOKEN
+        generateValue: true
+
 services:
   - type: web
     name: prairieclassroom-orchestrator
@@ -22,6 +28,9 @@ services:
         value: /tmp/prairie-memory
       - key: PRAIRIE_DATA_DIR
         value: /opt/render/project/src/data/synthetic_classrooms
+      - key: PRAIRIE_CLASSROOM_ACCESS_CODES_JSON
+        sync: false
+      - fromGroup: prairieclassroom-internal-auth
 
   - type: web
     name: prairieclassroom-inference-gemini
@@ -41,3 +50,4 @@ services:
         value: gemma-4-26b-a4b-it
       - key: PRAIRIE_GEMINI_MODEL_ID_PLANNING
         value: gemma-4-31b-it
+      - fromGroup: prairieclassroom-internal-auth

@@ -21,6 +21,8 @@ interface ActionButtonProps {
   leadingIcon?: ReactNode;
   trailingIcon?: ReactNode;
   fullWidth?: boolean;
+  title?: string;
+  disabledReason?: string;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
   className?: string;
@@ -47,6 +49,8 @@ export default function ActionButton({
   leadingIcon,
   trailingIcon,
   fullWidth = false,
+  title,
+  disabledReason,
   onClick,
   children,
   className,
@@ -73,6 +77,7 @@ export default function ActionButton({
       aria-busy={loading ? "true" : undefined}
       aria-label={ariaLabel}
       aria-describedby={ariaDescribedBy}
+      title={title ?? (isDisabled ? disabledReason : undefined)}
       onClick={onClick}
       data-testid={dataTestId}
     >

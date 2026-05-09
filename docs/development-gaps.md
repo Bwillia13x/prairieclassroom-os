@@ -72,12 +72,12 @@ No remaining G-16 implementation work is tracked here.
 - The gate now fails fast when no `PRAIRIE_GEMINI_API_KEY` / `GEMINI_API_KEY` is configured or when `PRAIRIE_ENABLE_GEMINI_RUNS=true` is absent.
 - `docs/eval-baseline.md` now tracks a separate Hosted Gemini API section.
 - `docs/hackathon-hosted-operations.md` documents the exact operator sequence.
-- The curated hosted eval suite has already passed on synthetic/demo data.
-- The full hosted release gate has completed successfully and produced a passing artifact set.
+- The curated hosted eval suite has a historical passing baseline on synthetic/demo data.
+- The current May 8 hosted refresh is blocked at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; preserve the last passing baseline at `output/release-gate/2026-05-03T17-59-42-981Z-80702`.
 
 **What remains**
 
-- Keep `docs/eval-baseline.md`, `docs/hackathon-proof-brief.md`, and `README.md` aligned with the latest passing hosted artifact.
+- Keep `docs/eval-baseline.md`, `docs/hackathon-proof-brief.md`, and `README.md` aligned with both the latest attempted hosted artifact and the last passing hosted artifact.
 - Re-run `npm run proof:check` and `npm run gemini:readycheck` before any later hosted refresh.
 - Use targeted hosted smoke only as an optional repair loop when a single route regresses.
 

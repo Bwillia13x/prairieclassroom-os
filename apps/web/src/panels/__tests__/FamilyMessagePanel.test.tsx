@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import AppContext, { type AppContextValue } from "../../AppContext";
@@ -247,8 +247,7 @@ describe("FamilyMessagePanel", () => {
     await user.click(screen.getByRole("button", { name: "Review approval" }));
 
     const textarea = await screen.findByLabelText(/Family message text/i);
-    await user.clear(textarea);
-    await user.type(textarea, "Edited family message.");
+    fireEvent.change(textarea, { target: { value: "Edited family message." } });
     await user.click(screen.getByRole("button", { name: "Approve & Copy" }));
 
     await waitFor(() => {
@@ -266,5 +265,5 @@ describe("FamilyMessagePanel", () => {
     expect(await screen.findByRole("button", { name: "Approved" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Copy" })).toBeEnabled();
     expect(screen.getByText("Edited by teacher")).toBeInTheDocument();
-  });
+  }, 15_000);
 });

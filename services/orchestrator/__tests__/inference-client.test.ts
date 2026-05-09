@@ -139,6 +139,52 @@ describe("callInference", () => {
     expect(getRequestContext(res).timeout_ms).toBe(60_000);
   });
 
+  it("sends the internal inference auth token when configured", async () => {
+    vi.stubEnv("PRAIRIE_INFERENCE_AUTH_TOKEN", "internal-secret");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      text: "{\"ok\":true}",
+      model_id: "mock",
+      latency_ms: 12,
+    }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await callInference({
+      deps,
+      req: mockReq(),
+      res: mockRes(),
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+    });
+
+    expect(fetchMock).toHaveBeenCalledWith("http://localhost:3200/generate", expect.objectContaining({
+      headers: expect.objectContaining({ Authorization: "Bearer internal-secret" }),
+    }));
+  });
+
+  it("sends worksheet images as inline payloads, not server file paths", async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      text: "{\"ok\":true}",
+      model_id: "mock",
+      latency_ms: 12,
+    }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await callInference({
+      deps,
+      req: mockReq(),
+      res: mockRes(),
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+      imagePayloads: [{ mime_type: "image/png", data_base64: "iVBORw0KGgo=" }],
+    });
+
+    const sent = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(sent.image_payloads).toEqual([{ mime_type: "image/png", data_base64: "iVBORw0KGgo=" }]);
+    expect(sent.images).toBeUndefined();
+  });
+
   it("extends support-patterns beyond the generic planning timeout even without provider env", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
       text: "{\"report\":{}}",
@@ -302,6 +348,34 @@ describe("callInference", () => {
       req: mockReq(),
       res,
       route: planningRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(getRequestContext(res).retry_count).toBe(1);
+  });
+
+  it("retries hosted provider high-demand errors embedded in 200 inference responses", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        text: "{\"error\":\"503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Please try again later.', 'status': 'UNAVAILABLE'}}\"}",
+        model_id: "gemma-4-31b-it",
+        latency_ms: 5_184,
+      }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        text: "{\"forecast\":{}}",
+        model_id: "gemma-4-31b-it",
+        latency_ms: 23,
+      }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const res = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res,
+      route: forecastRoute,
       prompt: { system: "sys", user: "user" },
       maxTokens: 256,
     });
@@ -639,6 +713,50 @@ describe("callInferenceStream", () => {
       tool_call_id: "call_curriculum_1",
       tool_name: "lookup_curriculum_outcome",
       executed: true,
+    });
+  });
+
+  it("falls back to non-stream generation when the provider stream closes before completion", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(streamResponse([
+        "event: ready",
+        "data: {\"mode\":\"mock\"}",
+        "",
+      ].join("\n")))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        text: "{\"ok\":true}",
+        model_id: "mock-fallback",
+        latency_ms: 42,
+        prompt_tokens: 8,
+        output_tokens: 10,
+        total_tokens: 18,
+      }), { status: 200, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const emit = vi.fn();
+    const result = await callInferenceStream({
+      deps,
+      req: mockReq(),
+      res: mockRes(),
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+    }, emit);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[0][0]).toBe("http://localhost:3200/generate/stream");
+    expect(fetchMock.mock.calls[1][0]).toBe("http://localhost:3200/generate");
+    expect(emit).toHaveBeenCalledWith({
+      type: "thinking",
+      text: "\nStreaming was interrupted; finishing with stable generation...",
+    });
+    expect(result).toMatchObject({
+      text: "{\"ok\":true}",
+      model_id: "mock-fallback",
+      latency_ms: 42,
+      prompt_tokens: 8,
+      output_tokens: 10,
+      total_tokens: 18,
     });
   });
 });

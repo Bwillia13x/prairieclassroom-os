@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { TAB_ORDER, TAB_META } from "../appReducer";
+import { normalizeApiBase } from "../api";
 import packageJson from "../../package.json";
 import "./AppFooter.css";
 
@@ -18,20 +19,25 @@ const STORAGE_KEY = "prairie.footer.shortcuts.expanded";
  * import uses `resolveJsonModule` (already enabled in tsconfig) so
  * Vite tree-shakes everything except the `version` field.
  *
- * `runtimeEnv` reads `VITE_PRAIRIE_MODE` if it's exposed at build /
- * dev time. The orchestrator selects its real inference lane
- * server-side and the web client doesn't currently learn that mode
- * over the wire (`/api/health` exposes uptime/memory only). Until
- * a `/api/runtime` endpoint surfaces the canonical mode, we default
- * to `"mock"` because that matches the project's documented default
- * (CLAUDE.md "Current State Of Development" — release-gate runs in
- * mock mode, the cheapest no-cost lane). When the orchestrator
- * starts publishing the runtime mode, swap this constant for a
- * fetched value without touching the rail's visual contract.
+ * `runtimeEnv` starts from `VITE_PRAIRIE_MODE` if it's exposed at
+ * build / dev time, then refreshes from `/api/health` when the
+ * orchestrator reports the live inference lane. The fallback remains
+ * `"mock"` because that matches the project's documented default
+ * no-cost lane.
  */
 const APP_VERSION: string = packageJson.version;
-const RUNTIME_ENV: string =
+const FALLBACK_RUNTIME_ENV: string =
   (import.meta.env.VITE_PRAIRIE_MODE as string | undefined) ?? "mock";
+const API_HEALTH_URL = `${normalizeApiBase(import.meta.env.VITE_API_URL)}/health`;
+
+interface HealthPayload {
+  inference_provider?: unknown;
+}
+
+function readRuntimeEnvFromHealth(payload: HealthPayload): string | null {
+  const provider = payload.inference_provider;
+  return typeof provider === "string" && provider.trim() ? provider.trim() : null;
+}
 
 /**
  * AppFooter — persistent footer with a collapsible keyboard-shortcut map and
@@ -48,6 +54,7 @@ export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) 
       return false;
     }
   });
+  const [runtimeEnv, setRuntimeEnv] = useState(FALLBACK_RUNTIME_ENV);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -58,6 +65,25 @@ export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) 
       // footer still works without persistence.
     }
   }, [expanded]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function refreshRuntimeEnv() {
+      try {
+        const res = await fetch(API_HEALTH_URL, { signal: controller.signal });
+        if (!res.ok) return;
+        const payload = await res.json() as HealthPayload;
+        const provider = readRuntimeEnvFromHealth(payload);
+        if (provider) setRuntimeEnv(provider);
+      } catch {
+        // Health is best-effort footer context; never block the app shell.
+      }
+    }
+
+    void refreshRuntimeEnv();
+    return () => controller.abort();
+  }, []);
 
   return (
     <footer className={`app-footer${expanded ? " app-footer--expanded" : ""}`} role="contentinfo">
@@ -128,7 +154,7 @@ export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) 
           ) : null}
           <span className="app-footer__rail-slot" data-rail-slot="env">
             <span className="app-footer__rail-key">env</span>
-            <span className="app-footer__rail-value">{RUNTIME_ENV}</span>
+            <span className="app-footer__rail-value">{runtimeEnv}</span>
           </span>
           <span className="app-footer__rail-slot" data-rail-slot="version">
             <span className="app-footer__rail-key">v</span>

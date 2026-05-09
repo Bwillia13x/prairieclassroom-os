@@ -8,7 +8,7 @@ import { assertGeminiRunsAllowed } from "./lib/gemini-api-preflight.mjs";
 const WEB_BASE = process.env.PRAIRIE_WEB_BASE ?? "http://localhost:5173";
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 const PROTECTED_CLASSROOM_ID = "alpha-grade4";
-const PROTECTED_CLASSROOM_CODE = "prairie-alpha-2026";
+const PROTECTED_CLASSROOM_CODE = process.env.PRAIRIE_SMOKE_PROTECTED_CLASSROOM_CODE ?? "";
 const INFERENCE_PROVIDER = (process.env.PRAIRIE_INFERENCE_PROVIDER ?? "").trim().toLowerCase();
 const HOSTED_GENERATION_TIMEOUT_MS = INFERENCE_PROVIDER === "gemini" ? 180_000 : 30_000;
 const OUTPUT_DIR = path.resolve(
@@ -257,7 +257,7 @@ async function main() {
   await mkdir(OUTPUT_DIR, { recursive: true });
 
   const browser = await chromium.launch();
-  const context = await browser.newContext();
+  const context = await browser.newContext({ viewport: { width: 1600, height: 1000 } });
   await context.addInitScript(() => {
     globalThis.localStorage.setItem("prairie-onboarding-done", "true");
     globalThis.__printCalls = 0;
@@ -390,40 +390,44 @@ async function main() {
     const printCalls = await page.evaluate(() => globalThis.__printCalls);
     assert.equal(printCalls, 1, "Print should be invoked exactly once during smoke test");
 
-    await selectShellClassroom(page, PROTECTED_CLASSROOM_ID);
-    await dismissRolePromptIfPresent(page);
-    await expectAuthPromptVisible(page);
-    await page.waitForFunction(() => {
-      const element = globalThis.document.querySelector(".access-dialog__description");
-      const text = element?.textContent ?? "";
-      return /Authentication required|needs an access code|protected.*access code/i.test(text);
-    });
+    if (PROTECTED_CLASSROOM_CODE) {
+      await selectShellClassroom(page, PROTECTED_CLASSROOM_ID);
+      await dismissRolePromptIfPresent(page);
+      await expectAuthPromptVisible(page);
+      await page.waitForFunction(() => {
+        const element = globalThis.document.querySelector(".access-dialog__description");
+        const text = element?.textContent ?? "";
+        return /Authentication required|needs an access code|protected.*access code/i.test(text);
+      });
 
-    await submitAccessCode(page, "wrong-code");
-    await page.waitForFunction(() => {
-      const element = globalThis.document.querySelector(".access-dialog__description");
-      return /Invalid classroom code|access code (?:didn't|did not) match/i.test(element?.textContent ?? "");
-    });
-    assert.match(
-      await page.locator(".access-dialog__description").innerText(),
-      /Invalid classroom code|access code (?:didn't|did not) match/i,
-    );
+      await submitAccessCode(page, "wrong-code");
+      await page.waitForFunction(() => {
+        const element = globalThis.document.querySelector(".access-dialog__description");
+        return /Invalid classroom code|access code (?:didn't|did not) match/i.test(element?.textContent ?? "");
+      });
+      assert.match(
+        await page.locator(".access-dialog__description").innerText(),
+        /Invalid classroom code|access code (?:didn't|did not) match/i,
+      );
 
-    await submitAccessCode(page, PROTECTED_CLASSROOM_CODE);
-    await page.waitForSelector("#classroom-access-title", { state: "detached" });
-    await openClassroomPanel(page);
-    assert.match(await page.locator(".shell-classroom-panel__details").innerText(), /saved in this browser/i);
-    await page.keyboard.press("Escape");
-    await navigateToSurface(page, "tomorrow-plan", { classroom: PROTECTED_CLASSROOM_ID });
-    await expectActiveClassroom(page, PROTECTED_CLASSROOM_ID, "Protected classroom tomorrow plan");
+      await submitAccessCode(page, PROTECTED_CLASSROOM_CODE);
+      await page.waitForSelector("#classroom-access-title", { state: "detached" });
+      await openClassroomPanel(page);
+      assert.match(await page.locator(".shell-classroom-panel__details").innerText(), /saved in this browser/i);
+      await page.keyboard.press("Escape");
+      await navigateToSurface(page, "tomorrow-plan", { classroom: PROTECTED_CLASSROOM_ID });
+      await expectActiveClassroom(page, PROTECTED_CLASSROOM_ID, "Protected classroom tomorrow plan");
 
-    await page.reload({ waitUntil: "networkidle" });
-    await openClassroomPanel(page);
-    assert.equal((await page.locator('[data-testid="shell-classroom-active-id"]').innerText()).trim(), PROTECTED_CLASSROOM_ID);
-    await page.waitForTimeout(300);
-    assert.equal(await page.locator("#classroom-access-title").count(), 0, "Saved classroom code should survive refresh without prompting");
-    assert.match(await page.locator(".shell-classroom-panel__details").innerText(), /saved in this browser/i);
-    await page.keyboard.press("Escape");
+      await page.reload({ waitUntil: "networkidle" });
+      await openClassroomPanel(page);
+      assert.equal((await page.locator('[data-testid="shell-classroom-active-id"]').innerText()).trim(), PROTECTED_CLASSROOM_ID);
+      await page.waitForTimeout(300);
+      assert.equal(await page.locator("#classroom-access-title").count(), 0, "Saved classroom code should survive refresh without prompting");
+      assert.match(await page.locator(".shell-classroom-panel__details").innerText(), /saved in this browser/i);
+      await page.keyboard.press("Escape");
+    } else {
+      console.log("Skipping protected-classroom browser smoke; set PRAIRIE_SMOKE_PROTECTED_CLASSROOM_CODE to exercise it.");
+    }
 
     const tabletContext = await browser.newContext({ viewport: { width: 720, height: 1100 } });
     await tabletContext.addInitScript(() => {

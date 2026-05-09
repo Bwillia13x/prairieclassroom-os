@@ -5,10 +5,14 @@ import { DEFAULT_GEMINI_MODEL_IDS, GEMINI_RUN_GUARD_ENV_VAR, resolveGeminiConfig
 
 export const PROOF_DOC_PATHS = [
   "docs/eval-baseline.md",
+  "docs/live-model-proof-status.md",
   "docs/hackathon-proof-brief.md",
+  "docs/hackathon-judge-summary.md",
   "docs/hackathon-hosted-operations.md",
+  "docs/hackathon-submission-checklist.md",
   "README.md",
   "docs/kaggle-writeup.md",
+  "docs/gemma-integration-followups.md",
 ];
 
 // Fallback seed only. `validateProofSurfaces` derives the canonical
@@ -17,8 +21,10 @@ export const PROOF_DOC_PATHS = [
 // for proof surfaces. This constant still backs `readHostedProofSummary`
 // callers that don't have a surfaces object, and the `ops-scripts.test.ts`
 // fixtures that construct synthetic proof surfaces inline.
-export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-04-27T01-26-45-190Z-87424";
-export const TARGETED_HOSTED_SMOKE_COMMAND = "PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api";
+export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-05-03T17-59-42-981Z-80702";
+export const CURRENT_HOSTED_ATTEMPT_RUN_DIR = "output/release-gate/2026-05-08T22-47-12-031Z-43430";
+export const TARGETED_HOSTED_SMOKE_COMMAND =
+  "PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api";
 export const LOCAL_PREP_COMMANDS = [
   "npm run proof:check",
   "npm run gemini:readycheck",
@@ -32,17 +38,8 @@ export const APPROVED_RERUN_ORDER = [
 const HOSTED_PROOF_RUN_DIR_PATTERN = /output\/release-gate\/\d{4}-\d{2}-\d{2}T[0-9A-Z-]+-\d+/g;
 
 const FORBIDDEN_OVERCLAIMS = [
-  /latest failed hosted gate/i,
-  /latest blocked hosted artifact/i,
-  /current blocked hosted artifact/i,
-  /still blocked at API smoke/i,
-  /full hosted gate still blocked/i,
-  /what is still blocked/i,
-  /exact blocked step/i,
-  /current blocker detail/i,
   /first approved live rerun step:\s*PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api/i,
   /next approved live rerun step is\s*`?PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api`?/i,
-  /this proof is partial/i,
   /Hosted Gemini proof lane:\s*partial/i,
 ];
 
@@ -70,6 +67,7 @@ export async function loadProofSurfaces(rootDir, docPaths = PROOF_DOC_PATHS) {
 }
 
 const CANONICAL_HOSTED_GATE_PATTERN = /Latest passing hosted gate[:*\s]*`(output\/release-gate\/[^`]+)`/i;
+const CURRENT_HOSTED_ATTEMPT_PATTERN = /Latest attempted hosted gate[:*\s]*`(output\/release-gate\/[^`]+)`/i;
 
 function extractCanonicalHostedArtifact(surfaces) {
   const proofBrief = surfaces["docs/hackathon-proof-brief.md"];
@@ -77,6 +75,15 @@ function extractCanonicalHostedArtifact(surfaces) {
     return null;
   }
   const match = proofBrief.match(CANONICAL_HOSTED_GATE_PATTERN)?.[1];
+  return match?.startsWith("output/release-gate/") ? match : null;
+}
+
+function extractCurrentHostedAttemptArtifact(surfaces) {
+  const proofBrief = surfaces["docs/hackathon-proof-brief.md"];
+  if (typeof proofBrief !== "string") {
+    return null;
+  }
+  const match = proofBrief.match(CURRENT_HOSTED_ATTEMPT_PATTERN)?.[1];
   return match?.startsWith("output/release-gate/") ? match : null;
 }
 
@@ -92,6 +99,7 @@ export function validateProofSurfaces(surfaces) {
     );
     return { ok: false, issues };
   }
+  const currentAttemptArtifact = extractCurrentHostedAttemptArtifact(surfaces);
 
   for (const docPath of PROOF_DOC_PATHS) {
     if (!(docPath in surfaces)) {
@@ -101,6 +109,23 @@ export function validateProofSurfaces(surfaces) {
 
     const content = surfaces[docPath];
     requireSubstring(issues, docPath, content, canonicalArtifact, "hosted proof artifact path");
+    if (currentAttemptArtifact) {
+      requireSubstring(issues, docPath, content, currentAttemptArtifact, "current hosted attempt artifact path");
+      requirePattern(
+        issues,
+        docPath,
+        content,
+        /(latest attempted hosted gate|current hosted refresh|May 8 hosted refresh|current hosted attempt)/i,
+        "current hosted attempt language",
+      );
+      requirePattern(
+        issues,
+        docPath,
+        content,
+        /(failed|blocked|did not produce a passing|not a passing baseline|no current clean full hosted gate)/i,
+        "current hosted blocker language",
+      );
+    }
     requireSubstring(issues, docPath, content, DEFAULT_GEMINI_MODEL_IDS.live, "hosted live model id");
     requireSubstring(issues, docPath, content, DEFAULT_GEMINI_MODEL_IDS.planning, "hosted planning model id");
     requireSubstring(issues, docPath, content, "npm run release:gate:gemini", "hosted release gate command");
@@ -135,13 +160,17 @@ export function validateProofSurfaces(surfaces) {
 
 export function extractHostedProofRunDir(surfaces) {
   // Character class `[:*\s]*` after each label tolerates the real docs'
-  // markdown emphasis (e.g., `**Latest passing hosted gate:**`) between the
-  // label and the backticked path. The proof-brief entry is intentionally
-  // first so the validator's canonical source wins over alternatives.
+  // markdown emphasis (e.g., `**Latest attempted hosted gate:**`) between the
+  // label and the backticked path. The attempted-gate entries are intentionally
+  // first so readycheck reports the current proof state, while proof validation
+  // still derives the last passing baseline from the proof-brief line.
   const preferredExtractions = [
+    ["docs/hackathon-proof-brief.md", /Latest attempted hosted gate[:*\s]*`([^`]+)`/i],
+    ["docs/live-model-proof-status.md", /Latest attempted hosted Gemini gate[:*\s]*`([^`]+)`/i],
+    ["docs/hackathon-hosted-operations.md", /Latest attempted gate artifact[:*\s]*`([^`]+)`/i],
     ["docs/hackathon-proof-brief.md", /Latest passing hosted gate[:*\s]*`([^`]+)`/i],
     ["docs/hackathon-hosted-operations.md", /Latest passing gate artifact[:*\s]*`([^`]+)`/i],
-    ["README.md", /latest passing hosted artifact is\s*`([^`]+)`/i],
+    ["README.md", /last passing hosted (?:artifact|baseline).*`([^`]+)`/i],
   ];
 
   for (const [docPath, pattern] of preferredExtractions) {

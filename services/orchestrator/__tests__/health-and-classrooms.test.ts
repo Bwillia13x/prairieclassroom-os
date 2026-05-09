@@ -196,7 +196,7 @@ describe("GET /api/classrooms", () => {
     closeAll();
   });
 
-  it("returns sanitized classroom list without access_code", async () => {
+  it("returns public classroom selector metadata only", async () => {
     const res = await fetch(`${baseUrl}/api/classrooms`);
     expect(res.status).toBe(200);
 
@@ -218,11 +218,53 @@ describe("GET /api/classrooms", () => {
     expect(openEntry).toBeDefined();
     expect(openEntry!.requires_access_code).toBe(false);
 
-    // Students should be sanitized — no student_id or internal fields
+    // Public selector rows should not disclose roster or classroom notes.
     const students = openEntry!.students as Array<Record<string, unknown>>;
-    expect(students).toHaveLength(1);
-    expect(students[0]).toEqual({ alias: "Fern", family_language: "English", eal_flag: false, support_tags: [] });
-    expect(students[0]).not.toHaveProperty("student_id");
+    expect(students).toEqual([]);
+    expect(openEntry!.classroom_notes).toEqual([]);
+  });
+});
+
+describe("GET /api/classrooms/:id/profile", () => {
+  let server: Server | null = null;
+  let baseUrl = "";
+
+  beforeEach(async () => {
+    const running = await startServer("http://127.0.0.1:19999");
+    server = running.server;
+    baseUrl = running.baseUrl;
+  });
+
+  afterEach(async () => {
+    await stopServer(server);
+    server = null;
+    baseUrl = "";
+    closeAll();
+  });
+
+  it("requires the classroom code for protected profile data", async () => {
+    const res = await fetch(`${baseUrl}/api/classrooms/${PROTECTED_CLASSROOM.classroom_id}/profile`);
+    expect(res.status).toBe(401);
+
+    const body = await res.json();
+    expect(body).toMatchObject({
+      category: "auth",
+      detail_code: "classroom_code_missing",
+    });
+  });
+
+  it("returns the full sanitized profile when authorized", async () => {
+    const res = await fetch(`${baseUrl}/api/classrooms/${PROTECTED_CLASSROOM.classroom_id}/profile`, {
+      headers: { "X-Classroom-Code": PROTECTED_CLASSROOM.access_code! },
+    });
+    expect(res.status).toBe(200);
+
+    const body = await res.json();
+    expect(body).toMatchObject({
+      classroom_id: PROTECTED_CLASSROOM.classroom_id,
+      requires_access_code: true,
+    });
+    expect(body).not.toHaveProperty("access_code");
   });
 });
 
@@ -267,5 +309,15 @@ describe("GET /api/classrooms/:id/schedule", () => {
     });
     expect(body.schedule).toEqual([{ time_slot: "09:00", activity: "Math block", ea_available: false }]);
     expect(body.upcoming_events).toEqual([{ event_date: "2026-04-15", description: "Field trip" }]);
+  });
+
+  it("requires the classroom code for protected schedule data", async () => {
+    const res = await fetch(`${baseUrl}/api/classrooms/${PROTECTED_CLASSROOM.classroom_id}/schedule`);
+    expect(res.status).toBe(401);
+
+    const allowed = await fetch(`${baseUrl}/api/classrooms/${PROTECTED_CLASSROOM.classroom_id}/schedule`, {
+      headers: { "X-Classroom-Code": PROTECTED_CLASSROOM.access_code! },
+    });
+    expect(allowed.status).toBe(200);
   });
 });

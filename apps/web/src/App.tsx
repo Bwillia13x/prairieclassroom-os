@@ -21,7 +21,7 @@ import {
   type ClassroomRole,
   type NavTarget,
 } from "./appReducer";
-import { configureApiClient, fetchTodaySnapshot, listClassrooms } from "./api";
+import { configureApiClient, fetchClassroomProfile, fetchTodaySnapshot, generateComplexityForecast, listClassrooms } from "./api";
 import { getClassroomLoadErrorMessage } from "./appErrors";
 import ErrorBoundary from "./components/ErrorBoundary";
 import SectionSkeleton from "./components/SectionSkeleton";
@@ -60,6 +60,13 @@ const RolePromptDialog = lazy(() => import("./components/RolePromptDialog"));
 const ShortcutSheet = lazy(() => import("./components/ShortcutSheet"));
 
 const todaySnapshotRequestCache = new Map<string, ReturnType<typeof fetchTodaySnapshot>>();
+const demoAutoForecastAttempts = new Set<string>();
+
+function getTomorrowForecastDate(now = new Date()): string {
+  const forecastDate = new Date(now);
+  forecastDate.setDate(forecastDate.getDate() + 1);
+  return forecastDate.toISOString().split("T")[0];
+}
 
 function loadTodaySnapshotOnce(classroomId: string) {
   const cached = todaySnapshotRequestCache.get(classroomId);
@@ -129,6 +136,7 @@ export default function App() {
   const appShellRef = useRef<HTMLDivElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const queuedFlushPromiseRef = useRef<Promise<void> | null>(null);
+  const profileLoadAttemptsRef = useRef<Set<string>>(new Set());
   // Ref mirrors visibleTabs so the global keydown handler doesn't need to
   // re-register whenever the role changes (and so the `1…9/0` shortcuts
   // always index into the current role's visible tab list).
@@ -437,6 +445,30 @@ export default function App() {
     };
   }, [requestClassroomCode]);
 
+  useEffect(() => {
+    if (!state.activeClassroom) return;
+    const classroomId = state.activeClassroom;
+    const classroom = state.classrooms.find((entry) => entry.classroom_id === classroomId);
+    if (!classroom) return;
+    if (classroom.students.length > 0 || classroom.classroom_notes.length > 0 || classroom.schedule?.length) return;
+    if (classroom.requires_access_code && !state.classroomAccessCodes[classroomId]) return;
+    if (profileLoadAttemptsRef.current.has(classroomId)) return;
+
+    profileLoadAttemptsRef.current.add(classroomId);
+    const controller = new AbortController();
+    fetchClassroomProfile(classroomId, controller.signal)
+      .then((profile) => {
+        dispatch({ type: "UPSERT_CLASSROOM_PROFILE", profile });
+      })
+      .catch((err) => {
+        profileLoadAttemptsRef.current.delete(classroomId);
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        console.warn("Failed to load classroom profile:", err);
+      });
+
+    return () => controller.abort();
+  }, [state.activeClassroom, state.classrooms, state.classroomAccessCodes]);
+
   // Flush queued telemetry once on mount. Online recovery is handled by the
   // separate 'online' listener below; we intentionally do NOT re-flush on every
   // classroomAccessCodes change because that causes burst writes on first auth.
@@ -475,9 +507,48 @@ export default function App() {
   useEffect(() => {
     if (!state.activeClassroom || activeRole === "reviewer") return;
     let cancelled = false;
-    loadTodaySnapshotOnce(state.activeClassroom)
+    const classroomId = state.activeClassroom;
+    const classroomProfile = state.classrooms.find((entry) => entry.classroom_id === classroomId);
+    const isDemoClassroom = classroomProfile?.is_demo || classroomId === DEMO_CLASSROOM_ID;
+    loadTodaySnapshotOnce(classroomId)
       .then((snapshot) => {
-        if (!cancelled) dispatch({ type: "SET_TODAY_SNAPSHOT", snapshot });
+        if (cancelled) return;
+        dispatch({ type: "SET_TODAY_SNAPSHOT", snapshot });
+
+        if (
+          activeRole === "teacher" &&
+          isDemoClassroom &&
+          (!snapshot.latest_forecast || snapshot.latest_forecast.blocks.length === 0) &&
+          !demoAutoForecastAttempts.has(classroomId)
+        ) {
+          demoAutoForecastAttempts.add(classroomId);
+          (async () => {
+            try {
+              await generateComplexityForecast({
+                classroom_id: classroomId,
+                forecast_date: getTomorrowForecastDate(),
+              });
+
+              const refreshedSnapshot = await fetchTodaySnapshot(classroomId);
+              if (cancelled) return;
+              dispatch({ type: "SET_TODAY_SNAPSHOT", snapshot: refreshedSnapshot });
+            } catch (err) {
+              demoAutoForecastAttempts.delete(classroomId);
+              if (cancelled) return;
+              console.warn("Failed to auto-seed demo forecast:", err);
+              dispatch({ type: "DISMISS_TOAST", id: "demo-forecast-seed-error" });
+              dispatch({
+                type: "PUSH_TOAST",
+                toast: {
+                  id: "demo-forecast-seed-error",
+                  type: "error",
+                  message: "Couldn't automatically generate today's demo flow. Open Forecast to seed it manually.",
+                  duration: 6000,
+                },
+              });
+            }
+          })();
+        }
       })
       .catch((err) => {
         if (cancelled) return;
@@ -497,7 +568,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [state.activeClassroom, activeRole]);
+  }, [state.activeClassroom, state.classrooms, activeRole]);
 
   useEffect(() => {
     setClassroomMenuOpen(false);

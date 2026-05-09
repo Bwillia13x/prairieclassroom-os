@@ -12,7 +12,6 @@ import StreamingIndicator from "../components/StreamingIndicator";
 import HistoryDrawer from "../components/HistoryDrawer";
 import PageIntro from "../components/PageIntro";
 import WorkspaceLayout from "../components/WorkspaceLayout";
-import EmptyStateCard from "../components/EmptyStateCard";
 import ErrorBanner from "../components/ErrorBanner";
 import ResultBanner from "../components/ResultBanner";
 import MockModeBanner from "../components/MockModeBanner";
@@ -251,10 +250,6 @@ export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick
                   eaActions={2}
                   prepItems={3}
                   familyFollowups={1}
-                />
-                <EmptyStateCard
-                  variant="preview"
-                  label="Tomorrow plan preview"
                 />
               </>
             ) : null}

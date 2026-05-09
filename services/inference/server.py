@@ -16,6 +16,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import hmac
 import os
 import time
 from flask import Flask, Response, request, jsonify, stream_with_context
@@ -23,6 +24,123 @@ from harness import GemmaHarness, InferenceMode, GenerationRequest, ModelTier, r
 
 app = Flask(__name__)
 harness: GemmaHarness | None = None
+
+INFERENCE_AUTH_TOKEN_ENV = "PRAIRIE_INFERENCE_AUTH_TOKEN"
+MAX_IMAGE_PAYLOADS = 4
+MAX_IMAGE_BASE64_BYTES = 12 * 1024 * 1024
+DEFAULT_MAX_TOKENS_CAP = 8192
+
+
+def _configured_auth_token() -> str:
+    return os.environ.get(INFERENCE_AUTH_TOKEN_ENV, "").strip()
+
+
+def _requires_configured_auth(mode: str) -> bool:
+    return mode in {InferenceMode.GEMINI.value, InferenceMode.API.value}
+
+
+def _request_auth_token() -> str:
+    header = request.headers.get("Authorization", "").strip()
+    if header.lower().startswith("bearer "):
+        return header[7:].strip()
+    return request.headers.get("X-Prairie-Inference-Token", "").strip()
+
+
+def _authorize_inference_request():
+    token = _configured_auth_token()
+    if not token:
+        return None
+    if not hmac.compare_digest(_request_auth_token(), token):
+        return jsonify({
+            "error": "Inference authorization required.",
+            "category": "auth",
+            "retryable": False,
+            "detail_code": "inference_auth_required",
+        }), 401
+    return None
+
+
+def _read_json_body():
+    try:
+        body = request.get_json(force=True)
+    except Exception:
+        return None, (jsonify({"error": "Invalid JSON request body"}), 400)
+    if not isinstance(body, dict):
+        return None, (jsonify({"error": "Request body must be a JSON object"}), 400)
+    return body, None
+
+
+def _parse_max_tokens(value) -> tuple[int | None, object | None]:
+    try:
+        parsed = int(value)
+    except (TypeError, ValueError):
+        return None, (jsonify({"error": "max_tokens must be an integer"}), 400)
+    cap = int(os.environ.get("PRAIRIE_INFERENCE_MAX_TOKENS", str(DEFAULT_MAX_TOKENS_CAP)))
+    if parsed < 1 or parsed > cap:
+        return None, (jsonify({"error": f"max_tokens must be between 1 and {cap}"}), 400)
+    return parsed, None
+
+
+def _parse_image_payloads(body: dict) -> tuple[list[dict[str, str]] | None, object | None]:
+    if "images" in body:
+        return None, (jsonify({
+            "error": "Path-based images are not accepted over the inference HTTP API. Use image_payloads.",
+            "category": "validation",
+            "retryable": False,
+            "detail_code": "path_images_rejected",
+        }), 400)
+
+    raw_payloads = body.get("image_payloads", [])
+    if raw_payloads is None:
+        raw_payloads = []
+    if not isinstance(raw_payloads, list) or len(raw_payloads) > MAX_IMAGE_PAYLOADS:
+        return None, (jsonify({"error": f"image_payloads must be a list of at most {MAX_IMAGE_PAYLOADS} items"}), 400)
+
+    payloads: list[dict[str, str]] = []
+    for raw in raw_payloads:
+        if not isinstance(raw, dict):
+            return None, (jsonify({"error": "Each image_payloads item must be an object"}), 400)
+        mime_type = str(raw.get("mime_type", "")).strip()
+        data_base64 = str(raw.get("data_base64", "")).strip()
+        if not mime_type.startswith("image/"):
+            return None, (jsonify({"error": "image_payloads items must declare an image/* mime_type"}), 400)
+        if not data_base64 or len(data_base64) > MAX_IMAGE_BASE64_BYTES:
+            return None, (jsonify({"error": "image_payloads data_base64 is missing or too large"}), 400)
+        payloads.append({"mime_type": mime_type, "data_base64": data_base64})
+    return payloads, None
+
+
+def _generation_request_from_body(body: dict) -> tuple[GenerationRequest | None, object | None]:
+    if "prompt" not in body:
+        return None, (jsonify({"error": "Missing 'prompt' in request body"}), 400)
+    if not isinstance(body["prompt"], str):
+        return None, (jsonify({"error": "prompt must be a string"}), 400)
+
+    tier_str = body.get("model_tier", "live")
+    try:
+        tier = ModelTier(tier_str)
+    except ValueError:
+        return None, (jsonify({"error": f"Invalid model_tier: {tier_str}"}), 400)
+
+    max_tokens, max_tokens_error = _parse_max_tokens(body.get("max_tokens", 2048))
+    if max_tokens_error is not None:
+        return None, max_tokens_error
+
+    image_payloads, image_payloads_error = _parse_image_payloads(body)
+    if image_payloads_error is not None:
+        return None, image_payloads_error
+
+    return GenerationRequest(
+        prompt=body["prompt"],
+        image_payloads=image_payloads or [],
+        thinking=body.get("thinking", False),
+        tools=body.get("tools"),
+        tool_interactions=body.get("tool_interactions"),
+        model_tier=tier,
+        max_tokens=max_tokens or 2048,
+        prompt_class=body.get("prompt_class"),
+        mock_context=body.get("mock_context"),
+    ), None
 
 def _apply_eval_behavior(body: dict) -> tuple[object, int] | None:
     if harness is None or harness.mode.value != "mock":
@@ -58,34 +176,24 @@ def health():
 
 @app.route("/generate", methods=["POST"])
 def generate():
+    auth_error = _authorize_inference_request()
+    if auth_error is not None:
+        return auth_error
+
     if harness is None:
         return jsonify({"error": "Harness not initialized"}), 503
 
-    body = request.get_json(force=True)
-    if not body or "prompt" not in body:
-        return jsonify({"error": "Missing 'prompt' in request body"}), 400
+    body, body_error = _read_json_body()
+    if body_error is not None:
+        return body_error
 
     test_behavior_resp = _apply_eval_behavior(body)
     if test_behavior_resp is not None:
         return test_behavior_resp
 
-    tier_str = body.get("model_tier", "live")
-    try:
-        tier = ModelTier(tier_str)
-    except ValueError:
-        return jsonify({"error": f"Invalid model_tier: {tier_str}"}), 400
-
-    gen_req = GenerationRequest(
-        prompt=body["prompt"],
-        images=body.get("images", []),
-        thinking=body.get("thinking", False),
-        tools=body.get("tools"),
-        tool_interactions=body.get("tool_interactions"),
-        model_tier=tier,
-        max_tokens=body.get("max_tokens", 2048),
-        prompt_class=body.get("prompt_class"),
-        mock_context=body.get("mock_context"),  # optional dev-only fixture context; ignored outside mock mode
-    )
+    gen_req, gen_req_error = _generation_request_from_body(body)
+    if gen_req_error is not None:
+        return gen_req_error
 
     start = time.perf_counter()
     try:
@@ -132,34 +240,24 @@ def _response_payload(resp, total_ms: float) -> dict:
 
 @app.route("/generate/stream", methods=["POST"])
 def generate_stream():
+    auth_error = _authorize_inference_request()
+    if auth_error is not None:
+        return auth_error
+
     if harness is None:
         return jsonify({"error": "Harness not initialized"}), 503
 
-    body = request.get_json(force=True)
-    if not body or "prompt" not in body:
-        return jsonify({"error": "Missing 'prompt' in request body"}), 400
+    body, body_error = _read_json_body()
+    if body_error is not None:
+        return body_error
 
     test_behavior_resp = _apply_eval_behavior(body)
     if test_behavior_resp is not None:
         return test_behavior_resp
 
-    tier_str = body.get("model_tier", "live")
-    try:
-        tier = ModelTier(tier_str)
-    except ValueError:
-        return jsonify({"error": f"Invalid model_tier: {tier_str}"}), 400
-
-    gen_req = GenerationRequest(
-        prompt=body["prompt"],
-        images=body.get("images", []),
-        thinking=body.get("thinking", False),
-        tools=body.get("tools"),
-        tool_interactions=body.get("tool_interactions"),
-        model_tier=tier,
-        max_tokens=body.get("max_tokens", 2048),
-        prompt_class=body.get("prompt_class"),
-        mock_context=body.get("mock_context"),
-    )
+    gen_req, gen_req_error = _generation_request_from_body(body)
+    if gen_req_error is not None:
+        return gen_req_error
 
     @stream_with_context
     def event_stream():
@@ -211,6 +309,10 @@ def create_app(mode: str = "mock", model_id: str | None = None, port: int = 3200
     global harness
     if mode == InferenceMode.GEMINI.value:
         require_gemini_run_guard()
+    if _requires_configured_auth(mode) and not _configured_auth_token():
+        raise RuntimeError(
+            f"{INFERENCE_AUTH_TOKEN_ENV} is required when running inference mode '{mode}'."
+        )
     harness = GemmaHarness(mode=InferenceMode(mode), model_id=model_id)
     print(f"Inference server starting — mode={mode}, host={host}, port={port}")
     app.run(host=host, port=port, debug=False)
