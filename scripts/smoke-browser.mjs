@@ -10,7 +10,10 @@ const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 const PROTECTED_CLASSROOM_ID = "alpha-grade4";
 const PROTECTED_CLASSROOM_CODE = process.env.PRAIRIE_SMOKE_PROTECTED_CLASSROOM_CODE ?? "";
 const INFERENCE_PROVIDER = (process.env.PRAIRIE_INFERENCE_PROVIDER ?? "").trim().toLowerCase();
-const HOSTED_GENERATION_TIMEOUT_MS = INFERENCE_PROVIDER === "gemini" ? 180_000 : 30_000;
+const BROWSER_SMOKE_TIMEOUT_MS = Number.parseInt(process.env.PRAIRIE_BROWSER_SMOKE_TIMEOUT_MS ?? "", 10);
+const HOSTED_GENERATION_TIMEOUT_MS = Number.isFinite(BROWSER_SMOKE_TIMEOUT_MS) && BROWSER_SMOKE_TIMEOUT_MS > 0
+  ? BROWSER_SMOKE_TIMEOUT_MS
+  : INFERENCE_PROVIDER === "gemini" ? 180_000 : 30_000;
 const OUTPUT_DIR = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
   "..",

@@ -35,7 +35,7 @@ describe("buildProofStatusMarkdown — hosted Gemini awareness", () => {
       ],
     });
 
-    assert.match(md, /Hosted Gemma 4 proof: Passing on synthetic\/demo data/);
+    assert.match(md, /Hosted Gemma 4 proof: Passing baseline on synthetic\/demo data/);
     assert.match(md, /Latest passed hosted Gemini gate: `output\/release-gate\/HOSTED-ID`/);
     assert.match(md, /Latest passed mock gate: `output\/release-gate\/MOCK-ID`/);
     assert.match(md, /mock and Ollama remain the default no-spend lanes/);
@@ -57,7 +57,7 @@ describe("buildProofStatusMarkdown — hosted Gemini awareness", () => {
     assert.doesNotMatch(md, /## Hosted Proof/);
     assert.doesNotMatch(md, /npm run gemini:readycheck/);
     assert.doesNotMatch(md, /npm run release:gate:gemini/);
-    assert.match(md, /Live-model proof:/);
+    assert.match(md, /Privacy-first Ollama live-model proof:/);
     assert.match(md, /mock and Ollama only; no paid fallback recorded/);
     assert.match(md, /Latest passed mock gate: `output\/release-gate\/MOCK-ID`/);
   });

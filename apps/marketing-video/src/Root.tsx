@@ -7,6 +7,13 @@ import {
   NOTHING_VIDEO_WIDTH,
   nothingDurationInFrames,
 } from "./NothingLaunchVideo";
+import {
+  SUBMISSION_VIDEO_FPS,
+  SUBMISSION_VIDEO_HEIGHT,
+  SUBMISSION_VIDEO_WIDTH,
+  SubmissionVideo,
+  submissionDurationInFrames,
+} from "./SubmissionVideo";
 
 export const RemotionRoot = () => (
   <>
@@ -25,6 +32,18 @@ export const RemotionRoot = () => (
       fps={NOTHING_VIDEO_FPS}
       width={NOTHING_VIDEO_WIDTH}
       height={NOTHING_VIDEO_HEIGHT}
+    />
+    <Composition
+      id="PrairieClassroomSubmission"
+      component={SubmissionVideo}
+      durationInFrames={submissionDurationInFrames}
+      fps={SUBMISSION_VIDEO_FPS}
+      width={SUBMISSION_VIDEO_WIDTH}
+      height={SUBMISSION_VIDEO_HEIGHT}
+      defaultProps={{
+        voiceover: "none",
+        captions: true,
+      }}
     />
   </>
 );

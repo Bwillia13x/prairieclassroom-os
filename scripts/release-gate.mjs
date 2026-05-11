@@ -56,6 +56,7 @@ const EVAL_RESULTS_FILE = path.join(EVAL_OUTPUT_DIR, `${EVAL_OUTPUT_BASENAME}-re
 const GEMINI_EVAL_SUITE_LABEL = "Hosted Gemini proof suite";
 const GEMINI_EVAL_CASE_IDS_FILE = path.join(ROOT, "evals", "suites", "hosted-gemini-proof.txt");
 const EVAL_BASELINE_DOC = path.join(ROOT, "docs", "eval-baseline.md");
+const HACKATHON_PROOF_BRIEF_DOC = path.join(ROOT, "docs", "hackathon-proof-brief.md");
 const REAL_PREFLIGHT_FILE = path.join(RUN_DIR, "real-preflight.json");
 const GEMINI_PREFLIGHT_FILE = path.join(RUN_DIR, "gemini-preflight.json");
 const HOST_PREFLIGHT_DIR = path.join(ROOT, "output", "host-preflight");
@@ -985,6 +986,14 @@ function renderResultsSection({
   ].join("\n");
 }
 
+async function readCurrentHostedAttemptArtifact() {
+  if (!existsSync(HACKATHON_PROOF_BRIEF_DOC)) {
+    return null;
+  }
+  const content = await readFile(HACKATHON_PROOF_BRIEF_DOC, "utf8");
+  return content.match(/Latest attempted hosted gate[:*\s]*`(output\/release-gate\/[^`]+)`/i)?.[1] ?? null;
+}
+
 function summarizeGateFailure(message) {
   const text = String(message ?? "");
   if (text.includes("80-smoke-api")) {
@@ -1114,6 +1123,7 @@ async function renderLatestGeminiSection() {
   if (!summary) {
     return renderBlockedGeminiSection();
   }
+  const currentAttemptArtifact = await readCurrentHostedAttemptArtifact();
 
   const payload = await readEvalPayloadForRunSummary(summary);
   if (payload) {
@@ -1150,6 +1160,11 @@ async function renderLatestGeminiSection() {
             ? [`**Eval suite:** ${suiteLabel}${selectedCaseCount && availableCaseCount ? ` (${selectedCaseCount}/${availableCaseCount} cases from the full corpus)` : ""}.`]
             : []),
           "**Usage scope:** Synthetic/demo evaluation only.",
+          ...(currentAttemptArtifact
+            ? [
+                `**Current hosted attempt:** The current hosted refresh at \`${currentAttemptArtifact}\` failed and did not produce a passing baseline; keep this artifact as a blocker record, not as proof.`,
+              ]
+            : []),
         ],
       });
     }

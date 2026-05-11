@@ -5,10 +5,10 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-05-09T14:59:15.818Z
+**Run date:** 2026-05-11T16:52:23.604Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
-**Raw artifacts:** `output/release-gate/2026-05-09T14-55-13-435Z-19611`
+**Raw artifacts:** `output/release-gate/2026-05-11T16-49-06-881Z-21463`
 
 ### Commands
 
@@ -22,7 +22,7 @@ npm run release:gate
 
 **Status:** Blocked before evals — Ollama preflight failed.
 **Backend:** `ollama`
-**Raw artifacts:** `output/host-preflight/2026-04-29T18-59-02-929Z.json`
+**Raw artifacts:** `output/host-preflight/2026-05-11T16-10-25-972Z.json`
 
 ### Commands
 
@@ -38,7 +38,7 @@ npm run release:gate:ollama
 - Ollama CLI is not available or `ollama list` failed.
 - Required models: `gemma4:4b`, `gemma4:27b`
 - Available models: none
-- Available disk on host: 8.95 GiB
+- Available disk on host: 16.76 GiB
 - Total host memory: 8.00 GiB
 
 ## Hosted Gemini API Baseline
@@ -50,9 +50,9 @@ npm run release:gate:ollama
 **Hosted run guard:** enabled
 **Eval suite:** Hosted Gemini proof suite (13/134 cases from the full corpus).
 **Usage scope:** Synthetic/demo evaluation only.
+**Current hosted attempt:** The current hosted refresh at `output/release-gate/2026-05-08T22-47-12-031Z-43430` failed and did not produce a passing baseline; keep this artifact as a blocker record, not as proof.
 **Model identifiers observed:** `gemma-4-26b-a4b-it`, `gemma-4-31b-it`
 **Raw artifacts:** `output/release-gate/2026-05-03T17-59-42-981Z-80702`
-**Current hosted attempt:** The May 8 hosted refresh at `output/release-gate/2026-05-08T22-47-12-031Z-43430` failed and did not produce a passing baseline; keep the May 3 artifact above as the hosted proof baseline.
 
 ### Commands
 

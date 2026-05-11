@@ -4,11 +4,11 @@ _This document is generated from zero-cost host-preflight and release-gate artif
 
 ## Verdict
 
-- Hosted Gemini proof lane: passing baseline on synthetic/demo data through the guarded Gemini lane.
-- Current hosted refresh: the May 8 hosted refresh failed and did not produce a passing baseline; latest attempted hosted Gemini gate is `output/release-gate/2026-05-08T22-47-12-031Z-43430`.
-- Zero-cost school-deployment proof: Blocked pending a viable privacy-first Ollama/self-hosted school deployment host.
+- Hosted Gemma 4 proof: Passing baseline on synthetic/demo data through the guarded Gemini lane.
+- Current hosted refresh: latest attempted hosted Gemini gate failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; this is not a passing baseline.
+- Privacy-first Ollama school-deployment proof: Blocked pending a viable zero-cost Ollama host.
 - Zero-cost enforcement: mock and Ollama remain the default no-spend lanes; hosted Gemini is explicit opt-in only.
-- Latest passed mock gate: `output/release-gate/2026-05-09T14-55-13-435Z-19611`
+- Latest passed mock gate: `output/release-gate/2026-05-11T16-49-06-881Z-21463`
 - Latest passed hosted Gemini gate: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
 - Latest attempted hosted Gemini gate: `output/release-gate/2026-05-08T22-47-12-031Z-43430`
 - Latest passed Ollama gate: _none recorded_
@@ -31,7 +31,7 @@ npm run logs:summary
 | --- | --- | --- | --- |
 | Gemini API | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` | Synthetic/demo only | `output/release-gate/2026-05-03T17-59-42-981Z-80702` |
 
-The May 8 hosted attempt at `output/release-gate/2026-05-08T22-47-12-031Z-43430` is not a passing baseline; it remains a current hosted attempt artifact for failure/refresh traceability.
+The current hosted attempt at `output/release-gate/2026-05-08T22-47-12-031Z-43430` failed and did not produce a passing baseline; keep the last passing artifact above as the hosted proof baseline.
 
 ## Proven Hosts
 
@@ -45,7 +45,7 @@ _None recorded_
 
 | Host | Block | Artifacts |
 | --- | --- | --- |
-| macbookair.ucalgary.ca (darwin arm64, Apple M1, 8.00 GiB) | Ollama CLI is not available or `ollama list` failed. | `output/host-preflight/2026-04-29T18-59-02-929Z.json` |
+| macbookair.ucalgary.ca (darwin arm64, Apple M1, 8.00 GiB) | Ollama CLI is not available or `ollama list` failed. | `output/host-preflight/2026-05-11T16-10-25-972Z.json` |
 | Benjamins-MacBook-Air.local (darwin arm64, Apple M1, 8.00 GiB) | Ollama CLI is not available or `ollama list` failed. | `output/host-preflight/2026-04-12T16-10-14-124Z.json` |
 
 ## Artifact Locations

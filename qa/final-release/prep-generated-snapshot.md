@@ -1,0 +1,112 @@
+- generic [ref=e3]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - status [ref=e423]:
+    - generic [ref=e424]: "[OK]"
+    - generic [ref=e425]: Variants generated
+    - button "Dismiss" [ref=e426] [cursor=pointer]: "[X]"
+  - button "Collapse navigation rail" [expanded] [ref=e5] [cursor=pointer]:
+    - img [ref=e6]
+    - generic [ref=e8]: Collapse
+  - banner [ref=e9]:
+    - generic [ref=e10]:
+      - generic "PrairieClassroom home" [ref=e11]:
+        - generic [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e14]: PrairieClassroom
+          - generic [ref=e15]: OS
+      - generic [ref=e16]:
+        - 'button "Active classroom: Grade 3-4 cross curricular" [ref=e18] [cursor=pointer]':
+          - img [ref=e20]
+          - generic [ref=e26]: Grade 3-4 cross curricular
+          - generic [ref=e27]: ⌄
+        - button "Teacher" [ref=e30] [cursor=pointer]:
+          - generic [ref=e33]: Teacher
+          - generic [ref=e34]: ⌄
+      - navigation "PrairieClassroom OS navigation" [ref=e35]:
+        - tablist "Primary navigation" [ref=e36]:
+          - 'tab "Today: Do this now" [ref=e37] [cursor=pointer]':
+            - img [ref=e38]
+            - generic [ref=e41]
+          - 'tab "Classroom: Room view" [ref=e44] [cursor=pointer]':
+            - img [ref=e45]
+            - generic [ref=e50]
+          - 'tab "Tomorrow: Plan tomorrow" [ref=e53] [cursor=pointer]':
+            - img [ref=e54]
+            - generic [ref=e56]
+          - 'tab "Week: Week map" [ref=e59] [cursor=pointer]':
+            - img [ref=e60]
+            - generic [ref=e66]
+          - 'tab "Prep: Adapt lesson" [selected] [ref=e69] [cursor=pointer]':
+            - img [ref=e70]
+            - generic [ref=e73]
+          - 'tab "Ops: Log note" [ref=e76] [cursor=pointer]':
+            - img [ref=e77]
+            - generic [ref=e80]
+            - generic "5 pending" [ref=e83]: "5"
+          - 'tab "Review: Message family" [ref=e84] [cursor=pointer]':
+            - img [ref=e85]
+            - generic [ref=e86]
+            - generic "16 pending" [ref=e89]: "16"
+        - generic [ref=e90]:
+          - generic [ref=e91]: Alberta K-6
+          - generic [ref=e92]: Privacy first
+          - generic [ref=e93]: Teacher controlled
+  - main [ref=e94]:
+    - 'tabpanel "Prep: Adapt lesson" [ref=e95]':
+      - generic [ref=e96]:
+        - region "Prep command, lesson adaptation, and language supports" [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]: Prep command
+            - heading "Prepare the material before it reaches the room." [level=1] [ref=e100]
+            - paragraph [ref=e101]: Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.
+          - complementary "Page pulse" [ref=e102]:
+            - generic [ref=e105]
+            - generic [ref=e109]
+            - generic [ref=e112]
+        - region "Prep operational preview" [ref=e131]:
+          - generic [ref=e132]:
+            - generic [ref=e133]
+            - generic [ref=e145]
+            - generic [ref=e167]
+        - generic [ref=e179]:
+          - generic [ref=e180]: "02"
+          - heading "Prep lane" [level=2] [ref=e181]
+          - paragraph [ref=e182]: Choose the prep mode, then keep the artifact canvas and output preview in one line of sight.
+        - tablist "Prep tool" [ref=e183]:
+          - tab "01 Artifact Differentiate Lesson variants Adapt one lesson, worksheet, or passage across readiness levels." [selected] [ref=e184] [cursor=pointer]:
+            - generic [ref=e185]: 01 Artifact
+            - generic [ref=e186]: Differentiate
+            - generic [ref=e187]: Lesson variants
+            - generic [ref=e188]: Adapt one lesson, worksheet, or passage across readiness levels.
+          - tab "02 Language Language Tools EAL support Simplify text and prepare bilingual vocabulary supports." [ref=e189] [cursor=pointer]:
+            - generic [ref=e190]: 02 Language
+            - generic [ref=e191]: Language Tools
+            - generic [ref=e192]: EAL support
+            - generic [ref=e193]: Simplify text and prepare bilingual vocabulary supports.
+        - region "Active workspace" [ref=e194]:
+          - generic [ref=e195]:
+            - generic [ref=e196]: Active workspace
+            - generic [ref=e197]: Build lesson variants
+          - generic [ref=e199]:
+            - heading "Build Lesson Variants" [level=2] [ref=e200]
+            - generic [ref=e201]
+    - contentinfo [ref=e395]:
+      - generic [ref=e396]:
+        - generic [ref=e397]:
+          - generic "Application context" [ref=e398]:
+            - generic [ref=e399]: PrairieClassroom OS
+            - generic [ref=e400]: Gemma 4 Good Hackathon demo build
+          - generic [ref=e401]:
+            - button "Shortcuts" [ref=e402] [cursor=pointer]
+            - button "Keyboard shortcuts" [ref=e405] [cursor=pointer]: "?"
+        - group "Build context" [ref=e406]:
+          - generic [ref=e407]:
+            - generic [ref=e408]: classroom
+            - generic [ref=e409]: demo-okafor-grade34
+          - generic [ref=e410]:
+            - generic [ref=e411]: env
+            - generic [ref=e412]: mock
+          - generic [ref=e413]:
+            - generic [ref=e414]: v
+            - generic [ref=e415]: 0.1.0

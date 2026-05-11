@@ -20,6 +20,7 @@
     "provision:vertex-endpoints": "node scripts/provision-vertex-endpoints.mjs",
     "smoke:api": "node scripts/smoke-api.mjs",
     "smoke:browser": "node scripts/smoke-browser.mjs",
+    "smoke:public-demo": "node scripts/smoke-public-demo.mjs",
     "ui:evidence": "node scripts/capture-ui-evidence.mjs",
     "demo:screenshots": "node scripts/capture-demo-script-screenshots.mjs",
     "smoke": "npm run smoke:api && npm run smoke:browser",
@@ -52,11 +53,19 @@
     "release:gate:gemini": "node scripts/release-gate.mjs --inference-mode gemini --update-baseline",
     "release:gate:real": "node scripts/release-gate.mjs --inference-mode api --update-baseline",
     "submission:final-check": "node scripts/submission-final-check.mjs",
+    "submission:publish-preflight": "node scripts/submission-publish-preflight.mjs",
     "eval:summary": "node scripts/eval-summary.mjs",
     "evidence:generate": "npx tsx scripts/evidence-generate.ts",
     "evidence:snapshot": "npx tsx scripts/evidence-snapshot.ts",
     "video:studio": "npm run studio -w @prairie/marketing-video",
-    "video:render": "npm run render -w @prairie/marketing-video"
+    "video:render": "npm run render -w @prairie/marketing-video",
+    "video:still:submission": "npm run still:submission -w @prairie/marketing-video",
+    "video:render:submission": "npm run render:submission -w @prairie/marketing-video",
+    "video:render:submission:polished": "npm run render:submission:polished -w @prairie/marketing-video",
+    "video:render:submission:final": "npm run render:submission:final -w @prairie/marketing-video",
+    "video:render:submission:voiceover": "npm run render:submission:voiceover -w @prairie/marketing-video",
+    "video:voiceover:elevenlabs": "node scripts/render-submission-voiceover-elevenlabs.mjs",
+    "video:qa:submission": "node scripts/qa-submission-video.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

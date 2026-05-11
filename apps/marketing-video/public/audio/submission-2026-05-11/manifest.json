@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-05-11T15:25:02.505Z",
+  "modelId": "eleven_multilingual_v2",
+  "outputFormat": "mp3_44100_128",
+  "voiceId": "hpp4J3VqNfWAUOO0d1Us",
+  "clips": [
+    {
+      "id": "scene-01",
+      "seconds": 12,
+      "text": "This is the opening proof: a paper worksheet becomes five usable access routes without the teacher retyping the artifact.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-01.mp3"
+    },
+    {
+      "id": "scene-02",
+      "seconds": 14,
+      "text": "The real problem is coordination. In a synthetic Grade 3/4 room, the day includes language supports, sensory routines, family follow-up, and a morning-only educational assistant.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-02.mp3"
+    },
+    {
+      "id": "scene-03",
+      "seconds": 15,
+      "text": "PrairieClassroom OS organizes that work around four adult jobs: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-03.mp3"
+    },
+    {
+      "id": "scene-04",
+      "seconds": 16,
+      "text": "Gemma 4 matters because the workflow can read the classroom artifact, transform it quickly, and keep the learning goal intact across different supports.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-04.mp3"
+    },
+    {
+      "id": "scene-05",
+      "seconds": 18,
+      "text": "A quick teacher note becomes structured memory. That memory feeds tomorrow's plan, the EA briefing, the next family message, and the following pattern review.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-05.mp3"
+    },
+    {
+      "id": "scene-06",
+      "seconds": 16,
+      "text": "Safety is practical here. The system can draft a family message, but it cannot send one. The teacher reviews, edits, and approves before anything leaves the classroom.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-06.mp3"
+    },
+    {
+      "id": "scene-07",
+      "seconds": 16,
+      "text": "The proof lane stays honest: proof and claims checks pass, hosted Gemma proof is synthetic-demo only, and the privacy-first local deployment path is separate until the Ollama host is proven.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-07.mp3"
+    },
+    {
+      "id": "scene-08",
+      "seconds": 13,
+      "text": "PrairieClassroom OS is built for the adults carrying inclusive classrooms: less coordination drag, more timely support, and professional judgment still in control.",
+      "file": "apps/marketing-video/public/audio/submission-2026-05-11/scene-08.mp3"
+    }
+  ],
+  "renderCommand": "npm run video:render:submission:voiceover"
+}

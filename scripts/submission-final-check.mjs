@@ -16,8 +16,14 @@
  *   --skip-release-gate   Skip the long mock release-gate step (faster, but
  *                         loses the structural-integrity signal).
  *   --skip-publication-check
- *                         Skip final public-link placeholder checks for
+ *                         Skip final publication readiness checks for
  *                         local-only validation before external links exist.
+ *   --skip-public-link-health
+ *                         Skip live HTTP checks for public links after they
+ *                         pass placeholder and URL-shape validation.
+ *   --skip-public-demo-smoke
+ *                         Skip the deployed browser smoke after public links
+ *                         pass publication readiness.
  *   --include-ollama      Also run release:gate:ollama (only meaningful on a
  *                         viable host with gemma4:4b + gemma4:27b pulled).
  */
@@ -25,7 +31,10 @@
 import { spawn } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { validatePublicationPlaceholders } from "./lib/submission-final-check.mjs";
+import {
+  validatePublicationPlaceholders,
+  validatePublicationReadiness,
+} from "./lib/submission-final-check.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
@@ -34,6 +43,8 @@ const args = new Set(process.argv.slice(2));
 const SKIP_RELEASE_GATE = args.has("--skip-release-gate");
 const INCLUDE_OLLAMA = args.has("--include-ollama");
 const SKIP_PUBLICATION_CHECK = args.has("--skip-publication-check");
+const SKIP_PUBLIC_LINK_HEALTH = args.has("--skip-public-link-health");
+const SKIP_PUBLIC_DEMO_SMOKE = args.has("--skip-public-demo-smoke");
 
 const STEPS = [
   { id: "claims", name: "claims:check", command: "npm", args: ["run", "claims:check"] },
@@ -46,10 +57,18 @@ const STEPS = [
 
 if (!SKIP_PUBLICATION_CHECK) {
   STEPS.push({
-    id: "publication-placeholders",
-    name: "publication placeholder check",
-    run: checkPublicationPlaceholders,
+    id: "publication-readiness",
+    name: "publication readiness check",
+    run: checkPublicationReadiness,
   });
+  if (!SKIP_PUBLIC_DEMO_SMOKE) {
+    STEPS.push({
+      id: "public-demo-smoke",
+      name: "smoke:public-demo",
+      command: "npm",
+      args: ["run", "smoke:public-demo"],
+    });
+  }
 }
 
 if (!SKIP_RELEASE_GATE) {
@@ -70,32 +89,32 @@ if (INCLUDE_OLLAMA) {
   });
 }
 
-function runStep(step) {
-  return new Promise((resolve) => {
-    const startedAt = Date.now();
-    process.stdout.write(`\n▶  ${step.name}\n`);
-    if (step.run) {
-      try {
-        const result = step.run();
-        resolve({
-          id: step.id,
-          name: step.name,
-          ok: result.ok,
-          durationMs: Date.now() - startedAt,
-          exitCode: result.ok ? 0 : 1,
-          details: result.details,
-        });
-      } catch (error) {
-        resolve({
-          id: step.id,
-          name: step.name,
-          ok: false,
-          durationMs: Date.now() - startedAt,
-          error: error instanceof Error ? error.message : String(error),
-        });
-      }
-      return;
+async function runStep(step) {
+  const startedAt = Date.now();
+  process.stdout.write(`\n▶  ${step.name}\n`);
+  if (step.run) {
+    try {
+      const result = await step.run();
+      return {
+        id: step.id,
+        name: step.name,
+        ok: result.ok,
+        durationMs: Date.now() - startedAt,
+        exitCode: result.ok ? 0 : 1,
+        details: result.details,
+      };
+    } catch (error) {
+      return {
+        id: step.id,
+        name: step.name,
+        ok: false,
+        durationMs: Date.now() - startedAt,
+        error: error instanceof Error ? error.message : String(error),
+      };
     }
+  }
+
+  return new Promise((resolve) => {
     const child = spawn(step.command, step.args, {
       cwd: ROOT,
       stdio: "inherit",
@@ -110,19 +129,24 @@ function runStep(step) {
   });
 }
 
-function checkPublicationPlaceholders() {
-  const { ok, issues } = validatePublicationPlaceholders({ rootDir: ROOT });
+async function checkPublicationReadiness() {
+  const { ok, issues } = SKIP_PUBLIC_LINK_HEALTH
+    ? validatePublicationPlaceholders({ rootDir: ROOT })
+    : await validatePublicationReadiness({ rootDir: ROOT });
 
   if (ok) {
-    console.log("No publication placeholders found in submission-facing docs.");
+    console.log(SKIP_PUBLIC_LINK_HEALTH
+      ? "Publication placeholders and URL shapes are clean. Public-link health check skipped."
+      : "Publication placeholders, URL shapes, and public-link health checks are clean.");
     return { ok: true, details: [] };
   }
 
-  console.log("Publication placeholders still block final publishing:");
+  console.log("Publication readiness still blocks final publishing:");
   for (const issue of issues) {
     console.log(`  - ${issue}`);
   }
   console.log("Use --skip-publication-check only for local-only validation before external links exist.");
+  console.log("Use --skip-public-link-health only when public URLs are already separately smoke-tested.");
 
   return { ok: false, details: issues };
 }
@@ -140,7 +164,9 @@ async function main() {
   console.log(`Submission final check — ${STEPS.length} step${STEPS.length === 1 ? "" : "s"}`);
   if (SKIP_RELEASE_GATE) console.log("  (release:gate skipped via --skip-release-gate)");
   if (INCLUDE_OLLAMA) console.log("  (release:gate:ollama included via --include-ollama)");
-  if (SKIP_PUBLICATION_CHECK) console.log("  (publication placeholder check skipped via --skip-publication-check)");
+  if (SKIP_PUBLICATION_CHECK) console.log("  (publication readiness check skipped via --skip-publication-check)");
+  if (SKIP_PUBLIC_LINK_HEALTH) console.log("  (public-link health check skipped via --skip-public-link-health)");
+  if (SKIP_PUBLIC_DEMO_SMOKE) console.log("  (public demo browser smoke skipped via --skip-public-demo-smoke)");
 
   const results = [];
   for (const step of STEPS) {
@@ -171,7 +197,7 @@ async function main() {
 
   console.log("\n" + `✓  All ${SKIP_PUBLICATION_CHECK ? "local " : ""}pre-submit gates passed.`);
   console.log("   Next: complete the external publish steps in docs/hackathon-submission-checklist.md");
-  console.log("   (GitHub public, live demo URL, YouTube video, Kaggle attachments).");
+  console.log("   (GitHub public, reachable live demo URL, public demo browser smoke, reachable YouTube video, Kaggle attachments).");
 }
 
 main().catch((error) => {

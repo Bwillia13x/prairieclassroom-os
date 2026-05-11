@@ -140,10 +140,20 @@ export async function listReleaseGateRunSummaries(releaseGateDir) {
   return sortNewest(runs, (run) => run.completed_at ?? run.failed_at ?? run.generated_at);
 }
 
-export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries }) {
+const PROOF_BRIEF_ATTEMPT_PATTERN = /Latest attempted hosted gate[:*\s]*`(output\/release-gate\/[^`]+)`/i;
+
+function extractPreferredHostedAttemptFromProofBrief(content) {
+  if (typeof content !== "string") {
+    return null;
+  }
+  return content.match(PROOF_BRIEF_ATTEMPT_PATTERN)?.[1] ?? null;
+}
+
+export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries, preferredHostedAttemptArtifact = null }) {
   const latestMockPass = runSummaries.find((run) => run.inference_mode === "mock" && run.status === "passed") ?? null;
   const latestOllamaPass = runSummaries.find((run) => run.inference_mode === "ollama" && run.status === "passed") ?? null;
   const latestHostedPass = runSummaries.find((run) => run.inference_mode === "gemini" && run.status === "passed") ?? null;
+  const latestHostedAttempt = runSummaries.find((run) => run.inference_mode === "gemini" && run.status !== "passed") ?? null;
   const hostGroups = new Map();
 
   for (const preflight of preflights) {
@@ -210,20 +220,31 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries }) 
   const mockArtifact = latestMockPass ? relativePath(rootDir, path.join(rootDir, latestMockPass.run_dir ?? "")) : null;
   const ollamaArtifact = latestOllamaPass ? relativePath(rootDir, path.join(rootDir, latestOllamaPass.run_dir ?? "")) : null;
   const hostedArtifact = latestHostedPass ? relativePath(rootDir, path.join(rootDir, latestHostedPass.run_dir ?? "")) : null;
+  const hostedAttemptArtifact = preferredHostedAttemptArtifact ?? (latestHostedAttempt
+    ? relativePath(rootDir, path.join(rootDir, latestHostedAttempt.run_dir ?? ""))
+    : null);
 
   const verdictBullets = latestHostedPass
     ? [
-        "- Hosted Gemma 4 proof: Passing on synthetic/demo data through the guarded Gemini lane.",
-        `- Zero-cost school-deployment proof: ${verdict}`,
+        "- Hosted Gemma 4 proof: Passing baseline on synthetic/demo data through the guarded Gemini lane.",
+        ...(hostedAttemptArtifact
+          ? [
+              `- Current hosted refresh: latest attempted hosted Gemini gate ${latestHostedAttempt.status ?? "failed"} at \`${hostedAttemptArtifact}\`; this is not a passing baseline.`,
+            ]
+          : []),
+        `- Privacy-first Ollama school-deployment proof: ${verdict}`,
         "- Zero-cost enforcement: mock and Ollama remain the default no-spend lanes; hosted Gemini is explicit opt-in only.",
       ]
     : [
-        `- Live-model proof: ${verdict}`,
+        `- Privacy-first Ollama live-model proof: ${verdict}`,
         "- Zero-cost enforcement: mock and Ollama only; no paid fallback recorded",
       ];
   verdictBullets.push(`- Latest passed mock gate: ${mockArtifact ? `\`${mockArtifact}\`` : "_none recorded_"}`);
   if (latestHostedPass) {
     verdictBullets.push(`- Latest passed hosted Gemini gate: ${hostedArtifact ? `\`${hostedArtifact}\`` : "_none recorded_"}`);
+  }
+  if (hostedAttemptArtifact) {
+    verdictBullets.push(`- Latest attempted hosted Gemini gate: \`${hostedAttemptArtifact}\``);
   }
   verdictBullets.push(`- Latest passed Ollama gate: ${ollamaArtifact ? `\`${ollamaArtifact}\`` : "_none recorded_"}`);
 
@@ -250,6 +271,12 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries }) 
           ].map(escapeCell)],
         ),
         "",
+        ...(hostedAttemptArtifact
+          ? [
+              `The current hosted attempt at \`${hostedAttemptArtifact}\` failed and did not produce a passing baseline; keep the last passing artifact above as the hosted proof baseline.`,
+              "",
+            ]
+          : []),
       ]
     : [];
 
@@ -318,11 +345,16 @@ export async function updateProofStatusDoc({
   const resolvedRoot = path.resolve(rootDir ?? process.cwd());
   const hostPreflights = await listHostPreflightArtifacts(path.join(resolvedRoot, "output", "host-preflight"));
   const runSummaries = await listReleaseGateRunSummaries(path.join(resolvedRoot, "output", "release-gate"));
+  const proofBriefPath = path.join(resolvedRoot, "docs", "hackathon-proof-brief.md");
+  const preferredHostedAttemptArtifact = existsSync(proofBriefPath)
+    ? extractPreferredHostedAttemptFromProofBrief(await readFile(proofBriefPath, "utf8"))
+    : null;
   const summariesForBuild = await preserveHostedPassFromExistingDoc(runSummaries, docPath);
   const markdown = buildProofStatusMarkdown({
     rootDir: resolvedRoot,
     preflights: hostPreflights,
     runSummaries: summariesForBuild,
+    preferredHostedAttemptArtifact,
   });
 
   await mkdir(path.dirname(docPath), { recursive: true });

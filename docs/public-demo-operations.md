@@ -4,11 +4,24 @@ This is the deployment-side checklist for turning the local PrairieClassroom OS 
 
 The submission window for this work is Phase F of [plans/2026-05-18-submission-plan.md](./plans/2026-05-18-submission-plan.md), targeting 2026-05-11 → 2026-05-12.
 
-## Deployment Status (updated 2026-04-30)
+## Deployment Status (updated 2026-05-11)
 
 - **Configured:** frontend Vercel config is committed at `apps/web/vercel.json`.
 - **Configured:** backend Render blueprint is committed at `render.yaml`.
-- **Not yet complete:** services have not been created in external hosting, production secrets have not been set, and the public URL has not been smoked from a non-local network.
+- **Verified:** public source repo `Bwillia13x/prairieclassroom-os` is visible without authentication.
+- **Verified:** the local submission video file passes QA at `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4`.
+- **Not yet complete:** Render services have not been created from this environment, production secrets have not been set in Render/Vercel, the Vercel project is not linked, the public demo URL has not been smoked from a non-local network, and the public video/Kaggle URLs are still placeholders.
+
+`npm run submission:final-check -- --skip-release-gate` currently fails only on publication placeholders and required public-URL validation. The full no-skip submission gate must remain blocked until the public demo, public YouTube video, and Kaggle writeup/submission URLs are real and reachable.
+
+## 2026-05-11 Hosting Findings
+
+- Render deployment cannot be completed from this shell because no Render CLI/API token is available.
+- Vercel CLI authentication is present, but `apps/web` is not linked to a Vercel project.
+- A frontend-only Vercel deploy would not be a valid public demo. The web app calls the orchestrator through `VITE_API_URL`/`/api`, so the Render orchestrator and inference services must be live first.
+- A plain shell does not expose the hosted Gemma key or enable hosted runs. `gemini:readycheck` reports the key and guard only after sourcing `.env`; production hosting still needs its own Render/Vercel secret values.
+- Ollama is not a viable proof lane on the current maintenance host: `npm run host:preflight:ollama` reports the Ollama CLI unavailable on an 8 GiB RAM host with 16.76 GiB free disk.
+- `npm run submission:publish-preflight` currently passes local file checks for `render.yaml`, `apps/web/vercel.json`, final MP4, Node `v25.8.2`, upstream configuration, branch sync, and Vercel CLI availability, then fails on 56 uncommitted paths, missing Vercel project link, Render CLI/API token, hosted Gemma env in the current shell, public live demo URL, public video URL, and Kaggle writeup URL.
 
 ## Deploy Targets (selected 2026-04-30)
 
@@ -21,6 +34,9 @@ The submission window for this work is Phase F of [plans/2026-05-18-submission-p
 ## Pre-deploy Setup (Phase B/F)
 
 ```bash
+# Confirm local publication prerequisites and credentials before external deploy.
+npm run submission:publish-preflight
+
 # Frontend — link to a Vercel project
 cd apps/web
 npx vercel link
@@ -106,6 +122,10 @@ Serve `apps/web/dist` from the public static host.
 ## Public Demo Smoke
 
 Before attaching the URL to Kaggle:
+
+```bash
+PRAIRIE_PUBLIC_DEMO_URL=https://<vercel-frontend-url> npm run smoke:public-demo
+```
 
 1. Open the final public URL in a private/incognito browser.
 2. Confirm the first visible screen is the Today dashboard, not onboarding or role selection.

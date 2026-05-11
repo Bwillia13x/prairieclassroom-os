@@ -9,11 +9,11 @@ Replace every bracketed placeholder before publishing the video, Kaggle project,
 - Live demo URL: must load from an external network and `/?demo=true` must land directly on Today.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
-- Repository URL: use only after the GitHub repo is public and clone-tested from a signed-out or different-machine context.
+- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os` (`HEAD` `a125d82c9741d7b200a5bbed01a2dc115717bc8a`).
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-05T20-58-48-474Z-5247`
+- Mock structural gate: `output/release-gate/2026-05-11T16-49-06-881Z-21463`
 - Current hosted Gemma 4 refresh: failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; do not claim a current clean full hosted gate.
 - Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`)
 - Last passing hosted Gemma 4 baseline: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
@@ -42,7 +42,7 @@ The project also keeps a separate local/self-hosted Ollama path for the intended
 
 Project links:
 
-- Code: [PrairieClassroom OS source code](https://github.com/Bwillia13x/prairieclassroom-os) after public clone test
+- Code: [PrairieClassroom OS source code](https://github.com/Bwillia13x/prairieclassroom-os)
 - Live demo: [add public deployed URL after deployment]
 - Kaggle writeup: [add Kaggle writeup URL after submission]
 

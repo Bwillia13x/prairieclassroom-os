@@ -1,0 +1,103 @@
+- generic [ref=e3]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - button "Collapse navigation rail" [expanded] [ref=e5] [cursor=pointer]:
+    - img [ref=e6]
+    - generic [ref=e8]: Collapse
+  - banner [ref=e9]:
+    - generic [ref=e10]:
+      - generic "PrairieClassroom home" [ref=e11]:
+        - generic [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e14]: PrairieClassroom
+          - generic [ref=e15]: OS
+      - generic [ref=e16]:
+        - 'button "Active classroom: Grade 3-4 cross curricular" [ref=e18] [cursor=pointer]':
+          - img [ref=e20]
+          - generic [ref=e26]: Grade 3-4 cross curricular
+          - generic [ref=e27]: ⌄
+        - button "Teacher" [ref=e30] [cursor=pointer]:
+          - generic [ref=e33]: Teacher
+          - generic [ref=e34]: ⌄
+      - navigation "PrairieClassroom OS navigation" [ref=e35]:
+        - tablist "Primary navigation" [ref=e36]:
+          - 'tab "Today: Do this now" [selected] [ref=e37] [cursor=pointer]':
+            - img [ref=e38]
+            - generic [ref=e41]
+          - 'tab "Classroom: Room view" [ref=e44] [cursor=pointer]':
+            - img [ref=e45]
+            - generic [ref=e50]
+          - 'tab "Tomorrow: Plan tomorrow" [ref=e53] [cursor=pointer]':
+            - img [ref=e54]
+            - generic [ref=e56]
+          - 'tab "Week: Week map" [ref=e59] [cursor=pointer]':
+            - img [ref=e60]
+            - generic [ref=e66]
+          - 'tab "Prep: Adapt lesson" [ref=e69] [cursor=pointer]':
+            - img [ref=e70]
+            - generic [ref=e73]
+          - 'tab "Ops: Log note" [ref=e76] [cursor=pointer]':
+            - img [ref=e77]
+            - generic [ref=e80]
+            - generic "5 pending" [ref=e83]: "5"
+          - 'tab "Review: Message family" [ref=e84] [cursor=pointer]':
+            - img [ref=e85]
+            - generic [ref=e86]
+            - generic "16 pending" [ref=e89]: "16"
+        - generic [ref=e90]:
+          - generic [ref=e91]: Alberta K-6
+          - generic [ref=e92]: Privacy first
+          - generic [ref=e93]: Teacher controlled
+  - main [ref=e94]:
+    - 'tabpanel "Today: Do this now" [ref=e95]':
+      - generic [ref=e96]:
+        - text: 01 —
+        - generic "Today" [ref=e97]:
+          - heading "Today" [level=1] [ref=e98]
+          - paragraph [ref=e99]: 10:00–10:45 is today's real test.
+        - region "Today command dashboard" [ref=e101]:
+          - note [ref=e102]:
+            - text: TODAY
+            - generic [ref=e103]: Monday — A fresh week. One calm move opens it.
+            - button "Dismiss Monday moment" [ref=e104] [cursor=pointer]: ×
+          - generic [ref=e105]:
+            - generic [ref=e106]
+            - complementary "Live signals and watchlist" [ref=e264]
+        - region "Today operational preview" [ref=e358]:
+          - generic [ref=e359]:
+            - generic [ref=e360]
+            - generic [ref=e376]
+            - generic [ref=e386]
+        - button "Show day detail" [ref=e409] [cursor=pointer]:
+          - text: Show day detail
+          - generic [ref=e410]: +
+        - generic:
+          - region "Who needs a touchpoint":
+            - generic
+            - toolbar "Student coverage filters"
+            - generic
+          - region "What to watch next":
+            - generic
+            - generic
+          - generic "End of Today":
+            - generic: End of Today
+            - paragraph
+    - contentinfo [ref=e411]:
+      - generic [ref=e412]:
+        - generic [ref=e413]:
+          - generic "Application context" [ref=e414]:
+            - generic [ref=e415]: PrairieClassroom OS
+            - generic [ref=e416]: Gemma 4 Good Hackathon demo build
+          - generic [ref=e417]:
+            - button "Shortcuts" [ref=e418] [cursor=pointer]
+            - button "Keyboard shortcuts" [ref=e421] [cursor=pointer]: "?"
+        - group "Build context" [ref=e422]:
+          - generic [ref=e423]:
+            - generic [ref=e424]: classroom
+            - generic [ref=e425]: demo-okafor-grade34
+          - generic [ref=e426]:
+            - generic [ref=e427]: env
+            - generic [ref=e428]: mock
+          - generic [ref=e429]:
+            - generic [ref=e430]: v
+            - generic [ref=e431]: 0.1.0

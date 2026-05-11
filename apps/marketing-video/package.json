@@ -8,7 +8,12 @@
     "still": "remotion still src/index.ts PrairieClassroomMarketing --frame=960 --output=../../qa/demo-script/videos/remotion-marketing-overview-preview.png --timeout=120000",
     "render": "remotion render src/index.ts PrairieClassroomMarketing ../../qa/demo-script/videos/remotion-marketing-overview.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000",
     "still:nothing": "remotion still src/index.ts PrairieClassroomNothingLaunch --frame=990 --output=../../qa/demo-script/videos/remotion-nothing-launch-preview.png --timeout=120000",
-    "render:nothing": "remotion render src/index.ts PrairieClassroomNothingLaunch ../../qa/demo-script/videos/remotion-nothing-launch.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000"
+    "render:nothing": "remotion render src/index.ts PrairieClassroomNothingLaunch ../../qa/demo-script/videos/remotion-nothing-launch.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000",
+    "still:submission": "remotion still src/index.ts PrairieClassroomSubmission --frame=390 --output=../../qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11-preview.png --timeout=120000",
+    "render:submission": "remotion render src/index.ts PrairieClassroomSubmission ../../qa/demo-script/videos/remotion-submission-2026-05-09-draft.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000",
+    "render:submission:polished": "remotion render src/index.ts PrairieClassroomSubmission ../../qa/demo-script/videos/remotion-submission-2026-05-09-polished.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000",
+    "render:submission:final": "remotion render src/index.ts PrairieClassroomSubmission ../../qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4 --props '{\"voiceover\":\"none\",\"captions\":true}' --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000",
+    "render:submission:voiceover": "remotion render src/index.ts PrairieClassroomSubmission ../../qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11-voiceover.mp4 --props '{\"voiceover\":\"elevenlabs\",\"captions\":true}' --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=180000"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.448",

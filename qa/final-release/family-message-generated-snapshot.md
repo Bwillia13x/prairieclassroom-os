@@ -1,0 +1,176 @@
+- generic [ref=e3]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - button "Collapse navigation rail" [expanded] [ref=e5] [cursor=pointer]:
+    - img [ref=e6]
+    - generic [ref=e8]: Collapse
+  - banner [ref=e9]:
+    - generic [ref=e10]:
+      - generic "PrairieClassroom home" [ref=e11]:
+        - generic [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e14]: PrairieClassroom
+          - generic [ref=e15]: OS
+      - generic [ref=e16]:
+        - 'button "Active classroom: Grade 3-4 cross curricular" [ref=e18] [cursor=pointer]':
+          - img [ref=e20]
+          - generic [ref=e26]: Grade 3-4 cross curricular
+          - generic [ref=e27]: ⌄
+        - button "Teacher" [ref=e30] [cursor=pointer]:
+          - generic [ref=e33]: Teacher
+          - generic [ref=e34]: ⌄
+      - navigation "PrairieClassroom OS navigation" [ref=e35]:
+        - tablist "Primary navigation" [ref=e36]:
+          - 'tab "Today: Do this now" [ref=e37] [cursor=pointer]':
+            - img [ref=e38]
+            - generic [ref=e41]:
+              - generic [ref=e42]: Today
+              - generic [ref=e43]: Do this now
+          - 'tab "Classroom: Room view" [ref=e44] [cursor=pointer]':
+            - img [ref=e45]
+            - generic [ref=e50]:
+              - generic [ref=e51]: Classroom
+              - generic [ref=e52]: Room view
+          - 'tab "Tomorrow: Plan tomorrow" [ref=e53] [cursor=pointer]':
+            - img [ref=e54]
+            - generic [ref=e56]:
+              - generic [ref=e57]: Tomorrow
+              - generic [ref=e58]: Plan tomorrow
+          - 'tab "Week: Week map" [ref=e59] [cursor=pointer]':
+            - img [ref=e60]
+            - generic [ref=e66]:
+              - generic [ref=e67]: Week
+              - generic [ref=e68]: Week map
+          - 'tab "Prep: Adapt lesson" [ref=e69] [cursor=pointer]':
+            - img [ref=e70]
+            - generic [ref=e73]:
+              - generic [ref=e74]: Prep
+              - generic [ref=e75]: Adapt lesson
+          - 'tab "Ops: Log note" [ref=e76] [cursor=pointer]':
+            - img [ref=e77]
+            - generic [ref=e80]:
+              - generic [ref=e81]: Ops
+              - generic [ref=e82]: Log note
+            - generic "5 pending" [ref=e83]: "5"
+          - 'tab "Review: Message family" [selected] [ref=e84] [cursor=pointer]':
+            - img [ref=e85]
+            - generic [ref=e86]:
+              - generic [ref=e87]: Review
+              - generic [ref=e88]: Message family
+            - generic "16 pending" [ref=e89]: "16"
+        - generic [ref=e90]:
+          - generic [ref=e91]: Alberta K-6
+          - generic [ref=e92]: Privacy first
+          - generic [ref=e93]: Teacher controlled
+  - main [ref=e94]:
+    - 'tabpanel "Review: Message family" [ref=e95]':
+      - generic [ref=e96]:
+        - region "Review command, family communication, patterns, and usage insights" [ref=e97]:
+          - generic [ref=e98]:
+            - generic [ref=e99]: Review command
+            - heading "Turn classroom memory into accountable follow-through." [level=1] [ref=e100]
+            - paragraph [ref=e101]: Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.
+          - complementary "Page pulse" [ref=e102]:
+            - generic [ref=e105]:
+              - strong [ref=e106]: Review pending
+              - generic [ref=e107]: 3 approvals · 2 signals
+            - generic [ref=e109]:
+              - generic [ref=e110]: Active tool
+              - generic [ref=e111]: Family Message
+            - generic [ref=e112]:
+              - generic [ref=e113]:
+                - generic [ref=e114]: Approvals
+                - generic [ref=e116]
+              - generic [ref=e119]:
+                - generic [ref=e120]: Signals
+                - generic [ref=e121]
+              - generic [ref=e128]:
+                - generic [ref=e129]: Cadence
+                - generic [ref=e131]
+        - region "Review operational preview" [ref=e134]:
+          - generic [ref=e135]:
+            - generic [ref=e136]:
+              - generic [ref=e137]: Approval queue
+              - generic [ref=e138]:
+                - generic [ref=e139]
+                - generic [ref=e142]
+            - generic [ref=e145]:
+              - generic [ref=e146]: Human-in-the-loop
+              - list [ref=e147]:
+                - listitem [ref=e148]
+                - listitem [ref=e151]
+        - generic [ref=e154]:
+          - generic [ref=e155]: "02"
+          - heading "Review lane" [level=2] [ref=e156]
+          - paragraph [ref=e157]: What to approve, what to read, what to learn.
+        - tablist "Review tool" [ref=e158]:
+          - tab "01 Family Family Message Draft family updates and keep human approval explicit. 3 approvals" [selected] [ref=e159] [cursor=pointer]:
+            - generic [ref=e160]: 01 Family
+            - generic [ref=e161]: Family Message
+            - generic [ref=e162]: Draft family updates and keep human approval explicit.
+            - generic [ref=e163]: 3 approvals
+          - tab "02 Patterns Support Patterns Inspect recurring classroom signals before next actions. 2 signals" [ref=e164] [cursor=pointer]:
+            - generic [ref=e165]: 02 Patterns
+            - generic [ref=e166]: Support Patterns
+            - generic [ref=e167]: Inspect recurring classroom signals before next actions.
+            - generic [ref=e168]: 2 signals
+          - tab "03 Usage Usage Insights Review feedback and workflow patterns from recent sessions. 16 reviews" [ref=e169] [cursor=pointer]:
+            - generic [ref=e170]: 03 Usage
+            - generic [ref=e171]: Usage Insights
+            - generic [ref=e172]: Review feedback and workflow patterns from recent sessions.
+            - generic [ref=e173]: 16 reviews
+        - region "Active workspace" [ref=e174]:
+          - generic [ref=e175]:
+            - generic [ref=e176]: Active workspace
+            - generic [ref=e177]: Draft family messages
+          - generic [ref=e179]:
+            - generic [ref=e180]:
+              - img [ref=e181]
+              - generic [ref=e182]: Review Workspace
+              - heading "Draft Family Messages" [level=2] [ref=e183]
+              - generic [ref=e184]: Build a plain-language family update, inspect the draft in the result canvas, and explicitly approve before copying it into your communication channel.
+              - text: Human approved
+            - region "Family follow-up coverage" [ref=e185]:
+              - generic [ref=e186]:
+                - generic [ref=e187]
+                - generic [ref=e190]
+              - toolbar "Student coverage filters" [ref=e192]:
+                - group "Primary filters" [ref=e193]
+                - button "More" [ref=e204] [cursor=pointer]
+              - generic [ref=e207]:
+                - button: ‹
+                - generic [ref=e208]
+                - button "Scroll roster right" [ref=e415] [cursor=pointer]: ›
+            - generic [ref=e416]:
+              - complementary [ref=e417]:
+                - 'note "Tip: Family Messages" [ref=e418]'
+                - 'img "Message Pipeline: 6% approval rate" [ref=e424]'
+                - button "Message History" [ref=e442] [cursor=pointer]
+                - generic [ref=e447]
+              - generic [ref=e516]:
+                - status [ref=e547]
+                - status "Demo content notice" [ref=e555]
+                - generic [ref=e560]
+                - generic [ref=e583]
+                - navigation "Family message output" [ref=e591]
+    - contentinfo [ref=e520]:
+      - generic [ref=e521]:
+        - generic [ref=e522]:
+          - generic "Application context" [ref=e523]:
+            - generic [ref=e524]: PrairieClassroom OS
+            - generic [ref=e525]: Gemma 4 Good Hackathon demo build
+          - generic [ref=e526]:
+            - button "Shortcuts" [ref=e527] [cursor=pointer]:
+              - generic [ref=e528]: ▸
+              - generic [ref=e529]: Shortcuts
+            - button "Keyboard shortcuts" [ref=e530] [cursor=pointer]: "?"
+        - group "Build context" [ref=e531]:
+          - generic [ref=e532]:
+            - generic [ref=e533]: classroom
+            - generic [ref=e534]: demo-okafor-grade34
+          - generic [ref=e535]:
+            - generic [ref=e536]: env
+            - generic [ref=e537]: mock
+          - generic [ref=e538]:
+            - generic [ref=e539]: v
+            - generic [ref=e540]: 0.1.0

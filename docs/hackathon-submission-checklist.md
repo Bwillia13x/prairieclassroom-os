@@ -6,20 +6,24 @@ The submission window is owned by [plans/2026-05-18-submission-plan.md](./plans/
 
 ## Current status
 
-Checked against the repo on 2026-05-08, refreshed for Gemma hosted-proof closure.
+Checked against the repo on 2026-05-11 after final local pre-submit, live browser QA, Ollama host preflight, and video QA.
 
-- Mock structural gate: passing at `output/release-gate/2026-05-05T20-58-48-474Z-5247`
+- Mock structural gate: passing at `output/release-gate/2026-05-11T16-49-06-881Z-21463`
+- Local pre-submit gate: `npm run submission:final-check -- --skip-publication-check` passed 7/7 on 2026-05-11.
+- Publication gate: `npm run submission:final-check -- --skip-release-gate` still fails on publication placeholders and required URL validation until the live demo URL, public YouTube URL, and Kaggle writeup URL are filled in. Once those links exist, the same gate also performs public-link health checks and runs `npm run smoke:public-demo` unless explicitly skipped.
 - Hosted Gemma 4 proof lane: current May 8 hosted refresh failed and no current clean full hosted gate was produced. Latest attempted hosted gate: `output/release-gate/2026-05-08T22-47-12-031Z-43430`.
 - Hosted Gemma 4 last passing baseline: passing on synthetic/demo data at `output/release-gate/2026-05-03T17-59-42-981Z-80702`.
 - Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`; provider high-demand block on `fcst-001-demo-schema`).
 - Latest completed May 8 hosted eval failure summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-failure-summary.json`
 - Latest May 8 cost rollup: `output/cost-rollups/2026-05-08-rollup.json`
 - Hosted models: `gemma-4-26b-a4b-it` and `gemma-4-31b-it`; full hosted rerun command is `npm run release:gate:gemini`.
-- Ollama proof on this machine: **not proven; deferred until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available** (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D)
+- Ollama proof on this machine: **not proven**. Latest preflight `output/host-preflight/2026-05-11T16-10-25-972Z.json` reports no Ollama CLI, 8.00 GiB RAM, and 16.76 GiB available disk; defer until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D).
 - Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,412 (within 1,500-word limit)
 - Kaggle paste block: synced to writeup
 - Submission copy pack: [submission-copy-pack.md](./submission-copy-pack.md) now carries pre-publish placeholder and claim guardrails for video, Kaggle, repository, and media-gallery fields.
-- Public-video script: rewritten 2026-04-26 to lead with multimodal hero shot + teacher quote + offline-Ollama shot (gated)
+- Public code repository: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os` (`HEAD` `a125d82c9741d7b200a5bbed01a2dc115717bc8a`).
+- Public-video script: final local video QA passed for `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps); upload/public YouTube URL still pending.
+- Publish preflight: `npm run submission:publish-preflight` passes local file checks, Node `v25.8.2`, upstream configuration, branch sync, and Vercel CLI availability; it fails on 56 uncommitted paths, missing Vercel project link, Render access, hosted Gemma env in the current shell, public demo URL, public video URL, and Kaggle writeup URL.
 - Judge/demo URL: `?demo=true` skips first-run onboarding and role-selection modals for the demo classroom
 - Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
 - Local release-ready memo: [evidence/2026-05-05-local-release-ready-memo.md](./evidence/2026-05-05-local-release-ready-memo.md) records the current artifact map and the external lane that is still incomplete.
@@ -56,6 +60,7 @@ Use the May 3 final visual audit plus the refreshed standard workflow evidence b
 
 Current local video candidate:
 
+- `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps; QA contact sheet at `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11-contact-sheet.jpg`)
 - `qa/demo-script/videos/walkthrough-kaggle-final.mp4` (173.88 seconds, under the 3-minute limit)
 - Backup short cut: `qa/demo-script/videos/walkthrough-teaser-90s.mp4` (94.88 seconds)
 
@@ -89,8 +94,8 @@ These are required for an actual competition submission but cannot be completed 
 
 **Phase F — live demo deploy (target window 2026-05-11 → 2026-05-12):**
 
-13. Deploy frontend to Vercel; deploy orchestrator + inference to chosen backend.
-14. Smoke from external network and from cellular.
+13. Run `npm run submission:publish-preflight`, then deploy frontend to Vercel and orchestrator + inference to Render once the missing credentials/links are available.
+14. Run `PRAIRIE_PUBLIC_DEMO_URL=https://<vercel-frontend-url> npm run smoke:public-demo`, then smoke from external network and from cellular.
 15. Verify `/?demo=true` lands directly on Today and at least one generation completes end-to-end.
 
 **Phase G — verification (target window 2026-05-14 → 2026-05-16):**
@@ -120,7 +125,7 @@ Do not claim any of the following unless new artifacts exist:
 
 - **Project title:** PrairieClassroom OS
 - **Track:** Future of Education
-- **Code repository:** `https://github.com/Bwillia13x/prairieclassroom-os` once public
+- **Code repository:** `https://github.com/Bwillia13x/prairieclassroom-os`
 - **Live demo:** public URL once deployed
 - **Video:** public YouTube link
 - **Cover image:** `differentiate-desktop.png` or `today-desktop.png`

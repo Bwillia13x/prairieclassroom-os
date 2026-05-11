@@ -1,0 +1,62 @@
+{
+  "generated_at": "2026-05-11",
+  "mode": "built-in image_gen",
+  "post_processing": "Copied project assets from ~/.codex/generated_images, resized/cropped to 1920x1080 with ImageMagick, and generated a contact sheet.",
+  "hyperframes_base_path": "apps/marketing-video/public/generated/alberta-complexity-2026-05-11",
+  "assets": [
+    {
+      "id": "complexity_coordination_load",
+      "file": "01-complexity-coordination-load.png",
+      "beat": "crisis_open",
+      "recommended_use": "Opening background with Alberta complexity evidence chips overlaid in HyperFrames."
+    },
+    {
+      "id": "hidden_roster_load",
+      "file": "02-hidden-roster-load.png",
+      "beat": "hidden_load",
+      "recommended_use": "Roster complexity background with no precise claims baked into the image."
+    },
+    {
+      "id": "four_adult_jobs",
+      "file": "03-four-adult-jobs.png",
+      "beat": "product_answer",
+      "recommended_use": "Four adult jobs layout: Today, Prep, Tomorrow, Ops/Review."
+    },
+    {
+      "id": "worksheet_to_access_routes",
+      "file": "04-worksheet-to-access-routes.png",
+      "beat": "gemma_material_flow",
+      "recommended_use": "Multimodal worksheet-to-variants sequence."
+    },
+    {
+      "id": "memory_to_tomorrow_loop",
+      "file": "05-memory-to-tomorrow-loop.png",
+      "beat": "gemma_memory_flow",
+      "recommended_use": "Closed-loop note to memory to tomorrow planning sequence."
+    },
+    {
+      "id": "family_approval_boundary",
+      "file": "06-family-approval-boundary.png",
+      "beat": "control_boundary",
+      "recommended_use": "Human approval gate and no-autonomous-send section."
+    },
+    {
+      "id": "ea_handoff_coordination",
+      "file": "07-ea-handoff-coordination.png",
+      "beat": "adult_coordination",
+      "recommended_use": "EA briefing, support-block, and handoff coordination cutaway."
+    },
+    {
+      "id": "gemma_proof_lockup",
+      "file": "08-gemma-proof-lockup.png",
+      "beat": "close_proof",
+      "recommended_use": "Final proof/technical lockup with text overlays for 12 tools, 13 prompt classes, roster-checked tools, and synthetic hosted proof."
+    }
+  ],
+  "review_only": [
+    {
+      "file": "contact-sheet.png",
+      "recommended_use": "Visual review only; do not use as a production video source."
+    }
+  ]
+}
