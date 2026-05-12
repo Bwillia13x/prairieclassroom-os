@@ -82,6 +82,10 @@ function parseLabelPair(labelText) {
   };
 }
 
+function parsePatternStudent(labelText) {
+  return labelText.replace(/\s+(low|medium|high)\s*$/i, "").trim();
+}
+
 function isExpectedAuthConsoleError(text) {
   return /Failed to load resource: the server responded with a status of (401|403)/.test(text);
 }
@@ -372,12 +376,23 @@ async function main() {
     assertNoAlphaAliases(patternText, "Support Patterns UI");
 
     const trendCard = page.locator(".pattern-section--trends .pattern-card").first();
-    const trendStudent = (await trendCard.locator(".pattern-card-label").innerText()).trim();
-    await trendCard.getByTestId("pattern-share-positive-trend").click();
+    if (await trendCard.count() > 0) {
+      const trendStudent = parsePatternStudent(await trendCard.locator(".pattern-card-label").innerText());
+      await trendCard.getByTestId("pattern-share-positive-trend").click();
 
-    await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom after pattern handoff");
-    await expectCheckedStudentInPanel(page, "family-message", trendStudent, "Family Message student after pattern handoff");
-    await expectSelectValue(page, "#msg-type", "praise", "Family Message type after pattern handoff");
+      await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Family Message classroom after pattern handoff");
+      await expectCheckedStudentInPanel(page, "family-message", trendStudent, "Family Message student after pattern handoff");
+      await expectSelectValue(page, "#msg-type", "praise", "Family Message type after pattern handoff");
+    } else {
+      const focusCard = page.locator(".pattern-section--focus .pattern-card").first();
+      await focusCard.waitFor({ state: "visible" });
+      const focusStudent = parsePatternStudent(await focusCard.locator(".pattern-card-label").innerText());
+      assert.ok(focusStudent, "Expected a suggested-focus student when no positive trends are returned");
+      await focusCard.getByTestId("pattern-log-focus-intervention").click();
+
+      await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Intervention classroom after pattern focus handoff");
+      await expectCheckedStudentInPanel(page, "log-intervention", focusStudent, "Intervention student after pattern focus handoff");
+    }
 
     await openTab(page, "survival-packet");
     await expectActiveClassroom(page, DEMO_CLASSROOM_ID, "Survival Packet classroom");

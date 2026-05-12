@@ -265,6 +265,7 @@ export function PatternReportResult({
                   type="button"
                   className="pattern-card-action-btn"
                   aria-label={`Log intervention for ${focus.student_ref}`}
+                  data-testid="pattern-log-focus-intervention"
                   onClick={() =>
                     onInterventionClick({
                       student_ref: focus.student_ref,
