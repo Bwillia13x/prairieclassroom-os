@@ -194,24 +194,35 @@ describe("callInference", () => {
     expect(sent.images).toBeUndefined();
   });
 
-  it("extends support-patterns beyond the generic planning timeout even without provider env", async () => {
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+  it("extends long synthesis routes beyond the generic planning timeout even without provider env", async () => {
+    vi.stubGlobal("fetch", vi.fn().mockImplementation(() => Promise.resolve(new Response(JSON.stringify({
       text: "{\"report\":{}}",
       model_id: "mock-plan",
       latency_ms: 30,
-    }), { status: 200 })));
+    }), { status: 200 }))));
 
-    const res = mockRes();
+    const patternsRes = mockRes();
     await callInference({
       deps,
       req: mockReq(),
-      res,
+      res: patternsRes,
       route: supportPatternsRoute,
       prompt: { system: "sys", user: "user" },
       maxTokens: 256,
     });
 
-    expect(getRequestContext(res).timeout_ms).toBe(180_000);
+    const survivalRes = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res: survivalRes,
+      route: survivalPacketRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
+    expect(getRequestContext(patternsRes).timeout_ms).toBe(180_000);
+    expect(getRequestContext(survivalRes).timeout_ms).toBe(240_000);
   });
 
   it("uses longer hosted timeouts for the gemini lane", async () => {

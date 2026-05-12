@@ -75,11 +75,12 @@ const DEFAULT_TIMEOUT_BY_TIER = {
   planning: 60_000,
 } as const;
 const DEFAULT_TIMEOUT_BY_PROMPT_CLASS: Partial<Record<RouteConfig["prompt_class"], number>> = {
-  // Support-pattern synthesis can exceed the generic planning budget even on
-  // the documented hosted manual-start path, because that path may omit the
-  // provider env on the orchestrator. Keep the route-specific budget local so
-  // the workflow survives that startup mismatch.
+  // Some synthesis routes exceed the generic planning budget on the documented
+  // hosted manual-start path, especially if the orchestrator provider env is
+  // temporarily omitted. Keep route-specific budgets local so the workflow
+  // survives that startup mismatch.
   detect_support_patterns: 180_000,
+  generate_survival_packet: 240_000,
 } as const;
 const GEMINI_TIMEOUT_BY_TIER = {
   live: 100_000,
