@@ -34,6 +34,12 @@ import type {
   VocabCardsRequest,
   VocabCardsResponse,
 } from "./types";
+import {
+  emitStaticDemoStream,
+  isStaticDemoApiActive,
+  markStaticDemoApiActive,
+  resolveStaticDemoRequest,
+} from "./demoApi";
 
 export function normalizeApiBase(value: string | undefined): string {
   const trimmed = (value || "/api").trim().replace(/\/+$/, "");
@@ -164,6 +170,14 @@ function teacherFriendlyAuthMessage(payload: ApiErrorPayload): string {
 }
 
 async function requestJson<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  if (isStaticDemoApiActive(API_BASE)) {
+    const demo = resolveStaticDemoRequest<T>(path, options);
+    if (demo.handled) {
+      markStaticDemoApiActive();
+      return demo.value;
+    }
+  }
+
   const classroomId = resolveClassroomId(options.classroomId, options.body);
   const headers = new Headers(options.headers);
 
@@ -250,6 +264,15 @@ async function streamRequestJson<T>(
   options: RequestOptions,
   handlers?: StreamingEventHandlers,
 ): Promise<T> {
+  if (isStaticDemoApiActive(API_BASE)) {
+    const demo = resolveStaticDemoRequest<T>(path, options);
+    if (demo.handled) {
+      markStaticDemoApiActive();
+      emitStaticDemoStream(handlers, demo.value);
+      return demo.value;
+    }
+  }
+
   const start = await requestJson<StreamStartResponse>(`${path}/stream`, {
     ...options,
   });

@@ -223,13 +223,16 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries, pr
   const hostedAttemptArtifact = preferredHostedAttemptArtifact ?? (latestHostedAttempt
     ? relativePath(rootDir, path.join(rootDir, latestHostedAttempt.run_dir ?? ""))
     : null);
+  const hostedAttemptSummary = hostedAttemptArtifact
+    ? runSummaries.find((run) => relativePath(rootDir, path.join(rootDir, run.run_dir ?? "")) === hostedAttemptArtifact) ?? latestHostedAttempt
+    : latestHostedAttempt;
 
   const verdictBullets = latestHostedPass
     ? [
         "- Hosted Gemma 4 proof: Passing baseline on synthetic/demo data through the guarded Gemini lane.",
         ...(hostedAttemptArtifact
           ? [
-              `- Current hosted refresh: latest attempted hosted Gemini gate ${latestHostedAttempt.status ?? "failed"} at \`${hostedAttemptArtifact}\`; this is not a passing baseline.`,
+              `- Current hosted refresh: latest attempted hosted Gemini gate ${hostedAttemptSummary?.status ?? "failed"} at \`${hostedAttemptArtifact}\`; this is not a passing baseline.`,
             ]
           : []),
         `- Privacy-first Ollama school-deployment proof: ${verdict}`,

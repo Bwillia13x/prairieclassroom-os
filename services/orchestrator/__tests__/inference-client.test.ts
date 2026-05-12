@@ -356,6 +356,30 @@ describe("callInference", () => {
     expect(getRequestContext(res).retry_count).toBe(1);
   });
 
+  it("retries direct hosted provider deadline responses", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(new Response("deadline expired", { status: 504 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        text: "{\"ok\":true}",
+        model_id: "gemma-4-31b-it",
+        latency_ms: 29,
+      }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const res = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res,
+      route: planningRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(getRequestContext(res).retry_count).toBe(1);
+  });
+
   it("retries hosted provider high-demand errors embedded in 200 inference responses", async () => {
     const fetchMock = vi.fn()
       .mockResolvedValueOnce(new Response(JSON.stringify({
@@ -757,6 +781,53 @@ describe("callInferenceStream", () => {
       prompt_tokens: 8,
       output_tokens: 10,
       total_tokens: 18,
+    });
+  });
+
+  it("falls back to non-stream generation when the provider emits a retryable stream error", async () => {
+    const fetchMock = vi.fn()
+      .mockResolvedValueOnce(streamResponse([
+        "event: ready",
+        "data: {\"mode\":\"gemini\"}",
+        "",
+        "event: error",
+        "data: {\"error\":\"500 INTERNAL. {'error': {'code': 500, 'message': 'Internal error encountered.', 'status': 'INTERNAL'}}\"}",
+        "",
+      ].join("\n")))
+      .mockResolvedValueOnce(new Response(JSON.stringify({
+        text: "{\"ok\":true}",
+        model_id: "gemma-4-31b-it",
+        latency_ms: 57,
+        prompt_tokens: 12,
+        output_tokens: 14,
+        total_tokens: 26,
+      }), { status: 200, headers: { "Content-Type": "application/json" } }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const emit = vi.fn();
+    const result = await callInferenceStream({
+      deps,
+      req: mockReq(),
+      res: mockRes(),
+      route: planningRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    }, emit);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock.mock.calls[0][0]).toBe("http://localhost:3200/generate/stream");
+    expect(fetchMock.mock.calls[1][0]).toBe("http://localhost:3200/generate");
+    expect(emit).toHaveBeenCalledWith({
+      type: "thinking",
+      text: "\nStreaming was interrupted; finishing with stable generation...",
+    });
+    expect(result).toMatchObject({
+      text: "{\"ok\":true}",
+      model_id: "gemma-4-31b-it",
+      latency_ms: 57,
+      prompt_tokens: 12,
+      output_tokens: 14,
+      total_tokens: 26,
     });
   });
 });

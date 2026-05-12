@@ -68,7 +68,7 @@ export type InferenceStreamEvent =
 
 export type InferenceStreamEmitter = (event: InferenceStreamEvent) => void | Promise<void>;
 
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 6;
 const MAX_TOOL_TURNS = 1;
 const DEFAULT_TIMEOUT_BY_TIER = {
   live: 30_000,
@@ -133,7 +133,7 @@ function withTimeout(signal: AbortSignal | undefined, timeoutMs: number) {
 }
 
 function isRetryableStatus(status: number): boolean {
-  return status === 429 || status === 503;
+  return status === 429 || status === 503 || status === 504;
 }
 
 function isRetryableErrorBody(text: string): boolean {
@@ -156,8 +156,8 @@ function isRetryableErrorBody(text: string): boolean {
     "please try again later",
     // Upstream Gemini API 504s wrapped by the inference service as 502 bodies.
     // Observed 2026-04-25: ea-001-schema returned 504 at 97.7s while the local
-    // budget is 130s. With MAX_RETRIES=2 and 500ms→1000ms backoff, the second
-    // attempt typically succeeds because the upstream queue has cleared.
+    // budget is 130s. The retry budget gives the upstream queue enough time to
+    // clear before returning a teacher-facing 502.
     "deadline_exceeded",
     "deadline exceeded",
   ].some((token) => normalized.includes(token));
@@ -181,6 +181,11 @@ function embeddedProviderError(text: string): string | null {
   } catch {
     return null;
   }
+}
+
+function isRetryableHttpFailure(status: number, body: string): boolean {
+  return isRetryableStatus(status)
+    || ((status === 500 || status === 502) && isRetryableErrorBody(body));
 }
 
 function isAbortError(error: unknown): boolean {
@@ -336,14 +341,14 @@ async function performGenerationCall(options: {
 
       const rawBody = await response.text();
       if (!response.ok) {
-        const retryable = isRetryableStatus(response.status)
-          || (response.status === 502 && isRetryableErrorBody(rawBody));
+        const retryable = isRetryableHttpFailure(response.status, rawBody);
         if (retryable && attempt < MAX_RETRIES) {
           attempt += 1;
           // Back off between retries so a transient upstream failure
           // (connection reset, 503, brief rate limit) has time to clear.
-          // With MAX_RETRIES=2 the waits are 500ms then 1000ms.
-          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          // With MAX_RETRIES=6 the waits are 500ms, 1000ms, 2000ms,
+          // 4000ms, then 8000ms for the final two retries.
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
           await new Promise((resolve) => setTimeout(resolve, backoffMs));
           continue;
         }
@@ -387,7 +392,7 @@ async function performGenerationCall(options: {
         const retryable = isRetryableErrorBody(providerError);
         if (retryable && attempt < MAX_RETRIES) {
           attempt += 1;
-          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
           await new Promise((resolve) => setTimeout(resolve, backoffMs));
           continue;
         }
@@ -421,7 +426,7 @@ async function performGenerationCall(options: {
       const retryable = isAbortError(error) || isTransportError(error);
       if (retryable && attempt < MAX_RETRIES) {
         attempt += 1;
-        const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+        const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
         continue;
       }
@@ -500,11 +505,12 @@ async function readInferenceSse(
 
     if (message.event === "error") {
       const errorText = typeof payload.error === "string" ? payload.error : "Inference stream failed";
+      const retryable = isRetryableErrorBody(errorText);
       throw new RouteError(502, {
         error: `Inference service error: ${errorText}`,
         category: "inference",
-        retryable: false,
-        detail_code: "inference_stream_error",
+        retryable,
+        detail_code: retryable ? "inference_service_retryable" : "inference_stream_error",
       });
     }
   }
@@ -609,11 +615,10 @@ async function performGenerationStreamCall(options: {
 
       if (!response.ok) {
         const rawBody = await response.text();
-        const retryable = isRetryableStatus(response.status)
-          || (response.status === 502 && isRetryableErrorBody(rawBody));
+        const retryable = isRetryableHttpFailure(response.status, rawBody);
         if (retryable && attempt < MAX_RETRIES) {
           attempt += 1;
-          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
           await new Promise((resolve) => setTimeout(resolve, backoffMs));
           continue;
         }
@@ -643,7 +648,7 @@ async function performGenerationStreamCall(options: {
         const retryable = isRetryableErrorBody(providerError);
         if (retryable && attempt < MAX_RETRIES) {
           attempt += 1;
-          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+          const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
           await new Promise((resolve) => setTimeout(resolve, backoffMs));
           continue;
         }
@@ -675,7 +680,7 @@ async function performGenerationStreamCall(options: {
       const retryable = isAbortError(error) || isTransportError(error);
       if (retryable && !receivedStreamEvent && attempt < MAX_RETRIES) {
         attempt += 1;
-        const backoffMs = Math.min(500 * 2 ** (attempt - 1), 4_000);
+        const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
         continue;
       }

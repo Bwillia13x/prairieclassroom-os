@@ -6,20 +6,21 @@ External-facing copy for fields that are not stored directly in the Kaggle body.
 
 Replace every bracketed placeholder before publishing the video, Kaggle project, or media gallery:
 
-- Live demo URL: must load from an external network and `/?demo=true` must land directly on Today.
+- Live demo URL: `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` loads from the public Vercel deployment and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes.
+- Live demo claim boundary: this URL uses the static synthetic demo fallback until Render/Vercel `VITE_API_URL` is wired to the orchestrator; do not describe it as live hosted-Gemma generation or new hosted proof.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
-- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os` (`HEAD` `a125d82c9741d7b200a5bbed01a2dc115717bc8a`).
+- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the latest verified pushed `main` state is `1208fd11c7b1db4c0ca9905a42f4764c9d989c6c`.
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-11T16-49-06-881Z-21463`
+- Mock structural gate: `output/release-gate/2026-05-11T22-53-32-342Z-87696`
 - Current hosted Gemma 4 refresh: failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; do not claim a current clean full hosted gate.
 - Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`)
 - Last passing hosted Gemma 4 baseline: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
 - Last passing hosted eval summary: `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-summary.json`
 - Latest May 8 cost rollup: `output/cost-rollups/2026-05-08-rollup.json`
-- Current test count: 2,069 Vitest + 69 Python in the latest mock gate
+- Current test count: 2,086 Vitest + 76 Python in the latest mock gate
 
 Do not add claims about real teacher validation, local Ollama proof, no-cloud operation, or measured classroom outcomes unless new artifacts are added and the claims ledger is advanced.
 
@@ -43,7 +44,7 @@ The project also keeps a separate local/self-hosted Ollama path for the intended
 Project links:
 
 - Code: [PrairieClassroom OS source code](https://github.com/Bwillia13x/prairieclassroom-os)
-- Live demo: [add public deployed URL after deployment]
+- Live demo: [PrairieClassroom OS public synthetic demo](https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34)
 - Kaggle writeup: [add Kaggle writeup URL after submission]
 
 ## Kaggle Project Links Text

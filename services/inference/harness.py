@@ -2527,17 +2527,21 @@ def run_smoke_tests(harness: GemmaHarness) -> bool:
             "connection reset",
             "429",
             "503",
+            "504",
+            "deadline_exceeded",
+            "deadline exceeded",
+            "deadline expired",
         ])
 
     def smoke_generate(request: GenerationRequest) -> tuple[GenerationResponse, bool, str | None]:
-        max_attempts = 3 if harness.mode in {InferenceMode.API, InferenceMode.GEMINI} else 1
+        max_attempts = 5 if harness.mode in {InferenceMode.API, InferenceMode.GEMINI} else 1
         for attempt in range(max_attempts):
             resp = harness.generate(request)
             ok, detail = inspect_response(resp)
             if ok or not is_transient_failure(detail) or attempt == max_attempts - 1:
                 return resp, ok, detail
             print(f"  retrying transient provider failure ({attempt + 1}/{max_attempts - 1})...")
-            time.sleep(min(0.5 * (attempt + 1), 2.0))
+            time.sleep(min(2 ** attempt, 8.0))
         return resp, ok, detail
 
     # Test 1: Text prompt

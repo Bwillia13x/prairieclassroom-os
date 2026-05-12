@@ -71,7 +71,7 @@ The system is therefore not just a demo concept. It is a working Gemma-4-native 
 ## Project Links To Attach
 
 - Public code repository: `https://github.com/Bwillia13x/prairieclassroom-os`
-- Public live demo: add public deployed URL after deployment
+- Public live demo: `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`
 - Public video: add public YouTube URL after upload
 
 ## Media Gallery Suggestions

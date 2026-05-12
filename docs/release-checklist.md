@@ -36,7 +36,7 @@ If you use a different prepared interpreter, export `PRAIRIE_PYTHON=/abs/path/to
 
 The browser smoke now covers:
 
-- seven-view top-level shell navigation (`classroom / today / tomorrow / week / prep / ops / review`)
+- seven-view top-level shell navigation (`today / classroom / tomorrow / week / prep / ops / review`)
 - canonical `tab` + optional `tool` query-param restore on refresh and legacy `?tab=<old-panel>` migration
 - `classroom` query-param restore on refresh
 - demo classroom panel handoffs

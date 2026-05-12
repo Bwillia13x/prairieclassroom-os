@@ -92,14 +92,16 @@ Current behavior: run the publish gate with `npm run submission:final-check` aft
 - Backend: Render free tier selected for the no-spend public demo path; root `render.yaml` defines the orchestrator and hosted-Gemini inference services.
 - Frontend: Vercel free tier; `apps/web/vercel.json` exists and carries SPA rewrites, security headers, and immutable asset caching.
 - Inference: hosted Gemma 4 mode with synthetic-only data; API key must be entered as a Render secret and must not be committed.
-- Smoke checklist exists at [docs/public-demo-operations.md](../public-demo-operations.md); external service creation and cellular smoke remain pending.
+- Smoke checklist exists at [docs/public-demo-operations.md](../public-demo-operations.md); the public Vercel synthetic demo now passes smoke using the static fallback, while Render hosted inference and cellular smoke remain pending.
 
 **B4 — Media gallery selection**
 - Cover image candidate: `output/playwright/ui-evidence/2026-04-24T12-11-06-752Z/differentiate-desktop.png` or fresh capture mid-generation.
 - Supporting images: Today, Tomorrow Plan, Family Message approval dialog, EA Briefing, mobile shell.
 - Closed-loop architecture diagram: render the ASCII version as a clean PNG.
 
-**Update 2026-04-30:** Vercel frontend config already existed; Render free tier is now the selected backend path with a committed `render.yaml` blueprint and Gemini-only inference requirements. Remaining Phase B deployment work is external: create the Render services, enter secrets, link Vercel `VITE_API_URL`, and complete external/cellular smoke.
+**Update 2026-04-30:** Vercel frontend config already existed; Render free tier is now the selected backend path with a committed `render.yaml` blueprint and Gemini-only inference requirements.
+
+**Update 2026-05-12:** Vercel project `echoexes-projects/prairieclassroom-os` is linked and the public synthetic demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` passes `smoke:public-demo` using the static demo API fallback. Vercel production has encrypted server-side hosted Gemma key/guard env vars, but the current Vite demo cannot read them in the browser. Remaining Phase B deployment work for hosted inference is external: create the Render services, enter Render secrets, link Vercel `VITE_API_URL`, and complete cellular smoke.
 
 ### Go/No-Go Gate
 

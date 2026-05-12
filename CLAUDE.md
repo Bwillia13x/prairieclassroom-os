@@ -23,8 +23,8 @@ As of 2026-05-05, the practical state of the repo is:
 - The hosted Gemini hackathon proof lane passes on synthetic/demo data via `npm run release:gate:gemini`.
 - The Ollama privacy-first live-model lane is implemented, but this host is **structurally blocked** for the full dual-speed lane: the latest 2026-04-29 `host:preflight:ollama` artifact records an 8.00 GiB Apple M1 host with no Ollama CLI, no required models, 0.09 GiB free RAM, and 8.95 GiB free disk. The full lane still needs a separate host with at least 16 GiB RAM and enough disk for `gemma4:4b` plus `gemma4:27b`. The `gemma4:4b` live-tier model may still be feasible on this host. See `docs/development-gaps.md` G-02 and `docs/pilot/claims-ledger.md`.
 - The paid Vertex lane exists, but it is intentionally gated behind `PRAIRIE_ALLOW_PAID_SERVICES=true` and is not part of the default no-cost proof story.
-- The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 134 eval cases, and broad unit coverage (2,069 vitest + 69 pytest in the latest mock gate) across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
-- The web shell exposes a flat seven-view navigation (`classroom / today / tomorrow / week / prep / ops / review`) with URL-backed `tab` + optional `tool` state and a classroom-code prompt that retries protected reads and writes from the UI.
+- The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 134 eval cases, and broad unit coverage (2,086 vitest + 76 pytest in the latest mock gate) across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
+- The web shell exposes a flat seven-view navigation (`today / classroom / tomorrow / week / prep / ops / review`) with URL-backed `tab` + optional `tool` state and a classroom-code prompt that retries protected reads and writes from the UI.
 - Protected classroom APIs now support `X-Classroom-Code` plus optional `X-Classroom-Role`; the role defaults to `teacher`, and generated `docs/api-surface.md` records current teacher-only and teacher/EA scopes.
 - Security hardened: classroomId path traversal validation, rate limiting (global + per-classroom auth), security headers, safe JSON deserialization, atomic schedule writes, prompt injection detection.
 - Documentation current: generated system/API inventory, pilot-readiness gates, memory lifecycle controls, database schema, classroom profiles, and eval inventory.
@@ -115,8 +115,8 @@ the new multi-tool pages (Prep, Tomorrow, Ops, Review):
 ### Web shell contract
 
 - The web shell exposes seven standalone top-level pages in this fixed
-  order: `classroom`, `today`, `tomorrow`, `week`, `prep`, `ops`,
-  `review`. `classroom` is the default landing page when no `?tab=` is
+  order: `today`, `classroom`, `tomorrow`, `week`, `prep`, `ops`,
+  `review`. `today` is the default landing page when no `?tab=` is
   present.
 - `Classroom` is the bird's-eye operating dashboard (health, coverage,
   queues, student watch).

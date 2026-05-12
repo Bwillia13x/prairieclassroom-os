@@ -82,7 +82,7 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 
 The repo has a current artifact-backed proof story:
 
-- **Mock structural gate:** passing at `output/release-gate/2026-05-05T20-58-48-474Z-5247`.
+- **Mock structural gate:** passing at `output/release-gate/2026-05-11T22-53-32-342Z-87696`.
 - **Current hosted Gemma 4 refresh:** failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; the May 8 run did not produce a current clean full hosted gate.
 - **Hosted tool-calling evidence:** `diff-015-tool-calling-curriculum` passed in the current hosted attempt before the eval lane hit a retryable provider `500 INTERNAL` and exited with code 143.
 - **Latest completed May 8 hosted eval summary:** `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` recorded 12/13, with `fcst-001-demo-schema` blocked by provider high demand.
@@ -92,7 +92,7 @@ The repo has a current artifact-backed proof story:
 - **Last passing hosted proof eval summary:** `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-summary.json`.
 - **Last passing hosted eval result:** 13/13 curated hosted proof cases passed, including the Punjabi family-message equity case.
 - **Full eval corpus:** 134 checked-in eval case files.
-- **Current unit coverage in latest mock gate:** 2,069 TypeScript/Vitest tests and 69 Python tests passed.
+- **Current unit coverage in latest mock gate:** 2,086 TypeScript/Vitest tests and 76 Python tests passed.
 - **Canonical inventory:** `docs/system-inventory.md` and `docs/api-surface.md`.
 - **Provider proof source:** `docs/eval-baseline.md`.
 - **Concise judge proof brief:** `docs/hackathon-proof-brief.md`.
@@ -129,5 +129,5 @@ PrairieClassroom OS is therefore not an AI tutor with school branding. It is a G
 | API endpoints | 52 |
 | SQLite tables per classroom | 10 |
 | Checked-in eval case files | 134 |
-| Latest mock-gate tests | 2,069 Vitest + 69 Python |
+| Latest mock-gate tests | 2,086 Vitest + 76 Python |
 | Primary user roles | teacher, educational assistant, substitute, reviewer |

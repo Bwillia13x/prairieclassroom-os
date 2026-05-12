@@ -1,8 +1,8 @@
 # Local Release-Ready Memo
 
-- **Memo date:** 2026-05-05
+- **Memo date:** 2026-05-05; proof pointers refreshed 2026-05-12
 - **Scope:** Local repo, proof, and submission-package readiness for the Gemma 4 competition submission.
-- **Current HEAD inspected:** `3448286`
+- **Current HEAD inspected:** `1208fd11c7b1db4c0ca9905a42f4764c9d989c6c`
 - **Working-tree state:** dirty; this memo records the current local candidate, not a committed or published release.
 - **Primary checklist:** [../hackathon-submission-checklist.md](../hackathon-submission-checklist.md)
 - **Copy guardrails:** [../submission-copy-pack.md](../submission-copy-pack.md)
@@ -11,22 +11,22 @@
 
 **LOCAL-READY / EXTERNAL-INCOMPLETE.**
 
-The current repo state is strong enough for local handoff into the final competition packaging lane: mock structure, hosted Gemma 4 proof, browser smoke, claims checks, inventory, and evidence docs are aligned to the refreshed 2026-05-05 local mock gate plus the 2026-05-03 hosted Gemma proof artifact set.
+The current repo state is strong enough for local handoff into the final competition packaging lane: mock structure, hosted Gemma 4 proof, browser smoke, claims checks, inventory, and evidence docs are aligned to the refreshed 2026-05-11 local mock gate plus the 2026-05-03 hosted Gemma proof artifact set. The May 8 hosted refresh remains a blocker artifact, not a new passing hosted baseline.
 
-This memo does **not** mark the competition submission complete. The live demo URL, public repository verification, public video, teacher-session artifact, media gallery, and Kaggle submission still require external actions and should remain outside any local completion claim until performed and verified.
+This memo does **not** mark the competition submission complete. The public Vercel synthetic demo is now deployed and smoked, but the public video, teacher-session artifact, media gallery, Kaggle submission, and hosted-Gemma public backend still require external actions and should remain outside any local completion claim until performed and verified.
 
 ## Objective Mapped To Evidence
 
 | Requirement | Current evidence | Verdict |
 | --- | --- | --- |
-| App is real and route-complete | `npm run ops:status` reports 12 panels, 13 prompt classes, 52 API endpoints, 134 eval cases | Green |
-| Mock structural gate passes | `output/release-gate/2026-05-05T20-58-48-474Z-5247/summary.json` has `status: "passed"` and `inference_mode: "mock"` | Green |
+| App is real and route-complete | `npm run system:inventory:check` reports 12 panels, 13 prompt classes, 53 API endpoints, 134 eval cases | Green |
+| Mock structural gate passes | `output/release-gate/2026-05-11T22-53-32-342Z-87696/summary.json` has `status: "passed"` and `inference_mode: "mock"` | Green |
 | Last passing hosted Gemma 4 proof exists | `output/release-gate/2026-05-03T17-59-42-981Z-80702/summary.json` has `status: "passed"` and `inference_mode: "gemini"` | Green |
 | Hosted proof uses Gemma 4 models | Hosted summary lists `gemma-4-26b-a4b-it` for live tier and `gemma-4-31b-it` for planning tier | Green |
 | Last passing hosted eval suite passes | `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-summary.json` records 13 total cases, 13 passed, 0 failed, 134 available cases | Green |
 | Current May 8 hosted refresh | `output/release-gate/2026-05-08T22-47-12-031Z-43430/summary.json` has `status: "failed"` at `75-gemini-evals`; `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` records the latest completed May 8 eval summary at 12/13 | Yellow |
-| Unit and contract coverage are current | Latest mock-gate logs record 188 Vitest files, 2,069 Vitest tests, and 69 Python tests passed | Green |
-| Browser workflow smoke passes | `output/release-gate/2026-05-05T20-58-48-474Z-5247/90-smoke-browser.log` records `PASS browser smoke` | Green |
+| Unit and contract coverage are current | Latest mock-gate logs record 191 Vitest files, 2,086 Vitest tests, and 76 Python tests passed | Green |
+| Browser workflow smoke passes | `output/release-gate/2026-05-11T22-53-32-342Z-87696/90-smoke-browser.log` records `PASS browser smoke` | Green |
 | Demo fixture remains valid | `npm run pilot:reset` restored the canonical demo DB after UI evidence capture, and `npm run demo:fixture:check` passed with 36 interventions, 3 plans, 1 pattern report, 1 family message, 5 sessions, and zero generated variants/runs | Green |
 | Claims are internally consistent | `npm run claims:check` passed after the latest docs changes | Green |
 | Proof docs are internally consistent | `npm run proof:check` passed after the latest docs changes | Green |
@@ -34,16 +34,16 @@ This memo does **not** mark the competition submission complete. The live demo U
 | Evidence docs are current and guarded | `npm run evidence:generate` regenerated `docs/evidence/` on 2026-05-03 after UI capture and demo reset; session-patterns says QA/demo sessions are not teacher-adoption evidence | Green |
 | UI media evidence is refreshed | `PRAIRIE_WEB_BASE=http://127.0.0.1:5173 npm run ui:evidence` produced 29 screenshots at `output/playwright/ui-evidence/2026-05-03T22-25-59-189Z` | Green |
 | Public claim copy avoids overclaiming | `docs/submission-copy-pack.md` warns against real teacher validation, local Ollama proof, no-cloud, and measured-outcome claims without new artifacts | Green |
-| Public live demo exists | Checklist says live demo deploy is not yet deployed; external Render/Vercel service creation and smoke are pending | Red |
-| Public repo is verified | Checklist requires making GitHub public and clone-testing from another context | Red |
-| Public video is ready | Checklist still requires recording/uploading/publication workflow | Red |
+| Public live demo exists | `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` is deployed and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes using the static demo fallback | Green |
+| Public repo is verified | Public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; latest verified pushed `main` was `1208fd11c7b1db4c0ca9905a42f4764c9d989c6c` | Green |
+| Public video URL exists | Local MP4 QA passed, but YouTube/public video URL is still pending | Red |
 | Teacher validation is documented | Checklist still requires a teacher session, quote, anonymized notes, and claims-ledger update | Red |
 | Local Ollama privacy-first proof exists | `ops:status` reports `ollama: none recorded`; host preflight is `ollama_unavailable` | Yellow |
 | Kaggle entry is submitted | Checklist still requires conversion from draft to submitted entry | Red |
 
 ## Artifact Anchors
 
-- Mock release gate: `output/release-gate/2026-05-05T20-58-48-474Z-5247`
+- Mock release gate: `output/release-gate/2026-05-11T22-53-32-342Z-87696`
 - Current May 8 hosted refresh: `output/release-gate/2026-05-08T22-47-12-031Z-43430`
 - Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json`
 - Last passing hosted Gemma 4 release gate: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
@@ -89,9 +89,9 @@ The latest direct checks after the final docs/evidence polish were:
 - `npm run test:scripts` - passed, 57 tests
 - `npm run typecheck` - passed
 - `npm run lint` - passed
-- `npm run test` - passed, 188 files / 2,069 tests
-- `PRAIRIE_PYTHON=$PWD/services/inference/.venv311/bin/python npm run test:python` - passed, 69 tests
-- `PRAIRIE_PYTHON=$PWD/services/inference/.venv311/bin/python npm run release:gate` - passed; mock artifact `output/release-gate/2026-05-05T20-58-48-474Z-5247`
+- `npm run test` - passed in the latest mock gate, 191 files / 2,086 tests
+- `PRAIRIE_PYTHON=$PWD/services/inference/.venv311/bin/python npm run test:python` - passed in the latest mock gate, 76 tests
+- `PRAIRIE_PYTHON=$PWD/services/inference/.venv311/bin/python npm run release:gate` - passed; latest mock artifact `output/release-gate/2026-05-11T22-53-32-342Z-87696`
 - `npm run ops:status` - inventory/proof status aligned
 - `npm run evidence:generate` - passed; system reliability now covers 25,679 requests across 9 log files and session patterns reflects the reset demo DB
 - `PRAIRIE_WEB_BASE=http://127.0.0.1:5173 npm run ui:evidence` - passed, 29 screenshots
@@ -107,11 +107,10 @@ The next operator actions are not code polish tasks:
 
 1. Create the public backend/frontend deployment and set required hosting secrets.
 2. Smoke `/?demo=true` from an external network and cellular.
-3. Make the GitHub repository public and clone-test from a signed-out or different-machine context.
-4. Finalize and publish the video link.
-5. Attach the media gallery assets.
-6. Conduct or explicitly waive the teacher quote/session lane.
-7. Submit the Kaggle entry and verify submitted state.
+3. Finalize and publish the video link.
+4. Attach the media gallery assets.
+5. Conduct or explicitly waive the teacher quote/session lane.
+6. Submit the Kaggle entry and verify submitted state.
 
 `npm run submission:final-check` now enforces the public-link placeholder check by default. Use `--skip-publication-check` only when intentionally running a local-only gate before the external links exist.
 

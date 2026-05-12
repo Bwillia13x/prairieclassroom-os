@@ -119,7 +119,7 @@ This walkthrough should be framed as a 4-workflow teacher story, not a 12-panel 
 **Show:**
 
 - Classroom selector with `demo-okafor-grade34`.
-- Classroom page (the default landing surface) → Today panel.
+- Today page (the default landing surface) → Classroom page.
 - Student roster or classroom profile view.
 
 **Narration:**
@@ -208,7 +208,7 @@ Open **Review -> Usage Insights** if populated, or reference the proof docs dire
 
 **Say clearly:**
 
-> "The proof lane is hosted Gemma 4 on synthetic/demo data. The last passing hosted baseline is May 3, and the current May 8 hosted refresh is documented as blocked rather than a clean pass. The current generated inventory records 12 panels, 13 prompt classes, 52 endpoints, and 134 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
+> "The proof lane is hosted Gemma 4 on synthetic/demo data. The last passing hosted baseline is May 3, and the current May 8 hosted refresh is documented as blocked rather than a clean pass. The current generated inventory records 12 panels, 13 prompt classes, 53 endpoints, and 134 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
 
 ---
 

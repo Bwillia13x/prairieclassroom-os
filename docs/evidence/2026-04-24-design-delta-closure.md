@@ -12,7 +12,7 @@
 
 Close the gap between the live app and the generated design comps as **directional product UI**, not pixel-perfect reproduction. Preserve all real contracts:
 
-- Seven top-level pages in fixed order (`classroom / today / tomorrow / week / prep / ops / review`).
+- Seven top-level pages in fixed order (`today / classroom / tomorrow / week / prep / ops / review`).
 - Per-page role scopes per [CLAUDE.md](../../CLAUDE.md) web-shell contract.
 - URL parameters (`?tab=`, `?tool=`, `?classroom=`, `?demo=true`) including legacy `?tab=<old-panel>` migration.
 - Demo fixture shape (26 students / 36 interventions / 3 plans / 1 pattern / 1 approved message / 5 sessions).
