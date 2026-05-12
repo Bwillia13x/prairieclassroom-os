@@ -89,6 +89,7 @@ const GEMINI_TIMEOUT_BY_PROMPT_CLASS: Partial<Record<RouteConfig["prompt_class"]
   detect_support_patterns: 180_000,
   forecast_complexity: 180_000,
   generate_ea_briefing: 130_000,
+  generate_survival_packet: 240_000,
 } as const;
 
 function readEvalTimeoutOverride(req: Request): number | null {

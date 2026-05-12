@@ -83,8 +83,8 @@ interface RequestOptions {
    */
   silent?: boolean;
   /**
-   * Client abort timeout in ms. Defaults to 135_000 so it stays just past
-   * the server's longest planning-tier Gemini timeout (130_000). A shorter
+   * Client abort timeout in ms. Defaults to 245_000 so it stays just past
+   * the server's longest hosted Gemini route budget (240_000). A shorter
    * client timeout creates a race where the client aborts while the server
    * keeps running and persists an artifact the user thinks they abandoned.
    * Callers (e.g. fire-and-forget telemetry) can shorten this explicitly.
@@ -104,10 +104,10 @@ interface StreamStartResponse {
 
 /**
  * Default client abort timeout — see RequestOptions.timeoutMs. Set 5 seconds
- * longer than the server's longest planning-tier Gemini budget so the client
+ * longer than the server's longest hosted Gemini route budget so the client
  * never aborts before the server's own timeout fires.
  */
-const DEFAULT_CLIENT_TIMEOUT_MS = 135_000;
+const DEFAULT_CLIENT_TIMEOUT_MS = 245_000;
 
 const apiClientConfig: ApiClientConfig = {};
 

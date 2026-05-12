@@ -13,7 +13,7 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, "..");
-const DEFAULT_TIMEOUT_MS = "180000";
+const DEFAULT_TIMEOUT_MS = "240000";
 
 function cliUrl() {
   for (const arg of process.argv.slice(2)) {

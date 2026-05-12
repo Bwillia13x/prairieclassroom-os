@@ -90,6 +90,15 @@ const forecastRoute: RouteConfig = {
   output_schema_version: "0.1.0",
 };
 
+const survivalPacketRoute: RouteConfig = {
+  prompt_class: "generate_survival_packet",
+  model_tier: "planning",
+  thinking_enabled: true,
+  retrieval_required: true,
+  tool_call_capable: false,
+  output_schema_version: "0.1.0",
+};
+
 describe("callInference", () => {
   beforeEach(() => {
     vi.unstubAllGlobals();
@@ -253,10 +262,21 @@ describe("callInference", () => {
       maxTokens: 256,
     });
 
+    const survivalRes = mockRes();
+    await callInference({
+      deps,
+      req: mockReq(),
+      res: survivalRes,
+      route: survivalPacketRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    });
+
     expect(getRequestContext(liveRes).timeout_ms).toBe(100_000);
     expect(getRequestContext(planningRes).timeout_ms).toBe(130_000);
     expect(getRequestContext(eaRes).timeout_ms).toBe(130_000);
     expect(getRequestContext(patternsRes).timeout_ms).toBe(180_000);
+    expect(getRequestContext(survivalRes).timeout_ms).toBe(240_000);
   });
 
   it("extends hosted complexity forecasts past the Gemini planning client deadline", async () => {
