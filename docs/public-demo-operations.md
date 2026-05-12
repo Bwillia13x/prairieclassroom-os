@@ -11,25 +11,26 @@ The submission window for this work is Phase F of [plans/2026-05-18-submission-p
 - **Verified:** public source repo `Bwillia13x/prairieclassroom-os` is visible without authentication.
 - **Verified:** the local submission video file passes QA at `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4`.
 - **Verified:** Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web`, production deployment is live at `https://prairieclassroom-os.vercel.app`, and the static shell returns HTTP 200 with the committed security headers.
-- **Verified:** the public synthetic demo URL `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` passes `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` using the in-browser static demo API fallback.
-- **Not yet complete:** Render services have not been created from this environment, Render production hosted Gemma secrets have not been set, Vercel `VITE_API_URL` is not set, and the public video/Kaggle URLs are still placeholders. Vercel production now stores the server-side `PRAIRIE_GEMINI_API_KEY` and `PRAIRIE_ENABLE_GEMINI_RUNS` values as encrypted env vars, but those values are not browser-exposed and do not upgrade the static demo into hosted inference by themselves.
+- **Verified:** Render blueprint `prairieclassroom-os` exists and created `prairieclassroom-orchestrator`, `prairieclassroom-inference-gemini`, and the shared `prairieclassroom-internal-auth` env group.
+- **Verified:** the public synthetic demo URL `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` passes `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` using the in-browser static demo API fallback. Hosted Render smoke is in progress and should not be claimed until it passes after `VITE_API_URL` is wired and verified.
+- **Not yet complete:** hosted Render generation smoke, public video URL, and Kaggle URL are still pending. Vercel production stores the server-side `PRAIRIE_GEMINI_API_KEY` and `PRAIRIE_ENABLE_GEMINI_RUNS` values as encrypted env vars, but those values are not browser-exposed.
 
 `npm run submission:final-check -- --skip-release-gate` currently remains blocked by the missing public YouTube and Kaggle writeup/submission URLs. The full no-skip submission gate must remain blocked until all final public links are real and reachable.
 
 ## 2026-05-12 Hosting Findings
 
-- Render deployment cannot be completed from this shell because no Render CLI/API token is available.
+- Render deployment was completed through the authenticated Render dashboard because this shell still has no Render CLI/API token.
 - Vercel CLI authentication is present as `bwillia13x`, and `apps/web` is linked to project `prj_Hf8Vju4JZRTNRBEDJ8dvWyftXlQO`.
 - Latest production frontend deployment:
   - canonical URL: `https://prairieclassroom-os.vercel.app`
   - deployment URL: `https://prairieclassroom-6cx0q64lr-echoexes-projects.vercel.app`
   - inspect URL: `https://vercel.com/echoexes-projects/prairieclassroom-os/HMmSaVK9HA2S91wLQFhBVNQaTpPy`
-- `vercel env ls` reports encrypted production `PRAIRIE_GEMINI_API_KEY` and `PRAIRIE_ENABLE_GEMINI_RUNS` env vars for `echoexes-projects/prairieclassroom-os`. No `VITE_API_URL` value is set; add it only after the Render orchestrator URL exists if the public demo is upgraded to live hosted inference.
+- `vercel env ls` reports encrypted production `PRAIRIE_GEMINI_API_KEY`, `PRAIRIE_ENABLE_GEMINI_RUNS`, and `VITE_API_URL` env vars for `echoexes-projects/prairieclassroom-os`. `VITE_API_URL` points to `https://prairieclassroom-orchestrator.onrender.com`.
 - The public Vercel demo now has a deliberate static fallback: when the app is loaded from a `*.vercel.app` host with `?demo=true` and no `VITE_API_URL`, it serves deterministic synthetic classroom data and static sample generations in-browser. This keeps the judge demo usable without production secrets and does not create new hosted-Gemma proof.
 - Latest public smoke against `https://prairieclassroom-os.vercel.app` passed with `PASS browser smoke`.
 - A plain shell does not export the hosted Gemma key or enable hosted runs. `gemini:readycheck` reports the key and guard only after exporting `.env`; that confirms local credential readiness but does not create a new hosted proof artifact.
 - Ollama is not a viable proof lane on the current maintenance host: `npm run host:preflight:ollama` reports the Ollama CLI unavailable on an 8 GiB RAM host with 16.76 GiB free disk.
-- With Node `v25.8.2` and `.env` exported, `npm run submission:publish-preflight` currently passes local file checks for `render.yaml`, `apps/web/vercel.json`, final MP4, upstream configuration, branch sync, Vercel CLI availability, Vercel project link, hosted Gemma key/guard presence, and public live demo URL, then remains blocked until local closure changes are committed and the Render CLI/API token, public video URL, and Kaggle writeup URL exist.
+- With Node `v25.8.2` and `.env` exported, `npm run submission:publish-preflight` currently passes local file checks for `render.yaml`, `apps/web/vercel.json`, final MP4, upstream configuration, branch sync, Vercel CLI availability, Vercel project link, hosted Gemma key/guard presence, and public live demo URL, then remains blocked until the public video URL and Kaggle writeup URL exist.
 
 ## Deploy Targets (selected 2026-04-30)
 
@@ -64,9 +65,10 @@ For the backend (Render blueprint):
 #   prairieclassroom-inference-gemini:
 #     PRAIRIE_GEMINI_API_KEY=<secret>
 #
-# The orchestrator receives INFERENCE_HOSTPORT from the inference service through
-# Render's private service reference. Set INFERENCE_URL manually only if you are
-# intentionally overriding that private-network route.
+# The orchestrator sets INFERENCE_URL to the Render inference service's public
+# URL because the initial private hostport health check degraded on this free-tier
+# blueprint. `/generate` remains protected by the shared
+# PRAIRIE_INFERENCE_AUTH_TOKEN env group.
 ```
 
 ## Demo URL
@@ -133,7 +135,7 @@ CORS_ORIGIN=https://<web-demo-host> \
 npx tsx services/orchestrator/server.ts
 ```
 
-On Render, `render.yaml` sets `INFERENCE_HOSTPORT` from the inference service's private network reference, so `INFERENCE_URL` is not required unless overriding that route manually.
+On Render, `render.yaml` sets `INFERENCE_URL=https://prairieclassroom-inference-gemini.onrender.com` for the orchestrator and still carries `INFERENCE_HOSTPORT` as the private-route reference. The public inference `/generate` endpoint remains protected by the shared `PRAIRIE_INFERENCE_AUTH_TOKEN`.
 
 3. Web build
 

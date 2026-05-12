@@ -23,12 +23,12 @@ Checked against the repo on 2026-05-12 after final local pre-submit, live browse
 - Submission copy pack: [submission-copy-pack.md](./submission-copy-pack.md) now carries pre-publish placeholder and claim guardrails for video, Kaggle, repository, and media-gallery fields.
 - Public code repository: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; latest verified pushed `main` was `1208fd11c7b1db4c0ca9905a42f4764c9d989c6c`.
 - Public-video script: final local video QA passed for `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps); upload/public YouTube URL still pending.
-- Publish preflight: with Node `v25.8.2` and `.env` exported, `npm run submission:publish-preflight` passes local file checks, upstream configuration, branch sync, Vercel CLI availability, Vercel project link, hosted Gemma key/guard presence, and public live demo URL; it remains blocked until local closure changes are committed and Render access, public video URL, and Kaggle writeup URL exist. Vercel production stores the server-side hosted Gemma key/guard as encrypted env vars, but Render hosted inference is still not wired.
+- Publish preflight: with Node `v25.8.2` and `.env` exported, `npm run submission:publish-preflight` passes local file checks, upstream configuration, branch sync, Vercel CLI availability, Vercel project link, hosted Gemma key/guard presence, and public live demo URL; it remains blocked until public video URL and Kaggle writeup URL exist. Vercel production stores the server-side hosted Gemma key/guard as encrypted env vars, and Render hosted services have been created.
 - Judge/demo URL: `?demo=true` skips first-run onboarding and role-selection modals for the demo classroom
 - Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
 - Local release-ready memo: [evidence/2026-05-05-local-release-ready-memo.md](./evidence/2026-05-05-local-release-ready-memo.md) records the current artifact map and the external lane that is still incomplete.
 - Strategic posture: lead with multimodal magic + teacher voice; treat offline-Ollama as the third WOW lever, capturable the moment a viable host arrives
-- Live demo deploy: PUBLIC SYNTHETIC DEMO READY / HOSTED BACKEND NOT WIRED — Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web` and serves the public demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`; `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes using the static demo API fallback. Render service creation, Render secret entry, Vercel `VITE_API_URL`, hosted-Gemma public inference, and cellular smoke are still pending.
+- Live demo deploy: PUBLIC SYNTHETIC DEMO READY / HOSTED BACKEND CREATED — Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web` and serves the public demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`; `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes using the static demo API fallback. Render services and Vercel `VITE_API_URL` exist; hosted-Gemma public smoke and cellular smoke are still pending until the Render inference route reports healthy through the orchestrator.
 
 ## Completed safely in repo
 
@@ -46,7 +46,7 @@ Checked against the repo on 2026-05-12 after final local pre-submit, live browse
 - Split the Vite production bundle into React, panel, and visualization chunks so the current web build no longer emits the large-entry-chunk warning.
 - Added [public demo operations](./public-demo-operations.md) with the deployment shape and judge-safe smoke checklist.
 - Added `render.yaml` and `services/inference/requirements-gemini.txt` so the selected no-spend public-demo backend path is concrete without installing local/torch dependencies on the hosted Gemma service.
-- Added Render service wiring through `INFERENCE_HOSTPORT`, while retaining `INFERENCE_URL` as the local/manual override. The orchestrator and hosted inference service share `PRAIRIE_INFERENCE_AUTH_TOKEN` so `/generate` is not callable anonymously.
+- Added Render service wiring through explicit `INFERENCE_URL=https://prairieclassroom-inference-gemini.onrender.com`, while retaining `INFERENCE_HOSTPORT` as the private-route reference. The orchestrator and hosted inference service share `PRAIRIE_INFERENCE_AUTH_TOKEN` so `/generate` is not callable anonymously.
 - Added a Vercel-safe static demo API fallback so the public `?demo=true` route works without Render credentials while staying clearly separate from hosted Gemma proof.
 
 ## Existing media candidates
@@ -74,7 +74,7 @@ These are required for an actual competition submission but cannot be completed 
 1. Send 3 teacher recruitment messages (target: 1 K-6 teacher, 1 EA, 1 retired teacher / consultant; $100 honorarium; 60-90 minute session).
 2. Print a real Grade 3/4 fractions worksheet for the multimodal hero shot.
 3. Identify a host with ≥16 GiB RAM and ≥40 GiB free disk for the eventual Ollama lane (borrow or order refurb Mac Mini).
-4. Create the external Render blueprint services from `render.yaml`, set `CORS_ORIGIN=https://prairieclassroom-os.vercel.app`, `PRAIRIE_GEMINI_API_KEY`, and `PRAIRIE_CLASSROOM_ACCESS_CODES_JSON` as hosting secrets, then link Vercel production `VITE_API_URL` to the Render orchestrator. The orchestrator receives Render's `INFERENCE_HOSTPORT` reference and shares `PRAIRIE_INFERENCE_AUTH_TOKEN` with the inference service.
+4. Create the external Render blueprint services from `render.yaml`, set `CORS_ORIGIN=https://prairieclassroom-os.vercel.app`, `PRAIRIE_GEMINI_API_KEY`, and `PRAIRIE_CLASSROOM_ACCESS_CODES_JSON` as hosting secrets, then link Vercel production `VITE_API_URL` to the Render orchestrator. The orchestrator uses the Render inference service URL and shares `PRAIRIE_INFERENCE_AUTH_TOKEN` with the inference service.
 
 **Phase C — teacher session (target window 2026-05-04 → 2026-05-10):**
 
