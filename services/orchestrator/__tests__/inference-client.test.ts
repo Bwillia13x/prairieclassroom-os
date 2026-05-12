@@ -324,6 +324,25 @@ describe("callInference", () => {
     expect(getRequestContext(res).retry_count).toBe(1);
   });
 
+  it("does not retry local timeout aborts", async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new DOMException("Timed out", "AbortError"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(callInference({
+      deps,
+      req: mockReq(),
+      res: mockRes(),
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+    })).rejects.toMatchObject({
+      detailCode: "inference_timeout",
+      retryable: true,
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
   it("retries transient upstream network failures wrapped as 502s", async () => {
     const fetchMock = vi.fn()
       .mockResolvedValueOnce(new Response(JSON.stringify({
@@ -849,6 +868,25 @@ describe("callInferenceStream", () => {
       output_tokens: 14,
       total_tokens: 26,
     });
+  });
+
+  it("does not fallback after a local stream timeout consumes the route budget", async () => {
+    const fetchMock = vi.fn().mockRejectedValue(new DOMException("Timed out", "AbortError"));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(callInferenceStream({
+      deps,
+      req: mockReq(),
+      res: mockRes(),
+      route: planningRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 256,
+    }, vi.fn())).rejects.toMatchObject({
+      detailCode: "inference_timeout",
+      retryable: true,
+    });
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
   });
 });
 

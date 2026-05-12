@@ -424,8 +424,9 @@ async function performGenerationCall(options: {
         throw error;
       }
 
-      const retryable = isAbortError(error) || isTransportError(error);
-      if (retryable && attempt < MAX_RETRIES) {
+      const timedOut = isAbortError(error);
+      const retryable = timedOut || isTransportError(error);
+      if (!timedOut && retryable && attempt < MAX_RETRIES) {
         attempt += 1;
         const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
@@ -678,8 +679,9 @@ async function performGenerationStreamCall(options: {
         throw error;
       }
 
-      const retryable = isAbortError(error) || isTransportError(error);
-      if (retryable && !receivedStreamEvent && attempt < MAX_RETRIES) {
+      const timedOut = isAbortError(error);
+      const retryable = timedOut || isTransportError(error);
+      if (!timedOut && retryable && !receivedStreamEvent && attempt < MAX_RETRIES) {
         attempt += 1;
         const backoffMs = Math.min(500 * 2 ** (attempt - 1), 8_000);
         await new Promise((resolve) => setTimeout(resolve, backoffMs));
@@ -709,7 +711,6 @@ async function performGenerationStreamCall(options: {
 
 const STREAM_FALLBACK_DETAIL_CODES = new Set([
   "inference_transport_error",
-  "inference_timeout",
   "inference_stream_missing_body",
   "inference_stream_incomplete",
   "inference_service_retryable",
