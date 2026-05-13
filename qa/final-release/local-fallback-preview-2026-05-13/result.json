@@ -1,0 +1,34 @@
+{
+  "today": {
+    "demoApi": "prairie-static-demo-api",
+    "hasStaticModelText": false,
+    "hasForecast": true,
+    "heading": "Today",
+    "overflowX": 0
+  },
+  "tomorrow": {
+    "demoApi": "prairie-static-demo-api",
+    "hasPlan": true,
+    "text": "Tomorrow commandPlan, forecast, and carry-forward queueStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.Active toolTomorrow PlanPlanReadyStatus3PrioritiesForecastReadyStatus5BlocksCarry-forward0Queued1Open follow-upsPlanning orderWatchpoints3 prioritiesCarry-forward0 queuedOpen follow-ups1Support prioritiesBrody· Offer sensory breakAmira· Give bilingual vocabularyElena· Start with manipulatives,02Stage tomorrowWhat to stage. Wha",
+    "overflowX": 0
+  },
+  "bad": [],
+  "logs": [
+    {
+      "type": "error",
+      "text": "Access to fetch at 'https://prairieclassroom-orchestrator.onrender.com/api/health' from origin 'http://127.0.0.1:4177' has been blocked by CORS policy: The 'Access-Control-Allow-Origin' header has a value 'https://prairieclassroom-os.vercel.app' that is not equal to the supplied origin. Have the ser"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "type": "error",
+      "text": "Access to fetch at 'https://prairieclassroom-orchestrator.onrender.com/api/health' from origin 'http://127.0.0.1:4177' has been blocked by CORS policy: The 'Access-Control-Allow-Origin' header has a value 'https://prairieclassroom-os.vercel.app' that is not equal to the supplied origin. Have the ser"
+    },
+    {
+      "type": "error",
+      "text": "Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}

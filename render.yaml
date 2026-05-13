@@ -19,6 +19,8 @@ services:
         value: "false"
       - key: PRAIRIE_INFERENCE_PROVIDER
         value: gemini
+      - key: PRAIRIE_REQUIRE_CLASSROOM_ACCESS_CODES
+        value: "true"
       - key: INFERENCE_URL
         value: https://prairieclassroom-inference-gemini.onrender.com
       - key: INFERENCE_HOSTPORT

@@ -249,6 +249,78 @@ describe("API client basics", () => {
     expect(headers.get("Content-Type")).toBe("application/json");
   });
 
+  it("falls back to the bundled static demo when the public deployed API has a transient failure", async () => {
+    vi.resetModules();
+    vi.stubEnv("VITE_API_URL", "https://prairieclassroom-orchestrator.onrender.com");
+    vi.stubGlobal("window", {
+      location: {
+        search: "?demo=true&tab=prep&classroom=demo-okafor-grade34",
+        hostname: "prairieclassroom-os.vercel.app",
+      },
+    });
+    vi.stubGlobal("document", { documentElement: { dataset: {} } });
+    const deployedFetch = vi.fn().mockResolvedValueOnce(jsonResponse(502, { error: "Inference service unavailable" }));
+    globalThis.fetch = deployedFetch;
+
+    try {
+      const { differentiate: deployedDifferentiate } = await import("../api");
+      const result = await deployedDifferentiate({
+        artifact: {
+          artifact_id: "a1",
+          title: "Math Lesson",
+          subject: "math",
+          source_type: "text",
+          raw_text: "Add fractions",
+        },
+        classroom_id: "demo-okafor-grade34",
+      });
+
+      expect(result.model_id).toBe("static-demo-fallback");
+      expect(result.variants.length).toBeGreaterThan(0);
+      expect(deployedFetch).toHaveBeenCalledTimes(1);
+      expect(document.documentElement.dataset.demoApi).toBe("prairie-static-demo-api");
+    } finally {
+      vi.unstubAllEnvs();
+      vi.unstubAllGlobals();
+      globalThis.fetch = mockFetch;
+    }
+  });
+
+  it("falls back to the bundled static demo when a deployed stream start returns a transient failure", async () => {
+    vi.resetModules();
+    vi.stubEnv("VITE_API_URL", "https://prairieclassroom-orchestrator.onrender.com");
+    vi.stubGlobal("window", {
+      location: {
+        search: "?demo=true&tab=tomorrow&classroom=demo-okafor-grade34",
+        hostname: "prairieclassroom-os.vercel.app",
+      },
+    });
+    vi.stubGlobal("document", { documentElement: { dataset: {} } });
+    const deployedFetch = vi.fn().mockResolvedValueOnce(jsonResponse(502, { error: "Stream unavailable" }));
+    globalThis.fetch = deployedFetch;
+
+    try {
+      const { generateTomorrowPlan: deployedGenerateTomorrowPlan } = await import("../api");
+      const onThinking = vi.fn();
+      const onChunk = vi.fn();
+      const result = await deployedGenerateTomorrowPlan({
+        classroom_id: "demo-okafor-grade34",
+        teacher_reflection: "Brody needed help after lunch.",
+      }, undefined, { onThinking, onChunk });
+
+      expect(result.model_id).toBe("static-demo-fallback");
+      expect(result.plan.classroom_id).toBe("demo-okafor-grade34");
+      expect(onThinking).toHaveBeenCalledWith(expect.stringContaining("synthetic classroom fixture"));
+      expect(onChunk).toHaveBeenCalled();
+      expect(deployedFetch).toHaveBeenCalledTimes(1);
+      expect(document.documentElement.dataset.demoApi).toBe("prairie-static-demo-api");
+    } finally {
+      vi.unstubAllEnvs();
+      vi.unstubAllGlobals();
+      globalThis.fetch = mockFetch;
+    }
+  });
+
   it("non-OK response throws ApiError with status and payload fields", async () => {
     const errorPayload = {
       error: "Validation failed",

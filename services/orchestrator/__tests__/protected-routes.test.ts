@@ -34,26 +34,29 @@ const CLASSROOMS: Record<string, ClassroomProfile> = {
   },
 };
 
-function makeDeps(): RouteDeps {
+function makeDeps(options: { requireClassroomAccessCodes?: boolean } = {}): RouteDeps {
   return {
     inferenceUrl: "http://127.0.0.1:9999",
     dataDir: "/tmp/prairieclassroom-tests",
     loadClassroom: (id: string) => CLASSROOMS[id],
     loadClassrooms: () => Object.values(CLASSROOMS),
-    authMiddleware: createAuthMiddleware((id: string) => CLASSROOMS[id]),
+    authMiddleware: createAuthMiddleware((id: string) => CLASSROOMS[id], options),
+    requireClassroomAccessCodes: options.requireClassroomAccessCodes,
     requireClassroomRole,
   };
 }
 
-async function startServer() {
+async function startServer(options: { requireClassroomAccessCodes?: boolean } = {}) {
   const app = express();
   app.use(express.json());
-  const deps = makeDeps();
+  const deps = makeDeps(options);
   app.use("/api/today", deps.authMiddleware, requireClassroomRole(["teacher", "ea"]));
+  app.use("/api/tomorrow-plan", deps.authMiddleware, requireClassroomRole(["teacher"]));
   app.use("/api/today", createTodayRouter(deps));
   app.use("/api/classrooms", createHistoryRouter(deps));
   app.use("/api/feedback", createFeedbackRouter(deps));
   app.use("/api/sessions", createSessionsRouter(deps));
+  app.post("/api/tomorrow-plan", (_req, res) => res.json({ ok: true }));
 
   const server = await new Promise<Server>((resolve) => {
     const nextServer = app.listen(0, "127.0.0.1", () => resolve(nextServer));
@@ -218,6 +221,29 @@ describe("protected classroom routes", () => {
     expect(sessionMissingClassroom.status).toBe(404);
     await expect(sessionMissingClassroom.json()).resolves.toMatchObject({
       detail_code: "classroom_not_found",
+    });
+  });
+
+  it("fails closed before protected operational and generation routes when hosted codes are required", async () => {
+    await stopServer(server);
+    const running = await startServer({ requireClassroomAccessCodes: true });
+    server = running.server;
+    baseUrl = running.baseUrl;
+
+    const today = await fetch(`${baseUrl}/api/today/${OPEN_CLASSROOM_ID}`);
+    expect(today.status).toBe(503);
+    await expect(today.json()).resolves.toMatchObject({
+      detail_code: "classroom_code_not_configured",
+    });
+
+    const generation = await fetch(`${baseUrl}/api/tomorrow-plan`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ classroom_id: OPEN_CLASSROOM_ID }),
+    });
+    expect(generation.status).toBe(503);
+    await expect(generation.json()).resolves.toMatchObject({
+      detail_code: "classroom_code_not_configured",
     });
   });
 });

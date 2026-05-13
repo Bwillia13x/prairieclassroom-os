@@ -7,7 +7,8 @@ External-facing copy for fields that are not stored directly in the Kaggle body.
 Replace every bracketed placeholder before publishing the video, Kaggle project, or media gallery:
 
 - Live demo URL: `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` loads from the public Vercel deployment and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes.
-- Live demo claim boundary: this URL uses the static synthetic demo fallback until Render/Vercel `VITE_API_URL` is wired to the orchestrator; do not describe it as live hosted-Gemma generation or new hosted proof.
+- Live demo claim boundary: production is wired to the Render-hosted orchestrator and Gemini inference service for synthetic/demo data when those services are healthy; the public `?demo=true` path also has a deterministic static fallback for transient Render/network 429/5xx failures. Do not describe the fallback as live hosted-Gemma generation or a new hosted proof baseline.
+- Deployed video-readiness evidence: `qa/final-release/deployed-video-ready-2026-05-13/` passed on the public URL across the main capture views at desktop/mobile sizes, including the keyboard command palette.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
 - Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the latest verified pushed `main` state is `1208fd11c7b1db4c0ca9905a42f4764c9d989c6c`.

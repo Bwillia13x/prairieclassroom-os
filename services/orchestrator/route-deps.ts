@@ -17,6 +17,7 @@ export interface RouteDeps {
   loadClassroom: (id: string) => ClassroomProfile | undefined;
   loadClassrooms: () => ClassroomProfile[];
   authMiddleware: RouteMiddleware;
+  requireClassroomAccessCodes?: boolean;
   requireClassroomRole?: (allowedRoles: readonly ClassroomRole[]) => RouteMiddleware;
 }
 

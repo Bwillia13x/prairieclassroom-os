@@ -133,6 +133,20 @@ describe("createAuthMiddleware", () => {
     expect(next).toHaveBeenCalled();
   });
 
+  it("fails closed for non-demo classrooms without codes when hosted codes are required", () => {
+    const mw = createAuthMiddleware(loadClassroom, { requireClassroomAccessCodes: true });
+    const req = mockReq({ body: { classroom_id: "open-room" } });
+    const res = mockRes();
+    mw(req as Request, res as unknown as Response, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(res._status).toBe(503);
+    expect(res._json).toMatchObject({
+      category: "auth",
+      detail_code: "classroom_code_not_configured",
+      retryable: false,
+    });
+  });
+
   it("calls next() when correct code is provided", () => {
     const req = mockReq({
       body: { classroom_id: "alpha-grade4" },

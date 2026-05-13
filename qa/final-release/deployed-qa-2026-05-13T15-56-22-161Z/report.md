@@ -1,0 +1,1060 @@
+# Deployed App QA
+
+Base: https://prairieclassroom-os.vercel.app
+Captured: 2026-05-13T15:57:37.962Z
+
+## Route Results
+
+| Viewport | Route | OK | Screenshot | Notes |
+| --- | --- | --- | --- | --- |
+| desktop | today | yes | desktop-today.png |  |
+| desktop | classroom | yes | desktop-classroom.png |  |
+| desktop | tomorrow-plan | yes | desktop-tomorrow-plan.png |  |
+| desktop | week | yes | desktop-week.png |  |
+| desktop | prep-differentiate | yes | desktop-prep-differentiate.png |  |
+| desktop | ops-log-intervention | yes | desktop-ops-log-intervention.png |  |
+| desktop | review-family-message | yes | desktop-review-family-message.png |  |
+| desktop | review-support-patterns | yes | desktop-review-support-patterns.png |  |
+| desktop | interactions | no |  | locator.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for getByTestId('shell-search-trigger')[22m
+[2m    - locator resolved to <button type="button" class="header-action" title="Search or ask Prairie" data-testid="shell-search-trigger">…</button>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not visible[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is not visible[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    56 × waiting for element to be visible, enabled and stable[22m
+[2m       - element is not visible[22m
+[2m     - retrying click action[22m
+[2m       - waiting 500ms[22m
+ |
+| mobile | today | yes | mobile-today.png |  |
+| mobile | classroom | yes | mobile-classroom.png |  |
+| mobile | tomorrow-plan | yes | mobile-tomorrow-plan.png |  |
+| mobile | week | yes | mobile-week.png |  |
+| mobile | prep-differentiate | yes | mobile-prep-differentiate.png |  |
+| mobile | ops-log-intervention | yes | mobile-ops-log-intervention.png |  |
+| mobile | review-family-message | yes | mobile-review-family-message.png |  |
+| mobile | review-support-patterns | yes | mobile-review-support-patterns.png |  |
+
+## Runtime Issues
+
+[
+  {
+    "route": "classroom",
+    "viewport": "desktop",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "tomorrow-plan",
+    "viewport": "desktop",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "week",
+    "viewport": "desktop",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "prep-differentiate",
+    "viewport": "desktop",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "ops-log-intervention",
+    "viewport": "desktop",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "review-family-message",
+    "viewport": "desktop",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "review-support-patterns",
+    "viewport": "desktop",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "classroom",
+    "viewport": "mobile",
+    "console": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "warning",
+        "text": "Failed to auto-seed demo forecast: ApiError: Too many authentication attempts. Please wait before trying again.\n    at W (https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:39532)\n    at async https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:250547"
+      }
+    ],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "status": 429,
+        "statusText": ""
+      }
+    ]
+  },
+  {
+    "route": "tomorrow-plan",
+    "viewport": "mobile",
+    "console": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "warning",
+        "text": "Failed to auto-seed demo forecast: ApiError: Too many authentication attempts. Please wait before trying again.\n    at W (https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:39532)\n    at async https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:250547"
+      }
+    ],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "status": 429,
+        "statusText": ""
+      }
+    ]
+  },
+  {
+    "route": "week",
+    "viewport": "mobile",
+    "console": [
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "error",
+        "text": "Failed to load resource: the server responded with a status of 429 ()"
+      },
+      {
+        "type": "warning",
+        "text": "Failed to auto-seed demo forecast: ApiError: Too many authentication attempts. Please wait before trying again.\n    at W (https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:39532)\n    at async https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:250547"
+      }
+    ],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "status": 429,
+        "statusText": ""
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "status": 429,
+        "statusText": ""
+      }
+    ]
+  },
+  {
+    "route": "prep-differentiate",
+    "viewport": "mobile",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "ops-log-intervention",
+    "viewport": "mobile",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "review-family-message",
+    "viewport": "mobile",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  },
+  {
+    "route": "review-support-patterns",
+    "viewport": "mobile",
+    "console": [],
+    "pageErrors": [],
+    "failedRequests": [
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      },
+      {
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+        "method": "POST",
+        "errorText": "net::ERR_ABORTED"
+      }
+    ],
+    "badResponses": []
+  }
+]
+
+## Raw Results
+
+```json
+[
+  {
+    "route": "today",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-today.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immediate risks, and the carry-forward you committed to before the day started.26 studentsTodaySame-day triage for Grade 3-4.Do this nowMorning triageStart morning triage with AmiraSeveral supports are approaching their review window. Tighten the pattern record before it goes stale.Do this now: Support PatternsStudentAmiraOpen23Today's flowCurrentForecast pendingForecast blocks not generated yet — open Forecast to seed today's flow.",
+      "toastText": []
+    }
+  },
+  {
+    "route": "classroom",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-classroom.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Classroom commandRoom viewRead the room, then choose the lens.Grade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.Open Today triage→Open work23Queue itemsThreads23Active student signalsRoster268 EAL supportsPlan coverage0/7No streakLiveToday triageStageTomorrow planForecastWeek mapRoom healthLive72Needs attentionNeeds attention23 open · plan today: noPressure indexThreads23Active conversationsRoster268 EAL supportsPla",
+      "toastText": []
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "tomorrow-plan",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-tomorrow-plan.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Tomorrow commandPlan, forecast, and carry-forward queueStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.Active toolTomorrow PlanPlanNeededStatus0PrioritiesForecastPendingStatus—BlocksCarry-forward0Queued0Open follow-ups02Stage tomorrowWhat to stage. What to forecast. What lands tomorrow.01 Planning orderTomorrow PlanWatchpoints, priorities, EA moves, prep, and family follow-ups.Plan not generated02 Block riskForecastBlock-by-blo",
+      "toastText": []
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "week",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-week.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Week commandShape the week before it shapes tomorrowUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.Plan TomorrowReview TodayUpdated 9:56 AM5Days mapped0Forecast days0High-risk blocks0Unmapped days23Open itemsNext decisionPriorityNo high-risk dayCoverage65% · Coverage watchOpen items23Staging cuesPlan tomorrow· Needs teacher passRead forecast day· No forecasted dayStage high-risk supp",
+      "toastText": []
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "prep-differentiate",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-prep-differentiate.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Prep commandPrepare the material before it reaches the room.Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.Heavy EAL load8 EAL · 7 languagesActive toolDifferentiateRoster26Students8EALLanguage7LanguagesVariantsModeArtifact readinessInput laneupload · paste · webCurriculumAlberta programOutputvariantsLanguage loadTagalogUrduArabicSomaliPunjabiSpanishEAL students8Family languages7Teacher passSame outcome· no lowered barEditable copy· teacher owned",
+      "toastText": []
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "ops-log-intervention",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-ops-log-intervention.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Ops commandCoordinate the adults without losing the thread.Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.Ops readyOpen log · briefing · coverage · handoffActive workflowLog InterventionHandoffSub packet readyCapture26Threads0Follow-upsCoverage—EA moves—BlocksCapture queueOpen threads26Follow-ups0Current lane0 follow-upsCoverage cuesEA movesneeds planHandoff pathLog noteBrief EAsBalance loadSub packet02Ops workflowCa",
+      "toastText": []
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "review-family-message",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-review-family-message.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolFamily MessageApprovals0AwaitingSignals0Patterns26ThreadsCadence23Reviews dueApproval queueAwaiting approval0Active threads26Human-in-the-loopAlways editable· teacher edits persistNo autonomous send· approval required02Review laneWhat to approve, wha",
+      "toastText": [
+        "Pick students to draft a message.Nothing sends automatically — you review and approve every message first."
+      ]
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "review-support-patterns",
+    "viewport": "desktop",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "desktop-review-support-patterns.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolSupport PatternsApprovals0AwaitingSignals0Patterns26ThreadsCadence23Reviews duePattern signalUnaddressed patterns0Approaching review23Active threads02Review laneWhat to approve, what to read, what to learn.01 FamilyFamily MessageDraft family updates ",
+      "toastText": [
+        "[SAMPLE]Recurring ThemesSelf-regulation cues at transitions · Student A, Student C · 4 records\"Asked for a brain-break before math; calmed within 90 seconds.\"\"Used the regulation corner during the read-aloud transition.\""
+      ]
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "interactions",
+    "viewport": "desktop",
+    "ok": false,
+    "issues": [
+      "locator.click: Timeout 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for getByTestId('shell-search-trigger')\u001b[22m\n\u001b[2m    - locator resolved to <button type=\"button\" class=\"header-action\" title=\"Search or ask Prairie\" data-testid=\"shell-search-trigger\">…</button>\u001b[22m\n\u001b[2m  - attempting click action\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m    - waiting 20ms\u001b[22m\n\u001b[2m    2 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m      - element is not visible\u001b[22m\n\u001b[2m    - retrying click action\u001b[22m\n\u001b[2m      - waiting 100ms\u001b[22m\n\u001b[2m    56 × waiting for element to be visible, enabled and stable\u001b[22m\n\u001b[2m       - element is not visible\u001b[22m\n\u001b[2m     - retrying click action\u001b[22m\n\u001b[2m       - waiting 500ms\u001b[22m\n"
+    ],
+    "screenshots": []
+  },
+  {
+    "route": "today",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-today.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immediate risks, and the carry-forward you committed to before the day started.26 studentsTodaySame-day triage for Grade 3-4.Do this nowMorning triageStart morning triage with AmiraSeveral supports are approaching their review window. Tighten the pattern record before it goes stale.Do this now: Support PatternsStudentAmiraOpen23Today's flowCurrentForecast pendingForecast blocks not generated yet — open Forecast to seed today's flow.",
+      "toastText": []
+    }
+  },
+  {
+    "route": "classroom",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-classroom.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Classroom commandRoom viewRead the room, then choose the lens.Grade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.Open Today triage→Open work23Queue itemsThreads23Active student signalsRoster268 EAL supportsPlan coverage0/7No streakLiveToday triageStageTomorrow planForecastWeek mapRoom healthLive72Needs attentionNeeds attention23 open · plan today: noPressure indexThreads23Active conversationsRoster268 EAL supportsPla",
+      "toastText": [
+        "[ERR]Couldn't automatically generate today's demo flow. Open Forecast to seed it manually.[X]"
+      ]
+    },
+    "runtimeIssues": {
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "warning",
+          "text": "Failed to auto-seed demo forecast: ApiError: Too many authentication attempts. Please wait before trying again.\n    at W (https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:39532)\n    at async https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:250547"
+        }
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "status": 429,
+          "statusText": ""
+        }
+      ]
+    }
+  },
+  {
+    "route": "tomorrow-plan",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-tomorrow-plan.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Tomorrow commandPlan, forecast, and carry-forward queueStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.Active toolTomorrow PlanPlanNeededStatus0PrioritiesForecastPendingStatus—BlocksCarry-forward0Queued0Open follow-ups02Stage tomorrowWhat to stage. What to forecast. What lands tomorrow.01 Planning orderTomorrow PlanWatchpoints, priorities, EA moves, prep, and family follow-ups.Plan not generated02 Block riskForecastBlock-by-blo",
+      "toastText": [
+        "[ERR]Couldn't automatically generate today's demo flow. Open Forecast to seed it manually.[X]"
+      ]
+    },
+    "runtimeIssues": {
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "warning",
+          "text": "Failed to auto-seed demo forecast: ApiError: Too many authentication attempts. Please wait before trying again.\n    at W (https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:39532)\n    at async https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:250547"
+        }
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "status": 429,
+          "statusText": ""
+        }
+      ]
+    }
+  },
+  {
+    "route": "week",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-week.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Week commandShape the week before it shapes tomorrowUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.Plan TomorrowReview TodayUpdated 9:57 AM5Days mapped0Forecast days0High-risk blocks0Unmapped days23Open itemsNext decisionPriorityNo high-risk dayCoverage65% · Coverage watchOpen items23Staging cuesPlan tomorrow· Needs teacher passRead forecast day· No forecasted dayStage high-risk supp",
+      "toastText": [
+        "[ERR]Couldn't automatically generate today's demo flow. Open Forecast to seed it manually.[X]"
+      ]
+    },
+    "runtimeIssues": {
+      "console": [
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "error",
+          "text": "Failed to load resource: the server responded with a status of 429 ()"
+        },
+        {
+          "type": "warning",
+          "text": "Failed to auto-seed demo forecast: ApiError: Too many authentication attempts. Please wait before trying again.\n    at W (https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:39532)\n    at async https://prairieclassroom-os.vercel.app/assets/index-Uoz5l_Zt.js:2:250547"
+        }
+      ],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "status": 429,
+          "statusText": ""
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "status": 429,
+          "statusText": ""
+        }
+      ]
+    }
+  },
+  {
+    "route": "prep-differentiate",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-prep-differentiate.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Prep commandPrepare the material before it reaches the room.Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.Heavy EAL load8 EAL · 7 languagesActive toolDifferentiateRoster26Students8EALLanguage7LanguagesVariantsModeArtifact readinessInput laneupload · paste · webCurriculumAlberta programOutputvariantsLanguage loadTagalogUrduArabicSomaliPunjabiSpanishEAL students8Family languages7Teacher passSame outcome· no lowered barEditable copy· teacher owned",
+      "toastText": []
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "ops-log-intervention",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-ops-log-intervention.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Ops commandCoordinate the adults without losing the thread.Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.Ops readyOpen log · briefing · coverage · handoffActive workflowLog InterventionHandoffSub packet readyCapture26Threads0Follow-upsCoverage—EA moves—BlocksCapture queueOpen threads26Follow-ups0Current lane0 follow-upsCoverage cuesEA movesneeds planHandoff pathLog noteBrief EAsBalance loadSub packet02Ops workflowCa",
+      "toastText": []
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "review-family-message",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-review-family-message.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolFamily MessageApprovals0AwaitingSignals0Patterns26ThreadsCadence23Reviews dueApproval queueAwaiting approval0Active threads26Human-in-the-loopAlways editable· teacher edits persistNo autonomous send· approval required02Review laneWhat to approve, wha",
+      "toastText": [
+        "Pick students to draft a message.Nothing sends automatically — you review and approve every message first."
+      ]
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  },
+  {
+    "route": "review-support-patterns",
+    "viewport": "mobile",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+    "ok": true,
+    "issues": [],
+    "screenshot": "mobile-review-support-patterns.png",
+    "metrics": {
+      "title": "PrairieClassroom OS",
+      "demoApi": "",
+      "overflowX": 0,
+      "activePanelVisible": true,
+      "visibleText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolSupport PatternsApprovals0AwaitingSignals0Patterns26ThreadsCadence23Reviews duePattern signalUnaddressed patterns0Approaching review23Active threads02Review laneWhat to approve, what to read, what to learn.01 FamilyFamily MessageDraft family updates ",
+      "toastText": [
+        "[SAMPLE]Recurring ThemesSelf-regulation cues at transitions · Student A, Student C · 4 records\"Asked for a brain-break before math; calmed within 90 seconds.\"\"Used the regulation corner during the read-aloud transition.\""
+      ]
+    },
+    "runtimeIssues": {
+      "console": [],
+      "pageErrors": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/complexity-forecast",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "errorText": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": []
+    }
+  }
+]
+```

@@ -120,11 +120,24 @@ function isTruthy(value: string | null) {
 export function isStaticDemoApiActive(apiBase: string): boolean {
   if (typeof window === "undefined") return false;
   if (import.meta.env.VITE_DEMO_API_FALLBACK === "true") return true;
+  if (typeof document !== "undefined" && document.documentElement.dataset.demoApi === DEMO_API_FLAG) return true;
 
+  const demoRequested = isPublicDemoRequest();
+  return demoRequested && apiBase === "/api";
+}
+
+export function isStaticDemoFallbackAllowed(): boolean {
+  if (typeof window === "undefined") return false;
+  if (import.meta.env.VITE_DEMO_API_FALLBACK === "true") return true;
+  return isPublicDemoRequest();
+}
+
+function isPublicDemoRequest(): boolean {
+  if (typeof window === "undefined") return false;
   const params = new URLSearchParams(window.location.search);
   const demoRequested = isTruthy(params.get("demo")) || isTruthy(params.get("judge")) || isTruthy(params.get("presentation"));
   const staticVercelHost = /\.vercel\.app$/i.test(window.location.hostname);
-  return demoRequested && apiBase === "/api" && staticVercelHost;
+  return demoRequested && staticVercelHost;
 }
 
 export function markStaticDemoApiActive() {

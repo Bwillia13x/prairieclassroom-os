@@ -68,18 +68,19 @@ function startFakeInference(healthy: boolean): Promise<{ server: Server; url: st
 
 /* ---------- test server ---------- */
 
-function makeDeps(inferenceUrl: string): RouteDeps {
+function makeDeps(inferenceUrl: string, options: { requireClassroomAccessCodes?: boolean } = {}): RouteDeps {
   return {
     inferenceUrl,
     dataDir: "/tmp/prairieclassroom-hc-tests",
     loadClassroom: (id: string) => CLASSROOMS[id],
     loadClassrooms: () => Object.values(CLASSROOMS),
-    authMiddleware: createAuthMiddleware((id: string) => CLASSROOMS[id]),
+    authMiddleware: createAuthMiddleware((id: string) => CLASSROOMS[id], options),
+    requireClassroomAccessCodes: options.requireClassroomAccessCodes,
   };
 }
 
-async function startServer(inferenceUrl: string) {
-  const deps = makeDeps(inferenceUrl);
+async function startServer(inferenceUrl: string, options: { requireClassroomAccessCodes?: boolean } = {}) {
+  const deps = makeDeps(inferenceUrl, options);
   const app = express();
   app.use(express.json());
   // Mount health at "/" (same as server.ts)
@@ -223,6 +224,23 @@ describe("GET /api/classrooms", () => {
     expect(students).toEqual([]);
     expect(openEntry!.classroom_notes).toEqual([]);
   });
+
+  it("marks non-demo no-code classrooms as requiring codes when hosted code requirement is enabled", async () => {
+    await stopServer(server);
+    const running = await startServer("http://127.0.0.1:19999", { requireClassroomAccessCodes: true });
+    server = running.server;
+    baseUrl = running.baseUrl;
+
+    const res = await fetch(`${baseUrl}/api/classrooms`);
+    expect(res.status).toBe(200);
+
+    const list = (await res.json()) as Array<Record<string, unknown>>;
+    const openEntry = list.find((c) => c.classroom_id === OPEN_CLASSROOM.classroom_id);
+    expect(openEntry).toBeDefined();
+    expect(openEntry!.requires_access_code).toBe(true);
+    expect(openEntry!.students).toEqual([]);
+    expect(openEntry!.classroom_notes).toEqual([]);
+  });
 });
 
 describe("GET /api/classrooms/:id/profile", () => {
@@ -319,5 +337,19 @@ describe("GET /api/classrooms/:id/schedule", () => {
       headers: { "X-Classroom-Code": PROTECTED_CLASSROOM.access_code! },
     });
     expect(allowed.status).toBe(200);
+  });
+
+  it("fails closed for no-code non-demo schedule data when hosted code requirement is enabled", async () => {
+    await stopServer(server);
+    const running = await startServer("http://127.0.0.1:19999", { requireClassroomAccessCodes: true });
+    server = running.server;
+    baseUrl = running.baseUrl;
+
+    const res = await fetch(`${baseUrl}/api/classrooms/${OPEN_CLASSROOM.classroom_id}/schedule`);
+    expect(res.status).toBe(503);
+    await expect(res.json()).resolves.toMatchObject({
+      category: "auth",
+      detail_code: "classroom_code_not_configured",
+    });
   });
 });

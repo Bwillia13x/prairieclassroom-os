@@ -1,0 +1,26 @@
+{
+  "today": {
+    "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "asset": "https://prairieclassroom-os.vercel.app/assets/index-ClB6q0Ib.js",
+    "demoApi": "",
+    "hasForecast": false,
+    "hasStaticModel": false,
+    "forecastEmptyText": false,
+    "overflowX": 0
+  },
+  "tomorrow": {
+    "demoApi": "",
+    "text": "Tomorrow commandPlan, forecast, and carry-forward queueStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.Active toolTomorrow PlanPlanNeededStatus0PrioritiesForecastReadyStatus11BlocksCarry-forward0Queued0Open follow-ups02Stage tomorrowWhat to stage. What to forecast. What lands tomorrow.01 Planning orderTomorrow PlanWatchpoints, priorities, EA moves, prep, and family follow-ups.Plan not generated02 Block riskForecastBlock-by-block risk before coverage and transition decisions.11 blocks forecastActive workspaceTomorrow PlanConvert today's signal into watchpoints, priorities, EA actions, prep, and family follow-ups.Plan not gen",
+    "hasStaticPlan": false,
+    "overflowX": 0
+  },
+  "badResponses": [],
+  "failedRequests": [
+    {
+      "method": "POST",
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+      "errorText": "net::ERR_ABORTED"
+    }
+  ],
+  "consoleEvents": []
+}

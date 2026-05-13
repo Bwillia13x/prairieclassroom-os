@@ -4,19 +4,20 @@ import { join } from "node:path";
 import { handleRouteError, sendClassroomNotFound, sendRouteError } from "../errors.js";
 import { validateBody, ScheduleUpdateRequestSchema, isValidClassroomId } from "../validate.js";
 import { requireRoles, type RouteDeps } from "../route-deps.js";
-import { isDemoClassroom } from "../auth.js";
+import { isDemoClassroom, requiresClassroomAccessCode } from "../auth.js";
 
 export function createClassroomsRouter(deps: RouteDeps): Router {
   const router = Router();
   const authMiddleware = deps.authMiddleware;
   const teacherOnly = requireRoles(deps, ["teacher"]);
+  const authOptions = { requireClassroomAccessCodes: deps.requireClassroomAccessCodes === true };
 
   function publicClassroomSummary(c: ReturnType<RouteDeps["loadClassrooms"]>[number]) {
     return {
       classroom_id: c.classroom_id,
       grade_band: c.grade_band,
       subject_focus: c.subject_focus,
-      requires_access_code: Boolean(c.access_code),
+      requires_access_code: requiresClassroomAccessCode(c, authOptions),
       is_demo: isDemoClassroom(c),
       classroom_notes: [],
       students: [],
@@ -29,7 +30,7 @@ export function createClassroomsRouter(deps: RouteDeps): Router {
       grade_band: c.grade_band,
       subject_focus: c.subject_focus,
       classroom_notes: c.classroom_notes,
-      requires_access_code: Boolean(c.access_code),
+      requires_access_code: requiresClassroomAccessCode(c, authOptions),
       is_demo: isDemoClassroom(c),
       students: (c.students ?? []).map((s) => ({
         alias: s.alias,

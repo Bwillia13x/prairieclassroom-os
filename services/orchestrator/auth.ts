@@ -28,6 +28,17 @@ export interface ClassroomAuthContext {
   demoBypass: boolean;
 }
 
+export interface ClassroomAuthOptions {
+  requireClassroomAccessCodes?: boolean;
+}
+
+export function requiresClassroomAccessCode(
+  profile: { access_code?: string; classroom_id: string; is_demo?: boolean },
+  options: ClassroomAuthOptions = {},
+): boolean {
+  return Boolean(profile.access_code) || (options.requireClassroomAccessCodes === true && !isDemoClassroom(profile));
+}
+
 function parseClassroomRole(req: Request, res: Response): ClassroomRole | null {
   const rawHeader = req.headers["x-classroom-role"];
   const rawRole = Array.isArray(rawHeader) ? rawHeader[0] : rawHeader;
@@ -58,6 +69,7 @@ function setClassroomAuthContext(
  */
 export function createAuthMiddleware(
   loadClassroom: (id: string) => ClassroomProfile | undefined,
+  options: ClassroomAuthOptions = {},
 ) {
   return (req: Request, res: Response, next: NextFunction): void => {
     // Skip auth for non-classroom routes
@@ -87,6 +99,16 @@ export function createAuthMiddleware(
     if (!classroom) {
       // Let the route handler return 404
       next();
+      return;
+    }
+
+    if (!classroom.access_code && options.requireClassroomAccessCodes === true) {
+      sendRouteError(res, 503, {
+        error: "Classroom access code is not configured for this hosted classroom.",
+        category: "auth",
+        retryable: false,
+        detail_code: "classroom_code_not_configured",
+      });
       return;
     }
 

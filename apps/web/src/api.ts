@@ -37,6 +37,7 @@ import type {
 import {
   emitStaticDemoStream,
   isStaticDemoApiActive,
+  isStaticDemoFallbackAllowed,
   markStaticDemoApiActive,
   resolveStaticDemoRequest,
 } from "./demoApi";
@@ -110,6 +111,18 @@ interface StreamStartResponse {
 const DEFAULT_CLIENT_TIMEOUT_MS = 245_000;
 
 const apiClientConfig: ApiClientConfig = {};
+
+function resolveStaticDemoFallback<T>(path: string, options: RequestOptions): T | null {
+  if (!isStaticDemoFallbackAllowed()) return null;
+  const demo = resolveStaticDemoRequest<T>(path, options);
+  if (!demo.handled) return null;
+  markStaticDemoApiActive();
+  return demo.value;
+}
+
+function shouldUseStaticDemoFallback(status: number): boolean {
+  return status === 429 || status >= 500;
+}
 
 export class ApiError extends Error {
   readonly status: number;
@@ -196,16 +209,29 @@ async function requestJson<T>(path: string, options: RequestOptions = {}): Promi
     headers.set("X-Classroom-Role", classroomRole);
   }
 
-  const res = await fetch(`${API_BASE}${path}`, {
-    method: options.method ?? "GET",
-    headers,
-    body: options.body ? JSON.stringify(options.body) : undefined,
-    keepalive: options.keepalive,
-    signal: options.signal ?? AbortSignal.timeout(options.timeoutMs ?? DEFAULT_CLIENT_TIMEOUT_MS),
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${API_BASE}${path}`, {
+      method: options.method ?? "GET",
+      headers,
+      body: options.body ? JSON.stringify(options.body) : undefined,
+      keepalive: options.keepalive,
+      signal: options.signal ?? AbortSignal.timeout(options.timeoutMs ?? DEFAULT_CLIENT_TIMEOUT_MS),
+    });
+  } catch (error) {
+    if (!(error instanceof DOMException && error.name === "AbortError")) {
+      const fallback = resolveStaticDemoFallback<T>(path, options);
+      if (fallback !== null) return fallback;
+    }
+    throw error;
+  }
 
   if (!res.ok) {
     const payload = await parseErrorPayload(res);
+    if (shouldUseStaticDemoFallback(res.status)) {
+      const fallback = resolveStaticDemoFallback<T>(path, options);
+      if (fallback !== null) return fallback;
+    }
     if (
       !options.silent
       && classroomId
@@ -273,9 +299,21 @@ async function streamRequestJson<T>(
     }
   }
 
-  const start = await requestJson<StreamStartResponse>(`${path}/stream`, {
-    ...options,
-  });
+  let start: StreamStartResponse;
+  try {
+    start = await requestJson<StreamStartResponse>(`${path}/stream`, {
+      ...options,
+    });
+  } catch (error) {
+    if (error instanceof ApiError && shouldUseStaticDemoFallback(error.status)) {
+      const fallback = resolveStaticDemoFallback<T>(path, options);
+      if (fallback !== null) {
+        emitStaticDemoStream(handlers, fallback);
+        return fallback;
+      }
+    }
+    throw error;
+  }
 
   if (typeof EventSource === "undefined") {
     throw new ApiError(500, {

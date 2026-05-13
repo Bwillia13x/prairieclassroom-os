@@ -99,7 +99,17 @@ function parseClassroomAccessCodeOverrides(): Record<string, string> {
   }
 }
 
+function parseBooleanEnv(name: string): boolean {
+  const raw = process.env[name]?.trim().toLowerCase();
+  if (!raw) return false;
+  if (["1", "true", "yes", "on"].includes(raw)) return true;
+  if (["0", "false", "no", "off"].includes(raw)) return false;
+  console.error(`Invalid ${name}: ${process.env[name]}. Expected true/false.`);
+  process.exit(1);
+}
+
 const CLASSROOM_ACCESS_CODE_OVERRIDES = parseClassroomAccessCodeOverrides();
+const REQUIRE_CLASSROOM_ACCESS_CODES = parseBooleanEnv("PRAIRIE_REQUIRE_CLASSROOM_ACCESS_CODES");
 
 // ----- Data loading -----
 
@@ -172,7 +182,9 @@ app.use(globalLimiter);
 // routes with `classroom_id` in the body because URL params aren't resolved
 // until the sub-router's route handler runs.
 
-const authMiddleware = createAuthMiddleware(loadClassroom);
+const authMiddleware = createAuthMiddleware(loadClassroom, {
+  requireClassroomAccessCodes: REQUIRE_CLASSROOM_ACCESS_CODES,
+});
 const teacherOnly = requireClassroomRole(["teacher"]);
 const teacherOrEa = requireClassroomRole(["teacher", "ea"]);
 const teacherEaOrSubstitute = requireClassroomRole(["teacher", "ea", "substitute"]);
@@ -187,6 +199,7 @@ const deps: RouteDeps = {
   loadClassroom,
   loadClassrooms,
   authMiddleware,
+  requireClassroomAccessCodes: REQUIRE_CLASSROOM_ACCESS_CODES,
   requireClassroomRole,
 };
 
