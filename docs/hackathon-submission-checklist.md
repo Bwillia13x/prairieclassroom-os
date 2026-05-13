@@ -28,7 +28,7 @@ Checked against the repo on 2026-05-12 after final local pre-submit, live browse
 - Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
 - Local release-ready memo: [evidence/2026-05-05-local-release-ready-memo.md](./evidence/2026-05-05-local-release-ready-memo.md) records the current artifact map and the external lane that is still incomplete.
 - Strategic posture: lead with multimodal magic + teacher voice; treat offline-Ollama as the third WOW lever, capturable the moment a viable host arrives
-- Live demo deploy: PUBLIC SYNTHETIC DEMO READY / HOSTED BACKEND CREATED — Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web` and serves the public demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`; `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes using the static demo API fallback. Render services and Vercel `VITE_API_URL` exist; hosted-Gemma public smoke and cellular smoke are still pending until the Render inference route reports healthy through the orchestrator.
+- Live demo deploy: PUBLIC SYNTHETIC DEMO READY / HOSTED BACKEND SMOKE PASSED — Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web` and serves the public demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`; `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes against the Vercel frontend wired to the Render-hosted orchestrator and Gemini inference services. External/cellular smoke is still pending. This public smoke does not replace the last passing full hosted release gate.
 
 ## Completed safely in repo
 
@@ -47,7 +47,7 @@ Checked against the repo on 2026-05-12 after final local pre-submit, live browse
 - Added [public demo operations](./public-demo-operations.md) with the deployment shape and judge-safe smoke checklist.
 - Added `render.yaml` and `services/inference/requirements-gemini.txt` so the selected no-spend public-demo backend path is concrete without installing local/torch dependencies on the hosted Gemma service.
 - Added Render service wiring through explicit `INFERENCE_URL=https://prairieclassroom-inference-gemini.onrender.com`, while retaining `INFERENCE_HOSTPORT` as the private-route reference. The orchestrator and hosted inference service share `PRAIRIE_INFERENCE_AUTH_TOKEN` so `/generate` is not callable anonymously.
-- Added a Vercel-safe static demo API fallback so the public `?demo=true` route works without Render credentials while staying clearly separate from hosted Gemma proof.
+- Added a Vercel-safe static demo API fallback so the public `?demo=true` route works without Render credentials while staying clearly separate from hosted Gemma proof. Current production is wired to Render through `VITE_API_URL`, so the latest public smoke exercises the hosted synthetic demo path rather than the fallback.
 
 ## Existing media candidates
 
@@ -95,7 +95,7 @@ These are required for an actual competition submission but cannot be completed 
 
 **Phase F — live demo deploy (target window 2026-05-11 → 2026-05-12):**
 
-13. Run `npm run submission:publish-preflight`, then deploy orchestrator + inference to Render once the missing Render credentials/secrets are available if upgrading from static demo to hosted inference; redeploy the already-linked Vercel frontend after `VITE_API_URL` points to the Render orchestrator.
+13. Run `npm run submission:publish-preflight`; the orchestrator + inference Render services and Vercel `VITE_API_URL` production build now exist, but preflight remains blocked until the public video and Kaggle URLs are real.
 14. Run `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo`, then smoke from external network and from cellular.
 15. Verify `/?demo=true` lands directly on Today and at least one generation completes end-to-end.
 

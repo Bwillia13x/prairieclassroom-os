@@ -12,22 +12,22 @@ The submission window for this work is Phase F of [plans/2026-05-18-submission-p
 - **Verified:** the local submission video file passes QA at `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4`.
 - **Verified:** Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web`, production deployment is live at `https://prairieclassroom-os.vercel.app`, and the static shell returns HTTP 200 with the committed security headers.
 - **Verified:** Render blueprint `prairieclassroom-os` exists and created `prairieclassroom-orchestrator`, `prairieclassroom-inference-gemini`, and the shared `prairieclassroom-internal-auth` env group.
-- **Verified:** the public synthetic demo URL `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` passes `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` using the in-browser static demo API fallback. Hosted Render smoke is in progress and should not be claimed until it passes after `VITE_API_URL` is wired and verified.
-- **Not yet complete:** hosted Render generation smoke, public video URL, and Kaggle URL are still pending. Vercel production stores the server-side `PRAIRIE_GEMINI_API_KEY` and `PRAIRIE_ENABLE_GEMINI_RUNS` values as encrypted env vars, but those values are not browser-exposed.
+- **Verified:** the public synthetic demo URL `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` passes `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` against the Vercel frontend wired to the Render-hosted orchestrator and Gemini inference services. This is public demo validation, not a new hosted release-gate proof baseline.
+- **Not yet complete:** public video URL, Kaggle URL, and external/cellular smoke are still pending. Vercel production stores the server-side `PRAIRIE_GEMINI_API_KEY` and `PRAIRIE_ENABLE_GEMINI_RUNS` values as encrypted env vars, but those values are not browser-exposed.
 
 `npm run submission:final-check -- --skip-release-gate` currently remains blocked by the missing public YouTube and Kaggle writeup/submission URLs. The full no-skip submission gate must remain blocked until all final public links are real and reachable.
 
 ## 2026-05-12 Hosting Findings
 
-- Render deployment was completed through the authenticated Render dashboard because this shell still has no Render CLI/API token.
+- Render deployment was completed through the authenticated Render dashboard, then verified through the Render CLI after the dashboard device login completed.
 - Vercel CLI authentication is present as `bwillia13x`, and `apps/web` is linked to project `prj_Hf8Vju4JZRTNRBEDJ8dvWyftXlQO`.
 - Latest production frontend deployment:
   - canonical URL: `https://prairieclassroom-os.vercel.app`
-  - deployment URL: `https://prairieclassroom-6cx0q64lr-echoexes-projects.vercel.app`
-  - inspect URL: `https://vercel.com/echoexes-projects/prairieclassroom-os/HMmSaVK9HA2S91wLQFhBVNQaTpPy`
+  - deployment URL: `https://prairieclassroom-jqhl2saxv-echoexes-projects.vercel.app`
+  - inspect URL: `https://vercel.com/echoexes-projects/prairieclassroom-os/6a6MHp5mBXtaWK2EcnUrQNA6Fmpu`
 - `vercel env ls` reports encrypted production `PRAIRIE_GEMINI_API_KEY`, `PRAIRIE_ENABLE_GEMINI_RUNS`, and `VITE_API_URL` env vars for `echoexes-projects/prairieclassroom-os`. `VITE_API_URL` points to `https://prairieclassroom-orchestrator.onrender.com`.
-- The public Vercel demo now has a deliberate static fallback: when the app is loaded from a `*.vercel.app` host with `?demo=true` and no `VITE_API_URL`, it serves deterministic synthetic classroom data and static sample generations in-browser. This keeps the judge demo usable without production secrets and does not create new hosted-Gemma proof.
-- Latest public smoke against `https://prairieclassroom-os.vercel.app` passed with `PASS browser smoke`.
+- The public Vercel demo keeps a deliberate static fallback: when the app is loaded from a `*.vercel.app` host with `?demo=true` and no `VITE_API_URL`, it serves deterministic synthetic classroom data and static sample generations in-browser. Current production has `VITE_API_URL` baked into the Vite bundle, so the smoke path exercises the Render-hosted API instead.
+- Latest public smoke against `https://prairieclassroom-os.vercel.app` passed with `PASS browser smoke` after both Render services were live on commit `6653b7c`. An earlier smoke attempt during the same update failed because the Render inference service was redeploying (`Inference service stream unavailable` at `2026-05-13T00:11:18Z`), not because the public URL or Vercel wiring was missing.
 - A plain shell does not export the hosted Gemma key or enable hosted runs. `gemini:readycheck` reports the key and guard only after exporting `.env`; that confirms local credential readiness but does not create a new hosted proof artifact.
 - Ollama is not a viable proof lane on the current maintenance host: `npm run host:preflight:ollama` reports the Ollama CLI unavailable on an 8 GiB RAM host with 16.76 GiB free disk.
 - With Node `v25.8.2` and `.env` exported, `npm run submission:publish-preflight` currently passes local file checks for `render.yaml`, `apps/web/vercel.json`, final MP4, upstream configuration, branch sync, Vercel CLI availability, Vercel project link, hosted Gemma key/guard presence, and public live demo URL, then remains blocked until the public video URL and Kaggle writeup URL exist.
@@ -85,25 +85,25 @@ Current public demo target:
 https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34
 ```
 
-This target is a public synthetic demo. It uses the bundled static demo API fallback until Render is live and `VITE_API_URL` points to the orchestrator API. Do not describe this fallback as a live hosted Gemma run or as new hosted proof.
+This target is a public synthetic demo. Current production uses the Render-hosted orchestrator and Gemini inference service because `VITE_API_URL` points to the Render API. The bundled static fallback remains available only when no API URL is baked into the Vercel bundle. Do not describe either public smoke path as a new hosted release-gate proof baseline.
 
 `?demo=true` now suppresses first-run onboarding and role-selection modals for the demo classroom. The Quick Help button still lets reviewers open the tour manually.
 
 ## Recommended Hackathon Mode
 
-For public judging, the currently deployed path is a fast synthetic demo lane:
+For public judging, the currently deployed path is a hosted synthetic demo lane:
 
 - Web: production Vite build.
-- API: in-browser static demo fallback on the Vercel `?demo=true` route.
-- Inference: deterministic sample outputs labelled `static-demo-fallback`.
+- API: Render-hosted Express orchestrator at `https://prairieclassroom-orchestrator.onrender.com`.
+- Inference: Render-hosted guarded Gemini service at `https://prairieclassroom-inference-gemini.onrender.com`.
 - Data: `data/synthetic_classrooms/` only.
-- Memory: bundled static demo snapshot only.
-
-The hosted-Gemma public path remains available as the next upgrade once Render credentials and secrets are present:
-
-- API: Express orchestrator.
-- Inference: guarded hosted Gemma 4 mode using the Render inference service.
 - Memory: demo SQLite memory.
+
+The in-browser static fallback remains available as a safety path when `VITE_API_URL` is absent from the Vercel build:
+
+- API: bundled static demo API fallback on the Vercel `?demo=true` route.
+- Inference: deterministic sample outputs labelled `static-demo-fallback`.
+- Memory: bundled static demo snapshot only.
 
 Do not use real student or classroom data in the public demo.
 
@@ -172,7 +172,7 @@ The public demo may honestly claim:
 
 - hosted Gemma 4 proof passed on synthetic/demo data;
 - mock structural gate passes with no paid services;
-- public synthetic Vercel demo passes the browser smoke using static sample outputs;
+- public synthetic Vercel + Render demo passes the browser smoke using hosted Gemini on synthetic/demo data;
 - classroom memory and retrieval are implemented;
 - teacher approval is required for family messages.
 
@@ -182,4 +182,5 @@ The public demo must not claim:
 - real classroom deployment;
 - all data stays local when the public demo uses hosted infrastructure;
 - static demo fallback as live model generation;
+- public hosted smoke as a new full hosted release-gate proof baseline;
 - Ollama readiness on the current 8 GiB maintenance host.
