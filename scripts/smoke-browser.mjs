@@ -115,6 +115,18 @@ async function expectActiveClassroom(page, expected, label) {
 
 async function expectCheckedStudentInPanel(page, surfaceId, student, label) {
   const host = hostTabForSurface(surfaceId);
+
+  const selectedChip = page
+    .locator(`#panel-${host}:not([hidden]) .intervention-logger__selected-chip`)
+    .filter({ hasText: student })
+    .first();
+  try {
+    await selectedChip.waitFor({ state: "visible", timeout: 2_000 });
+    return;
+  } catch {
+    // Fall through to the checkbox/chip contracts used by the other panels.
+  }
+
   const control = page
     .locator(`#panel-${host}:not([hidden]) .student-checkbox`)
     .filter({ hasText: student })
@@ -144,7 +156,7 @@ async function dismissRolePromptIfPresent(page) {
   // the shell. "Skip" defaults the role to Teacher, which is the smoke test's
   // expected role for all assertions.
   try {
-    await page.locator(".role-prompt-overlay").waitFor({ state: "visible", timeout: 5_000 });
+    await page.locator(".role-prompt-overlay").waitFor({ state: "visible", timeout: 1_000 });
   } catch {
     return;
   }
