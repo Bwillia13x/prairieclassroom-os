@@ -1,0 +1,112 @@
+- generic [ref=e3] [box=0,0,1405,687]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer] [box=0,-687,178,46]:
+    - /url: "#main-content"
+  - button "Collapse navigation rail" [expanded] [ref=e5] [cursor=pointer] [box=222,326,26,36]:
+    - img [ref=e6] [box=227,336,16,16]
+    - generic [ref=e8] [box=234,343,1,1]: Collapse
+  - banner [ref=e9] [box=0,0,0,0]:
+    - generic [ref=e10] [box=0,0,0,0]:
+      - generic "PrairieClassroom home" [ref=e11] [box=0,0,248,88]:
+        - generic [ref=e12] [box=32,0,199,87]:
+          - img [ref=e13] [box=32,27,34,34]
+          - generic [ref=e14] [box=74,34,127,18]: PrairieClassroom
+          - generic [ref=e15] [box=210,35,21,16]: OS
+      - generic [ref=e16] [box=248,0,1157,88]:
+        - 'button "Active classroom: Grade 3-4 cross curricular" [ref=e18] [cursor=pointer] [box=272,22,288,44]':
+          - img [ref=e20] [box=288,36,16,16]
+          - generic [ref=e26] [box=333,33,201,22]: Grade 3-4 cross curricular
+          - generic [ref=e27] [box=534,32,9,24]: ⌄
+        - button "Teacher" [ref=e30] [cursor=pointer] [box=576,22,113,44]:
+          - generic [ref=e33] [box=611,37,44,13]: Teacher
+          - generic [ref=e34] [box=663,33,8,22]: ⌄
+      - navigation "PrairieClassroom OS navigation" [ref=e35] [box=0,88,248,599]:
+        - tablist "Primary navigation" [ref=e36] [box=24,112,207,355]:
+          - tab "Today Do this now" [ref=e37] [cursor=pointer] [box=24,112,207,48]:
+            - img [ref=e38] [box=40,127,18,18]
+            - generic [ref=e41] [box=74,121,141,29]
+          - tab "Classroom Room view" [ref=e44] [cursor=pointer] [box=24,163,207,48]:
+            - img [ref=e45] [box=40,178,18,18]
+            - generic [ref=e50] [box=74,173,141,29]
+          - tab "Tomorrow Plan tomorrow" [ref=e53] [cursor=pointer] [box=24,214,207,48]:
+            - img [ref=e54] [box=40,230,18,18]
+            - generic [ref=e56] [box=74,224,141,29]
+          - tab "Week Week map" [ref=e59] [cursor=pointer] [box=24,266,207,48]:
+            - img [ref=e60] [box=40,281,18,18]
+            - generic [ref=e66] [box=74,275,141,29]
+          - tab "Prep Adapt lesson" [ref=e69] [cursor=pointer] [box=24,317,207,48]:
+            - img [ref=e70] [box=40,332,18,18]
+            - generic [ref=e73] [box=74,326,141,29]
+          - tab "Ops Log note" [ref=e76] [cursor=pointer] [box=24,368,207,48]:
+            - img [ref=e77] [box=40,383,18,18]
+            - generic [ref=e80] [box=74,377,141,29]
+          - tab "Review Message family 23 pending" [selected] [ref=e219] [cursor=pointer] [box=24,419,207,48]:
+            - img [ref=e84] [box=40,434,18,18]
+            - generic [ref=e85] [box=74,429,99,29]
+            - generic "23 pending" [ref=e220] [box=189,434,26,19]: "23"
+        - generic [ref=e88] [box=24,581,207,82]:
+          - generic [ref=e89] [box=24,606,207,16]: Alberta K-6
+          - generic [ref=e90] [box=24,627,207,16]: Privacy first
+          - generic [ref=e91] [box=24,647,207,16]: Teacher controlled
+  - main [ref=e92] [box=248,88,1157,599]:
+    - tabpanel "Review Message family 23 pending" [ref=e221] [box=288,128,1077,2100]:
+      - generic [ref=e94] [box=288,128,1077,2100]:
+        - region "Review command, family communication, patterns, and usage insights" [ref=e95] [box=288,128,1077,469]:
+          - generic [ref=e96] [box=306,145,1042,179]:
+            - generic [ref=e97] [box=310,145,1038,17]: Review command
+            - heading "Turn classroom memory into accountable follow-through." [level=1] [ref=e98] [box=310,174,660,95]
+            - paragraph [ref=e99] [box=310,281,562,43]: Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.
+          - complementary "Page pulse" [ref=e100] [box=306,348,1042,231]:
+            - generic [ref=e103] [box=345,365,139,41]
+            - generic [ref=e107] [box=323,427,1008,19]
+            - generic [ref=e110] [box=323,458,1008,105]
+        - region "Review operational preview" [ref=e132] [box=288,621,1077,129]:
+          - generic [ref=e133] [box=305,638,1043,95]:
+            - generic [ref=e134] [box=305,638,514,95]
+            - generic [ref=e143] [box=835,638,514,95]
+        - generic [ref=e145] [box=288,774,1077,81]:
+          - generic [ref=e146] [box=288,791,48,22]: "02"
+          - heading "Review lane" [level=2] [ref=e147] [box=360,799,1005,14]
+          - paragraph [ref=e148] [box=360,821,485,17]: What to approve, what to read, what to learn.
+        - tablist "Review tool" [ref=e149] [box=288,879,1077,88]:
+          - tab "01 Family Family Message Draft family updates and keep human approval explicit. Ready" [ref=e150] [cursor=pointer] [box=289,880,358,86]:
+            - generic [ref=e151] [box=305,892,259,17]: 01 Family
+            - generic [ref=e152] [box=305,913,259,20]: Family Message
+            - generic [ref=e153] [box=305,937,326,16]: Draft family updates and keep human approval explicit.
+            - generic [ref=e154] [box=580,898,52,28]: Ready
+          - tab "02 Patterns Support Patterns Inspect recurring classroom signals before next actions. 2 signals" [selected] [ref=e230] [cursor=pointer] [box=647,880,358,86]:
+            - generic [ref=e156] [box=664,892,231,17]: 02 Patterns
+            - generic [ref=e157] [box=664,913,231,20]: Support Patterns
+            - generic [ref=e158] [box=664,937,325,16]: Inspect recurring classroom signals before next actions.
+            - generic [ref=e159] [box=911,898,79,28]: 2 signals
+          - tab "03 Usage Usage Insights Review feedback and workflow patterns from recent sessions. 23 reviews" [ref=e231] [cursor=pointer] [box=1006,880,358,86]:
+            - generic [ref=e161] [box=1023,892,224,17]: 03 Usage
+            - generic [ref=e162] [box=1023,913,224,20]: Usage Insights
+            - generic [ref=e163] [box=1023,937,325,16]: Review feedback and workflow patterns from recent sessions.
+            - generic [ref=e164] [box=1263,898,85,28]: 23 reviews
+        - region "Active workspace" [ref=e165] [box=288,990,1077,1237]:
+          - generic [ref=e166] [box=288,990,1077,51]:
+            - generic [ref=e167] [box=292,1008,852,17]: Active workspace
+            - generic [ref=e168] [box=1160,998,201,26]: Inspect support patterns
+          - generic [ref=e170] [box=288,1058,1077,1170]:
+            - generic [ref=e171] [box=288,1058,1077,209]
+            - region "Support pattern coverage" [ref=e232] [box=288,1282,1077,199]
+            - generic [ref=e175] [box=288,1497,1077,730]
+    - contentinfo [ref=e198] [box=248,2358,1157,166]:
+      - generic [ref=e199] [box=248,2359,1157,165]:
+        - generic [ref=e200] [box=293,2394,1067,32]:
+          - generic "Application context" [ref=e201] [box=293,2402,895,17]:
+            - generic [ref=e202] [box=293,2402,200,17]: PrairieClassroom OS
+            - generic [ref=e203] [box=509,2405,189,14]: Gemma 4 Good Hackathon demo build
+          - generic [ref=e204] [box=1228,2394,132,32]:
+            - button "Shortcuts" [ref=e205] [cursor=pointer] [box=1228,2394,92,32]
+            - button "Keyboard shortcuts" [ref=e208] [cursor=pointer] [box=1328,2394,32,32]: "?"
+        - group "Build context" [ref=e209] [box=293,2450,1067,39]:
+          - generic [ref=e210] [box=293,2459,619,30]:
+            - generic [ref=e211] [box=309,2468,72,11]: classroom
+            - generic [ref=e212] [box=767,2468,128,11]: demo-okafor-grade34
+          - generic [ref=e213] [box=912,2459,299,30]:
+            - generic [ref=e214] [box=928,2468,24,11]: env
+            - generic [ref=e215] [box=1153,2468,40,11]: gemini
+          - generic [ref=e216] [box=1211,2459,149,30]:
+            - generic [ref=e217] [box=1227,2468,8,11]: v
+            - generic [ref=e218] [box=1310,2468,34,11]: 0.1.0

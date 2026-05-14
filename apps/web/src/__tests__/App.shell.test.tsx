@@ -2,6 +2,14 @@ import { act, fireEvent, render, screen, waitFor, within } from "@testing-librar
 import { vi, describe, it, beforeEach, afterEach, expect } from "vitest";
 import type { ClassroomProfile } from "../types";
 
+const mockUseSessionContext = vi.hoisted(() => vi.fn(() => ({
+  sessionId: "test-session",
+  recordPanelView: vi.fn(),
+  recordPanelVisit: vi.fn(),
+  recordGeneration: vi.fn(),
+  recordFeedback: vi.fn(),
+})));
+
 vi.mock("../api", async (importOriginal) => {
   const actual = await importOriginal<typeof import("../api")>();
   return {
@@ -24,11 +32,7 @@ vi.mock("../hooks/useFeedback", () => ({
 
 vi.mock("../hooks/useSessionContext", () => ({
   flushSessionQueue: vi.fn().mockResolvedValue(undefined),
-  useSessionContext: () => ({
-    recordPanelView: vi.fn(),
-    recordPanelVisit: vi.fn(),
-    recordGeneration: vi.fn(),
-  }),
+  useSessionContext: mockUseSessionContext,
 }));
 
 vi.mock("../components/CommandPalette", () => ({
@@ -230,6 +234,7 @@ describe("App shell — classroom pill trigger", { timeout: 60_000 }, () => {
   afterEach(() => {
     vi.clearAllMocks();
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 
   it("renders a switcher icon (not a lock) on the classroom pill trigger", async () => {
@@ -238,6 +243,54 @@ describe("App shell — classroom pill trigger", { timeout: 60_000 }, () => {
     const switcherIcon = trigger.querySelector(".shell-classroom-pill__switcher");
     expect(switcherIcon).not.toBeNull();
     expect(trigger.innerHTML).not.toMatch(/M5\.5 8V5\.9/);
+  });
+
+  it("starts in the demo classroom when deployed demo mode is the default", async () => {
+    vi.stubEnv("VITE_DEFAULT_DEMO_MODE", "true");
+    const protectedClassroom = makeDemoClassroom({
+      classroom_id: "classroom-alpha",
+      grade_band: "5",
+      subject_focus: "science",
+      requires_access_code: true,
+      is_demo: false,
+    });
+    const demoClassroom = makeDemoClassroom({ requires_access_code: false });
+    mockedListClassrooms.mockResolvedValue([protectedClassroom, demoClassroom]);
+    mockedFetchClassroomProfile.mockResolvedValue(demoClassroom);
+    mockedFetchTodaySnapshot.mockRejectedValue(new Error("snapshot disabled in shell test"));
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /active classroom: grade 3-4 literacy numeracy/i })).toBeInTheDocument();
+    });
+    expect(window.location.search).toContain("demo=true");
+    expect(window.location.search).toContain("classroom=demo-okafor-grade34");
+    expect(mockUseSessionContext).toHaveBeenLastCalledWith("demo-okafor-grade34", false);
+  });
+
+  it("does not briefly fetch a protected classroom when an explicit demo link carries a stale classroom query", async () => {
+    window.history.replaceState({}, "", "/?demo=true&tab=today&classroom=classroom-alpha");
+    const protectedClassroom = makeDemoClassroom({
+      classroom_id: "classroom-alpha",
+      grade_band: "5",
+      subject_focus: "science",
+      requires_access_code: true,
+      is_demo: false,
+    });
+    const demoClassroom = makeDemoClassroom({ requires_access_code: false });
+    mockedListClassrooms.mockResolvedValue([protectedClassroom, demoClassroom]);
+    mockedFetchClassroomProfile.mockResolvedValue(demoClassroom);
+    mockedFetchTodaySnapshot.mockRejectedValue(new Error("snapshot disabled in shell test"));
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /active classroom: grade 3-4 literacy numeracy/i })).toBeInTheDocument();
+    });
+    expect(mockedFetchTodaySnapshot.mock.calls.map(([classroomId]) => classroomId)).not.toContain("classroom-alpha");
+    expect(window.location.search).toContain("demo=true");
+    expect(window.location.search).toContain("classroom=demo-okafor-grade34");
   });
 
   it("renders the command-palette trigger with a visible 'Search' label and ⌘K hint", async () => {

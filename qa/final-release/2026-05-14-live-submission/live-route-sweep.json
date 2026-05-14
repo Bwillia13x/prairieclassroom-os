@@ -1,0 +1,430 @@
+{
+  "base": "https://prairieclassroom-os.vercel.app",
+  "capturedAt": "2026-05-14T20:37:20.748Z",
+  "firstRun": {
+    "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "title": "PrairieClassroom OS",
+    "todayVisible": true,
+    "accessDialogVisible": false,
+    "rolePromptVisible": false,
+    "onboardingVisible": false,
+    "activeClassroom": "",
+    "firstVisibleText": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immediate risks, and the carry-forward you committed to before the day started.26 studentsTodayAfter-school closeout: capture notes, messages, and tomorrow's first move.Do this nowAfter-school closeoutClose today's loop for BrodyAfter-school closeout: capture the evidence and next move — Recurring struggles with post-lunch regulation as noted in your pattern review..Do this now: Support PatternsStudentBrodyWindow12:45-1:45Open27NowMath blockToday's flowCurrent8:30-9:158:30-9:15Status: currentNowMath blockArrival of a new Somali-speaking EAL student requiring immediate orientationCurrent focus9:15-9:30Status: pastBreakBased on your documented observations, this is a sensory peak for BrodyComplete9:30-10:30Status: pastReading blockHigh concentration of EAL students (9 total) requiring tiered language supportsComplete10:30-10:4"
+  },
+  "viewports": [
+    {
+      "viewport": "desktop",
+      "results": [
+        {
+          "route": "today",
+          "screenshot": "desktop-today.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immediate risks, and the carry-forward you committed to before the day started.26 studentsTodayAfter-school closeout: capture notes, messages, and tomorrow's first move.Do this nowAfter-school closeoutClose today's loop for BrodyAfter-school closeout: capture the evidence and next move — Recurring struggles with post-lunch regulation as noted in your pattern review..Do this now: Support PatternsStudentBrodyWindow12:45-1:45Open27NowMath blockToday's flowCurrent8:30-9:158:30-9:15Status: currentNowMath blockArrival of a new Somali-speaking EAL student requiring immediate orientationCurrent focus9:15-9:30Status: pastBreakBased on your documented observations, this is a sensory peak for BrodyComplete9:30-10:30Status: pastReading blockHigh concentration of EAL students (9 total) requiring tiered language supportsComplete10:30-10:4",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        },
+        {
+          "route": "classroom",
+          "screenshot": "desktop-classroom.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Classroom commandRoom viewRead the room, then choose the lens.Grade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.Open Today triage→Open work27Queue itemsThreads23Active student signalsRoster268 EAL supportsPlan coverage1/7No streakLiveToday triageStageTomorrow planForecastWeek mapRoom healthLive75Needs attentionNeeds attention27 open · plan today: yesPressure indexThreads23Active conversationsRoster268 EAL supportsPlans1/7No streakQueue27Need teacher action27 open · plans filed 1/7Thu 2:37 PMView signalsClassroom operating bandsWatch, cover, clear.Three signals that decide whether to stay in the room view or pivot into action.Watch3Coverage53%Queue301WatchlistView allAmiraConsistent need for language support to bridge the gap between mathematical reasoning and written expression.2 openBrodyRecurring struggles",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        },
+        {
+          "route": "tomorrow-plan",
+          "screenshot": "desktop-tomorrow-plan.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Tomorrow commandPlan, forecast, and carry-forward queueStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.Active toolTomorrow PlanPlanReadyStatus2PrioritiesForecastReadyStatus11BlocksCarry-forward0Queued0Open follow-upsPlanning orderWatchpoints2 prioritiesCarry-forward0 queuedOpen follow-ups0Support prioritiesBrody· Implement a visualAmira· Provide sentence frames02Stage tomorrowWhat to stage. What to forecast. What lands tomorrow.01 Planning orderTomorrow PlanWatchpoints, priorities, EA moves, prep, and family follow-ups.2 priorities ready02 Block riskForecastBlock-by-block risk before coverage and transition decisions.11 blocks forecastActive workspaceTomorrow PlanConvert today's signal into watchpoints, priorities, EA actions, prep, and family follow-ups.2 priorities readyPlan Tomorrow's SupportⓘCapture the signal from ",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        },
+        {
+          "route": "week",
+          "screenshot": "desktop-week.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Week commandShape the week before it shapes tomorrowFri May 15 carries the next high-risk block. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.Plan TomorrowReview TodayUpdated 2:37 PM5Days mapped1Forecast days2High-risk blocks0Unmapped days27Open itemsNext decisionPriorityFri May 15Coverage53% · Teacher pass neededOpen items27Staging cuesPlan tomorrow· Plan readyRead forecast day· 1 day mappedStage high-risk support· 2 blocksDay signalsThu· Schedule onlyFri· HighMon· Schedule onlyTue· Schedule onlyWed· Schedule only02Five-day horizonRead risk, events, and coverage signals before the week turns into a daily scramble.Five-day horizonThis weekForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in view so the week reads as a planning map, not a spreadsheet.ThuMay 14TodaySchedule only0Event load8:30-9:15B",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        },
+        {
+          "route": "prep-differentiate",
+          "screenshot": "desktop-prep-differentiate.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Prep commandPrepare the material before it reaches the room.Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.Heavy EAL load8 EAL · 7 languagesActive toolDifferentiateRoster26Students8EALLanguage7LanguagesVariantsModeArtifact readinessInput laneupload · paste · webCurriculumAlberta programOutputvariantsLanguage loadTagalogUrduArabicSomaliPunjabiSpanishEAL students8Family languages7Teacher passSame outcome· no lowered barEditable copy· teacher ownedMaterials list· ready to stage02Prep laneChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.01 ArtifactDifferentiateLesson variantsAdapt one lesson, worksheet, or passage across readiness levels.02 LanguageLanguage ToolsEAL supportSimplify text and prepare bilingual vocabulary supports.Active workspaceBuild lesson variantsBuild Lesson VariantsArtifact intak",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        },
+        {
+          "route": "ops-ea-load",
+          "screenshot": "desktop-ops-ea-load.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&tool=ea-load&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Ops commandCoordinate the adults without losing the thread.Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.Coverage staged2 EA moves · 11 blocksActive workflowEA Load BalanceHandoffSub packet readyCapture26Threads0Follow-upsCoverage2EA moves11BlocksCapture queueOpen threads26Follow-ups0Current lane11 blocksCoverage cuesDaniyal, Imani· Morning bell workAmira· Before 12:00 PMHandoff pathLog noteBrief EAsBalance loadSub packet02Ops workflowCapture the evidence, then move it through briefing, load balance, and substitute handoff.1Log InterventionNow2EA Briefing23EA Load54Sub Packet2Active workflowBalance EA load across the day26 threads · 2 EA moves · 11 blocks · 11 blocksShared timelineEA load timeline2 watchpoints8:30-9:15Bell work journal + calendar mathForecast mediumEA in block9:15-9:30Recess transitionForeca",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        },
+        {
+          "route": "review-family-message",
+          "screenshot": "desktop-review-family-message.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolFamily MessageApprovals0AwaitingSignals2Patterns26ThreadsCadence23Reviews dueApproval queueAwaiting approval0Active threads26Human-in-the-loopAlways editable· teacher edits persistNo autonomous send· approval required02Review laneWhat to approve, what to read, what to learn.01 FamilyFamily MessageDraft family updates and keep human approval explicit.Ready02 PatternsSupport PatternsInspect recurring classroom signals before next actions.2 signals03 UsageUsage InsightsReview feedback and workflow patterns from recent sessions.23 reviewsActive workspaceDraft family messagesReview WorkspaceDraft Family MessagesBuild a plain-language family update",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        },
+        {
+          "route": "review-support-patterns",
+          "screenshot": "desktop-review-support-patterns.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolSupport PatternsApprovals0AwaitingSignals2Patterns26ThreadsCadence23Reviews duePattern signalUnaddressed patterns2Approaching review23Active threadsAmira· 1 patternBrody· 1 pattern02Review laneWhat to approve, what to read, what to learn.01 FamilyFamily MessageDraft family updates and keep human approval explicit.Ready02 PatternsSupport PatternsInspect recurring classroom signals before next actions.2 signals03 UsageUsage InsightsReview feedback and workflow patterns from recent sessions.23 reviewsActive workspaceInspect support patternsReview WorkspaceReview Classroom Support PatternsScan recurring themes, follow-up gaps, positive trends, an",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 0,
+            "viewportHeight": 900
+          }
+        }
+      ],
+      "consoleEvents": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": [],
+      "pageErrors": []
+    },
+    {
+      "viewport": "mobile",
+      "results": [
+        {
+          "route": "today",
+          "screenshot": "mobile-today.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immediate risks, and the carry-forward you committed to before the day started.26 studentsTodayAfter-school closeout: capture notes, messages, and tomorrow's first move.Do this nowAfter-school closeoutClose today's loop for BrodyAfter-school closeout: capture the evidence and next move — Recurring struggles with post-lunch regulation as noted in your pattern review..Do this now: Support PatternsStudentBrodyWindow12:45-1:45Open27NowMath blockToday's flowCurrent8:30-9:158:30-9:15Status: currentNowMath blockArrival of a new Somali-speaking EAL student requiring immediate orientationCurrent focus9:15-9:30Status: pastBreakBased on your documented observations, this is a sensory peak for BrodyComplete9:30-10:30Status: pastReading blockHigh concentration of EAL students (9 total) requiring tiered language supportsComplete10:30-10:4",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        },
+        {
+          "route": "classroom",
+          "screenshot": "mobile-classroom.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Classroom commandRoom viewRead the room, then choose the lens.Grade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.Open Today triage→Open work27Queue itemsThreads23Active student signalsRoster268 EAL supportsPlan coverage1/7No streakLiveToday triageStageTomorrow planForecastWeek mapRoom healthLive75Needs attentionNeeds attention27 open · plan today: yesPressure indexThreads23Active conversationsRoster268 EAL supportsPlans1/7No streakQueue27Need teacher action27 open · plans filed 1/7Thu 2:37 PMView signalsClassroom operating bandsWatch, cover, clear.Three signals that decide whether to stay in the room view or pivot into action.Watch3Coverage53%Queue301WatchlistView allAmiraConsistent need for language support to bridge the gap between mathematical reasoning and written expression.2 openBrodyRecurring struggles",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        },
+        {
+          "route": "tomorrow-plan",
+          "screenshot": "mobile-tomorrow-plan.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Tomorrow commandPlan, forecast, and carry-forward queueStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.Active toolTomorrow PlanPlanReadyStatus2PrioritiesForecastReadyStatus11BlocksCarry-forward0Queued0Open follow-upsPlanning orderWatchpoints2 prioritiesCarry-forward0 queuedOpen follow-ups0Support prioritiesBrody· Implement a visualAmira· Provide sentence frames02Stage tomorrowWhat to stage. What to forecast. What lands tomorrow.01 Planning orderTomorrow PlanWatchpoints, priorities, EA moves, prep, and family follow-ups.2 priorities ready02 Block riskForecastBlock-by-block risk before coverage and transition decisions.11 blocks forecastActive workspaceTomorrow PlanConvert today's signal into watchpoints, priorities, EA actions, prep, and family follow-ups.2 priorities readyPlan Tomorrow's SupportⓘCapture the signal from ",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        },
+        {
+          "route": "week",
+          "screenshot": "mobile-week.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Week commandShape the week before it shapes tomorrowFri May 15 carries the next high-risk block. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.Plan TomorrowReview TodayUpdated 2:37 PM5Days mapped1Forecast days2High-risk blocks0Unmapped days27Open itemsNext decisionPriorityFri May 15Coverage53% · Teacher pass neededOpen items27Staging cuesPlan tomorrow· Plan readyRead forecast day· 1 day mappedStage high-risk support· 2 blocksDay signalsThu· Schedule onlyFri· HighMon· Schedule onlyTue· Schedule onlyWed· Schedule only02Five-day horizonRead risk, events, and coverage signals before the week turns into a daily scramble.Five-day horizonThis weekForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in view so the week reads as a planning map, not a spreadsheet.ThuMay 14TodaySchedule only0Event load8:30-9:15B",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        },
+        {
+          "route": "prep-differentiate",
+          "screenshot": "mobile-prep-differentiate.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Prep commandPrepare the material before it reaches the room.Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.Heavy EAL load8 EAL · 7 languagesActive toolDifferentiateRoster26Students8EALLanguage7LanguagesVariantsModeArtifact readinessInput laneupload · paste · webCurriculumAlberta programOutputvariantsLanguage loadTagalogUrduArabicSomaliPunjabiSpanishEAL students8Family languages7Teacher passSame outcome· no lowered barEditable copy· teacher ownedMaterials list· ready to stage02Prep laneChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.01 ArtifactDifferentiateLesson variantsAdapt one lesson, worksheet, or passage across readiness levels.02 LanguageLanguage ToolsEAL supportSimplify text and prepare bilingual vocabulary supports.Active workspaceBuild lesson variantsBuild Lesson VariantsArtifact intak",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": false,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        },
+        {
+          "route": "ops-ea-load",
+          "screenshot": "mobile-ops-ea-load.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&tool=ea-load&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Ops commandCoordinate the adults without losing the thread.Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.Coverage staged2 EA moves · 11 blocksActive workflowEA Load BalanceHandoffSub packet readyCapture26Threads0Follow-upsCoverage2EA moves11BlocksCapture queueOpen threads26Follow-ups0Current lane11 blocksCoverage cuesDaniyal, Imani· Morning bell workAmira· Before 12:00 PMHandoff pathLog noteBrief EAsBalance loadSub packet02Ops workflowCapture the evidence, then move it through briefing, load balance, and substitute handoff.1Log InterventionNow2EA Briefing23EA Load54Sub Packet2Active workflowBalance EA load across the day26 threads · 2 EA moves · 11 blocks · 11 blocksShared timelineEA load timeline2 watchpoints8:30-9:15Bell work journal + calendar mathForecast mediumEA in block9:15-9:30Recess transitionForeca",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        },
+        {
+          "route": "review-family-message",
+          "screenshot": "mobile-review-family-message.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolFamily MessageApprovals0AwaitingSignals2Patterns26ThreadsCadence23Reviews dueApproval queueAwaiting approval0Active threads26Human-in-the-loopAlways editable· teacher edits persistNo autonomous send· approval required02Review laneWhat to approve, what to read, what to learn.01 FamilyFamily MessageDraft family updates and keep human approval explicit.Ready02 PatternsSupport PatternsInspect recurring classroom signals before next actions.2 signals03 UsageUsage InsightsReview feedback and workflow patterns from recent sessions.23 reviewsActive workspaceDraft family messagesReview WorkspaceDraft Family MessagesBuild a plain-language family update",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        },
+        {
+          "route": "review-support-patterns",
+          "screenshot": "mobile-review-support-patterns.png",
+          "metrics": {
+            "title": "PrairieClassroom OS",
+            "href": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+            "activeClassroom": "",
+            "activeText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Reviews due soon23 approaching reviewActive toolSupport PatternsApprovals0AwaitingSignals2Patterns26ThreadsCadence23Reviews duePattern signalUnaddressed patterns2Approaching review23Active threadsAmira· 1 patternBrody· 1 pattern02Review laneWhat to approve, what to read, what to learn.01 FamilyFamily MessageDraft family updates and keep human approval explicit.Ready02 PatternsSupport PatternsInspect recurring classroom signals before next actions.2 signals03 UsageUsage InsightsReview feedback and workflow patterns from recent sessions.23 reviewsActive workspaceInspect support patternsReview WorkspaceReview Classroom Support PatternsScan recurring themes, follow-up gaps, positive trends, an",
+            "overflowX": 0,
+            "bodyOverflowX": 0,
+            "accessDialogVisible": false,
+            "accessText": "",
+            "rolePromptVisible": false,
+            "onboardingVisible": false,
+            "footerMentionsGemma": true,
+            "mobileNavBottom": 852,
+            "viewportHeight": 852
+          }
+        }
+      ],
+      "consoleEvents": [],
+      "failedRequests": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions",
+          "method": "POST",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "badResponses": [],
+      "pageErrors": []
+    }
+  ],
+  "commandPalette": {
+    "visible": true,
+    "text": "ACTIONSactionRecommended now: Support PatternsNowNowPAGESpanelTodayLive-day triage — recommended next move, immediate risks, carry-forward.1panelClassroomBird's-eye dashboard — health, coverage, queues, student watch.2panelTomorrowNext-day plan, complexity forecast, and queued carry-forward.3panelWeekMulti-day coverage, upcoming events, planning rhythm, pattern pressure.4panelPrepLesson adaptation and language supports — differentiate and language tools.5panelOpsAdult coordination — log intervention, EA briefing, EA load, substitute packet.6panelReviewFamily message, support patterns, and usage insights.7TOOLStoolPrep · DifferentiatePreptoolPrep · Language ToolsPreptoolTomorrow · Tomorrow PlanTomorrowtoolTomorrow · ForecastTomorrowtoolOps · Log InterventionOpstoolOps · EA BriefingOpstoolOps · EA Load BalanceOpstoolOps · Sub PacketOpstoolReview · Family MessageReviewtoolReview · Support P",
+    "overflowX": 0
+  }
+}

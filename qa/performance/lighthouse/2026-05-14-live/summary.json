@@ -1,0 +1,38 @@
+{
+  "today-desktop": {
+    "categories": {
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "agentic-browsing": 100
+    },
+    "metrics": {
+      "fcp": "0.7 s",
+      "lcp": "1.0 s",
+      "tbt": "20 ms",
+      "cls": "0",
+      "speedIndex": "0.9 s"
+    },
+    "consoleErrorsAudit": 1,
+    "csp": 1
+  },
+  "today-mobile": {
+    "categories": {
+      "performance": 77,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100,
+      "agentic-browsing": 100
+    },
+    "metrics": {
+      "fcp": "2.7 s",
+      "lcp": "3.7 s",
+      "tbt": "350 ms",
+      "cls": "0",
+      "speedIndex": "2.7 s"
+    },
+    "consoleErrorsAudit": 1,
+    "csp": 1
+  }
+}

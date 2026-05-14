@@ -1,0 +1,112 @@
+- generic [ref=e3]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer]:
+    - /url: "#main-content"
+  - button "Collapse navigation rail" [expanded] [ref=e5] [cursor=pointer]:
+    - img [ref=e6]
+    - generic [ref=e8]: Collapse
+  - banner [ref=e9]:
+    - generic [ref=e10]:
+      - generic "PrairieClassroom home" [ref=e11]:
+        - generic [ref=e12]:
+          - img [ref=e13]
+          - generic [ref=e14]: PrairieClassroom
+          - generic [ref=e15]: OS
+      - generic [ref=e16]:
+        - 'button "Active classroom: Grade 3-4 cross curricular" [ref=e18] [cursor=pointer]':
+          - img [ref=e20]
+          - generic [ref=e26]: Grade 3-4 cross curricular
+          - generic [ref=e27]: ⌄
+        - button "Teacher" [ref=e30] [cursor=pointer]:
+          - generic [ref=e33]: Teacher
+          - generic [ref=e34]: ⌄
+      - navigation "PrairieClassroom OS navigation" [ref=e35]:
+        - tablist "Primary navigation" [ref=e36]:
+          - tab "Today Do this now" [ref=e37] [cursor=pointer]:
+            - img [ref=e38]
+            - generic [ref=e41]
+          - tab "Classroom Room view" [ref=e44] [cursor=pointer]:
+            - img [ref=e45]
+            - generic [ref=e50]
+          - tab "Tomorrow Plan tomorrow" [ref=e53] [cursor=pointer]:
+            - img [ref=e54]
+            - generic [ref=e56]
+          - tab "Week Week map" [ref=e59] [cursor=pointer]:
+            - img [ref=e60]
+            - generic [ref=e66]
+          - tab "Prep Adapt lesson" [ref=e69] [cursor=pointer]:
+            - img [ref=e70]
+            - generic [ref=e73]
+          - tab "Ops Log note" [ref=e76] [cursor=pointer]:
+            - img [ref=e77]
+            - generic [ref=e80]
+          - tab "Review Message family 23 pending" [selected] [ref=e219] [cursor=pointer]:
+            - img [ref=e84]
+            - generic [ref=e85]
+            - generic "23 pending" [ref=e220]: "23"
+        - generic [ref=e88]:
+          - generic [ref=e89]: Alberta K-6
+          - generic [ref=e90]: Privacy first
+          - generic [ref=e91]: Teacher controlled
+  - main [ref=e92]:
+    - tabpanel "Review Message family 23 pending" [ref=e221]:
+      - generic [ref=e94]:
+        - region "Review command, family communication, patterns, and usage insights" [ref=e95]:
+          - generic [ref=e96]:
+            - generic [ref=e97]: Review command
+            - heading "Turn classroom memory into accountable follow-through." [level=1] [ref=e98]
+            - paragraph [ref=e99]: Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.
+          - complementary "Page pulse" [ref=e100]:
+            - generic [ref=e103]
+            - generic [ref=e107]
+            - generic [ref=e110]
+        - region "Review operational preview" [ref=e132]:
+          - generic [ref=e133]:
+            - generic [ref=e134]
+            - generic [ref=e143]
+        - generic [ref=e145]:
+          - generic [ref=e146]: "02"
+          - heading "Review lane" [level=2] [ref=e147]
+          - paragraph [ref=e148]: What to approve, what to read, what to learn.
+        - tablist "Review tool" [ref=e149]:
+          - tab "01 Family Family Message Draft family updates and keep human approval explicit. Ready" [ref=e150] [cursor=pointer]:
+            - generic [ref=e151]: 01 Family
+            - generic [ref=e152]: Family Message
+            - generic [ref=e153]: Draft family updates and keep human approval explicit.
+            - generic [ref=e154]: Ready
+          - tab "02 Patterns Support Patterns Inspect recurring classroom signals before next actions. 2 signals" [selected] [ref=e230] [cursor=pointer]:
+            - generic [ref=e156]: 02 Patterns
+            - generic [ref=e157]: Support Patterns
+            - generic [ref=e158]: Inspect recurring classroom signals before next actions.
+            - generic [ref=e159]: 2 signals
+          - tab "03 Usage Usage Insights Review feedback and workflow patterns from recent sessions. 23 reviews" [ref=e231] [cursor=pointer]:
+            - generic [ref=e161]: 03 Usage
+            - generic [ref=e162]: Usage Insights
+            - generic [ref=e163]: Review feedback and workflow patterns from recent sessions.
+            - generic [ref=e164]: 23 reviews
+        - region "Active workspace" [ref=e165]:
+          - generic [ref=e166]:
+            - generic [ref=e167]: Active workspace
+            - generic [ref=e168]: Inspect support patterns
+          - generic [ref=e170]:
+            - generic [ref=e171]
+            - region "Support pattern coverage" [ref=e232]
+            - generic [ref=e175]
+    - contentinfo [ref=e198]:
+      - generic [ref=e199]:
+        - generic [ref=e200]:
+          - generic "Application context" [ref=e201]:
+            - generic [ref=e202]: PrairieClassroom OS
+            - generic [ref=e203]: Gemma 4 Good Hackathon demo build
+          - generic [ref=e204]:
+            - button "Shortcuts" [ref=e205] [cursor=pointer]
+            - button "Keyboard shortcuts" [ref=e208] [cursor=pointer]: "?"
+        - group "Build context" [ref=e209]:
+          - generic [ref=e210]:
+            - generic [ref=e211]: classroom
+            - generic [ref=e212]: demo-okafor-grade34
+          - generic [ref=e213]:
+            - generic [ref=e214]: env
+            - generic [ref=e215]: gemini
+          - generic [ref=e216]:
+            - generic [ref=e217]: v
+            - generic [ref=e218]: 0.1.0

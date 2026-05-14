@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import {
   appReducer,
   createInitialState,
@@ -9,9 +9,11 @@ import {
   isActiveTab,
   isActiveTool,
   isTabVisibleForRole,
+  isVercelDemoHost,
   resolveLegacyPanel,
   resolveNavTarget,
   restoreNavFromUrl,
+  shouldStartInDemoMode,
   shouldSuppressFirstRunModalsFromUrl,
   TAB_META,
   TOOLS_BY_TAB,
@@ -48,6 +50,10 @@ function baseState(overrides: Partial<AppState> = {}): AppState {
 function setUrl(pathAndSearch: string) {
   window.history.replaceState({}, "", pathAndSearch);
 }
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 describe("appReducer — SET_CLASSROOM_ROLE", () => {
   beforeEach(() => {
@@ -105,6 +111,7 @@ describe("appReducer — SET_ACTIVE_CLASSROOM", () => {
   beforeEach(() => {
     installLocalStorage();
     localStorage.clear();
+    vi.unstubAllEnvs();
     setUrl("/");
   });
 
@@ -230,6 +237,13 @@ describe("createInitialState — judge/demo first-run modals", () => {
     expect(state.activeClassroom).toBe("demo-okafor-grade34");
   });
 
+  it("keeps explicit demo links in the demo classroom even with a stale classroom query", () => {
+    setUrl("/?demo=true&tab=today&classroom=missing-classroom");
+    const state = createInitialState();
+    expect(state.activeClassroom).toBe("demo-okafor-grade34");
+    expect(shouldStartInDemoMode()).toBe(true);
+  });
+
   it("also supports explicit presentation and judge query flags", () => {
     setUrl("/?presentation=true");
     expect(shouldSuppressFirstRunModalsFromUrl()).toBe(true);
@@ -239,6 +253,28 @@ describe("createInitialState — judge/demo first-run modals", () => {
 
     setUrl("/?demo=on");
     expect(shouldSuppressFirstRunModalsFromUrl()).toBe(true);
+  });
+
+  it("defaults production demo deployments into the demo classroom without a query string", () => {
+    vi.stubEnv("VITE_DEFAULT_DEMO_MODE", "true");
+    const state = createInitialState();
+    expect(state.showOnboarding).toBe(false);
+    expect(state.activeClassroom).toBe("demo-okafor-grade34");
+    expect(shouldStartInDemoMode()).toBe(true);
+  });
+
+  it("does not override an explicit classroom when default demo mode is enabled", () => {
+    vi.stubEnv("VITE_DEFAULT_DEMO_MODE", "true");
+    setUrl("/?classroom=classroom-alpha&tab=prep");
+    const state = createInitialState();
+    expect(state.activeClassroom).toBe("classroom-alpha");
+    expect(shouldStartInDemoMode()).toBe(false);
+  });
+
+  it("recognizes Vercel-hosted app URLs as demo-default hosts", () => {
+    expect(isVercelDemoHost("prairieclassroom-os.vercel.app")).toBe(true);
+    expect(isVercelDemoHost("prairieclassroom-os-git-main-team.vercel.app")).toBe(true);
+    expect(isVercelDemoHost("localhost")).toBe(false);
   });
 });
 

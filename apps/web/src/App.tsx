@@ -12,6 +12,7 @@ import {
   isActiveTool,
   isTabVisibleForRole,
   resolveNavTarget,
+  shouldStartInDemoMode,
   shouldSuppressFirstRunModalsFromUrl,
   TAB_META,
   TOOLS_BY_TAB,
@@ -30,7 +31,6 @@ import StatusChip from "./components/StatusChip";
 import RoleContextPill from "./components/RoleContextPill";
 import { Popover } from "./components/popover";
 import RoleEscapeBanner from "./components/RoleEscapeBanner";
-import ClassroomPanel from "./panels/ClassroomPanel";
 import TodayPanel from "./panels/TodayPanel";
 import BrandMark from "./components/BrandMark";
 import MobileNav from "./components/MobileNav";
@@ -48,6 +48,7 @@ import type { ClassroomProfile, FamilyMessagePrefill, InterventionPrefill, Tomor
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
 const SHELL_NAV_COLLAPSED_KEY = "prairie:shell-nav-collapsed";
+const ClassroomPanel = lazy(() => import("./panels/ClassroomPanel"));
 const TomorrowPanel = lazy(() => import("./panels/TomorrowPanel"));
 const WeekPanel = lazy(() => import("./panels/WeekPanel"));
 const PrepPanel = lazy(() => import("./panels/PrepPanel"));
@@ -398,11 +399,15 @@ export default function App() {
 
         const params = new URLSearchParams(window.location.search);
         const requestedClassroomId = params.get("classroom");
-        const demoRequested = params.get("demo") === "true";
+        const demoRequested = shouldStartInDemoMode();
         const demoClassroom = data.find((entry) => entry.is_demo || entry.classroom_id === DEMO_CLASSROOM_ID);
+        const requestedClassroom = requestedClassroomId
+          ? data.find((entry) => entry.classroom_id === requestedClassroomId)
+          : undefined;
+        const requestedClassroomIsDemo = requestedClassroom?.is_demo || requestedClassroom?.classroom_id === DEMO_CLASSROOM_ID;
 
-        const nextClassroomId = requestedClassroomId && data.some((entry) => entry.classroom_id === requestedClassroomId)
-          ? requestedClassroomId
+        const nextClassroomId = requestedClassroom && (!demoRequested || requestedClassroomIsDemo)
+          ? requestedClassroom.classroom_id
           : demoRequested && demoClassroom
             ? demoClassroom.classroom_id
             : data[0]?.classroom_id ?? "";
@@ -776,6 +781,7 @@ export default function App() {
   const activeClassroomLabel = profile ? describeClassroom(profile) : describeClassroomFallback(activeClassroom);
   const activeClassroomMeta = profile?.subject_focus.replace(/_/g, " ") ?? "";
   const suppressFirstRunModals = shouldSuppressFirstRunModalsFromUrl();
+  const sessionTrackingEnabled = activeRole !== "reviewer" && !suppressFirstRunModals;
 
   useEffect(() => {
     visibleTabsRef.current = visibleTabs;
@@ -899,7 +905,7 @@ export default function App() {
 
   return (
     <AppContext.Provider value={ctxValue}>
-      <SessionProvider classroomId={activeClassroom} enabled={activeRole !== "reviewer"}>
+      <SessionProvider classroomId={activeClassroom} enabled={sessionTrackingEnabled}>
       <div
         className="app-shell"
         data-shell-nav-state={shellNavCollapsed ? "collapsed" : "expanded"}

@@ -1,0 +1,29 @@
+- generic [ref=e3] [box=0,0,1405,687]:
+  - link "Skip to main content" [ref=e4] [cursor=pointer] [box=0,-687,178,46]:
+    - /url: "#main-content"
+  - button "Collapse navigation rail" [expanded] [ref=e5] [cursor=pointer] [box=222,326,26,36]:
+    - img [ref=e6] [box=227,336,16,16]
+    - generic [ref=e8] [box=234,343,1,1]: Collapse
+  - banner [ref=e9] [box=0,0,0,0]:
+    - generic [ref=e10] [box=0,0,0,0]:
+      - generic "PrairieClassroom home" [ref=e11] [box=0,0,248,88]:
+        - generic [ref=e12] [box=32,0,199,87]
+      - generic [ref=e16] [box=248,0,1157,88]:
+        - 'button "Active classroom: Grade 3-4 cross curricular" [ref=e18] [cursor=pointer] [box=272,22,288,44]'
+        - button "Teacher" [ref=e30] [cursor=pointer] [box=576,22,113,44]
+      - navigation "PrairieClassroom OS navigation" [ref=e35] [box=0,88,248,599]:
+        - tablist "Primary navigation" [ref=e36] [box=24,112,207,355]
+        - generic [ref=e88] [box=24,581,207,82]
+  - main [ref=e92] [box=248,88,1157,599]:
+    - tabpanel "Today Do this now" [ref=e93] [box=288,128,1077,2159]:
+      - generic [ref=e102] [box=288,128,896,2159]:
+        - text: 01 —
+        - generic "Today" [ref=e103] [box=288,128,896,40]
+        - region "Today command dashboard" [ref=e107] [box=288,224,896,1634]
+        - region "Today operational preview" [ref=e390] [box=288,1898,896,257]
+        - button "Show day detail" [ref=e437] [cursor=pointer] [box=288,2211,176,36]
+        - generic [box=288,2287,896,0]
+    - contentinfo [ref=e439] [box=248,2417,1157,166]:
+      - generic [ref=e440] [box=248,2418,1157,165]:
+        - generic [ref=e441] [box=293,2453,1067,32]
+        - group "Build context" [ref=e450] [box=293,2509,1067,39]

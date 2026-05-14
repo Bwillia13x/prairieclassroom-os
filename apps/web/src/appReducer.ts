@@ -23,6 +23,7 @@ import type { ClassroomProfile, ComplexityDebtRegister, FamilyMessagePrefill, In
 import type { SectionIconName } from "./components/SectionIcon";
 
 const DEMO_CLASSROOM_ID = "demo-okafor-grade34";
+const DEMO_MODE_QUERY_KEYS = ["demo", "presentation", "judge"] as const;
 
 // ─── Active Tab (top-level) ───
 
@@ -625,11 +626,29 @@ export function restoreNavFromUrl(): { tab: ActiveTab; tool: ActiveTool | null }
 }
 
 export function shouldSuppressFirstRunModalsFromUrl(): boolean {
+  return shouldStartInDemoMode();
+}
+
+function isTruthy(value: string | null): boolean {
+  return ["1", "true", "yes", "on"].includes((value ?? "").toLowerCase());
+}
+
+export function isVercelDemoHost(hostname: string): boolean {
+  const normalized = hostname.toLowerCase();
+  return normalized === "prairieclassroom-os.vercel.app" || normalized.endsWith(".vercel.app");
+}
+
+export function shouldStartInDemoMode(): boolean {
   if (typeof window === "undefined") return false;
   try {
     const params = new URLSearchParams(window.location.search);
-    const truthy = (value: string | null) => ["1", "true", "yes", "on"].includes((value ?? "").toLowerCase());
-    return truthy(params.get("demo")) || truthy(params.get("presentation")) || truthy(params.get("judge"));
+    if (DEMO_MODE_QUERY_KEYS.some((key) => isTruthy(params.get(key)))) {
+      return true;
+    }
+    if (params.has("classroom")) {
+      return false;
+    }
+    return import.meta.env.VITE_DEFAULT_DEMO_MODE === "true" || isVercelDemoHost(window.location.hostname);
   } catch {
     return false;
   }
@@ -639,12 +658,11 @@ function restoreClassroomFromUrl(): string {
   if (typeof window === "undefined") return "";
   try {
     const params = new URLSearchParams(window.location.search);
-    const requestedClassroom = params.get("classroom");
-    if (requestedClassroom) return requestedClassroom;
-    const demoFlag = params.get("demo");
-    if (["1", "true", "yes", "on"].includes((demoFlag ?? "").toLowerCase())) {
+    if (shouldStartInDemoMode()) {
       return DEMO_CLASSROOM_ID;
     }
+    const requestedClassroom = params.get("classroom");
+    if (requestedClassroom) return requestedClassroom;
   } catch {
     return "";
   }
