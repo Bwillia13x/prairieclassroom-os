@@ -1,0 +1,40 @@
+{
+  "desktop": {
+    "categories": {
+      "performance": 98,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "fcp": "0.6 s",
+      "lcp": "1.0 s",
+      "tbt": "0 ms",
+      "cls": "0.025",
+      "speedIndex": "0.9 s"
+    },
+    "transfer": "Total size was 499 KiB",
+    "renderBlocking": "Est savings of 80 ms",
+    "unusedCss": "Est savings of 43 KiB",
+    "unusedJs": "Est savings of 44 KiB"
+  },
+  "mobile": {
+    "categories": {
+      "performance": 89,
+      "accessibility": 100,
+      "best-practices": 100,
+      "seo": 100
+    },
+    "metrics": {
+      "fcp": "2.5 s",
+      "lcp": "3.4 s",
+      "tbt": "30 ms",
+      "cls": "0",
+      "speedIndex": "2.5 s"
+    },
+    "transfer": "Total size was 412 KiB",
+    "renderBlocking": "Est savings of 720 ms",
+    "unusedCss": "Est savings of 45 KiB",
+    "unusedJs": "Est savings of 44 KiB"
+  }
+}

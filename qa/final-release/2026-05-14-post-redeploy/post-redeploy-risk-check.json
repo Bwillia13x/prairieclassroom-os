@@ -1,0 +1,102 @@
+[
+  {
+    "name": "desktop-root",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "inputUrl": "https://prairieclassroom-os.vercel.app",
+    "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "title": "PrairieClassroom OS",
+    "todayVisible": 1,
+    "activeId": "demo-okafor-grade34",
+    "blockerText": false,
+    "overflow": 0,
+    "consoleMessages": [],
+    "failedRequests": [],
+    "badResponses": [],
+    "sessionRequests": [
+      {
+        "method": "GET",
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions/summary/demo-okafor-grade34"
+      }
+    ],
+    "sessionPostTelemetryRequests": 0,
+    "sessionSummaryRequests": 1
+  },
+  {
+    "name": "mobile-root",
+    "viewport": {
+      "width": 393,
+      "height": 852
+    },
+    "inputUrl": "https://prairieclassroom-os.vercel.app",
+    "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "title": "PrairieClassroom OS",
+    "todayVisible": 1,
+    "activeId": "demo-okafor-grade34",
+    "blockerText": false,
+    "overflow": 0,
+    "consoleMessages": [],
+    "failedRequests": [],
+    "badResponses": [],
+    "sessionRequests": [
+      {
+        "method": "GET",
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions/summary/demo-okafor-grade34"
+      }
+    ],
+    "sessionPostTelemetryRequests": 0,
+    "sessionSummaryRequests": 1
+  },
+  {
+    "name": "desktop-canonical",
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "inputUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "title": "PrairieClassroom OS",
+    "todayVisible": 1,
+    "activeId": "demo-okafor-grade34",
+    "blockerText": false,
+    "overflow": 0,
+    "consoleMessages": [],
+    "failedRequests": [],
+    "badResponses": [],
+    "sessionRequests": [
+      {
+        "method": "GET",
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions/summary/demo-okafor-grade34"
+      }
+    ],
+    "sessionPostTelemetryRequests": 0,
+    "sessionSummaryRequests": 1
+  },
+  {
+    "name": "mobile-canonical",
+    "viewport": {
+      "width": 393,
+      "height": 852
+    },
+    "inputUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "title": "PrairieClassroom OS",
+    "todayVisible": 1,
+    "activeId": "demo-okafor-grade34",
+    "blockerText": false,
+    "overflow": 0,
+    "consoleMessages": [],
+    "failedRequests": [],
+    "badResponses": [],
+    "sessionRequests": [
+      {
+        "method": "GET",
+        "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions/summary/demo-okafor-grade34"
+      }
+    ],
+    "sessionPostTelemetryRequests": 0,
+    "sessionSummaryRequests": 1
+  }
+]
