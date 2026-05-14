@@ -256,12 +256,13 @@
   background: color-mix(in srgb, var(--hero-accent) 5%, transparent);
 }
 
-.today-hero__command-fact dt,
-.today-hero__command-fact dd {
+.today-hero__command-fact-label,
+.today-hero__command-fact-value {
   margin: 0;
 }
 
-.today-hero__command-fact dt {
+.today-hero__command-fact-label {
+  display: block;
   color: var(--color-text-tertiary);
   font-family: var(--font-mono);
   font-size: var(--text-2xs);
@@ -270,7 +271,8 @@
   text-transform: uppercase;
 }
 
-.today-hero__command-fact dd {
+.today-hero__command-fact-value {
+  display: block;
   overflow: hidden;
   color: var(--color-text);
   font-size: clamp(0.85rem, 0.95vw, 0.98rem);

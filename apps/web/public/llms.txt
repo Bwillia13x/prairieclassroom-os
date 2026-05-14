@@ -1,0 +1,4 @@
+# PrairieClassroom OS
+
+- [Public demo](https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34)
+- [Demo operations](https://prairieclassroom-os.vercel.app/)

@@ -154,14 +154,14 @@ export default function TodayHero({
                 </ActionButton>
               </div>
               {commandFacts.length > 0 ? (
-                <dl className="today-hero__command-facts" role="group" aria-label="Why this action is first">
+                <div className="today-hero__command-facts" role="group" aria-label="Why this action is first">
                   {commandFacts.map((fact) => (
                     <div key={fact.label} className="today-hero__command-fact">
-                      <dt>{fact.label}</dt>
-                      <dd>{fact.value}</dd>
+                      <span className="today-hero__command-fact-label">{fact.label}</span>
+                      <span className="today-hero__command-fact-value">{fact.value}</span>
                     </div>
                   ))}
-                </dl>
+                </div>
               ) : null}
             </div>
           </article>
@@ -184,7 +184,7 @@ export default function TodayHero({
                 </p>
               ) : (
                 flowBlocks.map((block) => (
-                  <article
+                  <div
                     key={`${block.time_slot}-${block.activity}`}
                     className={[
                       "today-hero__block",
@@ -198,7 +198,8 @@ export default function TodayHero({
                   >
                     <header className="today-hero__block-header">
                       <span className="today-hero__block-time">{block.time_slot}</span>
-                      <span className="today-hero__block-status" aria-label={`Status: ${block.state}`}>
+                      <span className="today-hero__block-status">
+                        <span className="sr-only">Status: {block.state}</span>
                         {block.state === "past" ? <CheckBadgeIcon /> : null}
                         {block.state === "current" ? (
                           <span className="today-hero__block-now">Now</span>
@@ -230,7 +231,7 @@ export default function TodayHero({
                         <span className="today-hero__block-elapsed">{getFlowStateLabel(block.state)}</span>
                       )}
                     </footer>
-                  </article>
+                  </div>
                 ))
               )}
             </div>
@@ -246,7 +247,7 @@ export default function TodayHero({
             </header>
             <div className="today-hero__debt-tiles" role="list">
               {debtTiles.map((tile) => (
-                <article
+                <div
                   key={tile.key}
                   className="today-hero__debt-tile"
                   role="listitem"
@@ -264,7 +265,7 @@ export default function TodayHero({
                       {tile.caption}
                     </span>
                   </div>
-                </article>
+                </div>
               ))}
             </div>
           </section>

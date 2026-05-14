@@ -35,6 +35,8 @@ export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props)
           const meta = TAB_META[tab];
           const isActive = activeTab === tab;
           const badge = getTabBadgeCount(tab, debtCounts ?? {}, tomorrowNotes.length);
+          const visibleLabel = `${meta.shortLabel}${badge > 0 ? ` ${badge}` : ""}`;
+          const accessibleLabel = `${visibleLabel} ${meta.label}: ${meta.taskLabel}${badge > 0 ? `, ${badge} pending` : ""}`;
 
           return (
             <button
@@ -43,12 +45,16 @@ export default function MobileNav({ activeTab, onTabChange, debtCounts }: Props)
               className={`mobile-nav-group mobile-nav-group--${meta.sectionTone}${isActive ? " mobile-nav-group--active" : ""}`}
               onClick={() => onTabChange(tab)}
               type="button"
-              aria-label={`${meta.label}: ${meta.taskLabel}${badge > 0 ? `, ${badge} pending` : ""}`}
+              aria-label={accessibleLabel}
               aria-pressed={isActive}
             >
               <SectionIcon name={meta.icon} className="mobile-nav-icon" />
               <span className="mobile-nav-group-label">{meta.shortLabel}</span>
-              {badge > 0 ? <span className="mobile-nav-badge">{badge}</span> : null}
+              {badge > 0 ? (
+                <span className="mobile-nav-badge" aria-hidden="true">
+                  {badge}
+                </span>
+              ) : null}
             </button>
           );
         })}

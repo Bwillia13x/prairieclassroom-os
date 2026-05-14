@@ -239,13 +239,19 @@
   min-width: 1.05rem;
   height: 1.05rem;
   padding: 0 0.28rem;
-  background: var(--color-accent);
+  background: var(--color-text);
   border-radius: var(--radius-pill);
-  color: var(--color-text-on-accent);
+  color: var(--color-surface);
   font-size: var(--text-2xs);
   font-weight: var(--font-weight-bold);
   animation: success-pop 0.35s var(--ease-spring) both;
   box-shadow: 0 0 0 2px var(--color-surface);
+}
+
+.app-shell .mobile-nav .mobile-nav-badge {
+  background: var(--color-text) !important;
+  border-color: var(--color-text) !important;
+  color: var(--color-surface) !important;
 }
 
 .mobile-nav-icon {

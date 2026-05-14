@@ -206,7 +206,7 @@ async function openTab(page, id) {
   if (!tool) return;
   const label = TOOL_SWITCHER_NAME[tool];
   assert.ok(label, `switcher label for ${tool}`);
-  await page.getByRole("tab", { name: label }).click();
+  await page.locator(`#panel-${tab}:not([hidden])`).getByRole("tab", { name: label }).click();
 }
 
 async function expectSevenViewShell(page) {

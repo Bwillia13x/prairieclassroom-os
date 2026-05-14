@@ -1082,7 +1082,6 @@ export default function App() {
                       onClick={() => setActiveTab(tab)}
                       type="button"
                       role="tab"
-                      aria-label={`${meta.label}: ${meta.taskLabel}`}
                       aria-selected={activeTab === tab}
                       tabIndex={shellNavCollapsed ? -1 : 0}
                       aria-controls={`panel-${tab}`}
