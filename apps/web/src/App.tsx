@@ -849,6 +849,7 @@ export default function App() {
     if (
       activeClassroom &&
       profile &&
+      !(profile.requires_access_code && !state.classroomAccessCodes[activeClassroom]) &&
       !(suppressFirstRunModals && profile.is_demo) &&
       !state.classroomRoles[activeClassroom] &&
       !state.authPrompt &&
@@ -857,7 +858,16 @@ export default function App() {
     ) {
       dispatch({ type: "OPEN_ROLE_PROMPT", classroomId: activeClassroom });
     }
-  }, [activeClassroom, profile, state.classroomRoles, state.authPrompt, state.rolePrompt, state.showOnboarding, suppressFirstRunModals]);
+  }, [
+    activeClassroom,
+    profile,
+    state.classroomAccessCodes,
+    state.classroomRoles,
+    state.authPrompt,
+    state.rolePrompt,
+    state.showOnboarding,
+    suppressFirstRunModals,
+  ]);
 
   const ctxValue = useMemo(
     () => ({
