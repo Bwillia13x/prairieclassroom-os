@@ -175,7 +175,7 @@ export default function App() {
     }
   }, [shellNavCollapsed]);
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const shell = appShellRef.current;
     const header = headerRef.current;
     if (!shell || !header) return;
@@ -615,17 +615,18 @@ export default function App() {
 
   // Restore scroll before paint so page switches do not jump after render.
   useLayoutEffect(() => {
-    const scrollEl = getTabScrollElement(state.activeTab);
-    if (!scrollEl) return;
-
     const saved = sessionStorage.getItem(`prairie-scroll-${state.activeTab}`);
-    if (saved) {
-      scrollEl.scrollTop = parseInt(saved, 10);
-      sessionStorage.removeItem(`prairie-scroll-${state.activeTab}`);
+    if (!saved) {
+      const appMain = appShellRef.current?.querySelector<HTMLElement>(".app-main");
+      if (appMain) appMain.scrollTop = 0;
       return;
     }
 
-    scrollEl.scrollTop = 0;
+    const scrollEl = getTabScrollElement(state.activeTab);
+    if (!scrollEl) return;
+
+    scrollEl.scrollTop = parseInt(saved, 10);
+    sessionStorage.removeItem(`prairie-scroll-${state.activeTab}`);
   }, [getTabScrollElement, state.activeTab]);
 
   // Mirror gating state in refs so the keydown handler can read current values

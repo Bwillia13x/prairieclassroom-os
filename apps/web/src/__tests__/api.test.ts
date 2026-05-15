@@ -279,6 +279,36 @@ describe("API client basics", () => {
     }
   });
 
+  it("lets the hosted live demo query bypass the bundled static demo", async () => {
+    vi.resetModules();
+    vi.stubEnv("VITE_API_URL", "https://prairieclassroom-orchestrator.onrender.com");
+    vi.stubGlobal("window", {
+      location: {
+        search: "?live=true&tab=today&classroom=demo-okafor-grade34",
+        hostname: "prairieclassroom-os.vercel.app",
+      },
+    });
+    vi.stubGlobal("document", { documentElement: { dataset: {} } });
+    const deployedFetch = vi.fn().mockResolvedValueOnce(jsonResponse(200, [
+      { classroom_id: "demo-okafor-grade34", grade_band: "3-4", subject_focus: "cross_curricular", classroom_notes: [], students: [] },
+    ]));
+    globalThis.fetch = deployedFetch;
+
+    try {
+      const { listClassrooms: deployedListClassrooms } = await import("../api");
+      const classrooms = await deployedListClassrooms();
+
+      expect(classrooms[0]?.classroom_id).toBe("demo-okafor-grade34");
+      expect(deployedFetch).toHaveBeenCalledTimes(1);
+      expect(String(deployedFetch.mock.calls[0][0])).toBe("https://prairieclassroom-orchestrator.onrender.com/api/classrooms");
+      expect(document.documentElement.dataset.demoApi).toBeUndefined();
+    } finally {
+      vi.unstubAllEnvs();
+      vi.unstubAllGlobals();
+      globalThis.fetch = mockFetch;
+    }
+  });
+
   it("uses the bundled static demo for public demo streams without waiting for Render", async () => {
     vi.resetModules();
     vi.stubEnv("VITE_API_URL", "https://prairieclassroom-orchestrator.onrender.com");

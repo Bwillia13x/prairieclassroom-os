@@ -1,0 +1,26 @@
+{
+  "checked_at": "2026-05-15T20:38:02.668Z",
+  "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+  "screenshot": "qa/final-release/2026-05-15-vercel-100-ready-public/screenshots/mobile-cellular-proxy-today.png",
+  "method": "Playwright iPhone 14 emulation with Chrome DevTools Network.emulateNetworkConditions cellular4g, 80ms RTT, 1.6Mbps down, 750Kbps up. This is a cellular proxy smoke, not a physical phone on a carrier network.",
+  "visibleAtMs": 1523,
+  "appState": {
+    "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "demoApi": "prairie-static-demo-api",
+    "viewport": {
+      "width": 390,
+      "height": 664,
+      "devicePixelRatio": 3
+    },
+    "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\nAfter-school closeout: capture notes, messages, and tomorrow's first move.\n\nDO THIS NOW\nAfter-school closeout\nClose today's loop for Amira\n\nAfter-school closeout: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: PAST\nReading block\n\nSeveral EAL students need vocabulary preview\n\nCOMPLETE\n12:30-12:45\nSTATUS: PAST\nMath block\n\nPost-lunch transition\n\nCOMPLETE\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep"
+  },
+  "consoleErrors": [],
+  "requestFailures": [],
+  "badResponses": [],
+  "assertions": {
+    "appVisible": true,
+    "staticDemoActive": true,
+    "noRequestFailures": true,
+    "noBadResponses": true
+  }
+}

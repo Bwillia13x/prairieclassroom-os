@@ -109,6 +109,7 @@ function isTruthy(value: string | null) {
 
 export function isStaticDemoApiActive(_apiBase: string): boolean {
   if (typeof window === "undefined") return false;
+  if (isHostedLiveDemoRequest()) return false;
   if (import.meta.env.VITE_DEMO_API_FALLBACK === "true") return true;
   if (typeof document !== "undefined" && document.documentElement.dataset.demoApi === DEMO_API_FLAG) return true;
 
@@ -117,8 +118,15 @@ export function isStaticDemoApiActive(_apiBase: string): boolean {
 
 export function isStaticDemoFallbackAllowed(): boolean {
   if (typeof window === "undefined") return false;
+  if (isHostedLiveDemoRequest()) return false;
   if (import.meta.env.VITE_DEMO_API_FALLBACK === "true") return true;
   return isPublicDemoRequest();
+}
+
+function isHostedLiveDemoRequest(): boolean {
+  if (typeof window === "undefined") return false;
+  const params = new URLSearchParams(window.location.search);
+  return isTruthy(params.get("live")) || isTruthy(params.get("hosted"));
 }
 
 function isPublicDemoRequest(): boolean {

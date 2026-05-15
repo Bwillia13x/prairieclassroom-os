@@ -253,6 +253,12 @@
   mix-blend-mode: multiply;
 }
 
+@media (max-width: 699px) {
+  .today-hero::after {
+    display: none;
+  }
+}
+
 /* Children fade up in a gentle cascade on first mount */
 .today-hero__narrative {
   animation: ambient-hero-rise 520ms var(--ease-out-expo) 40ms both;
@@ -637,6 +643,12 @@
 
 .today-hero__cta.today-hero__cta {
   animation: ambient-cta-invite 1400ms var(--ease-out-expo) 820ms 1 both;
+}
+
+@media (max-width: 699px) {
+  .today-hero__cta.today-hero__cta {
+    animation: none;
+  }
 }
 
 /* If the user has already interacted (hover / focus) before the invite

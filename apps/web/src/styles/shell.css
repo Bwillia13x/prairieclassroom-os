@@ -1049,6 +1049,12 @@
   animation: panel-enter var(--motion-base) var(--ease-standard) both;
 }
 
+@media (max-width: 760px) {
+  .app-main > [role="tabpanel"]:not([hidden]) {
+    animation: none;
+  }
+}
+
 .app-main > [role="tabpanel"][hidden] {
   display: none;
 }

@@ -1,0 +1,65 @@
+{
+  "checked_at": "2026-05-15T20:40:22.249Z",
+  "url": "https://prairieclassroom-os.vercel.app/?live=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+  "screenshot": "qa/final-release/2026-05-15-vercel-100-ready-public/screenshots/public-hosted-live-prep-rerun.png",
+  "appState": {
+    "finalUrl": "https://prairieclassroom-os.vercel.app/?live=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34&demo=true",
+    "demoApi": "",
+    "title": "PrairieClassroom OS",
+    "activeText": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n23\nAlberta K-6\nPrivacy first\nTeacher controlled\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\nEAL\nLANGUAGE\n7\nLANGUAGES\nVariants\nMODE\nARTIFACT READINESS\nInput lane\nUPLOAD · PASTE · WEB\nCurriculum\nALBERTA PROGRAM\nOutput\nVARIANTS\nLANGUAGE LOAD\nTagalog\nUrdu\nArabic\nSomali\nPunjabi\nSpanish\nEAL students\n8\nFamily languages\n7\nTEACHER PASS\nSame outcome\n· no lowered bar\nEditable copy\n· teacher owned\nMaterials list\n· ready to stage\n02\nPREP LANE\n\nChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.\n\n01 ARTIFACT\nDifferentiate\nLESSON VARIANTS\nAdapt one l"
+  },
+  "health": {
+    "status": 200,
+    "body": {
+      "status": "ok",
+      "inference_url": "https://prairieclassroom-inference-gemini.onrender.com",
+      "inference_provider": "gemini",
+      "ready": true
+    }
+  },
+  "generated": {
+    "status": 200,
+    "artifact_id": "judge-public-browser-live-002",
+    "model_id": "gemma-4-26b-a4b-it",
+    "latency_ms": 27961.111275712028,
+    "variant_count": 5,
+    "first_variant_title": "Prairie Plant Fraction Investigation"
+  },
+  "apiResponses": [
+    {
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms",
+      "status": 200
+    },
+    {
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/health",
+      "status": 200
+    },
+    {
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms/demo-okafor-grade34/profile",
+      "status": 200
+    },
+    {
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms/demo-okafor-grade34/runs?tool=differentiate&limit=3",
+      "status": 200
+    },
+    {
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/today/demo-okafor-grade34",
+      "status": 200
+    },
+    {
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/health",
+      "status": 200
+    },
+    {
+      "url": "https://prairieclassroom-orchestrator.onrender.com/api/differentiate",
+      "status": 200
+    }
+  ],
+  "consoleErrors": [],
+  "requestFailures": [],
+  "assertions": {
+    "staticDemoBypassed": true,
+    "hostedGeminiReady": true,
+    "generationSucceeded": true
+  }
+}

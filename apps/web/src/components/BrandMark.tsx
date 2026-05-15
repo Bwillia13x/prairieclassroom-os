@@ -2,7 +2,11 @@ function joinClassNames(...parts: Array<string | undefined | false>) {
   return parts.filter(Boolean).join(" ");
 }
 
-const BRAND_MARK_SRC = "/brand/prairieclassroomos-2026-05-01/prairieclassroomos-favicon-128.png";
+const BRAND_MARK_SRC = "/brand/prairieclassroomos-2026-05-01/prairieclassroomos-favicon-32.png";
+const BRAND_MARK_SRCSET = [
+  "/brand/prairieclassroomos-2026-05-01/prairieclassroomos-favicon-32.png 1x",
+  "/brand/prairieclassroomos-2026-05-01/prairieclassroomos-favicon-64.png 2x",
+].join(", ");
 
 export default function BrandMark({ className }: { className?: string }) {
   return (
@@ -10,6 +14,7 @@ export default function BrandMark({ className }: { className?: string }) {
       <img
         className="brand-mark__glyph"
         src={BRAND_MARK_SRC}
+        srcSet={BRAND_MARK_SRCSET}
         alt=""
         aria-hidden="true"
         decoding="async"

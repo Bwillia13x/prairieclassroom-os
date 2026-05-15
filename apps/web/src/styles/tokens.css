@@ -658,14 +658,14 @@
    accent fallback only; workflow text stays on the reading face. */
 @media (max-width: 699px) {
   :root {
-    --font-reading: "Atkinson Hyperlegible", "Instrument Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-reading: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     --font-sans: var(--font-reading);
     --font-display: var(--font-reading);
     --font-serif: var(--font-display);
     --font-editorial: var(--font-reading);
-    --font-mono: "Space Mono", ui-monospace, "SF Mono", "Cascadia Code", monospace;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", monospace;
     --font-instrument: var(--font-mono);
-    --font-dot: "Doto", var(--font-mono);
+    --font-dot: var(--font-mono);
     --font-ui: var(--font-sans);
     --text-display-sm: 1.75rem;
     --text-display-md: 2.25rem;

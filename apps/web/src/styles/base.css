@@ -48,6 +48,17 @@ h6 {
   line-height: var(--leading-tight);
   text-wrap: balance;
 }
+
+@media (max-width: 699px) {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: wrap;
+  }
+}
 /* Former h1/h2/h3 letter-spacing: -0.025em rule consolidated into the
    display-family block above (tracking now lives on --tracking-display). */
 
