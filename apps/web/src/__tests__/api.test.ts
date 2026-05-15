@@ -249,35 +249,28 @@ describe("API client basics", () => {
     expect(headers.get("Content-Type")).toBe("application/json");
   });
 
-  it("falls back to the bundled static demo when the public deployed API has a transient failure", async () => {
+  it("uses the bundled static demo immediately on public Vercel demo routes", async () => {
     vi.resetModules();
     vi.stubEnv("VITE_API_URL", "https://prairieclassroom-orchestrator.onrender.com");
     vi.stubGlobal("window", {
       location: {
-        search: "?demo=true&tab=prep&classroom=demo-okafor-grade34",
+        search: "?demo=true&tab=today&classroom=demo-okafor-grade34",
         hostname: "prairieclassroom-os.vercel.app",
       },
     });
     vi.stubGlobal("document", { documentElement: { dataset: {} } });
-    const deployedFetch = vi.fn().mockResolvedValueOnce(jsonResponse(502, { error: "Inference service unavailable" }));
+    const deployedFetch = vi.fn();
     globalThis.fetch = deployedFetch;
 
     try {
-      const { differentiate: deployedDifferentiate } = await import("../api");
-      const result = await deployedDifferentiate({
-        artifact: {
-          artifact_id: "a1",
-          title: "Math Lesson",
-          subject: "math",
-          source_type: "text",
-          raw_text: "Add fractions",
-        },
-        classroom_id: "demo-okafor-grade34",
-      });
+      const { fetchTodaySnapshot: deployedFetchTodaySnapshot, listClassrooms: deployedListClassrooms } = await import("../api");
+      const classrooms = await deployedListClassrooms();
+      const snapshot = await deployedFetchTodaySnapshot("demo-okafor-grade34");
 
-      expect(result.model_id).toBe("static-demo-fallback");
-      expect(result.variants.length).toBeGreaterThan(0);
-      expect(deployedFetch).toHaveBeenCalledTimes(1);
+      expect(classrooms[0]?.classroom_id).toBe("demo-okafor-grade34");
+      expect(classrooms[0]?.students.length).toBeGreaterThan(20);
+      expect(snapshot.latest_forecast?.blocks.length).toBeGreaterThan(0);
+      expect(deployedFetch).not.toHaveBeenCalled();
       expect(document.documentElement.dataset.demoApi).toBe("prairie-static-demo-api");
     } finally {
       vi.unstubAllEnvs();
@@ -286,7 +279,7 @@ describe("API client basics", () => {
     }
   });
 
-  it("falls back to the bundled static demo when a deployed stream start returns a transient failure", async () => {
+  it("uses the bundled static demo for public demo streams without waiting for Render", async () => {
     vi.resetModules();
     vi.stubEnv("VITE_API_URL", "https://prairieclassroom-orchestrator.onrender.com");
     vi.stubGlobal("window", {
@@ -296,7 +289,7 @@ describe("API client basics", () => {
       },
     });
     vi.stubGlobal("document", { documentElement: { dataset: {} } });
-    const deployedFetch = vi.fn().mockResolvedValueOnce(jsonResponse(502, { error: "Stream unavailable" }));
+    const deployedFetch = vi.fn();
     globalThis.fetch = deployedFetch;
 
     try {
@@ -312,7 +305,7 @@ describe("API client basics", () => {
       expect(result.plan.classroom_id).toBe("demo-okafor-grade34");
       expect(onThinking).toHaveBeenCalledWith(expect.stringContaining("synthetic classroom fixture"));
       expect(onChunk).toHaveBeenCalled();
-      expect(deployedFetch).toHaveBeenCalledTimes(1);
+      expect(deployedFetch).not.toHaveBeenCalled();
       expect(document.documentElement.dataset.demoApi).toBe("prairie-static-demo-api");
     } finally {
       vi.unstubAllEnvs();

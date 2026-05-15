@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { TAB_ORDER, TAB_META } from "../appReducer";
 import { normalizeApiBase } from "../api";
+import { isStaticDemoApiActive } from "../demoApi";
 import packageJson from "../../package.json";
 import "./AppFooter.css";
 
@@ -28,7 +29,8 @@ const STORAGE_KEY = "prairie.footer.shortcuts.expanded";
 const APP_VERSION: string = packageJson.version;
 const FALLBACK_RUNTIME_ENV: string =
   (import.meta.env.VITE_PRAIRIE_MODE as string | undefined) ?? "mock";
-const API_HEALTH_URL = `${normalizeApiBase(import.meta.env.VITE_API_URL)}/health`;
+const API_BASE = normalizeApiBase(import.meta.env.VITE_API_URL);
+const API_HEALTH_URL = `${API_BASE}/health`;
 
 interface HealthPayload {
   inference_provider?: unknown;
@@ -70,6 +72,7 @@ export default function AppFooter({ onOpenShortcuts, classroomId }: Props = {}) 
     const controller = new AbortController();
 
     async function refreshRuntimeEnv() {
+      if (isStaticDemoApiActive(API_BASE)) return;
       try {
         const res = await fetch(API_HEALTH_URL, { signal: controller.signal });
         if (!res.ok) return;

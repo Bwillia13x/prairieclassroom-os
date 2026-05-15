@@ -6,7 +6,7 @@ import {
 import type { ClassroomProfile, TomorrowPlanResponse } from "../types";
 
 describe("static demo API fallback", () => {
-  it("serves a public classroom summary without exposing the full roster", () => {
+  it("serves the bundled public classroom profile for immediate demo bootstrap", () => {
     const result = resolveStaticDemoRequest<ClassroomProfile[]>("/classrooms");
 
     expect(result.handled).toBe(true);
@@ -16,9 +16,9 @@ describe("static demo API fallback", () => {
       classroom_id: "demo-okafor-grade34",
       is_demo: true,
       requires_access_code: false,
-      classroom_notes: [],
-      students: [],
     });
+    expect(result.value[0].students.length).toBeGreaterThan(20);
+    expect(result.value[0].schedule?.length).toBeGreaterThan(0);
   });
 
   it("serves deterministic generation payloads for the Vercel demo path", () => {

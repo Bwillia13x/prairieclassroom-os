@@ -61,16 +61,6 @@ const classroomProfile: ClassroomProfile = {
   upcoming_events: classroomDemo.upcoming_events,
 };
 
-const classroomSummary: ClassroomProfile = {
-  classroom_id: classroomProfile.classroom_id,
-  grade_band: classroomProfile.grade_band,
-  subject_focus: classroomProfile.subject_focus,
-  requires_access_code: false,
-  is_demo: true,
-  classroom_notes: [],
-  students: [],
-};
-
 const curriculumEntries: CurriculumEntry[] = [
   {
     entry_id: "ab-math-3-number-fractions",
@@ -117,13 +107,12 @@ function isTruthy(value: string | null) {
   return ["1", "true", "yes", "on"].includes((value ?? "").toLowerCase());
 }
 
-export function isStaticDemoApiActive(apiBase: string): boolean {
+export function isStaticDemoApiActive(_apiBase: string): boolean {
   if (typeof window === "undefined") return false;
   if (import.meta.env.VITE_DEMO_API_FALLBACK === "true") return true;
   if (typeof document !== "undefined" && document.documentElement.dataset.demoApi === DEMO_API_FLAG) return true;
 
-  const demoRequested = isPublicDemoRequest();
-  return demoRequested && apiBase === "/api";
+  return isPublicDemoRequest();
 }
 
 export function isStaticDemoFallbackAllowed(): boolean {
@@ -137,7 +126,7 @@ function isPublicDemoRequest(): boolean {
   const params = new URLSearchParams(window.location.search);
   const demoRequested = isTruthy(params.get("demo")) || isTruthy(params.get("judge")) || isTruthy(params.get("presentation"));
   const staticVercelHost = /\.vercel\.app$/i.test(window.location.hostname);
-  return demoRequested && staticVercelHost;
+  return staticVercelHost && (demoRequested || !params.has("classroom"));
 }
 
 export function markStaticDemoApiActive() {
@@ -743,7 +732,7 @@ export function resolveStaticDemoRequest<T>(path: string, options: StaticDemoReq
   const url = new URL(path, "https://prairie-static-demo.local");
   const route = url.pathname;
 
-  if (method === "GET" && route === "/classrooms") return ok([classroomSummary] as T);
+  if (method === "GET" && route === "/classrooms") return ok([classroomProfile] as T);
   if (method === "GET" && route === `/classrooms/${DEMO_CLASSROOM_ID}/profile`) return ok(classroomProfile as T);
   if (method === "GET" && route === `/today/${DEMO_CLASSROOM_ID}`) return ok(demoTodaySnapshot() as T);
   if (method === "GET" && route === `/classrooms/${DEMO_CLASSROOM_ID}/health`) return ok(demoHealth() as T);
