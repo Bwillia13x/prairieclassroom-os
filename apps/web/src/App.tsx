@@ -532,7 +532,7 @@ export default function App() {
               await generateComplexityForecast({
                 classroom_id: classroomId,
                 forecast_date: getTomorrowForecastDate(),
-              });
+              }, undefined, undefined, { preferStaticDemo: true });
 
               const refreshedSnapshot = await fetchTodaySnapshot(classroomId);
               if (cancelled) return;

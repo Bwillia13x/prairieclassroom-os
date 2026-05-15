@@ -321,6 +321,37 @@ describe("API client basics", () => {
     }
   });
 
+  it("can prefer the bundled static demo without first calling the deployed API", async () => {
+    vi.resetModules();
+    vi.stubEnv("VITE_API_URL", "https://prairieclassroom-orchestrator.onrender.com");
+    vi.stubGlobal("window", {
+      location: {
+        search: "?demo=true&tab=today&classroom=demo-okafor-grade34",
+        hostname: "prairieclassroom-os.vercel.app",
+      },
+    });
+    vi.stubGlobal("document", { documentElement: { dataset: {} } });
+    const deployedFetch = vi.fn();
+    globalThis.fetch = deployedFetch;
+
+    try {
+      const { generateComplexityForecast: deployedGenerateComplexityForecast } = await import("../api");
+      const result = await deployedGenerateComplexityForecast({
+        classroom_id: "demo-okafor-grade34",
+        forecast_date: "2026-05-13",
+      }, undefined, undefined, { preferStaticDemo: true });
+
+      expect(result.model_id).toBe("static-demo-fallback");
+      expect(result.forecast.classroom_id).toBe("demo-okafor-grade34");
+      expect(deployedFetch).not.toHaveBeenCalled();
+      expect(document.documentElement.dataset.demoApi).toBe("prairie-static-demo-api");
+    } finally {
+      vi.unstubAllEnvs();
+      vi.unstubAllGlobals();
+      globalThis.fetch = mockFetch;
+    }
+  });
+
   it("non-OK response throws ApiError with status and payload fields", async () => {
     const errorPayload = {
       error: "Validation failed",

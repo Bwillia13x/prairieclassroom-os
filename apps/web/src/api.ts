@@ -91,6 +91,12 @@ interface RequestOptions {
    * Callers (e.g. fire-and-forget telemetry) can shorten this explicitly.
    */
   timeoutMs?: number;
+  /**
+   * Prefer the in-browser synthetic demo response when the public demo fallback
+   * is available. This prevents background demo helpers from emitting noisy
+   * failed network requests before falling back.
+   */
+  preferStaticDemo?: boolean;
 }
 
 export interface StreamingEventHandlers {
@@ -183,6 +189,11 @@ function teacherFriendlyAuthMessage(payload: ApiErrorPayload): string {
 }
 
 async function requestJson<T>(path: string, options: RequestOptions = {}): Promise<T> {
+  if (options.preferStaticDemo) {
+    const fallback = resolveStaticDemoFallback<T>(path, options);
+    if (fallback !== null) return fallback;
+  }
+
   if (isStaticDemoApiActive(API_BASE)) {
     const demo = resolveStaticDemoRequest<T>(path, options);
     if (demo.handled) {
@@ -266,10 +277,11 @@ async function requestVoid(path: string, options: RequestOptions = {}): Promise<
 
 function resolveEventSourceUrl(streamUrl: string): string {
   if (/^https?:\/\//i.test(streamUrl)) return streamUrl;
-  const origin = typeof window !== "undefined" ? window.location.origin : "http://localhost";
   const base = /^https?:\/\//i.test(API_BASE)
     ? API_BASE
-    : `${origin}${API_BASE}`;
+    : typeof window !== "undefined"
+      ? `${window.location.origin}${API_BASE}`
+      : API_BASE;
   const normalizedStreamUrl = streamUrl.startsWith("/api/")
     ? streamUrl.slice("/api".length)
     : streamUrl;
@@ -567,18 +579,21 @@ export function generateComplexityForecast(
   request: ComplexityForecastRequest,
   signal?: AbortSignal,
   stream?: StreamingEventHandlers,
+  options: { preferStaticDemo?: boolean } = {},
 ): Promise<ComplexityForecastResponse> {
   if (stream) {
     return streamRequestJson<ComplexityForecastResponse>("/complexity-forecast", {
       method: "POST",
       body: request,
       signal,
+      preferStaticDemo: options.preferStaticDemo,
     }, stream);
   }
   return requestJson<ComplexityForecastResponse>("/complexity-forecast", {
     method: "POST",
     body: request,
     signal,
+    preferStaticDemo: options.preferStaticDemo,
   });
 }
 
