@@ -1,0 +1,21 @@
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 2578
+cache-control: public, max-age=0, must-revalidate
+content-disposition: inline
+content-type: text/html; charset=utf-8
+date: Fri, 15 May 2026 18:41:34 GMT
+etag: "e632cf156cbb9068f9c4d17f9cc68dbf"
+last-modified: Fri, 15 May 2026 17:58:35 GMT
+permissions-policy: geolocation=(), microphone=(), camera=()
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-vercel-cache: HIT
+x-vercel-enable-rewrite-caching: 1
+x-vercel-id: pdx1::p8kg9-1778870494350-0da93a7ad5c7
+content-length: 2184
+

@@ -1,0 +1,23 @@
+HTTP/2 200 
+date: Fri, 15 May 2026 20:23:59 GMT
+content-type: application/json; charset=utf-8
+access-control-allow-origin: https://prairieclassroom-os.vercel.app
+etag: W/"dc0-1PaMqNz2YUb7tVlkFzVUf1y/zro"
+permissions-policy: camera=(), microphone=(), geolocation=()
+ratelimit: limit=10, remaining=9, reset=60
+ratelimit-policy: 10;w=60
+referrer-policy: strict-origin-when-cross-origin
+rndr-id: 378d155e-1767-4f27
+server: cloudflare
+vary: Origin
+vary: Accept-Encoding
+x-content-type-options: nosniff
+x-dns-prefetch-control: off
+x-frame-options: DENY
+x-powered-by: Express
+x-render-origin-server: Render
+x-request-id: req-1296ab24-46c1-45b3-83f3-35bd3e8bcd13
+cf-cache-status: DYNAMIC
+cf-ray: 9fc4dca12a3f46ca-YYC
+alt-svc: h3=":443"; ma=86400
+
