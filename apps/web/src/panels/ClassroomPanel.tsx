@@ -386,7 +386,7 @@ export default function ClassroomPanel({
   onInterventionPrefill,
   onMessagePrefill,
 }: Props) {
-  const { activeClassroom, activeRole, profile } = useApp();
+  const { activeClassroom, activeRole, profile, classroomAccessCodes } = useApp();
   const session = useSession();
   const { error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
@@ -405,12 +405,32 @@ export default function ClassroomPanel({
   }, [session]);
 
   useEffect(() => {
-    if (!activeClassroom) return;
+    if (!activeClassroom || !profile) return;
+    const hasProtectedAccess = !profile.requires_access_code || Boolean(classroomAccessCodes[activeClassroom]);
+    if (!hasProtectedAccess) {
+      reset();
+      health.reset();
+      studentSummaries.reset();
+      sessionSummary.reset();
+      return;
+    }
     execute((signal) => fetchTodaySnapshot(activeClassroom, signal));
     health.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
     studentSummaries.execute((signal) => fetchStudentSummary(activeClassroom, undefined, signal));
     sessionSummary.execute((signal) => fetchSessionSummary(activeClassroom, signal));
-  }, [activeClassroom, execute, health.execute, sessionSummary.execute, studentSummaries.execute]);
+  }, [
+    activeClassroom,
+    classroomAccessCodes,
+    execute,
+    health.execute,
+    health.reset,
+    profile,
+    reset,
+    sessionSummary.execute,
+    sessionSummary.reset,
+    studentSummaries.execute,
+    studentSummaries.reset,
+  ]);
 
   const attentionStudents = useMemo(
     () => new Set(result?.debt_register.items.flatMap((i) => i.student_refs) ?? []),

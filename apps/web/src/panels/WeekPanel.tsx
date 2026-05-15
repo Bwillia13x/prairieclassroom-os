@@ -133,7 +133,7 @@ function blockAriaLabel(day: OperatingDashboardDay, block: OperatingDashboardWee
  * own page.
  */
 export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
-  const { activeClassroom, activeRole, profile } = useApp();
+  const { activeClassroom, activeRole, profile, classroomAccessCodes } = useApp();
   const session = useSession();
   const { error, result, execute, reset } = useAsyncAction<TodaySnapshot>();
   const health = useAsyncAction<ClassroomHealth>();
@@ -145,11 +145,28 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
   }, [session]);
 
   useEffect(() => {
-    if (!activeClassroom) return;
+    if (!activeClassroom || !profile) return;
+    const hasProtectedAccess = !profile.requires_access_code || Boolean(classroomAccessCodes[activeClassroom]);
+    if (!hasProtectedAccess) {
+      reset();
+      health.reset();
+      sessionSummary.reset();
+      return;
+    }
     execute((signal) => fetchTodaySnapshot(activeClassroom, signal));
     health.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
     sessionSummary.execute((signal) => fetchSessionSummary(activeClassroom, signal));
-  }, [activeClassroom, execute, health.execute, sessionSummary.execute]);
+  }, [
+    activeClassroom,
+    classroomAccessCodes,
+    execute,
+    health.execute,
+    health.reset,
+    profile,
+    reset,
+    sessionSummary.execute,
+    sessionSummary.reset,
+  ]);
 
   const dashboard = useMemo(
     () => (result && profile)

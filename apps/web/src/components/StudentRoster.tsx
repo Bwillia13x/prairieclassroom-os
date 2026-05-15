@@ -105,7 +105,7 @@ function StudentCard({ student, onDrillDown }: StudentCardProps) {
 }
 
 export default function StudentRoster({ attentionCount, onDrillDown }: Props) {
-  const { activeClassroom } = useApp();
+  const { activeClassroom, profile, classroomAccessCodes } = useApp();
 
   const [expanded, setExpanded] = useState<boolean>(() => {
     try {
@@ -122,10 +122,14 @@ export default function StudentRoster({ attentionCount, onDrillDown }: Props) {
   const summaryAction = useAsyncAction<StudentSummary[]>();
 
   const loadStudents = useCallback(() => {
+    if (profile?.requires_access_code && !classroomAccessCodes[activeClassroom]) {
+      summaryAction.reset();
+      return;
+    }
     summaryAction.execute((signal) =>
       fetchStudentSummary(activeClassroom, undefined, signal)
     );
-  }, [activeClassroom, summaryAction.execute]);
+  }, [activeClassroom, classroomAccessCodes, profile?.requires_access_code, summaryAction.execute, summaryAction.reset]);
 
   useEffect(() => {
     if (expanded && !hasLoaded) {

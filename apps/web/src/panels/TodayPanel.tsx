@@ -67,7 +67,7 @@ interface Props {
  * current-day carry-forward.
  */
 export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessagePrefill }: Props) {
-  const { activeClassroom, activeRole, profile, latestTodaySnapshot } = useApp();
+  const { activeClassroom, activeRole, profile, latestTodaySnapshot, classroomAccessCodes } = useApp();
   const session = useSession();
   const result = latestTodaySnapshot ?? null;
   const health = useAsyncAction<ClassroomHealth>();
@@ -130,11 +130,28 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   }, [session]);
 
   useEffect(() => {
-    if (!activeClassroom) return;
+    if (!activeClassroom || !profile) return;
+    const hasProtectedAccess = !profile.requires_access_code || Boolean(classroomAccessCodes[activeClassroom]);
+    if (!hasProtectedAccess) {
+      health.reset();
+      studentSummaries.reset();
+      sessionSummary.reset();
+      return;
+    }
     health.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
     studentSummaries.execute((signal) => fetchStudentSummary(activeClassroom, undefined, signal));
     sessionSummary.execute((signal) => fetchSessionSummary(activeClassroom, signal));
-  }, [activeClassroom, health.execute, sessionSummary.execute, studentSummaries.execute]);
+  }, [
+    activeClassroom,
+    classroomAccessCodes,
+    health.execute,
+    health.reset,
+    profile,
+    sessionSummary.execute,
+    sessionSummary.reset,
+    studentSummaries.execute,
+    studentSummaries.reset,
+  ]);
 
   const recommendedAction = useMemo(
     () => result ? getTodayPrimaryAction(result, activeRole) : null,
