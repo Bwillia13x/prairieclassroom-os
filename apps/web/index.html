@@ -24,10 +24,7 @@
   </head>
   <body>
     <div id="root"></div>
-    <script>
-      // Apply saved theme before first paint to prevent flash
-      try{var t=localStorage.getItem('prairie-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}
-    </script>
+    <script src="/theme-init.js"></script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

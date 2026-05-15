@@ -78,6 +78,14 @@ export function attachStreamJob(req: Request, res: Response, streamId: string): 
       detail_code: "stream_job_not_found",
     });
   }
+  if (!job.classroomAuth) {
+    throw new RouteError(403, {
+      error: "Streaming request is missing classroom authorization context.",
+      category: "auth",
+      retryable: false,
+      detail_code: "stream_job_auth_missing",
+    });
+  }
 
   req.body = job.body;
   Object.defineProperty(req, "query", {
@@ -87,9 +95,7 @@ export function attachStreamJob(req: Request, res: Response, streamId: string): 
     writable: true,
   });
   Object.assign(req.headers, job.headers);
-  if (job.classroomAuth) {
-    res.locals.classroomAuth = job.classroomAuth;
-  }
+  res.locals.classroomAuth = job.classroomAuth;
 
   const controller = new AbortController();
   req.on("close", () => {

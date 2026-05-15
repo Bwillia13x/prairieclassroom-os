@@ -94,6 +94,9 @@ const GEMINI_TIMEOUT_BY_PROMPT_CLASS: Partial<Record<RouteConfig["prompt_class"]
 } as const;
 
 function readEvalTimeoutOverride(req: Request): number | null {
+  if (!evalControlHeadersEnabled()) {
+    return null;
+  }
   const raw = req.headers["x-prairie-eval-timeout-ms"];
   if (typeof raw !== "string" || !raw.trim()) {
     return null;
@@ -103,6 +106,25 @@ function readEvalTimeoutOverride(req: Request): number | null {
     return null;
   }
   return parsed;
+}
+
+function evalControlHeadersEnabled(): boolean {
+  const raw = (process.env.PRAIRIE_ENABLE_EVAL_HEADERS ?? "").trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(raw)) {
+    return true;
+  }
+  if (["0", "false", "no", "off"].includes(raw)) {
+    return false;
+  }
+  return process.env.NODE_ENV === "test";
+}
+
+function readEvalBehaviorOverride(req: Request): string | null {
+  if (!evalControlHeadersEnabled()) {
+    return null;
+  }
+  const raw = req.headers["x-prairie-eval-behavior"];
+  return typeof raw === "string" && raw ? raw : null;
 }
 
 // `?fast=true` opts out of thinking mode for this request, even when the route
@@ -731,10 +753,10 @@ export async function callInference(options: InferenceOptions): Promise<Inferenc
   const thinkingEnabled = options.route.thinking_enabled && !fastMode;
   const basePrompt = `${options.prompt.system}\n\n${options.prompt.user}`;
   const safetyAnalysis = detectPromptInjectionInUnknown(options.safetyScanSource ?? options.req.body);
-  const evalBehavior = options.req.headers["x-prairie-eval-behavior"];
+  const evalBehavior = readEvalBehaviorOverride(options.req);
   const mockContext = {
     ...(options.mockContext ?? {}),
-    ...(typeof evalBehavior === "string" && evalBehavior ? { __test_behavior: evalBehavior } : {}),
+    ...(evalBehavior ? { __test_behavior: evalBehavior } : {}),
   };
   const classroomId = getRequestClassroomId(options.req);
   const classroomProfile = classroomId ? options.deps.loadClassroom(classroomId) : undefined;
@@ -860,10 +882,10 @@ export async function callInferenceStream(
   const thinkingEnabled = options.route.thinking_enabled && !fastMode;
   const basePrompt = `${options.prompt.system}\n\n${options.prompt.user}`;
   const safetyAnalysis = detectPromptInjectionInUnknown(options.safetyScanSource ?? options.req.body);
-  const evalBehavior = options.req.headers["x-prairie-eval-behavior"];
+  const evalBehavior = readEvalBehaviorOverride(options.req);
   const mockContext = {
     ...(options.mockContext ?? {}),
-    ...(typeof evalBehavior === "string" && evalBehavior ? { __test_behavior: evalBehavior } : {}),
+    ...(evalBehavior ? { __test_behavior: evalBehavior } : {}),
   };
   const classroomId = getRequestClassroomId(options.req);
   const classroomProfile = classroomId ? options.deps.loadClassroom(classroomId) : undefined;

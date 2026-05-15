@@ -148,6 +148,71 @@ describe("callInference", () => {
     expect(getRequestContext(res).timeout_ms).toBe(60_000);
   });
 
+  it("ignores eval timeout headers when eval controls are explicitly disabled", async () => {
+    vi.stubEnv("PRAIRIE_ENABLE_EVAL_HEADERS", "false");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      text: "{\"ok\":true}",
+      model_id: "mock",
+      latency_ms: 12,
+    }), { status: 200 })));
+
+    const res = mockRes();
+    await callInference({
+      deps,
+      req: mockReq({ headers: { "x-prairie-eval-timeout-ms": "999999" } }),
+      res,
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+    });
+
+    expect(getRequestContext(res).timeout_ms).toBe(30_000);
+  });
+
+  it("honors eval timeout headers only behind the eval-control gate", async () => {
+    vi.stubEnv("PRAIRIE_ENABLE_EVAL_HEADERS", "true");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      text: "{\"ok\":true}",
+      model_id: "mock",
+      latency_ms: 12,
+    }), { status: 200 })));
+
+    const res = mockRes();
+    await callInference({
+      deps,
+      req: mockReq({ headers: { "x-prairie-eval-timeout-ms": "12345" } }),
+      res,
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+    });
+
+    expect(getRequestContext(res).timeout_ms).toBe(12_345);
+  });
+
+  it("does not forward eval behavior headers when eval controls are disabled", async () => {
+    vi.stubEnv("PRAIRIE_ENABLE_EVAL_HEADERS", "false");
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      text: "{\"ok\":true}",
+      model_id: "mock",
+      latency_ms: 12,
+    }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    await callInference({
+      deps,
+      req: mockReq({ headers: { "x-prairie-eval-behavior": "http_503" } }),
+      res: mockRes(),
+      route: liveRoute,
+      prompt: { system: "sys", user: "user" },
+      maxTokens: 128,
+      mockContext: { classroom_id: "alpha-grade4" },
+    });
+
+    const sent = JSON.parse(fetchMock.mock.calls[0][1].body as string);
+    expect(sent.mock_context).toEqual({ classroom_id: "alpha-grade4" });
+  });
+
   it("sends the internal inference auth token when configured", async () => {
     vi.stubEnv("PRAIRIE_INFERENCE_AUTH_TOKEN", "internal-secret");
     const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
