@@ -32,7 +32,7 @@ interface Props {
 }
 
 export default function FamilyMessagePanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, showError, dispatch, latestTodaySnapshot } = useApp();
+  const { classrooms, activeClassroom, classroomAccessCodes, students, showSuccess, showError, dispatch, latestTodaySnapshot, profile } = useApp();
   const role = useRole();
   const { canApproveMessages } = role;
   const session = useSession();
@@ -40,7 +40,8 @@ export default function FamilyMessagePanel({ prefill }: Props) {
     onError: (msg) => showError(`Couldn't draft message — ${msg}`),
   });
   const healthAction = useAsyncAction<ClassroomHealth>();
-  const history = useHistory(fetchMessageHistory, activeClassroom, 10);
+  const hasProtectedAccess = !profile?.requires_access_code || Boolean(classroomAccessCodes[activeClassroom]);
+  const history = useHistory(fetchMessageHistory, activeClassroom, 10, hasProtectedAccess);
   const [historicalResult, setHistoricalResult] = useState<FamilyMessageResponse | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [approvalOverrides, setApprovalOverrides] = useState<Record<string, { editedText?: string }>>({});
@@ -53,9 +54,9 @@ export default function FamilyMessagePanel({ prefill }: Props) {
   }, [session]);
 
   useEffect(() => {
-    if (!activeClassroom || !canApproveMessages) return;
+    if (!activeClassroom || !canApproveMessages || !hasProtectedAccess) return;
     healthAction.execute((signal) => fetchClassroomHealth(activeClassroom, signal));
-  }, [activeClassroom, canApproveMessages, healthAction.execute]);
+  }, [activeClassroom, canApproveMessages, hasProtectedAccess, healthAction.execute]);
 
   const handleFeedbackSubmit = useCallback(
     (rating: number, comment?: string) => {

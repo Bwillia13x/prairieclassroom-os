@@ -32,12 +32,13 @@ interface Props {
  * longer presents it as a competing workflow.
  */
 export default function InterventionPanel({ prefill }: Props) {
-  const { classrooms, activeClassroom, students, showSuccess, showError, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, classroomAccessCodes, students, showSuccess, showError, setActiveTab, profile } = useApp();
   const session = useSession();
   const { loading, error, result, execute, reset } = useAsyncAction<InterventionResponse>({
     onError: (msg) => showError(`Couldn't save intervention — ${msg}`),
   });
-  const history = useHistory(fetchInterventionHistory, activeClassroom, 20);
+  const hasProtectedAccess = !profile?.requires_access_code || Boolean(classroomAccessCodes[activeClassroom]);
+  const history = useHistory(fetchInterventionHistory, activeClassroom, 20, hasProtectedAccess);
   const [historicalResult, setHistoricalResult] = useState<InterventionResponse | null>(null);
   const [drawerPrefill, setDrawerPrefill] = useState<InterventionPrefill | null>(null);
   const [selectedAlias, setSelectedAlias] = useState<string | null>(prefill?.student_ref ?? null);

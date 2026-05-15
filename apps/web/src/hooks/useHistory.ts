@@ -11,6 +11,7 @@ export function useHistory<T>(
   fetchFn: (classroomId: string, limit: number, signal: AbortSignal) => Promise<T[]>,
   classroomId: string,
   limit: number,
+  enabled = true,
 ): UseHistoryResult<T> {
   const [items, setItems] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
@@ -18,6 +19,12 @@ export function useHistory<T>(
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
+    if (!enabled) {
+      setItems([]);
+      setLoading(false);
+      setError(null);
+      return;
+    }
     if (!classroomId) return;
     const controller = new AbortController();
     setLoading(true);
@@ -32,7 +39,7 @@ export function useHistory<T>(
       });
 
     return () => controller.abort();
-  }, [classroomId, limit, fetchFn, refreshKey]);
+  }, [classroomId, limit, fetchFn, refreshKey, enabled]);
 
   const refresh = useCallback(() => setRefreshKey((k) => k + 1), []);
   return { items, loading, error, refresh };

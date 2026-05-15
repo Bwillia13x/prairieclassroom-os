@@ -38,12 +38,13 @@ interface Props {
 }
 
 export default function TomorrowPlanPanel({ onFollowupClick, onInterventionClick }: Props) {
-  const { classrooms, activeClassroom, showSuccess, showError, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
+  const { classrooms, activeClassroom, classroomAccessCodes, showSuccess, showError, streaming, latestTodaySnapshot, profile, setActiveTab } = useApp();
   const session = useSession();
   const { loading, error, result, execute, cancel, reset } = useAsyncAction<TomorrowPlanResponse>({
     onError: (msg) => showError(`Couldn't draft plan — ${msg}`),
   });
-  const history = useHistory(fetchPlanHistory, activeClassroom, 10);
+  const hasProtectedAccess = !profile?.requires_access_code || Boolean(classroomAccessCodes[activeClassroom]);
+  const history = useHistory(fetchPlanHistory, activeClassroom, 10, hasProtectedAccess);
   const [historicalResult, setHistoricalResult] = useState<TomorrowPlanResponse | null>(null);
   const [drillDown, setDrillDown] = useState<DrillDownContext | null>(null);
 

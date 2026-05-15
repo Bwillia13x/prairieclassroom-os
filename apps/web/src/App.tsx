@@ -514,6 +514,9 @@ export default function App() {
     let cancelled = false;
     const classroomId = state.activeClassroom;
     const classroomProfile = state.classrooms.find((entry) => entry.classroom_id === classroomId);
+    if (state.classrooms.length === 0) return;
+    if (!classroomProfile && classroomId !== DEMO_CLASSROOM_ID) return;
+    if (classroomProfile?.requires_access_code && !state.classroomAccessCodes[classroomId]) return;
     const isDemoClassroom = classroomProfile?.is_demo || classroomId === DEMO_CLASSROOM_ID;
     loadTodaySnapshotOnce(classroomId)
       .then((snapshot) => {
@@ -573,7 +576,7 @@ export default function App() {
     return () => {
       cancelled = true;
     };
-  }, [state.activeClassroom, state.classrooms, activeRole]);
+  }, [state.activeClassroom, state.classrooms, state.classroomAccessCodes, activeRole]);
 
   useEffect(() => {
     setClassroomMenuOpen(false);
@@ -832,12 +835,13 @@ export default function App() {
       profile &&
       !(suppressFirstRunModals && profile.is_demo) &&
       !state.classroomRoles[activeClassroom] &&
+      !state.authPrompt &&
       !state.rolePrompt &&
       !state.showOnboarding
     ) {
       dispatch({ type: "OPEN_ROLE_PROMPT", classroomId: activeClassroom });
     }
-  }, [activeClassroom, profile, state.classroomRoles, state.rolePrompt, state.showOnboarding, suppressFirstRunModals]);
+  }, [activeClassroom, profile, state.classroomRoles, state.authPrompt, state.rolePrompt, state.showOnboarding, suppressFirstRunModals]);
 
   const ctxValue = useMemo(
     () => ({

@@ -85,7 +85,7 @@ function makeDemoClassroom(overrides: Partial<ClassroomProfile> = {}): Classroom
     subject_focus: "literacy_numeracy",
     classroom_notes: [],
     students: [],
-    requires_access_code: true,
+    requires_access_code: false,
     is_demo: true,
     ...overrides,
   };
