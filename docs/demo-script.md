@@ -37,7 +37,7 @@ INFERENCE_URL=http://localhost:3200 npx tsx services/orchestrator/server.ts
 npm run dev -w apps/web
 ```
 
-The demo classroom (`demo-okafor-grade34`) bypasses classroom-code auth for judging. Protected classrooms still require `X-Classroom-Code` and role-scoped access.
+The bundled synthetic classrooms in `data/synthetic_classrooms/classroom_*.json` are public demo fixtures for judging and bypass classroom-code auth through `is_demo: true`. Future real or de-identified classroom data must stay outside that demo classification and still require `X-Classroom-Code` plus role-scoped access.
 
 ### Reset demo data
 

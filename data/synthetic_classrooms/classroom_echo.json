@@ -1,5 +1,6 @@
 {
   "classroom_id": "echo-grade3",
+  "is_demo": true,
   "grade_band": "3",
   "subject_focus": "social_studies_and_literacy",
   "classroom_notes": [

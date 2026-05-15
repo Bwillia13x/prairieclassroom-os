@@ -91,7 +91,7 @@ https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafo
 
 The production root URL now redirects to this target, so reviewers who open `https://prairieclassroom-os.vercel.app/` start in demo mode instead of hitting classroom-code restrictions.
 
-This target is a public synthetic demo. Current production preloads the bundled static demo data for the Vercel `?demo=true` route, even though `VITE_API_URL` remains configured for Render-hosted checks. Do not describe static demo responses as live hosted-Gemma generation or as a new hosted release-gate proof baseline.
+This target is a public synthetic demo. All checked-in `data/synthetic_classrooms/classroom_*.json` profiles are synthetic public demo fixtures for submission and are explicitly marked `is_demo: true`, so they bypass classroom-code auth and report `requires_access_code: false` from the hosted classroom selector. Future real or de-identified classroom profiles loaded through `PRAIRIE_DATA_DIR` must stay non-demo and protected by access codes; do not use a global unlock flag that would expose arbitrary hosted data. Current production preloads the bundled static demo data for the Vercel `?demo=true` route, even though `VITE_API_URL` remains configured for Render-hosted checks. Do not describe static demo responses as live hosted-Gemma generation or as a new hosted release-gate proof baseline.
 
 `?demo=true` now suppresses first-run onboarding and role-selection modals for the demo classroom. The Quick Help button still lets reviewers open the tour manually.
 
@@ -102,7 +102,7 @@ For public judging and demo recording, the currently deployed path is a static-f
 - Web: production Vite build.
 - API: bundled static demo API for public Vercel `?demo=true` routes.
 - Inference: deterministic static sample outputs labelled `static-demo-fallback`.
-- Data: `data/synthetic_classrooms/` only.
+- Data: `data/synthetic_classrooms/` only, with every bundled classroom profile classified as synthetic public demo data via `is_demo: true`.
 - Memory: bundled static demo snapshot only.
 
 The Render-hosted path remains available for hosted synthetic checks and future dynamic public demos:

@@ -133,6 +133,8 @@ cd services/inference && python server.py --mode api --port 3200
 
 Navigate to **http://localhost:5173/?demo=true** for the demo classroom (Mrs. Okafor's Grade 3/4 split, pre-loaded with 2 weeks of classroom memory).
 
+All checked-in `data/synthetic_classrooms/classroom_*.json` profiles are synthetic public demo fixtures for submission and must be marked with `is_demo: true`; they do not require classroom codes. Future real or de-identified classroom profiles loaded through `PRAIRIE_DATA_DIR` must remain non-demo and protected with access codes, especially when `PRAIRIE_REQUIRE_CLASSROOM_ACCESS_CODES=true` is enabled.
+
 The shell exposes seven standalone top-level pages in this fixed
 order: **today → classroom → tomorrow → week → prep → ops → review**.
 `today` is the default landing page. Prep, Tomorrow, Ops, and
@@ -157,7 +159,7 @@ http://localhost:5173/?classroom=alpha-grade4&tab=tomorrow
 http://localhost:5173/?tab=tomorrow-plan   # legacy; redirects to tab=tomorrow&tool=tomorrow-plan
 ```
 
-`GET /api/classrooms` now returns only non-secret classroom selector metadata for the shell, including `requires_access_code` and `is_demo`. Full profile data (notes, roster support tags, schedule, and upcoming events) is fetched from protected classroom-specific endpoints after code auth. It never returns the classroom access code itself.
+`GET /api/classrooms` now returns only non-secret classroom selector metadata for the shell, including `requires_access_code` and `is_demo`. Bundled synthetic demo fixtures report `requires_access_code: false` and `is_demo: true`; future real/de-identified classrooms should report protected status until the correct code is supplied. Full profile data (notes, roster support tags, schedule, and upcoming events) is fetched from classroom-specific endpoints after the fixture/demo bypass or code auth. It never returns the classroom access code itself.
 
 Protected classrooms now work in the browser UI: the shell prompts for the classroom code, stores it locally in that browser, and retries protected `today`, history, and generation requests automatically. Direct API callers still authenticate with the `X-Classroom-Code` header.
 
