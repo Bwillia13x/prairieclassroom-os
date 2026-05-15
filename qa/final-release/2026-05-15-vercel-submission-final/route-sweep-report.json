@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-15T13:11:17.655Z",
+  "generatedAt": "2026-05-15T13:27:16.527Z",
   "base": "https://prairieclassroom-os.vercel.app",
   "routeMatrix": [
     {
@@ -10,7 +10,7 @@
         "Today": true,
         "Start morning triage": true
       },
-      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep\nThis week\nLIVE SIGNALS\nLive\n96%\nAtten",
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep\nThis week\nLIVE SIGNALS\nLive\n92%\nAttendance\nRoom base",
       "metrics": {
         "innerWidth": 375,
         "innerHeight": 667,
@@ -37,7 +37,7 @@
         "CLASSROOM COMMAND": true,
         "Active student signals": true
       },
-      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n63%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nVocabulary preview and family praise\n2 OPEN\nBrody\nAfter-lunch transition support\n2 OPEN\nElena\nMath confidence wit",
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n23\nQueue items\nTHREADS\n23\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n0/7\nNo streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n72\nNeeds attention\nNeeds attention\n\n23 open · plan today: no\n\nPRESSURE INDEX\nTHREADS\n23\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n0/7\nNo streak\nQUEUE\n23\nNeed teacher action\n23 open · plans filed 0/7\nFRI 7:25 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n65%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nEAL Level 2, Needs Visual Supports\n4 WATCH\nDaniyal\nEAL Level 1, New To School ",
       "metrics": {
         "innerWidth": 375,
         "innerHeight": 667,
@@ -48,63 +48,63 @@
           {
             "tag": "DIV",
             "className": "student-coverage__filters",
-            "text": "All3Urgent3Stale0More▾",
+            "text": "All26Urgent23Stale26More▾",
             "left": 42,
-            "right": 457,
-            "width": 415
+            "right": 3397,
+            "width": 3355
           },
           {
             "tag": "DIV",
             "className": "student-coverage__more",
             "text": "More▾",
-            "left": 400,
-            "right": 457,
+            "left": 3340,
+            "right": 3397,
             "width": 57
           },
           {
             "tag": "BUTTON",
             "className": "student-coverage__more-toggle",
             "text": "More▾",
-            "left": 400,
-            "right": 457,
+            "left": 3340,
+            "right": 3397,
             "width": 57
           },
           {
             "tag": "SPAN",
             "className": "",
             "text": "More",
-            "left": 409,
-            "right": 437,
+            "left": 3349,
+            "right": 3377,
             "width": 28
           },
           {
             "tag": "SPAN",
             "className": "student-coverage__caret",
             "text": "▾",
-            "left": 443,
-            "right": 448,
+            "left": 3383,
+            "right": 3388,
             "width": 5
           },
           {
             "tag": "DIV",
             "className": "student-coverage__rail",
-            "text": "‹Brody22 threadsAmira33 threadsElena11 thread›",
+            "text": "‹Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadH",
             "left": 42,
-            "right": 457,
-            "width": 415
+            "right": 3397,
+            "width": 3355
           },
           {
             "tag": "DIV",
             "className": "student-coverage__scroll",
-            "text": "Brody22 threadsAmira33 threadsElena11 thread",
+            "text": "Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadHa",
             "left": 42,
-            "right": 457,
-            "width": 415
+            "right": 3397,
+            "width": 3355
           },
           {
             "tag": "BUTTON",
             "className": "student-coverage__chip",
-            "text": "Elena11 thread",
+            "text": "Brody11 thread",
             "left": 324,
             "right": 456,
             "width": 132
@@ -112,7 +112,7 @@
           {
             "tag": "SPAN",
             "className": "student-coverage__chip-top",
-            "text": "Elena1",
+            "text": "Brody1",
             "left": 336,
             "right": 443,
             "width": 108
@@ -437,7 +437,7 @@
         "CLASSROOM COMMAND": true,
         "Active student signals": true
       },
-      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n63%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nVocabulary preview and family praise\n2 OPEN\nBrody\nAfter-lunch transition support\n2 OPEN\nElena\nMath confidence wit",
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n23\nQueue items\nTHREADS\n23\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n0/7\nNo streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n72\nNeeds attention\nNeeds attention\n\n23 open · plan today: no\n\nPRESSURE INDEX\nTHREADS\n23\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n0/7\nNo streak\nQUEUE\n23\nNeed teacher action\n23 open · plans filed 0/7\nFRI 7:26 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n65%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nEAL Level 2, Needs Visual Supports\n4 WATCH\nDaniyal\nEAL Level 1, New To School ",
       "metrics": {
         "innerWidth": 393,
         "innerHeight": 852,
@@ -448,63 +448,63 @@
           {
             "tag": "DIV",
             "className": "student-coverage__filters",
-            "text": "All3Urgent3Stale0More▾",
+            "text": "All26Urgent23Stale26More▾",
             "left": 42,
-            "right": 457,
-            "width": 415
+            "right": 3397,
+            "width": 3355
           },
           {
             "tag": "DIV",
             "className": "student-coverage__more",
             "text": "More▾",
-            "left": 400,
-            "right": 457,
+            "left": 3340,
+            "right": 3397,
             "width": 57
           },
           {
             "tag": "BUTTON",
             "className": "student-coverage__more-toggle",
             "text": "More▾",
-            "left": 400,
-            "right": 457,
+            "left": 3340,
+            "right": 3397,
             "width": 57
           },
           {
             "tag": "SPAN",
             "className": "",
             "text": "More",
-            "left": 409,
-            "right": 437,
+            "left": 3349,
+            "right": 3377,
             "width": 28
           },
           {
             "tag": "SPAN",
             "className": "student-coverage__caret",
             "text": "▾",
-            "left": 443,
-            "right": 448,
+            "left": 3383,
+            "right": 3388,
             "width": 5
           },
           {
             "tag": "DIV",
             "className": "student-coverage__rail",
-            "text": "‹Brody22 threadsAmira33 threadsElena11 thread›",
+            "text": "‹Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadH",
             "left": 42,
-            "right": 457,
-            "width": 415
+            "right": 3397,
+            "width": 3355
           },
           {
             "tag": "DIV",
             "className": "student-coverage__scroll",
-            "text": "Brody22 threadsAmira33 threadsElena11 thread",
+            "text": "Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadHa",
             "left": 42,
-            "right": 457,
-            "width": 415
+            "right": 3397,
+            "width": 3355
           },
           {
             "tag": "BUTTON",
             "className": "student-coverage__chip",
-            "text": "Elena11 thread",
+            "text": "Brody11 thread",
             "left": 324,
             "right": 456,
             "width": 132
@@ -512,7 +512,7 @@
           {
             "tag": "SPAN",
             "className": "student-coverage__chip-top",
-            "text": "Elena1",
+            "text": "Brody1",
             "left": 336,
             "right": 443,
             "width": 108
@@ -653,7 +653,7 @@
         "WEEK COMMAND": true,
         "coverage": true
       },
-      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 6:00 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n3\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n63% · COVERAGE WATCH\nOpen items\n3\nSTAGING CUES\nPlan tomorrow\n· Plan ready\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before the week turns into a daily scramble.\n\nFIVE-DAY HORIZON\nThis week\n\nForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in view so the week reads as",
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:26 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before the week turns into a daily scramble.\n\nFIVE-DAY HORIZON\nThis week\n\nForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in view so the wee",
       "metrics": {
         "innerWidth": 393,
         "innerHeight": 852,
@@ -810,7 +810,7 @@
         "Today": true,
         "Start morning triage": true
       },
-      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep\nThis week\nLIVE SIGNALS\nLive\n92%\nAttendance",
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep\nThis week\nLIVE SIGNALS\nLive",
       "metrics": {
         "innerWidth": 768,
         "innerHeight": 1024,
@@ -854,7 +854,7 @@
         "CLASSROOM COMMAND": true,
         "Active student signals": true
       },
-      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n63%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nVocabulary preview and family praise\n2 OPEN\nBrody\nAfter-lunch transition support\n2 OPEN\nElena\nMath conf",
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n23\nQueue items\nTHREADS\n23\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n0/7\nNo streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n72\nNeeds attention\nNeeds attention\n\n23 open · plan today: no\n\nPRESSURE INDEX\nTHREADS\n23\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n0/7\nNo streak\nQUEUE\n23\nNeed teacher action\n23 open · plans filed 0/7\nFRI 7:26 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n65%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nEAL Level 2, Needs Visual Supports\n4 WATCH\nDaniyal\nEAL Level 1, New ",
       "metrics": {
         "innerWidth": 768,
         "innerHeight": 1024,
@@ -864,83 +864,83 @@
         "overflowing": [
           {
             "tag": "DIV",
-            "className": "week-heatmap__day week-heatmap__day--schedule",
-            "text": "WedMay 208:30-9:15Bell work journal + calendar math9:15-9:30Recess transition9:30-10:30Literacy block10:30-10:45Snack br",
-            "left": 627,
-            "right": 803,
-            "width": 176
-          },
-          {
-            "tag": "BUTTON",
-            "className": "week-heatmap__day-head",
-            "text": "WedMay 20",
-            "left": 627,
-            "right": 803,
-            "width": 176
-          },
-          {
-            "tag": "STRONG",
-            "className": "",
-            "text": "May 20",
-            "left": 745,
-            "right": 794,
-            "width": 49
+            "className": "student-coverage__filters",
+            "text": "All26Urgent23Stale26More▾",
+            "left": 66,
+            "right": 3901,
+            "width": 3835
           },
           {
             "tag": "DIV",
-            "className": "week-heatmap__cells",
-            "text": "8:30-9:15Bell work journal + calendar math9:15-9:30Recess transition9:30-10:30Literacy block10:30-10:45Snack break10:45-",
-            "left": 627,
-            "right": 803,
-            "width": 176
+            "className": "student-coverage__more",
+            "text": "More▾",
+            "left": 3844,
+            "right": 3901,
+            "width": 57
           },
           {
             "tag": "BUTTON",
-            "className": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
-            "text": "8:30-9:15Bell work journal + calendar math",
-            "left": 627,
-            "right": 803,
-            "width": 176
+            "className": "student-coverage__more-toggle",
+            "text": "More▾",
+            "left": 3844,
+            "right": 3901,
+            "width": 57
           },
           {
             "tag": "SPAN",
             "className": "",
-            "text": "8:30-9:15",
-            "left": 636,
-            "right": 794,
-            "width": 158
-          },
-          {
-            "tag": "STRONG",
-            "className": "",
-            "text": "Bell work journal + calendar math",
-            "left": 636,
-            "right": 794,
-            "width": 158
-          },
-          {
-            "tag": "BUTTON",
-            "className": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
-            "text": "9:15-9:30Recess transition",
-            "left": 627,
-            "right": 803,
-            "width": 176
+            "text": "More",
+            "left": 3853,
+            "right": 3881,
+            "width": 28
           },
           {
             "tag": "SPAN",
-            "className": "",
-            "text": "9:15-9:30",
-            "left": 636,
-            "right": 794,
-            "width": 158
+            "className": "student-coverage__caret",
+            "text": "▾",
+            "left": 3887,
+            "right": 3892,
+            "width": 5
           },
           {
-            "tag": "STRONG",
-            "className": "",
-            "text": "Recess transition",
-            "left": 636,
-            "right": 794,
-            "width": 158
+            "tag": "DIV",
+            "className": "student-coverage__rail",
+            "text": "‹Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadH",
+            "left": 66,
+            "right": 3901,
+            "width": 3835
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__scroll",
+            "text": "Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadHa",
+            "left": 66,
+            "right": 3901,
+            "width": 3835
+          },
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__chip",
+            "text": "Daniyal11 thread",
+            "left": 708,
+            "right": 860,
+            "width": 152
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-top",
+            "text": "Daniyal1",
+            "left": 720,
+            "right": 847,
+            "width": 128
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-badge",
+            "text": "1",
+            "left": 827,
+            "right": 847,
+            "width": 20
           }
         ],
         "demoApi": "prairie-static-demo-api"
@@ -1070,7 +1070,7 @@
         "WEEK COMMAND": true,
         "coverage": true
       },
-      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:10 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before the week turns into a daily scramble.\n\nFIVE-DAY HORIZON\nThis week\n\nForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in vi",
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:26 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before the week turns into a daily scramble.\n\nFIVE-DAY HORIZON\nThis week\n\nForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in vi",
       "metrics": {
         "innerWidth": 768,
         "innerHeight": 1024,
@@ -1246,7 +1246,7 @@
         "Today": true,
         "Start morning triage": true
       },
-      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 O",
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nIntervent",
       "metrics": {
         "innerWidth": 1440,
         "innerHeight": 900,
@@ -1273,14 +1273,95 @@
         "CLASSROOM COMMAND": true,
         "Active student signals": true
       },
-      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWAT",
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n23\nQueue items\nTHREADS\n23\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n0/7\nNo streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n72\nNeeds attention\nNeeds attention\n\n23 open · plan today: no\n\nPRESSURE INDEX\nTHREADS\n23\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n0/7\nNo streak\nQUEUE\n23\nNeed teacher action\n23 open · plans filed 0/7\nFRI 7:26 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the r",
       "metrics": {
         "innerWidth": 1440,
         "innerHeight": 900,
         "scrollWidth": 1440,
         "scrollHeight": 900,
         "horizontalOverflow": false,
-        "overflowing": [],
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "student-coverage__filters",
+            "text": "All26Urgent23Stale26More▾",
+            "left": 321,
+            "right": 4156,
+            "width": 3835
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__more",
+            "text": "More▾",
+            "left": 4099,
+            "right": 4156,
+            "width": 57
+          },
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__more-toggle",
+            "text": "More▾",
+            "left": 4099,
+            "right": 4156,
+            "width": 57
+          },
+          {
+            "tag": "SPAN",
+            "className": "",
+            "text": "More",
+            "left": 4108,
+            "right": 4136,
+            "width": 28
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__caret",
+            "text": "▾",
+            "left": 4142,
+            "right": 4147,
+            "width": 5
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__rail",
+            "text": "‹Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadH",
+            "left": 321,
+            "right": 4156,
+            "width": 3835
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__scroll",
+            "text": "Amira11 threadAnaya11 threadBrody11 threadChantal11 threadDaniyal11 threadElena11 threadFarid11 threadGabriel11 threadHa",
+            "left": 321,
+            "right": 4156,
+            "width": 3835
+          },
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__chip",
+            "text": "Gabriel11 thread",
+            "left": 1443,
+            "right": 1595,
+            "width": 152
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-top",
+            "text": "Gabriel1",
+            "left": 1455,
+            "right": 1582,
+            "width": 128
+          },
+          {
+            "tag": "STRONG",
+            "className": "student-coverage__chip-name",
+            "text": "Gabriel",
+            "left": 1455,
+            "right": 1503,
+            "width": 48
+          }
+        ],
         "demoApi": "prairie-static-demo-api"
       },
       "viewport": {
@@ -1408,7 +1489,7 @@
         "WEEK COMMAND": true,
         "coverage": true
       },
-      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:10 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before ",
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:26 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before ",
       "metrics": {
         "innerWidth": 1440,
         "innerHeight": 900,
@@ -1516,7 +1597,7 @@
         "Today": true,
         "Start morning triage": true
       },
-      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up",
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOM",
       "metrics": {
         "innerWidth": 1920,
         "innerHeight": 1080,
@@ -1678,7 +1759,7 @@
         "WEEK COMMAND": true,
         "coverage": true
       },
-      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:11 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and ",
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:27 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and ",
       "metrics": {
         "innerWidth": 1920,
         "innerHeight": 1080,
@@ -1787,7 +1868,7 @@
       "textChecks": {
         "Today": true
       },
-      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nIntervent",
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 O",
       "metrics": {
         "innerWidth": 1440,
         "innerHeight": 900,

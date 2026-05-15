@@ -15,6 +15,9 @@ Public demo smoke target: https://prairieclassroom-os.vercel.app
 Skipping protected-classroom browser smoke; set PRAIRIE_SMOKE_PROTECTED_CLASSROOM_CODE to exercise it.
 PASS browser smoke
 
+[exit 0]
+```
+
 ## smoke public demo rerun
 
 ```console
@@ -245,6 +248,51 @@ All pairs meet WCAG AA. ✓
 ```console
 $ npm audit --omit=dev
 found 0 vulnerabilities
+
+[exit 0]
+```
+
+## final clean-deployment smoke
+
+```console
+$ PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo
+
+> prairieclassroom-os@0.0.1 smoke:public-demo
+> node scripts/smoke-public-demo.mjs
+
+Public demo smoke target: https://prairieclassroom-os.vercel.app
+
+> prairieclassroom-os@0.0.1 smoke:browser
+> node scripts/smoke-browser.mjs
+
+Skipping protected-classroom browser smoke; set PRAIRIE_SMOKE_PROTECTED_CLASSROOM_CODE to exercise it.
+PASS browser smoke
+
+[exit 0]
+```
+
+## final public route sweep
+
+```console
+$ node qa/final-release/2026-05-15-vercel-submission-final/public-route-sweep.mjs
+{
+  "failures": [],
+  "routeChecks": 35
+}
+
+[exit 0]
+```
+
+## final lighthouse spot checks
+
+```console
+$ npx lighthouse <canonical demo URL> --preset=desktop --only-categories=performance,accessibility,best-practices,seo
+$ npx lighthouse <canonical demo URL> --only-categories=performance,accessibility,best-practices,seo
+$ npx lighthouse <review support patterns URL> --preset=desktop --only-categories=performance,accessibility,best-practices,seo
+
+canonical desktop: performance 99, accessibility 100, best-practices 100, seo 100
+canonical mobile: performance 84, accessibility 100, best-practices 100, seo 100
+review support desktop: performance 83, accessibility 100, best-practices 100, seo 100
 
 [exit 0]
 ```

@@ -1,0 +1,10 @@
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Fri, 15 May 2026 13:24:48 GMT
+location: /?demo=true&tab=today&classroom=demo-okafor-grade34
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-vercel-enable-rewrite-caching: 1
+x-vercel-id: pdx1::8dh59-1778851488311-4555ff50f52a
+

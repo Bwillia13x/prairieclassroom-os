@@ -11,7 +11,7 @@ Replace every bracketed placeholder before publishing the video, Kaggle project,
 - Deployed submission-readiness evidence: `qa/final-release/2026-05-15-vercel-submission-final/` passed on the public URL across the main capture views at mobile/tablet/desktop/wide sizes, including static-fallback-labelled Differentiate output and the keyboard command palette.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
-- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the latest verified pushed `main` state is `1208fd11c7b1db4c0ca9905a42f4764c9d989c6c`.
+- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; verify `HEAD`, `origin/main`, and remote `refs/heads/main` match during final closeout.
 
 Current proof anchors to keep in external copy:
 
