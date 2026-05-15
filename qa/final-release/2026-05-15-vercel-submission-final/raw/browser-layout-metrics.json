@@ -1,0 +1,17 @@
+{
+  "bodyScrollWidth": 1280,
+  "docScrollWidth": 1280,
+  "horizontalOverflow": false,
+  "innerHeight": 720,
+  "innerWidth": 1280,
+  "searchTrigger": {
+    "display": "none",
+    "left": 0,
+    "opacity": "1",
+    "right": 0,
+    "text": "Search or ask Prairie⌘K",
+    "top": 0,
+    "visibility": "visible",
+    "width": 0
+  }
+}

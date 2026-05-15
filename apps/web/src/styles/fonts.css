@@ -30,6 +30,13 @@
 @font-face {
   font-family: "Atkinson Hyperlegible";
   font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/atkinson-hyperlegible-700.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Atkinson Hyperlegible";
+  font-style: normal;
   font-weight: 700;
   font-display: swap;
   src: url("/fonts/atkinson-hyperlegible-700.ttf") format("truetype");

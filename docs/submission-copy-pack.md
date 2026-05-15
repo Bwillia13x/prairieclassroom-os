@@ -8,14 +8,14 @@ Replace every bracketed placeholder before publishing the video, Kaggle project,
 
 - Live demo URL: `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` loads from the public Vercel deployment, the root URL redirects to that demo path, and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes.
 - Live demo claim boundary: production is wired to the Render-hosted orchestrator and Gemini inference service for synthetic/demo data when those services are healthy; the public `?demo=true` path also has a deterministic static fallback for transient Render/network 429/5xx failures. Do not describe the fallback as live hosted-Gemma generation or a new hosted proof baseline.
-- Deployed submission-readiness evidence: `qa/final-release/2026-05-14-live-submission/` passed on the public URL across the main capture views at desktop/mobile sizes, including generated Support Patterns output and the keyboard command palette.
+- Deployed submission-readiness evidence: `qa/final-release/2026-05-15-vercel-submission-final/` passed on the public URL across the main capture views at mobile/tablet/desktop/wide sizes, including static-fallback-labelled Differentiate output and the keyboard command palette.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
 - Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the latest verified pushed `main` state is `1208fd11c7b1db4c0ca9905a42f4764c9d989c6c`.
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-11T22-53-32-342Z-87696`
+- Mock structural gate: `output/release-gate/2026-05-15T12-57-10-977Z-52253`
 - Current hosted Gemma 4 refresh: failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; do not claim a current clean full hosted gate.
 - Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`)
 - Last passing hosted Gemma 4 baseline: `output/release-gate/2026-05-03T17-59-42-981Z-80702`

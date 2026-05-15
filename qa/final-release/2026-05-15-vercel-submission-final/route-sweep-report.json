@@ -1,0 +1,1852 @@
+{
+  "generatedAt": "2026-05-15T13:11:17.655Z",
+  "base": "https://prairieclassroom-os.vercel.app",
+  "routeMatrix": [
+    {
+      "label": "se:today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Today": true,
+        "Start morning triage": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep\nThis week\nLIVE SIGNALS\nLive\n96%\nAtten",
+      "metrics": {
+        "innerWidth": 375,
+        "innerHeight": 667,
+        "scrollWidth": 375,
+        "scrollHeight": 667,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "se",
+        "width": 375,
+        "height": 667
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "se:classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "CLASSROOM COMMAND": true,
+        "Active student signals": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n63%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nVocabulary preview and family praise\n2 OPEN\nBrody\nAfter-lunch transition support\n2 OPEN\nElena\nMath confidence wit",
+      "metrics": {
+        "innerWidth": 375,
+        "innerHeight": 667,
+        "scrollWidth": 375,
+        "scrollHeight": 667,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "student-coverage__filters",
+            "text": "All3Urgent3Stale0More▾",
+            "left": 42,
+            "right": 457,
+            "width": 415
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__more",
+            "text": "More▾",
+            "left": 400,
+            "right": 457,
+            "width": 57
+          },
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__more-toggle",
+            "text": "More▾",
+            "left": 400,
+            "right": 457,
+            "width": 57
+          },
+          {
+            "tag": "SPAN",
+            "className": "",
+            "text": "More",
+            "left": 409,
+            "right": 437,
+            "width": 28
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__caret",
+            "text": "▾",
+            "left": 443,
+            "right": 448,
+            "width": 5
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__rail",
+            "text": "‹Brody22 threadsAmira33 threadsElena11 thread›",
+            "left": 42,
+            "right": 457,
+            "width": 415
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__scroll",
+            "text": "Brody22 threadsAmira33 threadsElena11 thread",
+            "left": 42,
+            "right": 457,
+            "width": 415
+          },
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__chip",
+            "text": "Elena11 thread",
+            "left": 324,
+            "right": 456,
+            "width": 132
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-top",
+            "text": "Elena1",
+            "left": 336,
+            "right": 443,
+            "width": 108
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-badge",
+            "text": "1",
+            "left": 423,
+            "right": 443,
+            "width": 20
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "se",
+        "width": 375,
+        "height": 667
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "se:tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "TOMORROW COMMAND": true,
+        "Tomorrow Plan": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nFORECAST\nReady\nSTATUS\n5\nBLOCKS\nCARRY-FORWARD\n0\nQUEUED\n1\nOPEN FOLLOW-UPS\nPLANNING ORDER\nWatchpoints\n3 PRIORITIES\nCarry-forward\n0 QUEUED\nOpen follow-ups\n1\nSUPPORT PRIORITIES\nBrody\n· Offer sensory break\nAmira\n· Give bilingual vocabulary\nElena\n· Start with manipulatives,\nSTAGE TOMORROW\n\nWhat to stage. What to forecast. What lands tomorrow.\n\n01 PLANNING ORDER\nTomorrow Plan\n3 PRIORITIES READY\n02 BLOCK RISK\nForecast\n5 BLOCKS FORECAST\nACTIVE WORKSPACE\nTomorrow Plan\n\nConvert today's signal into watchpoints, priorities, EA actions, prep, and family follow-ups.\n\n3 PRIORITIES READY\nPlan Tomorrow's Support\nⓘ\nCapture the signal from today and convert it into watchpoints, stu",
+      "metrics": {
+        "innerWidth": 375,
+        "innerHeight": 667,
+        "scrollWidth": 375,
+        "scrollHeight": 667,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "9:15-9:30Recess transitionForecast mediumEA in block",
+            "left": 267,
+            "right": 467,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "9:15-9:30Recess transitionForecast mediumEA in block",
+            "left": 267,
+            "right": 467,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "9:15-9:30",
+            "left": 284,
+            "right": 450,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Recess transition",
+            "left": 284,
+            "right": 450,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "Forecast mediumEA in block",
+            "left": 284,
+            "right": 450,
+            "width": 166
+          },
+          {
+            "tag": "SPAN",
+            "className": "coverage-timeline__signal coverage-timeline__signal--forecast coverage-timeline__signal--medium",
+            "text": "Forecast medium",
+            "left": 284,
+            "right": 382,
+            "width": 98
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "9:30-10:30Literacy blockForecast highEA in block",
+            "left": 475,
+            "right": 675,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "9:30-10:30Literacy blockForecast highEA in block",
+            "left": 475,
+            "right": 675,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "9:30-10:30",
+            "left": 492,
+            "right": 658,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Literacy block",
+            "left": 492,
+            "right": 658,
+            "width": 166
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "se",
+        "width": 375,
+        "height": 667
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "se:week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "WEEK COMMAND": true,
+        "coverage": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 6:00 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n3\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n63% · COVERAGE WATCH\nOpen items\n3\nSTAGING CUES\nPlan tomorrow\n· Plan ready\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before the week turns into a daily scramble.\n\nFIVE-DAY HORIZON\nThis week\n\nForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in view so the week reads as",
+      "metrics": {
+        "innerWidth": 375,
+        "innerHeight": 667,
+        "scrollWidth": 375,
+        "scrollHeight": 667,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "se",
+        "width": 375,
+        "height": 667
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "se:prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Prep": true,
+        "Differentiate": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\nEAL\nLANGUAGE\n7\nLANGUAGES\nVariants\nMODE\nARTIFACT READINESS\nInput lane\nUPLOAD · PASTE · WEB\nCurriculum\nALBERTA PROGRAM\nOutput\nVARIANTS\nLANGUAGE LOAD\nTagalog\nUrdu\nArabic\nSomali\nPunjabi\nSpanish\nEAL students\n8\nFamily languages\n7\nTEACHER PASS\nSame outcome\n· no lowered bar\nEditable copy\n· teacher owned\nMaterials list\n· ready to stage\nPREP LANE\n\nChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.\n\n01 ARTIFACT\nDifferentiate\nAdapt one lesson, worksheet, or passage across readiness levels.\n02 LANGUAGE\nLanguage Tools\nSimplify text and prepare bilingual vocabulary supports.\nACTIVE WORKSPACE\nBuild lesson variants\nBuild Less",
+      "metrics": {
+        "innerWidth": 375,
+        "innerHeight": 667,
+        "scrollWidth": 375,
+        "scrollHeight": 667,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "se",
+        "width": 375,
+        "height": 667
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "se:ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "OPS COMMAND": true,
+        "Log Intervention": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.\n\nCoordination queued\n1 FOLLOW-UP · 3 THREADS\nACTIVE WORKFLOW\nLog Intervention\nHANDOFF\nSub packet ready\nCAPTURE\n3\nTHREADS\n1\nFOLLOW-UPS\nCOVERAGE\n2\nEA MOVES\n5\nBLOCKS\nCAPTURE QUEUE\nOpen threads\n3\nFollow-ups\n1\nCurrent lane\n1 FOLLOW-UPS\nCOVERAGE CUES\nAmira, Daniyal\n· 8:30-10:30\nBrody, Jasper\n· 10:45-11:45\nHANDOFF PATH\nLog note\nBrief EAs\nBalance load\nSub packet\nOPS WORKFLOW\n\nCapture the evidence, then move it through briefing, load balance, and substitute handoff.\n\n1\nLog Intervention\nWAITING\n2\nEA Briefing\nWAITING\n3\nEA Load\nWAITING\n4\nSub Packet\nWAITING\nACTIVE WORKFLOW\nCapture intervention notes\n\n3 threads · 2 EA moves · 5 blocks · 1 follow-ups\n\nACTIVE STATE\nLog Intervention Notes\n\nCapture the evidence, follow-up",
+      "metrics": {
+        "innerWidth": 375,
+        "innerHeight": 667,
+        "scrollWidth": 375,
+        "scrollHeight": 667,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "se",
+        "width": 375,
+        "height": 667
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "se:review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Review": true,
+        "Family Message": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.\n\nReview pending\n1 APPROVAL · 1 SIGNALS\nACTIVE TOOL\nFamily Message\nAPPROVALS\n1\nAWAITING\nSIGNALS\n1\nPATTERNS\n3\nTHREADS\nCADENCE\n0\nREVIEWS DUE\nAPPROVAL QUEUE\nAwaiting approval\n1\nActive threads\n3\nHUMAN-IN-THE-LOOP\nAlways editable\n· teacher edits persist\nNo autonomous send\n· approval required\nREVIEW LANE\n\nWhat to approve, what to read, what to learn.\n\n01 FAMILY\nFamily Message\n1 APPROVALS\n02 PATTERNS\nSupport Patterns\n1 SIGNALS\n03 USAGE\nUsage Insights\nSESSION SIGNAL\nACTIVE WORKSPACE\nDraft family messages\nREVIEW WORKSPACE\nDraft Family Messages\nBuild a plain-language family update, inspect the draft in the result canvas, and explicitly approve before copying it into your communication channel.\nROSTE",
+      "metrics": {
+        "innerWidth": 375,
+        "innerHeight": 667,
+        "scrollWidth": 375,
+        "scrollHeight": 667,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__chip",
+            "text": "Elena11 thread",
+            "left": 348,
+            "right": 492,
+            "width": 144
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-top",
+            "text": "Elena1",
+            "left": 360,
+            "right": 479,
+            "width": 120
+          },
+          {
+            "tag": "STRONG",
+            "className": "student-coverage__chip-name",
+            "text": "Elena",
+            "left": 360,
+            "right": 396,
+            "width": 36
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-badge",
+            "text": "1",
+            "left": 459,
+            "right": 479,
+            "width": 20
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-meta",
+            "text": "1 thread",
+            "left": 360,
+            "right": 479,
+            "width": 120
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-meta-text",
+            "text": "1 thread",
+            "left": 372,
+            "right": 414,
+            "width": 42
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "se",
+        "width": 375,
+        "height": 667
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "mobile:today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Today": true,
+        "Start morning triage": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep\nThis week\nLIVE SIGNALS\nLive\n96%\nAtten",
+      "metrics": {
+        "innerWidth": 393,
+        "innerHeight": 852,
+        "scrollWidth": 393,
+        "scrollHeight": 852,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 393,
+        "height": 852
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "mobile:classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "CLASSROOM COMMAND": true,
+        "Active student signals": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n63%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nVocabulary preview and family praise\n2 OPEN\nBrody\nAfter-lunch transition support\n2 OPEN\nElena\nMath confidence wit",
+      "metrics": {
+        "innerWidth": 393,
+        "innerHeight": 852,
+        "scrollWidth": 393,
+        "scrollHeight": 852,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "student-coverage__filters",
+            "text": "All3Urgent3Stale0More▾",
+            "left": 42,
+            "right": 457,
+            "width": 415
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__more",
+            "text": "More▾",
+            "left": 400,
+            "right": 457,
+            "width": 57
+          },
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__more-toggle",
+            "text": "More▾",
+            "left": 400,
+            "right": 457,
+            "width": 57
+          },
+          {
+            "tag": "SPAN",
+            "className": "",
+            "text": "More",
+            "left": 409,
+            "right": 437,
+            "width": 28
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__caret",
+            "text": "▾",
+            "left": 443,
+            "right": 448,
+            "width": 5
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__rail",
+            "text": "‹Brody22 threadsAmira33 threadsElena11 thread›",
+            "left": 42,
+            "right": 457,
+            "width": 415
+          },
+          {
+            "tag": "DIV",
+            "className": "student-coverage__scroll",
+            "text": "Brody22 threadsAmira33 threadsElena11 thread",
+            "left": 42,
+            "right": 457,
+            "width": 415
+          },
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__chip",
+            "text": "Elena11 thread",
+            "left": 324,
+            "right": 456,
+            "width": 132
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-top",
+            "text": "Elena1",
+            "left": 336,
+            "right": 443,
+            "width": 108
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-badge",
+            "text": "1",
+            "left": 423,
+            "right": 443,
+            "width": 20
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 393,
+        "height": 852
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "mobile:tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "TOMORROW COMMAND": true,
+        "Tomorrow Plan": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nFORECAST\nReady\nSTATUS\n5\nBLOCKS\nCARRY-FORWARD\n0\nQUEUED\n1\nOPEN FOLLOW-UPS\nPLANNING ORDER\nWatchpoints\n3 PRIORITIES\nCarry-forward\n0 QUEUED\nOpen follow-ups\n1\nSUPPORT PRIORITIES\nBrody\n· Offer sensory break\nAmira\n· Give bilingual vocabulary\nElena\n· Start with manipulatives,\nSTAGE TOMORROW\n\nWhat to stage. What to forecast. What lands tomorrow.\n\n01 PLANNING ORDER\nTomorrow Plan\n3 PRIORITIES READY\n02 BLOCK RISK\nForecast\n5 BLOCKS FORECAST\nACTIVE WORKSPACE\nTomorrow Plan\n\nConvert today's signal into watchpoints, priorities, EA actions, prep, and family follow-ups.\n\n3 PRIORITIES READY\nPlan Tomorrow's Support\nⓘ\nCapture the signal from today and convert it into watchpoints, stu",
+      "metrics": {
+        "innerWidth": 393,
+        "innerHeight": 852,
+        "scrollWidth": 393,
+        "scrollHeight": 852,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "9:15-9:30Recess transitionForecast mediumEA in block",
+            "left": 267,
+            "right": 467,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "9:15-9:30Recess transitionForecast mediumEA in block",
+            "left": 267,
+            "right": 467,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "9:15-9:30",
+            "left": 284,
+            "right": 450,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Recess transition",
+            "left": 284,
+            "right": 450,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "Forecast mediumEA in block",
+            "left": 284,
+            "right": 450,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "9:30-10:30Literacy blockForecast highEA in block",
+            "left": 475,
+            "right": 675,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "9:30-10:30Literacy blockForecast highEA in block",
+            "left": 475,
+            "right": 675,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "9:30-10:30",
+            "left": 492,
+            "right": 658,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Literacy block",
+            "left": 492,
+            "right": 658,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "Forecast highEA in block",
+            "left": 492,
+            "right": 658,
+            "width": 166
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 393,
+        "height": 852
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "mobile:week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "WEEK COMMAND": true,
+        "coverage": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 6:00 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n3\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n63% · COVERAGE WATCH\nOpen items\n3\nSTAGING CUES\nPlan tomorrow\n· Plan ready\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before the week turns into a daily scramble.\n\nFIVE-DAY HORIZON\nThis week\n\nForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in view so the week reads as",
+      "metrics": {
+        "innerWidth": 393,
+        "innerHeight": 852,
+        "scrollWidth": 393,
+        "scrollHeight": 852,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 393,
+        "height": 852
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "mobile:prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Prep": true,
+        "Differentiate": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\nEAL\nLANGUAGE\n7\nLANGUAGES\nVariants\nMODE\nARTIFACT READINESS\nInput lane\nUPLOAD · PASTE · WEB\nCurriculum\nALBERTA PROGRAM\nOutput\nVARIANTS\nLANGUAGE LOAD\nTagalog\nUrdu\nArabic\nSomali\nPunjabi\nSpanish\nEAL students\n8\nFamily languages\n7\nTEACHER PASS\nSame outcome\n· no lowered bar\nEditable copy\n· teacher owned\nMaterials list\n· ready to stage\nPREP LANE\n\nChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.\n\n01 ARTIFACT\nDifferentiate\nAdapt one lesson, worksheet, or passage across readiness levels.\n02 LANGUAGE\nLanguage Tools\nSimplify text and prepare bilingual vocabulary supports.\nACTIVE WORKSPACE\nBuild lesson variants\nBuild Less",
+      "metrics": {
+        "innerWidth": 393,
+        "innerHeight": 852,
+        "scrollWidth": 393,
+        "scrollHeight": 852,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 393,
+        "height": 852
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "mobile:ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "OPS COMMAND": true,
+        "Log Intervention": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.\n\nCoordination queued\n1 FOLLOW-UP · 3 THREADS\nACTIVE WORKFLOW\nLog Intervention\nHANDOFF\nSub packet ready\nCAPTURE\n3\nTHREADS\n1\nFOLLOW-UPS\nCOVERAGE\n2\nEA MOVES\n5\nBLOCKS\nCAPTURE QUEUE\nOpen threads\n3\nFollow-ups\n1\nCurrent lane\n1 FOLLOW-UPS\nCOVERAGE CUES\nAmira, Daniyal\n· 8:30-10:30\nBrody, Jasper\n· 10:45-11:45\nHANDOFF PATH\nLog note\nBrief EAs\nBalance load\nSub packet\nOPS WORKFLOW\n\nCapture the evidence, then move it through briefing, load balance, and substitute handoff.\n\n1\nLog Intervention\nWAITING\n2\nEA Briefing\nWAITING\n3\nEA Load\nWAITING\n4\nSub Packet\nWAITING\nACTIVE WORKFLOW\nCapture intervention notes\n\n3 threads · 2 EA moves · 5 blocks · 1 follow-ups\n\nACTIVE STATE\nLog Intervention Notes\n\nCapture the evidence, follow-up",
+      "metrics": {
+        "innerWidth": 393,
+        "innerHeight": 852,
+        "scrollWidth": 393,
+        "scrollHeight": 852,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 393,
+        "height": 852
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "mobile:review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Review": true,
+        "Family Message": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nSEARCH OR ASK PRAIRIE\nDARK\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.\n\nReview pending\n1 APPROVAL · 1 SIGNALS\nACTIVE TOOL\nFamily Message\nAPPROVALS\n1\nAWAITING\nSIGNALS\n1\nPATTERNS\n3\nTHREADS\nCADENCE\n0\nREVIEWS DUE\nAPPROVAL QUEUE\nAwaiting approval\n1\nActive threads\n3\nHUMAN-IN-THE-LOOP\nAlways editable\n· teacher edits persist\nNo autonomous send\n· approval required\nREVIEW LANE\n\nWhat to approve, what to read, what to learn.\n\n01 FAMILY\nFamily Message\n1 APPROVALS\n02 PATTERNS\nSupport Patterns\n1 SIGNALS\n03 USAGE\nUsage Insights\nSESSION SIGNAL\nACTIVE WORKSPACE\nDraft family messages\nREVIEW WORKSPACE\nDraft Family Messages\nBuild a plain-language family update, inspect the draft in the result canvas, and explicitly approve before copying it into your communication channel.\nROSTE",
+      "metrics": {
+        "innerWidth": 393,
+        "innerHeight": 852,
+        "scrollWidth": 393,
+        "scrollHeight": 852,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "BUTTON",
+            "className": "student-coverage__chip",
+            "text": "Elena11 thread",
+            "left": 348,
+            "right": 492,
+            "width": 144
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-top",
+            "text": "Elena1",
+            "left": 360,
+            "right": 479,
+            "width": 120
+          },
+          {
+            "tag": "STRONG",
+            "className": "student-coverage__chip-name",
+            "text": "Elena",
+            "left": 360,
+            "right": 396,
+            "width": 36
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-badge",
+            "text": "1",
+            "left": 459,
+            "right": 479,
+            "width": 20
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-meta",
+            "text": "1 thread",
+            "left": 360,
+            "right": 479,
+            "width": 120
+          },
+          {
+            "tag": "SPAN",
+            "className": "student-coverage__chip-meta-text",
+            "text": "1 thread",
+            "left": 372,
+            "right": 414,
+            "width": 42
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "mobile",
+        "width": 393,
+        "height": 852
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "tablet:today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Today": true,
+        "Start morning triage": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nInterventions\nOn track\n0\nAssessments\nNone due today\n1\nCommunications\n1 urgent\n1\nPlan adjustments\nThis week\n3\nMaterials prep\nThis week\nLIVE SIGNALS\nLive\n92%\nAttendance",
+      "metrics": {
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "scrollWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "FOOTER",
+            "className": "app-footer",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          },
+          {
+            "tag": "DIV",
+            "className": "app-footer__body",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "tablet:classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "CLASSROOM COMMAND": true,
+        "Active student signals": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWATCH\n3\nCOVERAGE\n63%\nQUEUE\n3\n01\nWatchlist\nView all\nAmira\nVocabulary preview and family praise\n2 OPEN\nBrody\nAfter-lunch transition support\n2 OPEN\nElena\nMath conf",
+      "metrics": {
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "scrollWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "week-heatmap__day week-heatmap__day--schedule",
+            "text": "WedMay 208:30-9:15Bell work journal + calendar math9:15-9:30Recess transition9:30-10:30Literacy block10:30-10:45Snack br",
+            "left": 627,
+            "right": 803,
+            "width": 176
+          },
+          {
+            "tag": "BUTTON",
+            "className": "week-heatmap__day-head",
+            "text": "WedMay 20",
+            "left": 627,
+            "right": 803,
+            "width": 176
+          },
+          {
+            "tag": "STRONG",
+            "className": "",
+            "text": "May 20",
+            "left": 745,
+            "right": 794,
+            "width": 49
+          },
+          {
+            "tag": "DIV",
+            "className": "week-heatmap__cells",
+            "text": "8:30-9:15Bell work journal + calendar math9:15-9:30Recess transition9:30-10:30Literacy block10:30-10:45Snack break10:45-",
+            "left": 627,
+            "right": 803,
+            "width": 176
+          },
+          {
+            "tag": "BUTTON",
+            "className": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+            "text": "8:30-9:15Bell work journal + calendar math",
+            "left": 627,
+            "right": 803,
+            "width": 176
+          },
+          {
+            "tag": "SPAN",
+            "className": "",
+            "text": "8:30-9:15",
+            "left": 636,
+            "right": 794,
+            "width": 158
+          },
+          {
+            "tag": "STRONG",
+            "className": "",
+            "text": "Bell work journal + calendar math",
+            "left": 636,
+            "right": 794,
+            "width": 158
+          },
+          {
+            "tag": "BUTTON",
+            "className": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+            "text": "9:15-9:30Recess transition",
+            "left": 627,
+            "right": 803,
+            "width": 176
+          },
+          {
+            "tag": "SPAN",
+            "className": "",
+            "text": "9:15-9:30",
+            "left": 636,
+            "right": 794,
+            "width": 158
+          },
+          {
+            "tag": "STRONG",
+            "className": "",
+            "text": "Recess transition",
+            "left": 636,
+            "right": 794,
+            "width": 158
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "tablet:tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "TOMORROW COMMAND": true,
+        "Tomorrow Plan": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nFORECAST\nReady\nSTATUS\n5\nBLOCKS\nCARRY-FORWARD\n0\nQUEUED\n1\nOPEN FOLLOW-UPS\nPLANNING ORDER\nWatchpoints\n3 PRIORITIES\nCarry-forward\n0 QUEUED\nOpen follow-ups\n1\nSUPPORT PRIORITIES\nBrody\n· Offer sensory break\nAmira\n· Give bilingual vocabulary\nElena\n· Start with manipulatives,\n02\nSTAGE TOMORROW\n\nWhat to stage. What to forecast. What lands tomorrow.\n\n01 PLANNING ORDER\nTomorrow Plan\nWatchpoints, priorities, EA moves, prep, and family follow-ups.\n3 PRIORITIES READY\n02 BLOCK RISK\nForecast\nBlock-by-block risk before coverage and transition decisions.\n5 BLOCKS FORECAST\nACTIVE WORKSPACE\nTomorrow Plan\n\nConvert today's signal into watchpoints, priorities, EA actions, pr",
+      "metrics": {
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "scrollWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "10:30-10:45Snack breakForecast highEA in block",
+            "left": 707,
+            "right": 907,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "10:30-10:45Snack breakForecast highEA in block",
+            "left": 707,
+            "right": 907,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "10:30-10:45",
+            "left": 724,
+            "right": 890,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Snack break",
+            "left": 724,
+            "right": 890,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "Forecast highEA in block",
+            "left": 724,
+            "right": 890,
+            "width": 166
+          },
+          {
+            "tag": "SPAN",
+            "className": "coverage-timeline__signal coverage-timeline__signal--forecast coverage-timeline__signal--high",
+            "text": "Forecast high",
+            "left": 724,
+            "right": 804,
+            "width": 80
+          },
+          {
+            "tag": "SPAN",
+            "className": "coverage-timeline__signal coverage-timeline__signal--ea",
+            "text": "EA in block",
+            "left": 810,
+            "right": 878,
+            "width": 68
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "10:45-11:45Science / Social StudiesForecast mediumEA in block",
+            "left": 915,
+            "right": 1115,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "10:45-11:45Science / Social StudiesForecast mediumEA in block",
+            "left": 915,
+            "right": 1115,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "10:45-11:45",
+            "left": 932,
+            "right": 1098,
+            "width": 166
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "tablet:week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "WEEK COMMAND": true,
+        "coverage": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:10 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before the week turns into a daily scramble.\n\nFIVE-DAY HORIZON\nThis week\n\nForecasted blocks keep their risk levels. Schedule-only and event-seeded blocks stay in vi",
+      "metrics": {
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "scrollWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "FOOTER",
+            "className": "app-footer",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          },
+          {
+            "tag": "DIV",
+            "className": "app-footer__body",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "tablet:prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Prep": true,
+        "Differentiate": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\nEAL\nLANGUAGE\n7\nLANGUAGES\nVariants\nMODE\nARTIFACT READINESS\nInput lane\nUPLOAD · PASTE · WEB\nCurriculum\nALBERTA PROGRAM\nOutput\nVARIANTS\nLANGUAGE LOAD\nTagalog\nUrdu\nArabic\nSomali\nPunjabi\nSpanish\nEAL students\n8\nFamily languages\n7\nTEACHER PASS\nSame outcome\n· no lowered bar\nEditable copy\n· teacher owned\nMaterials list\n· ready to stage\n02\nPREP LANE\n\nChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.\n\n01 ARTIFACT\nDifferentiate\nLESSON VARIANTS\nAdapt one lesson, worksheet, or passage across readiness levels.\n02 LANGUAGE\nLanguage Tools\nEAL SUPPORT\nSimplify text and prepare bilingual vocabulary supports.\nACTIVE W",
+      "metrics": {
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "scrollWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "FOOTER",
+            "className": "app-footer",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          },
+          {
+            "tag": "DIV",
+            "className": "app-footer__body",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "tablet:ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "OPS COMMAND": true,
+        "Log Intervention": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.\n\nCoordination queued\n1 FOLLOW-UP · 3 THREADS\nACTIVE WORKFLOW\nLog Intervention\nHANDOFF\nSub packet ready\nCAPTURE\n3\nTHREADS\n1\nFOLLOW-UPS\nCOVERAGE\n2\nEA MOVES\n5\nBLOCKS\nCAPTURE QUEUE\nOpen threads\n3\nFollow-ups\n1\nCurrent lane\n1 FOLLOW-UPS\nCOVERAGE CUES\nAmira, Daniyal\n· 8:30-10:30\nBrody, Jasper\n· 10:45-11:45\nHANDOFF PATH\nLog note\nBrief EAs\nBalance load\nSub packet\n02\nOPS WORKFLOW\n\nCapture the evidence, then move it through briefing, load balance, and substitute handoff.\n\n1\nLog Intervention\nWAITING\n2\nEA Briefing\nWAITING\n3\nEA Load\nWAITING\n4\nSub Packet\nWAITING\nACTIVE WORKFLOW\nCapture intervention notes\n\n3 threads · 2 EA moves · 5 blocks · 1 follow-ups\n\nACTIVE STATE\nLog Intervention Notes\n\nCapture the eviden",
+      "metrics": {
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "scrollWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "FOOTER",
+            "className": "app-footer",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          },
+          {
+            "tag": "DIV",
+            "className": "app-footer__body",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "tablet:review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Review": true,
+        "Family Message": true
+      },
+      "textSample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.\n\nReview pending\n1 APPROVAL · 1 SIGNALS\nACTIVE TOOL\nFamily Message\nAPPROVALS\n1\nAWAITING\nSIGNALS\n1\nPATTERNS\n3\nTHREADS\nCADENCE\n0\nREVIEWS DUE\nAPPROVAL QUEUE\nAwaiting approval\n1\nActive threads\n3\nHUMAN-IN-THE-LOOP\nAlways editable\n· teacher edits persist\nNo autonomous send\n· approval required\n02\nREVIEW LANE\n\nWhat to approve, what to read, what to learn.\n\n01 FAMILY\nFamily Message\nDraft family updates and keep human approval explicit.\n1 APPROVALS\n02 PATTERNS\nSupport Patterns\nInspect recurring classroom signals before next actions.\n1 SIGNALS\n03 USAGE\nUsage Insights\nReview feedback and workflow patterns from recent sessions.\nSESSION SIGNAL\nACTIVE WORKSPACE\nDraft family messages\nREVIEW WORK",
+      "metrics": {
+        "innerWidth": 768,
+        "innerHeight": 1024,
+        "scrollWidth": 768,
+        "scrollHeight": 1024,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "FOOTER",
+            "className": "app-footer",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          },
+          {
+            "tag": "DIV",
+            "className": "app-footer__body",
+            "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envgeminiv0.1.0",
+            "left": -7,
+            "right": 775,
+            "width": 782
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "tablet",
+        "width": 768,
+        "height": 1024
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "desktop:today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Today": true,
+        "Start morning triage": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 O",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "desktop:classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "CLASSROOM COMMAND": true,
+        "Active student signals": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or pivot into action.\n\nWAT",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "desktop:tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "TOMORROW COMMAND": true,
+        "Tomorrow Plan": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nFORECAST\nReady\nSTATUS\n5\nBLOCKS\nCARRY-FORWARD\n0\nQUEUED\n1\nOPEN FOLLOW-UPS\nPLANNING ORDER\nWatchpoints\n3 PRIORITIES\nCarry-forward\n0 QUEUED\nOpen follow-ups\n1\nSUPPORT PRIORITIES\nBrody\n· Offer sensory break\nAmira\n· Give bilingual vocabulary\nElena\n· Start with manipulatives,\n02\nSTAGE TOMORROW\n\nWhat to stage. What to forecast. What lands tomorrow.\n\n01 PLANNING ORDER\nTomorrow Plan\nWatchpoints, priorities, EA moves, prep, and family follow-ups.\n3 PRIORITIES READY\n02 BLOCK RISK\nForecast\nBlock-by-block risk be",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "11:45-12:30Lunch",
+            "left": 1378,
+            "right": 1578,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "11:45-12:30Lunch",
+            "left": 1378,
+            "right": 1578,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "11:45-12:30",
+            "left": 1395,
+            "right": 1561,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Lunch",
+            "left": 1395,
+            "right": 1561,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "",
+            "left": 1395,
+            "right": 1561,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "12:30-12:45Body break + transition to math1 watch",
+            "left": 1586,
+            "right": 1786,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "12:30-12:45Body break + transition to math1 watch",
+            "left": 1586,
+            "right": 1786,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "12:30-12:45",
+            "left": 1603,
+            "right": 1769,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Body break + transition to math",
+            "left": 1603,
+            "right": 1769,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "1 watch",
+            "left": 1603,
+            "right": 1769,
+            "width": 166
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "desktop:week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "WEEK COMMAND": true,
+        "coverage": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:10 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and coverage signals before ",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "desktop:prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Prep": true,
+        "Differentiate": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\nEAL\nLANGUAGE\n7\nLANGUAGES\nVariants\nMODE\nARTIFACT READINESS\nInput lane\nUPLOAD · PASTE · WEB\nCurriculum\nALBERTA PROGRAM\nOutput\nVARIANTS\nLANGUAGE LOAD\nTagalog\nUrdu\nArabic\nSomali\nPunjabi\nSpanish\nEAL students\n8\nFamily languages\n7\nTEACHER PASS\nSame outcome\n· no lowered bar\nEditable copy\n· teacher owned\nMaterials list\n· ready to stage\n02\nPREP LANE\n\nChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.\n\n01 ARTIFACT\nDifferentiate\nLESSON VARIANTS\nAdapt one le",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "desktop:ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "OPS COMMAND": true,
+        "Log Intervention": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.\n\nCoordination queued\n1 FOLLOW-UP · 3 THREADS\nACTIVE WORKFLOW\nLog Intervention\nHANDOFF\nSub packet ready\nCAPTURE\n3\nTHREADS\n1\nFOLLOW-UPS\nCOVERAGE\n2\nEA MOVES\n5\nBLOCKS\nCAPTURE QUEUE\nOpen threads\n3\nFollow-ups\n1\nCurrent lane\n1 FOLLOW-UPS\nCOVERAGE CUES\nAmira, Daniyal\n· 8:30-10:30\nBrody, Jasper\n· 10:45-11:45\nHANDOFF PATH\nLog note\nBrief EAs\nBalance load\nSub packet\n02\nOPS WORKFLOW\n\nCapture the evidence, then move it through briefing, load balance, and substitute handoff.\n\n1\nLog Intervention\nWAITING\n2\nEA Briefing\nWAITING\n3\nEA Load\nWAITING\n4\nSub Packet\n",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "desktop:review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Review": true,
+        "Family Message": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.\n\nReview pending\n1 APPROVAL · 1 SIGNALS\nACTIVE TOOL\nFamily Message\nAPPROVALS\n1\nAWAITING\nSIGNALS\n1\nPATTERNS\n3\nTHREADS\nCADENCE\n0\nREVIEWS DUE\nAPPROVAL QUEUE\nAwaiting approval\n1\nActive threads\n3\nHUMAN-IN-THE-LOOP\nAlways editable\n· teacher edits persist\nNo autonomous send\n· approval required\n02\nREVIEW LANE\n\nWhat to approve, what to read, what to learn.\n\n01 FAMILY\nFamily Message\nDraft family updates and keep human approval explicit.\n1 APPROVALS\n02 PATTERNS\nSupport Patterns\nInspect recurring classroom signals before next actions.\n1 ",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "desktop",
+        "width": 1440,
+        "height": 900
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "wide:today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Today": true,
+        "Start morning triage": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up",
+      "metrics": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1080,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "wide",
+        "width": 1920,
+        "height": 1080
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "wide:classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "CLASSROOM COMMAND": true,
+        "Active student signals": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nActive student signals\nROSTER\n26\n8 EAL supports\nPLAN COVERAGE\n4/7\n4d streak\nLIVE\nToday triage\nSTAGE\nTomorrow plan\nFORECAST\nWeek map\nROOM HEALTH\nLive\n21\nSteady\nSteady\n\n3 open · 4-day streak\n\nPRESSURE INDEX\nTHREADS\n3\nActive conversations\nROSTER\n26\n8 EAL supports\nPLANS\n4/7\n4d streak\nQUEUE\n3\nNeed teacher action\n3 open · plans filed 4/7\nTUE 6:00 AM\nView signals\nCLASSROOM OPERATING BANDS\nWatch, cover, clear.\n\nThree signals that decide whether to stay in the room view or",
+      "metrics": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1080,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "wide",
+        "width": 1920,
+        "height": 1080
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "wide:tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "TOMORROW COMMAND": true,
+        "Tomorrow Plan": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nFORECAST\nReady\nSTATUS\n5\nBLOCKS\nCARRY-FORWARD\n0\nQUEUED\n1\nOPEN FOLLOW-UPS\nPLANNING ORDER\nWatchpoints\n3 PRIORITIES\nCarry-forward\n0 QUEUED\nOpen follow-ups\n1\nSUPPORT PRIORITIES\nBrody\n· Offer sensory break\nAmira\n· Give bilingual vocabulary\nElena\n· Start with manipulatives,\n02\nSTAGE TOMORROW\n\nWhat to stage. What to forecast. What lands tomorrow.\n\n01 PLANNING ORDER\nTomorrow Plan\nWatchpoints, priorities, EA moves, prep, and family follow-ups.\n3 PRIORITIES READY\n02 BLOCK RISK\nForecas",
+      "metrics": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1080,
+        "horizontalOverflow": false,
+        "overflowing": [
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "12:45-1:45Math block",
+            "left": 1830,
+            "right": 2030,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "12:45-1:45Math block",
+            "left": 1830,
+            "right": 2030,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "12:45-1:45",
+            "left": 1847,
+            "right": 2013,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Math block",
+            "left": 1847,
+            "right": 2013,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "",
+            "left": 1847,
+            "right": 2013,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__item",
+            "text": "1:45-2:00Afternoon recess transition",
+            "left": 2038,
+            "right": 2238,
+            "width": 200
+          },
+          {
+            "tag": "BUTTON",
+            "className": "coverage-timeline__card",
+            "text": "1:45-2:00Afternoon recess transition",
+            "left": 2038,
+            "right": 2238,
+            "width": 200
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__time",
+            "text": "1:45-2:00",
+            "left": 2055,
+            "right": 2221,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__activity",
+            "text": "Afternoon recess transition",
+            "left": 2055,
+            "right": 2221,
+            "width": 166
+          },
+          {
+            "tag": "DIV",
+            "className": "coverage-timeline__signals",
+            "text": "",
+            "left": 2055,
+            "right": 2221,
+            "width": 166
+          }
+        ],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "wide",
+        "width": 1920,
+        "height": 1080
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "wide:week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "WEEK COMMAND": true,
+        "coverage": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\nUPDATED 7:11 AM\n5\nDAYS MAPPED\n0\nFORECAST DAYS\n0\nHIGH-RISK BLOCKS\n0\nUNMAPPED DAYS\n23\nOPEN ITEMS\nNEXT DECISION\nPriority\nNO HIGH-RISK DAY\nCoverage\n65% · COVERAGE WATCH\nOpen items\n23\nSTAGING CUES\nPlan tomorrow\n· Needs teacher pass\nRead forecast day\n· No forecasted day\nStage high-risk support\n· No high-risk blocks\nDAY SIGNALS\nFri\n· Schedule only\nMon\n· Schedule only\nTue\n· Schedule only\nWed\n· Schedule only\nThu\n· Schedule only\n02\nFIVE-DAY HORIZON\n\nRead risk, events, and ",
+      "metrics": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1080,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "wide",
+        "width": 1920,
+        "height": 1080
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "wide:prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Prep": true,
+        "Differentiate": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\nEAL\nLANGUAGE\n7\nLANGUAGES\nVariants\nMODE\nARTIFACT READINESS\nInput lane\nUPLOAD · PASTE · WEB\nCurriculum\nALBERTA PROGRAM\nOutput\nVARIANTS\nLANGUAGE LOAD\nTagalog\nUrdu\nArabic\nSomali\nPunjabi\nSpanish\nEAL students\n8\nFamily languages\n7\nTEACHER PASS\nSame outcome\n· no lowered bar\nEditable copy\n· teacher owned\nMaterials list\n· ready to stage\n02\nPREP LANE\n\nChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.\n\n01 ARTIFACT\nDifferentiate\nLESS",
+      "metrics": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1080,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "wide",
+        "width": 1920,
+        "height": 1080
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "wide:ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "OPS COMMAND": true,
+        "Log Intervention": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.\n\nCoordination queued\n1 FOLLOW-UP · 3 THREADS\nACTIVE WORKFLOW\nLog Intervention\nHANDOFF\nSub packet ready\nCAPTURE\n3\nTHREADS\n1\nFOLLOW-UPS\nCOVERAGE\n2\nEA MOVES\n5\nBLOCKS\nCAPTURE QUEUE\nOpen threads\n3\nFollow-ups\n1\nCurrent lane\n1 FOLLOW-UPS\nCOVERAGE CUES\nAmira, Daniyal\n· 8:30-10:30\nBrody, Jasper\n· 10:45-11:45\nHANDOFF PATH\nLog note\nBrief EAs\nBalance load\nSub packet\n02\nOPS WORKFLOW\n\nCapture the evidence, then move it through briefing, load balance, and substitute handoff.\n\n1\nLog Intervention\nWAITING\n2\nEA Briefing\nWAITING\n3\nEA Lo",
+      "metrics": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1080,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "wide",
+        "width": 1920,
+        "height": 1080
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "label": "wide:review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Review": true,
+        "Family Message": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.\n\nReview pending\n1 APPROVAL · 1 SIGNALS\nACTIVE TOOL\nFamily Message\nAPPROVALS\n1\nAWAITING\nSIGNALS\n1\nPATTERNS\n3\nTHREADS\nCADENCE\n0\nREVIEWS DUE\nAPPROVAL QUEUE\nAwaiting approval\n1\nActive threads\n3\nHUMAN-IN-THE-LOOP\nAlways editable\n· teacher edits persist\nNo autonomous send\n· approval required\n02\nREVIEW LANE\n\nWhat to approve, what to read, what to learn.\n\n01 FAMILY\nFamily Message\nDraft family updates and keep human approval explicit.\n1 APPROVALS\n02 PATTERNS\nSupport Patterns\nInspect recurring classroom signals",
+      "metrics": {
+        "innerWidth": 1920,
+        "innerHeight": 1080,
+        "scrollWidth": 1920,
+        "scrollHeight": 1080,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "viewport": {
+        "name": "wide",
+        "width": 1920,
+        "height": 1080
+      },
+      "consoleMessages": [],
+      "pageErrors": [],
+      "badResponses": []
+    }
+  ],
+  "negativeChecks": [
+    {
+      "label": "negative:stale-classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "Today": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\n12:30-12:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Amira\n\nMorning triage: protect 12:30-12:45 before Body break + transition to math.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: UPCOMING\nNEXT\nReading block\n\nSeveral EAL students need vocabulary preview\n\nQUEUED\n12:30-12:45\nSTATUS: UPCOMING\nNEXT\nMath block\n\nPost-lunch transition\n\nQUEUED\n12:45-1:45\nSTATUS: PAST\nMath block\n\nTeacher solo with split grades\n\nCOMPLETE\n2:45-3:00\nSTATUS: PAST\nLearning reflection + pack-up\n\nEnd-of-day transitions\n\nCOMPLETE\nFollow-up debt\n3 OPEN\n1\nIntervent",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": "prairie-static-demo-api"
+      },
+      "staleActiveClassroom": "demo-okafor-grade34",
+      "passed": true
+    },
+    {
+      "label": "negative:protected-classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?tab=tomorrow&tool=tomorrow-plan&classroom=alpha-grade4",
+      "title": "PrairieClassroom OS",
+      "textChecks": {
+        "protected": true,
+        "access code": true
+      },
+      "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 4 literacy and social studies\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nNeeded\nSTATUS\n0\nPRIORITIES\nFORECAST\nPending\nSTATUS\n—\nBLOCKS\nCARRY-FORWARD\n0\nQUEUED\n0\nOPEN FOLLOW-UPS\n02\nSTAGE TOMORROW\n\nWhat to stage. What to forecast. What lands tomorrow.\n\n01 PLANNING ORDER\nTomorrow Plan\nWatchpoints, priorities, EA moves, prep, and family follow-ups.\nPLAN NOT GENERATED\n02 BLOCK RISK\nForecast\nBlock-by-block risk before coverage and transition decisions.\nFORECAST NOT GENERATED\nACTIVE WORKSPACE\nTomorrow Plan\n\nConvert today's signal into watchpoints, priorities, EA actions, prep, and family follow-up",
+      "metrics": {
+        "innerWidth": 1440,
+        "innerHeight": 900,
+        "scrollWidth": 1440,
+        "scrollHeight": 900,
+        "horizontalOverflow": false,
+        "overflowing": [],
+        "demoApi": ""
+      },
+      "hasAccessPrompt": true,
+      "passed": true
+    }
+  ],
+  "fallbackDifferentiate": {
+    "label": "workflow:differentiate-static-fallback",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+    "title": "PrairieClassroom OS",
+    "textChecks": {
+      "static-demo-fallback": true,
+      "Core": true,
+      "Extension": true,
+      "EAL": true
+    },
+    "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\nEAL\nLANGUAGE\n7\nLANGUAGES\nVariants\nMODE\nARTIFACT READINESS\nInput lane\nUPLOAD · PASTE · WEB\nCurriculum\nALBERTA PROGRAM\nOutput\nVARIANTS\nLANGUAGE LOAD\nTagalog\nUrdu\nArabic\nSomali\nPunjabi\nSpanish\nEAL students\n8\nFamily languages\n7\nTEACHER PASS\nSame outcome\n· no lowered bar\nEditable copy\n· teacher owned\nMaterials list\n· ready to stage\n02\nPREP LANE\n\nChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.\n\n01 ARTIFACT\nDifferentiate\nLESSON VARIANTS\nAdapt one le",
+    "metrics": {
+      "innerWidth": 1440,
+      "innerHeight": 900,
+      "scrollWidth": 1440,
+      "scrollHeight": 900,
+      "horizontalOverflow": false,
+      "overflowing": [],
+      "demoApi": "prairie-static-demo-api"
+    },
+    "hasStaticFallbackLabel": true,
+    "hasVariantOutput": true,
+    "consoleMessages": [],
+    "pageErrors": [],
+    "badResponses": []
+  },
+  "failures": []
+}

@@ -1,0 +1,9 @@
+{
+  "title": "PrairieClassroom OS",
+  "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+  "hasPrairieClassroom": true,
+  "hasToday": true,
+  "hasOkafor": false,
+  "logCount": 0,
+  "logs": []
+}

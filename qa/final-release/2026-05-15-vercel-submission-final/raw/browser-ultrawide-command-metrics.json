@@ -1,0 +1,26 @@
+{
+  "horizontalOverflow": false,
+  "innerHeight": 1080,
+  "innerWidth": 1920,
+  "items": {
+    "shell-help-trigger": {
+      "display": "flex",
+      "height": 44,
+      "left": 1836,
+      "right": 1880,
+      "text": "?",
+      "visibility": "visible",
+      "width": 44
+    },
+    "shell-search-trigger": {
+      "display": "flex",
+      "height": 44,
+      "left": 1716,
+      "right": 1760,
+      "text": "Search or ask Prairie⌘K",
+      "visibility": "visible",
+      "width": 44
+    }
+  },
+  "textSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nRead"
+}

@@ -16,11 +16,16 @@
     <meta name="twitter:image" content="/brand/og-preview.png" />
     <!-- Typography is self-hosted — see apps/web/src/styles/fonts.css.
          Mobile uses font-display: swap so CSS/JS stay ahead of font transfer
-         on the first paint path; wider viewports preload the accessible
-         reading face weights that carry body, headings, and app chrome. -->
+         on the first paint path; wider viewports preload the faces that carry
+         body, headings, app chrome, and dense status labels to limit CLS. -->
     <link rel="preload" as="font" type="font/ttf" href="/fonts/atkinson-hyperlegible-400.ttf" crossorigin media="(min-width: 700px)" />
     <link rel="preload" as="font" type="font/ttf" href="/fonts/atkinson-hyperlegible-700.ttf" crossorigin media="(min-width: 700px)" />
+    <link rel="preload" as="font" type="font/ttf" href="/fonts/space-mono-700.ttf" crossorigin media="(min-width: 900px)" />
+    <link rel="preload" as="font" type="font/woff2" href="/fonts/instrument-sans-600.woff2" crossorigin media="(min-width: 900px)" />
     <title>PrairieClassroom OS</title>
+    <script type="module" crossorigin src="/assets/index-CmqT6Wq2.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/react-BTDdODlp.js">
+    <link rel="stylesheet" crossorigin href="/assets/index-Dy4UM2h7.css">
   </head>
   <body>
     <div id="root"></div>
@@ -28,6 +33,5 @@
       // Apply saved theme before first paint to prevent flash
       try{var t=localStorage.getItem('prairie-theme');if(t==='light'||t==='dark')document.documentElement.setAttribute('data-theme',t)}catch(e){}
     </script>
-    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
