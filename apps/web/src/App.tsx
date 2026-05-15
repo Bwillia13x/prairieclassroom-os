@@ -828,6 +828,22 @@ export default function App() {
     }
   }, []);
 
+  useEffect(() => {
+    if (
+      activeClassroom &&
+      profile?.requires_access_code &&
+      !state.classroomAccessCodes[activeClassroom] &&
+      !state.authPrompt
+    ) {
+      openAuthPrompt({
+        classroomId: activeClassroom,
+        message: `${describeClassroom(profile)} is protected. Save the classroom access code to unlock planning, messaging, and intervention workflows.`,
+        status: 401,
+        source: "selection",
+      });
+    }
+  }, [activeClassroom, openAuthPrompt, profile, state.authPrompt, state.classroomAccessCodes]);
+
   // Prompt for role when a classroom is loaded but has no stored role.
   useEffect(() => {
     if (
