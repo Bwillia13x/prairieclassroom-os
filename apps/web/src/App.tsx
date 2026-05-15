@@ -1239,7 +1239,7 @@ export default function App() {
           </Suspense>
         ) : null}
 
-        {state.showOnboarding ? (
+        {state.showOnboarding && !authPrompt ? (
           <Suspense fallback={null}>
             <OnboardingOverlay onDismiss={handleDismissOnboarding} />
           </Suspense>
@@ -1252,7 +1252,7 @@ export default function App() {
         {authPrompt ? (
           <Suspense fallback={null}>
             <ClassroomAccessDialog
-              open={!state.rolePrompt && !state.showOnboarding}
+              open={!state.rolePrompt}
               classroomId={authPrompt.classroomId}
               message={authPrompt.message}
               initialValue={state.classroomAccessCodes[authPrompt.classroomId] ?? ""}
