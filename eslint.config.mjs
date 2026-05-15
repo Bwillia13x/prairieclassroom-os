@@ -48,11 +48,18 @@ export default tseslint.config(
       "scripts/smoke-browser.mjs",
       "scripts/audit-2026-04-25-sweep.mjs",
       "scripts/validate-today-layout.mjs",
+      "qa/final-release/**/*.mjs",
     ],
     languageOptions: {
       globals: {
         document: "readonly",
         getComputedStyle: "readonly",
+        localStorage: "readonly",
+        process: "readonly",
+        console: "readonly",
+        sessionStorage: "readonly",
+        setTimeout: "readonly",
+        URLSearchParams: "readonly",
         window: "readonly",
         PopStateEvent: "readonly",
       },
