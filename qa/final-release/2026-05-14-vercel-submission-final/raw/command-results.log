@@ -1,0 +1,244 @@
+
+===== git status =====
+$ git status --short --branch
+## main...origin/main
+?? qa/final-release/2026-05-14-vercel-submission-final/
+[exit 0] git status
+
+===== git divergence =====
+$ git rev-list --left-right --count main...origin/main
+0	0
+[exit 0] git divergence
+
+===== rebuild memory =====
+$ npm run rebuild:memory
+
+> prairieclassroom-os@0.0.1 rebuild:memory
+> npm rebuild better-sqlite3 --workspace @prairie/memory
+
+rebuilt dependencies successfully
+[exit 0] rebuild memory
+
+===== submission publish preflight =====
+$ npm run submission:publish-preflight
+
+> prairieclassroom-os@0.0.1 submission:publish-preflight
+> node scripts/submission-publish-preflight.mjs
+
+Submission publish preflight
+✓ file:render.yaml: present
+✓ file:apps/web/vercel.json: present
+✓ file:qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4: present
+✓ node version: v25.8.2 matches v25.8.2
+✗ git worktree clean: 1 uncommitted path(s)
+✓ git upstream configured: origin/main
+✓ git branch synced: ahead 0, behind 0
+✓ vercel cli: /opt/homebrew/bin/vercel
+✓ vercel project link: apps/web/.vercel/project.json
+✓ render cli or api token: /opt/homebrew/bin/render
+✗ hosted gemma api key: missing PRAIRIE_GEMINI_API_KEY
+✗ hosted gemma guard: PRAIRIE_ENABLE_GEMINI_RUNS is not enabled
+✓ public live demo url: https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34
+✗ public video url: missing
+✗ kaggle writeup url: missing
+
+5 blockers remain before public publishing.
+[exit 1] submission publish preflight
+
+===== public demo smoke =====
+$ env PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo
+
+> prairieclassroom-os@0.0.1 smoke:public-demo
+> node scripts/smoke-public-demo.mjs
+
+Public demo smoke target: https://prairieclassroom-os.vercel.app
+
+> prairieclassroom-os@0.0.1 smoke:browser
+> node scripts/smoke-browser.mjs
+
+Skipping protected-classroom browser smoke; set PRAIRIE_SMOKE_PROTECTED_CLASSROOM_CODE to exercise it.
+PASS browser smoke
+[exit 0] public demo smoke
+
+===== submission final check skip publication =====
+$ npm run submission:final-check -- --skip-publication-check
+
+> prairieclassroom-os@0.0.1 submission:final-check
+> node scripts/submission-final-check.mjs --skip-publication-check
+
+Submission final check — 7 steps
+  (publication readiness check skipped via --skip-publication-check)
+
+▶  claims:check
+
+> prairieclassroom-os@0.0.1 claims:check
+> node scripts/claims-check.mjs
+
+Claims check passed.
+
+▶  proof:check
+
+> prairieclassroom-os@0.0.1 proof:check
+> node scripts/proof-check.mjs
+
+Proof surfaces are internally consistent.
+
+▶  system:inventory:check
+
+> prairieclassroom-os@0.0.1 system:inventory:check
+> node scripts/system-inventory.mjs --check
+
+System Inventory
+Primary panels: 12
+Prompt classes: 13
+Live/planning split: 7/6
+Retrieval-backed prompt classes: 7
+API route bases: 21
+API endpoints: 53
+Eval case files: 134
+
+Canonical inventory claims are in sync.
+
+▶  eval:inventory:check
+
+> prairieclassroom-os@0.0.1 eval:inventory:check
+> node scripts/eval-inventory.mjs --check
+
+Eval inventory is in sync.
+
+▶  demo:fixture:check
+
+> prairieclassroom-os@0.0.1 demo:fixture:check
+> node scripts/validate-demo-fixture.mjs
+
+Demo fixture validation passed.
+  Classroom: demo-okafor-grade34
+  interventions: 36
+  generated_plans: 3
+  pattern_reports: 1
+  family_messages: 1
+  sessions: 5
+  feedback: 0
+  complexity_forecasts: 0
+  scaffold_reviews: 0
+  survival_packets: 0
+  generated_variants: 0
+  runs: 0
+
+▶  check:contrast
+
+> prairieclassroom-os@0.0.1 check:contrast
+> node scripts/check-contrast.mjs
+
+Contrast report: output/contrast-report.md
+Pairs evaluated: 80 (light + dark)
+All pairs meet WCAG AA. ✓
+
+▶  release:gate (mock)
+
+> prairieclassroom-os@0.0.1 release:gate
+> node scripts/release-gate.mjs --inference-mode mock --update-baseline
+
+Release gate logs: /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/release-gate/2026-05-15T02-27-07-009Z-92123
+Release gate Python: /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/services/inference/.venv311/bin/python
+Release gate passed (mock).
+
+════════════════════════════════════════════════════════════
+Submission Final Check — Summary
+════════════════════════════════════════════════════════════
+  ✓  claims:check                    329ms
+  ✓  proof:check                     231ms
+  ✓  system:inventory:check          241ms
+  ✓  eval:inventory:check            328ms
+  ✓  demo:fixture:check               1.2s
+  ✓  check:contrast                  245ms
+  ✓  release:gate (mock)             2m43s
+────────────────────────────────────────────────────────────
+  Passed: 7/7    Total: 2m46s
+
+✓  All local pre-submit gates passed.
+   Next: complete the external publish steps in docs/hackathon-submission-checklist.md
+   (GitHub public, reachable live demo URL, public demo browser smoke, reachable YouTube video, Kaggle attachments).
+[exit 0] submission final check skip publication
+
+===== claims check =====
+$ npm run claims:check
+
+> prairieclassroom-os@0.0.1 claims:check
+> node scripts/claims-check.mjs
+
+Claims check passed.
+[exit 0] claims check
+
+===== proof check =====
+$ npm run proof:check
+
+> prairieclassroom-os@0.0.1 proof:check
+> node scripts/proof-check.mjs
+
+Proof surfaces are internally consistent.
+[exit 0] proof check
+
+===== system inventory check =====
+$ npm run system:inventory:check
+
+> prairieclassroom-os@0.0.1 system:inventory:check
+> node scripts/system-inventory.mjs --check
+
+System Inventory
+Primary panels: 12
+Prompt classes: 13
+Live/planning split: 7/6
+Retrieval-backed prompt classes: 7
+API route bases: 21
+API endpoints: 53
+Eval case files: 134
+
+Canonical inventory claims are in sync.
+[exit 0] system inventory check
+
+===== eval inventory check =====
+$ npm run eval:inventory:check
+
+> prairieclassroom-os@0.0.1 eval:inventory:check
+> node scripts/eval-inventory.mjs --check
+
+Eval inventory is in sync.
+[exit 0] eval inventory check
+
+===== demo fixture check =====
+$ npm run demo:fixture:check
+
+> prairieclassroom-os@0.0.1 demo:fixture:check
+> node scripts/validate-demo-fixture.mjs
+
+Demo fixture validation passed.
+  Classroom: demo-okafor-grade34
+  interventions: 36
+  generated_plans: 3
+  pattern_reports: 1
+  family_messages: 1
+  sessions: 5
+  feedback: 0
+  complexity_forecasts: 0
+  scaffold_reviews: 0
+  survival_packets: 0
+  generated_variants: 0
+  runs: 0
+[exit 0] demo fixture check
+
+===== contrast check =====
+$ npm run check:contrast
+
+> prairieclassroom-os@0.0.1 check:contrast
+> node scripts/check-contrast.mjs
+
+Contrast report: output/contrast-report.md
+Pairs evaluated: 80 (light + dark)
+All pairs meet WCAG AA. ✓
+[exit 0] contrast check
+
+===== npm audit prod =====
+$ npm audit --omit=dev
+found 0 vulnerabilities
+[exit 0] npm audit prod

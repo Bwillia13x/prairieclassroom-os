@@ -1,0 +1,26 @@
+{
+  "generatedAt": "2026-05-15T02:32:08.350Z",
+  "project": {
+    "id": "prj_Hf8Vju4JZRTNRBEDJ8dvWyftXlQO",
+    "name": "prairieclassroom-os",
+    "teamId": "team_6F2gUB7a71YmwNGbqU5HA7cE",
+    "framework": "vite",
+    "vercelNodeVersion": "24.x"
+  },
+  "production": {
+    "deploymentId": "dpl_HkA4bZLk7ZNzxrnotDZaQ5bsCkTe",
+    "url": "prairieclassroom-q0i2zo89s-echoexes-projects.vercel.app",
+    "alias": "https://prairieclassroom-os.vercel.app",
+    "state": "READY",
+    "target": "production",
+    "commit": "e00d83116ab596f04e722f44c612fa790e850d29",
+    "commitMessage": "fix: prioritize access gate over onboarding",
+    "source": "cli prebuilt deploy",
+    "region": "iad1"
+  },
+  "buildNotes": [
+    "Local repo uses Node v25.8.2 for build and validation.",
+    "Vercel project is configured for Node 24.x, but production was deployed from prebuilt local artifacts, avoiding npm workspace install drift.",
+    "Recent non-prebuilt failed deployment was attributable to @prairie/shared workspace package lookup from npm; prebuilt deploy path avoids that failure mode."
+  ]
+}

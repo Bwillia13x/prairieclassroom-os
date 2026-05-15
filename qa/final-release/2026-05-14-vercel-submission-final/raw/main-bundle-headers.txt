@@ -1,0 +1,21 @@
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 566
+cache-control: public, max-age=31536000, immutable
+content-disposition: inline; filename="index-CmqT6Wq2.js"
+content-type: application/javascript; charset=utf-8
+date: Fri, 15 May 2026 02:30:33 GMT
+etag: "ef057bb351acd5b6e745291240bd709c"
+last-modified: Fri, 15 May 2026 02:21:06 GMT
+permissions-policy: geolocation=(), microphone=(), camera=()
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-vercel-cache: HIT
+x-vercel-enable-rewrite-caching: 1
+x-vercel-id: pdx1::6h72z-1778812233498-90031ba7f90f
+content-length: 225341
+

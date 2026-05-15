@@ -1,0 +1,31 @@
+HTTP/2 307 
+cache-control: public, max-age=0, must-revalidate
+content-type: text/plain
+date: Fri, 15 May 2026 02:30:32 GMT
+location: /?demo=true&tab=today&classroom=demo-okafor-grade34
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-vercel-enable-rewrite-caching: 1
+x-vercel-id: pdx1::jp4zs-1778812232936-49cb91f33094
+
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 566
+cache-control: public, max-age=0, must-revalidate
+content-disposition: inline
+content-type: text/html; charset=utf-8
+date: Fri, 15 May 2026 02:30:33 GMT
+etag: "a71b0905624e1c9bf35e93677a5e6bcf"
+last-modified: Fri, 15 May 2026 02:21:06 GMT
+permissions-policy: geolocation=(), microphone=(), camera=()
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-vercel-cache: HIT
+x-vercel-enable-rewrite-caching: 1
+x-vercel-id: pdx1::fd9lv-1778812233002-b183f7813233
+content-length: 2042
+

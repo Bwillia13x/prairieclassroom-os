@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-05-15T02:25:51.481Z",
+  "rows": [
+    {
+      "label": "Canonical Today demo",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "performance": 76,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3709,
+      "cls": 0,
+      "tbtMs": 285,
+      "speedIndexMs": 4530
+    },
+    {
+      "label": "Differentiate tool route",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+      "performance": 81,
+      "accessibility": 100,
+      "bestPractices": 100,
+      "seo": 100,
+      "lcpMs": 3768,
+      "cls": 0,
+      "tbtMs": 87,
+      "speedIndexMs": 4384
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "findings": [
+    {
+      "name": "localhost",
+      "count": 0
+    },
+    {
+      "name": "127.0.0.1",
+      "count": 0
+    },
+    {
+      "name": "0.0.0.0",
+      "count": 0
+    },
+    {
+      "name": "PRAIRIE env",
+      "count": 0
+    },
+    {
+      "name": "VITE env",
+      "count": 0
+    },
+    {
+      "name": "Gemini",
+      "count": 0
+    },
+    {
+      "name": "API key literal",
+      "count": 0
+    },
+    {
+      "name": "secret literal",
+      "count": 0
+    },
+    {
+      "name": "token literal",
+      "count": 0
+    },
+    {
+      "name": "OpenAI-like key",
+      "count": 4
+    }
+  ],
+  "riskWindowFalsePositive": [
+    "sk-windows",
+    "sk-windows__body",
+    "sk-windows-body",
+    "sk-windows__readout",
+    "sk-windows__eyebrow",
+    "sk-windows__metric",
+    "sk-windows__metric-number",
+    "sk-windows__metric-unit",
+    "sk-windows__signal",
+    "sk-windows__content"
+  ]
+}

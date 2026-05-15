@@ -1,0 +1,1248 @@
+{
+  "generatedAt": "2026-05-15T02:24:23.704Z",
+  "base": "https://prairieclassroom-os.vercel.app/",
+  "deploymentId": "dpl_HkA4bZLk7ZNzxrnotDZaQ5bsCkTe",
+  "deploymentCommit": "e00d831",
+  "total": 38,
+  "passed": 38,
+  "failed": 0,
+  "consoleErrors": 0,
+  "pageErrors": 0,
+  "badResponses": 0,
+  "requestFailures": 0,
+  "ignoredHarnessAborts": 10,
+  "overflowFailures": 0,
+  "results": [
+    {
+      "name": "desktop-today",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3970,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/desktop-today.png",
+      "assertions": [
+        {
+          "expected": "Today",
+          "found": true
+        },
+        {
+          "expected": "Today's",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled Today End-of-day closeout: carry forward what will matter tomorrow. DO THIS NOW End-of-day closeout Close today's loop for Amira End-of-day closeout: capture the evidence and next move — Vocabulary preview and family praise. DRAFT AMIRA"
+    },
+    {
+      "name": "desktop-classroom",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3331,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/desktop-classroom.png",
+      "assertions": [
+        {
+          "expected": "Classroom",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled CLASSROOM COMMAND Room view Read the room, then choose the lens. Grade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map. OPEN TODAY TRIAGE → OPEN WORK 3 Queue items THRE"
+    },
+    {
+      "name": "desktop-tomorrow",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3342,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "screenshot": "screenshots/desktop-tomorrow.png",
+      "assertions": [
+        {
+          "expected": "Tomorrow",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled TOMORROW COMMAND Plan, forecast, and carry-forward queue Start with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day. ACTIVE TOOL Tomorrow Plan PLAN Ready STATUS 3 PRIORITIES FORE"
+    },
+    {
+      "name": "desktop-week",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3224,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/desktop-week.png",
+      "assertions": [
+        {
+          "expected": "Week",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled WEEK COMMAND Shape the week before it shapes tomorrow Use the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you. PLAN TOMORROW REVIEW"
+    },
+    {
+      "name": "desktop-prep",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3144,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "screenshot": "screenshots/desktop-prep.png",
+      "assertions": [
+        {
+          "expected": "Prep",
+          "found": true
+        },
+        {
+          "expected": "Differentiate",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled PREP COMMAND Prepare the material before it reaches the room. Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode. Heavy EAL load 8 EAL · 7 LANGUAGES ACTIVE TOOL Differentiate ROSTER 26 STUD"
+    },
+    {
+      "name": "desktop-ops",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3011,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "screenshot": "screenshots/desktop-ops.png",
+      "assertions": [
+        {
+          "expected": "Ops",
+          "found": true
+        },
+        {
+          "expected": "Log Intervention",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled OPS COMMAND Coordinate the adults without losing the thread. Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface. Coordination queued 1 FOLLOW-UP · 3 THREADS ACT"
+    },
+    {
+      "name": "desktop-review",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3681,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "screenshot": "screenshots/desktop-review.png",
+      "assertions": [
+        {
+          "expected": "Review",
+          "found": true
+        },
+        {
+          "expected": "Family Message",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled REVIEW COMMAND Turn classroom memory into accountable follow-through. Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable. Review pending 1 APPROVAL · 1 S"
+    },
+    {
+      "name": "mobile-today",
+      "viewport": "mobile",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3042,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/mobile-today.png",
+      "assertions": [
+        {
+          "expected": "Today",
+          "found": true
+        },
+        {
+          "expected": "Today's",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms/demo-okafor-grade34/student-summary",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "overflow": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom OS Grade 3-4 cross curricular ⌄ SEARCH OR ASK PRAIRIE DARK Today End-of-day closeout: carry forward what will matter tomorrow. DO THIS NOW End-of-day closeout Close today's loop for Amira End-of-day closeout: capture the evidence and next move — Vocabulary preview and family praise. DRAFT AMIRA MESSAGE STUDENT Amira WINDOW 12:30-12:45 OPEN 3 NOW Math block Today's flow CURRENT 8:30-9:15 8:30-9:15 STATUS: CURRENT NOW Math block Predictable routine CURRENT FOC"
+    },
+    {
+      "name": "mobile-classroom",
+      "viewport": "mobile",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3538,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/mobile-classroom.png",
+      "assertions": [
+        {
+          "expected": "Classroom",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/today/demo-okafor-grade34",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms/demo-okafor-grade34/student-summary",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "overflow": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom OS Grade 3-4 cross curricular ⌄ SEARCH OR ASK PRAIRIE DARK CLASSROOM COMMAND Room view Read the room, then choose the lens. Grade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map. OPEN TODAY TRIAGE → OPEN WORK 23 Queue items THREADS 23 Active student signals ROSTER 26 8 EAL supports PLAN COVERAGE 0/7 No streak LIVE Today triage STAGE Tomorrow plan FORECAST Week map ROOM HEALTH Live 7"
+    },
+    {
+      "name": "mobile-tomorrow",
+      "viewport": "mobile",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3326,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "screenshot": "screenshots/mobile-tomorrow.png",
+      "assertions": [
+        {
+          "expected": "Tomorrow",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom OS Grade 3-4 cross curricular ⌄ SEARCH OR ASK PRAIRIE DARK TOMORROW COMMAND Plan, forecast, and carry-forward queue Start with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day. ACTIVE TOOL Tomorrow Plan PLAN Ready STATUS 3 PRIORITIES FORECAST Ready STATUS 5 BLOCKS CARRY-FORWARD 0 QUEUED 1 OPEN FOLLOW-UPS PLANNING ORDER Watchpoints 3 PRIORITIES Carry-forward 0 QUEUED Open follow-ups 1 SUPPORT PRIORITIES"
+    },
+    {
+      "name": "mobile-week",
+      "viewport": "mobile",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3162,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/mobile-week.png",
+      "assertions": [
+        {
+          "expected": "Week",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms/demo-okafor-grade34/health",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "overflow": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom OS Grade 3-4 cross curricular ⌄ SEARCH OR ASK PRAIRIE DARK WEEK COMMAND Shape the week before it shapes tomorrow Use the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you. PLAN TOMORROW REVIEW TODAY UPDATED 8:22 PM 5 DAYS MAPPED 0 FORECAST DAYS 0 HIGH-RISK BLOCKS 0 UNMAPPED DAYS 23 OPEN ITEMS NEXT DECISION Priority NO HIGH-RISK DAY Coverage 65% · COVERAGE W"
+    },
+    {
+      "name": "mobile-prep",
+      "viewport": "mobile",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 2925,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "screenshot": "screenshots/mobile-prep.png",
+      "assertions": [
+        {
+          "expected": "Prep",
+          "found": true
+        },
+        {
+          "expected": "Differentiate",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom OS Grade 3-4 cross curricular ⌄ SEARCH OR ASK PRAIRIE DARK PREP COMMAND Prepare the material before it reaches the room. Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode. Heavy EAL load 8 EAL · 7 LANGUAGES ACTIVE TOOL Differentiate ROSTER 26 STUDENTS 8 EAL LANGUAGE 7 LANGUAGES Variants MODE ARTIFACT READINESS Input lane UPLOAD · PASTE · WEB Curriculum ALBERTA PROGRAM Output VARIANTS LANGUAGE LOAD Tagalog Urdu "
+    },
+    {
+      "name": "mobile-ops",
+      "viewport": "mobile",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 2953,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "screenshot": "screenshots/mobile-ops.png",
+      "assertions": [
+        {
+          "expected": "Ops",
+          "found": true
+        },
+        {
+          "expected": "Log Intervention",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom OS Grade 3-4 cross curricular ⌄ SEARCH OR ASK PRAIRIE DARK OPS COMMAND Coordinate the adults without losing the thread. Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface. Coordination queued 1 FOLLOW-UP · 3 THREADS ACTIVE WORKFLOW Log Intervention HANDOFF Sub packet ready CAPTURE 3 THREADS 1 FOLLOW-UPS COVERAGE 2 EA MOVES 5 BLOCKS CAPTURE QUEUE Open threads 3 Follow-ups 1 Current la"
+    },
+    {
+      "name": "mobile-review",
+      "viewport": "mobile",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3280,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "screenshot": "screenshots/mobile-review.png",
+      "assertions": [
+        {
+          "expected": "Review",
+          "found": true
+        },
+        {
+          "expected": "Family Message",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom OS Grade 3-4 cross curricular ⌄ SEARCH OR ASK PRAIRIE DARK REVIEW COMMAND Turn classroom memory into accountable follow-through. Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable. Review pending 1 APPROVAL · 1 SIGNALS ACTIVE TOOL Family Message APPROVALS 1 AWAITING SIGNALS 1 PATTERNS 3 THREADS CADENCE 0 REVIEWS DUE APPROVAL QUEUE Awaiting approval 1 Active threads 3 HUMAN-IN-"
+    },
+    {
+      "name": "tablet-today",
+      "viewport": "tablet",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3584,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/tablet-today.png",
+      "assertions": [
+        {
+          "expected": "Today",
+          "found": true
+        },
+        {
+          "expected": "Today's",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions/summary/demo-okafor-grade34",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "overflow": {
+        "clientWidth": 820,
+        "scrollWidth": 820,
+        "bodyScrollWidth": 820,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom Grade 3-4 cross curricular ⌄ ROLE Teacher ⌄ SEARCH OR ASK PRAIRIE ⌘K Today End-of-day closeout: carry forward what will matter tomorrow. DO THIS NOW End-of-day closeout Close today's loop for Amira End-of-day closeout: capture the evidence and next move — Vocabulary preview and family praise. DRAFT AMIRA MESSAGE STUDENT Amira WINDOW 12:30-12:45 OPEN 3 NOW Math block Today's flow CURRENT 8:30-9:15 8:30-9:15 STATUS: CURRENT NOW Math block Predictable routine C"
+    },
+    {
+      "name": "tablet-classroom",
+      "viewport": "tablet",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3248,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/tablet-classroom.png",
+      "assertions": [
+        {
+          "expected": "Classroom",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 820,
+        "scrollWidth": 820,
+        "bodyScrollWidth": 820,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom Grade 3-4 cross curricular ⌄ ROLE Teacher ⌄ SEARCH OR ASK PRAIRIE ⌘K CLASSROOM COMMAND Room view Read the room, then choose the lens. Grade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map. OPEN TODAY TRIAGE → OPEN WORK 23 Queue items THREADS 23 Active student signals ROSTER 26 8 EAL supports PLAN COVERAGE 0/7 No streak LIVE Today triage STAGE Tomorrow plan FORECAST Week map ROOM HEA"
+    },
+    {
+      "name": "tablet-tomorrow",
+      "viewport": "tablet",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3196,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "screenshot": "screenshots/tablet-tomorrow.png",
+      "assertions": [
+        {
+          "expected": "Tomorrow",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 820,
+        "scrollWidth": 820,
+        "bodyScrollWidth": 820,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom Grade 3-4 cross curricular ⌄ ROLE Teacher ⌄ SEARCH OR ASK PRAIRIE ⌘K TOMORROW COMMAND Plan, forecast, and carry-forward queue Start with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day. ACTIVE TOOL Tomorrow Plan PLAN Ready STATUS 3 PRIORITIES FORECAST Ready STATUS 5 BLOCKS CARRY-FORWARD 0 QUEUED 1 OPEN FOLLOW-UPS PLANNING ORDER Watchpoints 3 PRIORITIES Carry-forward 0 QUEUED Open follow-ups 1 SUPPORT "
+    },
+    {
+      "name": "tablet-week",
+      "viewport": "tablet",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3283,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/tablet-week.png",
+      "assertions": [
+        {
+          "expected": "Week",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 820,
+        "scrollWidth": 820,
+        "bodyScrollWidth": 820,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom Grade 3-4 cross curricular ⌄ ROLE Teacher ⌄ SEARCH OR ASK PRAIRIE ⌘K WEEK COMMAND Shape the week before it shapes tomorrow Use the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you. PLAN TOMORROW REVIEW TODAY UPDATED 8:23 PM 5 DAYS MAPPED 0 FORECAST DAYS 0 HIGH-RISK BLOCKS 0 UNMAPPED DAYS 23 OPEN ITEMS NEXT DECISION Priority NO HIGH-RISK DAY Coverage 65% · "
+    },
+    {
+      "name": "tablet-prep",
+      "viewport": "tablet",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 2947,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "screenshot": "screenshots/tablet-prep.png",
+      "assertions": [
+        {
+          "expected": "Prep",
+          "found": true
+        },
+        {
+          "expected": "Differentiate",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 820,
+        "scrollWidth": 820,
+        "bodyScrollWidth": 820,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom Grade 3-4 cross curricular ⌄ ROLE Teacher ⌄ SEARCH OR ASK PRAIRIE ⌘K PREP COMMAND Prepare the material before it reaches the room. Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode. Heavy EAL load 8 EAL · 7 LANGUAGES ACTIVE TOOL Differentiate ROSTER 26 STUDENTS 8 EAL LANGUAGE 7 LANGUAGES Variants MODE ARTIFACT READINESS Input lane UPLOAD · PASTE · WEB Curriculum ALBERTA PROGRAM Output VARIANTS LANGUAGE LOAD Tag"
+    },
+    {
+      "name": "tablet-ops",
+      "viewport": "tablet",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 2980,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "screenshot": "screenshots/tablet-ops.png",
+      "assertions": [
+        {
+          "expected": "Ops",
+          "found": true
+        },
+        {
+          "expected": "Log Intervention",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 820,
+        "scrollWidth": 820,
+        "bodyScrollWidth": 820,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom Grade 3-4 cross curricular ⌄ ROLE Teacher ⌄ SEARCH OR ASK PRAIRIE ⌘K OPS COMMAND Coordinate the adults without losing the thread. Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface. Coordination queued 1 FOLLOW-UP · 3 THREADS ACTIVE WORKFLOW Log Intervention HANDOFF Sub packet ready CAPTURE 3 THREADS 1 FOLLOW-UPS COVERAGE 2 EA MOVES 5 BLOCKS CAPTURE QUEUE Open threads 3 Follow-ups 1 "
+    },
+    {
+      "name": "tablet-review",
+      "viewport": "tablet",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3679,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "screenshot": "screenshots/tablet-review.png",
+      "assertions": [
+        {
+          "expected": "Review",
+          "found": true
+        },
+        {
+          "expected": "Family Message",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 820,
+        "scrollWidth": 820,
+        "bodyScrollWidth": 820,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content PrairieClassroom Grade 3-4 cross curricular ⌄ ROLE Teacher ⌄ SEARCH OR ASK PRAIRIE ⌘K REVIEW COMMAND Turn classroom memory into accountable follow-through. Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable. Review pending 1 APPROVAL · 1 SIGNALS ACTIVE TOOL Family Message APPROVALS 1 AWAITING SIGNALS 1 PATTERNS 3 THREADS CADENCE 0 REVIEWS DUE APPROVAL QUEUE Awaiting approval 1 Active threads 3"
+    },
+    {
+      "name": "wide-today",
+      "viewport": "wide",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3140,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/wide-today.png",
+      "assertions": [
+        {
+          "expected": "Today",
+          "found": true
+        },
+        {
+          "expected": "Today's",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1920,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Search or ask Prairie ? Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled Today End-of-day closeout: carry forward what will matter tomorrow. DO THIS NOW End-of-day closeout Close today's loop for Amira End-of-day closeout: record what happened around 12:30-12:45 and carry the right su"
+    },
+    {
+      "name": "wide-classroom",
+      "viewport": "wide",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3208,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/wide-classroom.png",
+      "assertions": [
+        {
+          "expected": "Classroom",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/today/demo-okafor-grade34",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms/demo-okafor-grade34/health",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/classrooms/demo-okafor-grade34/student-summary",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "overflow": {
+        "clientWidth": 1920,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Search or ask Prairie ? Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled CLASSROOM COMMAND Room view Read the room, then choose the lens. Grade 3-4 is showing needs attention. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map. OPEN TODAY TRIA"
+    },
+    {
+      "name": "wide-tomorrow",
+      "viewport": "wide",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3049,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "screenshot": "screenshots/wide-tomorrow.png",
+      "assertions": [
+        {
+          "expected": "Tomorrow",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1920,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Search or ask Prairie ? Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled TOMORROW COMMAND Plan, forecast, and carry-forward queue Start with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day. ACTIVE TOOL Tomorrow Plan PLAN Ready "
+    },
+    {
+      "name": "wide-week",
+      "viewport": "wide",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3157,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/wide-week.png",
+      "assertions": [
+        {
+          "expected": "Week",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/today/demo-okafor-grade34",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "overflow": {
+        "clientWidth": 1920,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Search or ask Prairie ? Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled WEEK COMMAND Shape the week before it shapes tomorrow Use the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for y"
+    },
+    {
+      "name": "wide-prep",
+      "viewport": "wide",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 2974,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "screenshot": "screenshots/wide-prep.png",
+      "assertions": [
+        {
+          "expected": "Prep",
+          "found": true
+        },
+        {
+          "expected": "Differentiate",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1920,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Search or ask Prairie ? Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled PREP COMMAND Prepare the material before it reaches the room. Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode. Heavy EAL load 8 EAL · 7 LANGUAGES ACTIVE TOOL Diff"
+    },
+    {
+      "name": "wide-ops",
+      "viewport": "wide",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3126,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "screenshot": "screenshots/wide-ops.png",
+      "assertions": [
+        {
+          "expected": "Ops",
+          "found": true
+        },
+        {
+          "expected": "Log Intervention",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1920,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Search or ask Prairie ? Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled OPS COMMAND Coordinate the adults without losing the thread. Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface. Coordination queued 1 F"
+    },
+    {
+      "name": "wide-review",
+      "viewport": "wide",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 3029,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "screenshot": "screenshots/wide-review.png",
+      "assertions": [
+        {
+          "expected": "Review",
+          "found": true
+        },
+        {
+          "expected": "Family Message",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1920,
+        "scrollWidth": 1920,
+        "bodyScrollWidth": 1920,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Search or ask Prairie ? Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled REVIEW COMMAND Turn classroom memory into accountable follow-through. Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable. Review "
+    },
+    {
+      "name": "differentiate-output",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "ok": true,
+      "durationMs": 3036,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "screenshot": "screenshots/desktop-differentiate-output.png",
+      "assertions": [
+        {
+          "expected": "Differentiate",
+          "found": true
+        },
+        {
+          "expected": "Lesson",
+          "found": true
+        },
+        {
+          "expected": "Source",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled PREP COMMAND Prepare the material before it reaches the room. Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode. Heavy EAL load 8 EAL · 7 LANGUAGES ACTIVE TOOL Differentiate ROSTER 26 STUD"
+    },
+    {
+      "name": "tomorrow-plan-record",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "ok": true,
+      "durationMs": 3061,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "screenshot": "screenshots/desktop-tomorrow-plan-record.png",
+      "assertions": [
+        {
+          "expected": "Tomorrow Plan",
+          "found": true
+        },
+        {
+          "expected": "Plan",
+          "found": true
+        },
+        {
+          "expected": "Teacher",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled TOMORROW COMMAND Plan, forecast, and carry-forward queue Start with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day. ACTIVE TOOL Tomorrow Plan PLAN Ready STATUS 3 PRIORITIES FORE"
+    },
+    {
+      "name": "family-message-approval-boundary",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "ok": true,
+      "durationMs": 3528,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "screenshot": "screenshots/desktop-family-message-approval-boundary.png",
+      "assertions": [
+        {
+          "expected": "Family Message",
+          "found": true
+        },
+        {
+          "expected": "approval",
+          "found": true
+        },
+        {
+          "expected": "No autonomous send",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled REVIEW COMMAND Turn classroom memory into accountable follow-through. Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable. Review pending 1 APPROVAL · 1 S"
+    },
+    {
+      "name": "intervention-logging",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "ok": true,
+      "durationMs": 3042,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "screenshot": "screenshots/desktop-intervention-logging.png",
+      "assertions": [
+        {
+          "expected": "Log Intervention",
+          "found": true
+        },
+        {
+          "expected": "intervention",
+          "found": true
+        },
+        {
+          "expected": "Student",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled OPS COMMAND Coordinate the adults without losing the thread. Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface. Coordination queued 1 FOLLOW-UP · 3 THREADS ACT"
+    },
+    {
+      "name": "ea-load",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-load",
+      "ok": true,
+      "durationMs": 2941,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-load",
+      "screenshot": "screenshots/desktop-ea-load.png",
+      "assertions": [
+        {
+          "expected": "EA Load",
+          "found": true
+        },
+        {
+          "expected": "Load",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled OPS COMMAND Coordinate the adults without losing the thread. Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface. Coordination queued 1 FOLLOW-UP · 3 THREADS ACT"
+    },
+    {
+      "name": "sub-packet",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=survival-packet",
+      "ok": true,
+      "durationMs": 2996,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=survival-packet",
+      "screenshot": "screenshots/desktop-sub-packet.png",
+      "assertions": [
+        {
+          "expected": "Sub Packet",
+          "found": true
+        },
+        {
+          "expected": "Substitute",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled OPS COMMAND Coordinate the adults without losing the thread. Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface. Coordination queued 1 FOLLOW-UP · 3 THREADS ACT"
+    },
+    {
+      "name": "support-patterns",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+      "ok": true,
+      "durationMs": 2971,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+      "screenshot": "screenshots/desktop-support-patterns.png",
+      "assertions": [
+        {
+          "expected": "Support Patterns",
+          "found": true
+        },
+        {
+          "expected": "pattern",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled REVIEW COMMAND Turn classroom memory into accountable follow-through. Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable. Review pending 1 APPROVAL · 1 S"
+    },
+    {
+      "name": "command-palette-family",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "ok": true,
+      "durationMs": 4335,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/desktop-command-palette-family.png",
+      "assertions": [
+        {
+          "expected": "Command palette dialog visible",
+          "found": true
+        },
+        {
+          "expected": "Family Message",
+          "found": true
+        },
+        {
+          "expected": "Differentiate",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled Today End-of-day closeout: carry forward what will matter tomorrow. DO THIS NOW End-of-day closeout Close today's loop for Amira End-of-day closeout: capture the evidence and next move — Vocabulary preview and family praise. DRAFT AMIRA"
+    },
+    {
+      "name": "stale-classroom-query",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-missing-final",
+      "ok": true,
+      "durationMs": 3115,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "screenshots/desktop-stale-classroom-query.png",
+      "assertions": [
+        {
+          "expected": "Today",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [
+        {
+          "url": "https://prairieclassroom-orchestrator.onrender.com/api/sessions/summary/demo-okafor-grade34",
+          "failure": "net::ERR_ABORTED"
+        }
+      ],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 3-4 cross curricular ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note 1 Review Message family Alberta K-6 Privacy first Teacher controlled Today End-of-day closeout: carry forward what will matter tomorrow. DO THIS NOW End-of-day closeout Close today's loop for Amira End-of-day closeout: capture the evidence and next move — Vocabulary preview and family praise. DRAFT AMIRA"
+    },
+    {
+      "name": "protected-classroom-gated",
+      "viewport": "desktop",
+      "url": "https://prairieclassroom-os.vercel.app/?tab=today&classroom=alpha-grade4",
+      "ok": true,
+      "durationMs": 3333,
+      "pageTitle": "PrairieClassroom OS",
+      "finalUrl": "https://prairieclassroom-os.vercel.app/?tab=today&classroom=alpha-grade4",
+      "screenshot": "screenshots/desktop-protected-classroom-gated.png",
+      "assertions": [
+        {
+          "expected": "Access code",
+          "found": true
+        },
+        {
+          "expected": "protected",
+          "found": true
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "ignoredRequestFailures": [],
+      "overflow": {
+        "clientWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "hasHorizontalOverflow": false
+      },
+      "visibleTextSample": "Skip to main content Collapse PrairieClassroom OS Grade 4 literacy and social studies ⌄ Teacher ⌄ Today Do this now Classroom Room view Tomorrow Plan tomorrow Week Week map Prep Adapt lesson Ops Log note Review Message family Alberta K-6 Privacy first Teacher controlled Today End-of-day closeout: carry forward what will matter tomorrow. SHOW DAY DETAIL + PROTECTED CLASSROOM Unlock alpha-grade4 Grade 4 literacy and social studies is protected. Save the classroom access code to unlock planning, me"
+    }
+  ]
+}
