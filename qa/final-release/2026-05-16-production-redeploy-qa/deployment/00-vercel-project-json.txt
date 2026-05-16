@@ -1,0 +1,16 @@
+{
+  "projectId": "prj_Hf8Vju4JZRTNRBEDJ8dvWyftXlQO",
+  "orgId": "team_6F2gUB7a71YmwNGbqU5HA7cE",
+  "projectName": "prairieclassroom-os",
+  "settings": {
+    "createdAt": 1778611078438,
+    "framework": "vite",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": "npm run build",
+    "outputDirectory": "dist",
+    "rootDirectory": null,
+    "directoryListing": false,
+    "nodeVersion": "24.x"
+  }
+}

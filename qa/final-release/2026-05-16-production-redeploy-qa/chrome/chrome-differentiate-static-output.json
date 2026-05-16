@@ -1,0 +1,98 @@
+{
+  "workflowEvalQa5c": {
+    "blockers": false,
+    "bodyOverflow": false,
+    "generatedNotPreview": true,
+    "hasResult": true,
+    "hasStaticFallbackLabel": true,
+    "resultExcerpt": "Result canvasFour ways in. One learning goal.Variants are aligned to Prairie Food Chains Exit Task with intentional differences in support, complexity, and language.Preview allExportCore laneRight level, right now~Grade 7.220 minCore fraction model taskUse the fraction strips to show one-half, one-third, and one-fourth. Explain one model in a complete sentence.Review readySource: Prairie Food Chains Exit TaskModel: static-demo-fallbackTeacher edit notesUse with most students after the concrete launch.fraction stripsmath journalReview readyCoreUse the fraction strips to show one-half, one-third,...Preview laneEdit copyMoreEAL Supported laneLanguage + meaning~Grade 1.720 minVocabulary-supported fraction taskMatch each fraction word to a picture. Then finish the sentence: I know this is ___ because ___.Language checkSource: Prairie Food Chains Exit TaskModel: static-demo-fallbackTeacher edit notesPreview denominator, numerator, equal parts with picture cues.picture vocabulary cardsfraction stripsLanguage checkEAL SupportedMatch each fraction word to a picture. Then...Preview laneEdit copyMoreExtension lanePush thinking further~Grade 3.925 minExtension comparison challengeCreate two fr",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34"
+  },
+  "workflowLogsQa5c": [
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:55.633Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:55.633Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:55.633Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:55.633Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:11:51.643Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:11:51.643Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:11:51.643Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:11:51.643Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:11:51.643Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34"
+    }
+  ],
+  "knownExtensionNoiseQa5c": 14
+}

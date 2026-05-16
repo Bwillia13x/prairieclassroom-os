@@ -1,0 +1,15 @@
+Filename: 12-gemma4-dual-tier.png
+Exact on-screen text:
+Gemma 4 live tier
+Fast classroom transformations
+Gemma 4 planning tier
+Cross-record synthesis
+
+Original requested prompt:
+Create a premium technical architecture card with two horizontal lanes. Lane one labeled exactly "Gemma 4 live tier" with sublabel "Fast classroom transformations". Lane two labeled exactly "Gemma 4 planning tier" with sublabel "Cross-record synthesis". Use warm ivory background, deep navy linework, muted gold checkpoints, subtle grid. No other text.
+
+Imagegen source prompt used in this render pass:
+Warm ivory technical architecture card with two blank horizontal lanes, navy linework, gold checkpoints, subtle grid, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

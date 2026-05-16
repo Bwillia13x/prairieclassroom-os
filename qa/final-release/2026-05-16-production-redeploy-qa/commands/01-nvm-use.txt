@@ -1,0 +1,2 @@
+Found '/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/.nvmrc' with version <v25.8.2>
+Now using node v25.8.2 (npm v11.11.1)

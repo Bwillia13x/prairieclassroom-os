@@ -1,0 +1,12 @@
+Filename: 08-observation-to-memory.png
+Exact on-screen text:
+Observation → classroom memory
+
+Original requested prompt:
+Create a restrained visual of a teacher note becoming a structured classroom memory card. Warm paper, graphite pencil, subtle navy data lines, muted gold connector dots. Render exact text: "Observation → classroom memory". No other text.
+
+Imagegen source prompt used in this render pass:
+Teacher note with no readable writing becoming a structured blank classroom memory card, warm paper, graphite pencil, navy data lines, gold connector dots, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

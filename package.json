@@ -64,6 +64,9 @@
     "video:render:submission:polished": "npm run render:submission:polished -w @prairie/marketing-video",
     "video:render:submission:final": "npm run render:submission:final -w @prairie/marketing-video",
     "video:render:submission:voiceover": "npm run render:submission:voiceover -w @prairie/marketing-video",
+    "video:voiceover:classroom-full": "node scripts/render-classroom-full-voiceover-elevenlabs.mjs",
+    "video:still:classroom-full": "npm run still:classroom-full -w @prairie/marketing-video",
+    "video:render:classroom-full": "npm run render:classroom-full -w @prairie/marketing-video",
     "video:voiceover:elevenlabs": "node scripts/render-submission-voiceover-elevenlabs.mjs",
     "video:qa:submission": "node scripts/qa-submission-video.mjs"
   },

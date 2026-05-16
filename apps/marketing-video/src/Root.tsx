@@ -14,6 +14,13 @@ import {
   SubmissionVideo,
   submissionDurationInFrames,
 } from "./SubmissionVideo";
+import {
+  CLASSROOM_FULL_VIDEO_FPS,
+  CLASSROOM_FULL_VIDEO_HEIGHT,
+  CLASSROOM_FULL_VIDEO_WIDTH,
+  ClassroomFullVideo,
+  classroomFullDurationInFrames,
+} from "./ClassroomFullVideo";
 
 export const RemotionRoot = () => (
   <>
@@ -44,6 +51,14 @@ export const RemotionRoot = () => (
         voiceover: "none",
         captions: true,
       }}
+    />
+    <Composition
+      id="PrairieClassroomClassroomFull"
+      component={ClassroomFullVideo}
+      durationInFrames={classroomFullDurationInFrames}
+      fps={CLASSROOM_FULL_VIDEO_FPS}
+      width={CLASSROOM_FULL_VIDEO_WIDTH}
+      height={CLASSROOM_FULL_VIDEO_HEIGHT}
     />
   </>
 );

@@ -1,0 +1,20 @@
+Vercel CLI 50.1.6
+Retrieving project…
+Deploying echoexes-projects/prairieclassroom-os
+Uploading [--------------------] (0.0B/558.6KB)
+Uploading [=====---------------] (149.5KB/558.6KB)
+Uploading [==========----------] (291.7KB/558.6KB)
+Uploading [===============-----] (420.1KB/558.6KB)
+Uploading [====================] (558.6KB/558.6KB)
+Inspect: https://vercel.com/echoexes-projects/prairieclassroom-os/CKv2ZmurbAoWoVTpZx7MAyZgvGKx [2s]
+Production: https://prairieclassroom-lw66n1m9c-echoexes-projects.vercel.app [2s]
+https://prairieclassroom-lw66n1m9c-echoexes-projects.vercel.appBuilding...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 108 deployment files...
+[2K[1A[2K[GProduction: https://prairieclassroom-lw66n1m9c-echoexes-projects.vercel.app [7s]
+Completing...
+Aliased: https://prairieclassroom-os.vercel.app [7s]

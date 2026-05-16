@@ -8,20 +8,20 @@ Replace every bracketed placeholder before publishing the video, Kaggle project,
 
 - Live demo URL: `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` loads from the public Vercel deployment. The root URL now shows the PrairieClassroom OS landing page with a primary CTA into that demo path, and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` remains the public demo smoke command.
 - Live demo claim boundary: the public `?demo=true` Vercel path is static-first and preloads bundled synthetic/demo data in-browser so reviewers do not wait on Render cold starts. Render-hosted synthetic checks remain separate; do not describe static demo output as live hosted-Gemma generation or a new hosted proof baseline.
-- Deployed submission-readiness evidence: `qa/final-release/2026-05-15-vercel-submission-final/` passed on the public URL across the main capture views at mobile/tablet/desktop/wide sizes, including static-fallback-labelled Differentiate output and the keyboard command palette.
+- Deployed submission-readiness evidence: `qa/final-release/2026-05-16-public-demo-check/` passed against the current public root and canonical demo path; `qa/final-release/2026-05-16-local-e2e-qa/` passed local teacher-workflow browser QA across the main routes and workflows.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
-- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; verify `HEAD`, `origin/main`, and remote `refs/heads/main` match during final closeout.
+- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; final pre-push closeout on 2026-05-16 verified `HEAD`, `origin/main`, and remote `refs/heads/main` all resolved to `937d0736b12572d4609bf55b9de36da6efbcd919` before the final verification commit.
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-15T12-57-10-977Z-52253`
-- Current hosted Gemma 4 refresh: failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; do not claim a current clean full hosted gate.
-- Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`)
-- Last passing hosted Gemma 4 baseline: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
-- Last passing hosted eval summary: `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-summary.json`
-- Latest May 8 cost rollup: `output/cost-rollups/2026-05-08-rollup.json`
-- Current test count: 2,086 Vitest + 76 Python in the latest mock gate
+- Mock structural gate: `output/release-gate/2026-05-16T22-26-39-727Z-59832`
+- Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; claim it only as synthetic/demo hosted proof.
+- Latest completed May 16 hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`)
+- Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
+- Latest passing hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`
+- Latest May 16 cost rollup: `output/cost-rollups/2026-05-16-rollup.json`
+- Current test count: 2,139 Vitest + 76 Python in the latest mock gate
 
 Do not add claims about real teacher validation, local Ollama proof, no-cloud operation, or measured classroom outcomes unless new artifacts are added and the claims ledger is advanced.
 

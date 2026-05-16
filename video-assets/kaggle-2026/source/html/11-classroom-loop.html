@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+@font-face { font-family: 'Source Serif'; src: url('file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/public/fonts/source-serif-4-variable.woff2') format('woff2'); font-weight: 400 900; }
+@font-face { font-family: 'Space Grotesk'; src: url('file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/public/fonts/space-grotesk-400.ttf') format('truetype'); font-weight: 400; }
+@font-face { font-family: 'Space Grotesk'; src: url('file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/public/fonts/space-grotesk-600.ttf') format('truetype'); font-weight: 700; }
+@font-face { font-family: 'Atkinson'; src: url('file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/public/fonts/atkinson-hyperlegible-400.ttf') format('truetype'); font-weight: 400; }
+@font-face { font-family: 'Atkinson'; src: url('file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/public/fonts/atkinson-hyperlegible-700.ttf') format('truetype'); font-weight: 700; }
+:root { --ivory:#F7F2E8; --navy:#0B2545; --graphite:#2E3238; --gold:#B88A3B; --blueGray:#CBD5E1; --white:#FFFDF8; }
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1920px; height: 1080px; overflow: hidden; }
+body { background: var(--ivory); font-family: 'Atkinson', system-ui, sans-serif; color: var(--navy); }
+.frame { position: relative; width: 1920px; height: 1080px; overflow: hidden; background: var(--ivory); }
+.bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; filter: saturate(.84) contrast(.94) brightness(1.04); opacity: .76; }
+.bg.subtle { opacity: .46; filter: saturate(.70) contrast(.92) brightness(1.08); }
+.veil { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(247,242,232,.98) 0%, rgba(247,242,232,.90) 40%, rgba(247,242,232,.34) 72%, rgba(247,242,232,.14) 100%); }
+.veil-right { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(247,242,232,.10) 0%, rgba(247,242,232,.54) 42%, rgba(247,242,232,.97) 100%); }
+.veil-soft { position:absolute; inset:0; background: radial-gradient(circle at 30% 40%, rgba(255,253,248,.78), rgba(247,242,232,.34) 50%, rgba(11,37,69,.12) 100%); }
+.copy { position: absolute; z-index: 3; }
+.serif { font-family: 'Source Serif', Georgia, serif; font-weight: 780; letter-spacing: 0; }
+.sans { font-family: 'Space Grotesk', 'Atkinson', system-ui, sans-serif; font-weight: 700; letter-spacing: 0; }
+.body { font-family: 'Atkinson', system-ui, sans-serif; font-weight: 400; letter-spacing: 0; }
+.gold-line { width: 168px; height: 5px; background: var(--gold); border-radius: 99px; margin: 28px 0 32px; }
+.subtitle { font-size: 42px; line-height: 1.28; color: var(--graphite); }
+.tiny { font-size: 24px; line-height: 1.3; color: var(--graphite); }
+.panel { background: rgba(255,253,248,.91); border: 1px solid rgba(11,37,69,.18); box-shadow: 0 22px 72px rgba(11,37,69,.10); backdrop-filter: blur(8px); }
+.stat { background: rgba(255,253,248,.84); border: 1px solid rgba(11,37,69,.16); border-radius: 24px; padding: 44px 44px; min-height: 250px; }
+.stat .number { font: 780 74px/1 'Source Serif', Georgia, serif; color: var(--navy); margin-bottom: 20px; }
+.stat .label { font: 700 30px/1.2 'Space Grotesk', sans-serif; color: var(--graphite); }
+.node { position: absolute; z-index: 3; width: 390px; min-height: 118px; padding: 28px 32px; border-radius: 24px; background: rgba(255,253,248,.94); border: 1px solid rgba(11,37,69,.24); box-shadow: 0 20px 60px rgba(11,37,69,.08); display: grid; place-items: center; text-align: center; font: 700 36px/1.14 'Space Grotesk', sans-serif; color: var(--navy); }
+</style></head><body><main class="frame"><img class="bg subtle" src="file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/video-assets/kaggle-2026/source/backgrounds/11-classroom-loop-background.png" alt=""><div class="veil-soft"></div><div style="position:absolute; inset:70px; border:1px solid rgba(11,37,69,.08); border-radius:42px;"></div><div style="position:absolute; left:110px; right:110px; top:150px; height:1px; background:rgba(11,37,69,.08)"></div><div style="position:absolute; left:110px; right:110px; bottom:150px; height:1px; background:rgba(11,37,69,.08)"></div><svg width="1920" height="1080" style="position:absolute; inset:0; z-index:2" aria-hidden="true"><defs><marker id="arrow" markerWidth="18" markerHeight="18" refX="9" refY="9" orient="auto"><path d="M2,2 L16,9 L2,16 z" fill="#0B2545" opacity="0.66"/></marker></defs><circle cx="960" cy="540" r="310" fill="none" stroke="#0B2545" stroke-width="4" opacity="0.28" stroke-dasharray="7 18"/><path d="M960 230 C1320 240 1360 525 1225 710" fill="none" stroke="#0B2545" stroke-width="6" opacity="0.52" marker-end="url(#arrow)"/><path d="M1215 720 C1045 930 700 865 665 615" fill="none" stroke="#0B2545" stroke-width="6" opacity="0.52" marker-end="url(#arrow)"/><path d="M660 605 C550 350 715 235 950 230" fill="none" stroke="#0B2545" stroke-width="6" opacity="0.52" marker-end="url(#arrow)"/></svg><div class="node" style="left:765px; top:150px">Classroom signal</div><div class="node" style="left:1245px; top:478px">Gemma 4 synthesis</div><div class="node" style="left:765px; top:812px">Teacher / EA action</div><div class="node" style="left:285px; top:478px">Classroom memory</div></main></body></html>

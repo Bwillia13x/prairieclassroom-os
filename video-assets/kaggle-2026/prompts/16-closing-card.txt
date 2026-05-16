@@ -1,0 +1,14 @@
+Filename: 16-closing-card.png
+Exact on-screen text:
+PrairieClassroom OS
+Built with Gemma 4
+Synthetic Alberta classroom demo
+
+Original requested prompt:
+Create a hopeful closing image blending an Alberta prairie sunrise with an empty elementary classroom interior. Subtle digital signal lines fading into the horizon. Render exact text: "PrairieClassroom OS" large, "Built with Gemma 4", and "Synthetic Alberta classroom demo". Warm, calm, premium, no logos, no other text.
+
+Imagegen source prompt used in this render pass:
+Alberta prairie sunrise blended with empty elementary classroom interior, subtle digital signal lines fading into horizon, no text, no logos.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

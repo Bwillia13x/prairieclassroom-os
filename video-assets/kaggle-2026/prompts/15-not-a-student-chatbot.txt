@@ -1,0 +1,13 @@
+Filename: 15-not-a-student-chatbot.png
+Exact on-screen text:
+Not a student chatbot.
+A coordination layer for the adults holding the classroom together.
+
+Original requested prompt:
+Create a quiet, serious documentary classroom still: empty classroom before the bell, teacher desk prepared, materials arranged, warm winter light. Render exact text: "Not a student chatbot." and below it "A coordination layer for the adults holding the classroom together." Deep navy serif heading, graphite subtitle, muted gold line. No other text.
+
+Imagegen source prompt used in this render pass:
+Quiet empty classroom before the bell, prepared teacher desk, warm winter light, premium documentary look, negative space for text, no readable posters, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

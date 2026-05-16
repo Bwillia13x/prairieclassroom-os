@@ -21,8 +21,8 @@ export const PROOF_DOC_PATHS = [
 // for proof surfaces. This constant still backs `readHostedProofSummary`
 // callers that don't have a surfaces object, and the `ops-scripts.test.ts`
 // fixtures that construct synthetic proof surfaces inline.
-export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-05-03T17-59-42-981Z-80702";
-export const CURRENT_HOSTED_ATTEMPT_RUN_DIR = "output/release-gate/2026-05-08T22-47-12-031Z-43430";
+export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-05-16T19-53-39-742Z-56491";
+export const CURRENT_HOSTED_ATTEMPT_RUN_DIR = "output/release-gate/2026-05-16T19-53-39-742Z-56491";
 export const TARGETED_HOSTED_SMOKE_COMMAND =
   "PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api";
 export const LOCAL_PREP_COMMANDS = [
@@ -100,6 +100,7 @@ export function validateProofSurfaces(surfaces) {
     return { ok: false, issues };
   }
   const currentAttemptArtifact = extractCurrentHostedAttemptArtifact(surfaces);
+  const currentAttemptIsPassing = currentAttemptArtifact === canonicalArtifact;
 
   for (const docPath of PROOF_DOC_PATHS) {
     if (!(docPath in surfaces)) {
@@ -115,16 +116,26 @@ export function validateProofSurfaces(surfaces) {
         issues,
         docPath,
         content,
-        /(latest attempted hosted gate|current hosted refresh|May 8 hosted refresh|current hosted attempt)/i,
+        /(latest attempted hosted gate|current hosted refresh|May (8|16) hosted refresh|current hosted attempt)/i,
         "current hosted attempt language",
       );
-      requirePattern(
-        issues,
-        docPath,
-        content,
-        /(failed|blocked|did not produce a passing|not a passing baseline|no current clean full hosted gate)/i,
-        "current hosted blocker language",
-      );
+      if (currentAttemptIsPassing) {
+        requirePattern(
+          issues,
+          docPath,
+          content,
+          /(current hosted refresh.*pass|latest attempted hosted gate.*pass|full hosted release gate completed|current clean full hosted gate|passing baseline)/i,
+          "current hosted passing language",
+        );
+      } else {
+        requirePattern(
+          issues,
+          docPath,
+          content,
+          /(failed|blocked|did not produce a passing|not a passing baseline|no current clean full hosted gate)/i,
+          "current hosted blocker language",
+        );
+      }
     }
     requireSubstring(issues, docPath, content, DEFAULT_GEMINI_MODEL_IDS.live, "hosted live model id");
     requireSubstring(issues, docPath, content, DEFAULT_GEMINI_MODEL_IDS.planning, "hosted planning model id");

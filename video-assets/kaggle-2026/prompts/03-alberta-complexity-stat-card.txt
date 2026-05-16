@@ -1,0 +1,16 @@
+Filename: 03-alberta-complexity-stat-card.png
+Exact on-screen text:
+Alberta classrooms are scaling in complexity.
+835,089 K–12/ECS students
+44,000+ EAL students in CBE
+26,000 specialized learning needs in CBE
+Sources: Alberta Education · CBE 2025–26 budget
+
+Original requested prompt:
+Create a refined institutional stat card on warm ivory paper background with subtle outline of Alberta and faint classroom network nodes. Render exact text. Large heading: "Alberta classrooms are scaling in complexity." Three stat blocks below. Deep navy numbers, graphite labels, muted gold vertical dividers. Tiny footer: "Sources: Alberta Education · CBE 2025–26 budget". No other text.
+
+Imagegen source prompt used in this render pass:
+Warm ivory institutional stat-card background with subtle Alberta outline and classroom network nodes, no text or numbers.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

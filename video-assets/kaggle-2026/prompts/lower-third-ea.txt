@@ -1,0 +1,10 @@
+Filename: lower-third-ea.png
+Exact on-screen text:
+EA Briefing
+Planning context → adult handoff
+
+Production prompt:
+Create a deterministic transparent 1920x1080 PNG/SVG-style lower-third overlay for PrairieClassroom OS. Transparent canvas. Semi-transparent ivory rounded rectangle in lower-left. Deep navy title. Graphite subtitle. Thin muted gold line at left. No other text.
+
+Timeline use:
+Clip E EA Briefing

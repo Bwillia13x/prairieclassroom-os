@@ -1,0 +1,30 @@
+Vercel CLI 50.1.6
+Retrieving project…
+Deploying echoexes-projects/prairieclassroom-os
+Uploading [--------------------] (0.0B/1MB)
+Uploading [=====---------------] (274.0KB/1MB)
+Uploading [==========----------] (537.5KB/1MB)
+Uploading [===============-----] (806.1KB/1MB)
+Uploading [====================] (1.0MB/1MB)
+Inspect: https://vercel.com/echoexes-projects/prairieclassroom-os/5Hs6xpgvUtBVN2GwQwys24J6SAaz [3s]
+Production: https://prairieclassroom-3y1b9umuz-echoexes-projects.vercel.app [3s]
+https://prairieclassroom-3y1b9umuz-echoexes-projects.vercel.appBuilding...
+Building...
+Building: Running build in Washington, D.C., USA (East) – iad1
+Building: Build machine configuration: 2 cores, 8 GB
+Building: Retrieving list of deployment files...
+Building: Previous build caches not available.
+Building: Downloading 607 deployment files...
+Building: Running "vercel build"
+Building: Vercel CLI 53.3.2
+Building: Installing dependencies...
+Building: npm error code E404
+Building: npm error 404 Not Found - GET https://registry.npmjs.org/@prairie%2fshared - Not found
+Building: npm error 404
+Building: npm error 404  The requested resource '@prairie/shared@*' could not be found or you do not have permission to access it.
+Building: npm error 404
+Building: npm error 404 Note that you can also install from a
+Building: npm error 404 tarball, folder, http url, or git url.
+Building: npm error A complete log of this run can be found in: /vercel/.npm/_logs/2026-05-16T18_51_41_350Z-debug-0.log
+Building: Error: Command "npm install" exited with 1
+Error: Command "npm install" exited with 1

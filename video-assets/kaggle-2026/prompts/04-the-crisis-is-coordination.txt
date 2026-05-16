@@ -1,0 +1,12 @@
+Filename: 04-the-crisis-is-coordination.png
+Exact on-screen text:
+The crisis is coordination.
+
+Original requested prompt:
+Create a cinematic still of a teacher seen from behind before school starts, facing a blank whiteboard, with stacks of lesson materials and an empty classroom. No visible face, no students, no readable classroom posters. Add exact text in large deep navy serif type over the right half: "The crisis is coordination." Add a single muted gold line. No other text.
+
+Imagegen source prompt used in this render pass:
+Teacher seen from behind before school, blank whiteboard, stacks of lesson materials, empty classroom, right-side negative space, no visible face, no readable posters, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

@@ -1,0 +1,730 @@
+[
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Today",
+      "routeName": "today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Read the room, then choose the lens.",
+      "routeName": "classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Plan, forecast, and carry-forward queue",
+      "routeName": "tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Shape the week before it shapes tomorrow",
+      "routeName": "week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Prepare the material before it reaches the room.",
+      "routeName": "prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Coordinate the adults without losing the thread.",
+      "routeName": "ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Turn classroom memory into accountable follow-through.",
+      "routeName": "review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Today",
+      "routeName": "today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Read the room, then choose the lens.",
+      "routeName": "classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Plan, forecast, and carry-forward queue",
+      "routeName": "tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Shape the week before it shapes tomorrow",
+      "routeName": "week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Prepare the material before it reaches the room.",
+      "routeName": "prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Coordinate the adults without losing the thread.",
+      "routeName": "ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Turn classroom memory into accountable follow-through.",
+      "routeName": "review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Today",
+      "routeName": "today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Read the room, then choose the lens.",
+      "routeName": "classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Plan, forecast, and carry-forward queue",
+      "routeName": "tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Shape the week before it shapes tomorrow",
+      "routeName": "week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Prepare the material before it reaches the room.",
+      "routeName": "prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Coordinate the adults without losing the thread.",
+      "routeName": "ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Turn classroom memory into accountable follow-through.",
+      "routeName": "review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Today",
+      "routeName": "today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Read the room, then choose the lens.",
+      "routeName": "classroom",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Plan, forecast, and carry-forward queue",
+      "routeName": "tomorrow",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Shape the week before it shapes tomorrow",
+      "routeName": "week",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Prepare the material before it reaches the room.",
+      "routeName": "prep",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Coordinate the adults without losing the thread.",
+      "routeName": "ops",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "demoApi": "prairie-static-demo-api",
+      "heroColor": "rgb(9, 37, 66)",
+      "heroOpacity": "1",
+      "heroText": "Turn classroom memory into accountable follow-through.",
+      "routeName": "review",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  }
+]

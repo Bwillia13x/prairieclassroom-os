@@ -9,9 +9,12 @@ import {
 } from "../hackathon-proof.mjs";
 import { DEFAULT_GEMINI_MODEL_IDS } from "../gemini-api-preflight.mjs";
 
+const FAILED_HOSTED_ATTEMPT_RUN_DIR = "output/release-gate/2026-05-16T19-20-45-520Z-14783";
+
 function consistentSurfaces({
   artifact = HOSTED_PROOF_RUN_DIR,
   attemptArtifact = null,
+  attemptStatus = "failed",
   includeProofBriefLine = true,
   proofBriefLineOverride = null,
 } = {}) {
@@ -24,9 +27,15 @@ function consistentSurfaces({
     `Artifact reference: ${artifact}`,
   ];
   if (attemptArtifact) {
-    sharedClauses.push(
-      `Current hosted refresh failed and did not produce a passing baseline: ${attemptArtifact}`,
-    );
+    if (attemptStatus === "passed") {
+      sharedClauses.push(
+        `Current hosted refresh passed as a passing baseline: ${attemptArtifact}`,
+      );
+    } else {
+      sharedClauses.push(
+        `Current hosted refresh failed and did not produce a passing baseline: ${attemptArtifact}`,
+      );
+    }
   }
 
   const proofBriefLines = [...sharedClauses];
@@ -98,14 +107,24 @@ describe("validateProofSurfaces — derives canonical artifact from proof-brief"
 
   it("passes when surfaces include both last-passing and current-attempt hosted artifacts", () => {
     const result = validateProofSurfaces(
-      consistentSurfaces({ attemptArtifact: CURRENT_HOSTED_ATTEMPT_RUN_DIR }),
+      consistentSurfaces({ attemptArtifact: FAILED_HOSTED_ATTEMPT_RUN_DIR }),
+    );
+    assert.deepEqual(result, { ok: true, issues: [] });
+  });
+
+  it("passes when the latest current attempt is the canonical passing hosted artifact", () => {
+    const result = validateProofSurfaces(
+      consistentSurfaces({
+        attemptArtifact: HOSTED_PROOF_RUN_DIR,
+        attemptStatus: "passed",
+      }),
     );
     assert.deepEqual(result, { ok: true, issues: [] });
   });
 
   it("flags docs that omit the current attempted hosted artifact when proof-brief declares one", () => {
-    const surfaces = consistentSurfaces({ attemptArtifact: CURRENT_HOSTED_ATTEMPT_RUN_DIR });
-    surfaces["README.md"] = surfaces["README.md"].replace(CURRENT_HOSTED_ATTEMPT_RUN_DIR, "missing-current-attempt");
+    const surfaces = consistentSurfaces({ attemptArtifact: FAILED_HOSTED_ATTEMPT_RUN_DIR });
+    surfaces["README.md"] = surfaces["README.md"].replace(FAILED_HOSTED_ATTEMPT_RUN_DIR, "missing-current-attempt");
 
     const result = validateProofSurfaces(surfaces);
     assert.equal(result.ok, false);
@@ -140,7 +159,7 @@ describe("extractHostedProofRunDir — preferred path matches the real proof-bri
   });
 
   it("prefers the current attempted hosted gate for readycheck when present", () => {
-    const surfaces = consistentSurfaces({ attemptArtifact: CURRENT_HOSTED_ATTEMPT_RUN_DIR });
+    const surfaces = consistentSurfaces({ attemptArtifact: CURRENT_HOSTED_ATTEMPT_RUN_DIR, attemptStatus: "passed" });
 
     const extracted = extractHostedProofRunDir(surfaces);
     assert.equal(extracted, CURRENT_HOSTED_ATTEMPT_RUN_DIR);

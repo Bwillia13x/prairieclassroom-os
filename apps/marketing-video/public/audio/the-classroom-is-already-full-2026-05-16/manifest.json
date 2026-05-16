@@ -1,0 +1,21 @@
+{
+  "generatedAt": "2026-05-16T21:01:44.376Z",
+  "modelId": "eleven_multilingual_v2",
+  "outputFormat": "mp3_44100_128",
+  "voice": {
+    "voiceId": "EXAVITQu4vr4xnSDxMaL",
+    "name": "Sarah - Mature, Reassuring, Confident",
+    "labels": {
+      "use_case": "entertainment_tv",
+      "gender": "female",
+      "accent": "american",
+      "age": "young",
+      "language": "en",
+      "descriptive": "professional"
+    }
+  },
+  "textCharacters": 2364,
+  "files": {
+    "voiceover": "apps/marketing-video/public/audio/the-classroom-is-already-full-2026-05-16/voiceover.mp3"
+  }
+}

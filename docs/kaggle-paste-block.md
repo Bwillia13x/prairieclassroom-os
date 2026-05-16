@@ -63,8 +63,7 @@ Safety is built into the product design. PrairieClassroom OS uses observational 
 The checked-in repo currently proves three things:
 
 - the no-cost structural gate passes on the current branch
-- the last passing hosted Gemma 4 baseline passed `13/13` on synthetic/demo data
-- the current May 8 hosted refresh is blocked at `output/release-gate/2026-05-08T22-47-12-031Z-43430` and should not be described as a clean pass
+- the current hosted Gemma 4 baseline passed `13/13` on synthetic/demo data at `output/release-gate/2026-05-16T19-53-39-742Z-56491`
 
 The system is therefore not just a demo concept. It is a working Gemma-4-native operating layer for differentiated instruction, classroom memory, family communication, and next-day planning.
 

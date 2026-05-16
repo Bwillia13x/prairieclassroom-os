@@ -1,0 +1,7 @@
+commit 937d0736b12572d4609bf55b9de36da6efbcd919 (HEAD -> main, origin/main, origin/HEAD)
+Author:     benjaminwilliams <bdrewwilliams@gmail.com>
+AuthorDate: Sat May 16 12:41:11 2026 -0600
+Commit:     benjaminwilliams <bdrewwilliams@gmail.com>
+CommitDate: Sat May 16 12:41:11 2026 -0600
+
+    Polish Today hero and shell caveats

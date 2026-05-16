@@ -36,7 +36,9 @@ describe("buildProofStatusMarkdown — hosted Gemini awareness", () => {
     });
 
     assert.match(md, /Hosted Gemma 4 proof: Passing baseline on synthetic\/demo data/);
+    assert.match(md, /Current hosted refresh: latest attempted hosted Gemini gate passed at `output\/release-gate\/HOSTED-ID`/);
     assert.match(md, /Latest passed hosted Gemini gate: `output\/release-gate\/HOSTED-ID`/);
+    assert.match(md, /Latest attempted hosted Gemini gate: `output\/release-gate\/HOSTED-ID`/);
     assert.match(md, /Latest passed mock gate: `output\/release-gate\/MOCK-ID`/);
     assert.match(md, /mock and Ollama remain the default no-spend lanes/);
     assert.match(md, /npm run gemini:readycheck/);
@@ -88,6 +90,35 @@ describe("buildProofStatusMarkdown — hosted Gemini awareness", () => {
 
     assert.doesNotMatch(md, /Hosted Gemma 4 proof/);
     assert.doesNotMatch(md, /## Hosted Proof/);
+  });
+
+  it("keeps a failed latest hosted attempt separate from an older passing hosted proof", () => {
+    const md = buildProofStatusMarkdown({
+      rootDir: ROOT,
+      preflights: [],
+      runSummaries: [
+        mockRun({
+          mode: "gemini",
+          status: "failed",
+          id: "FAILED-HOSTED-ID",
+          extra: { failed_at: "2099-01-03T00:00:00.000Z" },
+        }),
+        mockRun({
+          mode: "gemini",
+          status: "passed",
+          id: "PASSED-HOSTED-ID",
+          extra: {
+            completed_at: "2099-01-02T00:00:00.000Z",
+            gemini_model_ids: { live: "gemma-live", planning: "gemma-planning" },
+          },
+        }),
+        mockRun({ mode: "mock", status: "passed", id: "MOCK-ID" }),
+      ],
+    });
+
+    assert.match(md, /Latest passed hosted Gemini gate: `output\/release-gate\/PASSED-HOSTED-ID`/);
+    assert.match(md, /Latest attempted hosted Gemini gate: `output\/release-gate\/FAILED-HOSTED-ID`/);
+    assert.match(md, /this is not a passing baseline/);
   });
 });
 

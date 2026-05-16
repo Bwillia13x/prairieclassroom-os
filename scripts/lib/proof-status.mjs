@@ -153,7 +153,7 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries, pr
   const latestMockPass = runSummaries.find((run) => run.inference_mode === "mock" && run.status === "passed") ?? null;
   const latestOllamaPass = runSummaries.find((run) => run.inference_mode === "ollama" && run.status === "passed") ?? null;
   const latestHostedPass = runSummaries.find((run) => run.inference_mode === "gemini" && run.status === "passed") ?? null;
-  const latestHostedAttempt = runSummaries.find((run) => run.inference_mode === "gemini" && run.status !== "passed") ?? null;
+  const latestHostedAttempt = runSummaries.find((run) => run.inference_mode === "gemini") ?? null;
   const hostGroups = new Map();
 
   for (const preflight of preflights) {
@@ -232,7 +232,9 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries, pr
         "- Hosted Gemma 4 proof: Passing baseline on synthetic/demo data through the guarded Gemini lane.",
         ...(hostedAttemptArtifact
           ? [
-              `- Current hosted refresh: latest attempted hosted Gemini gate ${hostedAttemptSummary?.status ?? "failed"} at \`${hostedAttemptArtifact}\`; this is not a passing baseline.`,
+              hostedAttemptSummary?.status === "passed"
+                ? `- Current hosted refresh: latest attempted hosted Gemini gate passed at \`${hostedAttemptArtifact}\`; this is the current passing baseline.`
+                : `- Current hosted refresh: latest attempted hosted Gemini gate ${hostedAttemptSummary?.status ?? "failed"} at \`${hostedAttemptArtifact}\`; this is not a passing baseline.`,
             ]
           : []),
         `- Privacy-first Ollama school-deployment proof: ${verdict}`,
@@ -276,7 +278,9 @@ export function buildProofStatusMarkdown({ rootDir, preflights, runSummaries, pr
         "",
         ...(hostedAttemptArtifact
           ? [
-              `The current hosted attempt at \`${hostedAttemptArtifact}\` failed and did not produce a passing baseline; keep the last passing artifact above as the hosted proof baseline.`,
+              hostedAttemptSummary?.status === "passed"
+                ? `The current hosted attempt at \`${hostedAttemptArtifact}\` passed and is the hosted proof baseline.`
+                : `The current hosted attempt at \`${hostedAttemptArtifact}\` failed and did not produce a passing baseline; keep the last passing artifact above as the hosted proof baseline.`,
               "",
             ]
           : []),

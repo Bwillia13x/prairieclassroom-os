@@ -1,0 +1,42 @@
+{
+  "method": "Meta+K",
+  "paletteEvalKeyboard": {
+    "hasPrep": true,
+    "hasToday": true,
+    "inputPlaceholder": "Jump to panel, classroom, or action…",
+    "open": true,
+    "textStart": "ACTIONS ACTION Recommended now: Differentiate Now NOW PAGES PANEL Today LIVE-DAY TRIAGE — RECOMMENDED NEXT MOVE, IMMEDIATE RISKS, CARRY-FORWARD. 1 PANEL Classroom BIRD'S-EYE DASHBOARD — HEALTH, COVERAGE, QUEUES, STUDENT WATCH. 2 PANEL Tomorrow NEXT-DAY PLAN, COMPLEXITY FORECAST, AND QUEUED CARRY-FORWARD. 3 PANEL Week MULTI-DAY COVERAGE, UPCOMING EVENTS, PLANNING RHYTHM, PATTERN PRESSURE. 4 PANEL Prep LESSON ADAPTATION AND LANGUAGE SUPPORTS — DIFFERENTIATE AND LANGUAGE TOOLS. 5 PANEL Ops ADULT COORDINATION — LOG INTERVENTION, EA BRIEFING, EA LOAD, SUBSTITUTE PACKET. 6 PANEL Review FAMILY MESSAG"
+  },
+  "paletteLogsKeyboard": [
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-16T19:10:02.635Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    }
+  ]
+}

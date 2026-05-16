@@ -1,0 +1,15 @@
+Filename: 14-proof-of-work.png
+Exact on-screen text:
+Proof of work
+12 workflow tools
+13 prompt classes
+134 eval cases
+
+Original requested prompt:
+Create a premium technical proof card: repository diagram, evaluation cards, checkmarks, test report pages, laptop edge, no readable code. Render exact text: "Proof of work" plus three stat blocks: "12 workflow tools", "13 prompt classes", "134 eval cases". Deep navy and muted gold, restrained technical audit aesthetic. No other text.
+
+Imagegen source prompt used in this render pass:
+Technical proof card background with repository blocks, eval cards, checkmarks, test pages, laptop edge, no readable code or text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

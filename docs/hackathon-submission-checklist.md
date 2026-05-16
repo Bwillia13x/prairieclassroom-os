@@ -6,39 +6,41 @@ The submission window is owned by [plans/2026-05-18-submission-plan.md](./plans/
 
 ## Current status
 
-Checked against the repo on 2026-05-15 after final local pre-submit, live browser QA, Vercel production inspection, deployed public-demo smoke, deployed route/mobile/tablet/wide submission-readiness screenshots, Lighthouse spot checks, and security validation.
+Checked against the repo on 2026-05-16 after final local pre-submit, local teacher-workflow browser QA, Vercel public root/canonical demo inspection, public-demo smoke, release-gate validation, and proof/doc synchronization.
 
-- Mock structural gate: passing at `output/release-gate/2026-05-15T12-57-10-977Z-52253`
-- Local pre-submit gate: `npm run submission:final-check -- --skip-publication-check` passed 7/7 on 2026-05-15, including the mock release gate at `output/release-gate/2026-05-15T12-57-10-977Z-52253`.
+- Mock structural gate: passing at `output/release-gate/2026-05-16T22-26-39-727Z-59832`
+- Local browser QA: `qa/final-release/2026-05-16-local-e2e-qa/` passed cleanly after restarting the local stack with the repo-documented screenshot-proof rate-limit bypass; routes, core workflows, command palette, and legacy deep links were exercised.
+- Public demo QA: `qa/final-release/2026-05-16-public-demo-check/` passed; root CTA opens the canonical static-first demo, `smoke:public-demo` passes, and the public demo reports `prairie-static-demo-api`.
+- Local pre-submit gate: `npm run submission:final-check -- --skip-publication-check` passed 7/7 on 2026-05-16, including the mock release gate at `output/release-gate/2026-05-16T22-26-39-727Z-59832`.
 - Publication gate: `npm run submission:final-check -- --skip-release-gate` still fails on publication placeholders and required URL validation until the public YouTube URL and Kaggle writeup URL are filled in. The live demo URL is now real and the gate runs `npm run smoke:public-demo` against it unless explicitly skipped.
-- Hosted Gemma 4 proof lane: current May 8 hosted refresh failed and no current clean full hosted gate was produced. Latest attempted hosted gate: `output/release-gate/2026-05-08T22-47-12-031Z-43430`.
-- Hosted Gemma 4 last passing baseline: passing on synthetic/demo data at `output/release-gate/2026-05-03T17-59-42-981Z-80702`.
-- Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`; provider high-demand block on `fcst-001-demo-schema`).
-- Latest completed May 8 hosted eval failure summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-failure-summary.json`
-- Latest May 8 cost rollup: `output/cost-rollups/2026-05-08-rollup.json`
+- Hosted Gemma 4 proof lane: current May 16 hosted refresh passed and produced a clean full hosted gate. Latest attempted hosted gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`.
+- Hosted Gemma 4 current passing baseline: passing on synthetic/demo data at `output/release-gate/2026-05-16T19-53-39-742Z-56491`.
+- Latest completed May 16 hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`).
+- Latest completed May 16 hosted eval failure summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`
+- Latest May 16 cost rollup: `output/cost-rollups/2026-05-16-rollup.json`
 - Hosted models: `gemma-4-26b-a4b-it` and `gemma-4-31b-it`; full hosted rerun command is `npm run release:gate:gemini`.
 - Ollama proof on this machine: **not proven**. Latest preflight `output/host-preflight/2026-05-11T16-10-25-972Z.json` reports no Ollama CLI, 8.00 GiB RAM, and 16.76 GiB available disk; defer until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D).
 - Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,412 (within 1,500-word limit)
 - Kaggle paste block: synced to writeup
 - Submission copy pack: [submission-copy-pack.md](./submission-copy-pack.md) now carries pre-publish placeholder and claim guardrails for video, Kaggle, repository, and media-gallery fields.
-- Public code repository: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; verify `git rev-parse HEAD`, `git rev-parse origin/main`, and `git ls-remote origin refs/heads/main` match during final closeout.
+- Public code repository: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; final pre-push closeout on 2026-05-16 verified `git rev-parse HEAD`, `git rev-parse origin/main`, and `git ls-remote origin refs/heads/main` all resolved to `937d0736b12572d4609bf55b9de36da6efbcd919` before the final verification commit.
 - Public-video script: final local video QA passed for `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps); upload/public YouTube URL still pending. A public web search on 2026-05-14 did not find an existing PrairieClassroom OS YouTube URL to backfill.
 - Publish preflight: with Node `v25.8.2`, `npm run submission:publish-preflight` passes local file checks, upstream configuration, Vercel CLI availability, Vercel project link, Render CLI/token availability, and public live demo URL. It remains blocked in a plain shell by branch/worktree sync until the readiness commit is pushed, by hosted Gemma env checks until `.env` is exported, and by missing public video and Kaggle writeup URLs. Vercel production stores the server-side hosted Gemma key/guard as encrypted env vars, and Render hosted services have been created.
 - Judge/demo URL: `?demo=true` skips first-run onboarding and role-selection modals for the demo classroom
 - Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
 - Local release-ready memo: [evidence/2026-05-05-local-release-ready-memo.md](./evidence/2026-05-05-local-release-ready-memo.md) records the current artifact map and the external lane that is still incomplete.
 - Strategic posture: lead with multimodal magic + teacher voice; treat offline-Ollama as the third WOW lever, capturable the moment a viable host arrives
-- Live demo deploy: PUBLIC SYNTHETIC DEMO READY / STATIC-FIRST VERCEL DEMO — Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web`, the production root now opens a PrairieClassroom OS landing page with a primary CTA into the public demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`, stale explicit demo classroom queries settle back onto that demo classroom, and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes against the Vercel frontend using bundled synthetic classroom data. Fresh deployed submission-readiness evidence is in `qa/final-release/2026-05-15-vercel-submission-final/`, covering the main capture surfaces before the landing-page addition, static-fallback-labelled Differentiate output, command palette, desktop/mobile/tablet/wide fit, console/network capture, security/header checks, and Lighthouse spot checks. Public video and Kaggle submission URLs are still missing; true cellular-browser smoke is still pending. This public smoke does not replace the last passing full hosted release gate.
+- Live demo deploy: PUBLIC SYNTHETIC DEMO READY / STATIC-FIRST VERCEL DEMO — Vercel project `echoexes-projects/prairieclassroom-os` is linked from `apps/web`, the production root now opens a PrairieClassroom OS landing page with a primary CTA into the public demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`, stale explicit demo classroom queries settle back onto that demo classroom, and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` passes against the Vercel frontend using bundled synthetic classroom data. Fresh public-demo evidence is in `qa/final-release/2026-05-16-public-demo-check/`; local teacher-workflow browser QA is in `qa/final-release/2026-05-16-local-e2e-qa/`. Public video and Kaggle submission URLs are still missing; true cellular-browser smoke is still pending. This public smoke does not replace the last passing full hosted release gate.
 
 ## Completed safely in repo
 
 - Trimmed the Kaggle writeup to fit the competition word limit and aligned it to the current proof story.
 - Updated the public-video shot list so it no longer claims unproven Ollama/local behavior on this host.
 - Preserved one consistent story across the writeup, proof brief, README, and proof-status docs:
-  - hosted Gemma 4 remains synthetic/demo-only proof evidence, but the current hosted refresh is blocked rather than a new passing baseline
+  - hosted Gemma 4 remains synthetic/demo-only proof evidence, and the current hosted refresh is a new passing baseline
   - Ollama is the intended privacy-first deployment path
 - Kept the current proof references anchored to checked-in artifacts.
-- Refreshed the hosted Gemini proof references to separate the latest attempted hosted gate from the last passing baseline and added a judge-facing short summary.
+- Refreshed the hosted Gemini proof references to reflect the current passing hosted baseline while preserving synthetic/demo, Ollama, and paid-lane boundaries.
 - Added a safe dry-run-first artifact pruning script for reclaiming local disk from old generated outputs.
 - Added roster-scoped memory filtering and reset the demo SQLite memory so stale local test records cannot leak into retrieval citations.
 - Refreshed the current shell and workflow evidence bundle on 2026-05-03 with `npm run ui:evidence`.

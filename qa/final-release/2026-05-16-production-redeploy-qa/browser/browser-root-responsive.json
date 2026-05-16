@@ -1,0 +1,86 @@
+[
+  {
+    "viewport": {
+      "name": "desktop",
+      "width": 1280,
+      "height": 720
+    },
+    "result": {
+      "bodyOverflow": false,
+      "cta": "Enter PrairieClassroom",
+      "h1": "PrairieClassroom OS",
+      "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "result": {
+      "bodyOverflow": false,
+      "cta": "Enter PrairieClassroom",
+      "h1": "PrairieClassroom OS",
+      "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "result": {
+      "bodyOverflow": false,
+      "cta": "Enter PrairieClassroom",
+      "h1": "PrairieClassroom OS",
+      "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "result": {
+      "bodyOverflow": false,
+      "cta": "Enter PrairieClassroom",
+      "h1": "PrairieClassroom OS",
+      "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  }
+]

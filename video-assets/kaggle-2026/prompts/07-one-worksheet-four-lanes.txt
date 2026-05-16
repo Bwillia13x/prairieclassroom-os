@@ -1,0 +1,13 @@
+Filename: 07-one-worksheet-four-lanes.png
+Exact on-screen text:
+One worksheet → four readiness lanes
+Core · Chunked · Extension · EAL supported
+
+Original requested prompt:
+Create a cinematic educational technology image: a paper fractions worksheet on the left transforming into four clean digital lesson variant cards on the right. Deep blue interface glow, warm desk light, no random text. Render exact text: "One worksheet → four readiness lanes" and below it "Core · Chunked · Extension · EAL supported". No other text.
+
+Imagegen source prompt used in this render pass:
+Paper fractions worksheet with unlabeled shapes on left transforming into four blank digital lesson cards on right, deep blue interface glow, warm desk light, no readable text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

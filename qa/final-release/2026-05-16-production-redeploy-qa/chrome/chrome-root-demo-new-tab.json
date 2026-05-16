@@ -1,0 +1,26 @@
+{
+  "chromeRootEval3": {
+    "bodyOverflow": false,
+    "cta": "Enter PrairieClassroom",
+    "h1": "PrairieClassroom OS",
+    "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "url": "https://prairieclassroom-os.vercel.app/"
+  },
+  "chromeDemoEval3": {
+    "assetUrls": [
+      "https://prairieclassroom-os.vercel.app/assets/index-XQe-noro.js",
+      "https://prairieclassroom-os.vercel.app/theme-init.js",
+      "https://prairieclassroom-os.vercel.app/assets/index-Bwe3RgQ_.css",
+      "https://prairieclassroom-os.vercel.app/assets/App-BLYOr-QG.css",
+      "https://prairieclassroom-os.vercel.app/assets/DataVisualizations-B1HYPV_4.css"
+    ],
+    "blockers": false,
+    "bodyOverflow": false,
+    "demoApi": "prairie-static-demo-api",
+    "hasToday": true,
+    "title": "PrairieClassroom OS",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+  },
+  "chromeLogs3": [],
+  "note": "Chrome extension read-only evaluate sandbox does not expose localStorage/sessionStorage/performance; this used a new Chrome tab and verified visible first-entry/demo state without mutating storage."
+}

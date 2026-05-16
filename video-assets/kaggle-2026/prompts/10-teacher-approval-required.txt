@@ -1,0 +1,14 @@
+Filename: 10-teacher-approval-required.png
+Exact on-screen text:
+Draft only.
+Teacher approval required.
+No autonomous sends.
+
+Original requested prompt:
+Create a calm close-up of a teacher reviewing a family-message draft on a laptop in an empty classroom. Laptop UI should be generic and blurred, no readable interface text. Add exact text in a clean ivory overlay panel: "Draft only." then "Teacher approval required." then "No autonomous sends." Use deep navy text and muted gold checkmarks or lines. No other text.
+
+Imagegen source prompt used in this render pass:
+Teacher reviewing blurred generic family-message draft on laptop in empty classroom, calm safety mood, no readable UI text, clear panel space, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

@@ -5,12 +5,12 @@ _This document is generated from zero-cost host-preflight and release-gate artif
 ## Verdict
 
 - Hosted Gemma 4 proof: Passing baseline on synthetic/demo data through the guarded Gemini lane.
-- Current hosted refresh: latest attempted hosted Gemini gate failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; this is not a passing baseline.
+- Current hosted refresh: latest attempted hosted Gemini gate passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; this is the current passing baseline.
 - Privacy-first Ollama school-deployment proof: Blocked pending a viable zero-cost Ollama host.
 - Zero-cost enforcement: mock and Ollama remain the default no-spend lanes; hosted Gemini is explicit opt-in only.
-- Latest passed mock gate: `output/release-gate/2026-05-15T12-57-10-977Z-52253`
-- Latest passed hosted Gemini gate: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
-- Latest attempted hosted Gemini gate: `output/release-gate/2026-05-08T22-47-12-031Z-43430`
+- Latest passed mock gate: `output/release-gate/2026-05-16T22-26-39-727Z-59832`
+- Latest passed hosted Gemini gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
+- Latest attempted hosted Gemini gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
 - Latest passed Ollama gate: _none recorded_
 
 ## Commands
@@ -29,9 +29,9 @@ npm run logs:summary
 
 | Provider | Models | Scope | Artifact |
 | --- | --- | --- | --- |
-| Gemini API | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` | Synthetic/demo only | `output/release-gate/2026-05-03T17-59-42-981Z-80702` |
+| Gemini API | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` | Synthetic/demo only | `output/release-gate/2026-05-16T19-53-39-742Z-56491` |
 
-The current hosted attempt at `output/release-gate/2026-05-08T22-47-12-031Z-43430` failed and did not produce a passing baseline; keep the last passing artifact above as the hosted proof baseline.
+The current hosted attempt at `output/release-gate/2026-05-16T19-53-39-742Z-56491` passed and is the hosted proof baseline.
 
 ## Proven Hosts
 

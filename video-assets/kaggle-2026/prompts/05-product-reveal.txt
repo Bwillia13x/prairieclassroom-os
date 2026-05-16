@@ -1,0 +1,14 @@
+Filename: 05-product-reveal.png
+Exact on-screen text:
+PrairieClassroom OS
+A teacher operating layer for inclusive classrooms
+Built with Gemma 4
+
+Original requested prompt:
+Create a premium title card blending an Alberta classroom interior with a quiet prairie horizon through the windows. Warm ivory overlays, deep navy typography, restrained muted gold line. Render exact text: "PrairieClassroom OS" large, "A teacher operating layer for inclusive classrooms" beneath, and "Built with Gemma 4" as small footer. No logos. No other text.
+
+Imagegen source prompt used in this render pass:
+Quiet Alberta classroom interior blended with prairie horizon through windows, warm ivory overlay feel, no text, no logos.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

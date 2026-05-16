@@ -5,6 +5,24 @@ Target: PrairieClassroom OS web app, production Vite preview
 Base URL: `http://localhost:4173/?demo=true`
 Additional route: `http://localhost:4173/?demo=true&tab=today&classroom=demo-okafor-grade34`
 
+## 2026-05-16 Public Demo Rerun
+
+Target: `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`
+
+Artifacts:
+
+- `qa/performance/lighthouse/2026-05-16-rerun/public-canonical-desktop.report.json`
+- `qa/performance/lighthouse/2026-05-16-rerun/public-canonical-desktop.report.html`
+- `qa/performance/lighthouse/2026-05-16-rerun/public-canonical-mobile.report.json`
+- `qa/performance/lighthouse/2026-05-16-rerun/public-canonical-mobile.report.html`
+
+| Mode | Perf | A11y | BP | SEO | FCP | LCP | TBT | CLS | Transfer |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Desktop | 100 | 100 | 100 | 100 | 0.36s | 0.56s | 0ms | 0.000004 | 440 KiB |
+| Mobile | 95 | 100 | 100 | 100 | 2.05s | 2.22s | 29ms | 0 | 244 KiB |
+
+Status: performance-polished for the public static-first demo lane. Lighthouse lab does not provide field INP; TBT remains the lab proxy.
+
 ## Method
 
 - Built `apps/web` with `VITE_API_URL=http://localhost:3101/api`.

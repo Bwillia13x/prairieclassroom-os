@@ -11,18 +11,18 @@ This document is the operator source of truth for the hosted Gemma 4 hackathon l
 
 ## Current Proof Status
 
-- Hosted Gemini proof lane: current hosted refresh failed on the API-key-only synthetic/demo lane; no current clean full hosted gate was produced on May 8.
-- Hosted Gemini last passing baseline: passed (`13/13` curated cases) on 2026-05-03, including the Punjabi family-message equity case.
-- Full `release:gate:gemini`: historical last passing baseline only; the May 8 current hosted attempt failed before completion.
-- Latest attempted gate artifact: `output/release-gate/2026-05-08T22-47-12-031Z-43430`
-- Latest attempted gate summary: `output/release-gate/2026-05-08T22-47-12-031Z-43430/summary.json`
-- Latest attempted eval log: `output/release-gate/2026-05-08T22-47-12-031Z-43430/75-gemini-evals.log`
-- Latest completed May 8 eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`; `fcst-001-demo-schema` blocked by provider high demand)
-- Latest completed May 8 eval failure summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-failure-summary.json`
-- Latest May 8 cost rollup: `output/cost-rollups/2026-05-08-rollup.json`
-- Latest passing gate artifact: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
-- Latest passing eval summary: `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-summary.json`
-- Hosted eval failure ledger: `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-failure-summary.json` contains only the separate Ollama host-preflight block; hosted Gemini validation, transport, timeout, parse, schema, and retrieval failure groups are empty.
+- Hosted Gemini proof lane: current hosted refresh passed on the API-key-only synthetic/demo lane; a clean full hosted gate was produced on May 16.
+- Hosted Gemini current passing baseline: passed (`13/13` curated cases) on 2026-05-16, including the Punjabi family-message equity case.
+- Full `release:gate:gemini`: current hosted attempt passed with typecheck, lint, Python tests, TS tests, claims check, harness smoke, hosted evals, API smoke, and browser smoke.
+- Latest attempted gate artifact: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
+- Latest attempted gate summary: `output/release-gate/2026-05-16T19-53-39-742Z-56491/summary.json`
+- Latest attempted eval log: `output/release-gate/2026-05-16T19-53-39-742Z-56491/75-gemini-evals.log`
+- Latest completed May 16 eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`)
+- Latest completed May 16 eval failure summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`
+- Latest May 16 cost rollup: `output/cost-rollups/2026-05-16-rollup.json`
+- Latest passing gate artifact: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
+- Latest passing eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`
+- Hosted eval failure ledger: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json` contains only the separate Ollama host-preflight block; hosted Gemini validation, transport, timeout, parse, schema, and retrieval failure groups are empty.
 - Hosted reruns remain opt-in and synthetic/demo-only
 
 ## Hosted Models
@@ -79,7 +79,7 @@ npm run logs:summary
 
 `proof:bump` is the operator helper that sweeps the canonical hosted-gate artifact reference across the editorial surfaces (`README.md`, `docs/hackathon-proof-brief.md`, `docs/kaggle-writeup.md`, `docs/pilot/claims-ledger.md`, etc.). `release:gate:gemini --update-baseline` refreshes `docs/eval-baseline.md` and `docs/live-model-proof-status.md` automatically; `proof:bump` covers the rest. Use `proof:bump -- --dry-run --auto` to preview, or pass an explicit artifact id when bumping back to a prior canonical.
 
-The May 8 closure pass already used its one approved full hosted rerun. Do not run another full hosted gate without explicit approval. The current hosted attempt artifact is a blocker record, not a passing baseline; keep the privacy-first school deployment claim tied to local/self-hosted Gemma 4 via Ollama until that lane has a passing artifact.
+The May 16 closure pass used the latest approved full hosted rerun and passed. Do not run another full hosted gate without explicit approval. Keep the privacy-first school deployment claim tied to local/self-hosted Gemma 4 via Ollama until that lane has a passing artifact.
 
 ## Optional Repair-First Loop
 

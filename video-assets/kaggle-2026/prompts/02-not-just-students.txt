@@ -1,0 +1,14 @@
+Filename: 02-not-just-students.png
+Exact on-screen text:
+Not just students.
+Reading levels · home languages · sensory needs
+family messages · EA coverage · tomorrow’s plan
+
+Original requested prompt:
+Create a premium top-down teacher planning desk covered with organized but overwhelming classroom materials: sticky notes, schedule sheets, support cards with no names, family communication draft, substitute folder, pencils. Warm documentary lighting. Overlay exact text in deep navy, centered-left, with the first line large: "Not just students." Below in smaller graphite text: "Reading levels · home languages · sensory needs" and "family messages · EA coverage · tomorrow’s plan". Use a thin muted gold divider. No other text.
+
+Imagegen source prompt used in this render pass:
+Premium top-down teacher planning desk, organized but overwhelming blank materials, no names, no readable writing, warm documentary light, centered-left negative space.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

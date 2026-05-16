@@ -1,0 +1,13 @@
+Filename: 06-open-the-day.png
+Exact on-screen text:
+Open the day
+What changed? Who needs attention? Where could the morning break down?
+
+Original requested prompt:
+Create a clean product-story card with a subtle abstract dashboard grid in the background, warm ivory paper texture, deep navy text, muted gold accent. Render exact heading "Open the day" and subtitle "What changed? Who needs attention? Where could the morning break down?" No other text.
+
+Imagegen source prompt used in this render pass:
+Clean product-story card background, subtle abstract dashboard grid, warm ivory paper texture, navy rules, muted gold accents, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

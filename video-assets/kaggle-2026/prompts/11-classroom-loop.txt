@@ -1,0 +1,15 @@
+Filename: 11-classroom-loop.png
+Exact on-screen text:
+Classroom signal
+Gemma 4 synthesis
+Teacher / EA action
+Classroom memory
+
+Original requested prompt:
+Create an elegant four-node loop diagram on warm ivory background. Thin navy arrows in a circle, muted gold node accents, subtle paper texture, technical manuscript style. Render exact labels at the four nodes: "Classroom signal", "Gemma 4 synthesis", "Teacher / EA action", "Classroom memory". No other text.
+
+Imagegen source prompt used in this render pass:
+Warm ivory technical manuscript background with four-node circular loop and arrows, no labels, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

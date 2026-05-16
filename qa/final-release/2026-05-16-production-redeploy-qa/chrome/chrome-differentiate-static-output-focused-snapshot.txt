@@ -1,0 +1,255 @@
+- link "Skip to main content":
+  - /url: "#main-content"
+- button "Expand navigation rail" [pressed]:
+  - generic: Expand
+- banner:
+  - 'button "Active classroom: Grade 3-4 cross curricular"':
+    - generic: Grade 3-4 cross curricular
+    - generic: ⌄
+  - button "Teacher":
+    - generic: Teacher
+    - generic: ⌄
+- main:
+  - tabpanel "Prep Adapt lesson":
+    - region "Prep command, lesson adaptation, and language supports":
+      - generic: Prep command
+      - heading "Prepare the material before it reaches the room." [level=1]
+      - paragraph: Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.
+      - complementary "Page pulse":
+        - strong: Heavy EAL load
+        - generic: 8 EAL · 7 languages
+        - generic: Active tool
+        - generic: Differentiate
+        - generic: Roster
+        - strong: "26"
+        - generic: Students
+        - strong: "8"
+        - generic: EAL
+        - generic: Language
+        - strong: "7"
+        - generic: Languages
+        - strong: Variants
+        - generic: Mode
+    - region "Prep operational preview":
+      - generic: Artifact readiness
+      - generic: Input lane
+      - generic: upload · paste · web
+      - generic: Curriculum
+      - generic: Alberta program
+      - generic: Output
+      - generic: variants
+      - generic: Language load
+      - list:
+        - listitem "tl": Tagalog
+        - listitem "ur": Urdu
+        - listitem "ar": Arabic
+        - listitem "so": Somali
+        - listitem "pa": Punjabi
+        - listitem "es": Spanish
+      - generic: EAL students
+      - generic: "8"
+      - generic: Family languages
+      - generic: "7"
+      - generic: Teacher pass
+      - list:
+        - text: Same outcome
+        - generic: · no lowered bar
+        - text: Editable copy
+        - generic: · teacher owned
+        - text: Materials list
+        - generic: · ready to stage
+    - generic: "02"
+    - heading "Prep lane" [level=2]
+    - paragraph: Choose the prep mode, then keep the artifact canvas and output preview in one line of sight.
+    - tablist "Prep tool":
+      - tab "01 Artifact Differentiate Lesson variants Adapt one lesson, worksheet, or passage across readiness levels." [selected]:
+        - generic: 01 Artifact
+        - generic: Differentiate
+        - generic: Lesson variants
+        - generic: Adapt one lesson, worksheet, or passage across readiness levels.
+      - tab "02 Language Language Tools EAL support Simplify text and prepare bilingual vocabulary supports.":
+        - generic: 02 Language
+        - generic: Language Tools
+        - generic: EAL support
+        - generic: Simplify text and prepare bilingual vocabulary supports.
+    - region "Active workspace":
+      - generic: Active workspace
+      - generic: Build lesson variants
+      - heading "Build Lesson Variants" [level=2]
+      - complementary:
+        - text: Artifact intake
+        - heading "Start with what you have" [level=2]
+        - paragraph: Bring in one artifact and PrairieClassroom will organize classroom-ready variants around the same outcome.
+        - paragraph: "* Required"
+        - generic: Artifact source*
+        - tablist "Artifact input method":
+          - tab "Upload file PDF or Word text":
+            - generic: Upload file
+            - generic: PDF or Word text
+          - tab "Paste text Paste text directly" [selected]:
+            - generic: Paste text
+            - generic: Paste text directly
+          - tab "Web link Add a URL":
+            - generic: Web link
+            - generic: Add a URL
+        - textbox "Artifact source":
+          - /placeholder: Paste or type the lesson content, worksheet text, or instructions…
+          - text: Read the short passage about prairie food chains. Students identify producers, consumers, and decomposers, then explain how changes to one population affect the rest of the ecosystem.
+        - generic: TXT
+        - strong: Pasted source text
+        - generic: 1 pages · 366 B
+        - button "Remove"
+        - region "Curriculum context":
+          - heading "Curriculum context" [level=3]
+          - generic: Artifact title*
+          - textbox "Artifact title":
+            - /placeholder: e.g. Community Helpers Reading Passage
+            - text: Prairie Food Chains Exit Task
+          - generic: Subject
+          - textbox "Subject":
+            - /placeholder: e.g. literacy, math, science
+            - text: science
+          - generic: Curriculum
+          - strong: Alberta Program of Studies
+          - generic: Class profile
+          - strong: 26 students · mixed readiness
+          - generic: Outcome focus(optional)
+          - textbox "Outcome focus(optional)":
+            - /placeholder: What do you want from differentiation? e.g. 'Simplify for EAL, add extension for strong readers'
+            - text: Keep the same outcome, add EAL vocabulary support, chunked steps, and an extension lane.
+          - button "Alberta Curriculum Alignment":
+            - text: Alberta Curriculum Alignment
+            - generic: +
+        - region "Student readiness controls":
+          - heading "Student readiness" [level=3]
+          - generic: 26 students
+          - strong: Core
+          - generic: 3 students
+          - strong: Chunked
+          - generic: 23 students
+          - strong: Extension
+          - generic: 1 students
+          - strong: EAL Supported
+          - generic: 8 students
+        - region "Output includes":
+          - heading "Output includes" [level=3]
+          - list:
+            - generic: Four readiness lanes
+            - strong: Same goal
+            - generic: Teacher notes
+            - strong: Included
+            - generic: Materials list
+            - strong: Included
+        - button "Generate variants":
+          - generic: Generate lesson variants
+      - region "Lesson variant result canvas":
+        - generic: Result canvas
+        - heading "Four ways in. One learning goal." [level=2]
+        - paragraph:
+          - text: Variants are aligned to
+          - strong: Prairie Food Chains Exit Task
+          - text: with intentional differences in support, complexity, and language.
+        - generic "Variant canvas actions":
+          - button "Preview all"
+          - button "Export"
+        - article:
+          - heading "Core lane" [level=3]
+          - paragraph: Right level, right now
+          - generic "Variant estimates":
+            - generic "Middle-school reading band (Flesch-Kincaid estimate, heuristic)": ~Grade 7.2
+            - generic: 20 min
+          - heading "Core fraction model task" [level=4]
+          - paragraph: Use the fraction strips to show one-half, one-third, and one-fourth. Explain one model in a complete sentence.
+          - generic: Review ready
+          - generic: "Source: Prairie Food Chains Exit Task"
+          - generic: "Model: static-demo-fallback"
+          - generic "Teacher edit notes"
+          - generic: Review ready
+          - strong: Core
+          - paragraph: Use the fraction strips to show one-half, one-third,...
+          - button "Preview lane"
+          - button "Edit copy"
+          - button "More actions for Core lane": More
+        - article:
+          - heading "EAL Supported lane" [level=3]
+          - paragraph: Language + meaning
+          - generic "Variant estimates":
+            - generic "Early elementary reading band (Flesch-Kincaid estimate, heuristic)": ~Grade 1.7
+            - generic: 20 min
+          - heading "Vocabulary-supported fraction task" [level=4]
+          - paragraph: "Match each fraction word to a picture. Then finish the sentence: I know this is ___ because ___."
+          - generic: Language check
+          - generic: "Source: Prairie Food Chains Exit Task"
+          - generic: "Model: static-demo-fallback"
+          - generic "Teacher edit notes"
+          - generic: Language check
+          - strong: EAL Supported
+          - paragraph: Match each fraction word to a picture. Then...
+          - button "Preview lane"
+          - button "Edit copy"
+          - button "More actions for EAL Supported lane": More
+        - article:
+          - heading "Extension lane" [level=3]
+          - paragraph: Push thinking further
+          - generic "Variant estimates":
+            - generic "Mid elementary reading band (Flesch-Kincaid estimate, heuristic)": ~Grade 3.9
+            - generic: 25 min
+          - heading "Extension comparison challenge" [level=4]
+          - paragraph: Create two fraction models that look different but name the same amount. Explain your proof.
+          - generic: Challenge check
+          - generic: "Source: Prairie Food Chains Exit Task"
+          - generic: "Model: static-demo-fallback"
+          - generic "Teacher edit notes"
+          - generic: Challenge check
+          - strong: Extension
+          - paragraph: Create two fraction models that look different but...
+          - button "Preview lane"
+          - button "Edit copy"
+          - button "More actions for Extension lane": More
+        - generic: All variants align to the same classroom outcome.
+        - button "View alignment details"
+      - group "Variant summary":
+        - button "Show Core variants":
+          - generic: Core
+          - generic: 20m
+        - button "Show Eal Supported variants":
+          - generic: Eal Supported
+          - generic: 20m
+        - button "Show Extension variants":
+          - generic: Extension
+          - generic: 25m
+      - generic "Recent runs in this session":
+        - generic: Recent
+        - button "Prairie Food Chains Exit Task"
+      - generic: "Rate this differentiation output:"
+      - radiogroup "Rating":
+        - radio "1 star": ☆
+        - radio "2 stars": ☆
+        - radio "3 stars": ☆
+        - radio "4 stars": ☆
+        - radio "5 stars": ☆
+      - navigation "Variants output":
+        - list:
+          - button "Print":
+            - generic: Print
+          - button "Copy":
+            - generic: Copy
+          - button "Download":
+            - generic: Download
+          - button "Save to Tomorrow":
+            - generic: Save to Tomorrow
+  - contentinfo:
+    - generic "Application context":
+      - generic: PrairieClassroom OS
+      - generic: Gemma 4 Good Hackathon demo build
+    - button "Shortcuts":
+      - generic: ▸
+      - generic: Shortcuts
+    - button "Keyboard shortcuts": "?"
+    - group "Build context":
+      - generic: classroom
+      - generic: demo-okafor-grade34
+      - generic: env
+      - generic: mock
+      - generic: v
+      - generic: 0.1.0

@@ -1,0 +1,1576 @@
+[
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\nMid-day recovery: log the fresh evidence before the afternoon shift.\n\nDO THIS NOW\nMid-day recovery\nDo a mid-day recovery check with Amira\n\nMid-day recovery: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "today",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 9.28,
+          "tag": "SPAN",
+          "text": "1"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3\nA",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "classroom",
+      "severeOverflow": [
+        {
+          "cls": "student-coverage__filters",
+          "left": 42,
+          "right": 457,
+          "tag": "DIV",
+          "text": "All3Urgent3Stale0More▾",
+          "width": 415
+        },
+        {
+          "cls": "student-coverage__more",
+          "left": 398,
+          "right": 457,
+          "tag": "DIV",
+          "text": "More▾",
+          "width": 59
+        },
+        {
+          "cls": "student-coverage__more-toggle",
+          "left": 398,
+          "right": 457,
+          "tag": "BUTTON",
+          "text": "More▾",
+          "width": 59
+        },
+        {
+          "cls": "",
+          "left": 407,
+          "right": 437,
+          "tag": "SPAN",
+          "text": "More",
+          "width": 30
+        },
+        {
+          "cls": "student-coverage__caret",
+          "left": 443,
+          "right": 448,
+          "tag": "SPAN",
+          "text": "▾",
+          "width": 5
+        },
+        {
+          "cls": "student-coverage__rail",
+          "left": 42,
+          "right": 457,
+          "tag": "DIV",
+          "text": "‹Brody22 threadsAmira33 threadsElena11 thread›",
+          "width": 415
+        },
+        {
+          "cls": "student-coverage__chip",
+          "left": 324,
+          "right": 456,
+          "tag": "BUTTON",
+          "text": "Elena11 thread",
+          "width": 132
+        },
+        {
+          "cls": "student-coverage__chip-top",
+          "left": 336,
+          "right": 443,
+          "tag": "SPAN",
+          "text": "Elena1",
+          "width": 108
+        },
+        {
+          "cls": "student-coverage__chip-badge",
+          "left": 423,
+          "right": 443,
+          "tag": "SPAN",
+          "text": "1",
+          "width": 20
+        },
+        {
+          "cls": "student-coverage__chip-meta",
+          "left": 336,
+          "right": 443,
+          "tag": "SPAN",
+          "text": "1 thread",
+          "width": 108
+        }
+      ],
+      "tinyText": [
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 9.28,
+          "tag": "SPAN",
+          "text": "1"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nFORECAST\nRe",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "tomorrow",
+      "severeOverflow": [
+        {
+          "cls": "coverage-timeline__item",
+          "left": 267,
+          "right": 467,
+          "tag": "DIV",
+          "text": "9:15-9:30Recess transitionForecast mediumEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 267,
+          "right": 467,
+          "tag": "BUTTON",
+          "text": "9:15-9:30Recess transitionForecast mediumEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 284,
+          "right": 450,
+          "tag": "DIV",
+          "text": "9:15-9:30",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__activity",
+          "left": 284,
+          "right": 450,
+          "tag": "DIV",
+          "text": "Recess transition",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__signals",
+          "left": 284,
+          "right": 450,
+          "tag": "DIV",
+          "text": "Forecast mediumEA in block",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__item",
+          "left": 475,
+          "right": 675,
+          "tag": "DIV",
+          "text": "9:30-10:30Literacy blockForecast highEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 475,
+          "right": 675,
+          "tag": "BUTTON",
+          "text": "9:30-10:30Literacy blockForecast highEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 492,
+          "right": 658,
+          "tag": "DIV",
+          "text": "9:30-10:30",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__activity",
+          "left": 492,
+          "right": 658,
+          "tag": "DIV",
+          "text": "Literacy block",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__signals",
+          "left": 492,
+          "right": 658,
+          "tag": "DIV",
+          "text": "Forecast highEA in block",
+          "width": 166
+        }
+      ],
+      "tinyText": [
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 9.28,
+          "tag": "SPAN",
+          "text": "1"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODAY\n",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "week",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 9.28,
+          "tag": "SPAN",
+          "text": "1"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n8\n",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "prep",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 9.28,
+          "tag": "SPAN",
+          "text": "1"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.\n\nCoordination queued\n1 FOLLOW-UP · 3 THREADS\nACTIVE WOR",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "ops",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 9.28,
+          "tag": "SPAN",
+          "text": "1"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "mobile",
+      "width": 390,
+      "height": 844
+    },
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.\n\nReview pending\n1 APPROVAL · 1 SIGNALS\n",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "review",
+      "severeOverflow": [
+        {
+          "cls": "student-coverage__chip",
+          "left": 348,
+          "right": 492,
+          "tag": "BUTTON",
+          "text": "Elena11 thread",
+          "width": 144
+        },
+        {
+          "cls": "student-coverage__chip-top",
+          "left": 360,
+          "right": 479,
+          "tag": "SPAN",
+          "text": "Elena1",
+          "width": 120
+        },
+        {
+          "cls": "student-coverage__chip-badge",
+          "left": 459,
+          "right": 479,
+          "tag": "SPAN",
+          "text": "1",
+          "width": 20
+        },
+        {
+          "cls": "student-coverage__chip-meta",
+          "left": 360,
+          "right": 479,
+          "tag": "SPAN",
+          "text": "1 thread",
+          "width": 120
+        }
+      ],
+      "tinyText": [
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 9.28,
+          "tag": "SPAN",
+          "text": "1"
+        },
+        {
+          "size": 9.6,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 844,
+        "scrollWidth": 390,
+        "width": 390
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nToday\n\nMid-day recovery: log the fresh evidence before the afternoon shift.\n\nDO THIS NOW\nMid-day recovery\nDo a mid-day recovery check with Amira\n\nMid-day recovery: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRA",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "today",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.\n\nOPEN TODAY TRIAGE\n→\nOPEN WORK\n3\nQueue items\nTHREADS\n3",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "classroom",
+      "severeOverflow": [
+        {
+          "cls": "week-heatmap__day week-heatmap__day--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "DIV",
+          "text": "ThuMay 218:30-9:15Bell work journal + calendar math9:15-9:30Recess transition9:30-10:30Literacy bloc",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__day-head",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "ThuMay 21",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cells",
+          "left": 627,
+          "right": 803,
+          "tag": "DIV",
+          "text": "8:30-9:15Bell work journal + calendar math9:15-9:30Recess transition9:30-10:30Literacy block10:30-10",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "8:30-9:15Bell work journal + calendar math",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "9:15-9:30Recess transition",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "9:30-10:30Literacy block",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "10:30-10:45Snack break",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "10:45-11:45Science / Social Studies",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "11:45-12:30Lunch",
+          "width": 176
+        },
+        {
+          "cls": "week-heatmap__cell week-heatmap__cell--unknown week-heatmap__cell--schedule",
+          "left": 627,
+          "right": 803,
+          "tag": "BUTTON",
+          "text": "12:30-12:45Body break + transition to math",
+          "width": 176
+        }
+      ],
+      "tinyText": [
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nFORECAST\n",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "tomorrow",
+      "severeOverflow": [
+        {
+          "cls": "coverage-timeline__item",
+          "left": 707,
+          "right": 907,
+          "tag": "DIV",
+          "text": "10:30-10:45Snack breakForecast highEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 707,
+          "right": 907,
+          "tag": "BUTTON",
+          "text": "10:30-10:45Snack breakForecast highEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 724,
+          "right": 890,
+          "tag": "DIV",
+          "text": "10:30-10:45",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__activity",
+          "left": 724,
+          "right": 890,
+          "tag": "DIV",
+          "text": "Snack break",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__signals",
+          "left": 724,
+          "right": 890,
+          "tag": "DIV",
+          "text": "Forecast highEA in block",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__signal coverage-timeline__signal--forecast coverage-timeline__signal--high",
+          "left": 724,
+          "right": 804,
+          "tag": "SPAN",
+          "text": "Forecast high",
+          "width": 80
+        },
+        {
+          "cls": "coverage-timeline__signal coverage-timeline__signal--ea",
+          "left": 810,
+          "right": 878,
+          "tag": "SPAN",
+          "text": "EA in block",
+          "width": 68
+        },
+        {
+          "cls": "coverage-timeline__item",
+          "left": 915,
+          "right": 1115,
+          "tag": "DIV",
+          "text": "10:45-11:45Science / Social StudiesForecast mediumEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 915,
+          "right": 1115,
+          "tag": "BUTTON",
+          "text": "10:45-11:45Science / Social StudiesForecast mediumEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 932,
+          "right": 1098,
+          "tag": "DIV",
+          "text": "10:45-11:45",
+          "width": 166
+        }
+      ],
+      "tinyText": [
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.\n\nPLAN TOMORROW\nREVIEW TODA",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "week",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.\n\nHeavy EAL load\n8 EAL · 7 LANGUAGES\nACTIVE TOOL\nDifferentiate\nROSTER\n26\nSTUDENTS\n",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "prep",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.\n\nCoordination queued\n1 FOLLOW-UP · 3 THREADS\nACTIVE W",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "ops",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "tablet",
+      "width": 768,
+      "height": 1024
+    },
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.\n\nReview pending\n1 APPROVAL · 1 SIGNAL",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "review",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Do now"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Room"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Plan"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Week"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Adapt"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Log"
+        },
+        {
+          "size": 8.96,
+          "tag": "SPAN",
+          "text": "Message"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 1024,
+        "scrollWidth": 768,
+        "width": 768
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\nMid-day recovery: log the fresh evidence before the aft",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "today",
+      "severeOverflow": [
+        {
+          "cls": "forecast-timeline-segment forecast-timeline-segment--medium",
+          "left": 1552,
+          "right": 1634,
+          "tag": "BUTTON",
+          "text": "2:45-3:00",
+          "width": 82
+        }
+      ],
+      "tinyText": [
+        {
+          "size": 9.92,
+          "tag": "SPAN",
+          "text": "1"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the len",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "classroom",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.92,
+          "tag": "SPAN",
+          "text": "1"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStar",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "tomorrow",
+      "severeOverflow": [
+        {
+          "cls": "coverage-timeline__item",
+          "left": 1610,
+          "right": 1810,
+          "tag": "DIV",
+          "text": "12:30-12:45Body break + transition to math1 watch",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 1610,
+          "right": 1810,
+          "tag": "BUTTON",
+          "text": "12:30-12:45Body break + transition to math1 watch",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 1627,
+          "right": 1793,
+          "tag": "DIV",
+          "text": "12:30-12:45",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__activity",
+          "left": 1627,
+          "right": 1793,
+          "tag": "DIV",
+          "text": "Body break + transition to math",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__signals",
+          "left": 1627,
+          "right": 1793,
+          "tag": "DIV",
+          "text": "1 watch",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__signal coverage-timeline__signal--watch",
+          "left": 1627,
+          "right": 1677,
+          "tag": "SPAN",
+          "text": "1 watch",
+          "width": 50
+        },
+        {
+          "cls": "coverage-timeline__item",
+          "left": 1818,
+          "right": 2018,
+          "tag": "DIV",
+          "text": "12:45-1:45Math block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 1818,
+          "right": 2018,
+          "tag": "BUTTON",
+          "text": "12:45-1:45Math block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 1835,
+          "right": 2001,
+          "tag": "DIV",
+          "text": "12:45-1:45",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__activity",
+          "left": 1835,
+          "right": 2001,
+          "tag": "DIV",
+          "text": "Math block",
+          "width": 166
+        }
+      ],
+      "tinyText": [
+        {
+          "size": 9.92,
+          "tag": "SPAN",
+          "text": "1"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nWEEK COMMAND\nShape the week before it shapes tomorrow\n\nUse the",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "week",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.92,
+          "tag": "SPAN",
+          "text": "1"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nPREP COMMAND\nPrepare the material before it reaches the room.\n",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "prep",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.92,
+          "tag": "SPAN",
+          "text": "1"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\n",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "ops",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.92,
+          "tag": "SPAN",
+          "text": "1"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  },
+  {
+    "viewport": {
+      "name": "wide",
+      "width": 1600,
+      "height": 900
+    },
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "blockerTextFound": false,
+      "blockers": [],
+      "bodyOverflow": false,
+      "bodyStart": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nSearch or ask Prairie\n?\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nREVIEW COMMAND\nTurn classroom memory into accountable follow-t",
+      "demoApi": "prairie-static-demo-api",
+      "routeName": "review",
+      "severeOverflow": [],
+      "tinyText": [
+        {
+          "size": 9.92,
+          "tag": "SPAN",
+          "text": "1"
+        }
+      ],
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 900,
+        "scrollWidth": 1600,
+        "width": 1600
+      }
+    },
+    "logs": []
+  }
+]

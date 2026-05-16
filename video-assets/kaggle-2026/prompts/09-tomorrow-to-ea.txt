@@ -1,0 +1,13 @@
+Filename: 09-tomorrow-to-ea.png
+Exact on-screen text:
+Tomorrow plan → EA briefing
+Planning context becomes adult coordination.
+
+Original requested prompt:
+Create a cinematic documentary-style still of two adults in an elementary classroom before school, shown only from shoulders down and hands, reviewing a simple briefing folder at a desk. No faces, no children, no readable names. Render exact text: "Tomorrow plan → EA briefing" and below it "Planning context becomes adult coordination." Deep navy text, muted gold accent line. No other text.
+
+Imagegen source prompt used in this render pass:
+Two adults from shoulders down reviewing blank briefing folder in elementary classroom before school, no faces, no children, no readable names, left/top negative space, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

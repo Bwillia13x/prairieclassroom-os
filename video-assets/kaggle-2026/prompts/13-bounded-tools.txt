@@ -1,0 +1,13 @@
+Filename: 13-bounded-tools.png
+Exact on-screen text:
+Bounded tools
+Curriculum lookup · intervention history · roster check
+
+Original requested prompt:
+Create a clean technical trust diagram showing an AI model node connected to three local tool nodes and a teacher approval gate. No logos. Render exact heading "Bounded tools" and exact subtitle "Curriculum lookup · intervention history · roster check". Warm ivory, deep navy, muted gold. No other text.
+
+Imagegen source prompt used in this render pass:
+Warm ivory trust diagram background with central abstract model node, three blank tool nodes, teacher approval gate, no text, no logos.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

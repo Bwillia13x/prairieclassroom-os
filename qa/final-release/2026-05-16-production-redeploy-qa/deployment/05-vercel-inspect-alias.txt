@@ -1,0 +1,24 @@
+Vercel CLI 50.1.6
+Fetching deployment "prairieclassroom-os.vercel.app" in echoexes-projects
+> Fetched deployment "prairieclassroom-lw66n1m9c-echoexes-projects.vercel.app" in echoexes-projects [316ms]
+
+  General
+
+    id		dpl_CKv2ZmurbAoWoVTpZx7MAyZgvGKx
+    name	prairieclassroom-os
+    target	production
+    status	● Ready
+    url		https://prairieclassroom-lw66n1m9c-echoexes-projects.vercel.app
+    created	Sat May 16 2026 12:53:01 GMT-0600 (Mountain Daylight Time) [27s ago]
+
+
+  Aliases
+
+    ╶ https://prairieclassroom-os.vercel.app
+    ╶ https://prairieclassroom-os-echoexes-projects.vercel.app
+    ╶ https://prairieclassroom-os-bwillia13x-echoexes-projects.vercel.app
+
+
+  Builds
+
+    ╶ .        [0ms]

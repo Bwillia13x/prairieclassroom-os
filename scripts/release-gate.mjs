@@ -994,6 +994,13 @@ async function readCurrentHostedAttemptArtifact() {
   return content.match(/Latest attempted hosted gate[:*\s]*`(output\/release-gate\/[^`]+)`/i)?.[1] ?? null;
 }
 
+async function readRunSummaryForArtifact(artifactPath) {
+  if (!artifactPath) {
+    return null;
+  }
+  return readJsonFileIfPresent(path.join(ROOT, artifactPath, "summary.json"));
+}
+
 function summarizeGateFailure(message) {
   const text = String(message ?? "");
   if (text.includes("80-smoke-api")) {
@@ -1124,6 +1131,7 @@ async function renderLatestGeminiSection() {
     return renderBlockedGeminiSection();
   }
   const currentAttemptArtifact = await readCurrentHostedAttemptArtifact();
+  const currentAttemptSummary = await readRunSummaryForArtifact(currentAttemptArtifact);
 
   const payload = await readEvalPayloadForRunSummary(summary);
   if (payload) {
@@ -1161,9 +1169,13 @@ async function renderLatestGeminiSection() {
             : []),
           "**Usage scope:** Synthetic/demo evaluation only.",
           ...(currentAttemptArtifact
-            ? [
-                `**Current hosted attempt:** The current hosted refresh at \`${currentAttemptArtifact}\` failed and did not produce a passing baseline; keep this artifact as a blocker record, not as proof.`,
-              ]
+            ? currentAttemptSummary?.status === "passed"
+              ? [
+                  `**Current hosted attempt:** The current hosted refresh at \`${currentAttemptArtifact}\` passed and is the current hosted synthetic/demo proof baseline.`,
+                ]
+              : [
+                  `**Current hosted attempt:** The current hosted refresh at \`${currentAttemptArtifact}\` failed and did not produce a passing baseline; keep this artifact as a blocker record, not as proof.`,
+                ]
             : []),
         ],
       });

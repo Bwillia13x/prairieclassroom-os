@@ -1,0 +1,607 @@
+[
+  {
+    "route": "today",
+    "result": {
+      "activePanel": true,
+      "activePanelText": "TodayTodaySame-day triage for Grade 3-4: recommended next move, immediate risks, and the carry-forward you committed to before the day started.26 studentsTodayMid-day recovery: log the fresh evidence before the afternoon shift.Do this nowMid-day recoveryDo a mid-day recovery check with AmiraMid-day recovery: capture the evidence and next move — Vocabulary preview and family praise.Draft Amira messageStudentAmiraWindow12:30-12:45Open3NowMath blockToday's flowCurrent8:30-9:158:30-9:15Status: curre",
+      "blockerTextFound": false,
+      "blockers": [],
+      "demoApi": "prairie-static-demo-api",
+      "horizontalOverflow": false,
+      "navLabels": [
+        {
+          "id": "shell-nav-group-today",
+          "selected": "true",
+          "text": "TodayDo this now"
+        },
+        {
+          "id": "shell-nav-group-classroom",
+          "selected": "false",
+          "text": "ClassroomRoom view"
+        },
+        {
+          "id": "shell-nav-group-tomorrow",
+          "selected": "false",
+          "text": "TomorrowPlan tomorrow"
+        },
+        {
+          "id": "shell-nav-group-week",
+          "selected": "false",
+          "text": "WeekWeek map"
+        },
+        {
+          "id": "shell-nav-group-prep",
+          "selected": "false",
+          "text": "PrepAdapt lesson"
+        },
+        {
+          "id": "shell-nav-group-ops",
+          "selected": "false",
+          "text": "OpsLog note1"
+        },
+        {
+          "id": "shell-nav-group-review",
+          "selected": "false",
+          "text": "ReviewMessage family"
+        }
+      ],
+      "overflow": [
+        {
+          "cls": "forecast-timeline-segment forecast-timeline-segment--high",
+          "left": 1247,
+          "right": 1337,
+          "tag": "BUTTON",
+          "text": "12:45-1:45",
+          "width": 89
+        },
+        {
+          "cls": "forecast-timeline-time",
+          "left": 1255,
+          "right": 1329,
+          "tag": "SPAN",
+          "text": "12:45-1:45",
+          "width": 73
+        },
+        {
+          "cls": "forecast-timeline-segment forecast-timeline-segment--medium",
+          "left": 1340,
+          "right": 1422,
+          "tag": "BUTTON",
+          "text": "2:45-3:00",
+          "width": 82
+        },
+        {
+          "cls": "forecast-timeline-time",
+          "left": 1348,
+          "right": 1414,
+          "tag": "SPAN",
+          "text": "2:45-3:00",
+          "width": 66
+        },
+        {
+          "cls": "app-footer",
+          "left": 232,
+          "right": 1296,
+          "tag": "FOOTER",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        },
+        {
+          "cls": "app-footer__body",
+          "left": 232,
+          "right": 1296,
+          "tag": "DIV",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        }
+      ],
+      "routeName": "today",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "route": "classroom",
+    "result": {
+      "activePanel": true,
+      "activePanelText": "Classroom commandRoom viewRead the room, then choose the lens.Grade 3-4 is showing steady. Start with the live queue, stage tomorrow's support, or step back to the weekly pressure map.Open Today triage→Open work3Queue itemsThreads3Active student signalsRoster268 EAL supportsPlan coverage4/74d streakLiveToday triageStageTomorrow planForecastWeek mapRoom healthLive21SteadySteady3 open · 4-day streakPressure indexThreads3Active conversationsRoster268 EAL supportsPlans4/74d streakQueue3Need teacher ",
+      "blockerTextFound": false,
+      "blockers": [],
+      "demoApi": "prairie-static-demo-api",
+      "horizontalOverflow": false,
+      "navLabels": [
+        {
+          "id": "shell-nav-group-today",
+          "selected": "false",
+          "text": "TodayDo this now"
+        },
+        {
+          "id": "shell-nav-group-classroom",
+          "selected": "true",
+          "text": "ClassroomRoom view"
+        },
+        {
+          "id": "shell-nav-group-tomorrow",
+          "selected": "false",
+          "text": "TomorrowPlan tomorrow"
+        },
+        {
+          "id": "shell-nav-group-week",
+          "selected": "false",
+          "text": "WeekWeek map"
+        },
+        {
+          "id": "shell-nav-group-prep",
+          "selected": "false",
+          "text": "PrepAdapt lesson"
+        },
+        {
+          "id": "shell-nav-group-ops",
+          "selected": "false",
+          "text": "OpsLog note1"
+        },
+        {
+          "id": "shell-nav-group-review",
+          "selected": "false",
+          "text": "ReviewMessage family"
+        }
+      ],
+      "overflow": [
+        {
+          "cls": "app-footer",
+          "left": 232,
+          "right": 1296,
+          "tag": "FOOTER",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        },
+        {
+          "cls": "app-footer__body",
+          "left": 232,
+          "right": 1296,
+          "tag": "DIV",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        }
+      ],
+      "routeName": "classroom",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "route": "tomorrow",
+    "result": {
+      "activePanel": true,
+      "activePanelText": "Tomorrow commandPlan, forecast, and carry-forward queueStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.Active toolTomorrow PlanPlanReadyStatus3PrioritiesForecastReadyStatus5BlocksCarry-forward0Queued1Open follow-upsPlanning orderWatchpoints3 prioritiesCarry-forward0 queuedOpen follow-ups1Support prioritiesBrody· Offer sensory breakAmira· Give bilingual vocabularyElena· Start with manipulatives,02Stage tomorrowWhat to stage. Wha",
+      "blockerTextFound": false,
+      "blockers": [],
+      "demoApi": "prairie-static-demo-api",
+      "horizontalOverflow": false,
+      "navLabels": [
+        {
+          "id": "shell-nav-group-today",
+          "selected": "false",
+          "text": "TodayDo this now"
+        },
+        {
+          "id": "shell-nav-group-classroom",
+          "selected": "false",
+          "text": "ClassroomRoom view"
+        },
+        {
+          "id": "shell-nav-group-tomorrow",
+          "selected": "true",
+          "text": "TomorrowPlan tomorrow"
+        },
+        {
+          "id": "shell-nav-group-week",
+          "selected": "false",
+          "text": "WeekWeek map"
+        },
+        {
+          "id": "shell-nav-group-prep",
+          "selected": "false",
+          "text": "PrepAdapt lesson"
+        },
+        {
+          "id": "shell-nav-group-ops",
+          "selected": "false",
+          "text": "OpsLog note1"
+        },
+        {
+          "id": "shell-nav-group-review",
+          "selected": "false",
+          "text": "ReviewMessage family"
+        }
+      ],
+      "overflow": [
+        {
+          "cls": "coverage-timeline__item",
+          "left": 1154,
+          "right": 1354,
+          "tag": "DIV",
+          "text": "10:45-11:45Science / Social StudiesForecast mediumEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 1154,
+          "right": 1354,
+          "tag": "BUTTON",
+          "text": "10:45-11:45Science / Social StudiesForecast mediumEA in block",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 1171,
+          "right": 1337,
+          "tag": "DIV",
+          "text": "10:45-11:45",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__activity",
+          "left": 1171,
+          "right": 1337,
+          "tag": "DIV",
+          "text": "Science / Social Studies",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__signals",
+          "left": 1171,
+          "right": 1337,
+          "tag": "DIV",
+          "text": "Forecast mediumEA in block",
+          "width": 166
+        },
+        {
+          "cls": "coverage-timeline__item",
+          "left": 1362,
+          "right": 1562,
+          "tag": "DIV",
+          "text": "11:45-12:30Lunch",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__card",
+          "left": 1362,
+          "right": 1562,
+          "tag": "BUTTON",
+          "text": "11:45-12:30Lunch",
+          "width": 200
+        },
+        {
+          "cls": "coverage-timeline__time",
+          "left": 1379,
+          "right": 1545,
+          "tag": "DIV",
+          "text": "11:45-12:30",
+          "width": 166
+        }
+      ],
+      "routeName": "tomorrow",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "route": "week",
+    "result": {
+      "activePanel": true,
+      "activePanelText": "Week commandShape the week before it shapes tomorrowUse the weekly pattern before locking tomorrow's coverage. Read the forecast, check the risk, and stage the plan before tomorrow starts making decisions for you.Plan TomorrowReview TodayUpdated 6:00 AM5Days mapped0Forecast days0High-risk blocks0Unmapped days3Open itemsNext decisionPriorityNo high-risk dayCoverage63% · Coverage watchOpen items3Staging cuesPlan tomorrow· Plan readyRead forecast day· No forecasted dayStage high-risk support· No hi",
+      "blockerTextFound": false,
+      "blockers": [],
+      "demoApi": "prairie-static-demo-api",
+      "horizontalOverflow": false,
+      "navLabels": [
+        {
+          "id": "shell-nav-group-today",
+          "selected": "false",
+          "text": "TodayDo this now"
+        },
+        {
+          "id": "shell-nav-group-classroom",
+          "selected": "false",
+          "text": "ClassroomRoom view"
+        },
+        {
+          "id": "shell-nav-group-tomorrow",
+          "selected": "false",
+          "text": "TomorrowPlan tomorrow"
+        },
+        {
+          "id": "shell-nav-group-week",
+          "selected": "true",
+          "text": "WeekWeek map"
+        },
+        {
+          "id": "shell-nav-group-prep",
+          "selected": "false",
+          "text": "PrepAdapt lesson"
+        },
+        {
+          "id": "shell-nav-group-ops",
+          "selected": "false",
+          "text": "OpsLog note1"
+        },
+        {
+          "id": "shell-nav-group-review",
+          "selected": "false",
+          "text": "ReviewMessage family"
+        }
+      ],
+      "overflow": [
+        {
+          "cls": "app-footer",
+          "left": 232,
+          "right": 1296,
+          "tag": "FOOTER",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        },
+        {
+          "cls": "app-footer__body",
+          "left": 232,
+          "right": 1296,
+          "tag": "DIV",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        }
+      ],
+      "routeName": "week",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "route": "prep",
+    "result": {
+      "activePanel": true,
+      "activePanelText": "Prep commandPrepare the material before it reaches the room.Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.Heavy EAL load8 EAL · 7 languagesActive toolDifferentiateRoster26Students8EALLanguage7LanguagesVariantsModeArtifact readinessInput laneupload · paste · webCurriculumAlberta programOutputvariantsLanguage loadTagalogUrduArabicSomaliPunjabiSpanishEAL students8Family languages7Teacher passSame outcome· no lowered barEditable copy· teacher owned",
+      "blockerTextFound": false,
+      "blockers": [],
+      "demoApi": "prairie-static-demo-api",
+      "horizontalOverflow": false,
+      "navLabels": [
+        {
+          "id": "shell-nav-group-today",
+          "selected": "false",
+          "text": "TodayDo this now"
+        },
+        {
+          "id": "shell-nav-group-classroom",
+          "selected": "false",
+          "text": "ClassroomRoom view"
+        },
+        {
+          "id": "shell-nav-group-tomorrow",
+          "selected": "false",
+          "text": "TomorrowPlan tomorrow"
+        },
+        {
+          "id": "shell-nav-group-week",
+          "selected": "false",
+          "text": "WeekWeek map"
+        },
+        {
+          "id": "shell-nav-group-prep",
+          "selected": "true",
+          "text": "PrepAdapt lesson"
+        },
+        {
+          "id": "shell-nav-group-ops",
+          "selected": "false",
+          "text": "OpsLog note1"
+        },
+        {
+          "id": "shell-nav-group-review",
+          "selected": "false",
+          "text": "ReviewMessage family"
+        }
+      ],
+      "overflow": [
+        {
+          "cls": "app-footer",
+          "left": 232,
+          "right": 1296,
+          "tag": "FOOTER",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        },
+        {
+          "cls": "app-footer__body",
+          "left": 232,
+          "right": 1296,
+          "tag": "DIV",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        }
+      ],
+      "routeName": "prep",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "route": "ops",
+    "result": {
+      "activePanel": true,
+      "activePanelText": "Ops commandCoordinate the adults without losing the thread.Capture today's evidence, brief the adults in the room, balance coverage, and package the handoff from one operational surface.Coordination queued1 follow-up · 3 threadsActive workflowLog InterventionHandoffSub packet readyCapture3Threads1Follow-upsCoverage2EA moves5BlocksCapture queueOpen threads3Follow-ups1Current lane1 follow-upsCoverage cuesAmira, Daniyal· 8:30-10:30Brody, Jasper· 10:45-11:45Handoff pathLog noteBrief EAsBalance loadS",
+      "blockerTextFound": false,
+      "blockers": [],
+      "demoApi": "prairie-static-demo-api",
+      "horizontalOverflow": false,
+      "navLabels": [
+        {
+          "id": "shell-nav-group-today",
+          "selected": "false",
+          "text": "TodayDo this now"
+        },
+        {
+          "id": "shell-nav-group-classroom",
+          "selected": "false",
+          "text": "ClassroomRoom view"
+        },
+        {
+          "id": "shell-nav-group-tomorrow",
+          "selected": "false",
+          "text": "TomorrowPlan tomorrow"
+        },
+        {
+          "id": "shell-nav-group-week",
+          "selected": "false",
+          "text": "WeekWeek map"
+        },
+        {
+          "id": "shell-nav-group-prep",
+          "selected": "false",
+          "text": "PrepAdapt lesson"
+        },
+        {
+          "id": "shell-nav-group-ops",
+          "selected": "true",
+          "text": "OpsLog note1"
+        },
+        {
+          "id": "shell-nav-group-review",
+          "selected": "false",
+          "text": "ReviewMessage family"
+        }
+      ],
+      "overflow": [
+        {
+          "cls": "app-footer",
+          "left": 232,
+          "right": 1296,
+          "tag": "FOOTER",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        },
+        {
+          "cls": "app-footer__body",
+          "left": 232,
+          "right": 1296,
+          "tag": "DIV",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        }
+      ],
+      "routeName": "ops",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  },
+  {
+    "route": "review",
+    "result": {
+      "activePanel": true,
+      "activePanelText": "Review commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Review pending1 approval · 1 signalsActive toolFamily MessageApprovals1AwaitingSignals1Patterns3ThreadsCadence0Reviews dueApproval queueAwaiting approval1Active threads3Human-in-the-loopAlways editable· teacher edits persistNo autonomous send· approval required02Review laneWhat to approve, what to",
+      "blockerTextFound": false,
+      "blockers": [],
+      "demoApi": "prairie-static-demo-api",
+      "horizontalOverflow": false,
+      "navLabels": [
+        {
+          "id": "shell-nav-group-today",
+          "selected": "false",
+          "text": "TodayDo this now"
+        },
+        {
+          "id": "shell-nav-group-classroom",
+          "selected": "false",
+          "text": "ClassroomRoom view"
+        },
+        {
+          "id": "shell-nav-group-tomorrow",
+          "selected": "false",
+          "text": "TomorrowPlan tomorrow"
+        },
+        {
+          "id": "shell-nav-group-week",
+          "selected": "false",
+          "text": "WeekWeek map"
+        },
+        {
+          "id": "shell-nav-group-prep",
+          "selected": "false",
+          "text": "PrepAdapt lesson"
+        },
+        {
+          "id": "shell-nav-group-ops",
+          "selected": "false",
+          "text": "OpsLog note1"
+        },
+        {
+          "id": "shell-nav-group-review",
+          "selected": "true",
+          "text": "ReviewMessage family"
+        }
+      ],
+      "overflow": [
+        {
+          "cls": "app-footer",
+          "left": 232,
+          "right": 1296,
+          "tag": "FOOTER",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        },
+        {
+          "cls": "app-footer__body",
+          "left": 232,
+          "right": 1296,
+          "tag": "DIV",
+          "text": "PrairieClassroom OSGemma 4 Good Hackathon demo build▸Shortcuts?classroomdemo-okafor-grade34envmockv0.1.0",
+          "width": 1064
+        }
+      ],
+      "routeName": "review",
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "viewport": {
+        "height": 720,
+        "scrollWidth": 1280,
+        "width": 1280
+      }
+    },
+    "logs": []
+  }
+]

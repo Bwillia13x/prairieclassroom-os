@@ -1,0 +1,5 @@
+
+> prairieclassroom-os@0.0.1 claims:check
+> node scripts/claims-check.mjs
+
+Claims check passed.

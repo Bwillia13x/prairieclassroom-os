@@ -50,7 +50,7 @@ For the competition proof lane, the project uses hosted Gemma 4 through the Gemi
 - live tier: `gemma-4-26b-a4b-it`
 - planning tier: `gemma-4-31b-it`
 
-The repo also includes an Ollama path for the intended privacy-preserving local deployment model, but that lane is not claimed as proven on the current maintenance host. The competition proof uses the hosted Gemini lane on synthetic/demo data; the last passing hosted baseline remains May 3, while the current May 8 hosted refresh is blocked and not a passing baseline.
+The repo also includes an Ollama path for the intended privacy-preserving local deployment model, but that lane is not claimed as proven on the current maintenance host. The competition proof uses the hosted Gemini lane on synthetic/demo data; the current May 16 hosted refresh passed as the latest full hosted baseline.
 
 ## 4. Architecture
 
@@ -83,21 +83,21 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 The repo has a current artifact-backed proof story:
 
 - **Mock structural gate:** passing at `output/release-gate/2026-05-11T22-53-32-342Z-87696`.
-- **Current hosted Gemma 4 refresh:** failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; the May 8 run did not produce a current clean full hosted gate.
-- **Hosted tool-calling evidence:** `diff-015-tool-calling-curriculum` passed in the current hosted attempt before the eval lane hit a retryable provider `500 INTERNAL` and exited with code 143.
-- **Latest completed May 8 hosted eval summary:** `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` recorded 12/13, with `fcst-001-demo-schema` blocked by provider high demand.
-- **Latest completed May 8 hosted eval failure summary:** `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-failure-summary.json`.
-- **Latest May 8 cost rollup:** `output/cost-rollups/2026-05-08-rollup.json`.
-- **Last passing hosted Gemma 4 baseline:** full hosted release gate passed via `npm run release:gate:gemini` on synthetic/demo data at `output/release-gate/2026-05-03T17-59-42-981Z-80702`.
-- **Last passing hosted proof eval summary:** `output/evals/2026-05-03-gemini/2026-05-03T17-59-42-981Z-80702-gemini-summary.json`.
-- **Last passing hosted eval result:** 13/13 curated hosted proof cases passed, including the Punjabi family-message equity case.
+- **Current hosted Gemma 4 refresh:** passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; the May 16 run produced a current clean full hosted gate.
+- **Hosted tool-calling evidence:** `diff-015-tool-calling-curriculum` passed in the current hosted attempt with provider-native tool history.
+- **Latest completed May 16 hosted eval summary:** `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` recorded 13/13.
+- **Latest completed May 16 hosted eval failure summary:** `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`.
+- **Latest May 16 cost rollup:** `output/cost-rollups/2026-05-16-rollup.json`.
+- **Latest passing hosted Gemma 4 baseline:** full hosted release gate passed via `npm run release:gate:gemini` on synthetic/demo data at `output/release-gate/2026-05-16T19-53-39-742Z-56491`.
+- **Latest passing hosted proof eval summary:** `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`.
+- **Latest passing hosted eval result:** 13/13 curated hosted proof cases passed, including the Punjabi family-message equity case.
 - **Full eval corpus:** 134 checked-in eval case files.
 - **Current unit coverage in latest mock gate:** 2,086 TypeScript/Vitest tests and 76 Python tests passed.
 - **Canonical inventory:** `docs/system-inventory.md` and `docs/api-surface.md`.
 - **Provider proof source:** `docs/eval-baseline.md`.
 - **Concise judge proof brief:** `docs/hackathon-proof-brief.md`.
 
-This proves that the application is real, route-complete, test-covered, and capable of executing real hosted Gemma 4 calls on synthetic/demo classroom data. It does not claim a current clean May 8 hosted baseline, real classroom outcomes, or real-student-data validation.
+This proves that the application is real, route-complete, test-covered, and capable of executing real hosted Gemma 4 calls on synthetic/demo classroom data. It does not claim real classroom outcomes or real-student-data validation.
 
 ## 7. Limitations
 

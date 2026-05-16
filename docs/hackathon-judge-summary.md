@@ -4,13 +4,13 @@ Short, judge-facing copy for PrairieClassroom OS. This is the one-page narrative
 
 ## Paste-Ready Submission Blurb
 
-PrairieClassroom OS is a Gemma-4-native classroom operating layer for Alberta K-6 teachers and educational assistants managing mixed-readiness, high-complexity classrooms. It is organized around four daily adult jobs — open the day, adapt instruction, prepare tomorrow, coordinate with adults or families — wired together by a closed feedback loop where today's classroom signal becomes tomorrow's planning context. For the hackathon proof lane, we verified real hosted Gemma 4 execution on synthetic/demo classroom data. The last passing hosted baseline is the May 3 full release gate; the current May 8 hosted refresh did not produce a clean new passing gate because the hosted eval lane hit provider instability. The intended school deployment path remains privacy-first local or self-hosted Gemma 4 via Ollama.
+PrairieClassroom OS is a Gemma-4-native classroom operating layer for Alberta K-6 teachers and educational assistants managing mixed-readiness, high-complexity classrooms. It is organized around four daily adult jobs — open the day, adapt instruction, prepare tomorrow, coordinate with adults or families — wired together by a closed feedback loop where today's classroom signal becomes tomorrow's planning context. For the hackathon proof lane, we verified real hosted Gemma 4 execution on synthetic/demo classroom data. The current May 16 hosted release gate passed 13/13 curated hosted proof cases, API smoke, and browser smoke. The intended school deployment path remains privacy-first local or self-hosted Gemma 4 via Ollama.
 
 ## What Judges Can Safely Credit
 
 - Real hosted Gemma 4 execution was proven on the synthetic/demo lane.
-- The last passing hosted baseline includes curated evals, API smoke, and browser smoke.
-- The current hosted refresh failed at `output/release-gate/2026-05-08T22-47-12-031Z-43430`; do not present it as a passing baseline.
+- The current passing hosted baseline includes curated evals, API smoke, and browser smoke.
+- The current hosted refresh passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; present it only as synthetic/demo hosted proof, not real classroom validation.
 - Multimodal worksheet image extraction (`extract_worksheet`) is wired through Gemini-API `inline_data` parts, not stub code.
 - Roster-checked function calling rejects unknown student aliases, preventing the model from confirming a hallucinated student.
 - Tool results round-trip through provider-native `tool_interactions[]`, not prompt injection.
@@ -26,12 +26,12 @@ PrairieClassroom OS is a Gemma-4-native classroom operating layer for Alberta K-
 
 ## Proof Anchors
 
-- Latest attempted hosted gate: `output/release-gate/2026-05-08T22-47-12-031Z-43430`
-- Current hosted refresh status: failed at the curated hosted eval step; `diff-015-tool-calling-curriculum` passed before a retryable provider `500 INTERNAL`, then the eval process exited with code 143.
-- Latest completed May 8 hosted eval summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-summary.json` (`12/13`; provider high-demand block on `fcst-001-demo-schema`).
-- Latest completed May 8 hosted eval failure summary: `output/evals/2026-05-08-gemini/2026-05-08T21-48-03-113Z-23553-gemini-failure-summary.json`
-- Latest May 8 cost rollup: `output/cost-rollups/2026-05-08-rollup.json`
-- Last passing hosted baseline: `output/release-gate/2026-05-03T17-59-42-981Z-80702`
+- Latest attempted hosted gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
+- Current hosted refresh status: passed; `13/13` curated hosted cases passed, including `diff-015-tool-calling-curriculum`, `plan-010-prompt-injection`, `msg-lang-pa-praise`, `surv-001-schema`, and `extract-001-schema`.
+- Latest completed May 16 hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`).
+- Latest completed May 16 hosted eval failure summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`
+- Latest May 16 cost rollup: `output/cost-rollups/2026-05-16-rollup.json`
+- Latest passing hosted baseline: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
 - Hosted eval result in the last passing baseline: `13/13` curated proof cases passed, including the Punjabi family-message equity case.
 - Models observed in the hosted lane: `gemma-4-26b-a4b-it` and `gemma-4-31b-it`
 - Hosted rerun command: `npm run release:gate:gemini`

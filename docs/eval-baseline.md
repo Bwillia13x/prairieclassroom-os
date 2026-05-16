@@ -5,10 +5,10 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-05-15T12:59:12.314Z
+**Run date:** 2026-05-16T22:30:04.462Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
-**Raw artifacts:** `output/release-gate/2026-05-15T12-57-10-977Z-52253`
+**Raw artifacts:** `output/release-gate/2026-05-16T22-26-39-727Z-59832`
 
 ### Commands
 
@@ -44,15 +44,15 @@ npm run release:gate:ollama
 ## Hosted Gemini API Baseline
 
 **Status:** Passing baseline — 13/13 evals passed and the full hosted release gate completed.
-**Run date:** 2026-05-03T18:09:15.505Z
+**Run date:** 2026-05-16T20:05:43.945Z
 **Backend:** `gemini`
 **Key source:** `PRAIRIE_GEMINI_API_KEY`
 **Hosted run guard:** enabled
 **Eval suite:** Hosted Gemini proof suite (13/134 cases from the full corpus).
 **Usage scope:** Synthetic/demo evaluation only.
-**Current hosted attempt:** The current hosted refresh at `output/release-gate/2026-05-08T22-47-12-031Z-43430` failed and did not produce a passing baseline; keep this artifact as a blocker record, not as proof.
+**Current hosted attempt:** The current hosted refresh at `output/release-gate/2026-05-16T19-53-39-742Z-56491` passed and is the current hosted synthetic/demo proof baseline.
 **Model identifiers observed:** `gemma-4-26b-a4b-it`, `gemma-4-31b-it`
-**Raw artifacts:** `output/release-gate/2026-05-03T17-59-42-981Z-80702`
+**Raw artifacts:** `output/release-gate/2026-05-16T19-53-39-742Z-56491`
 
 ### Commands
 

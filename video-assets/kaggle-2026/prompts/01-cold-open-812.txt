@@ -1,0 +1,13 @@
+Filename: 01-cold-open-812.png
+Exact on-screen text:
+8:12 AM
+The classroom is already full.
+
+Original requested prompt:
+Create a cinematic documentary-style Alberta elementary classroom before school starts, winter morning light through windows, empty desks, teacher planning materials, worksheet pages, sticky notes, pencil, coffee mug. Serious but warm tone. Add exact text in deep navy serif typography, positioned left with high negative space: "8:12 AM" and below it "The classroom is already full." Thin muted gold accent line under the time. No other text.
+
+Imagegen source prompt used in this render pass:
+Cinematic Alberta elementary classroom before school, winter light, empty desks, planning materials, blank worksheet pages, blank sticky notes, pencil, coffee mug, high negative space left, no text.
+
+Production note:
+The imagegen source was generated without text or logos. Final text was composited deterministically in HTML/CSS to preserve exact spelling and punctuation.

@@ -1,0 +1,36 @@
+PrairieClassroom OS Kaggle 2026 image asset manifest
+Generated: 2026-05-16T22:24:12.960Z
+Root: /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/video-assets/kaggle-2026
+
+Full-screen PNGs:
+- png/01-cold-open-812.png
+- png/02-not-just-students.png
+- png/03-alberta-complexity-stat-card.png
+- png/04-the-crisis-is-coordination.png
+- png/05-product-reveal.png
+- png/06-open-the-day.png
+- png/07-one-worksheet-four-lanes.png
+- png/08-observation-to-memory.png
+- png/09-tomorrow-to-ea.png
+- png/10-teacher-approval-required.png
+- png/11-classroom-loop.png
+- png/12-gemma4-dual-tier.png
+- png/13-bounded-tools.png
+- png/14-proof-of-work.png
+- png/15-not-a-student-chatbot.png
+- png/16-closing-card.png
+
+Lower-third PNGs:
+- png/lower-third-today.png
+- png/lower-third-differentiate.png
+- png/lower-third-intervention.png
+- png/lower-third-tomorrow.png
+- png/lower-third-ea.png
+- png/lower-third-family.png
+- png/lower-third-patterns.png
+
+- contact-sheet.png
+- README.md
+- prompts/*.txt
+- source/html/*.html
+- source/backgrounds/*-background.png
