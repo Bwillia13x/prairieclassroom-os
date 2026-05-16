@@ -151,6 +151,51 @@ interface RenderShellOptions {
   debtItems?: Array<{ category: string; student_refs: string[]; age_days: number }>;
 }
 
+function makeShellTodaySnapshot(
+  profile: ClassroomProfile,
+  options: Pick<RenderShellOptions, "debtCounts" | "debtItems"> = {},
+) {
+  return {
+    debt_register: {
+      register_id: "test-register",
+      classroom_id: profile.classroom_id,
+      items: (options.debtItems ?? []).map((item, index) => ({
+        category: item.category,
+        student_refs: item.student_refs,
+        description: `${item.category} for ${item.student_refs.join(", ") || "classroom"}`,
+        source_record_id: `shell-debt-${index + 1}`,
+        age_days: item.age_days,
+        suggested_action: "Review in shell test",
+      })),
+      item_count_by_category: options.debtCounts ?? {},
+      generated_at: "2026-04-13T00:00:00.000Z",
+      schema_version: "1.0.0",
+    },
+    latest_plan: null,
+    latest_forecast: {
+      forecast_id: "shell-test-forecast",
+      classroom_id: profile.classroom_id,
+      forecast_date: "2026-04-13",
+      overall_summary: "Morning routines are stable while the shell test verifies navigation.",
+      highest_risk_block: "9:00-9:30",
+      schema_version: "1.0.0",
+      blocks: [
+        {
+          time_slot: "9:00-9:30",
+          activity: "Morning routines",
+          level: "low",
+          contributing_factors: [],
+          suggested_mitigation: "Confirm coverage",
+        },
+      ],
+      generated_at: "2026-04-13T00:00:00.000Z",
+    },
+    student_count: profile.students.length,
+    student_threads: [],
+    last_activity_at: null,
+  } as never;
+}
+
 async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfile = {}) {
   // Backwards-compatible: callers may pass a ClassroomProfile directly.
   const opts: RenderShellOptions =
@@ -160,24 +205,7 @@ async function renderShellWithDemo(options: RenderShellOptions | ClassroomProfil
   const profile = opts.profile ?? makeDemoClassroom();
   mockedListClassrooms.mockResolvedValue([profile]);
   mockedFetchClassroomProfile.mockResolvedValue(profile);
-  if (opts.debtCounts) {
-    mockedFetchTodaySnapshot.mockResolvedValue({
-      debt_register: {
-        register_id: "test-register",
-        classroom_id: profile.classroom_id,
-        items: opts.debtItems ?? [],
-        item_count_by_category: opts.debtCounts,
-        generated_at: new Date().toISOString(),
-        schema_version: "1.0.0",
-      },
-      latest_plan: null,
-      latest_forecast: null,
-      student_count: 0,
-      last_activity_at: null,
-    } as never);
-  } else {
-    mockedFetchTodaySnapshot.mockRejectedValue(new Error("snapshot disabled in shell test"));
-  }
+  mockedFetchTodaySnapshot.mockResolvedValue(makeShellTodaySnapshot(profile, opts));
   const utils = render(<App />);
   await waitFor(() => {
     expect(screen.getByRole("button", { name: /active classroom/i })).toBeTruthy();
@@ -257,7 +285,7 @@ describe("App shell — classroom pill trigger", { timeout: 60_000 }, () => {
     const demoClassroom = makeDemoClassroom({ requires_access_code: false });
     mockedListClassrooms.mockResolvedValue([protectedClassroom, demoClassroom]);
     mockedFetchClassroomProfile.mockResolvedValue(demoClassroom);
-    mockedFetchTodaySnapshot.mockRejectedValue(new Error("snapshot disabled in shell test"));
+    mockedFetchTodaySnapshot.mockResolvedValue(makeShellTodaySnapshot(demoClassroom));
 
     render(<App />);
 
@@ -281,7 +309,7 @@ describe("App shell — classroom pill trigger", { timeout: 60_000 }, () => {
     const demoClassroom = makeDemoClassroom({ requires_access_code: false });
     mockedListClassrooms.mockResolvedValue([protectedClassroom, demoClassroom]);
     mockedFetchClassroomProfile.mockResolvedValue(demoClassroom);
-    mockedFetchTodaySnapshot.mockRejectedValue(new Error("snapshot disabled in shell test"));
+    mockedFetchTodaySnapshot.mockResolvedValue(makeShellTodaySnapshot(demoClassroom));
 
     render(<App />);
 
@@ -326,6 +354,31 @@ describe("App shell — classroom pill trigger", { timeout: 60_000 }, () => {
     expect(badge).not.toBeNull();
     expect(badge?.classList.contains("shell-nav__badge--alert")).toBe(true);
     expect(badge?.textContent).toContain("8");
+  });
+
+  it("exposes a `title` tooltip on every shell nav tab when the rail is collapsed", async () => {
+    localStorage.setItem("prairie:shell-nav-collapsed", "1");
+    await renderShellWithDemo();
+    const expectedTitles: Record<string, string> = {
+      classroom: "Classroom: Room view",
+      today: "Today: Do this now",
+      tomorrow: "Tomorrow: Plan tomorrow",
+      week: "Week: Week map",
+      prep: "Prep: Adapt lesson",
+      ops: "Ops: Log note",
+      review: "Review: Message family",
+    };
+    for (const [tab, expected] of Object.entries(expectedTitles)) {
+      const tabButton = screen.getByTestId(`shell-nav-group-${tab}`);
+      expect(tabButton).toHaveAttribute("title", expected);
+    }
+  });
+
+  it("does not duplicate visible shell nav labels with title tooltips while expanded", async () => {
+    await renderShellWithDemo();
+    for (const tab of ["classroom", "today", "tomorrow", "week", "prep", "ops", "review"]) {
+      expect(screen.getByTestId(`shell-nav-group-${tab}`)).not.toHaveAttribute("title");
+    }
   });
 
   it("renders the brand unboxed and the primary rail as a full segmented tablist", async () => {

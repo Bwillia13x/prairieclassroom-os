@@ -48,6 +48,18 @@ export interface TodayHeroMondayMoment {
   onDismiss: () => void;
 }
 
+/**
+ * Debt-tile keys are stable strings shared with the TodayPanel routing
+ * map. Keep this union in sync with the `key` values in `getDebtTiles`
+ * below — the panel uses them to pick which workspace to open.
+ */
+export type TodayHeroDebtTileKey =
+  | "interventions"
+  | "assessments"
+  | "communications"
+  | "plan"
+  | "materials";
+
 interface Props {
   snapshot: TodaySnapshot | null;
   health: ClassroomHealth | null;
@@ -61,6 +73,13 @@ interface Props {
   currentHour?: number;
   onCtaClick: () => void;
   onStudentClick?: (studentRef: string) => void;
+  /**
+   * Optional debt-tile click router. When provided, each Follow-up debt
+   * tile becomes a button that dispatches the tile's key so the host
+   * (TodayPanel) can navigate to the matching tool surface. Without
+   * this prop the tiles render as static read-only cards.
+   */
+  onDebtTileClick?: (key: TodayHeroDebtTileKey) => void;
 }
 
 export default function TodayHero({
@@ -76,6 +95,7 @@ export default function TodayHero({
   currentHour,
   onCtaClick,
   onStudentClick,
+  onDebtTileClick,
 }: Props) {
   const forecastBlocks = snapshot?.latest_forecast?.blocks ?? [];
   const openItems = openItemCount ?? snapshot?.debt_register.items.length ?? 0;
@@ -246,27 +266,51 @@ export default function TodayHero({
               <span className="today-hero__section-meta">{openItems} open</span>
             </header>
             <div className="today-hero__debt-tiles" role="list">
-              {debtTiles.map((tile) => (
-                <div
-                  key={tile.key}
-                  className="today-hero__debt-tile"
-                  role="listitem"
-                  data-tone={tile.tone}
-                >
-                  <span className="today-hero__debt-icon" aria-hidden="true">
-                    {tile.icon}
-                  </span>
-                  <div className="today-hero__debt-copy">
-                    <strong className="today-hero__debt-value">{tile.value}</strong>
-                    <span className="today-hero__debt-label">{tile.label}</span>
-                    <span
-                      className={`today-hero__debt-caption today-hero__debt-caption--${tile.tone}`}
-                    >
-                      {tile.caption}
+              {debtTiles.map((tile) => {
+                const tileBody = (
+                  <>
+                    <span className="today-hero__debt-icon" aria-hidden="true">
+                      {tile.icon}
                     </span>
+                    <div className="today-hero__debt-copy">
+                      <strong className="today-hero__debt-value">{tile.value}</strong>
+                      <span className="today-hero__debt-label">{tile.label}</span>
+                      <span
+                        className={`today-hero__debt-caption today-hero__debt-caption--${tile.tone}`}
+                      >
+                        {tile.caption}
+                      </span>
+                    </div>
+                  </>
+                );
+                if (onDebtTileClick) {
+                  return (
+                    <div key={tile.key} className="today-hero__debt-tile-shell" role="listitem">
+                      <button
+                        type="button"
+                        className="today-hero__debt-tile today-hero__debt-tile--actionable"
+                        data-tone={tile.tone}
+                        data-debt-tile={tile.key}
+                        onClick={() => onDebtTileClick(tile.key)}
+                        aria-label={`${tile.label}: ${tile.value} ${tile.caption}`}
+                      >
+                        {tileBody}
+                      </button>
+                    </div>
+                  );
+                }
+                return (
+                  <div
+                    key={tile.key}
+                    className="today-hero__debt-tile"
+                    role="listitem"
+                    data-tone={tile.tone}
+                    data-debt-tile={tile.key}
+                  >
+                    {tileBody}
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         </div>
@@ -532,7 +576,7 @@ function getBlockSubtitle(block: ComplexityBlock): string {
 // ─── Debt tiles ────────────────────────────────────────────────────
 
 interface DebtTile {
-  key: string;
+  key: TodayHeroDebtTileKey;
   icon: ReactNode;
   value: number;
   label: string;
@@ -606,7 +650,7 @@ interface SignalRow {
   label: string;
   value: string;
   caption: string;
-  tone: "neutral" | "good" | "warn";
+  tone: "neutral" | "good" | "warn" | "danger";
   icon: ReactNode;
 }
 
@@ -621,6 +665,42 @@ function getLiveSignals(
   const approvalRate = messagesTotal > 0 ? Math.round((messagesApproved / messagesTotal) * 100) : null;
   const peakLevel = snapshot?.latest_forecast?.blocks?.find((b) => b.level === "high")?.level ?? "low";
 
+  const planTone: SignalRow["tone"] =
+    planReady < 50 ? "danger" : planReady < 80 ? "warn" : "good";
+  const planCaption =
+    planReady < 50
+      ? "Coverage gap — set the day before students arrive"
+      : planReady < 80
+        ? "Prep coverage below target"
+        : "Coverage ready for the day";
+
+  const engagementTone: SignalRow["tone"] =
+    openItems > 6 ? "danger" : openItems > 2 ? "warn" : "good";
+  const engagementCaption =
+    openItems > 6
+      ? "Follow-up backlog will drag the day"
+      : openItems > 2
+        ? "Follow-ups may drag transitions"
+        : "No immediate drag";
+
+  let approvalTone: SignalRow["tone"];
+  let approvalCaption: string;
+  if (approvalRate !== null) {
+    if (approvalRate < 40) {
+      approvalTone = "danger";
+      approvalCaption = "Messages stalled — review and approve";
+    } else if (approvalRate < 60) {
+      approvalTone = "warn";
+      approvalCaption = "Messages need review";
+    } else {
+      approvalTone = "good";
+      approvalCaption = "Message queue healthy";
+    }
+  } else {
+    approvalTone = peakLevel === "high" ? "warn" : "good";
+    approvalCaption = peakLevel === "high" ? "High-complexity block ahead" : "No acute concern";
+  }
+
   return [
     {
       label: "Attendance",
@@ -632,24 +712,22 @@ function getLiveSignals(
     {
       label: "Engagement",
       value: openItems > 6 ? "Watch" : openItems > 2 ? "Steady" : "Good",
-      caption: openItems > 6 ? "Follow-ups may drag transitions" : "No immediate drag",
-      tone: openItems > 6 ? "warn" : "good",
+      caption: engagementCaption,
+      tone: engagementTone,
       icon: <ChatBubbleIcon />,
     },
     {
       label: "Plan readiness",
       value: `${planReady}%`,
-      caption: planReady >= 70 ? "Coverage ready for the day" : "Prep coverage below target",
-      tone: planReady >= 70 ? "good" : "warn",
+      caption: planCaption,
+      tone: planTone,
       icon: <BarChartIcon />,
     },
     {
       label: approvalRate !== null ? "Family approvals" : "Room climate",
       value: approvalRate !== null ? `${approvalRate}%` : peakLevel === "high" ? "Watch" : "Positive",
-      caption: approvalRate !== null
-        ? approvalRate < 60 ? "Messages need review" : "Message queue healthy"
-        : peakLevel === "high" ? "High-complexity block ahead" : "No acute concern",
-      tone: peakLevel === "high" || (approvalRate !== null && approvalRate < 60) ? "warn" : "good",
+      caption: approvalCaption,
+      tone: approvalTone,
       icon: <HeartIcon />,
     },
   ];
@@ -686,10 +764,6 @@ interface WatchInput {
 function getWatchRows({ checkFirstStudents, studentReasons, snapshot, students }: WatchInput): WatchRow[] {
   const threadByAlias = new Map((snapshot?.student_threads ?? []).map((thread) => [thread.alias, thread]));
   const summaryByAlias = new Map(students.map((student) => [student.alias, student]));
-  // Index the freshest debt-register item per student so we can derive
-  // a per-row fallback reason instead of repeating the same generic
-  // "Check before the next transition" caption across every avatar.
-  // Newest (lowest age_days) wins on ties.
   const debtByAlias = new Map<string, DebtItem>();
   for (const item of snapshot?.debt_register?.items ?? []) {
     for (const ref of item.student_refs ?? []) {
@@ -713,11 +787,13 @@ function getWatchRows({ checkFirstStudents, studentReasons, snapshot, students }
   return uniqueAliases.map((alias) => {
     const thread = threadByAlias.get(alias);
     const summary = summaryByAlias.get(alias);
+    const debtItem = debtByAlias.get(alias);
     const reason =
       studentReasons?.[alias] ??
       thread?.priority_reason ??
       summary?.latest_priority_reason ??
-      summarizeDebtReason(debtByAlias.get(alias)) ??
+      cleanDebtDescription(debtItem, alias) ??
+      summarizeDebtReason(debtItem) ??
       "Check before the next transition";
     const pending = thread?.pending_action_count ?? summary?.pending_action_count ?? 0;
     const tone: WatchRow["tone"] =
@@ -748,6 +824,24 @@ function getWatchStatusLabel({ reason, tone }: Pick<WatchRow, "reason" | "tone">
 }
 
 // ─── Helpers ───────────────────────────────────────────────────────
+
+function cleanDebtDescription(item: DebtItem | undefined, alias: string): string | null {
+  const raw = item?.description?.trim();
+  if (!raw) return null;
+  const escapedAlias = alias.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const aliasPrefix = new RegExp(`^${escapedAlias}[\\s,:—–-]+`, "i");
+  const aliasSuffix = new RegExp(`[\\s,:—–-]+(?:for|to|from)?\\s*${escapedAlias}\\.?$`, "i");
+  let cleaned = raw.replace(aliasPrefix, "").replace(aliasSuffix, "").trim();
+  if (cleaned.length === 0) return null;
+  if (cleaned.length > 60) {
+    const slice = cleaned.slice(0, 60);
+    const lastSpace = slice.lastIndexOf(" ");
+    cleaned = `${lastSpace > 30 ? slice.slice(0, lastSpace) : slice}…`;
+  }
+  cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+  if (cleaned.length < 4) return null;
+  return cleaned;
+}
 
 /**
  * Per-category caption used as a fallback when a student has no explicit

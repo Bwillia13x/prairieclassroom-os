@@ -1122,6 +1122,7 @@ export default function App() {
                       aria-selected={activeTab === tab}
                       tabIndex={shellNavCollapsed ? -1 : 0}
                       aria-controls={`panel-${tab}`}
+                      title={shellNavCollapsed ? `${meta.label}: ${meta.taskLabel}` : undefined}
                     >
                       <SectionIcon name={meta.icon} className="shell-nav__group-icon" />
                       <span className="shell-nav__label-stack">

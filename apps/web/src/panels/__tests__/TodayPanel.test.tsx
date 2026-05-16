@@ -490,8 +490,13 @@ describe("TodayPanel", () => {
     expect(await screen.findByRole("button", { name: /open follow-ups/i })).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: /open follow-ups/i }));
 
-    expect(await screen.findByRole("dialog", { name: /open follow-ups/i })).toBeInTheDocument();
-    expect(screen.getByText("Follow-up still needs logging")).toBeInTheDocument();
+    const dialog = await screen.findByRole("dialog", { name: /open follow-ups/i });
+    // The DebtItem.description ("Follow-up still needs logging") now
+    // also surfaces in the TodayHero watchlist as the row caption (see
+    // TodayHero's `cleanDebtDescription` fallback). Scope the
+    // assertion to the drawer so the duplicate occurrence in the
+    // watchlist doesn't trip getByText.
+    expect(within(dialog).getByText("Follow-up still needs logging")).toBeInTheDocument();
   });
 
   it("opens the forecast drawer from a risk window block", async () => {
@@ -788,6 +793,64 @@ describe("TodayPanel", () => {
     // 4 actionable out of 7 total roster threads — must read "4 watching".
     expect(within(preview).getByText("4 watching")).toBeInTheDocument();
     expect(within(preview).queryByText("7 watching")).not.toBeInTheDocument();
+  });
+
+  it("dedupes the Triage queue preview to one row per debt category with counts and oldest age", async () => {
+    const dupSnapshot = makeSnapshot({
+      debt_register: {
+        register_id: "r-dedupe",
+        classroom_id: "demo-classroom",
+        items: [
+          {
+            category: "stale_followup",
+            student_refs: ["Brody"],
+            description: "Follow-up overdue 1",
+            source_record_id: "int-a",
+            age_days: 7,
+            suggested_action: "Log follow-up",
+          },
+          {
+            category: "stale_followup",
+            student_refs: ["Cara"],
+            description: "Follow-up overdue 2",
+            source_record_id: "int-b",
+            age_days: 4,
+            suggested_action: "Log follow-up",
+          },
+          {
+            category: "stale_followup",
+            student_refs: ["Dru"],
+            description: "Follow-up overdue 3",
+            source_record_id: "int-c",
+            age_days: 9,
+            suggested_action: "Log follow-up",
+          },
+          {
+            category: "unapproved_message",
+            student_refs: ["Amira"],
+            description: "Message draft waiting",
+            source_record_id: "msg-1",
+            age_days: 2,
+            suggested_action: "Approve message",
+          },
+        ],
+        item_count_by_category: {
+          stale_followup: 3,
+          unapproved_message: 1,
+        },
+        generated_at: "2026-04-12T15:00:00.000Z",
+      } as unknown as TodaySnapshot["debt_register"],
+    });
+    renderTodayPanel(dupSnapshot);
+
+    const preview = await screen.findByLabelText("Today operational preview");
+    // Exactly one "Stale follow-up" evidence row, not four.
+    expect(within(preview).getAllByText("Stale follow-up")).toHaveLength(1);
+    // Meta carries the count and the oldest age across all 3 items.
+    expect(within(preview).getByText("3 · 9d oldest")).toBeInTheDocument();
+    // Other categories surface alongside, also as a single row each.
+    expect(within(preview).getByText("Unapproved message")).toBeInTheDocument();
+    expect(within(preview).getByText("1 · 2d oldest")).toBeInTheDocument();
   });
 
   it("hides the Touchpoints 'watching' meta when no thread is actionable", async () => {

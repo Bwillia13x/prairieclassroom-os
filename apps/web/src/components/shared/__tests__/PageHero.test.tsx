@@ -219,3 +219,32 @@ describe("PageHero", () => {
     ).toBeNull();
   });
 });
+
+describe("PageHero CSS hygiene", () => {
+  it("normalises .page-hero--prep to the command tokens, not brand-highlight", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const cssPath = path.resolve(__dirname, "..", "PageHero.css");
+    const css = fs.readFileSync(cssPath, "utf8");
+
+    const prepBlockMatch = css.match(/\.page-hero--prep\s*{([^}]*)}/);
+    expect(prepBlockMatch).not.toBeNull();
+    const prepBlock = prepBlockMatch![1];
+    expect(prepBlock).toMatch(/--page-hero-rule:\s*var\(--color-command-rule\)/);
+    expect(prepBlock).toMatch(/--page-hero-eyebrow:\s*var\(--color-command-eyebrow\)/);
+    expect(prepBlock).not.toMatch(/--page-hero-rule:\s*color-mix\([^)]*--color-brand-highlight/);
+    expect(prepBlock).not.toMatch(
+      /--page-hero-eyebrow:\s*var\(--color-brand-highlight-strong\)/,
+    );
+  });
+
+  it("disables the bevel ::after sheet on Prep + Review utility heroes", async () => {
+    const fs = await import("node:fs");
+    const path = await import("node:path");
+    const cssPath = path.resolve(__dirname, "..", "PageHero.css");
+    const css = fs.readFileSync(cssPath, "utf8");
+    expect(css).toMatch(
+      /\.page-hero--prep::after\s*,\s*\.page-hero--review::after\s*{[^}]*opacity:\s*0/,
+    );
+  });
+});

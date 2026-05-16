@@ -28,6 +28,7 @@
 
 .today-hero {
   --hero-card-radius: 6px;
+  --hero-card-border: 1px solid var(--color-border);
   --hero-card-border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border));
   --hero-card-bg: var(--color-surface);
   --hero-card-shadow:
@@ -644,6 +645,7 @@
   color: var(--block-muted);
   display: -webkit-box;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -708,6 +710,7 @@
 
   .today-hero__block-subtitle {
     -webkit-line-clamp: 2;
+    line-clamp: 2;
   }
 }
 
@@ -717,6 +720,11 @@
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--space-3);
+}
+
+.today-hero__debt-tile-shell {
+  display: flex;
+  min-width: 0;
 }
 
 @media (max-width: 880px) {
@@ -794,6 +802,57 @@
 .today-hero__debt-caption--warning {
   color: var(--color-text-warning);
   font-weight: var(--font-weight-semibold);
+}
+
+.today-hero__debt-tile--actionable {
+  width: 100%;
+  min-height: 100%;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  font: inherit;
+  color: inherit;
+  transition:
+    background var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-fast) var(--ease-standard),
+    transform var(--motion-fast) var(--ease-standard);
+}
+
+.today-hero__debt-tile--actionable:hover,
+.today-hero__debt-tile--actionable:focus-visible {
+  background: color-mix(in srgb, var(--hero-accent) 6%, transparent);
+  outline: none;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--hero-accent) 22%, transparent);
+}
+
+.today-hero__debt-tile--actionable:focus-visible {
+  box-shadow:
+    var(--focus-ring-halo),
+    inset 0 0 0 1px color-mix(in srgb, var(--hero-accent) 22%, transparent);
+}
+
+.today-hero__debt-tile--actionable[data-tone="danger"]:hover {
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-danger) 28%, transparent);
+}
+
+.today-hero__debt-tile--actionable[data-tone="danger"]:focus-visible {
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  box-shadow:
+    var(--focus-ring-halo),
+    inset 0 0 0 1px color-mix(in srgb, var(--color-danger) 28%, transparent);
+}
+
+.today-hero__debt-tile--actionable[data-tone="warning"]:hover {
+  background: color-mix(in srgb, var(--color-warning) 9%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+
+.today-hero__debt-tile--actionable[data-tone="warning"]:focus-visible {
+  background: color-mix(in srgb, var(--color-warning) 9%, transparent);
+  box-shadow:
+    var(--focus-ring-halo),
+    inset 0 0 0 1px color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 /* ── Side rail cards (signals + watchlist) ────────────────────── */
@@ -960,6 +1019,18 @@
   color: var(--color-success);
 }
 
+.today-hero__signal-row--danger {
+  border-color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 50%, var(--color-border));
+  background: var(--color-bg-danger);
+  background: color-mix(in srgb, var(--color-danger) 6%, transparent);
+}
+
+.today-hero__signal-row--danger .today-hero__signal-icon {
+  background: color-mix(in srgb, var(--color-danger) 18%, transparent);
+  color: var(--color-text-danger);
+}
+
 .today-hero__signal-label {
   font-family: var(--font-sans);
   font-size: clamp(0.9rem, 0.95vw, 1rem);
@@ -992,6 +1063,10 @@
 
 .today-hero__signal-row--good .today-hero__signal-value {
   color: var(--color-success);
+}
+
+.today-hero__signal-row--danger .today-hero__signal-value {
+  color: var(--color-text-danger);
 }
 
 /* ── Watchlist ────────────────────────────────────────────────── */
@@ -1155,6 +1230,7 @@
   line-height: 1.35;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -1165,9 +1241,11 @@
   justify-content: center;
   width: 26px;
   height: 26px;
+  border: 1px solid var(--color-border-accent);
   border: 1px solid color-mix(in srgb, var(--hero-accent) 20%, transparent);
   border-radius: 999px;
   color: var(--hero-accent);
+  background: var(--color-bg-accent);
   background: color-mix(in srgb, var(--hero-accent) 6%, transparent);
 }
 

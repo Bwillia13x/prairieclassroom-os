@@ -23,7 +23,7 @@ import OperationalPreview, {
 } from "../components/shared/OperationalPreview";
 import SectionMarker from "../components/shared/SectionMarker";
 import DayArc from "../components/DayArc";
-import TodayHero from "../components/TodayHero";
+import TodayHero, { type TodayHeroDebtTileKey } from "../components/TodayHero";
 import PageFreshness from "../components/PageFreshness";
 import SourceTag from "../components/SourceTag";
 import {
@@ -57,6 +57,22 @@ interface Props {
   onInterventionPrefill?: (prefill: InterventionPrefill) => void;
   onMessagePrefill?: (prefill: FamilyMessagePrefill) => void;
 }
+
+const TODAY_DEBT_TILE_TARGETS: Record<TodayHeroDebtTileKey, NavTarget> = {
+  interventions: "log-intervention",
+  assessments: "support-patterns",
+  communications: "family-message",
+  plan: "tomorrow-plan",
+  materials: "prep",
+};
+
+const TODAY_DEBT_LABELS: Record<string, string> = {
+  stale_followup: "Stale follow-up",
+  unapproved_message: "Unapproved message",
+  unaddressed_pattern: "Unaddressed pattern",
+  recurring_plan_item: "Recurring plan item",
+  approaching_review: "Approaching review",
+};
 
 /**
  * TodayPanel — live-day triage surface. The 2026-04-23 navigation reorg
@@ -227,19 +243,34 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
   // OperationalPreview groups for the today triage cockpit. All data
   // pulled from the existing snapshot/health/forecast results — no new
   // backend fields. Falls back to empty groups while loading.
-  const TODAY_DEBT_LABELS: Record<string, string> = {
-    stale_followup: "Stale follow-up",
-    unapproved_message: "Unapproved message",
-    unaddressed_pattern: "Unaddressed pattern",
-    recurring_plan_item: "Recurring plan item",
-    approaching_review: "Approaching review",
-  };
-  const triageQueueEvidence = (result?.debt_register?.items ?? [])
-    .slice(0, 4)
-    .map((item) => ({
-      label: TODAY_DEBT_LABELS[item.category] ?? item.category,
-      meta: `${item.age_days}d · ${item.student_refs.length}`,
-    }));
+  const triageQueueEvidence = (() => {
+    const items = result?.debt_register?.items ?? [];
+    if (items.length === 0) return [];
+    const counts = result?.debt_register?.item_count_by_category ?? {};
+    const grouped = new Map<string, { oldest: number; rawCount: number }>();
+    for (const item of items) {
+      const existing = grouped.get(item.category);
+      const ageDays = item.age_days ?? 0;
+      if (existing) {
+        existing.oldest = Math.max(existing.oldest, ageDays);
+        existing.rawCount += 1;
+      } else {
+        grouped.set(item.category, { oldest: ageDays, rawCount: 1 });
+      }
+    }
+    return Array.from(grouped.entries())
+      .sort(([, a], [, b]) => b.oldest - a.oldest || b.rawCount - a.rawCount)
+      .map(([category, info]) => {
+        const count =
+          (counts as Record<string, number | undefined>)[category] ??
+          info.rawCount;
+        return {
+          label: TODAY_DEBT_LABELS[category] ?? category,
+          meta: `${count} · ${info.oldest}d oldest`,
+        };
+      })
+      .slice(0, 4);
+  })();
 
   const riskEvidence: { label: string; meta: string }[] = [];
   if (peakBlock) {
@@ -372,6 +403,9 @@ export default function TodayPanel({ onTabChange, onInterventionPrefill, onMessa
               onTabChange(recommendedAction.tab);
             }}
             onStudentClick={(studentRef) => setDrillDown({ type: "student", alias: studentRef })}
+            onDebtTileClick={(key) => {
+              onTabChange(TODAY_DEBT_TILE_TARGETS[key]);
+            }}
           />
         ) : (
           <SectionSkeleton label="Loading today story" variant="today-hero" lines={3} />

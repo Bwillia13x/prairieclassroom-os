@@ -440,12 +440,12 @@ describe("TodayHero", () => {
     expect(within(flowSection).getByText(/^now$/i)).toBeInTheDocument();
   });
 
-  it("derives a per-student watchlist caption from the debt register when no explicit reason is supplied", () => {
+  it("prefers the cleaned DebtItem.description for the watchlist row when no explicit reason is supplied", () => {
     // Two students appear only via debt-register items; neither has a
     // priority_reason, latest_priority_reason, or studentReasons entry.
-    // Without the debt-derived fallback every row would read the same
-    // "Check before the next transition" caption — which we no longer
-    // accept in the watchlist UI.
+    // The hero should surface the richer description text (with the
+    // alias prefix stripped) instead of the canned category caption,
+    // and never fall back to "Check before the next transition".
     const snapshot = makeSnapshot({
       latest_forecast: makeForecast("medium"),
       debt_register: {
@@ -463,7 +463,7 @@ describe("TodayHero", () => {
           {
             category: "stale_followup",
             student_refs: ["Marco"],
-            description: "Marco follow-up overdue",
+            description: "Follow-up overdue for Marco",
             source_record_id: "student-2",
             age_days: 6,
             suggested_action: "Close the loop",
@@ -486,14 +486,181 @@ describe("TodayHero", () => {
       />,
     );
 
-    // Each row shows a category-specific caption rather than the
-    // generic fallback. The text is short on purpose so it fits the
-    // single-line ellipsis in the rail.
-    expect(screen.getByText(/pattern review approaching/i)).toBeInTheDocument();
-    expect(screen.getByText(/follow-up overdue/i)).toBeInTheDocument();
+    // The cleaned description (alias prefix/suffix stripped, leading
+    // letter capitalised) is what each row reads, not the short
+    // category-only caption.
+    expect(screen.getByText(/pattern review window approaching/i)).toBeInTheDocument();
+    expect(screen.getByText(/^follow-up overdue$/i)).toBeInTheDocument();
     expect(
       screen.queryByText(/check before the next transition/i),
     ).not.toBeInTheDocument();
+  });
+
+  it("falls back to the category caption when the debt description is empty/whitespace", () => {
+    const snapshot = makeSnapshot({
+      latest_forecast: makeForecast("low"),
+      debt_register: {
+        register_id: "r-fallback-empty",
+        classroom_id: "demo",
+        items: [
+          {
+            category: "stale_followup",
+            student_refs: ["Quinn"],
+            description: "   ",
+            source_record_id: "student-empty",
+            age_days: 4,
+            suggested_action: "Close the loop",
+          },
+        ],
+        item_count_by_category: { stale_followup: 1 },
+        generated_at: "2026-04-13T00:00:00Z",
+        schema_version: "1.0",
+      },
+    });
+
+    render(
+      <TodayHero
+        snapshot={snapshot}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        checkFirstStudents={["Quinn"]}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    expect(screen.getByText(/follow-up overdue/i)).toBeInTheDocument();
+  });
+
+  it("renders Follow-up debt tiles as buttons that fire onDebtTileClick with the tile key", async () => {
+    const user = userEvent.setup();
+    const onDebtTileClick = vi.fn();
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({
+          latest_forecast: makeForecast("low"),
+          debt_register: {
+            register_id: "r-tiles",
+            classroom_id: "demo",
+            items: [
+              {
+                category: "stale_followup",
+                student_refs: ["Brody"],
+                description: "Follow-up overdue",
+                source_record_id: "int-1",
+                age_days: 6,
+                suggested_action: "Close the loop",
+              },
+            ],
+            item_count_by_category: { stale_followup: 1 },
+            generated_at: "2026-04-13T00:00:00Z",
+            schema_version: "1.0",
+          },
+        })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+        onDebtTileClick={onDebtTileClick}
+      />,
+    );
+
+    const tile = document.querySelector(
+      '[data-debt-tile="interventions"]',
+    ) as HTMLButtonElement | null;
+    expect(tile).not.toBeNull();
+    expect(tile?.tagName).toBe("BUTTON");
+    expect(tile).toHaveAccessibleName("Interventions: 1 1 urgent");
+    expect(tile?.getAttribute("role")).toBeNull();
+    await user.click(tile!);
+    expect(onDebtTileClick).toHaveBeenCalledWith("interventions");
+
+    const planTile = document.querySelector(
+      '[data-debt-tile="plan"]',
+    ) as HTMLButtonElement | null;
+    expect(planTile).not.toBeNull();
+    await user.click(planTile!);
+    expect(onDebtTileClick).toHaveBeenCalledWith("plan");
+    expect(onDebtTileClick).toHaveBeenCalledTimes(2);
+  });
+
+  it("keeps Follow-up debt tiles non-interactive when onDebtTileClick is omitted", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    const tile = document.querySelector('[data-debt-tile="interventions"]');
+    expect(tile).not.toBeNull();
+    expect(tile?.tagName).toBe("DIV");
+  });
+
+  it("renders the Plan readiness signal as danger when coverage drops below 50%", () => {
+    // 0/7 plans → 0% readiness, well below the 50% danger threshold.
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={{
+          streak_days: 0,
+          plans_last_7: [false, false, false, false, false, false, false],
+          messages_approved: 0,
+          messages_total: 0,
+          trends: { debt_total_14d: [], plans_14d: [], peak_complexity_14d: [] },
+        }}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    const planRow = screen.getByText("Plan readiness").closest("li");
+    expect(planRow).not.toBeNull();
+    expect(planRow!.className).toMatch(/today-hero__signal-row--danger/);
+  });
+
+  it("renders the Family approvals signal as danger when nothing is approved", () => {
+    // 0 of 5 messages approved → 0% approval, below the 40% threshold.
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={{
+          streak_days: 5,
+          plans_last_7: [true, true, true, true, true, true, true],
+          messages_approved: 0,
+          messages_total: 5,
+          trends: { debt_total_14d: [], plans_14d: [], peak_complexity_14d: [] },
+        }}
+        students={[]}
+        recommendedAction={calmAction}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    const approvalRow = screen.getByText("Family approvals").closest("li");
+    expect(approvalRow).not.toBeNull();
+    expect(approvalRow!.className).toMatch(/today-hero__signal-row--danger/);
+  });
+
+  it("renders the Engagement signal as danger when openItemCount > 6", () => {
+    render(
+      <TodayHero
+        snapshot={makeSnapshot({ latest_forecast: makeForecast("low") })}
+        health={makeHealth(5, true)}
+        students={[]}
+        recommendedAction={calmAction}
+        openItemCount={9}
+        onCtaClick={() => {}}
+      />,
+    );
+
+    const engagementRow = screen.getByText("Engagement").closest("li");
+    expect(engagementRow).not.toBeNull();
+    expect(engagementRow!.className).toMatch(/today-hero__signal-row--danger/);
   });
 });
 
