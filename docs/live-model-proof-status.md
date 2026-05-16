@@ -8,7 +8,7 @@ _This document is generated from zero-cost host-preflight and release-gate artif
 - Current hosted refresh: latest attempted hosted Gemini gate passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; this is the current passing baseline.
 - Privacy-first Ollama school-deployment proof: Blocked pending a viable zero-cost Ollama host.
 - Zero-cost enforcement: mock and Ollama remain the default no-spend lanes; hosted Gemini is explicit opt-in only.
-- Latest passed mock gate: `output/release-gate/2026-05-16T22-26-39-727Z-59832`
+- Latest passed mock gate: `output/release-gate/2026-05-16T22-56-34-068Z-9551`
 - Latest passed hosted Gemini gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
 - Latest attempted hosted Gemini gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
 - Latest passed Ollama gate: _none recorded_
