@@ -6,36 +6,55 @@ interface Props {
   onDismiss: () => void;
 }
 
-const STEPS = [
+interface OnboardingStep {
+  title: string;
+  description: string;
+  group: string;
+  visualSrc: string;
+  visualWidth: number;
+  visualHeight: number;
+}
+
+const STEPS: OnboardingStep[] = [
   {
     title: "Your morning starts here",
     description: "The Today dashboard shows what needs attention first — pending messages, follow-up debt, yesterday's plan, and today's complexity forecast. Start every session here.",
     group: "Today",
     visualSrc: "/brand/onboarding-morning-command.png",
+    visualWidth: 760,
+    visualHeight: 351,
   },
   {
     title: "Prep materials for tomorrow",
     description: "Use Differentiate to create adapted versions of lesson artifacts for EAL, chunked, and extension groups. Language Tools simplifies text and builds vocabulary cards.",
     group: "Prep",
     visualSrc: "/brand/workflow-prep.png",
+    visualWidth: 320,
+    visualHeight: 320,
   },
   {
     title: "Plan and log your day",
     description: "Reflect on today's wins and challenges to generate tomorrow's support plan. Log interventions, generate EA briefings, forecast complexity, or prep a substitute packet.",
     group: "Daily Ops",
     visualSrc: "/brand/workflow-ops.png",
+    visualWidth: 320,
+    visualHeight: 320,
   },
   {
     title: "Review and communicate",
     description: "Draft family messages in any language — every message requires your explicit approval before copying. Track support patterns across students over time.",
     group: "Review",
     visualSrc: "/brand/workflow-review.png",
+    visualWidth: 320,
+    visualHeight: 320,
   },
   {
     title: "Navigate with your keyboard",
     description: "Press 1–0 to jump directly to any panel. Use the classroom pill in the header to switch classrooms. Protected classrooms will prompt for an access code that's saved in your browser.",
     group: "Quick tips",
     visualSrc: "/brand/prairieclassroom-mark.png",
+    visualWidth: 512,
+    visualHeight: 512,
   },
 ];
 
@@ -71,8 +90,8 @@ export default function OnboardingOverlay({ onDismiss }: Props) {
           className="onboarding-visual"
           src={current.visualSrc}
           alt=""
-          width="760"
-          height="351"
+          width={current.visualWidth}
+          height={current.visualHeight}
           aria-hidden="true"
         />
 

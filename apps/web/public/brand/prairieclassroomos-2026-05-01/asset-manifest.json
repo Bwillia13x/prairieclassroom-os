@@ -1,6 +1,7 @@
 {
   "created": "2026-05-01",
-  "source_direction": "PrairieClassroomOS option 1 lightest glass edge, notebook and field lines",
+  "refreshed": "2026-05-15",
+  "source_direction": "PrairieClassroomOS refreshed notebook tile with cleaner prairie contour lines, stronger favicon readability, and app-facing derived sizes",
   "background": "transparent PNG alpha, generated via magenta chroma-key removal",
   "master_assets": [
     {
@@ -49,6 +50,6 @@
   "notes": [
     "Integrated into conventional app-facing files: /favicon.png, /apple-touch-icon.png, /prairieclassroom-logo.png, and /brand/prairieclassroom-mark.png.",
     "Raw untrimmed transparent masters are retained with -transparent filenames.",
-    "Chroma-key source renders and checker preview are archived under output/brand-assets/prairieclassroomos-2026-05-01/."
+    "2026-05-15 generated sources, processed alpha files, original backups, and review screenshots are archived under output/imagegen/app-asset-refresh-2026-05-15/."
   ]
 }

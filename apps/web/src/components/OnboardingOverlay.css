@@ -34,7 +34,8 @@
 
 .onboarding-visual {
   display: block;
-  width: min(100%, 280px);
+  width: auto;
+  max-width: min(100%, 280px);
   height: auto;
   max-height: 132px;
   object-fit: contain;
