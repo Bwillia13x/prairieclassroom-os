@@ -3,21 +3,6 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
-  "redirects": [
-    {
-      "source": "/",
-      "destination": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
-      "permanent": false,
-      "missing": [
-        { "type": "query", "key": "classroom" },
-        { "type": "query", "key": "demo" },
-        { "type": "query", "key": "judge" },
-        { "type": "query", "key": "presentation" },
-        { "type": "query", "key": "tab" },
-        { "type": "query", "key": "tool" }
-      ]
-    }
-  ],
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ],
