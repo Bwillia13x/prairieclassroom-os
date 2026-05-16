@@ -1,5 +1,6 @@
 PrairieClassroom OS Kaggle 2026 image asset manifest
 Generated: 2026-05-16T22:24:12.960Z
+Reviewed/polished: 2026-05-16T22:51:30Z
 Root: /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/video-assets/kaggle-2026
 
 Full-screen PNGs:

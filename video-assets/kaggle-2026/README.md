@@ -75,3 +75,5 @@ Transparent 1920x1080 overlays for Descript. Place each over the matching app sc
 ## Rendering Note
 
 Cinematic backgrounds were generated with imagegen. Final typography was composited deterministically from `source/html/` to preserve exact spelling, punctuation, and asset dimensions.
+
+The May 16 polish pass increased video-legibility on secondary text, diagram labels, proof cards, and lower-third overlays while preserving the exact approved copy.
