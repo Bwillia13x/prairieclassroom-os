@@ -1,0 +1,392 @@
+- link "Skip to main content":
+  - /url: "#main-content"
+- button "Expand navigation rail" [pressed]:
+  - generic: Expand
+- banner:
+  - 'button "Active classroom: Grade 3-4 cross curricular"':
+    - generic: Grade 3-4 cross curricular
+    - generic: ⌄
+  - button "Teacher":
+    - generic: Teacher
+    - generic: ⌄
+- main:
+  - tabpanel "Today Do this now":
+    - text: 01 —
+    - generic "Today":
+      - heading "Today" [level=1]
+      - paragraph: "End-of-day closeout: carry forward what will matter tomorrow."
+    - region "Today command dashboard":
+      - article "Close today's loop for Amira":
+        - generic: Do this now
+        - generic: End-of-day closeout
+        - heading "Close today's loop for Amira" [level=2]
+        - paragraph: "End-of-day closeout: capture the evidence and next move — Vocabulary preview and family praise."
+        - button "Draft Amira message":
+          - generic: Draft Amira message
+        - group "Why this action is first":
+          - generic: Student
+          - generic: Amira
+          - generic: Window
+          - generic: 12:30-12:45
+          - generic: Open
+          - generic: "3"
+          - generic: Now
+          - generic: Math block
+      - region "Today's flow":
+        - heading "Today's flow" [level=3]
+        - generic: Current
+        - strong: 8:30-9:15
+        - list:
+          - generic: 8:30-9:15
+          - generic: "Status: current"
+          - generic: Now
+          - strong: Math block
+          - paragraph: Predictable routine
+          - generic: Current focus
+          - generic: 9:30-10:30
+          - generic: "Status: past"
+          - strong: Reading block
+          - paragraph: Several EAL students need vocabulary preview
+          - generic: Complete
+          - generic: 12:30-12:45
+          - generic: "Status: past"
+          - strong: Math block
+          - paragraph: Post-lunch transition
+          - generic: Complete
+          - generic: 12:45-1:45
+          - generic: "Status: past"
+          - strong: Math block
+          - paragraph: Teacher solo with split grades
+          - generic: Complete
+          - generic: 2:45-3:00
+          - generic: "Status: past"
+          - strong: Learning reflection + pack-up
+          - paragraph: End-of-day transitions
+          - generic: Complete
+      - region "Follow-up debt":
+        - heading "Follow-up debt" [level=3]
+        - generic: 3 open
+        - list:
+          - 'button "Interventions: 1 On track"':
+            - strong: "1"
+            - generic: Interventions
+            - generic: On track
+          - 'button "Assessments: 0 None due today"':
+            - strong: "0"
+            - generic: Assessments
+            - generic: None due today
+          - 'button "Communications: 1 1 urgent"':
+            - strong: "1"
+            - generic: Communications
+            - generic: 1 urgent
+          - 'button "Plan adjustments: 1 This week"':
+            - strong: "1"
+            - generic: Plan adjustments
+            - generic: This week
+          - 'button "Materials prep: 3 This week"':
+            - strong: "3"
+            - generic: Materials prep
+            - generic: This week
+      - complementary "Live signals and watchlist":
+        - article "Live signals":
+          - generic: Live signals
+          - generic "Updating live": Live
+          - list:
+            - strong: 96%
+            - generic: Attendance
+            - generic: Room baseline steady
+            - strong: Steady
+            - generic: Engagement
+            - generic: Follow-ups may drag transitions
+            - strong: 57%
+            - generic: Plan readiness
+            - generic: Prep coverage below target
+            - strong: 71%
+            - generic: Family approvals
+            - generic: Message queue healthy
+          - paragraph:
+            - generic: Last updated
+            - generic: 6:00 AM
+            - generic: ·
+            - generic "AI-generated content": AI SNAPSHOT
+        - article "Students to watch":
+          - generic: Students to watch
+          - generic: 4 active
+          - list:
+            - 'button "Open student details for Amira: Vocabulary preview and family praise"':
+              - generic: AM
+              - strong: Amira
+              - generic: Watch
+              - generic: Vocabulary preview and family praise
+            - 'button "Open student details for Brody: After-lunch transition support"':
+              - generic: BR
+              - strong: Brody
+              - generic: Watch
+              - generic: After-lunch transition support
+            - 'button "Open student details for Daniyal: Routine and picture-cue support"':
+              - generic: DA
+              - strong: Daniyal
+              - generic: Watch
+              - generic: Routine and picture-cue support
+            - 'button "Check first: Imani"':
+              - generic: IM
+              - strong: Imani
+              - generic: Monitor
+              - generic: Vocabulary preview pattern should be converted into a…
+    - region "Today operational preview":
+      - generic: Triage queue
+      - generic: 3 pending
+      - generic: Stale follow-up
+      - generic: 1 · 3d oldest
+      - generic: Unaddressed pattern
+      - generic: 1 · 2d oldest
+      - generic: Unapproved message
+      - generic: 1 · 1d oldest
+      - generic: Risk signal
+      - generic: 12:30-12:45
+      - generic: Body break + transition to math
+      - generic: HIGH
+      - generic: Open items
+      - generic: "3"
+      - generic: Plan streak
+      - generic: 4d
+      - generic: Touchpoints
+      - generic: 3 watching
+      - list:
+        - listitem "After-lunch transition support":
+          - text: Brody
+          - generic: · 1 open
+        - listitem "Vocabulary preview and family praise":
+          - text: Amira
+          - generic: · 1 open
+        - listitem "Math confidence with manipulatives":
+          - text: Elena
+          - generic: · 2d ago
+    - button "Show day detail":
+      - text: Show day detail
+      - generic: +
+    - region "Who needs a touchpoint":
+      - generic: Roster
+      - heading "Who needs a touchpoint" [level=3]
+      - strong: "3"
+      - text: active · 3 total
+      - toolbar "Student coverage filters":
+        - group "Primary filters":
+          - button "All 3" [pressed]:
+            - generic: All
+            - generic: "3"
+          - button "Urgent 3":
+            - generic: Urgent
+            - generic: "3"
+          - button "Stale 0":
+            - generic: Stale
+            - generic: "0"
+        - button "More":
+          - generic: More
+          - generic: ▾
+      - 'button "Brody: 2 active threads"':
+        - strong: Brody
+        - generic: "2"
+        - generic: 2 threads
+      - 'button "Amira: 3 active threads"':
+        - strong: Amira
+        - generic: "3"
+        - generic: 3 threads
+      - 'button "Elena: 1 active thread"':
+        - strong: Elena
+        - generic: "1"
+        - generic: 1 thread
+    - note "Weekly workflow suggestion":
+      - generic: Most-used workflow this week
+      - paragraph: You usually open Tomorrow Plan right after this check-in, then move to Family Message.
+      - paragraph:
+        - generic: Today → Tomorrow Plan → Family Message
+        - generic: ·
+        - generic: 5x
+      - button "Jump to Tomorrow Plan":
+        - generic: Jump to Tomorrow Plan
+    - region "What to watch next":
+      - generic: "02"
+      - heading "What to watch next" [level=2]
+      - paragraph: What to triage now. Where the day stands.
+      - region "Today's Shape":
+        - heading "Today's Shape" [level=2]
+        - paragraph:
+          - generic: 5 blocks
+          - generic: ·
+          - generic: 4 students watching
+          - generic: ·
+          - generic: 3 open threads
+        - 'generic "Peak block: Body break + transition to math, 12:30-12:45, High complexity."':
+          - generic: Peak
+          - strong: 12:30
+          - emphasis: Body break + tr...
+        - 'img "Day arc visualization: 5 blocks, peaks at 12:30-12:45 with high complexity, 4 priority students, 3 open threads."':
+          - generic: High
+          - generic: Medium
+          - generic: Low
+          - generic: "Peak: Body break + tr..."
+          - generic: 12:30-12:45 · High
+          - generic: Bell workjournal + calendar math
+          - generic: 8:30
+          - generic: Literacy block
+          - generic: 9:30
+          - generic: Body break +transition to math
+          - generic: 12:30
+          - generic: Math block
+          - generic: 12:45
+          - generic: Learningreflection + pack-up
+          - generic: 2:45
+          - 'button "8:30-9:15 Bell work journal + calendar math: low complexity. Open detail."'
+          - 'button "9:30-10:30 Literacy block: medium complexity. Open detail."'
+          - 'button "12:30-12:45 Body break + transition to math: high complexity. Open detail."'
+          - 'button "12:45-1:45 Math block: high complexity. Open detail."'
+          - 'button "2:45-3:00 Learning reflection + pack-up: medium complexity. Open detail."'
+          - 'button "Daniyal: 1 pending action, Routine and picture-cue support. Open detail."':
+            - generic: Daniyal
+          - 'button "Amira: 1 pending action, Vocabulary preview and family praise. Open detail."':
+            - generic: Amira
+          - 'button "Brody: 1 pending action, After-lunch transition support. Open detail."':
+            - generic: Brody
+          - 'button "Elena: 1 pending action, Math confidence with manipulatives. Open detail."':
+            - generic: Elena
+          - generic: "1"
+          - generic: "1"
+          - generic: "1"
+        - generic: Low
+        - generic: Medium
+        - generic: High
+        - generic: Student attention (4)
+        - generic: Open threads (3)
+      - generic: Needs Attention Now
+      - generic: 3 open items
+      - generic "Record-derived data": RECORD
+      - paragraph: same as last check
+      - button "unapproved messages 1 unapproved messages":
+        - generic: unapproved messages
+        - generic "1 unapproved messages": "1"
+      - button "open follow-ups 1 open follow-ups":
+        - generic: open follow-ups
+        - generic "1 open follow-ups": "1"
+      - button "unaddressed patterns 1 unaddressed patterns":
+        - generic: unaddressed patterns
+        - generic "1 unaddressed patterns": "1"
+      - 'button "Complexity debt: 3 items, manageable, Stale follow-up leading."':
+        - heading "Complexity Debt Record-derived data" [level=3]: Complexity Debt RECORD
+        - 'generic "Manageable: 3 or fewer open items."': Manageable
+        - generic: "3"
+        - generic: open items
+        - generic: Largest source
+        - strong: Stale follow-up
+        - emphasis: 1 item
+        - paragraph: Debt severity tier
+        - generic: 0-3
+        - generic: 4-7
+        - generic: 8+
+        - generic: Stale follow-up
+        - generic: "1"
+        - generic: Unapproved message
+        - generic: "1"
+        - generic: Unaddressed pattern
+        - generic: "1"
+      - strong: Need the wider lens?
+      - text: Classroom shows the full operating dashboard and health trend; Week opens the multi-day forecast band.
+      - button "Open Classroom":
+        - generic: Open Classroom
+      - button "Open Week":
+        - generic: Open Week
+      - heading "Carry Forward AI-generated content" [level=3]: Carry Forward AI SNAPSHOT
+      - paragraph: Keep the priorities that still matter before opening a fresh planning pass.
+      - button "Open Tomorrow Plan":
+        - generic: Open Tomorrow Plan
+      - heading "Support Priorities" [level=4]
+      - list:
+        - button "Brody — Offer sensory break before math and seat near the concrete fraction materials.":
+          - strong: Brody
+          - text: — Offer sensory break before math and seat near the concrete fraction materials.
+        - button "Amira — Give bilingual vocabulary preview and a sentence frame before independent work.":
+          - strong: Amira
+          - text: — Give bilingual vocabulary preview and a sentence frame before independent work.
+        - button "Elena — Start with manipulatives, then move to the paper model.":
+          - strong: Elena
+          - text: — Start with manipulatives, then move to the paper model.
+      - heading "Prep Checklist" [level=4]
+      - list:
+        - checkbox "Print fraction model strips in core, chunked, EAL-supported, and extension versions."
+        - generic: Print fraction model strips in core, chunked, EAL-supported, and extension versions.
+        - checkbox "Place visual timer and manipulative tray beside the math launch table."
+        - generic: Place visual timer and manipulative tray beside the math launch table.
+        - checkbox "Write one family praise note for Amira after the vocabulary-supported math response."
+        - generic: Write one family praise note for Amira after the vocabulary-supported math response.
+      - heading "Family Follow-ups" [level=4]
+      - paragraph:
+        - strong: 2 follow-ups
+        - text: — Amira · praise · +1 more
+      - button "Draft Amira family message":
+        - generic: Draft Amira
+      - generic "2 high risk windows":
+        - paragraph: Risk Windows AI SNAPSHOT
+        - generic: "2"
+        - generic: high blocks
+        - paragraph: Stage supports before 12:30-12:45. Keep recovery time visible.
+      - paragraph: Peak block
+      - button "Open peak window details for Body break + transition to math at 12:30-12:45":
+        - generic: 12:30-12:45
+        - generic: high
+      - paragraph: The public demo forecast is highest after lunch when math, transition load, and low adult coverage collide.
+      - group "Complexity timeline for the day":
+        - 'button "8:30-9:15: Bell work journal + calendar math — low complexity"':
+          - generic: 8:30-9:15
+        - 'button "9:30-10:30: Literacy block — medium complexity"':
+          - generic: 9:30-10:30
+        - 'button "12:30-12:45: Body break + transition to math — high complexity"':
+          - generic: 12:30-12:45
+        - 'button "12:45-1:45: Math block — high complexity"':
+          - generic: 12:45-1:45
+        - 'button "2:45-3:00: Learning reflection + pack-up — medium complexity"':
+          - generic: 2:45-3:00
+      - generic "Risk window watch list":
+        - button "Open details for Literacy block at 9:30-10:30":
+          - generic: 9:30-10:30
+          - generic: Literacy block
+          - generic: Several EAL students need vocabulary preview
+          - generic: medium
+        - button "Open details for Body break + transition to math at 12:30-12:45":
+          - generic: 12:30-12:45
+          - generic: Body break + transition to math
+          - generic: Post-lunch transition
+          - generic: high
+        - button "Open details for Math block at 12:45-1:45":
+          - generic: 12:45-1:45
+          - generic: Math block
+          - generic: Teacher solo with split grades
+          - generic: high
+        - button "Open details for Learning reflection + pack-up at 2:45-3:00":
+          - generic: 2:45-3:00
+          - generic: Learning reflection + pack-up
+          - generic: End-of-day transitions
+          - generic: medium
+      - button "Open Forecast":
+        - generic: Open Forecast
+    - generic "End of Today":
+      - generic: End of Today
+      - paragraph:
+        - generic: Last updated
+        - generic: 6:00 AM
+        - generic: ·
+        - generic "AI-generated content": AI SNAPSHOT
+  - contentinfo:
+    - generic "Application context":
+      - generic: PrairieClassroom OS
+      - generic: Gemma 4 Good Hackathon demo build
+    - button "Shortcuts":
+      - generic: ▸
+      - generic: Shortcuts
+    - button "Keyboard shortcuts": "?"
+    - group "Build context":
+      - generic: classroom
+      - generic: demo-okafor-grade34
+      - generic: env
+      - generic: mock
+      - generic: v
+      - generic: 0.1.0

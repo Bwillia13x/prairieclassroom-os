@@ -1,0 +1,5 @@
+
+> prairieclassroom-os@0.0.1 eval:inventory:check
+> node scripts/eval-inventory.mjs --check
+
+Eval inventory is in sync.

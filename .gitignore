@@ -96,6 +96,13 @@ qa/demo-script/flows/
 qa/demo-script/multimodal-hero/
 qa/demo-script/teacher-quote/
 
+# Generated submission imagegen asset packs — large local binaries for external upload/review
+video-assets/kaggle-2026-imagegen/
+video-assets/kaggle-2026-branded-imagegen/
+video-assets/kaggle-2026-imagegen-final.zip
+video-assets/prairieclassroom-kaggle-2026-all-imagegen-assets.zip
+video-assets/prairieclassroom-kaggle-2026-branded-imagegen-assets.zip
+
 # Environment and credential files (defensive — `.env` already covered above)
 .env.*
 *.env

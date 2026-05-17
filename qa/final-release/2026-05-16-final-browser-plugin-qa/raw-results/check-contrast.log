@@ -1,0 +1,7 @@
+
+> prairieclassroom-os@0.0.1 check:contrast
+> node scripts/check-contrast.mjs
+
+Contrast report: output/contrast-report.md
+Pairs evaluated: 80 (light + dark)
+All pairs meet WCAG AA. ✓

@@ -1,0 +1,10 @@
+ DEPRECATED  "environmentMatchGlobs" is deprecated. Use `test.projects` to define different configurations instead.
+
+ RUN  v3.2.4 /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev
+
+ ✓ services/orchestrator/__tests__/auth.test.ts (239 tests) 27ms
+
+ Test Files  1 passed (1)
+      Tests  239 passed (239)
+   Start at  20:22:26
+   Duration  1.03s (transform 67ms, setup 163ms, collect 50ms, tests 27ms, environment 0ms, prepare 79ms)

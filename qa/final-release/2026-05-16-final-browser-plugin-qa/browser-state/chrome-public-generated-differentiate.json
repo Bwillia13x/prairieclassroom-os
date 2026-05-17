@@ -1,0 +1,70 @@
+{
+  "genState": {
+    "hasFallback": true,
+    "hasLoading": false,
+    "hasVariants": true,
+    "textSample": "Skip to main contentExpandPrairieClassroomOS⌘ KActive classroomGrade 3-4 cross curricular⌄RoleTeacher⌄Search or ask Prairie⌘KDark?TodayDo this nowClassroomRoom viewTomorrowPlan tomorrowWeekWeek mapPrepAdapt lessonOpsLog note1ReviewMessage familyAlberta K-6Privacy firstTeacher controlledPrep commandPrepare the material before it reaches the room.Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.Heavy EAL load8 EAL · 7 languagesActive toolDifferentiateRoster26Students8EALLanguage7LanguagesVariantsModeArtifact readinessInput laneupload · paste · webCurriculumAlberta programOutputvariantsLanguage loadTagalogUrduArabicSomaliPunjabiSpanishEAL students8Family languages7Teacher passSame outcome· no lowered barEditable copy· teacher ownedMaterials list· ready to stage02Prep laneChoose the prep mode, then keep the artifact canvas and output preview in one line of sight.01 ArtifactDifferentiateLesson variantsAdapt one lesson, worksheet, or passage across readiness levels.02 LanguageLanguage ToolsEAL supportSimplify text and prepare bilingual vocabulary supports.Active workspaceBuild lesson variantsBuild Lesson VariantsArtifact intakeStart with what you haveBring in one artifact and PrairieClassroom will organize classroom-ready variants around the same outcome.* RequiredArtifact source*Upload filePDF or Word textPaste textPaste text directlyWeb linkAdd a URLFractions Review Worksheet\n1. Circle the larger fraction: 1/4 or 1/3?\n2. Show 2/3 on the number line.\n3. Solve: 1/2 + 1/4 = ___.\n4. Write a fraction equal to 1/2.TXTPasted source text1 pages · 324 BRemoveCurriculum contextArtifact title*SubjectCurriculumAlberta Program of StudiesClass profile26 students · mixed readinessOutcome focus(optional)Differentiate for mixed readiness, EAL"
+  },
+  "genLogs": [
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:05:31.851Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:05:31.853Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:06:12.368Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:06:12.368Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:06:12.368Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.373Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    }
+  ]
+}

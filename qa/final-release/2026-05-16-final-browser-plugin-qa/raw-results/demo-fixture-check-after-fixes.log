@@ -1,0 +1,17 @@
+
+> prairieclassroom-os@0.0.1 demo:fixture:check
+> node scripts/validate-demo-fixture.mjs
+
+Demo fixture validation passed.
+  Classroom: demo-okafor-grade34
+  interventions: 36
+  generated_plans: 3
+  pattern_reports: 1
+  family_messages: 1
+  sessions: 5
+  feedback: 0
+  complexity_forecasts: 0
+  scaffold_reviews: 0
+  survival_packets: 0
+  generated_variants: 0
+  runs: 0

@@ -1,0 +1,27 @@
+ DEPRECATED  "environmentMatchGlobs" is deprecated. Use `test.projects` to define different configurations instead.
+
+ RUN  v3.2.4 /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev
+
+ ✓ services/orchestrator/__tests__/auth.test.ts (239 tests) 28ms
+stderr | apps/web/src/__tests__/appReducer.test.ts > createInitialState — classroomRoles hydration > ignores malformed JSON and returns an empty map
+[appReducer] localStorage "prairie-classroom-roles" was corrupted; resetting. SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+    at JSON.parse (<anonymous>)
+    at loadClassroomRoles (/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/src/appReducer.ts:554:25)
+    at createInitialState (/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/src/appReducer.ts:699:21)
+    at /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/apps/web/src/__tests__/appReducer.test.ts:208:19
+    at file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/node_modules/@vitest/runner/dist/chunk-hooks.js:155:11
+    at file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/node_modules/@vitest/runner/dist/chunk-hooks.js:752:26
+    at file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/node_modules/@vitest/runner/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/node_modules/@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/node_modules/@vitest/runner/dist/chunk-hooks.js:1574:12)
+
+ ✓ apps/web/src/__tests__/appReducer.test.ts (55 tests) 34ms
+ ✓ apps/web/src/__tests__/App.shell.test.tsx (18 tests) 1976ms
+   ✓ App shell — classroom pill trigger > feeds Today debt into the command palette for per-student actions  380ms
+   ✓ App shell — classroom pill trigger > keeps the global Action Atlas out of the page-owned top-level workspaces  452ms
+
+ Test Files  3 passed (3)
+      Tests  312 passed (312)
+   Start at  20:28:37
+   Duration  3.86s (transform 1.49s, setup 301ms, collect 790ms, tests 2.04s, environment 1.46s, prepare 200ms)

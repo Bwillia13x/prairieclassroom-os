@@ -1,0 +1,5 @@
+
+> prairieclassroom-os@0.0.1 smoke:browser
+> node scripts/smoke-browser.mjs
+
+PASS browser smoke

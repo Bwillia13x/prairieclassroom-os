@@ -1,0 +1,7 @@
+
+> prairieclassroom-os@0.0.1 release:gate
+> node scripts/release-gate.mjs --inference-mode mock --update-baseline
+
+Release gate logs: /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/release-gate/2026-05-17T02-33-38-283Z-67545
+Release gate Python: /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/services/inference/.venv311/bin/python
+Release gate passed (mock).

@@ -1,0 +1,3 @@
+
+> prairieclassroom-os@0.0.1 typecheck
+> tsc --noEmit && tsc -b apps/web

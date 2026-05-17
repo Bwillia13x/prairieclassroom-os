@@ -1,0 +1,14 @@
+
+> prairieclassroom-os@0.0.1 system:inventory:check
+> node scripts/system-inventory.mjs --check
+
+System Inventory
+Primary panels: 12
+Prompt classes: 13
+Live/planning split: 7/6
+Retrieval-backed prompt classes: 7
+API route bases: 21
+API endpoints: 53
+Eval case files: 134
+
+Canonical inventory claims are in sync.

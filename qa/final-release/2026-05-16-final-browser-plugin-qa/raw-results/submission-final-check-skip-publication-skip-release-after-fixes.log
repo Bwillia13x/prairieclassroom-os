@@ -1,0 +1,88 @@
+
+> prairieclassroom-os@0.0.1 submission:final-check
+> node scripts/submission-final-check.mjs --skip-publication-check --skip-release-gate
+
+Submission final check — 6 steps
+  (release:gate skipped via --skip-release-gate)
+  (publication readiness check skipped via --skip-publication-check)
+
+▶  claims:check
+
+> prairieclassroom-os@0.0.1 claims:check
+> node scripts/claims-check.mjs
+
+Claims check passed.
+
+▶  proof:check
+
+> prairieclassroom-os@0.0.1 proof:check
+> node scripts/proof-check.mjs
+
+Proof surfaces are internally consistent.
+
+▶  system:inventory:check
+
+> prairieclassroom-os@0.0.1 system:inventory:check
+> node scripts/system-inventory.mjs --check
+
+System Inventory
+Primary panels: 12
+Prompt classes: 13
+Live/planning split: 7/6
+Retrieval-backed prompt classes: 7
+API route bases: 21
+API endpoints: 53
+Eval case files: 134
+
+Canonical inventory claims are in sync.
+
+▶  eval:inventory:check
+
+> prairieclassroom-os@0.0.1 eval:inventory:check
+> node scripts/eval-inventory.mjs --check
+
+Eval inventory is in sync.
+
+▶  demo:fixture:check
+
+> prairieclassroom-os@0.0.1 demo:fixture:check
+> node scripts/validate-demo-fixture.mjs
+
+Demo fixture validation passed.
+  Classroom: demo-okafor-grade34
+  interventions: 36
+  generated_plans: 3
+  pattern_reports: 1
+  family_messages: 1
+  sessions: 5
+  feedback: 0
+  complexity_forecasts: 0
+  scaffold_reviews: 0
+  survival_packets: 0
+  generated_variants: 0
+  runs: 0
+
+▶  check:contrast
+
+> prairieclassroom-os@0.0.1 check:contrast
+> node scripts/check-contrast.mjs
+
+Contrast report: output/contrast-report.md
+Pairs evaluated: 80 (light + dark)
+All pairs meet WCAG AA. ✓
+
+════════════════════════════════════════════════════════════
+Submission Final Check — Summary
+════════════════════════════════════════════════════════════
+  ✓  claims:check                    346ms
+  ✓  proof:check                     283ms
+  ✓  system:inventory:check          289ms
+  ✓  eval:inventory:check            284ms
+  ✓  demo:fixture:check              835ms
+  ✓  check:contrast                  241ms
+────────────────────────────────────────────────────────────
+  Passed: 6/6    Total: 2.3s
+
+✓  All local pre-submit gates passed.
+   Next: complete the external publish steps in docs/hackathon-submission-checklist.md
+   (GitHub public, reachable live demo URL, public demo browser smoke, reachable YouTube video, Kaggle attachments).

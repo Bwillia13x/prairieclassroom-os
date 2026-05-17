@@ -1,0 +1,7 @@
+
+> prairieclassroom-os@0.0.1 smoke:browser
+> node scripts/smoke-browser.mjs
+
+page.waitForFunction: Timeout 30000ms exceeded.
+
+Screenshot: /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/output/playwright/browser-smoke-failure.png

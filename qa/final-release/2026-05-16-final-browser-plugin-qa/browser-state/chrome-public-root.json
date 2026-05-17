@@ -1,0 +1,18 @@
+{
+  "rootInfo": {
+    "demoApi": null,
+    "h1": "PrairieClassroom OS",
+    "height": 693,
+    "links": [
+      {
+        "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+        "tag": "A",
+        "text": "Enter PrairieClassroom"
+      }
+    ],
+    "title": "PrairieClassroom OS",
+    "url": "https://prairieclassroom-os.vercel.app/",
+    "width": 1440
+  },
+  "rootLogs": []
+}

@@ -1,0 +1,256 @@
+- link "Skip to main content":
+  - /url: "#main-content"
+- button "Expand navigation rail" [pressed]:
+  - generic: Expand
+- banner:
+  - 'button "Active classroom: Grade 3-4 cross curricular"':
+    - generic: Grade 3-4 cross curricular
+    - generic: ⌄
+  - button "Teacher":
+    - generic: Teacher
+    - generic: ⌄
+- main:
+  - tabpanel "Review Message family":
+    - region "Review command, family communication, patterns, and usage insights":
+      - generic: Review command
+      - heading "Turn classroom memory into accountable follow-through." [level=1]
+      - paragraph: Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.
+      - complementary "Page pulse":
+        - strong: Review pending
+        - generic: 1 approval · 1 signals
+        - generic: Active tool
+        - generic: Family Message
+        - generic: Approvals
+        - strong: "1"
+        - generic: Awaiting
+        - generic: Signals
+        - strong: "1"
+        - generic: Patterns
+        - strong: "3"
+        - generic: Threads
+        - generic: Cadence
+        - strong: "0"
+        - generic: Reviews due
+    - region "Review operational preview":
+      - generic: Approval queue
+      - generic: Awaiting approval
+      - generic: "1"
+      - generic: Active threads
+      - generic: "3"
+      - generic: Human-in-the-loop
+      - list:
+        - text: Always editable
+        - generic: · teacher edits persist
+        - text: No autonomous send
+        - generic: · approval required
+    - generic: "02"
+    - heading "Review lane" [level=2]
+    - paragraph: What to approve, what to read, what to learn.
+    - tablist "Review tool":
+      - tab "01 Family Family Message Draft family updates and keep human approval explicit. 1 approvals" [selected]:
+        - generic: 01 Family
+        - generic: Family Message
+        - generic: Draft family updates and keep human approval explicit.
+        - generic: 1 approvals
+      - tab "02 Patterns Support Patterns Inspect recurring classroom signals before next actions. 1 signals":
+        - generic: 02 Patterns
+        - generic: Support Patterns
+        - generic: Inspect recurring classroom signals before next actions.
+        - generic: 1 signals
+      - tab "03 Usage Usage Insights Review feedback and workflow patterns from recent sessions. Session signal":
+        - generic: 03 Usage
+        - generic: Usage Insights
+        - generic: Review feedback and workflow patterns from recent sessions.
+        - generic: Session signal
+    - region "Active workspace":
+      - generic: Active workspace
+      - generic: Draft family messages
+      - generic: Review Workspace
+      - heading "Draft Family Messages" [level=2]
+      - generic: Build a plain-language family update, inspect the draft in the result canvas, and explicitly approve before copying it into your communication channel.
+      - text: Human approved
+      - region "Family follow-up coverage":
+        - generic: Roster
+        - heading "Family follow-up coverage" [level=3]
+        - strong: "3"
+        - text: active · 3 total
+        - toolbar "Student coverage filters":
+          - group "Primary filters":
+            - button "All 3" [pressed]:
+              - generic: All
+              - generic: "3"
+            - button "Urgent 3":
+              - generic: Urgent
+              - generic: "3"
+            - button "Stale 0":
+              - generic: Stale
+              - generic: "0"
+          - button "More":
+            - generic: More
+            - generic: ▾
+        - button: ‹
+        - 'button "Brody: 2 active threads"':
+          - strong: Brody
+          - generic: "2"
+          - generic: 2 threads
+        - 'button "Amira: 3 active threads"':
+          - strong: Amira
+          - generic: "3"
+          - generic: 3 threads
+        - 'button "Elena: 1 active thread"':
+          - strong: Elena
+          - generic: "1"
+          - generic: 1 thread
+        - button: ›
+      - complementary:
+        - 'note "Tip: Family Messages"':
+          - generic: Family Messages
+          - generic: Draft plain-language messages for families. You review every message before it can be shared — nothing sends automatically.
+          - button "Dismiss hint":
+            - generic: ✕
+        - 'img "Message Pipeline: 71% approval rate"':
+          - heading "Message Pipeline" [level=4]
+          - generic: 71% approval rate
+          - generic: Generated
+          - generic: "7"
+          - generic: Approved
+          - generic: "5"
+          - generic: Pending
+          - generic: "2"
+        - button "Message History":
+          - text: Message History
+        - heading "Compose family message" [level=2]
+        - paragraph: Select the student, choose the message type, and review the generated draft before anything leaves this workspace.
+        - generic: Students
+        - group "Students":
+          - button "Amira":
+            - generic: Amira
+          - button "Brody" [pressed]:
+            - generic: Brody
+          - button "Chantal":
+            - generic: Chantal
+          - button "Daniyal":
+            - generic: Daniyal
+          - button "Elena":
+            - generic: Elena
+          - button "Farid":
+            - generic: Farid
+          - button "Gabriel":
+            - generic: Gabriel
+          - button "Hannah":
+            - generic: Hannah
+          - button "Imani":
+            - generic: Imani
+          - button "Jasper":
+            - generic: Jasper
+          - button "Kiana":
+            - generic: Kiana
+          - button "Liam":
+            - generic: Liam
+          - button "Maya":
+            - generic: Maya
+          - button "Navpreet":
+            - generic: Navpreet
+          - button "Oliver":
+            - generic: Oliver
+          - button "Anaya":
+            - generic: Anaya
+          - button "Quinn":
+            - generic: Quinn
+          - button "Rania":
+            - generic: Rania
+          - button "Sebastián":
+            - generic: Sebastián
+          - button "Marco":
+            - generic: Marco
+          - button "Uyen":
+            - generic: Uyen
+          - button "Violet":
+            - generic: Violet
+          - button "Wesley":
+            - generic: Wesley
+          - button "Xavier":
+            - generic: Xavier
+          - button "Nadia":
+            - generic: Nadia
+          - button "Zayn":
+            - generic: Zayn
+        - generic: Message type
+        - combobox "Message type":
+          - option "Routine Update" [selected]
+          - option "Missed Work"
+          - option "Praise"
+          - option "Low-Stakes Concern"
+        - generic: Language
+        - combobox "Language":
+          - option "English" [selected]
+          - option "French"
+          - option "Arabic"
+          - option "Ukrainian"
+          - option "Tagalog"
+          - option "Spanish"
+          - option "Chinese (Simplified)"
+          - option "Punjabi"
+        - generic: Context(optional)
+        - textbox "Context(optional)":
+          - /placeholder: e.g. 'Ari showed great improvement in reading comprehension this week.'
+          - text: Brody used his visual timer independently during math centres today and transitioned without an adult prompt.
+        - button "Draft family message"
+      - status:
+        - generic: Message drafted
+        - generic: 32 ms
+      - heading "Draft Message" [level=2]
+      - paragraph: Brody · routine update · English
+      - generic: Approval required
+      - generic: Plain-language draft
+      - generic: Manual send only
+      - generic: static-demo-fallback
+      - generic: 32 ms
+      - paragraph: Brody had a strong day using classroom supports during math. Please celebrate the effort and the growing independence at home.
+      - heading "Student-Friendly Version" [level=3]
+      - paragraph: You used your supports well in math today. Keep going.
+      - paragraph: This message will not be sent automatically. Copy and paste it into your preferred communication channel.
+      - generic: "Rate this family message output:"
+      - radiogroup "Rating":
+        - radio "1 star": ☆
+        - radio "2 stars": ☆
+        - radio "3 stars": ☆
+        - radio "4 stars": ☆
+        - radio "5 stars": ☆
+      - navigation "Family message output":
+        - list:
+          - button "Review approval":
+            - generic: Review approval
+          - button "Print":
+            - generic: Print
+          - button "Approve to copy" [disabled]:
+            - generic: Approve to copy
+      - dialog "Review approval":
+        - heading "Review approval" [level=2]
+        - generic: 1 recipient
+        - generic: ·
+        - generic: English
+        - generic: ·
+        - generic: routine_update
+        - generic: Family message (editable)
+        - textbox "Family message text — edit before approving and copying": Brody had a strong day using classroom supports during math. Please celebrate the effort and the growing independence at home.
+        - heading "Student version" [level=3]
+        - paragraph: You used your supports well in math today. Keep going.
+        - status
+        - button "Cancel" [active]
+        - button "Approve & Copy"
+  - contentinfo:
+    - generic "Application context":
+      - generic: PrairieClassroom OS
+      - generic: Gemma 4 Good Hackathon demo build
+    - button "Shortcuts":
+      - generic: ▸
+      - generic: Shortcuts
+    - button "Keyboard shortcuts": "?"
+    - group "Build context":
+      - generic: classroom
+      - generic: demo-okafor-grade34
+      - generic: env
+      - generic: mock
+      - generic: v
+      - generic: 0.1.0

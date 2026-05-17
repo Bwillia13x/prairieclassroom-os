@@ -1,0 +1,5 @@
+
+> prairieclassroom-os@0.0.1 proof:check
+> node scripts/proof-check.mjs
+
+Proof surfaces are internally consistent.

@@ -1,0 +1,221 @@
+- link "Skip to main content":
+  - /url: "#main-content"
+- button "Expand navigation rail" [pressed]:
+  - generic: Expand
+- banner:
+  - 'button "Active classroom: Grade 3-4 cross curricular"':
+    - generic: Grade 3-4 cross curricular
+    - generic: ⌄
+  - button "Teacher":
+    - generic: Teacher
+    - generic: ⌄
+- main:
+  - tabpanel "Prep Adapt lesson":
+    - region "Prep command, lesson adaptation, and language supports":
+      - generic: Prep command
+      - heading "Prepare the material before it reaches the room." [level=1]
+      - paragraph: Start with artifact, context, and readiness. Keep the canvas visible while choosing the prep mode.
+      - complementary "Page pulse":
+        - strong: Heavy EAL load
+        - generic: 8 EAL · 7 languages
+        - generic: Active tool
+        - generic: Differentiate
+        - generic: Roster
+        - strong: "26"
+        - generic: Students
+        - strong: "8"
+        - generic: EAL
+        - generic: Language
+        - strong: "7"
+        - generic: Languages
+        - strong: Variants
+        - generic: Mode
+    - region "Prep operational preview":
+      - generic: Artifact readiness
+      - generic: Input lane
+      - generic: upload · paste · web
+      - generic: Curriculum
+      - generic: Alberta program
+      - generic: Output
+      - generic: variants
+      - generic: Language load
+      - list:
+        - listitem "tl": Tagalog
+        - listitem "ur": Urdu
+        - listitem "ar": Arabic
+        - listitem "so": Somali
+        - listitem "pa": Punjabi
+        - listitem "es": Spanish
+      - generic: EAL students
+      - generic: "8"
+      - generic: Family languages
+      - generic: "7"
+      - generic: Teacher pass
+      - list:
+        - text: Same outcome
+        - generic: · no lowered bar
+        - text: Editable copy
+        - generic: · teacher owned
+        - text: Materials list
+        - generic: · ready to stage
+    - generic: "02"
+    - heading "Prep lane" [level=2]
+    - paragraph: Choose the prep mode, then keep the artifact canvas and output preview in one line of sight.
+    - tablist "Prep tool":
+      - tab "01 Artifact Differentiate Lesson variants Adapt one lesson, worksheet, or passage across readiness levels." [selected]:
+        - generic: 01 Artifact
+        - generic: Differentiate
+        - generic: Lesson variants
+        - generic: Adapt one lesson, worksheet, or passage across readiness levels.
+      - tab "02 Language Language Tools EAL support Simplify text and prepare bilingual vocabulary supports.":
+        - generic: 02 Language
+        - generic: Language Tools
+        - generic: EAL support
+        - generic: Simplify text and prepare bilingual vocabulary supports.
+    - region "Active workspace":
+      - generic: Active workspace
+      - generic: Build lesson variants
+      - heading "Build Lesson Variants" [level=2]
+      - complementary:
+        - text: Artifact intake
+        - heading "Start with what you have" [level=2]
+        - paragraph: Bring in one artifact and PrairieClassroom will organize classroom-ready variants around the same outcome.
+        - paragraph: "* Required"
+        - generic: Artifact source*
+        - tablist "Artifact input method":
+          - tab "Upload file PDF or Word text":
+            - generic: Upload file
+            - generic: PDF or Word text
+          - tab "Paste text Paste text directly" [active] [selected]:
+            - generic: Paste text
+            - generic: Paste text directly
+          - tab "Web link Add a URL":
+            - generic: Web link
+            - generic: Add a URL
+        - textbox "Artifact source":
+          - /placeholder: Paste or type the lesson content, worksheet text, or instructions…
+        - region "Curriculum context":
+          - heading "Curriculum context" [level=3]
+          - generic: Artifact title*
+          - textbox "Artifact title":
+            - /placeholder: e.g. Community Helpers Reading Passage
+          - generic: Subject
+          - textbox "Subject":
+            - /placeholder: e.g. literacy, math, science
+          - generic: Curriculum
+          - strong: Alberta Program of Studies
+          - generic: Class profile
+          - strong: 26 students · mixed readiness
+          - generic: Outcome focus(optional)
+          - textbox "Outcome focus(optional)":
+            - /placeholder: What do you want from differentiation? e.g. 'Simplify for EAL, add extension for strong readers'
+          - button "Alberta Curriculum Alignment":
+            - text: Alberta Curriculum Alignment
+            - generic: +
+        - region "Student readiness controls":
+          - heading "Student readiness" [level=3]
+          - generic: 26 students
+          - strong: Core
+          - generic: 3 students
+          - strong: Chunked
+          - generic: 23 students
+          - strong: Extension
+          - generic: 1 students
+          - strong: EAL Supported
+          - generic: 8 students
+        - region "Output includes":
+          - heading "Output includes" [level=3]
+          - list:
+            - generic: Four readiness lanes
+            - strong: Same goal
+            - generic: Teacher notes
+            - strong: Included
+            - generic: Materials list
+            - strong: Included
+        - button "Generate variants":
+          - generic: Generate lesson variants
+      - region "Variant lane preview":
+        - region "Sample lesson variant preview":
+          - generic: Sample preview
+          - 'heading "Sample output: four ways in." [level=2]'
+          - paragraph:
+            - text: This is demo sample output for
+            - strong: Community Helpers Reading Passage
+            - text: . Add your artifact on the left to generate the real classroom version.
+          - article:
+            - heading "Core lane" [level=3]
+            - paragraph: Right level, right now
+            - generic "Variant estimates":
+              - generic "High-school+ reading band (Flesch-Kincaid estimate, heuristic)": ~Grade 9.6
+              - generic: 18 min
+            - heading "Core lane" [level=4]
+            - paragraph: Balanced support with clear structure and visuals to build comprehension.
+            - generic: Review ready
+            - generic: "Source: Community Helpers Reading Passage"
+            - generic "Teacher edit notes"
+            - button "Preview lane"
+            - button "Edit copy"
+            - button "More actions for Core lane": More
+          - article:
+            - heading "Chunked lane" [level=3]
+            - paragraph: Scaffold for success
+            - generic "Variant estimates":
+              - generic "Middle-school reading band (Flesch-Kincaid estimate, heuristic)": ~Grade 8.4
+              - generic: 14 min
+            - heading "Chunked lane" [level=4]
+            - paragraph: Smaller steps, sentence stems, and visual supports to build independence.
+            - generic: Structure check
+            - generic: "Source: Community Helpers Reading Passage"
+            - generic "Teacher edit notes"
+            - button "Preview lane"
+            - button "Edit copy"
+            - button "More actions for Chunked lane": More
+          - article:
+            - heading "Extension lane" [level=3]
+            - paragraph: Push thinking further
+            - generic "Variant estimates":
+              - generic "High-school+ reading band (Flesch-Kincaid estimate, heuristic)": ~Grade 12.6
+              - generic: 20 min
+            - heading "Extension lane" [level=4]
+            - paragraph: Richer texts, deeper questions, and opportunities for synthesis.
+            - generic: Challenge check
+            - generic: "Source: Community Helpers Reading Passage"
+            - generic "Teacher edit notes"
+            - button "Preview lane"
+            - button "Edit copy"
+            - button "More actions for Extension lane": More
+          - article:
+            - heading "EAL Supported lane" [level=3]
+            - paragraph: Language + meaning
+            - generic "Variant estimates":
+              - generic "High-school+ reading band (Flesch-Kincaid estimate, heuristic)": ~Grade 14.3
+              - generic: 16 min
+            - heading "EAL Supported lane" [level=4]
+            - paragraph: Language supports and vocabulary focus to build comprehension and confidence.
+            - generic: Language check
+            - generic: "Source: Community Helpers Reading Passage"
+            - generic "Teacher edit notes"
+            - button "Preview lane"
+            - button "Edit copy"
+            - button "More actions for EAL Supported lane": More
+          - generic: Sample only. Your generated output will replace this preview.
+        - list "Output will include":
+          - listitem: ✓ Readiness lane
+          - listitem: ✓ Scaffolded lane
+          - listitem: ✓ Extension lane
+          - listitem: ✓ Language support lane
+  - contentinfo:
+    - generic "Application context":
+      - generic: PrairieClassroom OS
+      - generic: Gemma 4 Good Hackathon demo build
+    - button "Shortcuts":
+      - generic: ▸
+      - generic: Shortcuts
+    - button "Keyboard shortcuts": "?"
+    - group "Build context":
+      - generic: classroom
+      - generic: demo-okafor-grade34
+      - generic: env
+      - generic: mock
+      - generic: v
+      - generic: 0.1.0

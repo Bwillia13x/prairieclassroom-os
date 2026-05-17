@@ -1,0 +1,112 @@
+{
+  "familyState": {
+    "copyButtons": [
+      {
+        "ariaDisabled": "true",
+        "disabled": true,
+        "text": "Approve to copy"
+      },
+      {
+        "ariaDisabled": null,
+        "disabled": false,
+        "text": "Approve & Copy"
+      }
+    ],
+    "hasApprovalLanguage": true,
+    "hasDraft": true,
+    "hasStaticFallback": true,
+    "textSample": "Skip to main content[OK]Message drafted[X]ExpandPrairieClassroomOS⌘ KActive classroomGrade 3-4 cross curricular⌄RoleTeacher⌄Search or ask Prairie⌘KDark?TodayDo this nowClassroomRoom viewTomorrowPlan tomorrowWeekWeek mapPrepAdapt lessonOpsLog note1ReviewMessage familyAlberta K-6Privacy firstTeacher controlledReview commandTurn classroom memory into accountable follow-through.Move from open communication, recurring patterns, and session evidence into a review workflow that stays human-approved and auditable.Review pending1 approval · 1 signalsActive toolFamily MessageApprovals1AwaitingSignals1Patterns3ThreadsCadence0Reviews dueApproval queueAwaiting approval1Active threads3Human-in-the-loopAlways editable· teacher edits persistNo autonomous send· approval required02Review laneWhat to approve, what to read, what to learn.01 FamilyFamily MessageDraft family updates and keep human approval explicit.1 approvals02 PatternsSupport PatternsInspect recurring classroom signals before next actions.1 signals03 UsageUsage InsightsReview feedback and workflow patterns from recent sessions.Session signalActive workspaceDraft family messagesReview WorkspaceDraft Family MessagesBuild a plain-language family update, inspect the draft in the result canvas, and explicitly approve before copying it into your communication channel.RosterFamily follow-up coverage3 active · 3 totalAll3Urgent3Stale0More▾‹Brody22 threadsAmira33 threadsElena11 thread›Family MessagesDraft plain-language messages for families. You review every message before it can be shared — nothing sends automatically.✕Message Pipeline71% approval rateGenerated7Approved5Pending2Message HistoryCompose family messageSelect the student, choose the message type, and review the generated draft before anything leaves this workspace.StudentsAmiraBrodyChantalDaniyalElenaFaridGabrielHannahImaniJasperKianaLiamMayaNavpreetOliverAnayaQuinnRaniaSebastiánMarcoUyenVioletWesleyXavierNadiaZaynMessage typeRoutine UpdateMissed WorkPraiseLow-Stakes ConcernLanguageEnglishFrenchArabicUkrainianTagalogSpanishChinese (Simplified)PunjabiContext(optional)Brody used his visual timer independently during math centres today and transitioned without an"
+  },
+  "familyLogs": [
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:05:31.851Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:05:31.853Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:06:12.368Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:06:12.368Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:06:12.368Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.373Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:07:17.376Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:08:11.360Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:08:11.360Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:08:11.360Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:08:11.360Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:08:11.360Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34"
+    }
+  ]
+}

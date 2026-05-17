@@ -1,0 +1,66 @@
+{
+  "browserKind": "chrome-channel",
+  "results": [
+    {
+      "id": "desktop-1440x900",
+      "width": 1440,
+      "height": 900,
+      "screenshot": "public-root-desktop-1440x900.png",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "h1": "PrairieClassroom OS",
+      "ctaText": "Enter PrairieClassroom",
+      "ctaHref": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "documentHorizontalOverflow": false,
+      "textSample": "\n    PrairieClassroomOSPrairieClassroom OSTeacher-controlled classroom memory and adult coordination for the live school day.Enter PrairieClassroom\n    \n  \n\n",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "id": "mobile-393x852",
+      "width": 393,
+      "height": 852,
+      "screenshot": "public-root-mobile-393x852.png",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "h1": "PrairieClassroom OS",
+      "ctaText": "Enter PrairieClassroom",
+      "ctaHref": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "documentHorizontalOverflow": false,
+      "textSample": "\n    PrairieClassroomOSPrairieClassroom OSTeacher-controlled classroom memory and adult coordination for the live school day.Enter PrairieClassroom\n    \n  \n\n",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "id": "tablet-768x1024",
+      "width": 768,
+      "height": 1024,
+      "screenshot": "public-root-tablet-768x1024.png",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "h1": "PrairieClassroom OS",
+      "ctaText": "Enter PrairieClassroom",
+      "ctaHref": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "documentHorizontalOverflow": false,
+      "textSample": "\n    PrairieClassroomOSPrairieClassroom OSTeacher-controlled classroom memory and adult coordination for the live school day.Enter PrairieClassroom\n    \n  \n\n",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": []
+    },
+    {
+      "id": "wide-1920x1080",
+      "width": 1920,
+      "height": 1080,
+      "screenshot": "public-root-wide-1920x1080.png",
+      "url": "https://prairieclassroom-os.vercel.app/",
+      "h1": "PrairieClassroom OS",
+      "ctaText": "Enter PrairieClassroom",
+      "ctaHref": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "documentHorizontalOverflow": false,
+      "textSample": "\n    PrairieClassroomOSPrairieClassroom OSTeacher-controlled classroom memory and adult coordination for the live school day.Enter PrairieClassroom\n    \n  \n\n",
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": []
+    }
+  ],
+  "failures": []
+}

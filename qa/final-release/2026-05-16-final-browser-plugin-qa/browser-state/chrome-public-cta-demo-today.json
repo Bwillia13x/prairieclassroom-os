@@ -1,0 +1,25 @@
+{
+  "ctaInfo": {
+    "activeButtons": [],
+    "appText": "Loading PrairieClassroom OS...",
+    "demoApi": null,
+    "height": 693,
+    "title": "PrairieClassroom OS",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "width": 1440
+  },
+  "ctaLogs": [
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:05:31.851Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T02:05:31.853Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    }
+  ]
+}

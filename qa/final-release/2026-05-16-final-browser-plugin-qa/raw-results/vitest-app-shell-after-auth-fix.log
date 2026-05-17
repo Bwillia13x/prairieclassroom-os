@@ -1,0 +1,12 @@
+ DEPRECATED  "environmentMatchGlobs" is deprecated. Use `test.projects` to define different configurations instead.
+
+ RUN  v3.2.4 /Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev
+
+ ✓ apps/web/src/__tests__/App.shell.test.tsx (18 tests) 1971ms
+   ✓ App shell — classroom pill trigger > feeds Today debt into the command palette for per-student actions  381ms
+   ✓ App shell — classroom pill trigger > keeps the global Action Atlas out of the page-owned top-level workspaces  429ms
+
+ Test Files  1 passed (1)
+      Tests  18 passed (18)
+   Start at  20:22:26
+   Duration  4.11s (transform 1.37s, setup 70ms, collect 608ms, tests 1.97s, environment 680ms, prepare 66ms)
