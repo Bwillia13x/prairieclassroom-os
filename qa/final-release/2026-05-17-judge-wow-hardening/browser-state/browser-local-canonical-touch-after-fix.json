@@ -1,0 +1,15 @@
+{
+  "hasToday": true,
+  "heading": "Today",
+  "roleButton": {
+    "height": 44,
+    "text": "RoleTeacher⌄",
+    "width": 112
+  },
+  "searchButton": {
+    "height": 0,
+    "text": "Search or ask Prairie⌘K",
+    "width": 0
+  },
+  "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34"
+}

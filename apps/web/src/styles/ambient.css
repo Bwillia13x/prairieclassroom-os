@@ -1205,6 +1205,17 @@
   .shell-nav {
     display: none !important;
   }
+
+  .role-pill,
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
+    flex: 0 0 auto !important;
+    min-width: var(--control-h-md) !important;
+    min-height: var(--control-h-md) !important;
+  }
+
+  .shell-bar__actions .header-action[data-testid="shell-search-trigger"] {
+    width: var(--control-h-md) !important;
+  }
 }
 
 /* Premium command shell target — late-cascade version.

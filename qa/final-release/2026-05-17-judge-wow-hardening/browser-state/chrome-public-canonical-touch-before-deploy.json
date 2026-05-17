@@ -1,0 +1,16 @@
+{
+  "demoApi": "prairie-static-demo-api",
+  "hasToday": true,
+  "heading": "Today",
+  "roleButton": {
+    "height": 44,
+    "text": "RoleTeacher⌄",
+    "width": 113
+  },
+  "searchButton": {
+    "height": 0,
+    "text": "Search or ask Prairie⌘K",
+    "width": 0
+  },
+  "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+}

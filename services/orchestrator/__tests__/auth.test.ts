@@ -91,9 +91,9 @@ describe("createAuthMiddleware", () => {
     expect(next).toHaveBeenCalled();
   });
 
-  it("bypasses auth for any classroom that sets is_demo: true (not just the legacy ID)", () => {
-    // Second demo classroom, not using the legacy ID. Should still bypass
-    // via the first-class is_demo field on the profile.
+  it("bypasses auth for an is_demo classroom without an access code", () => {
+    // Second demo classroom, not using the legacy ID. It should still bypass
+    // via the first-class is_demo field when no explicit code is configured.
     const classrooms: Record<string, ClassroomProfile> = {
       "pilot-demo-grade1": {
         classroom_id: "pilot-demo-grade1",
@@ -103,7 +103,6 @@ describe("createAuthMiddleware", () => {
         classroom_notes: [],
         routines: {},
         students: [],
-        access_code: "would-normally-require-this",
       },
     };
     const loadWithDemoFlag = (id: string) => classrooms[id];
@@ -116,6 +115,43 @@ describe("createAuthMiddleware", () => {
     expect(res.locals.classroomAuth).toMatchObject({
       classroomId: "pilot-demo-grade1",
       demoBypass: true,
+    });
+  });
+
+  it("requires an access code when an is_demo classroom has an explicit code", () => {
+    const classrooms: Record<string, ClassroomProfile> = {
+      "pilot-demo-grade1": {
+        classroom_id: "pilot-demo-grade1",
+        is_demo: true,
+        grade_band: "1",
+        subject_focus: "general",
+        classroom_notes: [],
+        routines: {},
+        students: [],
+        access_code: "demo-code",
+      },
+    };
+    const loadWithDemoFlag = (id: string) => classrooms[id];
+    const mw = createAuthMiddleware(loadWithDemoFlag);
+
+    const missingReq = mockReq({ body: { classroom_id: "pilot-demo-grade1" } });
+    const missingRes = mockRes();
+    mw(missingReq as Request, missingRes as unknown as Response, next);
+    expect(next).not.toHaveBeenCalled();
+    expect(missingRes._status).toBe(401);
+    expect(missingRes._json?.detail_code).toBe("classroom_code_missing");
+
+    next = vi.fn();
+    const validReq = mockReq({
+      body: { classroom_id: "pilot-demo-grade1" },
+      headers: { "x-classroom-code": "demo-code" },
+    });
+    const validRes = mockRes();
+    mw(validReq as Request, validRes as unknown as Response, next);
+    expect(next).toHaveBeenCalled();
+    expect(validRes.locals.classroomAuth).toMatchObject({
+      classroomId: "pilot-demo-grade1",
+      demoBypass: false,
     });
   });
 

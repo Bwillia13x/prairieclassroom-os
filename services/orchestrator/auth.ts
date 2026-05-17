@@ -90,7 +90,7 @@ export function createAuthMiddleware(
     // the profile; fall back to the legacy ID match for classrooms that
     // pre-date the schema field. If the classroom doesn't resolve, still
     // honor the legacy ID so early-boot / fixture-missing paths still work.
-    if (isDemoClassroom(classroom ?? { classroom_id: classroomId })) {
+    if (isDemoClassroom(classroom ?? { classroom_id: classroomId }) && !classroom?.access_code) {
       setClassroomAuthContext(res, { classroomId, role, demoBypass: true });
       next();
       return;

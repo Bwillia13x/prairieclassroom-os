@@ -63,6 +63,12 @@ const ShortcutSheet = lazy(() => import("./components/ShortcutSheet"));
 const todaySnapshotRequestCache = new Map<string, ReturnType<typeof fetchTodaySnapshot>>();
 const demoAutoForecastAttempts = new Set<string>();
 
+function isCanonicalDemoClassroom(classroom?: Pick<ClassroomProfile, "classroom_id" | "is_demo" | "requires_access_code"> | null): boolean {
+  if (!classroom) return false;
+  if (classroom.classroom_id === DEMO_CLASSROOM_ID) return true;
+  return Boolean(classroom.is_demo && !classroom.requires_access_code);
+}
+
 function getTomorrowForecastDate(now = new Date()): string {
   const forecastDate = new Date(now);
   forecastDate.setDate(forecastDate.getDate() + 1);
@@ -406,11 +412,13 @@ export default function App() {
         const params = new URLSearchParams(window.location.search);
         const requestedClassroomId = params.get("classroom");
         const demoRequested = shouldStartInDemoMode();
-        const demoClassroom = data.find((entry) => entry.is_demo || entry.classroom_id === DEMO_CLASSROOM_ID);
+        const demoClassroom = data.find((entry) => entry.classroom_id === DEMO_CLASSROOM_ID)
+          ?? data.find((entry) => entry.is_demo && !entry.requires_access_code)
+          ?? data.find((entry) => entry.is_demo);
         const requestedClassroom = requestedClassroomId
           ? data.find((entry) => entry.classroom_id === requestedClassroomId)
           : undefined;
-        const requestedClassroomIsDemo = requestedClassroom?.is_demo || requestedClassroom?.classroom_id === DEMO_CLASSROOM_ID;
+        const requestedClassroomIsDemo = isCanonicalDemoClassroom(requestedClassroom);
 
         const nextClassroomId = requestedClassroom && (!demoRequested || requestedClassroomIsDemo)
           ? requestedClassroom.classroom_id
@@ -608,7 +616,7 @@ export default function App() {
     params.set("classroom", state.activeClassroom);
 
     const profile = state.classrooms.find((entry) => entry.classroom_id === state.activeClassroom);
-    if (profile?.is_demo || (!profile && state.activeClassroom === DEMO_CLASSROOM_ID)) {
+    if (isCanonicalDemoClassroom(profile) || (!profile && state.activeClassroom === DEMO_CLASSROOM_ID)) {
       params.set("demo", "true");
     } else if (profile) {
       params.delete("demo");

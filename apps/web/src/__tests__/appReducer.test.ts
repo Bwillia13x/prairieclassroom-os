@@ -299,6 +299,22 @@ describe("appReducer — role prompt", () => {
     const next = appReducer(initial, { type: "CLOSE_ROLE_PROMPT" });
     expect(next.rolePrompt).toBeNull();
   });
+
+  it("clears the role prompt when protected-classroom auth recovery opens", () => {
+    const initial = baseState({ rolePrompt: { classroomId: "alpha-grade4" } });
+    const next = appReducer(initial, {
+      type: "OPEN_AUTH_PROMPT",
+      prompt: {
+        classroomId: "alpha-grade4",
+        message: "Invalid classroom code.",
+        status: 403,
+        source: "request",
+      },
+    });
+
+    expect(next.rolePrompt).toBeNull();
+    expect(next.authPrompt?.message).toBe("Invalid classroom code.");
+  });
 });
 
 describe("ClassroomRole literal shape", () => {

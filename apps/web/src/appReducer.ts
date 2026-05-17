@@ -922,7 +922,7 @@ export function appReducer(state: AppState, action: AppAction): AppState {
     }
 
     case "OPEN_AUTH_PROMPT":
-      return { ...state, authPrompt: action.prompt };
+      return { ...state, authPrompt: action.prompt, rolePrompt: null };
 
     case "CLOSE_AUTH_PROMPT":
       return { ...state, authPrompt: null };

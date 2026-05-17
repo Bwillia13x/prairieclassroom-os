@@ -321,6 +321,30 @@ describe("App shell — classroom pill trigger", { timeout: 60_000 }, () => {
     expect(window.location.search).toContain("classroom=demo-okafor-grade34");
   });
 
+  it("does not treat a protected synthetic fixture as the default public demo classroom", async () => {
+    window.history.replaceState({}, "", "/?demo=true&tab=today&classroom=classroom-alpha");
+    const protectedDemoClassroom = makeDemoClassroom({
+      classroom_id: "classroom-alpha",
+      grade_band: "5",
+      subject_focus: "science",
+      requires_access_code: true,
+      is_demo: true,
+    });
+    const demoClassroom = makeDemoClassroom({ requires_access_code: false });
+    mockedListClassrooms.mockResolvedValue([protectedDemoClassroom, demoClassroom]);
+    mockedFetchClassroomProfile.mockResolvedValue(demoClassroom);
+    mockedFetchTodaySnapshot.mockResolvedValue(makeShellTodaySnapshot(demoClassroom));
+
+    render(<App />);
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: /active classroom: grade 3-4 literacy numeracy/i })).toBeInTheDocument();
+    });
+    expect(mockedFetchTodaySnapshot.mock.calls.map(([classroomId]) => classroomId)).not.toContain("classroom-alpha");
+    expect(window.location.search).toContain("demo=true");
+    expect(window.location.search).toContain("classroom=demo-okafor-grade34");
+  });
+
   it("renders the command-palette trigger with a visible 'Search' label and ⌘K hint", async () => {
     await renderShellWithDemo();
     const btn = screen.getByTestId("shell-search-trigger");

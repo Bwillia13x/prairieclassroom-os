@@ -1,0 +1,245 @@
+{
+  "createdAt": "2026-05-17T03:10:50.127Z",
+  "targets": [
+    {
+      "name": "local",
+      "base": "http://localhost:5173",
+      "pages": [
+        {
+          "viewport": "desktop",
+          "route": "root",
+          "url": "http://localhost:5173/",
+          "title": "PrairieClassroom OS",
+          "h1": "PrairieClassroom OS",
+          "demoApi": null,
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "PrairieClassroomOS\nPrairieClassroom OS\n\nTeacher-controlled classroom memory and adult coordination for the live school day.\n\nEnter PrairieClassroom",
+          "modalOpen": false,
+          "navCount": 0,
+          "mainCount": 1,
+          "activeNav": null,
+          "rootImageLoaded": true,
+          "cta": {
+            "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+            "width": 257,
+            "height": 52,
+            "text": "Enter PrairieClassroom"
+          },
+          "smallTouchTargets": []
+        },
+        {
+          "viewport": "desktop",
+          "route": "canonical",
+          "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+          "title": "PrairieClassroom OS",
+          "h1": "Today",
+          "demoApi": null,
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\nEnd-of-day closeout: carry forward what will matter tomorrow.\n\nDO THIS NOW\nTomorrow staging\nCarry Farid forward into tomorrow\n\nTomorrow staging: capture the evidence and next move — Farid can explain his thinking clearly aloud but still slows down when he has to transfer that reasoning into written sentences..\n\nDO THIS NOW: SU",
+          "modalOpen": false,
+          "navCount": 2,
+          "mainCount": 1,
+          "activeNav": "TodayDo this now",
+          "rootImageLoaded": null,
+          "cta": null,
+          "smallTouchTargets": [
+            {
+              "tag": "button",
+              "text": "Collapse",
+              "width": 26,
+              "height": 36,
+              "top": 432,
+              "left": 222,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "route": "root",
+          "url": "http://localhost:5173/",
+          "title": "PrairieClassroom OS",
+          "h1": "PrairieClassroom OS",
+          "demoApi": null,
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "PrairieClassroomOS\nPrairieClassroom OS\n\nTeacher-controlled classroom memory and adult coordination for the live school day.\n\nEnter PrairieClassroom",
+          "modalOpen": false,
+          "navCount": 0,
+          "mainCount": 1,
+          "activeNav": null,
+          "rootImageLoaded": true,
+          "cta": {
+            "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+            "width": 361,
+            "height": 52,
+            "text": "Enter PrairieClassroom"
+          },
+          "smallTouchTargets": []
+        },
+        {
+          "viewport": "mobile",
+          "route": "canonical",
+          "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+          "title": "PrairieClassroom OS",
+          "h1": "Today",
+          "demoApi": null,
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\nEnd-of-day closeout: carry forward what will matter tomorrow.\n\nDO THIS NOW\nTomorrow staging\nCarry Farid forward into tomorrow\n\nTomorrow staging: capture the evidence and next move — Farid can explain his thinking clearly aloud but still slows down when he has to transfer that reasoning into written sentences..\n\nDO THIS NOW: SUPPORT PATTERNS\nSTUDENT\nFarid\nWINDOW\n10:00–10:45\nOPEN\n20\nNOW\nReading block\nToday's flow\nCURRENT\n9:00–9:45\n9:00–9:45\nSTATUS: CURRENT\nNOW\nReading block\n\nAmira's pe",
+          "modalOpen": false,
+          "navCount": 2,
+          "mainCount": 1,
+          "activeNav": "TodayDo this now",
+          "rootImageLoaded": null,
+          "cta": null,
+          "smallTouchTargets": []
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "issues": []
+    },
+    {
+      "name": "public",
+      "base": "https://prairieclassroom-os.vercel.app",
+      "pages": [
+        {
+          "viewport": "desktop",
+          "route": "root",
+          "url": "https://prairieclassroom-os.vercel.app/",
+          "title": "PrairieClassroom OS",
+          "h1": "PrairieClassroom OS",
+          "demoApi": null,
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "PrairieClassroomOS\nPrairieClassroom OS\n\nTeacher-controlled classroom memory and adult coordination for the live school day.\n\nEnter PrairieClassroom",
+          "modalOpen": false,
+          "navCount": 0,
+          "mainCount": 1,
+          "activeNav": null,
+          "rootImageLoaded": true,
+          "cta": {
+            "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+            "width": 257,
+            "height": 52,
+            "text": "Enter PrairieClassroom"
+          },
+          "smallTouchTargets": []
+        },
+        {
+          "viewport": "desktop",
+          "route": "canonical",
+          "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+          "title": "PrairieClassroom OS",
+          "h1": "Today",
+          "demoApi": "prairie-static-demo-api",
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\n1\nReview\nMessage family\nAlberta K-6\nPrivacy first\nTeacher controlled\nToday\n\nEnd-of-day closeout: carry forward what will matter tomorrow.\n\nDO THIS NOW\nTomorrow staging\nCarry Amira forward into tomorrow\n\nTomorrow staging: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:",
+          "modalOpen": false,
+          "navCount": 2,
+          "mainCount": 1,
+          "activeNav": "TodayDo this now",
+          "rootImageLoaded": null,
+          "cta": null,
+          "smallTouchTargets": [
+            {
+              "tag": "button",
+              "text": "Collapse",
+              "width": 26,
+              "height": 36,
+              "top": 432,
+              "left": 222,
+              "visible": true
+            }
+          ]
+        },
+        {
+          "viewport": "mobile",
+          "route": "root",
+          "url": "https://prairieclassroom-os.vercel.app/",
+          "title": "PrairieClassroom OS",
+          "h1": "PrairieClassroom OS",
+          "demoApi": null,
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "PrairieClassroomOS\nPrairieClassroom OS\n\nTeacher-controlled classroom memory and adult coordination for the live school day.\n\nEnter PrairieClassroom",
+          "modalOpen": false,
+          "navCount": 0,
+          "mainCount": 1,
+          "activeNav": null,
+          "rootImageLoaded": true,
+          "cta": {
+            "href": "/?demo=true&tab=today&classroom=demo-okafor-grade34",
+            "width": 361,
+            "height": 52,
+            "text": "Enter PrairieClassroom"
+          },
+          "smallTouchTargets": []
+        },
+        {
+          "viewport": "mobile",
+          "route": "canonical",
+          "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+          "title": "PrairieClassroom OS",
+          "h1": "Today",
+          "demoApi": "prairie-static-demo-api",
+          "horizontalOverflowPx": 0,
+          "visibleTextSample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\nEnd-of-day closeout: carry forward what will matter tomorrow.\n\nDO THIS NOW\nTomorrow staging\nCarry Amira forward into tomorrow\n\nTomorrow staging: capture the evidence and next move — Vocabulary preview and family praise.\n\nDRAFT AMIRA MESSAGE\nSTUDENT\nAmira\nWINDOW\n12:30-12:45\nOPEN\n3\nNOW\nMath block\nToday's flow\nCURRENT\n8:30-9:15\n8:30-9:15\nSTATUS: CURRENT\nNOW\nMath block\n\nPredictable routine\n\nCURRENT FOCUS\n9:30-10:30\nSTATUS: PAST\nReading block\n\nSeveral EAL students need vocabulary preview\n",
+          "modalOpen": false,
+          "navCount": 2,
+          "mainCount": 1,
+          "activeNav": "TodayDo this now",
+          "rootImageLoaded": null,
+          "cta": null,
+          "smallTouchTargets": [
+            {
+              "tag": "button",
+              "text": "RoleTeacher⌄",
+              "width": 38,
+              "height": 44,
+              "top": 17,
+              "left": 250,
+              "visible": true
+            },
+            {
+              "tag": "button",
+              "text": "Search or ask Prairie⌘K",
+              "width": 38,
+              "height": 44,
+              "top": 17,
+              "left": 295,
+              "visible": true
+            }
+          ],
+          "smallTouchTargetSample": [
+            {
+              "tag": "button",
+              "text": "RoleTeacher⌄",
+              "width": 38,
+              "height": 44,
+              "top": 17,
+              "left": 250,
+              "visible": true
+            },
+            {
+              "tag": "button",
+              "text": "Search or ask Prairie⌘K",
+              "width": 38,
+              "height": 44,
+              "top": 17,
+              "left": 295,
+              "visible": true
+            }
+          ]
+        }
+      ],
+      "consoleErrors": [],
+      "pageErrors": [],
+      "badResponses": [],
+      "requestFailures": [],
+      "issues": [
+        "public canonical mobile: 2 visible touch targets below 40px"
+      ]
+    }
+  ],
+  "issueCount": 1
+}
