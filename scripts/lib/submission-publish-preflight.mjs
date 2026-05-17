@@ -104,6 +104,24 @@ function renderChecks(rootDir, env, commandResolver) {
   ];
 }
 
+function summarizeCommandOutput(commandResult) {
+  return [
+    commandResult.stdout,
+    commandResult.stderr,
+  ].join("\n").split(/\r?\n/).map((line) => line.trim()).filter(Boolean)[0] ?? "command failed";
+}
+
+function dependencyAuditCheck(rootDir, commandRunner) {
+  const audit = commandRunner("npm", ["audit", "--omit=dev"], rootDir);
+  return [
+    result(
+      "production dependency audit",
+      audit.status === 0,
+      audit.status === 0 ? "found 0 vulnerabilities" : summarizeCommandOutput(audit),
+    ),
+  ];
+}
+
 function hostedGemmaChecks(env) {
   const hasKey = Boolean(env.PRAIRIE_GEMINI_API_KEY);
   const guardEnabled = /^(1|true|yes)$/i.test(env.PRAIRIE_ENABLE_GEMINI_RUNS ?? "");
@@ -166,6 +184,7 @@ export function collectSubmissionPublishPreflight({
     ...fileChecks(rootDir, requiredFiles),
     ...nodeVersionChecks(rootDir, nodeVersion),
     ...gitChecks(rootDir, commandRunner),
+    ...dependencyAuditCheck(rootDir, commandRunner),
     ...vercelChecks(rootDir, commandResolver),
     ...renderChecks(rootDir, env, commandResolver),
     ...hostedGemmaChecks(env),

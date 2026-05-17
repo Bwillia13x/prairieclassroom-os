@@ -62,6 +62,9 @@ async function seedRequiredFiles(rootDir) {
 }
 
 function cleanGitRunner(command, args) {
+  if (command === "npm" && args.join(" ") === "audit --omit=dev") {
+    return { status: 0, stdout: "found 0 vulnerabilities\n", stderr: "" };
+  }
   if (command !== "git") return { status: 1, stdout: "", stderr: "unknown command" };
   if (args[0] === "status") return { status: 0, stdout: "", stderr: "" };
   if (args[0] === "rev-parse") return { status: 0, stdout: "origin/main\n", stderr: "" };
@@ -70,6 +73,9 @@ function cleanGitRunner(command, args) {
 }
 
 function dirtyGitRunner(command, args) {
+  if (command === "npm" && args.join(" ") === "audit --omit=dev") {
+    return { status: 0, stdout: "found 0 vulnerabilities\n", stderr: "" };
+  }
   if (command !== "git") return { status: 1, stdout: "", stderr: "unknown command" };
   if (args[0] === "status") return { status: 0, stdout: " M docs/submission-copy-pack.md\n?? scripts/new.mjs\n", stderr: "" };
   if (args[0] === "rev-parse") return { status: 0, stdout: "origin/main\n", stderr: "" };
@@ -146,6 +152,9 @@ describe("submission publish preflight", () => {
         },
         commandResolver: (command) => `/usr/local/bin/${command}`,
         commandRunner: (command, args) => {
+          if (command === "npm" && args.join(" ") === "audit --omit=dev") {
+            return { status: 0, stdout: "found 0 vulnerabilities\n", stderr: "" };
+          }
           if (command !== "git") return { status: 1, stdout: "", stderr: "unknown command" };
           if (args[0] === "status") return { status: 0, stdout: "", stderr: "" };
           if (args[0] === "rev-parse") return { status: 0, stdout: "origin/main\n", stderr: "" };
@@ -158,6 +167,37 @@ describe("submission publish preflight", () => {
       const branchSync = results.find((item) => item.label === "git branch synced");
       assert.equal(branchSync.ok, false);
       assert.equal(branchSync.detail, "ahead 2, behind 1");
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("fails publication preflight when the production dependency audit is not clean", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-publish-audit-"));
+    try {
+      await seedRequiredFiles(rootDir);
+      await seedPublishDocs(rootDir, { finalLinks: true });
+
+      const results = collectSubmissionPublishPreflight({
+        rootDir,
+        env: {
+          PRAIRIE_GEMINI_API_KEY: "test-key",
+          PRAIRIE_ENABLE_GEMINI_RUNS: "true",
+          RENDER_API_TOKEN: "render-token",
+        },
+        commandResolver: (command) => `/usr/local/bin/${command}`,
+        commandRunner: (command, args) => {
+          if (command === "npm" && args.join(" ") === "audit --omit=dev") {
+            return { status: 1, stdout: "1 high severity vulnerability\n", stderr: "" };
+          }
+          return cleanGitRunner(command, args);
+        },
+        nodeVersion: "v25.8.2",
+      });
+
+      const audit = results.find((item) => item.label === "production dependency audit");
+      assert.equal(audit.ok, false);
+      assert.equal(audit.detail, "1 high severity vulnerability");
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }
