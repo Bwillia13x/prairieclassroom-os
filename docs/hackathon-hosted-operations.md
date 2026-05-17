@@ -14,15 +14,15 @@ This document is the operator source of truth for the hosted Gemma 4 hackathon l
 - Hosted Gemini proof lane: current hosted refresh passed on the API-key-only synthetic/demo lane; a clean full hosted gate was produced on May 16.
 - Hosted Gemini current passing baseline: passed (`13/13` curated cases) on 2026-05-16, including the Punjabi family-message equity case.
 - Full `release:gate:gemini`: current hosted attempt passed with typecheck, lint, Python tests, TS tests, claims check, harness smoke, hosted evals, API smoke, and browser smoke.
-- Latest attempted gate artifact: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
-- Latest attempted gate summary: `output/release-gate/2026-05-16T19-53-39-742Z-56491/summary.json`
-- Latest attempted eval log: `output/release-gate/2026-05-16T19-53-39-742Z-56491/75-gemini-evals.log`
-- Latest completed May 16 eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`)
-- Latest completed May 16 eval failure summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`
-- Latest May 16 cost rollup: `output/cost-rollups/2026-05-16-rollup.json`
-- Latest passing gate artifact: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
-- Latest passing eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`
-- Hosted eval failure ledger: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json` contains only the separate Ollama host-preflight block; hosted Gemini validation, transport, timeout, parse, schema, and retrieval failure groups are empty.
+- Latest attempted gate artifact: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
+- Latest attempted gate summary: `output/release-gate/2026-05-17T00-36-24-280Z-35954/summary.json`
+- Latest attempted eval log: `output/release-gate/2026-05-17T00-36-24-280Z-35954/75-gemini-evals.log`
+- Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
+- Latest completed hosted eval failure summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json`
+- Latest hosted cost rollup: `output/cost-rollups/2026-05-17-rollup.json`
+- Latest passing gate artifact: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
+- Latest passing eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`
+- Hosted eval failure ledger: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json` contains only the separate Ollama host-preflight block; hosted Gemini validation, transport, timeout, parse, schema, and retrieval failure groups are empty.
 - Hosted reruns remain opt-in and synthetic/demo-only
 
 ## Hosted Models

@@ -1,0 +1,17 @@
+{
+  "createdAt": "2026-05-17T00:03:54.001Z",
+  "fixtureDataDir": "qa/final-release/2026-05-16-pre-submit-e2e/raw/protected-fixture-data",
+  "protectedClassroom": {
+    "classroom_id": "alpha-grade4",
+    "grade_band": "4",
+    "subject_focus": "literacy_and_social_studies",
+    "requires_access_code": true,
+    "is_demo": false,
+    "classroom_notes": [],
+    "students": []
+  },
+  "promptShown": true,
+  "invalidCodeRejected": true,
+  "consoleErrors": [],
+  "pageErrors": []
+}

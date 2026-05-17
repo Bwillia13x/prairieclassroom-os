@@ -82,14 +82,14 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 
 The repo has a current artifact-backed proof story:
 
-- **Mock structural gate:** passing at `output/release-gate/2026-05-11T22-53-32-342Z-87696`.
-- **Current hosted Gemma 4 refresh:** passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; the May 16 run produced a current clean full hosted gate.
+- **Mock structural gate:** passing at `output/release-gate/2026-05-17T00-18-46-562Z-13425`.
+- **Current hosted Gemma 4 refresh:** passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; the May 16 run produced a current clean full hosted gate.
 - **Hosted tool-calling evidence:** `diff-015-tool-calling-curriculum` passed in the current hosted attempt with provider-native tool history.
-- **Latest completed May 16 hosted eval summary:** `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` recorded 13/13.
-- **Latest completed May 16 hosted eval failure summary:** `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`.
-- **Latest May 16 cost rollup:** `output/cost-rollups/2026-05-16-rollup.json`.
-- **Latest passing hosted Gemma 4 baseline:** full hosted release gate passed via `npm run release:gate:gemini` on synthetic/demo data at `output/release-gate/2026-05-16T19-53-39-742Z-56491`.
-- **Latest passing hosted proof eval summary:** `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`.
+- **Latest completed hosted eval summary:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` recorded 13/13.
+- **Latest completed hosted eval failure summary:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json`.
+- **Latest hosted cost rollup:** `output/cost-rollups/2026-05-17-rollup.json`.
+- **Latest passing hosted Gemma 4 baseline:** full hosted release gate passed via `npm run release:gate:gemini` on synthetic/demo data at `output/release-gate/2026-05-17T00-36-24-280Z-35954`.
+- **Latest passing hosted proof eval summary:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`.
 - **Latest passing hosted eval result:** 13/13 curated hosted proof cases passed, including the Punjabi family-message equity case.
 - **Full eval corpus:** 134 checked-in eval case files.
 - **Current unit coverage in latest mock gate:** 2,086 TypeScript/Vitest tests and 76 Python tests passed.

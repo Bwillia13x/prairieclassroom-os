@@ -162,21 +162,21 @@ is self-contained and bounded — pick any one independently.
   the 2026-04-18 implementation session because `npm run gemini:readycheck`
   reported a missing Gemini API key and disabled hosted-run guard, but a later
   hosted rerun passed with the supplied AI Studio key at
-  `output/release-gate/2026-05-16T19-53-39-742Z-56491` with a matching `13/13`
-  eval summary under `output/evals/2026-05-16-gemini/`.
+  `output/release-gate/2026-05-17T00-36-24-280Z-35954` with a matching `13/13`
+  eval summary under `output/evals/2026-05-17-gemini/`.
 - **May 16 hosted refresh state:** The latest attempted hosted gate is
-  `output/release-gate/2026-05-16T19-53-39-742Z-56491`; it passed the full
+  `output/release-gate/2026-05-17T00-36-24-280Z-35954`; it passed the full
   `release:gate:gemini` path and is the current passing baseline on
   synthetic/demo data. That run completed
   `13/13` curated hosted proof evals, including
   `diff-015-tool-calling-curriculum`, `plan-010-prompt-injection`,
   `msg-lang-pa-praise`, `surv-001-schema`, and `extract-001-schema`. The
-  latest completed May 16 hosted eval summary is
-  `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`
+  latest completed hosted eval summary is
+  `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`
   (`13/13`); this is the current passing hosted-proof language for the
   tool-calling closure. `npm run eval:summary` refreshed
-  `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`
-  and `npm run cost:rollup` wrote `output/cost-rollups/2026-05-16-rollup.json`.
+  `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json`
+  and `npm run cost:rollup` wrote `output/cost-rollups/2026-05-17-rollup.json`.
 
 ## Shipped 2026-04-18 — F3 bundle (real SSE streaming)
 
@@ -209,12 +209,12 @@ F2.0/F2.1 now forward tools, execute local JS tools, and send provider-native
 tool result history on the follow-up turn. The May 16 current hosted attempt
 ran the guarded `npm run release:gate:gemini` path after `npm run cost:status`
 confirmed headroom. `diff-015-tool-calling-curriculum` passed in
-`output/release-gate/2026-05-16T19-53-39-742Z-56491/75-gemini-evals.log`,
+`output/release-gate/2026-05-17T00-36-24-280Z-35954/75-gemini-evals.log`,
 which is the hosted Gemma tool-calling proof for this closure pass.
 
 The same run completed the curated hosted eval suite at `13/13`, followed by API
 smoke and browser smoke, so the current hosted proof baseline is
-`output/release-gate/2026-05-16T19-53-39-742Z-56491`. Do not run another full
+`output/release-gate/2026-05-17T00-36-24-280Z-35954`. Do not run another full
 hosted gate without explicit approval.
 
 ### F3.x — Remaining streaming hardening
@@ -234,7 +234,7 @@ EA Load, Survival Packet, and Support Patterns. Remaining bounded work:
    Gemini responses for planning routes, including long-running EA briefing,
    forecast, and survival-packet calls in `output/request-logs/2026-05-16.jsonl`.
    The latest attempted hosted gate
-   `output/release-gate/2026-05-16T19-53-39-742Z-56491` passed the hosted eval,
+   `output/release-gate/2026-05-17T00-36-24-280Z-35954` passed the hosted eval,
    API smoke, and browser smoke steps. The remaining live-model proof gap is
    the Ollama privacy-first/local lane, which is still blocked on host
    capability.

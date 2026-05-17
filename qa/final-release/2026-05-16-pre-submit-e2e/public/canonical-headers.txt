@@ -1,0 +1,22 @@
+HTTP/2 200 
+accept-ranges: bytes
+access-control-allow-origin: *
+age: 4012
+cache-control: public, max-age=0, must-revalidate
+content-disposition: inline
+content-security-policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://*.onrender.com; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+content-type: text/html; charset=utf-8
+date: Sun, 17 May 2026 00:06:48 GMT
+etag: "4591b7e37f71668b86eb4b21ba096cf2"
+last-modified: Sat, 16 May 2026 22:59:55 GMT
+permissions-policy: geolocation=(), microphone=(), camera=()
+referrer-policy: strict-origin-when-cross-origin
+server: Vercel
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-frame-options: DENY
+x-vercel-cache: HIT
+x-vercel-enable-rewrite-caching: 1
+x-vercel-id: pdx1::cb5p6-1778976408413-00426e8d3e65
+content-length: 1991
+

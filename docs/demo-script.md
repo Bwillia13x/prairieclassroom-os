@@ -92,10 +92,10 @@ http://localhost:5173/?demo=true
 
 **Point to artifact-backed proof if needed:**
 
-- Current hosted refresh: passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; claim it only as synthetic/demo hosted proof.
-- Latest completed May 16 hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`)
-- Latest passing hosted gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
-- Latest passing hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`
+- Current hosted refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
+- Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
+- Latest passing hosted gate: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
+- Latest passing hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`
 - System inventory: `docs/system-inventory.md`
 
 ## A4. Safety (45 seconds)

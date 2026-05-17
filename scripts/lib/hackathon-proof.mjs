@@ -21,8 +21,8 @@ export const PROOF_DOC_PATHS = [
 // for proof surfaces. This constant still backs `readHostedProofSummary`
 // callers that don't have a surfaces object, and the `ops-scripts.test.ts`
 // fixtures that construct synthetic proof surfaces inline.
-export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-05-16T19-53-39-742Z-56491";
-export const CURRENT_HOSTED_ATTEMPT_RUN_DIR = "output/release-gate/2026-05-16T19-53-39-742Z-56491";
+export const HOSTED_PROOF_RUN_DIR = "output/release-gate/2026-05-17T00-36-24-280Z-35954";
+export const CURRENT_HOSTED_ATTEMPT_RUN_DIR = "output/release-gate/2026-05-17T00-36-24-280Z-35954";
 export const TARGETED_HOSTED_SMOKE_COMMAND =
   "PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api";
 export const LOCAL_PREP_COMMANDS = [

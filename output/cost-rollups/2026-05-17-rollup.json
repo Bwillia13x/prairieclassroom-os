@@ -1,0 +1,183 @@
+{
+  "generated_at": "2026-05-17T01:02:18.186Z",
+  "date_range": {
+    "from": "2026-05-17",
+    "to": "2026-05-17"
+  },
+  "daily": [
+    {
+      "date": "2026-05-17",
+      "present": true,
+      "totals": {
+        "calls": 22,
+        "prompt_tokens": 101402,
+        "output_tokens": 20947,
+        "total_tokens": 150911,
+        "estimated_usd": 0.026431549999999995,
+        "by_provider": {
+          "gemini": {
+            "calls": 22,
+            "prompt_tokens": 101402,
+            "output_tokens": 20947,
+            "estimated_usd": 0.026431549999999995
+          }
+        },
+        "by_prompt_class": {
+          "differentiate_material": {
+            "calls": 3,
+            "prompt_tokens": 5168,
+            "output_tokens": 2504,
+            "estimated_usd": 0.001585
+          },
+          "prepare_tomorrow_plan": {
+            "calls": 4,
+            "prompt_tokens": 32780,
+            "output_tokens": 3300,
+            "estimated_usd": 0.0068969999999999995
+          },
+          "draft_family_message": {
+            "calls": 4,
+            "prompt_tokens": 1871,
+            "output_tokens": 586,
+            "estimated_usd": 0.000453625
+          },
+          "generate_ea_briefing": {
+            "calls": 2,
+            "prompt_tokens": 4333,
+            "output_tokens": 1518,
+            "estimated_usd": 0.001110875
+          },
+          "forecast_complexity": {
+            "calls": 2,
+            "prompt_tokens": 8229,
+            "output_tokens": 2730,
+            "estimated_usd": 0.00287235
+          },
+          "generate_survival_packet": {
+            "calls": 3,
+            "prompt_tokens": 17311,
+            "output_tokens": 6072,
+            "estimated_usd": 0.00623985
+          },
+          "extract_worksheet": {
+            "calls": 1,
+            "prompt_tokens": 683,
+            "output_tokens": 39,
+            "estimated_usd": 0.0001
+          },
+          "detect_support_patterns": {
+            "calls": 2,
+            "prompt_tokens": 26875,
+            "output_tokens": 2844,
+            "estimated_usd": 0.0057376499999999995
+          },
+          "balance_ea_load": {
+            "calls": 1,
+            "prompt_tokens": 4152,
+            "output_tokens": 1354,
+            "estimated_usd": 0.0014352
+          }
+        },
+        "by_model": {
+          "gemma-4-26b-a4b-it": {
+            "calls": 10,
+            "prompt_tokens": 12055,
+            "output_tokens": 4647,
+            "estimated_usd": 0.0032495
+          },
+          "gemma-4-31b-it": {
+            "calls": 12,
+            "prompt_tokens": 89347,
+            "output_tokens": 16300,
+            "estimated_usd": 0.023182049999999996
+          }
+        }
+      }
+    }
+  ],
+  "totals": {
+    "calls": 22,
+    "prompt_tokens": 101402,
+    "output_tokens": 20947,
+    "total_tokens": 150911,
+    "estimated_usd": 0.026431549999999995,
+    "by_provider": {
+      "gemini": {
+        "calls": 22,
+        "prompt_tokens": 101402,
+        "output_tokens": 20947,
+        "estimated_usd": 0.026431549999999995
+      }
+    },
+    "by_prompt_class": {
+      "differentiate_material": {
+        "calls": 3,
+        "prompt_tokens": 5168,
+        "output_tokens": 2504,
+        "estimated_usd": 0.001585
+      },
+      "prepare_tomorrow_plan": {
+        "calls": 4,
+        "prompt_tokens": 32780,
+        "output_tokens": 3300,
+        "estimated_usd": 0.0068969999999999995
+      },
+      "draft_family_message": {
+        "calls": 4,
+        "prompt_tokens": 1871,
+        "output_tokens": 586,
+        "estimated_usd": 0.000453625
+      },
+      "generate_ea_briefing": {
+        "calls": 2,
+        "prompt_tokens": 4333,
+        "output_tokens": 1518,
+        "estimated_usd": 0.001110875
+      },
+      "forecast_complexity": {
+        "calls": 2,
+        "prompt_tokens": 8229,
+        "output_tokens": 2730,
+        "estimated_usd": 0.00287235
+      },
+      "generate_survival_packet": {
+        "calls": 3,
+        "prompt_tokens": 17311,
+        "output_tokens": 6072,
+        "estimated_usd": 0.00623985
+      },
+      "extract_worksheet": {
+        "calls": 1,
+        "prompt_tokens": 683,
+        "output_tokens": 39,
+        "estimated_usd": 0.0001
+      },
+      "detect_support_patterns": {
+        "calls": 2,
+        "prompt_tokens": 26875,
+        "output_tokens": 2844,
+        "estimated_usd": 0.0057376499999999995
+      },
+      "balance_ea_load": {
+        "calls": 1,
+        "prompt_tokens": 4152,
+        "output_tokens": 1354,
+        "estimated_usd": 0.0014352
+      }
+    },
+    "by_model": {
+      "gemma-4-26b-a4b-it": {
+        "calls": 10,
+        "prompt_tokens": 12055,
+        "output_tokens": 4647,
+        "estimated_usd": 0.0032495
+      },
+      "gemma-4-31b-it": {
+        "calls": 12,
+        "prompt_tokens": 89347,
+        "output_tokens": 16300,
+        "estimated_usd": 0.023182049999999996
+      }
+    }
+  }
+}

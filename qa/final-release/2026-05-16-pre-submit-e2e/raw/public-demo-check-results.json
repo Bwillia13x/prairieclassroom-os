@@ -1,0 +1,137 @@
+{
+  "createdAt": "2026-05-17T00:10:00.726Z",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "checks": {
+    "rootLanding": {
+      "title": "PrairieClassroom OS",
+      "ctaText": "Enter PrairieClassroom"
+    },
+    "rootCta": {
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    "staticFirst": {
+      "marker": "prairie-static-demo-api"
+    },
+    "staticGeneratedLabel": {
+      "marker": "prairie-static-demo-api",
+      "labelPresent": true
+    }
+  },
+  "layout": [
+    {
+      "label": "public-root-desktop",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-canonical-today-desktop",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-static-differentiate-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [
+        {
+          "label": "public-static-differentiate-generated",
+          "tag": "button",
+          "text": "Plant Needs Reading Passage",
+          "width": 171.0625,
+          "height": 28.59375,
+          "scrollWidth": 190,
+          "clientWidth": 169
+        }
+      ]
+    },
+    {
+      "label": "public-root-mobile",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-canonical-today-mobile",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    }
+  ],
+  "performance": [
+    {
+      "label": "public-canonical-today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "timing": {
+        "type": "navigate",
+        "domContentLoadedEventEnd": 169,
+        "loadEventEnd": 170,
+        "duration": 170,
+        "transferSize": 300,
+        "decodedBodySize": 1991
+      },
+      "paint": [
+        {
+          "name": "first-paint",
+          "startTime": 184
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 184
+        }
+      ],
+      "resourceCount": 22
+    },
+    {
+      "label": "public-static-differentiate-generated",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "timing": {
+        "type": "navigate",
+        "domContentLoadedEventEnd": 178,
+        "loadEventEnd": 179,
+        "duration": 179,
+        "transferSize": 1093,
+        "decodedBodySize": 1991
+      },
+      "paint": [
+        {
+          "name": "first-paint",
+          "startTime": 188
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 188
+        }
+      ],
+      "resourceCount": 26
+    }
+  ],
+  "logs": {
+    "desktop": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": []
+    },
+    "mobile": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": []
+    }
+  },
+  "layoutFailures": [
+    {
+      "label": "public-static-differentiate-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [
+        {
+          "label": "public-static-differentiate-generated",
+          "tag": "button",
+          "text": "Plant Needs Reading Passage",
+          "width": 171.0625,
+          "height": 28.59375,
+          "scrollWidth": 190,
+          "clientWidth": 169
+        }
+      ]
+    }
+  ],
+  "error": "Public layout findings: [\n  {\n    \"label\": \"public-static-differentiate-generated\",\n    \"horizontalOverflowPx\": 0,\n    \"clippedText\": [\n      {\n        \"label\": \"public-static-differentiate-generated\",\n        \"tag\": \"button\",\n        \"text\": \"Plant Needs Reading Passage\",\n        \"width\": 171.0625,\n        \"height\": 28.59375,\n        \"scrollWidth\": 190,\n        \"clientWidth\": 169\n      }\n    ]\n  }\n]\n\n1 !== 0\n"
+}

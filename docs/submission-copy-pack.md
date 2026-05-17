@@ -15,13 +15,13 @@ Replace every bracketed placeholder before publishing the video, Kaggle project,
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-16T22-26-39-727Z-59832`
-- Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; claim it only as synthetic/demo hosted proof.
-- Latest completed May 16 hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`)
-- Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
-- Latest passing hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`
-- Latest May 16 cost rollup: `output/cost-rollups/2026-05-16-rollup.json`
-- Current test count: 2,139 Vitest + 76 Python in the latest mock gate
+- Mock structural gate: `output/release-gate/2026-05-17T00-18-46-562Z-13425`
+- Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
+- Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
+- Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
+- Latest passing hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`
+- Latest hosted cost rollup: `output/cost-rollups/2026-05-17-rollup.json`
+- Current test count: 2,086 Vitest + 76 Python in the latest mock gate
 
 Do not add claims about real teacher validation, local Ollama proof, no-cloud operation, or measured classroom outcomes unless new artifacts are added and the claims ledger is advanced.
 

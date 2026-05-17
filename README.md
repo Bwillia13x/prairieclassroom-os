@@ -196,7 +196,7 @@ npm run release:gate
 
 If the gate fails because a port is already in use, stop the existing local processes and re-run the command. The gate expects to own `:3200`, `:3100`, and `:5173`.
 
-For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present. The current May 16 hosted refresh passed: the latest attempted hosted gate is `output/release-gate/2026-05-16T19-53-39-742Z-56491`, where the full hosted release gate completed on synthetic/demo data.
+For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present. The current May 16 hosted refresh passed: the latest attempted hosted gate is `output/release-gate/2026-05-17T00-36-24-280Z-35954`, where the full hosted release gate completed on synthetic/demo data.
 
 After a future successful hosted refresh, update the `Latest passing hosted gate:` and `Latest attempted hosted gate:` lines in `docs/hackathon-proof-brief.md`. `npm run proof:check` derives the canonical proof artifacts from that file and verifies every proof surface references the same current attempt and last passing baseline.
 
@@ -341,7 +341,7 @@ Flask Inference :3200
 
 134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,086 TypeScript / Vitest tests and 76 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
-The current hosted Gemma 4 refresh passed: `output/release-gate/2026-05-16T19-53-39-742Z-56491` completed the full hosted release gate, including 13/13 curated proof eval cases, API smoke, and browser smoke on synthetic/demo data with `gemma-4-26b-a4b-it` and `gemma-4-31b-it`. The latest completed May 16 hosted eval summary is `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json`, with cost rollup at `output/cost-rollups/2026-05-16-rollup.json`. Hosted proof is synthetic/demo only; the privacy-first school deployment path remains local/self-hosted Gemma 4 via Ollama.
+The current hosted Gemma 4 refresh passed: `output/release-gate/2026-05-17T00-36-24-280Z-35954` completed the full hosted release gate, including 13/13 curated proof eval cases, API smoke, and browser smoke on synthetic/demo data with `gemma-4-26b-a4b-it` and `gemma-4-31b-it`. The latest completed hosted eval summary is `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`, with cost rollup at `output/cost-rollups/2026-05-17-rollup.json`. Hosted proof is synthetic/demo only; the privacy-first school deployment path remains local/self-hosted Gemma 4 via Ollama.
 
 ```bash
 # Run evals (requires orchestrator + inference running)

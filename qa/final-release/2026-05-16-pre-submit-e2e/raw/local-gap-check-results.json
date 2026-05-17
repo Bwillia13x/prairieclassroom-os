@@ -1,0 +1,182 @@
+{
+  "createdAt": "2026-05-17T00:00:48.303Z",
+  "baseUrl": "http://localhost:5173",
+  "desktopLayout": [
+    {
+      "label": "local-desktop-today",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-classroom",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-prep-differentiate",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-prep-language-tools",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-tomorrow-plan",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-tomorrow-forecast",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-week",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-ops-log-intervention",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-ops-ea-briefing",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-review-family-message",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-review-support-patterns",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-desktop-review-usage-insights",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    }
+  ],
+  "mobileLayout": [
+    {
+      "label": "local-mobile-today",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-classroom",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-prep-differentiate",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-prep-language-tools",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-tomorrow-plan",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-tomorrow-forecast",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-week",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-ops-log-intervention",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-ops-ea-briefing",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-review-family-message",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-review-support-patterns",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "local-mobile-review-usage-insights",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    }
+  ],
+  "landing": {
+    "ctaUrl": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34"
+  },
+  "commandPalette": {
+    "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=language-tools"
+  },
+  "focus": {
+    "tag": "button",
+    "text": "Collapse",
+    "outlineWidth": "2px",
+    "outlineStyle": "solid",
+    "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+    "rect": {
+      "x": 221.59375,
+      "y": 457,
+      "width": 26.390625,
+      "height": 36
+    }
+  },
+  "languageTools": {
+    "simplify": "passed",
+    "vocab": "passed"
+  },
+  "forecast": "passed",
+  "eaBriefing": "passed",
+  "usageInsights": "passed",
+  "deepLinks": [
+    {
+      "legacy": "tomorrow-plan",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan"
+    },
+    {
+      "legacy": "log-intervention",
+      "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention"
+    },
+    {
+      "legacy": "differentiate",
+      "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate"
+    }
+  ],
+  "invalidClassroomRecovery": {
+    "active": "demo-okafor-grade34"
+  },
+  "protectedNegative": {
+    "skipped": true,
+    "reason": "Default local fixture has no protected classroom; all bundled classrooms report requires_access_code=false."
+  },
+  "console": {
+    "desktopErrors": [],
+    "desktopPageErrors": [],
+    "mobileErrors": [],
+    "mobilePageErrors": []
+  },
+  "layoutFailures": []
+}

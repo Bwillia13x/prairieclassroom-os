@@ -72,7 +72,7 @@ No remaining G-16 implementation work is tracked here.
 - The gate now fails fast when no `PRAIRIE_GEMINI_API_KEY` / `GEMINI_API_KEY` is configured or when `PRAIRIE_ENABLE_GEMINI_RUNS=true` is absent.
 - `docs/eval-baseline.md` now tracks a separate Hosted Gemini API section.
 - `docs/hackathon-hosted-operations.md` documents the exact operator sequence.
-- The curated hosted eval suite has a current passing baseline on synthetic/demo data at `output/release-gate/2026-05-16T19-53-39-742Z-56491`.
+- The curated hosted eval suite has a current passing baseline on synthetic/demo data at `output/release-gate/2026-05-17T00-36-24-280Z-35954`.
 
 **What remains**
 

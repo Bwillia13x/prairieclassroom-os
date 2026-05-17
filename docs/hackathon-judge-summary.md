@@ -10,7 +10,7 @@ PrairieClassroom OS is a Gemma-4-native classroom operating layer for Alberta K-
 
 - Real hosted Gemma 4 execution was proven on the synthetic/demo lane.
 - The current passing hosted baseline includes curated evals, API smoke, and browser smoke.
-- The current hosted refresh passed at `output/release-gate/2026-05-16T19-53-39-742Z-56491`; present it only as synthetic/demo hosted proof, not real classroom validation.
+- The current hosted refresh passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; present it only as synthetic/demo hosted proof, not real classroom validation.
 - Multimodal worksheet image extraction (`extract_worksheet`) is wired through Gemini-API `inline_data` parts, not stub code.
 - Roster-checked function calling rejects unknown student aliases, preventing the model from confirming a hallucinated student.
 - Tool results round-trip through provider-native `tool_interactions[]`, not prompt injection.
@@ -26,12 +26,12 @@ PrairieClassroom OS is a Gemma-4-native classroom operating layer for Alberta K-
 
 ## Proof Anchors
 
-- Latest attempted hosted gate: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
+- Latest attempted hosted gate: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 - Current hosted refresh status: passed; `13/13` curated hosted cases passed, including `diff-015-tool-calling-curriculum`, `plan-010-prompt-injection`, `msg-lang-pa-praise`, `surv-001-schema`, and `extract-001-schema`.
-- Latest completed May 16 hosted eval summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-summary.json` (`13/13`).
-- Latest completed May 16 hosted eval failure summary: `output/evals/2026-05-16-gemini/2026-05-16T19-53-39-742Z-56491-gemini-failure-summary.json`
-- Latest May 16 cost rollup: `output/cost-rollups/2026-05-16-rollup.json`
-- Latest passing hosted baseline: `output/release-gate/2026-05-16T19-53-39-742Z-56491`
+- Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`).
+- Latest completed hosted eval failure summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json`
+- Latest hosted cost rollup: `output/cost-rollups/2026-05-17-rollup.json`
+- Latest passing hosted baseline: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 - Hosted eval result in the last passing baseline: `13/13` curated proof cases passed, including the Punjabi family-message equity case.
 - Models observed in the hosted lane: `gemma-4-26b-a4b-it` and `gemma-4-31b-it`
 - Hosted rerun command: `npm run release:gate:gemini`
