@@ -1,4 +1,4 @@
-/* global URL, performance, location */
+/* global URL, performance, location, HTMLImageElement */
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";

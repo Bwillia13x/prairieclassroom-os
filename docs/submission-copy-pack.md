@@ -15,7 +15,7 @@ Do not paste bracketed placeholders into any external field. The public video us
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-17T09-32-01-518Z-29944`
+- Mock structural gate: `output/release-gate/2026-05-17T10-51-35-351Z-42560`
 - Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
 - Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
 - Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
