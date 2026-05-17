@@ -11,17 +11,17 @@ Replace every bracketed placeholder before publishing the video, Kaggle project,
 - Deployed submission-readiness evidence: `qa/final-release/2026-05-16-public-demo-check/` passed against the current public root and canonical demo path; `qa/final-release/2026-05-16-local-e2e-qa/` passed local teacher-workflow browser QA across the main routes and workflows.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
-- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; final pre-push closeout on 2026-05-16 verified `HEAD`, `origin/main`, and remote `refs/heads/main` all resolved to `937d0736b12572d4609bf55b9de36da6efbcd919` before the final verification commit.
+- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the 2026-05-17 readiness-evidence sync verified local `HEAD`, `origin/main`, and remote `refs/heads/main` all resolved to `30c5af462acf964dddf8ca5aff4f0960dd272c3d` before this docs-only refresh.
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-17T01-40-42-582Z-66292`
+- Mock structural gate: `output/release-gate/2026-05-17T05-27-29-134Z-29292`
 - Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
 - Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
 - Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 - Latest passing hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`
 - Latest hosted cost rollup: `output/cost-rollups/2026-05-17-rollup.json`
-- Current test count: 2,086 Vitest + 76 Python in the latest mock gate
+- Current test count: 2,142 Vitest + 76 Python in the latest mock gate
 
 Do not add claims about real teacher validation, local Ollama proof, no-cloud operation, or measured classroom outcomes unless new artifacts are added and the claims ledger is advanced.
 

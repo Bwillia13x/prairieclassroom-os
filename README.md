@@ -339,7 +339,7 @@ Flask Inference :3200
 
 ## Evaluation
 
-134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,086 TypeScript / Vitest tests and 76 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
+134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,142 TypeScript / Vitest tests and 76 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
 The current hosted Gemma 4 refresh passed: `output/release-gate/2026-05-17T00-36-24-280Z-35954` completed the full hosted release gate, including 13/13 curated proof eval cases, API smoke, and browser smoke on synthetic/demo data with `gemma-4-26b-a4b-it` and `gemma-4-31b-it`. The latest completed hosted eval summary is `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`, with cost rollup at `output/cost-rollups/2026-05-17-rollup.json`. Hosted proof is synthetic/demo only; the privacy-first school deployment path remains local/self-hosted Gemma 4 via Ollama.
 
