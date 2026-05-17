@@ -86,6 +86,10 @@ function parsePatternStudent(labelText) {
   return labelText.replace(/\s+(low|medium|high)\s*$/i, "").trim();
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function isExpectedAuthConsoleError(text) {
   return /Failed to load resource: the server responded with a status of (401|403)/.test(text);
 }
@@ -206,7 +210,25 @@ async function openTab(page, id) {
   if (!tool) return;
   const label = TOOL_SWITCHER_NAME[tool];
   assert.ok(label, `switcher label for ${tool}`);
-  await page.locator(`#panel-${tab}:not([hidden])`).getByRole("tab", { name: label }).click();
+  const panel = page.locator(`#panel-${tab}:not([hidden])`);
+  const tabControl = panel.getByRole("tab", { name: label }).first();
+  try {
+    await tabControl.click({ timeout: 5_000 });
+    return;
+  } catch (error) {
+    const buttonControl = panel.getByRole("button", { name: new RegExp(`\\b${escapeRegExp(label)}\\b`, "i") }).first();
+    try {
+      await buttonControl.click({ timeout: 5_000 });
+      return;
+    } catch (fallbackError) {
+      throw new Error(
+        `Could not find tool switcher control for ${tool} (${label}) in ${tab}`
+        + `\nTab lookup: ${error instanceof Error ? error.message : String(error)}`
+        + `\nButton lookup: ${fallbackError instanceof Error ? fallbackError.message : String(fallbackError)}`,
+        { cause: fallbackError },
+      );
+    }
+  }
 }
 
 async function expectSevenViewShell(page) {
