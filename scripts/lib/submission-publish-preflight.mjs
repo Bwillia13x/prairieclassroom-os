@@ -51,6 +51,18 @@ export function isPublicUrl(value) {
     && !host.endsWith(".local");
 }
 
+export function isKaggleUrl(value) {
+  if (!isPublicUrl(value)) return false;
+  const host = new URL(value).hostname.toLowerCase();
+  return host === "kaggle.com" || host.endsWith(".kaggle.com");
+}
+
+export function isYouTubeUrl(value) {
+  if (!isPublicUrl(value)) return false;
+  const host = new URL(value).hostname.toLowerCase().replace(/^www\./, "");
+  return host === "youtube.com" || host === "youtu.be";
+}
+
 function fileChecks(rootDir, requiredFiles = REQUIRED_PUBLISH_FILES) {
   return requiredFiles.map((relPath) => result(
     `file:${relPath}`,
@@ -110,8 +122,8 @@ function publicLinkChecks(rootDir) {
   const kaggleUrl = extractUrlFromLine(copyPack, /^-\s*Kaggle writeup:/i);
   return [
     result("public live demo url", isPublicUrl(demoUrl), demoUrl || "missing"),
-    result("public video url", isPublicUrl(videoUrl), videoUrl || "missing"),
-    result("kaggle writeup url", isPublicUrl(kaggleUrl), kaggleUrl || "missing"),
+    result("public video url", isYouTubeUrl(videoUrl), videoUrl || "missing"),
+    result("kaggle writeup url", isKaggleUrl(kaggleUrl), kaggleUrl || "missing"),
   ];
 }
 

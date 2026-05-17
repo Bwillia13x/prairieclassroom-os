@@ -7,7 +7,9 @@ import {
   collectSubmissionPublishPreflight,
   extractUrlFromLine,
   formatSubmissionPublishPreflight,
+  isKaggleUrl,
   isPublicUrl,
+  isYouTubeUrl,
 } from "../submission-publish-preflight.mjs";
 
 async function seedFile(rootDir, relPath, content = "") {
@@ -165,6 +167,61 @@ describe("submission publish preflight", () => {
     assert.equal(isPublicUrl("https://prairieclassroom.example.com/?demo=true"), true);
     assert.equal(isPublicUrl("http://localhost:5173/?demo=true"), false);
     assert.equal(isPublicUrl("https://demo.local/?demo=true"), false);
+  });
+
+  it("requires Kaggle and YouTube domains for final publication links", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-publish-link-domains-"));
+    try {
+      await seedRequiredFiles(rootDir);
+      await seedFile(
+        rootDir,
+        "docs/submission-copy-pack.md",
+        [
+          "# Submission Copy Pack",
+          "- Code: https://github.com/Bwillia13x/prairieclassroom-os",
+          "- Live demo: https://prairieclassroom.example.com/?demo=true",
+          "- Kaggle writeup: https://example.com/not-kaggle",
+        ].join("\n"),
+      );
+      await seedFile(
+        rootDir,
+        "docs/kaggle-paste-block.md",
+        [
+          "# Kaggle Paste Block",
+          "- Public live demo: https://prairieclassroom.example.com/?demo=true",
+          "- Public video: https://vimeo.com/example",
+        ].join("\n"),
+      );
+
+      const results = collectSubmissionPublishPreflight({
+        rootDir,
+        env: {
+          PRAIRIE_GEMINI_API_KEY: "test-key",
+          PRAIRIE_ENABLE_GEMINI_RUNS: "true",
+          RENDER_API_TOKEN: "render-token",
+        },
+        commandResolver: (command) => `/usr/local/bin/${command}`,
+        commandRunner: cleanGitRunner,
+        nodeVersion: "v25.8.2",
+      });
+
+      const video = results.find((item) => item.label === "public video url");
+      const kaggle = results.find((item) => item.label === "kaggle writeup url");
+      assert.equal(video.ok, false);
+      assert.equal(kaggle.ok, false);
+      assert.equal(video.detail, "https://vimeo.com/example");
+      assert.equal(kaggle.detail, "https://example.com/not-kaggle");
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("recognizes required publication hostnames", () => {
+    assert.equal(isYouTubeUrl("https://www.youtube.com/watch?v=example"), true);
+    assert.equal(isYouTubeUrl("https://youtu.be/example"), true);
+    assert.equal(isYouTubeUrl("https://vimeo.com/example"), false);
+    assert.equal(isKaggleUrl("https://www.kaggle.com/competitions/gemma-4-good/discussion/example"), true);
+    assert.equal(isKaggleUrl("https://example.com/not-kaggle"), false);
   });
 
   it("extracts markdown and bare URLs from labelled lines", () => {
