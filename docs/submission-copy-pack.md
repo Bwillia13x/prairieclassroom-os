@@ -4,7 +4,7 @@ External-facing copy for fields that are not stored directly in the Kaggle body.
 
 ## Pre-Publish Guardrails
 
-Replace every bracketed placeholder before publishing the video, Kaggle project, or media gallery:
+Do not paste bracketed placeholders into any external field. The public video usually has to be uploaded before the Kaggle submission URL exists, so use the YouTube description below with the Kaggle line omitted for the initial upload. After the Kaggle entry exists, run `npm run submission:apply-links -- --video-url '<youtube-url>' --kaggle-url '<kaggle-url>'`, update the YouTube description with the complete Project links block, and rerun `npm run submission:final-check`.
 
 - Live demo URL: `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` loads from the public Vercel deployment. The root URL now shows the PrairieClassroom OS landing page with a primary CTA into that demo path, and `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo` remains the public demo smoke command.
 - Live demo claim boundary: the public `?demo=true` Vercel path is static-first and preloads bundled synthetic/demo data in-browser so reviewers do not wait on Render cold starts. Render-hosted synthetic checks remain separate; do not describe static demo output as live hosted-Gemma generation or a new hosted proof baseline.
@@ -30,6 +30,8 @@ Do not add claims about real teacher validation, local Ollama proof, no-cloud op
 PrairieClassroom OS | Gemma 4 for Inclusive Classroom Coordination
 
 ## YouTube Description
+
+For the initial YouTube upload, paste this description and omit the `Kaggle writeup` bullet under Project links until the Kaggle URL exists. After `submission:apply-links` records both final public links, paste the complete Project links block including the real Kaggle URL.
 
 PrairieClassroom OS is a Gemma-4-native operating layer for high-complexity inclusive classrooms.
 
