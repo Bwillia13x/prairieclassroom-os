@@ -51,6 +51,7 @@ async function seedSubmissionDocs(rootDir, overrides = {}) {
     overrides.publicDemo ?? [
       "# Public Demo Operations",
       "- **Not yet complete:** public video URL, Kaggle URL, and true cellular-browser smoke are still pending.",
+      "`npm run submission:final-check -- --skip-release-gate` currently remains blocked by the missing public YouTube and Kaggle writeup/submission URLs.",
     ].join("\n"),
   );
 }
@@ -88,7 +89,7 @@ describe("findPublicationPlaceholders", () => {
 
       const issues = findPublicationPlaceholders({ rootDir });
 
-      assert.equal(issues.length, 7);
+      assert.equal(issues.length, 8);
       assert.match(issues.join("\n"), /docs\/submission-copy-pack\.md:2/);
       assert.match(issues.join("\n"), /docs\/submission-copy-pack\.md:3/);
       assert.match(issues.join("\n"), /docs\/submission-copy-pack\.md:4/);
@@ -96,6 +97,7 @@ describe("findPublicationPlaceholders", () => {
       assert.match(issues.join("\n"), /docs\/kaggle-paste-block\.md:3/);
       assert.match(issues.join("\n"), /docs\/hackathon-submission-checklist\.md:2/);
       assert.match(issues.join("\n"), /docs\/public-demo-operations\.md:2/);
+      assert.match(issues.join("\n"), /docs\/public-demo-operations\.md:3/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }

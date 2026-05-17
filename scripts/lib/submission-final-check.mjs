@@ -33,6 +33,7 @@ export const PUBLICATION_PLACEHOLDERS = [
     file: "docs/public-demo-operations.md",
     patterns: [
       /public video URL, Kaggle URL, and true cellular-browser smoke are still pending/i,
+      /missing public YouTube and Kaggle writeup\/submission URLs/i,
       /missing public video URL and missing Kaggle writeup URL/i,
       /blocked until the public video URL and Kaggle writeup URL are real/i,
     ],

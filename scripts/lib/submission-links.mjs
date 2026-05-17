@@ -76,6 +76,15 @@ const DOC_UPDATES = [
   },
   {
     relPath: "docs/public-demo-operations.md",
+    pattern: /^`npm run submission:final-check -- --skip-release-gate` currently remains blocked/i,
+    buildLine: () => [
+      "`npm run submission:final-check -- --skip-release-gate` verifies publication placeholders, ",
+      "public-link health, and public demo smoke after final public links are applied. ",
+      "Run the full no-skip submission gate once the release-gate artifact should also be refreshed.",
+    ].join(""),
+  },
+  {
+    relPath: "docs/public-demo-operations.md",
     pattern: /^-\s*In the remaining-work closeout,/i,
     buildLine: () => [
       "- After final links are applied, ",
