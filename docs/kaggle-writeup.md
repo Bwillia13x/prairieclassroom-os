@@ -82,7 +82,7 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 
 The repo has a current artifact-backed proof story:
 
-- **Mock structural gate:** passing at `output/release-gate/2026-05-17T05-27-29-134Z-29292`.
+- **Mock structural gate:** passing at `output/release-gate/2026-05-17T06-27-29-305Z-44718`.
 - **Current hosted Gemma 4 refresh:** passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; the May 16 run produced a current clean full hosted gate.
 - **Hosted tool-calling evidence:** `diff-015-tool-calling-curriculum` passed in the current hosted attempt with provider-native tool history.
 - **Latest completed hosted eval summary:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` recorded 13/13.

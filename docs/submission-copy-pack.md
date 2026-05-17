@@ -11,11 +11,11 @@ Replace every bracketed placeholder before publishing the video, Kaggle project,
 - Deployed submission-readiness evidence: `qa/final-release/2026-05-16-public-demo-check/` passed against the current public root and canonical demo path; `qa/final-release/2026-05-16-local-e2e-qa/` passed local teacher-workflow browser QA across the main routes and workflows.
 - Video URL: must be public or unlisted only for review; switch public before final submission.
 - Kaggle writeup URL: add only after the Kaggle entry exists.
-- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the 2026-05-17 readiness-evidence sync verified local `HEAD`, `origin/main`, and remote `refs/heads/main` all resolved to `30c5af462acf964dddf8ca5aff4f0960dd272c3d` before this docs-only refresh.
+- Repository URL: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the 2026-05-17 publication preflight verifies the local branch is clean, upstreamed, and synced with `origin/main` before final link publishing.
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-17T05-27-29-134Z-29292`
+- Mock structural gate: `output/release-gate/2026-05-17T06-27-29-305Z-44718`
 - Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
 - Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
 - Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
