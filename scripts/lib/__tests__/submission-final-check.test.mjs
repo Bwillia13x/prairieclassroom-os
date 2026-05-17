@@ -45,6 +45,14 @@ async function seedSubmissionDocs(rootDir, overrides = {}) {
       "- Live demo deploy: NOT YET DEPLOYED — external service creation, secret entry, and cellular smoke are still pending.",
     ].join("\n"),
   );
+  await seedFile(
+    rootDir,
+    "docs/public-demo-operations.md",
+    overrides.publicDemo ?? [
+      "# Public Demo Operations",
+      "- **Not yet complete:** public video URL, Kaggle URL, and true cellular-browser smoke are still pending.",
+    ].join("\n"),
+  );
 }
 
 async function seedCleanSubmissionDocs(rootDir) {
@@ -65,6 +73,10 @@ async function seedCleanSubmissionDocs(rootDir) {
       "# Hackathon Submission Checklist",
       "- Live demo deploy: deployed and smoked from external network and cellular.",
     ].join("\n"),
+    publicDemo: [
+      "# Public Demo Operations",
+      "- **Verified:** public video, Kaggle writeup, and public demo checks are recorded.",
+    ].join("\n"),
   });
 }
 
@@ -76,13 +88,14 @@ describe("findPublicationPlaceholders", () => {
 
       const issues = findPublicationPlaceholders({ rootDir });
 
-      assert.equal(issues.length, 6);
+      assert.equal(issues.length, 7);
       assert.match(issues.join("\n"), /docs\/submission-copy-pack\.md:2/);
       assert.match(issues.join("\n"), /docs\/submission-copy-pack\.md:3/);
       assert.match(issues.join("\n"), /docs\/submission-copy-pack\.md:4/);
       assert.match(issues.join("\n"), /docs\/kaggle-paste-block\.md:2/);
       assert.match(issues.join("\n"), /docs\/kaggle-paste-block\.md:3/);
       assert.match(issues.join("\n"), /docs\/hackathon-submission-checklist\.md:2/);
+      assert.match(issues.join("\n"), /docs\/public-demo-operations\.md:2/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }
@@ -98,6 +111,7 @@ describe("findPublicationPlaceholders", () => {
           "# Hackathon Submission Checklist",
           "- Live demo deploy: NOT YET DEPLOYED — external service creation, secret entry, and cellular smoke are still pending.",
         ].join("\n"),
+        publicDemo: "# Public Demo Operations\nAll links verified.",
       });
 
       const issues = findPublicationPlaceholders({ rootDir });

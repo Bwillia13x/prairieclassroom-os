@@ -38,7 +38,21 @@ async function seedSubmissionDocs(rootDir) {
     "docs/hackathon-submission-checklist.md",
     [
       "# Hackathon Submission Checklist",
+      "- Publication gate: `npm run submission:final-check -- --skip-release-gate` still fails on publication placeholders and required URL validation until the public YouTube URL and Kaggle writeup URL are filled in.",
       "- Public-video script: final local video QA passed for `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps); upload/public YouTube URL still pending.",
+      "- Publish preflight: with Node `v25.8.2` and `.env` exported, `npm run submission:publish-preflight` remains blocked only by the missing public video and Kaggle writeup URLs.",
+      "- Live demo deploy: PUBLIC SYNTHETIC DEMO READY. Public video and Kaggle submission URLs are still missing; true cellular-browser smoke is still pending.",
+      "13. Run `npm run submission:publish-preflight`; the orchestrator + inference Render services and Vercel `VITE_API_URL` production build now exist, but preflight remains blocked until the public video and Kaggle URLs are real.",
+    ].join("\n"),
+  );
+  await seedFile(
+    rootDir,
+    "docs/public-demo-operations.md",
+    [
+      "# Public Demo Operations",
+      "- **Not yet complete:** public video URL, Kaggle URL, and true cellular-browser smoke are still pending. Vercel production stores the server-side `PRAIRIE_GEMINI_API_KEY` and `PRAIRIE_ENABLE_GEMINI_RUNS` values as encrypted env vars, but those values are not browser-exposed.",
+      "- In the remaining-work closeout, `source ~/.nvm/nvm.sh && nvm use --silent 25.8.2 && set -a && source .env && set +a && npm run submission:publish-preflight` passed every local, GitHub, Vercel, Render, hosted-Gemma-env, and live-demo check. The only remaining failures were the missing public video URL and missing Kaggle writeup URL.",
+      "- With Node `v25.8.2`, `npm run submission:publish-preflight` passes local file checks for `render.yaml`, `apps/web/vercel.json`, final MP4, upstream configuration, Vercel CLI availability, Vercel project link, Render availability, hosted Gemma env checks when `.env` is exported, and public live demo URL. The no-skip publication gate must remain blocked until the public video URL and Kaggle writeup URL are real.",
     ].join("\n"),
   );
 }
@@ -55,14 +69,20 @@ describe("submission link application", () => {
         kaggleUrl: "https://www.kaggle.com/competitions/gemma-4-good/discussion/example",
       });
 
-      assert.equal(result.changes.length, 3);
+      assert.equal(result.changes.length, 10);
       const copyPack = await readFile(path.join(rootDir, "docs/submission-copy-pack.md"), "utf8");
       const pasteBlock = await readFile(path.join(rootDir, "docs/kaggle-paste-block.md"), "utf8");
       const checklist = await readFile(path.join(rootDir, "docs/hackathon-submission-checklist.md"), "utf8");
+      const operations = await readFile(path.join(rootDir, "docs/public-demo-operations.md"), "utf8");
 
       assert.match(copyPack, /Kaggle writeup: https:\/\/www\.kaggle\.com\/competitions\/gemma-4-good\/discussion\/example/);
       assert.match(pasteBlock, /Public video: https:\/\/www\.youtube\.com\/watch\?v=example/);
+      assert.match(checklist, /sha256 `2fbd0bd1b48ef1aefd7c82f612f9fecdf0dfafd273a80454a26b2bb59b796da6`/);
       assert.match(checklist, /public YouTube URL recorded: https:\/\/www\.youtube\.com\/watch\?v=example\./);
+      assert.match(checklist, /final public links are recorded/);
+      assert.match(checklist, /Public video and Kaggle submission URLs are recorded/);
+      assert.match(operations, /Public video URL recorded: https:\/\/www\.youtube\.com\/watch\?v=example/);
+      assert.match(operations, /Kaggle URL recorded: https:\/\/www\.kaggle\.com\/competitions\/gemma-4-good\/discussion\/example/);
 
       const validation = validatePublicationPlaceholders({ rootDir });
       assert.equal(validation.ok, true);
@@ -85,7 +105,7 @@ describe("submission link application", () => {
       });
 
       const after = await readFile(path.join(rootDir, "docs/kaggle-paste-block.md"), "utf8");
-      assert.equal(result.changes.length, 3);
+      assert.equal(result.changes.length, 10);
       assert.equal(after, before);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
@@ -106,8 +126,10 @@ describe("submission link application", () => {
       );
       const copyPackPath = path.join(rootDir, "docs/submission-copy-pack.md");
       const pasteBlockPath = path.join(rootDir, "docs/kaggle-paste-block.md");
+      const operationsPath = path.join(rootDir, "docs/public-demo-operations.md");
       const copyPackBefore = await readFile(copyPackPath, "utf8");
       const pasteBlockBefore = await readFile(pasteBlockPath, "utf8");
+      const operationsBefore = await readFile(operationsPath, "utf8");
 
       await assert.rejects(
         () => applySubmissionLinks({
@@ -120,6 +142,7 @@ describe("submission link application", () => {
 
       assert.equal(await readFile(copyPackPath, "utf8"), copyPackBefore);
       assert.equal(await readFile(pasteBlockPath, "utf8"), pasteBlockBefore);
+      assert.equal(await readFile(operationsPath, "utf8"), operationsBefore);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }

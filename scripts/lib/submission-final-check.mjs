@@ -22,7 +22,19 @@ export const PUBLICATION_PLACEHOLDERS = [
     patterns: [
       /Live demo deploy: NOT YET DEPLOYED/i,
       /external service creation, secret entry, and cellular smoke are still pending/i,
+      /still fails on publication placeholders/i,
       /upload\/public YouTube URL still pending/i,
+      /missing public video and Kaggle writeup URLs/i,
+      /Public video and Kaggle submission URLs are still missing/i,
+      /blocked until the public video and Kaggle URLs are real/i,
+    ],
+  },
+  {
+    file: "docs/public-demo-operations.md",
+    patterns: [
+      /public video URL, Kaggle URL, and true cellular-browser smoke are still pending/i,
+      /missing public video URL and missing Kaggle writeup URL/i,
+      /blocked until the public video URL and Kaggle writeup URL are real/i,
     ],
   },
 ];
