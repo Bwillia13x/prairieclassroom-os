@@ -4,9 +4,9 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { chromium } from "playwright";
 
-const BASE_URL = "https://prairieclassroom-os.vercel.app";
+const BASE_URL = process.env.PRAIRIE_PUBLIC_DEMO_URL ?? "https://prairieclassroom-os.vercel.app";
 const DEMO_CLASSROOM = "demo-okafor-grade34";
-const OUT_DIR = path.resolve("qa/final-release/2026-05-16-pre-submit-e2e");
+const OUT_DIR = path.resolve(process.env.PRAIRIE_QA_OUT_DIR ?? "qa/final-release/2026-05-16-pre-submit-e2e");
 const SHOTS = path.join(OUT_DIR, "screenshots");
 const RAW = path.join(OUT_DIR, "raw");
 

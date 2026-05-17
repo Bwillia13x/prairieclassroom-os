@@ -1,0 +1,110 @@
+{
+  "createdAt": "2026-05-17T01:46:41.300Z",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "checks": {
+    "rootLanding": {
+      "title": "PrairieClassroom OS",
+      "ctaText": "Enter PrairieClassroom"
+    },
+    "rootCta": {
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    "staticFirst": {
+      "marker": "prairie-static-demo-api"
+    },
+    "staticGeneratedLabel": {
+      "marker": "prairie-static-demo-api",
+      "labelPresent": true
+    }
+  },
+  "layout": [
+    {
+      "label": "public-root-desktop",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-canonical-today-desktop",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-static-differentiate-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-root-mobile",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-canonical-today-mobile",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    }
+  ],
+  "performance": [
+    {
+      "label": "public-canonical-today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "timing": {
+        "type": "navigate",
+        "domContentLoadedEventEnd": 104,
+        "loadEventEnd": 105,
+        "duration": 105,
+        "transferSize": 300,
+        "decodedBodySize": 1991
+      },
+      "paint": [
+        {
+          "name": "first-paint",
+          "startTime": 116
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 116
+        }
+      ],
+      "resourceCount": 22
+    },
+    {
+      "label": "public-static-differentiate-generated",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "timing": {
+        "type": "navigate",
+        "domContentLoadedEventEnd": 98,
+        "loadEventEnd": 99,
+        "duration": 99,
+        "transferSize": 1097,
+        "decodedBodySize": 1991
+      },
+      "paint": [
+        {
+          "name": "first-paint",
+          "startTime": 104
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 120
+        }
+      ],
+      "resourceCount": 26
+    }
+  ],
+  "logs": {
+    "desktop": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": []
+    },
+    "mobile": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": []
+    }
+  },
+  "layoutFailures": []
+}
