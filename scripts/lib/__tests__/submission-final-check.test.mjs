@@ -72,7 +72,7 @@ async function seedCleanSubmissionDocs(rootDir) {
     ].join("\n"),
     checklist: [
       "# Hackathon Submission Checklist",
-      "- Live demo deploy: deployed and smoked from external network and cellular.",
+      "- Live demo deploy: True cellular-browser smoke verified on iPhone 14; via TELUS LTE; using Safari; at 2026-05-17 10:45 MDT; screenshots: qa/cellular/2026-05-17/; notes: Today, Prep, Review, reload, and static generation passed.",
     ].join("\n"),
     publicDemo: [
       "# Public Demo Operations",
@@ -146,7 +146,7 @@ describe("validatePublicationPlaceholders", () => {
         ].join("\n"),
         checklist: [
           "# Hackathon Submission Checklist",
-          "- Live demo deploy: deployed and smoked from external network and cellular.",
+          "- Live demo deploy: True cellular-browser smoke verified on iPhone 14; via TELUS LTE; using Safari; at 2026-05-17 10:45 MDT; screenshots: qa/cellular/2026-05-17/; notes: Today, Prep, Review, reload, and static generation passed.",
         ].join("\n"),
       });
 
@@ -207,6 +207,42 @@ describe("validatePublicationPlaceholders", () => {
       assert.equal(result.ok, false);
       assert.match(result.issues.join("\n"), /true cellular-browser smoke is still pending/);
       assert.match(result.issues.join("\n"), /Cellular browser smoke evidence is missing/);
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("fails when cellular smoke wording lacks screenshots and notes", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-final-check-weak-cellular-"));
+    try {
+      await seedSubmissionDocs(rootDir, {
+        copyPack: [
+          "# Submission Copy Pack",
+          "- Code: https://github.com/Bwillia13x/prairieclassroom-os",
+          "- Live demo: https://prairieclassroom.example.com",
+          "- Kaggle writeup: https://www.kaggle.com/competitions/gemma-4-good/discussion/example",
+        ].join("\n"),
+        pasteBlock: [
+          "# Kaggle Paste Block",
+          "- Public code repository: https://github.com/Bwillia13x/prairieclassroom-os",
+          "- Public live demo: https://prairieclassroom.example.com",
+          "- Public video: https://www.youtube.com/watch?v=example",
+        ].join("\n"),
+        checklist: [
+          "# Hackathon Submission Checklist",
+          "- Live demo deploy: deployed and smoked from external network and cellular.",
+        ].join("\n"),
+        publicDemo: [
+          "# Public Demo Operations",
+          "- **Verified:** public video, Kaggle writeup, and public demo checks are recorded.",
+        ].join("\n"),
+      });
+
+      const result = validatePublicationPlaceholders({ rootDir });
+
+      assert.equal(result.ok, false);
+      assert.match(result.issues.join("\n"), /Cellular browser smoke evidence is missing/);
+      assert.match(result.issues.join("\n"), /screenshots and notes/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }

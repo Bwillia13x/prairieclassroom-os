@@ -63,7 +63,7 @@ async function seedPublishDocs(rootDir, { finalLinks = false } = {}) {
       ? [
         "# Hackathon Submission Checklist",
         "- Publication gate: final public links are recorded; rerun `npm run submission:final-check -- --skip-release-gate` before publishing.",
-        "- Live demo deploy: deployed and smoked from external network and cellular.",
+        "- Live demo deploy: True cellular-browser smoke verified on iPhone 14; via TELUS LTE; using Safari; at 2026-05-17 10:45 MDT; screenshots: qa/cellular/2026-05-17/; notes: Today, Prep, Review, reload, and static generation passed.",
       ].join("\n")
       : [
         "# Hackathon Submission Checklist",
@@ -76,7 +76,7 @@ async function seedPublishDocs(rootDir, { finalLinks = false } = {}) {
     finalLinks
       ? [
         "# Public Demo Operations",
-        "- **Verified:** public video, Kaggle writeup, public demo checks, and cellular-browser smoke recorded.",
+        "- **Verified:** public video, Kaggle writeup, public demo checks, and true cellular-browser smoke verified on iPhone 14; screenshots: qa/cellular/2026-05-17/; notes: Today, Prep, Review, reload, and static generation passed.",
       ].join("\n")
       : [
         "# Public Demo Operations",

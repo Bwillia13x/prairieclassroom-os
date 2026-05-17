@@ -48,16 +48,18 @@ export const PUBLICATION_PLACEHOLDERS = [
 export const CELLULAR_SMOKE_EVIDENCE = [
   {
     file: "docs/hackathon-submission-checklist.md",
-    patterns: [
-      /smoked from external network and cellular/i,
-      /cellular-browser smoke (?:passed|verified|recorded|complete|completed)/i,
+    requiredPatterns: [
+      /true cellular-browser smoke verified/i,
+      /screenshots:/i,
+      /notes:/i,
     ],
   },
   {
     file: "docs/public-demo-operations.md",
-    patterns: [
-      /cellular-browser smoke (?:passed|verified|recorded|complete|completed)/i,
-      /cellular smoke (?:passed|verified|recorded|complete|completed)/i,
+    requiredPatterns: [
+      /true cellular-browser smoke verified/i,
+      /screenshots:/i,
+      /notes:/i,
     ],
   },
 ];
@@ -266,13 +268,13 @@ export function findCellularSmokeEvidenceIssues({
     if (!fs.existsSync(absolutePath)) continue;
 
     const content = fs.readFileSync(absolutePath, "utf8");
-    if (spec.patterns.some((pattern) => pattern.test(content))) {
+    if (spec.requiredPatterns.every((pattern) => pattern.test(content))) {
       return [];
     }
   }
 
   return [
-    "Cellular browser smoke evidence is missing: record a real cellular-device pass in docs/hackathon-submission-checklist.md or docs/public-demo-operations.md.",
+    "Cellular browser smoke evidence is missing: record a real cellular-device pass with screenshots and notes in docs/hackathon-submission-checklist.md or docs/public-demo-operations.md.",
   ];
 }
 
