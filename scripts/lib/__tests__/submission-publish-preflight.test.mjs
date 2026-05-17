@@ -46,6 +46,7 @@ async function seedPublishDocs(rootDir, { finalLinks = false } = {}) {
     finalLinks
       ? [
         "# Kaggle Paste Block",
+        "- Public code repository: https://github.com/Bwillia13x/prairieclassroom-os",
         "- Public live demo: https://prairieclassroom.example.com/?demo=true",
         "- Public video: https://www.youtube.com/watch?v=example",
       ].join("\n")
@@ -53,6 +54,32 @@ async function seedPublishDocs(rootDir, { finalLinks = false } = {}) {
         "# Kaggle Paste Block",
         "- Public live demo: add public deployed URL after deployment",
         "- Public video: add public YouTube URL after upload",
+      ].join("\n"),
+  );
+  await seedFile(
+    rootDir,
+    "docs/hackathon-submission-checklist.md",
+    finalLinks
+      ? [
+        "# Hackathon Submission Checklist",
+        "- Publication gate: final public links are recorded; rerun `npm run submission:final-check -- --skip-release-gate` before publishing.",
+      ].join("\n")
+      : [
+        "# Hackathon Submission Checklist",
+        "- Publication gate: `npm run submission:final-check -- --skip-release-gate` still fails on publication placeholders and required URL validation until the public YouTube URL and Kaggle writeup URL are filled in.",
+      ].join("\n"),
+  );
+  await seedFile(
+    rootDir,
+    "docs/public-demo-operations.md",
+    finalLinks
+      ? [
+        "# Public Demo Operations",
+        "- **Verified:** public video, Kaggle writeup, and public demo checks are recorded.",
+      ].join("\n")
+      : [
+        "# Public Demo Operations",
+        "- **Not yet complete:** public video URL, Kaggle URL, and true cellular-browser smoke are still pending.",
       ].join("\n"),
   );
 }
@@ -132,6 +159,7 @@ describe("submission publish preflight", () => {
       });
 
       assert.equal(results.every((item) => item.ok), true);
+      assert.equal(results.find((item) => item.label === "publication static docs").detail, "placeholders and URL shapes clean");
       assert.match(formatSubmissionPublishPreflight(results), /Publish preflight passed/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
@@ -429,6 +457,48 @@ describe("submission publish preflight", () => {
       assert.equal(kaggle.ok, false);
       assert.equal(video.detail, "https://vimeo.com/example");
       assert.equal(kaggle.detail, "https://example.com/not-kaggle");
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("fails publication preflight when stale publication docs remain after final links are present", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-publish-stale-docs-"));
+    try {
+      await seedRequiredFiles(rootDir);
+      await seedPublishDocs(rootDir, { finalLinks: true });
+      await seedFile(
+        rootDir,
+        "docs/public-demo-operations.md",
+        [
+          "# Public Demo Operations",
+          "- **Not yet complete:** public video URL, Kaggle URL, and true cellular-browser smoke are still pending.",
+        ].join("\n"),
+      );
+
+      const results = collectSubmissionPublishPreflight({
+        rootDir,
+        env: {
+          PRAIRIE_GEMINI_API_KEY: "test-key",
+          PRAIRIE_ENABLE_GEMINI_RUNS: "true",
+          RENDER_API_TOKEN: "render-token",
+        },
+        commandResolver: (command) => `/usr/local/bin/${command}`,
+        commandRunner: cleanGitRunner,
+        nodeVersion: "v25.8.2",
+        submissionVideo: {
+          relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
+          sha256: TEST_VIDEO_SHA256,
+        },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
+        },
+      });
+
+      const staticDocs = results.find((item) => item.label === "publication static docs");
+      assert.equal(staticDocs.ok, false);
+      assert.match(staticDocs.detail, /docs\/public-demo-operations\.md:2/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }

@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
+import { validatePublicationPlaceholders } from "./submission-final-check.mjs";
 
 export const SUBMISSION_VIDEO = {
   relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
@@ -254,6 +255,19 @@ function publicLinkChecks(rootDir) {
   ];
 }
 
+function publicationStaticChecks(rootDir, linkResults) {
+  if (!linkResults.every((item) => item.ok)) return [];
+
+  const { ok, issues } = validatePublicationPlaceholders({ rootDir });
+  return [
+    result(
+      "publication static docs",
+      ok,
+      ok ? "placeholders and URL shapes clean" : `${issues.length} issue(s): ${issues.slice(0, 2).join(" | ")}`,
+    ),
+  ];
+}
+
 function gitChecks(rootDir, commandRunner) {
   const status = commandRunner("git", ["status", "--porcelain"], rootDir);
   if (status.status !== 0) {
@@ -291,6 +305,7 @@ export function collectSubmissionPublishPreflight({
   submissionVideo = SUBMISSION_VIDEO,
   kaggleWriteup = KAGGLE_WRITEUP,
 } = {}) {
+  const linkResults = publicLinkChecks(rootDir);
   return [
     ...fileChecks(rootDir, requiredFiles),
     ...videoShaCheck(rootDir, submissionVideo),
@@ -302,7 +317,8 @@ export function collectSubmissionPublishPreflight({
     ...vercelChecks(rootDir, commandResolver),
     ...renderChecks(rootDir, env, commandResolver),
     ...hostedGemmaChecks(env),
-    ...publicLinkChecks(rootDir),
+    ...linkResults,
+    ...publicationStaticChecks(rootDir, linkResults),
   ];
 }
 
