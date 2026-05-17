@@ -20,11 +20,11 @@ Checked against the repo on 2026-05-17 after continued local teacher-workflow br
 - Latest hosted cost rollup: `output/cost-rollups/2026-05-17-rollup.json`
 - Hosted models: `gemma-4-26b-a4b-it` and `gemma-4-31b-it`; full hosted rerun command is `npm run release:gate:gemini`.
 - Ollama proof on this machine: **not proven**. Latest preflight `output/host-preflight/2026-05-11T16-10-25-972Z.json` reports no Ollama CLI, 8.00 GiB RAM, and 16.76 GiB available disk; defer until viable host (≥16 GiB RAM, ≥40 GiB free disk) is available (see [development-gaps.md](./development-gaps.md) G-02 and submission-plan Phase D).
-- Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,412 (within 1,500-word limit)
+- Kaggle writeup: aligned to hosted proof lane; reframed around four daily jobs + closed-loop framing; estimated time-back-to-teaching lines added; current word count 1,478 (within 1,500-word limit, 22-word headroom)
 - Kaggle paste block: synced to writeup
 - Submission copy pack: [submission-copy-pack.md](./submission-copy-pack.md) now carries pre-publish placeholder and claim guardrails for video, Kaggle, repository, and media-gallery fields.
 - Public code repository: public clone test passed on 2026-05-11 against `https://github.com/Bwillia13x/prairieclassroom-os`; the 2026-05-17 readiness-evidence sync verified `git rev-parse HEAD`, `git rev-parse origin/main`, and `git ls-remote origin refs/heads/main` all resolved to `30c5af462acf964dddf8ca5aff4f0960dd272c3d` before this docs-only refresh.
-- Public-video script: final local video QA passed for `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps); upload/public YouTube URL still pending. A public web search on 2026-05-14 did not find an existing PrairieClassroom OS YouTube URL to backfill.
+- Public-video script: final local video QA passed for `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps; sha256 `2fbd0bd1b48ef1aefd7c82f612f9fecdf0dfafd273a80454a26b2bb59b796da6`); upload/public YouTube URL still pending. Public web searches on 2026-05-14 and 2026-05-17 did not find an existing PrairieClassroom OS YouTube URL to backfill.
 - Publish preflight: with Node `v25.8.2` and `.env` exported, `npm run submission:publish-preflight` passes local file checks, git worktree cleanliness, upstream configuration, branch sync, Vercel CLI availability, Vercel project link, Render CLI/token availability, hosted Gemma env/guard checks, and public live demo URL. It remains blocked only by the missing public video and Kaggle writeup URLs. Vercel production stores the server-side hosted Gemma key/guard as encrypted env vars, and Render hosted services have been created.
 - Judge/demo URL: `?demo=true` skips first-run onboarding and role-selection modals for the demo classroom
 - Judge-facing summary doc: [hackathon-judge-summary.md](./hackathon-judge-summary.md) — refreshed 2026-04-26 with Gemma-4-specificity framing
@@ -64,7 +64,7 @@ Use the May 3 final visual audit plus the refreshed standard workflow evidence b
 
 Current local video candidate:
 
-- `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps; QA contact sheet at `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11-contact-sheet.jpg`)
+- `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` (120.043 seconds, 1920x1080, 30 fps; sha256 `2fbd0bd1b48ef1aefd7c82f612f9fecdf0dfafd273a80454a26b2bb59b796da6`; QA contact sheet at `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11-contact-sheet.jpg`, sha256 `8e992b76a393dc165ddd3fedf9d65664fe0c91c82978fc511415151da15886f7`)
 - `qa/demo-script/videos/walkthrough-kaggle-final.mp4` (173.88 seconds, under the 3-minute limit)
 - Backup short cut: `qa/demo-script/videos/walkthrough-teaser-90s.mp4` (94.88 seconds)
 

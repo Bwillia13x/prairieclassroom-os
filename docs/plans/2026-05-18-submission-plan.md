@@ -40,7 +40,7 @@ This plan implements **everything that is not Ollama-blocked first**, then resum
 ### Deliverables
 
 - [x] This plan doc, committed.
-- [x] [docs/kaggle-writeup.md](../kaggle-writeup.md) — three impact-estimate lines added to §1, panel count reframed, closed-loop framing led, word count verified ≤1,500 (current: 1,412 words).
+- [x] [docs/kaggle-writeup.md](../kaggle-writeup.md) — three impact-estimate lines added to §1, panel count reframed, closed-loop framing led, word count verified ≤1,500 (current: 1,478 words; 22-word headroom).
 - [x] [docs/kaggle-paste-block.md](../kaggle-paste-block.md) — synchronized to writeup edits.
 - [x] [docs/video-shot-list.md](../video-shot-list.md) — rewritten with multimodal-first + teacher-quote + offline-Ollama shot order; tight-cut backup retained; legacy ordering preserved in git history per the doc's own pointer.
 - [x] [docs/hackathon-judge-summary.md](../hackathon-judge-summary.md) — tighter framing reflecting new posture; "Why Gemma 4 Specifically" section added.
