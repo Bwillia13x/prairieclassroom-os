@@ -62,6 +62,7 @@ async function seedRequiredFiles(rootDir) {
   await seedFile(rootDir, "render.yaml", "services: []\n");
   await seedFile(rootDir, "apps/web/vercel.json", "{}\n");
   await seedFile(rootDir, "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4", TEST_VIDEO_CONTENT);
+  await seedFile(rootDir, "docs/kaggle-writeup.md", "one two three\n");
   await seedFile(rootDir, "apps/web/.vercel/project.json", "{}\n");
 }
 
@@ -124,6 +125,10 @@ describe("submission publish preflight", () => {
           relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
           sha256: TEST_VIDEO_SHA256,
         },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
+        },
       });
 
       assert.equal(results.every((item) => item.ok), true);
@@ -147,6 +152,10 @@ describe("submission publish preflight", () => {
         submissionVideo: {
           relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
           sha256: TEST_VIDEO_SHA256,
+        },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
         },
       });
       const failedLabels = results.filter((item) => !item.ok).map((item) => item.label);
@@ -195,6 +204,10 @@ describe("submission publish preflight", () => {
           relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
           sha256: TEST_VIDEO_SHA256,
         },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
+        },
       });
 
       const branchSync = results.find((item) => item.label === "git branch synced");
@@ -230,6 +243,10 @@ describe("submission publish preflight", () => {
           relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
           sha256: TEST_VIDEO_SHA256,
         },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
+        },
       });
 
       const audit = results.find((item) => item.label === "production dependency audit");
@@ -259,6 +276,10 @@ describe("submission publish preflight", () => {
         submissionVideo: {
           relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
           sha256: "0000000000000000000000000000000000000000000000000000000000000000",
+        },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
         },
       });
 
@@ -304,11 +325,49 @@ describe("submission publish preflight", () => {
           relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
           sha256: TEST_VIDEO_SHA256,
         },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
+        },
       });
 
       const metadata = results.find((item) => item.label === "submission video metadata");
       assert.equal(metadata.ok, false);
       assert.match(metadata.detail, /duration=181\.000s fps=24\.00 size=1280x720 codecs=vp9\/missing/);
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("fails publication preflight when the Kaggle writeup exceeds the word limit", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-publish-writeup-count-"));
+    try {
+      await seedRequiredFiles(rootDir);
+      await seedPublishDocs(rootDir, { finalLinks: true });
+
+      const results = collectSubmissionPublishPreflight({
+        rootDir,
+        env: {
+          PRAIRIE_GEMINI_API_KEY: "test-key",
+          PRAIRIE_ENABLE_GEMINI_RUNS: "true",
+          RENDER_API_TOKEN: "render-token",
+        },
+        commandResolver: (command) => `/usr/local/bin/${command}`,
+        commandRunner: cleanGitRunner,
+        nodeVersion: "v25.8.2",
+        submissionVideo: {
+          relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
+          sha256: TEST_VIDEO_SHA256,
+        },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 2,
+        },
+      });
+
+      const writeup = results.find((item) => item.label === "kaggle writeup word count");
+      assert.equal(writeup.ok, false);
+      assert.equal(writeup.detail, "3/2 words (1 over)");
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }
@@ -357,6 +416,10 @@ describe("submission publish preflight", () => {
         submissionVideo: {
           relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
           sha256: TEST_VIDEO_SHA256,
+        },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
         },
       });
 

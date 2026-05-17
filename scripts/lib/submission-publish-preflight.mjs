@@ -7,11 +7,16 @@ export const SUBMISSION_VIDEO = {
   relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
   sha256: "2fbd0bd1b48ef1aefd7c82f612f9fecdf0dfafd273a80454a26b2bb59b796da6",
 };
+export const KAGGLE_WRITEUP = {
+  relPath: "docs/kaggle-writeup.md",
+  maxWords: 1500,
+};
 
 export const REQUIRED_PUBLISH_FILES = [
   "render.yaml",
   "apps/web/vercel.json",
   SUBMISSION_VIDEO.relPath,
+  KAGGLE_WRITEUP.relPath,
 ];
 
 function result(label, ok, detail) {
@@ -154,6 +159,27 @@ function videoMetadataChecks(rootDir, commandRunner, video = SUBMISSION_VIDEO) {
   return [result("submission video metadata", ok, detail)];
 }
 
+function countWords(content) {
+  return content.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function kaggleWriteupChecks(rootDir, writeup = KAGGLE_WRITEUP) {
+  if (!existsSync(path.join(rootDir, writeup.relPath))) {
+    return [result("kaggle writeup word count", false, `${writeup.relPath} missing`)];
+  }
+  const words = countWords(readText(rootDir, writeup.relPath));
+  const headroom = writeup.maxWords - words;
+  return [
+    result(
+      "kaggle writeup word count",
+      words <= writeup.maxWords,
+      words <= writeup.maxWords
+        ? `${words}/${writeup.maxWords} words (${headroom} spare)`
+        : `${words}/${writeup.maxWords} words (${Math.abs(headroom)} over)`,
+    ),
+  ];
+}
+
 function nodeMajor(version) {
   return String(version ?? "").trim().replace(/^v/, "").split(".")[0] ?? "";
 }
@@ -263,11 +289,13 @@ export function collectSubmissionPublishPreflight({
   requiredFiles = REQUIRED_PUBLISH_FILES,
   nodeVersion = process.version,
   submissionVideo = SUBMISSION_VIDEO,
+  kaggleWriteup = KAGGLE_WRITEUP,
 } = {}) {
   return [
     ...fileChecks(rootDir, requiredFiles),
     ...videoShaCheck(rootDir, submissionVideo),
     ...videoMetadataChecks(rootDir, commandRunner, submissionVideo),
+    ...kaggleWriteupChecks(rootDir, kaggleWriteup),
     ...nodeVersionChecks(rootDir, nodeVersion),
     ...gitChecks(rootDir, commandRunner),
     ...dependencyAuditCheck(rootDir, commandRunner),
