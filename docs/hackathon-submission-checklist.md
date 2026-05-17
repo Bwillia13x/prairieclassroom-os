@@ -137,6 +137,12 @@ Do not claim any of the following unless new artifacts exist:
 
 ## Final pre-submit checks
 
+After the YouTube video and Kaggle writeup are public, apply the final URLs consistently across all publication-gated docs:
+
+```bash
+npm run submission:apply-links -- --video-url <youtube-url> --kaggle-url <kaggle-url>
+```
+
 Run the chained final gate from the repo root before publishing the final links:
 
 ```bash
