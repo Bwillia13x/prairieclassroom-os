@@ -437,7 +437,7 @@ button.action-atlas__compact-card:disabled {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  min-height: var(--control-h-xs);
+  min-height: var(--control-h-md);
   padding: 0 var(--space-2);
   border: 0;
   background: transparent;
@@ -480,7 +480,7 @@ button.action-atlas__compact-card:disabled {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  min-height: var(--control-h-xs);
+  min-height: var(--control-h-md);
   padding: 0 var(--space-2);
   border: 1px solid color-mix(in srgb, var(--color-border) 48%, transparent);
   background: var(--color-surface);

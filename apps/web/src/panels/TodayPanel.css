@@ -2515,6 +2515,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
+  min-height: var(--control-h-md);
   padding: 8px 14px;
   border: 1px solid var(--color-border);
   border-radius: 999px;

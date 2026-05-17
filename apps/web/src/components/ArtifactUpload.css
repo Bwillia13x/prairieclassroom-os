@@ -340,6 +340,7 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
+  min-height: var(--control-h-md);
   border: 0;
   background: transparent;
   color: var(--color-text-secondary);

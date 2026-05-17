@@ -330,7 +330,7 @@
 
 .variant-card__actions button {
   appearance: none;
-  min-height: var(--control-h-sm);
+  min-height: var(--control-h-md);
   padding: 0 var(--space-2-5);
   border: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
   border-radius: var(--radius-sm);

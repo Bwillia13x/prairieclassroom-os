@@ -316,7 +316,7 @@ function ClassroomCommandCard({
                 <div className="classroom-command-card__fact" key={fact.label}>
                   <dt>{fact.label}</dt>
                   <dd>{fact.value}</dd>
-                  <span>{fact.caption}</span>
+                  <dd className="classroom-command-card__fact-caption">{fact.caption}</dd>
                 </div>
               ))}
             </dl>

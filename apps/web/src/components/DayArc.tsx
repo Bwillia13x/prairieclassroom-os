@@ -295,7 +295,7 @@ export default function DayArc({
         <svg
           className="day-arc__svg"
           viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
-          role="img"
+          role="group"
           aria-label={ariaLabel}
           preserveAspectRatio="xMidYMid meet"
         >
@@ -485,7 +485,8 @@ export default function DayArc({
                 i === ridge.length - 1
                   ? VIEW_W - PAD_X
                   : (p.x + ridge[i + 1].x) / 2;
-              const hitW = Math.max(20, hitRight - hitLeft);
+              const hitW = Math.max(96, hitRight - hitLeft);
+              const hitX = p.x - hitW / 2;
               // Audit #10: compose a rich SVG-native tooltip so a hover
               // reveals time, activity, level, and mitigation on the
               // peak block without a JS layer.
@@ -516,7 +517,7 @@ export default function DayArc({
                 >
                   <title>{tooltip}</title>
                   <rect
-                    x={hitLeft}
+                    x={hitX}
                     y={PAD_TOP - 8}
                     width={hitW}
                     height={RIDGE_MAX_H + 54}
@@ -622,7 +623,7 @@ export default function DayArc({
                     className="day-arc__star-hit"
                     cx={s.x}
                     cy={s.y}
-                    r={Math.max(16, s.radius + 7)}
+                    r={Math.max(44, s.radius + 7)}
                     fill="transparent"
                   />
                 )}

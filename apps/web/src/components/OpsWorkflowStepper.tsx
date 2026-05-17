@@ -129,7 +129,7 @@ export default function OpsWorkflowStepper({ activeTool, variant = "full" }: Pro
       aria-label="Ops workflow"
       data-testid="ops-workflow-stepper"
     >
-      <ol className="ops-stepper__list" role="tablist" aria-label="Ops workflow steps">
+      <ol className="ops-stepper__list" aria-label="Ops workflow steps">
         {OPS_STEPS.map((step, i) => {
           const status = statusMap.get(step.tool) ?? null;
           const isActive = step.tool === focusTool;
@@ -170,12 +170,10 @@ export default function OpsWorkflowStepper({ activeTool, variant = "full" }: Pro
             >
               <button
                 type="button"
-                role="tab"
                 className={isActive ? "ops-stepper__indicator" : "ops-stepper__btn"}
                 onClick={() => setActiveTool(step.tool)}
                 aria-label={`Step ${i + 1}: ${step.label}`}
-                aria-selected={isActive}
-                aria-controls="ops-workspace"
+                aria-pressed={isActive}
                 aria-describedby={variant === "full" ? noteId : undefined}
               >
                 {content}

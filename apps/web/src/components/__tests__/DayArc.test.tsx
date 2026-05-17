@@ -142,7 +142,7 @@ describe("DayArc", () => {
         now={new Date("2026-04-13T09:30:00")}
       />,
     );
-    const label = screen.getByRole("img").getAttribute("aria-label") ?? "";
+    const label = screen.getByRole("group", { name: /day arc visualization/i }).getAttribute("aria-label") ?? "";
     expect(label).toMatch(/3 blocks/);
     expect(label).toMatch(/10:00-10:45/);
     expect(label).toMatch(/high complexity/);

@@ -47,7 +47,8 @@
   appearance: none;
   background: transparent;
   border: 0;
-  padding: 0;
+  min-height: var(--control-h-md);
+  padding: 0 var(--space-1);
   color: var(--color-accent);
   cursor: pointer;
   font: inherit;

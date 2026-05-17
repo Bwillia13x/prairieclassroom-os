@@ -251,6 +251,16 @@
   line-height: var(--leading-tight);
 }
 
+.classroom-command-card__fact-caption {
+  margin-top: var(--space-1);
+  color: var(--color-text-tertiary);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-normal);
+  font-variant-numeric: normal;
+  line-height: var(--leading-tight);
+}
+
 .classroom-command-card__pivots {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

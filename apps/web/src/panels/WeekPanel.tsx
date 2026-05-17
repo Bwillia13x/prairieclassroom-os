@@ -372,7 +372,7 @@ export default function WeekPanel({ onTabChange, onInterventionPrefill, onMessag
                         <span>{day.label}</span>
                         <strong>{day.date_label}</strong>
                       </button>
-                      <div className="week-ops-day__badges" aria-label="Day signals">
+                      <div className="week-ops-day__badges" role="group" aria-label="Day signals">
                         {day.is_today ? <span className="week-ops-badge">Today</span> : null}
                         {forecasted ? <span className="week-ops-badge week-ops-badge--forecast">Forecast</span> : null}
                         {riskLevel === "high" ? <span className="week-ops-badge week-ops-badge--high">High risk</span> : null}

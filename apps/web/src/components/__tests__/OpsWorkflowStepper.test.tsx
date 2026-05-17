@@ -69,25 +69,25 @@ describe("OpsWorkflowStepper", () => {
     expect(active!.textContent).toContain("EA Briefing");
   });
 
-  it("renders every step as an accessible tab for the embedded workflow", () => {
+  it("renders every step as an accessible workflow button", () => {
     renderStepper("log-intervention");
-    const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(4);
-    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    const buttons = screen.getAllByRole("button", { name: /step \d:/i });
+    expect(buttons).toHaveLength(4);
+    expect(buttons[0]).toHaveAttribute("aria-pressed", "true");
   });
 
   it("calls setActiveTool when a non-active step is clicked", async () => {
     const user = userEvent.setup();
     renderStepper("log-intervention");
-    const briefingBtn = screen.getByRole("tab", { name: /ea briefing/i });
+    const briefingBtn = screen.getByRole("button", { name: /ea briefing/i });
     await user.click(briefingBtn);
     expect(mockSetActiveTool).toHaveBeenCalledWith("ea-briefing");
   });
 
   it("keeps full step names in button accessibility labels on narrow layouts", () => {
     renderStepper("log-intervention");
-    expect(screen.getByRole("tab", { name: "Step 2: EA Briefing" })).toBeInTheDocument();
-    expect(screen.getByRole("tab", { name: "Step 3: EA Load" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Step 2: EA Briefing" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Step 3: EA Load" })).toBeInTheDocument();
   });
 
   it("applies completed class to steps before the active step", () => {

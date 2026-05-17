@@ -144,7 +144,7 @@ describe("multi-tool page switchers", () => {
     const switcher = screen.getByRole("navigation", { name: /ops workflow/i });
     expect(within(switcher).getByText(/ea load/i)).toBeInTheDocument();
 
-    fireEvent.click(within(switcher).getByRole("tab", { name: /sub packet/i }));
+    fireEvent.click(within(switcher).getByRole("button", { name: /sub packet/i }));
     expect(setActiveTool).toHaveBeenCalledWith("survival-packet");
   });
 
@@ -156,7 +156,7 @@ describe("multi-tool page switchers", () => {
 
     expect(screen.getByText("Intervention surface")).toBeInTheDocument();
     const switcher = screen.getByRole("navigation", { name: /ops workflow/i });
-    expect(within(switcher).getByRole("tab", { name: /log intervention/i })).toHaveAttribute("aria-selected", "true");
+    expect(within(switcher).getByRole("button", { name: /log intervention/i })).toHaveAttribute("aria-pressed", "true");
   });
 
   it("renders and updates the Review page switcher", () => {
