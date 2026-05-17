@@ -35,6 +35,8 @@ export function validateCellularSmokeEvidence({
   device,
   browser,
   carrier,
+  screenshots,
+  notes,
   result,
 } = {}) {
   const issues = [];
@@ -42,6 +44,8 @@ export function validateCellularSmokeEvidence({
   if (!device) issues.push("Missing --device");
   if (!browser) issues.push("Missing --browser");
   if (!carrier) issues.push("Missing --carrier");
+  if (!screenshots) issues.push("Missing --screenshots");
+  if (!notes) issues.push("Missing --notes");
   if (!result) {
     issues.push("Missing --result");
   } else if (!/^pass(?:ed)?$/i.test(result)) {
@@ -80,7 +84,15 @@ export async function applyCellularSmokeEvidence({
   result = "",
   dryRun = false,
 } = {}) {
-  const issues = validateCellularSmokeEvidence({ checkedAt, device, browser, carrier, result });
+  const issues = validateCellularSmokeEvidence({
+    checkedAt,
+    device,
+    browser,
+    carrier,
+    screenshots,
+    notes,
+    result,
+  });
   if (issues.length > 0) {
     throw new Error(issues.join("\n"));
   }

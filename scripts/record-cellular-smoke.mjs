@@ -7,12 +7,8 @@ const ROOT = path.resolve(__dirname, "..");
 
 const USAGE = [
   "Usage:",
-  "  npm run submission:record-cellular-smoke -- --result pass --checked-at '<date/time>' --device '<phone>' --browser '<browser>' --carrier '<carrier/network>'",
-  "  npm run submission:record-cellular-smoke -- --dry-run --result pass --checked-at '<date/time>' --device '<phone>' --browser '<browser>' --carrier '<carrier/network>'",
-  "",
-  "Optional:",
-  "  --screenshots '<paths or note>'",
-  "  --notes '<brief observation>'",
+  "  npm run submission:record-cellular-smoke -- --result pass --checked-at '<date/time>' --device '<phone>' --browser '<browser>' --carrier '<carrier/network>' --screenshots '<paths or note>' --notes '<brief observation>'",
+  "  npm run submission:record-cellular-smoke -- --dry-run --result pass --checked-at '<date/time>' --device '<phone>' --browser '<browser>' --carrier '<carrier/network>' --screenshots '<paths or note>' --notes '<brief observation>'",
   "",
   "Use this only after a real phone-on-cellular smoke pass. Desktop HTTP checks, Lighthouse mobile emulation, and Playwright mobile emulation do not close this blocker.",
 ].join("\n");

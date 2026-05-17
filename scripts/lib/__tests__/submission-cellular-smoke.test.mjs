@@ -82,6 +82,8 @@ describe("cellular smoke evidence application", () => {
       "Missing --device",
       "Missing --browser",
       "Missing --carrier",
+      "Missing --screenshots",
+      "Missing --notes",
       "Missing --result",
     ]);
     assert.deepEqual(
@@ -90,6 +92,8 @@ describe("cellular smoke evidence application", () => {
         device: "iPhone",
         browser: "Safari",
         carrier: "TELUS LTE",
+        screenshots: "qa/cellular/2026-05-17/",
+        notes: "Today, Prep, Review, reload, and static generation passed",
         result: "fail",
       }),
       ["--result must be pass/passed to close cellular smoke evidence: fail"],
