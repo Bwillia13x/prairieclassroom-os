@@ -37,6 +37,23 @@ async function waitForApp(page, tab) {
   await page.waitForLoadState("networkidle", { timeout: 20_000 }).catch(() => {});
 }
 
+async function waitForLandingHero(page) {
+  await page.waitForSelector(".landing-page__image", { timeout: 15_000 });
+  await page.waitForFunction(() => {
+    const image = document.querySelector(".landing-page__image");
+    if (!(image instanceof HTMLImageElement)) return false;
+    const style = getComputedStyle(image);
+    const rect = image.getBoundingClientRect();
+    const zIndex = Number.parseInt(style.zIndex || "0", 10);
+    return image.complete
+      && image.naturalWidth > 0
+      && rect.width >= window.innerWidth * 0.95
+      && rect.height >= window.innerHeight * 0.95
+      && Number.isFinite(zIndex)
+      && zIndex >= 0;
+  }, null, { timeout: 20_000 });
+}
+
 async function auditLayout(page, label) {
   return await page.evaluate((auditLabel) => {
     const root = document.documentElement;
@@ -115,6 +132,7 @@ async function main() {
     await desktopPage.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await desktopPage.getByRole("heading", { name: "PrairieClassroom OS" }).waitFor({ timeout: 20_000 });
     await desktopPage.getByRole("link", { name: "Enter PrairieClassroom" }).waitFor({ timeout: 10_000 });
+    await waitForLandingHero(desktopPage);
     await desktopPage.screenshot({ path: path.join(SHOTS, "public-root-desktop.png"), fullPage: true, animations: "disabled" });
     results.layout.push(await auditLayout(desktopPage, "public-root-desktop"));
     results.checks.rootLanding = {
@@ -160,6 +178,7 @@ async function main() {
 
     await mobilePage.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await mobilePage.getByRole("heading", { name: "PrairieClassroom OS" }).waitFor({ timeout: 20_000 });
+    await waitForLandingHero(mobilePage);
     await mobilePage.screenshot({ path: path.join(SHOTS, "public-root-mobile.png"), fullPage: true, animations: "disabled" });
     results.layout.push(await auditLayout(mobilePage, "public-root-mobile"));
 
@@ -177,8 +196,10 @@ async function main() {
     assert.equal(layoutFailures.length, 0, `Public layout findings: ${JSON.stringify(layoutFailures, null, 2)}`);
     assert.deepEqual(desktopLogs.consoleErrors, []);
     assert.deepEqual(desktopLogs.pageErrors, []);
+    assert.deepEqual(desktopLogs.requestFailures, []);
     assert.deepEqual(mobileLogs.consoleErrors, []);
     assert.deepEqual(mobileLogs.pageErrors, []);
+    assert.deepEqual(mobileLogs.requestFailures, []);
 
     await writeFile(path.join(RAW, "public-demo-check-results.json"), `${JSON.stringify(results, null, 2)}\n`);
     console.log("PASS public demo browser QA");

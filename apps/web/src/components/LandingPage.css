@@ -14,17 +14,18 @@ body:has(.landing-page) {
 .landing-page__image {
   position: absolute;
   inset: 0;
-  z-index: -3;
+  z-index: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: 60% center;
+  pointer-events: none;
 }
 
 .landing-page__scrim {
   position: absolute;
   inset: 0;
-  z-index: -2;
+  z-index: 1;
   background:
     linear-gradient(
       90deg,
@@ -42,6 +43,8 @@ body:has(.landing-page) {
 }
 
 .landing-page__shell {
+  position: relative;
+  z-index: 2;
   display: grid;
   min-height: 100dvh;
   grid-template-rows: auto 1fr;
