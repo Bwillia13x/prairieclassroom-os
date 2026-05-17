@@ -1,11 +1,17 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
+
+export const SUBMISSION_VIDEO = {
+  relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
+  sha256: "2fbd0bd1b48ef1aefd7c82f612f9fecdf0dfafd273a80454a26b2bb59b796da6",
+};
 
 export const REQUIRED_PUBLISH_FILES = [
   "render.yaml",
   "apps/web/vercel.json",
-  "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
+  SUBMISSION_VIDEO.relPath,
 ];
 
 function result(label, ok, detail) {
@@ -69,6 +75,83 @@ function fileChecks(rootDir, requiredFiles = REQUIRED_PUBLISH_FILES) {
     existsSync(path.join(rootDir, relPath)),
     existsSync(path.join(rootDir, relPath)) ? "present" : "missing",
   ));
+}
+
+function parseRate(rate) {
+  const [num, den] = String(rate ?? "0/1").split("/").map(Number);
+  return den ? num / den : num;
+}
+
+function sha256File(rootDir, relPath) {
+  const hash = createHash("sha256");
+  hash.update(readFileSync(path.join(rootDir, relPath)));
+  return hash.digest("hex");
+}
+
+function videoShaCheck(rootDir, video = SUBMISSION_VIDEO) {
+  if (!existsSync(path.join(rootDir, video.relPath))) {
+    return [result("submission video sha256", false, `${video.relPath} missing`)];
+  }
+  const actual = sha256File(rootDir, video.relPath);
+  return [
+    result(
+      "submission video sha256",
+      actual === video.sha256,
+      actual === video.sha256 ? actual : `expected ${video.sha256}, got ${actual}`,
+    ),
+  ];
+}
+
+function videoMetadataChecks(rootDir, commandRunner, video = SUBMISSION_VIDEO) {
+  if (!existsSync(path.join(rootDir, video.relPath))) {
+    return [result("submission video metadata", false, `${video.relPath} missing`)];
+  }
+
+  const probe = commandRunner("ffprobe", [
+    "-v",
+    "error",
+    "-show_entries",
+    "format=duration,size,bit_rate",
+    "-show_streams",
+    "-of",
+    "json",
+    video.relPath,
+  ], rootDir);
+  if (probe.status !== 0) {
+    return [result("submission video metadata", false, summarizeCommandOutput(probe))];
+  }
+
+  let parsed;
+  try {
+    parsed = JSON.parse(probe.stdout);
+  } catch {
+    return [result("submission video metadata", false, "ffprobe returned invalid JSON")];
+  }
+
+  const videoStream = parsed.streams?.find((stream) => stream.codec_type === "video");
+  const audioStream = parsed.streams?.find((stream) => stream.codec_type === "audio");
+  const duration = Number(parsed.format?.duration);
+  const fps = parseRate(videoStream?.avg_frame_rate);
+  const ok = Boolean(
+    videoStream
+    && audioStream
+    && videoStream.width === 1920
+    && videoStream.height === 1080
+    && Math.abs(fps - 30) < 0.01
+    && duration >= 119.8
+    && duration <= 120.3
+    && videoStream.codec_name === "h264"
+    && audioStream.codec_name === "aac",
+  );
+  const detail = ok
+    ? `${duration.toFixed(3)}s ${fps.toFixed(2)}fps ${videoStream.width}x${videoStream.height} h264/aac`
+    : [
+      `duration=${Number.isFinite(duration) ? duration.toFixed(3) : "unknown"}s`,
+      `fps=${Number.isFinite(fps) ? fps.toFixed(2) : "unknown"}`,
+      `size=${videoStream?.width ?? "?"}x${videoStream?.height ?? "?"}`,
+      `codecs=${videoStream?.codec_name ?? "missing"}/${audioStream?.codec_name ?? "missing"}`,
+    ].join(" ");
+  return [result("submission video metadata", ok, detail)];
 }
 
 function nodeMajor(version) {
@@ -179,9 +262,12 @@ export function collectSubmissionPublishPreflight({
   commandRunner = defaultCommandRunner,
   requiredFiles = REQUIRED_PUBLISH_FILES,
   nodeVersion = process.version,
+  submissionVideo = SUBMISSION_VIDEO,
 } = {}) {
   return [
     ...fileChecks(rootDir, requiredFiles),
+    ...videoShaCheck(rootDir, submissionVideo),
+    ...videoMetadataChecks(rootDir, commandRunner, submissionVideo),
     ...nodeVersionChecks(rootDir, nodeVersion),
     ...gitChecks(rootDir, commandRunner),
     ...dependencyAuditCheck(rootDir, commandRunner),
