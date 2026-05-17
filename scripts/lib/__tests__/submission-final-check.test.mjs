@@ -176,6 +176,42 @@ describe("validatePublicationPlaceholders", () => {
     }
   });
 
+  it("fails when public links are present but cellular smoke remains pending", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-final-check-cellular-"));
+    try {
+      await seedSubmissionDocs(rootDir, {
+        copyPack: [
+          "# Submission Copy Pack",
+          "- Code: https://github.com/Bwillia13x/prairieclassroom-os",
+          "- Live demo: https://prairieclassroom.example.com",
+          "- Kaggle writeup: https://www.kaggle.com/competitions/gemma-4-good/discussion/example",
+        ].join("\n"),
+        pasteBlock: [
+          "# Kaggle Paste Block",
+          "- Public code repository: https://github.com/Bwillia13x/prairieclassroom-os",
+          "- Public live demo: https://prairieclassroom.example.com",
+          "- Public video: https://www.youtube.com/watch?v=example",
+        ].join("\n"),
+        checklist: [
+          "# Hackathon Submission Checklist",
+          "- Live demo deploy: PUBLIC SYNTHETIC DEMO READY. Public video and Kaggle submission URLs are recorded; true cellular-browser smoke is still pending.",
+        ].join("\n"),
+        publicDemo: [
+          "# Public Demo Operations",
+          "- **Not yet complete:** true cellular-browser smoke remains pending. Public video URL recorded: https://www.youtube.com/watch?v=example; Kaggle URL recorded: https://www.kaggle.com/competitions/gemma-4-good/discussion/example.",
+        ].join("\n"),
+      });
+
+      const result = validatePublicationPlaceholders({ rootDir });
+
+      assert.equal(result.ok, false);
+      assert.match(result.issues.join("\n"), /true cellular-browser smoke is still pending/);
+      assert.match(result.issues.join("\n"), /Cellular browser smoke evidence is missing/);
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
   it("passes public-link health checks when required URLs respond", async () => {
     const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-final-check-health-"));
     const calls = [];

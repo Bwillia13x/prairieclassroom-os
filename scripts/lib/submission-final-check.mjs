@@ -22,6 +22,8 @@ export const PUBLICATION_PLACEHOLDERS = [
     patterns: [
       /Live demo deploy: NOT YET DEPLOYED/i,
       /external service creation, secret entry, and cellular smoke are still pending/i,
+      /true cellular-browser smoke is still pending/i,
+      /true cellular-browser smoke remains pending/i,
       /still fails on publication placeholders/i,
       /upload\/public YouTube URL still pending/i,
       /\*\*Video:\*\* public YouTube link/i,
@@ -34,9 +36,28 @@ export const PUBLICATION_PLACEHOLDERS = [
     file: "docs/public-demo-operations.md",
     patterns: [
       /public video URL, Kaggle URL, and true cellular-browser smoke are still pending/i,
+      /true cellular-browser smoke is still pending/i,
+      /true cellular-browser smoke remains pending/i,
       /missing public YouTube and Kaggle writeup\/submission URLs/i,
       /missing public video URL and missing Kaggle writeup URL/i,
       /blocked until the public video URL and Kaggle writeup URL are real/i,
+    ],
+  },
+];
+
+export const CELLULAR_SMOKE_EVIDENCE = [
+  {
+    file: "docs/hackathon-submission-checklist.md",
+    patterns: [
+      /smoked from external network and cellular/i,
+      /cellular-browser smoke (?:passed|verified|recorded|complete|completed)/i,
+    ],
+  },
+  {
+    file: "docs/public-demo-operations.md",
+    patterns: [
+      /cellular-browser smoke (?:passed|verified|recorded|complete|completed)/i,
+      /cellular smoke (?:passed|verified|recorded|complete|completed)/i,
     ],
   },
 ];
@@ -236,6 +257,25 @@ export function findPublicationLinkIssues({
   return issues;
 }
 
+export function findCellularSmokeEvidenceIssues({
+  rootDir = process.cwd(),
+  evidenceSpecs = CELLULAR_SMOKE_EVIDENCE,
+} = {}) {
+  for (const spec of evidenceSpecs) {
+    const absolutePath = path.join(rootDir, spec.file);
+    if (!fs.existsSync(absolutePath)) continue;
+
+    const content = fs.readFileSync(absolutePath, "utf8");
+    if (spec.patterns.some((pattern) => pattern.test(content))) {
+      return [];
+    }
+  }
+
+  return [
+    "Cellular browser smoke evidence is missing: record a real cellular-device pass in docs/hackathon-submission-checklist.md or docs/public-demo-operations.md.",
+  ];
+}
+
 async function fetchUrlStatus(fetchImpl, url, timeoutMs) {
   const requestOptions = {
     method: "HEAD",
@@ -285,6 +325,7 @@ export function validatePublicationPlaceholders(options = {}) {
   const issues = [
     ...findPublicationPlaceholders(options),
     ...findPublicationLinkIssues(options),
+    ...findCellularSmokeEvidenceIssues(options),
   ];
   return { ok: issues.length === 0, issues };
 }

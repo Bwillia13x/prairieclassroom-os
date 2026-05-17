@@ -60,7 +60,7 @@ async function seedSubmissionDocs(rootDir) {
 }
 
 describe("submission link application", () => {
-  it("updates every final publication-link line and clears placeholder validation", async () => {
+  it("updates every final publication-link line without clearing pending cellular smoke", async () => {
     const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-links-"));
     try {
       await seedSubmissionDocs(rootDir);
@@ -84,12 +84,16 @@ describe("submission link application", () => {
       assert.match(checklist, /\*\*Video:\*\* https:\/\/www\.youtube\.com\/watch\?v=example/);
       assert.match(checklist, /final public links are recorded/);
       assert.match(checklist, /Public video and Kaggle submission URLs are recorded/);
+      assert.match(checklist, /true cellular-browser smoke is still pending/);
       assert.match(operations, /Public video URL recorded: https:\/\/www\.youtube\.com\/watch\?v=example/);
       assert.match(operations, /Kaggle URL recorded: https:\/\/www\.kaggle\.com\/competitions\/gemma-4-good\/discussion\/example/);
+      assert.match(operations, /true cellular-browser smoke remains pending/);
       assert.match(operations, /verifies publication placeholders, public-link health, and public demo smoke/);
 
       const validation = validatePublicationPlaceholders({ rootDir });
-      assert.equal(validation.ok, true);
+      assert.equal(validation.ok, false);
+      assert.match(validation.issues.join("\n"), /cellular-browser smoke/i);
+      assert.match(validation.issues.join("\n"), /Cellular browser smoke evidence is missing/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }
@@ -140,7 +144,9 @@ describe("submission link application", () => {
       assert.match(pasteBlock, /Public video: https:\/\/youtu\.be\/corrected/);
       assert.match(checklist, /\*\*Video:\*\* https:\/\/youtu\.be\/corrected/);
       assert.match(operations, /Public video URL recorded: https:\/\/youtu\.be\/corrected/);
-      assert.equal(validatePublicationPlaceholders({ rootDir }).ok, true);
+      const validation = validatePublicationPlaceholders({ rootDir });
+      assert.equal(validation.ok, false);
+      assert.match(validation.issues.join("\n"), /cellular-browser smoke/i);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }
