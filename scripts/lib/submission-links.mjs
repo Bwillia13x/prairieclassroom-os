@@ -37,6 +37,11 @@ const DOC_UPDATES = [
   },
   {
     relPath: "docs/hackathon-submission-checklist.md",
+    pattern: /^-\s*\*\*Video:\*\*/i,
+    buildLine: ({ videoUrl }) => `- **Video:** ${videoUrl}`,
+  },
+  {
+    relPath: "docs/hackathon-submission-checklist.md",
     pattern: /^-\s*Publish preflight:/i,
     buildLine: ({ videoUrl, kaggleUrl }) => [
       "- Publish preflight: final public links are recorded for ",

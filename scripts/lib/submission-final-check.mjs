@@ -24,6 +24,7 @@ export const PUBLICATION_PLACEHOLDERS = [
       /external service creation, secret entry, and cellular smoke are still pending/i,
       /still fails on publication placeholders/i,
       /upload\/public YouTube URL still pending/i,
+      /\*\*Video:\*\* public YouTube link/i,
       /missing public video and Kaggle writeup URLs/i,
       /Public video and Kaggle submission URLs are still missing/i,
       /blocked until the public video and Kaggle URLs are real/i,
