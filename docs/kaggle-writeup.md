@@ -82,7 +82,7 @@ The app also includes classroom-code protection for non-demo classrooms, adult r
 
 The repo has a current artifact-backed proof story:
 
-- **Mock structural gate:** passing at `output/release-gate/2026-05-17T07-08-37-482Z-61537`.
+- **Mock structural gate:** passing at `output/release-gate/2026-05-17T09-01-46-073Z-40058`.
 - **Current hosted Gemma 4 refresh:** passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; the May 16 run produced a current clean full hosted gate.
 - **Hosted tool-calling evidence:** `diff-015-tool-calling-curriculum` passed in the current hosted attempt with provider-native tool history.
 - **Latest completed hosted eval summary:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` recorded 13/13.
@@ -126,7 +126,7 @@ PrairieClassroom OS is therefore not an AI tutor with school branding. It is a G
 | Model tiers | 2 (live + planning) |
 | Submission proof models | `gemma-4-26b-a4b-it`, `gemma-4-31b-it` |
 | Privacy-first deployment target | `gemma4:4b`, `gemma4:27b` |
-| API endpoints | 52 |
+| API endpoints | 53 |
 | SQLite tables per classroom | 10 |
 | Checked-in eval case files | 134 |
 | Latest mock-gate tests | 2,142 Vitest + 76 Python |
