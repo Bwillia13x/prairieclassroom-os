@@ -6,9 +6,9 @@ PrairieClassroom OS is built for the adult coordination work behind inclusive te
 
 The repo ships **12 workflow tools**, **13 model-routed prompt classes**, and **134 eval cases**, validated end-to-end on real hosted Gemma 4 (`gemma-4-26b-a4b-it` + `gemma-4-31b-it`) against synthetic Alberta K-6 classroom data.
 
-> **Submitted to:** [Gemma 4 Good Hackathon](https://kaggle.com/competitions/gemma-4-good-hackathon) — Future of Education track.
+> **Submission target:** [Gemma 4 Good Hackathon](https://kaggle.com/competitions/gemma-4-good-hackathon) — Future of Education track.
 > **Judges, start here:** [Kaggle writeup](docs/kaggle-writeup.md) · [Judge summary](docs/hackathon-judge-summary.md) · [Proof brief](docs/hackathon-proof-brief.md) · [Submission plan](docs/plans/2026-05-18-submission-plan.md)
-> **Live demo + video:** see "Project Links" inside the Kaggle writeup once Phase F (deploy) and Phase E (video) of the [submission plan](docs/plans/2026-05-18-submission-plan.md) complete.
+> **Live demo:** [PrairieClassroom OS public synthetic demo](https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34). Public YouTube and Kaggle submission URLs are intentionally left out until those external artifacts exist.
 
 ## Why Gemma 4
 

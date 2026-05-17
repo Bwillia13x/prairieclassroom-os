@@ -2,9 +2,13 @@
 
 Use this checklist to close the remaining physical cellular-browser blocker for the public PrairieClassroom OS demo. This is a manual device check; desktop HTTP reachability, Playwright mobile emulation, and Lighthouse mobile runs do not prove this item.
 
-## Target
+## Targets
 
 ```text
+Root landing page:
+https://prairieclassroom-os.vercel.app/
+
+Canonical demo route:
 https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34
 ```
 
@@ -13,7 +17,7 @@ https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafo
 1. Use a real phone on mobile data only.
 2. Turn Wi-Fi off.
 3. Open a private/incognito browser tab if available.
-4. Paste the target URL above.
+4. Paste the root landing page URL above.
 
 ## Pass Criteria
 
@@ -21,7 +25,8 @@ Record pass/fail for each item:
 
 | Check | Expected Result | Result |
 | --- | --- | --- |
-| Initial load | Demo opens without access-code, onboarding, or role-selection blocking the route. |  |
+| Root landing page | The public root loads the PrairieClassroom OS landing page, including the main classroom image and a primary CTA into the demo. |  |
+| CTA entry | Tapping the primary CTA opens the canonical demo route without access-code, onboarding, or role-selection blocking the route. |  |
 | Today route | The first visible app workspace is Today for the Okafor Grade 3/4 demo class. |  |
 | Mobile nav | Bottom navigation is visible and tappable. |  |
 | Prep route | Tap Adapt or navigate to Prep Differentiate; the route loads without horizontal overflow. |  |
@@ -38,7 +43,7 @@ Save these details in the final submission closeout note:
 - Browser:
 - Carrier/network:
 - Result:
-- Screenshots captured:
+- Screenshots captured: root landing, Today, generated output, Review, reload state
 - Notes:
 
 ## After It Passes
