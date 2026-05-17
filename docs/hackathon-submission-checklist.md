@@ -77,7 +77,7 @@ These are required for an actual competition submission but cannot be completed 
 1. Send 3 teacher recruitment messages (target: 1 K-6 teacher, 1 EA, 1 retired teacher / consultant; $100 honorarium; 60-90 minute session).
 2. Print a real Grade 3/4 fractions worksheet for the multimodal hero shot.
 3. Identify a host with ≥16 GiB RAM and ≥40 GiB free disk for the eventual Ollama lane (borrow or order refurb Mac Mini).
-4. Create the external Render blueprint services from `render.yaml`, set `CORS_ORIGIN=https://prairieclassroom-os.vercel.app`, `PRAIRIE_GEMINI_API_KEY`, and `PRAIRIE_CLASSROOM_ACCESS_CODES_JSON` as hosting secrets, then link Vercel production `VITE_API_URL` to the Render orchestrator. The orchestrator uses the Render inference service URL and shares `PRAIRIE_INFERENCE_AUTH_TOKEN` with the inference service.
+4. Render/Vercel deployment setup is complete: the Render blueprint services exist, Vercel production is linked, `VITE_API_URL` points to the Render orchestrator, and publication preflight verifies Render availability plus hosted Gemma env/guard readiness when `.env` is exported. Do not recreate these services unless credentials or hosting state changes.
 
 **Phase C — teacher session (target window 2026-05-04 → 2026-05-10):**
 

@@ -29,8 +29,8 @@ This plan implements **everything that is not Ollama-blocked first**, then resum
 | **C — Teacher session** | 2026-05-04 → 2026-05-10 | Recruit, schedule, conduct, capture quote and observation notes | pending (host external) |
 | **D — Ollama lane** | resumes when viable host arrives | Install Ollama, pull weights, run `release:gate:ollama`, capture offline footage | gated on host |
 | **E — Video production** | 2026-05-11 → 2026-05-13 | Edit, voiceover, captions, upload to YouTube | pending |
-| **F — Live demo deploy** | 2026-05-11 → 2026-05-12 | Vercel frontend + free-tier backend, smoke from external network | pending |
-| **G — Verification** | 2026-05-14 → 2026-05-16 | Full `release:gate`, `claims:check`, `system:inventory:check`, `eval:inventory:check`, external smoke | pending |
+| **F — Live demo deploy** | 2026-05-11 → 2026-05-12 | Vercel frontend + free-tier backend, smoke from external network | mostly complete; cellular smoke pending |
+| **G — Verification** | 2026-05-14 → 2026-05-16 | Full `release:gate`, `claims:check`, `system:inventory:check`, `eval:inventory:check`, external smoke | app/public-demo gates current; publication artifacts pending |
 | **H — Submission** | 2026-05-17 → 2026-05-18 | Submit Kaggle entry early; monitor | pending |
 
 ---
@@ -92,7 +92,7 @@ Current behavior: run the publish gate with `npm run submission:final-check` aft
 - Backend: Render free tier selected for the no-spend public demo path; root `render.yaml` defines the orchestrator and hosted-Gemini inference services.
 - Frontend: Vercel free tier; `apps/web/vercel.json` exists and carries SPA rewrites, security headers, and immutable asset caching.
 - Inference: hosted Gemma 4 mode with synthetic-only data; API key must be entered as a Render secret and must not be committed.
-- Smoke checklist exists at [docs/public-demo-operations.md](../public-demo-operations.md); the public Vercel synthetic demo now passes smoke using the static fallback, while Render hosted inference and cellular smoke remain pending.
+- Smoke checklist exists at [docs/public-demo-operations.md](../public-demo-operations.md); the public Vercel synthetic demo now passes smoke using the static fallback, and Render hosted inference is created and verified for intentional hosted checks. True cellular smoke remains pending.
 
 **B4 — Media gallery selection**
 - Cover image candidate: `output/playwright/ui-evidence/2026-04-24T12-11-06-752Z/differentiate-desktop.png` or fresh capture mid-generation.
@@ -101,7 +101,9 @@ Current behavior: run the publish gate with `npm run submission:final-check` aft
 
 **Update 2026-04-30:** Vercel frontend config already existed; Render free tier is now the selected backend path with a committed `render.yaml` blueprint and Gemini-only inference requirements.
 
-**Update 2026-05-12:** Vercel project `echoexes-projects/prairieclassroom-os` is linked and the public synthetic demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` passes `smoke:public-demo` using the static demo API fallback. Vercel production has encrypted server-side hosted Gemma key/guard env vars, but the current Vite demo cannot read them in the browser. Remaining Phase B deployment work for hosted inference is external: create the Render services, enter Render secrets, link Vercel `VITE_API_URL`, and complete cellular smoke.
+**Update 2026-05-12:** Vercel project `echoexes-projects/prairieclassroom-os` is linked and the public synthetic demo at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34` passes `smoke:public-demo` using the static demo API fallback. Vercel production has encrypted server-side hosted Gemma key/guard env vars, but the current Vite demo cannot read them in the browser.
+
+**Update 2026-05-17:** Render blueprint services now exist, `VITE_API_URL` is linked to the Render orchestrator, the public Vercel alias is Ready, and publication preflight verifies Render CLI/token availability plus hosted Gemma env/guard readiness when `.env` is exported. Remaining external publication blockers are the public YouTube URL, the public Kaggle writeup/submission URL, and true cellular-browser smoke.
 
 ### Go/No-Go Gate
 
@@ -188,9 +190,9 @@ Always export the 2:40 tight cut as a parallel deliverable. The 3:00 cut is pref
 ## Phase F — Live Demo Deploy (2026-05-11 → 2026-05-12, parallel with E)
 
 Per [docs/public-demo-operations.md](../public-demo-operations.md):
-- Frontend → Vercel; `apps/web/vercel.json` to be created.
-- Orchestrator + inference → Render free tier or $5/mo box.
-- Smoke from external network and from cellular.
+- Frontend → Vercel; `apps/web/vercel.json` is committed and the production alias is live.
+- Orchestrator + inference → Render free tier services are created; the public reviewer route remains static-first, with Render retained for intentional hosted checks.
+- Smoke from external network has passed; true cellular-browser smoke remains pending.
 - Confirm `/?demo=true` lands directly on Today.
 
 If anything is flaky from cellular, fall back to a *recorded video of the demo running locally* — Kaggle's rule reads "a URL or files for your working demo."
