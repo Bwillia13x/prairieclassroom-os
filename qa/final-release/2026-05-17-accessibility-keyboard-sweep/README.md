@@ -5,12 +5,12 @@ Live Vercel accessibility, keyboard-focus, and mobile touch-target sweep for the
 ## Command
 
 ```bash
-source ~/.nvm/nvm.sh && nvm use >/dev/null && node qa/final-release/2026-05-17-accessibility-keyboard-sweep/public-accessibility-keyboard-sweep.mjs
+source ~/.nvm/nvm.sh && nvm use >/dev/null && PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app node qa/final-release/2026-05-17-accessibility-keyboard-sweep/public-accessibility-keyboard-sweep.mjs
 ```
 
 ## Result
 
-Passed on 2026-05-17 against `https://prairieclassroom-os.vercel.app` after production deployment `dpl_DuYtYunconaSaJbayb1NyPVsMfUL` was aliased to the canonical public URL.
+Passed on 2026-05-17 against `https://prairieclassroom-os.vercel.app` after production deployment `dpl_7tzxdLn6Dv1AvCyEdLXWdSVmoDbY` was aliased to the canonical public URL.
 
 Evidence:
 

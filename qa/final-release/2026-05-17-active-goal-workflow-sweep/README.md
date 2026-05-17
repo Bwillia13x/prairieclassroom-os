@@ -5,12 +5,12 @@ Live Vercel generated-output workflow sweep for the active submission-readiness 
 ## Command
 
 ```bash
-source ~/.nvm/nvm.sh && nvm use >/dev/null && node qa/final-release/2026-05-17-active-goal-workflow-sweep/public-workflow-sweep.mjs
+source ~/.nvm/nvm.sh && nvm use >/dev/null && PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app node qa/final-release/2026-05-17-active-goal-workflow-sweep/public-workflow-sweep.mjs
 ```
 
 ## Result
 
-Passed on 2026-05-17.
+Passed on 2026-05-17 against production deployment `dpl_7tzxdLn6Dv1AvCyEdLXWdSVmoDbY`.
 
 Evidence:
 
