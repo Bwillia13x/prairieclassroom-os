@@ -60,7 +60,7 @@ That distinction is intentional. The hosted lane is the proof path used for the 
 
 Safety is built into the product design. PrairieClassroom OS uses observational language instead of diagnostic claims, excludes clinical and stigmatizing terms from relevant prompt classes, and keeps a permanent teacher-approval boundary on family messaging.
 
-The checked-in repo currently proves three things:
+The checked-in repo currently includes two current proof anchors:
 
 - the no-cost structural gate passes on the current branch
 - the current hosted Gemma 4 baseline passed `13/13` on synthetic/demo data at `output/release-gate/2026-05-17T00-36-24-280Z-35954`
