@@ -140,8 +140,10 @@ Do not claim any of the following unless new artifacts exist:
 After the YouTube video and Kaggle writeup are public, apply the final URLs consistently across all publication-gated docs:
 
 ```bash
-npm run submission:apply-links -- --video-url <youtube-url> --kaggle-url <kaggle-url>
+npm run submission:apply-links -- --video-url '<youtube-url>' --kaggle-url '<kaggle-url>'
 ```
+
+Keep the quotes around both URLs; YouTube links usually contain `?`, which zsh can expand before the script runs.
 
 Run the chained final gate from the repo root before publishing the final links:
 

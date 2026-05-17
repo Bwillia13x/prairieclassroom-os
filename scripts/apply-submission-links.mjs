@@ -7,11 +7,12 @@ const ROOT = path.resolve(__dirname, "..");
 
 const USAGE = [
   "Usage:",
-  "  npm run submission:apply-links -- --video-url <youtube-url> --kaggle-url <kaggle-url>",
-  "  npm run submission:apply-links -- --dry-run --video-url <youtube-url> --kaggle-url <kaggle-url>",
+  "  npm run submission:apply-links -- --video-url '<youtube-url>' --kaggle-url '<kaggle-url>'",
+  "  npm run submission:apply-links -- --dry-run --video-url '<youtube-url>' --kaggle-url '<kaggle-url>'",
   "",
   "Updates the submission-facing docs that gate final publication readiness.",
   "The video URL must be YouTube/youtu.be and the writeup URL must be kaggle.com.",
+  "Quote URLs in the shell because YouTube links usually contain `?` query strings.",
 ].join("\n");
 
 function readFlag(args, name) {
