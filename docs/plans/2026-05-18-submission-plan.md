@@ -3,7 +3,7 @@
 **Created:** 2026-04-26 (T-22 days)
 **Owner:** solo maintainer
 **Deadline:** 2026-05-18 23:59 UTC
-**Status:** in progress
+**Status:** app and public demo validated; external publication artifacts pending
 **Companion docs:** [hackathon-submission-checklist.md](../hackathon-submission-checklist.md), [video-shot-list.md](../video-shot-list.md), [hackathon-proof-brief.md](../hackathon-proof-brief.md)
 
 ---
@@ -24,11 +24,11 @@ This plan implements **everything that is not Ollama-blocked first**, then resum
 
 | Phase | Window | Scope | Status |
 |---|---|---|---|
-| **A — Doc hardening** | 2026-04-26 → 2026-04-28 | Writeup, video shot list, judge summary, submission checklist, plan docs | in progress |
-| **B — Production prep** | 2026-04-29 → 2026-05-03 | Hero-shot capture checklist, teacher session prep, deploy plan, media gallery selection | in progress |
+| **A — Doc hardening** | 2026-04-26 → 2026-04-28 | Writeup, video shot list, judge summary, submission checklist, plan docs | complete |
+| **B — Production prep** | 2026-04-29 → 2026-05-03 | Hero-shot capture checklist, teacher session prep, deploy plan, media gallery selection | deploy ready; teacher/media artifacts pending externally |
 | **C — Teacher session** | 2026-05-04 → 2026-05-10 | Recruit, schedule, conduct, capture quote and observation notes | pending (host external) |
 | **D — Ollama lane** | resumes when viable host arrives | Install Ollama, pull weights, run `release:gate:ollama`, capture offline footage | gated on host |
-| **E — Video production** | 2026-05-11 → 2026-05-13 | Edit, voiceover, captions, upload to YouTube | pending |
+| **E — Video production** | 2026-05-11 → 2026-05-13 | Edit, voiceover, captions, upload to YouTube | local MP4 QA complete; public YouTube URL pending |
 | **F — Live demo deploy** | 2026-05-11 → 2026-05-12 | Vercel frontend + free-tier backend, smoke from external network | mostly complete; cellular smoke pending |
 | **G — Verification** | 2026-05-14 → 2026-05-16 | Full `release:gate`, `claims:check`, `system:inventory:check`, `eval:inventory:check`, external smoke | app/public-demo gates current; publication artifacts pending |
 | **H — Submission** | 2026-05-17 → 2026-05-18 | Submit Kaggle entry early; monitor | pending |
@@ -74,7 +74,7 @@ Current behavior: run the publish gate with `npm run submission:final-check` aft
 
 ---
 
-## Phase B — Production Prep (pending Phase A)
+## Phase B — Production Prep (deploy ready; external capture tasks pending)
 
 ### Workstreams
 
@@ -184,6 +184,8 @@ Update [docs/eval-baseline.md](../eval-baseline.md) Ollama section. Update [docs
 
 ### Backup
 Always export the 2:40 tight cut as a parallel deliverable. The 3:00 cut is preferred; the tight cut is insurance.
+
+**Update 2026-05-17:** the local submission MP4 `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` passes QA at 120.043 seconds, 1920x1080, 30 fps. The public YouTube URL is still pending and remains a publication blocker.
 
 ---
 
