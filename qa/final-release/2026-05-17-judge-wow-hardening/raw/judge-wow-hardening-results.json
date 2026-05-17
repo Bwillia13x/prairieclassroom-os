@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-05-17T03:10:50.127Z",
+  "createdAt": "2026-05-17T03:29:32.380Z",
   "targets": [
     {
       "name": "local",
@@ -190,56 +190,15 @@
           "activeNav": "TodayDo this now",
           "rootImageLoaded": null,
           "cta": null,
-          "smallTouchTargets": [
-            {
-              "tag": "button",
-              "text": "RoleTeacher⌄",
-              "width": 38,
-              "height": 44,
-              "top": 17,
-              "left": 250,
-              "visible": true
-            },
-            {
-              "tag": "button",
-              "text": "Search or ask Prairie⌘K",
-              "width": 38,
-              "height": 44,
-              "top": 17,
-              "left": 295,
-              "visible": true
-            }
-          ],
-          "smallTouchTargetSample": [
-            {
-              "tag": "button",
-              "text": "RoleTeacher⌄",
-              "width": 38,
-              "height": 44,
-              "top": 17,
-              "left": 250,
-              "visible": true
-            },
-            {
-              "tag": "button",
-              "text": "Search or ask Prairie⌘K",
-              "width": 38,
-              "height": 44,
-              "top": 17,
-              "left": 295,
-              "visible": true
-            }
-          ]
+          "smallTouchTargets": []
         }
       ],
       "consoleErrors": [],
       "pageErrors": [],
       "badResponses": [],
       "requestFailures": [],
-      "issues": [
-        "public canonical mobile: 2 visible touch targets below 40px"
-      ]
+      "issues": []
     }
   ],
-  "issueCount": 1
+  "issueCount": 0
 }

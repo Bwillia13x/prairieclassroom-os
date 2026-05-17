@@ -10,7 +10,7 @@
 ## Browser Surfaces Used
 
 - Browser / Codex in-app browser: local canonical route after the mobile touch-target fix.
-- Chrome / real Chrome extension backend: public canonical route before deploy, confirming static-first marker and desktop state.
+- Chrome / real Chrome extension backend: public canonical route before deploy, confirming static-first marker and desktop state. Post-deploy retry found Chrome was not running; the extension and native host checks passed and are logged in `commands/chrome-extension-checks-after-deploy.log`.
 - Playwright Chromium: root/canonical desktop and mobile checks, command palette, reduced-motion probe, screenshots, public/local smoke scripts.
 - Computer Use: not used; no Mac UI state was required.
 
@@ -18,7 +18,7 @@
 
 - P0: none found in this pass.
 - P1: none remaining after the prior auth/default-demo recovery fixes in this worktree.
-- P2: public mobile canonical demo had two visible top-bar controls under the 40 px touch-target threshold before this fix. Local after-fix evidence shows the role/search controls no longer shrink below the shared mobile control size.
+- P2: public mobile canonical demo had two visible top-bar controls under the 40 px touch-target threshold before this fix. The 2026-05-17 post-deploy check now passes with zero public issues and no mobile touch-target regression.
 
 ## Fixes Under Test
 
@@ -43,6 +43,17 @@
 - Passed: `npm run check:contrast`
 - Passed: `npm run submission:final-check -- --skip-publication-check --skip-release-gate`
 - Passed: `npm run release:gate` (`output/release-gate/2026-05-17T03-24-49-730Z-18838`)
+- Passed: `npx vercel build --prod`
+- Passed: `npx vercel deploy --prebuilt --prod --yes`
+- Passed: post-deploy `node qa/final-release/2026-05-17-judge-wow-hardening/judge-wow-hardening-check.mjs`
+- Passed: post-deploy `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo`
+
+## Deployment
+
+- Commit deployed: `a39afa5` (`Harden public demo recovery and mobile controls`)
+- Production alias: `https://prairieclassroom-os.vercel.app`
+- Deployment URL: `https://prairieclassroom-4veol6yuk-echoexes-projects.vercel.app`
+- Inspect URL: `https://vercel.com/echoexes-projects/prairieclassroom-os/DJrbcSPujHknALkjSyAk1TiHhDiW`
 
 ## Evidence Paths
 
