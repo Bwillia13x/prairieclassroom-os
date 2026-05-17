@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-05-17T14:03:36.878Z",
+  "steps": [
+    {
+      "name": "teacher nav visible",
+      "teacherNav": [
+        "TodayDo this now",
+        "ClassroomRoom view",
+        "TomorrowPlan tomorrow",
+        "WeekWeek map",
+        "PrepAdapt lesson",
+        "OpsLog note",
+        "ReviewMessage family15"
+      ]
+    },
+    {
+      "name": "ea nav gated",
+      "eaNav": [
+        "TodayDo this now",
+        "ClassroomRoom view",
+        "OpsLog note",
+        "ReviewMessage family15"
+      ]
+    },
+    {
+      "name": "teacher role restored"
+    },
+    {
+      "name": "command palette search",
+      "containsTomorrow": true,
+      "searchCount": 0
+    },
+    {
+      "name": "keyboard tab focus",
+      "focus": {
+        "tag": "A",
+        "text": "Skip to main content",
+        "visible": true,
+        "outline": "solid",
+        "boxShadow": "oklab(0 0 0 / 0) 0px 0px 0px 0px"
+      }
+    },
+    {
+      "name": "legacy stale demo deep-link recovery",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "text": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\nAlberta K-6\nPrivacy first\nTeacher controlled\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then fold queued notes into the first moves for the next school day.\n\nACTIVE TOOL\nTomorrow Plan\nPLAN\nReady\nSTATUS\n3\nPRIORITIES\nF"
+    }
+  ],
+  "errors": [],
+  "warnings": [],
+  "failures": []
+}

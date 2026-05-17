@@ -1,0 +1,2965 @@
+{
+  "createdAt": "2026-05-17T13:18:14.918Z",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "classroom": "demo-okafor-grade34",
+  "requireStaticDemoMarker": true,
+  "pages": [
+    {
+      "route": "today",
+      "label": "Today",
+      "viewport": "desktop",
+      "screenshot": "desktop-today.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [
+          {
+            "role": "button",
+            "name": "Collapse navigation rail",
+            "width": 26,
+            "height": 36,
+            "classes": "shell-nav__collapse-toggle"
+          },
+          {
+            "role": "button",
+            "name": "8:30-9:15 Bell work journal + calendar math: low complexity. Open detail.",
+            "width": 26,
+            "height": 43,
+            "classes": "[object SVGAnimatedString]"
+          },
+          {
+            "role": "button",
+            "name": "2:45-3:00 Learning reflection + pack-up: medium complexity. Open detail.",
+            "width": 26,
+            "height": 43,
+            "classes": "[object SVGAnimatedString]"
+          },
+          {
+            "role": "button",
+            "name": "Daniyal: 1 pending action, Routine and picture-cue support. Open detail.",
+            "width": 27,
+            "height": 27,
+            "classes": "[object SVGAnimatedString]"
+          },
+          {
+            "role": "button",
+            "name": "Amira: 1 pending action, Vocabulary preview and family praise. Open detail.",
+            "width": 27,
+            "height": 27,
+            "classes": "[object SVGAnimatedString]"
+          },
+          {
+            "role": "button",
+            "name": "Brody: 1 pending action, After-lunch transition support. Open detail.",
+            "width": 27,
+            "height": 27,
+            "classes": "[object SVGAnimatedString]"
+          },
+          {
+            "role": "button",
+            "name": "Elena: 1 pending action, Math confidence with manipulatives. Open detail.",
+            "width": 27,
+            "height": 27,
+            "classes": "[object SVGAnimatedString]"
+          },
+          {
+            "role": "button",
+            "name": "▸Shortcuts",
+            "width": 92,
+            "height": 32,
+            "classes": "app-footer__toggle"
+          }
+        ],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button#tab-week:WeekWeek map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button#tab-prep:PrepAdapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button#tab-ops:OpsLog note1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button#tab-review:ReviewMessage family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:Draft Amira message",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Interventions: 1 On track",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Assessments: 0 None due today",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Communications: 1 1 urgent",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Plan adjustments: 1 This week",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Materials prep: 3 This week",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:Open student details for Amira: Vocabulary preview and family praise",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:Open student details for Brody: After-lunch transition support",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Open student details for Daniyal: Routine and picture-cue support",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:Check first: Imani",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:Show day detail+",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:All3",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Urgent3",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Stale0",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:More▾",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Brody: 2 active threads",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Amira: 3 active threads",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "classroom",
+      "label": "Classroom",
+      "viewport": "desktop",
+      "screenshot": "desktop-classroom.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [
+          {
+            "role": "button",
+            "name": "Collapse navigation rail",
+            "width": 26,
+            "height": 36,
+            "classes": "shell-nav__collapse-toggle"
+          },
+          {
+            "role": "button",
+            "name": "Day 1: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 2: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 3: Critical",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 4: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 5: Medium",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 6: Critical",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 7: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 8: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 9: Critical",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 10: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 11: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 12: Critical",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 13: High",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Day 14: Critical",
+            "width": 22,
+            "height": 16,
+            "classes": "viz-complexity-cal__cell viz-complexity-cal__cell--clickable"
+          },
+          {
+            "role": "button",
+            "name": "Scroll roster left",
+            "width": 30,
+            "height": 30,
+            "classes": "student-coverage__scroll-btn student-coverage__scroll-btn--left"
+          },
+          {
+            "role": "button",
+            "name": "Scroll roster right",
+            "width": 30,
+            "height": 30,
+            "classes": "student-coverage__scroll-btn student-coverage__scroll-btn--right"
+          },
+          {
+            "role": "button",
+            "name": "▸Shortcuts",
+            "width": 92,
+            "height": 32,
+            "classes": "app-footer__toggle"
+          }
+        ],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button#tab-week:WeekWeek map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button#tab-prep:PrepAdapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button#tab-ops:OpsLog note1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button#tab-review:ReviewMessage family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:Open Today triage→",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Live: Today triage",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Stage: Tomorrow plan",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Forecast: Week map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:View signals",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:View all",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:AmiraVocabulary preview and family praise2 open",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:BrodyAfter-lunch transition support2 open",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:ElenaMath confidence with manipulatives2 open",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:Coverage 63%",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:1Log a quick follow-up after tomorrow's math launch.Brody · 3dMedium",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:2Review and approve the praise note.Amira · 1dHigh",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:3Add vocabulary preview cards to tomorrow's prep checklist.Amira, Daniyal, +1 · ",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "rect:Day 1: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "rect:Day 2: Missed",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "rect:Day 3: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "rect:Day 4: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "week",
+      "label": "Week",
+      "viewport": "desktop",
+      "screenshot": "desktop-week.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [
+          {
+            "role": "button",
+            "name": "Collapse navigation rail",
+            "width": 26,
+            "height": 36,
+            "classes": "shell-nav__collapse-toggle"
+          },
+          {
+            "role": "button",
+            "name": "▸Shortcuts",
+            "width": 92,
+            "height": 32,
+            "classes": "app-footer__toggle"
+          }
+        ],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button#tab-week:WeekWeek map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button#tab-prep:PrepAdapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button#tab-ops:OpsLog note1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button#tab-review:ReviewMessage family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:Plan Tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Review Today",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Open week dashboard details for Mon May 18",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Mon May 18, 8:30-9:15, Bell work journal + calendar math. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Mon May 18, 9:15-9:30, Recess transition. Schedule only signal from schedule. Historically difficult - Brody's sensory peak",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Mon May 18, 9:30-10:30, Literacy block. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:Mon May 18, 10:30-10:45, Snack break. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:Mon May 18, 10:45-11:45, Science / Social Studies. Schedule only signal from schedule. EA departs at noon - last full-support block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Open week dashboard details for Tue May 19",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:Tue May 19, 8:30-9:15, Bell work journal + calendar math. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:Tue May 19, 9:15-9:30, Recess transition. Schedule only signal from schedule. Historically difficult - Brody's sensory peak",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:Tue May 19, 9:30-10:30, Literacy block. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Tue May 19, 10:30-10:45, Snack break. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Tue May 19, 10:45-11:45, Science / Social Studies. Schedule only signal from schedule. EA departs at noon - last full-support block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:Open week dashboard details for Wed May 20",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Wed May 20, 8:30-9:15, Bell work journal + calendar math. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Wed May 20, 9:15-9:30, Recess transition. Schedule only signal from schedule. Historically difficult - Brody's sensory peak",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "prep-differentiate",
+      "label": "Prep / Differentiate",
+      "viewport": "desktop",
+      "screenshot": "desktop-prep-differentiate.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [
+          {
+            "role": "button",
+            "name": "Collapse navigation rail",
+            "width": 26,
+            "height": 36,
+            "classes": "shell-nav__collapse-toggle"
+          },
+          {
+            "role": "button",
+            "name": "▸Shortcuts",
+            "width": 92,
+            "height": 32,
+            "classes": "app-footer__toggle"
+          }
+        ],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 3
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button#tab-week:WeekWeek map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button#tab-prep:PrepAdapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button#tab-ops:OpsLog note1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button#tab-review:ReviewMessage family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:01 ArtifactDifferentiateLesson variantsAdapt one lesson, worksheet, or passage a",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:02 LanguageLanguage ToolsEAL supportSimplify text and prepare bilingual vocabula",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Upload filePDF or Word text",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Paste textPaste text directly",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Web linkAdd a URL",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Browse for lesson artifact file",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:browse",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "summary:Scan worksheet photo Photo of a worksheet",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "input#title",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "input#subject",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "textarea#teacher-goal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:Alberta Curriculum Alignment+",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Generate variants",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "summary:Teacher edit notes",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:Preview lane",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Edit copy",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:More actions for Core lane",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "tomorrow-plan",
+      "label": "Tomorrow / Plan",
+      "viewport": "desktop",
+      "screenshot": "desktop-tomorrow-plan.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [
+          {
+            "role": "button",
+            "name": "Collapse navigation rail",
+            "width": 26,
+            "height": 36,
+            "classes": "shell-nav__collapse-toggle"
+          },
+          {
+            "role": "button",
+            "name": "About Tomorrow Plan",
+            "width": 36,
+            "height": 36,
+            "classes": "page-intro-info__trigger"
+          },
+          {
+            "role": "button",
+            "name": "▸Shortcuts",
+            "width": 92,
+            "height": 32,
+            "classes": "app-footer__toggle"
+          }
+        ],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 2
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button#tab-week:WeekWeek map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button#tab-prep:PrepAdapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button#tab-ops:OpsLog note1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button#tab-review:ReviewMessage family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:01 Planning orderTomorrow PlanWatchpoints, priorities, EA moves, prep, and famil",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:02 Block riskForecastBlock-by-block risk before coverage and transition decision",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:About Tomorrow Plan",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:8:30-9:15: Bell work journal + calendar math",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:9:15-9:30: Recess transition",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:9:30-10:30: Literacy block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:10:30-10:45: Snack break",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:10:45-11:45: Science / Social Studies",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:11:45-12:30: Lunch",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:12:30-12:45: Body break + transition to math",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:12:45-1:45: Math block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:1:45-2:00: Afternoon recess transition",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:2:00-2:45: Art / Music / Phys Ed",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:2:45-3:00: Learning reflection + pack-up",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "textarea#reflection",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "textarea#plan-goal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Generate plan",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "ops-ea-briefing",
+      "label": "Ops / EA Briefing",
+      "viewport": "desktop",
+      "screenshot": "desktop-ops-ea-briefing.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [
+          {
+            "role": "button",
+            "name": "Collapse navigation rail",
+            "width": 26,
+            "height": 36,
+            "classes": "shell-nav__collapse-toggle"
+          },
+          {
+            "role": "button",
+            "name": "▸Shortcuts",
+            "width": 92,
+            "height": 32,
+            "classes": "app-footer__toggle"
+          }
+        ],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button#tab-week:WeekWeek map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button#tab-prep:PrepAdapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button#tab-ops:OpsLog note1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button#tab-review:ReviewMessage family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:Step 1: Log Intervention",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Step 2: EA Briefing",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Step 3: EA Load",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Step 4: Sub Packet",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "input#ea-name",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "textarea#ea-coordination-notes",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:Generate briefing",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:▸Shortcuts",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Keyboard shortcuts",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "review-family-message",
+      "label": "Review / Family Message",
+      "viewport": "desktop",
+      "screenshot": "desktop-review-family-message.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [
+          {
+            "role": "button",
+            "name": "Collapse navigation rail",
+            "width": 26,
+            "height": 36,
+            "classes": "shell-nav__collapse-toggle"
+          },
+          {
+            "role": "button",
+            "name": "Scroll roster left",
+            "width": 30,
+            "height": 30,
+            "classes": "student-coverage__scroll-btn student-coverage__scroll-btn--left"
+          },
+          {
+            "role": "button",
+            "name": "Scroll roster right",
+            "width": 30,
+            "height": 30,
+            "classes": "student-coverage__scroll-btn student-coverage__scroll-btn--right"
+          },
+          {
+            "role": "button",
+            "name": "Dismiss hint",
+            "width": 24,
+            "height": 36,
+            "classes": "contextual-hint-dismiss"
+          },
+          {
+            "role": "button",
+            "name": "▸Shortcuts",
+            "width": 92,
+            "height": 32,
+            "classes": "app-footer__toggle"
+          }
+        ],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 2
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button:Collapse navigation rail",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button#tab-today:TodayDo this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button#tab-classroom:ClassroomRoom view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button#tab-tomorrow:TomorrowPlan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button#tab-week:WeekWeek map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button#tab-prep:PrepAdapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button#tab-ops:OpsLog note1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button#tab-review:ReviewMessage family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:01 FamilyFamily MessageDraft family updates and keep human approval explicit.1 a",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:02 PatternsSupport PatternsInspect recurring classroom signals before next actio",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:03 UsageUsage InsightsReview feedback and workflow patterns from recent sessions",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:All3",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Urgent3",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Stale0",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:More▾",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:Brody: 2 active threads",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Amira: 3 active threads",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:Elena: 1 active thread",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:Dismiss hint",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:Message History",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Amira",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Brody",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:Chantal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Daniyal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Elena",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "today",
+      "label": "Today",
+      "viewport": "mobile",
+      "screenshot": "mobile-today.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button:Draft Amira message",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button:Interventions: 1 On track",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button:Assessments: 0 None due today",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button:Communications: 1 1 urgent",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button:Plan adjustments: 1 This week",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button:Materials prep: 3 This week",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:Open student details for Amira: Vocabulary preview and family praise",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Open student details for Brody: After-lunch transition support",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Open student details for Daniyal: Routine and picture-cue support",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Check first: Imani",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Show day detail+",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "g:8:30-9:15 Bell work journal + calendar math: low complexity. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "g:9:30-10:30 Literacy block: medium complexity. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "g:12:30-12:45 Body break + transition to math: high complexity. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "g:12:45-1:45 Math block: high complexity. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "g:2:45-3:00 Learning reflection + pack-up: medium complexity. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "g:Daniyal: 1 pending action, Routine and picture-cue support. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "g:Amira: 1 pending action, Vocabulary preview and family praise. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "g:Brody: 1 pending action, After-lunch transition support. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "g:Elena: 1 pending action, Math confidence with manipulatives. Open detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:unapproved messages1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:open follow-ups1",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:unaddressed patterns1",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "classroom",
+      "label": "Classroom",
+      "viewport": "mobile",
+      "screenshot": "mobile-classroom.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button:Open Today triage→",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button:Live: Today triage",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button:Stage: Tomorrow plan",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button:Forecast: Week map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button:View signals",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button:View all",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:AmiraVocabulary preview and family praise2 open",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:BrodyAfter-lunch transition support2 open",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:ElenaMath confidence with manipulatives2 open",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Coverage 63%",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:1Log a quick follow-up after tomorrow's math launch.Brody · 3dMedium",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:2Review and approve the praise note.Amira · 1dHigh",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:3Add vocabulary preview cards to tomorrow's prep checklist.Amira, Daniyal, +1 · ",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "rect:Day 1: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "rect:Day 2: Missed",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "rect:Day 3: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "rect:Day 4: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "rect:Day 5: Missed",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "rect:Day 6: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "rect:Day 7: Missed",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "rect:Day 8: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "rect:Day 9: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "rect:Day 10: Planned",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "week",
+      "label": "Week",
+      "viewport": "mobile",
+      "screenshot": "mobile-week.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button:Plan Tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button:Review Today",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button:Open week dashboard details for Mon May 18",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button:Mon May 18, 8:30-9:15, Bell work journal + calendar math. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button:Mon May 18, 9:15-9:30, Recess transition. Schedule only signal from schedule. Historically difficult - Brody's sensory peak",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button:Mon May 18, 9:30-10:30, Literacy block. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:Mon May 18, 10:30-10:45, Snack break. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Mon May 18, 10:45-11:45, Science / Social Studies. Schedule only signal from schedule. EA departs at noon - last full-support block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Open week dashboard details for Tue May 19",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Tue May 19, 8:30-9:15, Bell work journal + calendar math. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Tue May 19, 9:15-9:30, Recess transition. Schedule only signal from schedule. Historically difficult - Brody's sensory peak",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Tue May 19, 9:30-10:30, Literacy block. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:Tue May 19, 10:30-10:45, Snack break. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:Tue May 19, 10:45-11:45, Science / Social Studies. Schedule only signal from schedule. EA departs at noon - last full-support block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Open week dashboard details for Wed May 20",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:Wed May 20, 8:30-9:15, Bell work journal + calendar math. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:Wed May 20, 9:15-9:30, Recess transition. Schedule only signal from schedule. Historically difficult - Brody's sensory peak",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:Wed May 20, 9:30-10:30, Literacy block. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Wed May 20, 10:30-10:45, Snack break. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Wed May 20, 10:45-11:45, Science / Social Studies. Schedule only signal from schedule. EA departs at noon - last full-support block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:Open week dashboard details for Thu May 21",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Thu May 21, 8:30-9:15, Bell work journal + calendar math. Schedule only signal from schedule. Schedule-only block. Generate a forecast for risk detail.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Thu May 21, 9:15-9:30, Recess transition. Schedule only signal from schedule. Historically difficult - Brody's sensory peak",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "prep-differentiate",
+      "label": "Prep / Differentiate",
+      "viewport": "mobile",
+      "screenshot": "mobile-prep-differentiate.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 3
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button:01 ArtifactDifferentiateLesson variantsAdapt one lesson, worksheet, or passage a",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button:02 LanguageLanguage ToolsEAL supportSimplify text and prepare bilingual vocabula",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button:Upload filePDF or Word text",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button:Paste textPaste text directly",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button:Web linkAdd a URL",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button:Browse for lesson artifact file",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:browse",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "summary:Scan worksheet photo Photo of a worksheet",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "input#title",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "input#subject",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "textarea#teacher-goal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Alberta Curriculum Alignment+",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:Generate variants",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "summary:Teacher edit notes",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Preview lane",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:Edit copy",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:More actions for Core lane",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "summary:Teacher edit notes",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Preview lane",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Edit copy",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:More actions for Chunked lane",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "summary:Teacher edit notes",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Preview lane",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "tomorrow-plan",
+      "label": "Tomorrow / Plan",
+      "viewport": "mobile",
+      "screenshot": "mobile-tomorrow-plan.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 2
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button:01 Planning orderTomorrow PlanWatchpoints, priorities, EA moves, prep, and famil",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button:02 Block riskForecastBlock-by-block risk before coverage and transition decision",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button:About Tomorrow Plan",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button:8:30-9:15: Bell work journal + calendar math",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button:9:15-9:30: Recess transition",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button:9:30-10:30: Literacy block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:10:30-10:45: Snack break",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:10:45-11:45: Science / Social Studies",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:11:45-12:30: Lunch",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:12:30-12:45: Body break + transition to math",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:12:45-1:45: Math block",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:1:45-2:00: Afternoon recess transition",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:2:00-2:45: Art / Music / Phys Ed",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:2:45-3:00: Learning reflection + pack-up",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "textarea#reflection",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "textarea#plan-goal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:Generate plan",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:Keyboard shortcuts",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Do now Today: Do this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Room Classroom: Room view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:Plan Tomorrow: Plan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Week Week: Week map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Adapt Prep: Adapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "ops-ea-briefing",
+      "label": "Ops / EA Briefing",
+      "viewport": "mobile",
+      "screenshot": "mobile-ops-ea-briefing.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 1
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button:Step 1: Log Intervention",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button:Step 2: EA Briefing",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button:Step 3: EA Load",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button:Step 4: Sub Packet",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "input#ea-name",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "textarea#ea-coordination-notes",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:Generate briefing",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Keyboard shortcuts",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Do now Today: Do this now",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Room Classroom: Room view",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Plan Tomorrow: Plan tomorrow",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Week Week: Week map",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:Adapt Prep: Adapt lesson",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:Log 1 Ops: Log note, 1 pending",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Message Review: Message family",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Step 1: Log Intervention",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Step 2: EA Briefing",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    },
+    {
+      "route": "review-family-message",
+      "label": "Review / Family Message",
+      "viewport": "mobile",
+      "screenshot": "mobile-review-family-message.png",
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": []
+      },
+      "semantic": {
+        "unnamedControls": [],
+        "smallTouchTargets": [],
+        "mainCount": 1,
+        "h1Count": 1,
+        "activeTabCount": 2
+      },
+      "focus": {
+        "seen": [
+          {
+            "index": 0,
+            "descriptor": "a:Skip to main content",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 1,
+            "descriptor": "button#shell-classroom-trigger:Active classroom: Grade 3-4 cross curricular",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 2,
+            "descriptor": "button:RoleTeacher⌄",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 3,
+            "descriptor": "button:Search or ask Prairie⌘K",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 4,
+            "descriptor": "button:Switch to dark mode.",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 5,
+            "descriptor": "button:01 FamilyFamily MessageDraft family updates and keep human approval explicit.1 a",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 6,
+            "descriptor": "button:02 PatternsSupport PatternsInspect recurring classroom signals before next actio",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 7,
+            "descriptor": "button:03 UsageUsage InsightsReview feedback and workflow patterns from recent sessions",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 8,
+            "descriptor": "button:All3",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 9,
+            "descriptor": "button:Urgent3",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 10,
+            "descriptor": "button:Stale0",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 11,
+            "descriptor": "button:More▾",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 12,
+            "descriptor": "button:Brody: 2 active threads",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 13,
+            "descriptor": "button:Amira: 3 active threads",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 14,
+            "descriptor": "button:Elena: 1 active thread",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 15,
+            "descriptor": "button:Dismiss hint",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 16,
+            "descriptor": "button:Message History",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 17,
+            "descriptor": "button:Amira",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 18,
+            "descriptor": "button:Brody",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 19,
+            "descriptor": "button:Chantal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 20,
+            "descriptor": "button:Daniyal",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 21,
+            "descriptor": "button:Elena",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 22,
+            "descriptor": "button:Farid",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 23,
+            "descriptor": "button:Gabriel",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 24,
+            "descriptor": "button:Hannah",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 25,
+            "descriptor": "button:Imani",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 26,
+            "descriptor": "button:Jasper",
+            "inViewport": true,
+            "focusVisible": true
+          },
+          {
+            "index": 27,
+            "descriptor": "button:Kiana",
+            "inViewport": true,
+            "focusVisible": true
+          }
+        ],
+        "failures": []
+      },
+      "axeViolations": []
+    }
+  ],
+  "logs": {
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "badResponses": []
+  },
+  "failures": []
+}

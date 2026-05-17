@@ -1,0 +1,85 @@
+{
+  "createdAt": "2026-05-17T13:18:14.915Z",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "checks": {
+    "differentiate": "generated static fallback variants",
+    "languageTools": "simplify and vocab cards generated",
+    "tomorrowPlan": "plan generated",
+    "forecast": "forecast generated",
+    "eaBriefing": "briefing generated",
+    "eaLoad": "load profile generated",
+    "supportPatterns": "patterns analyzed",
+    "survivalPacket": "packet generated and print invoked",
+    "familyMessage": "drafted with copy disabled until approval dialog"
+  },
+  "layout": [
+    {
+      "label": "workflow-differentiate-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-language-simplify-result",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-language-vocab-result",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-tomorrow-plan-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-forecast-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-ea-briefing-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-ea-load-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-support-patterns-analyzed",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-survival-packet-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    },
+    {
+      "label": "workflow-family-message-approval-dialog",
+      "horizontalOverflowPx": 0,
+      "clippedText": [],
+      "modalOpen": false
+    }
+  ],
+  "logs": {
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "requestFailures": [],
+    "badResponses": []
+  },
+  "failures": []
+}

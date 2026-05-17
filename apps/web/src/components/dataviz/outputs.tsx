@@ -28,8 +28,8 @@ export function InterventionTimeline({ records, onDotClick }: IntTimelineProps) 
   const maxDate = sorted[sorted.length - 1]._ts;
   const range = Math.max(maxDate - minDate, 86400000); // at least 1 day
   const w = 260;
-  const h = 40;
-  const pad = 12;
+  const h = 52;
+  const pad = 22;
 
   return (
     <div className="viz-int-timeline" role={onDotClick ? "group" : "img"} aria-label={`${sorted.length} interventions over time`}>
@@ -49,22 +49,47 @@ export function InterventionTimeline({ records, onDotClick }: IntTimelineProps) 
           const dateStr = new Date(record._ts).toLocaleDateString();
           const studentsStr = record.student_refs.join(", ");
           const dotAriaLabel = `Intervention on ${dateStr}: ${studentsStr}`;
-          const clickProps = onDotClick
-            ? {
-                role: "button" as const,
-                tabIndex: 0,
-                className: "viz-int-timeline__dot--clickable",
-                "data-testid": `viz-int-timeline-dot-${record.record_id}`,
-                "aria-label": dotAriaLabel,
-                onClick: () => onDotClick(record),
-                onKeyDown: (e: KeyboardEvent<SVGCircleElement>) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    e.preventDefault();
-                    onDotClick(record);
-                  }
-                },
-              }
-            : {};
+          const activateDot = () => onDotClick?.(record);
+          const handleDotKeyDown = (e: KeyboardEvent<SVGGElement>) => {
+            if (!onDotClick) return;
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onDotClick(record);
+            }
+          };
+          if (onDotClick) {
+            return (
+              <g
+                key={record.record_id}
+                role="button"
+                tabIndex={0}
+                className="viz-int-timeline__dot--clickable"
+                data-testid={`viz-int-timeline-dot-${record.record_id}`}
+                aria-label={dotAriaLabel}
+                onClick={activateDot}
+                onKeyDown={handleDotKeyDown}
+              >
+                <circle
+                  className="viz-int-timeline__dot-hit"
+                  cx={x}
+                  cy={h / 2}
+                  r={21}
+                  aria-hidden="true"
+                />
+                <circle
+                  cx={x}
+                  cy={h / 2}
+                  r={4}
+                  fill={fill}
+                  opacity={0.85}
+                  aria-hidden="true"
+                />
+                <title>
+                  {dateStr} — {record.follow_up_needed ? "Needs follow-up" : "Resolved"}
+                </title>
+              </g>
+            );
+          }
           return (
             <circle
               key={record.record_id}
@@ -73,7 +98,6 @@ export function InterventionTimeline({ records, onDotClick }: IntTimelineProps) 
               r={4}
               fill={fill}
               opacity={0.85}
-              {...clickProps}
             >
               <title>
                 {dateStr} — {record.follow_up_needed ? "Needs follow-up" : "Resolved"}

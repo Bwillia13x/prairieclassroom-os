@@ -1,0 +1,841 @@
+{
+  "generated_at": "2026-05-17T14:01:16.364Z",
+  "base": "http://localhost:5173",
+  "routes": [
+    {
+      "viewport": "desktop",
+      "route": "today",
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-today.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          },
+          {
+            "tag": "g",
+            "inputType": "",
+            "text": "9:00–9:45 Morning literacy block: medium complexity. Open detail.",
+            "width": 28,
+            "height": 43
+          },
+          {
+            "tag": "g",
+            "inputType": "",
+            "text": "12:45–13:30 Afternoon writing block: high complexity. Open detail.",
+            "width": 28,
+            "height": 43
+          }
+        ],
+        "verySmallTargetCount": 3
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "classroom",
+      "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-classroom.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 1: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 2: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 3: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 4: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 5: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 6: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 7: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 8: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 9: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 10: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 11: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 12: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 13: Low",
+            "width": 22,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 14: Critical",
+            "width": 22,
+            "height": 16
+          }
+        ],
+        "verySmallTargetCount": 15
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "tomorrow-plan",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-tomorrow-plan.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "complexity-forecast",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&tool=complexity-forecast&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-complexity-forecast.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "week",
+      "url": "http://localhost:5173/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-week.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "differentiate",
+      "url": "http://localhost:5173/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-differentiate.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "language-tools",
+      "url": "http://localhost:5173/?demo=true&tab=prep&tool=language-tools&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-language-tools.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Scroll roster right",
+            "width": 30,
+            "height": 30
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Dismiss hint",
+            "width": 24,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 3
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "log-intervention",
+      "url": "http://localhost:5173/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-log-intervention.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "ea-briefing",
+      "url": "http://localhost:5173/?demo=true&tab=ops&tool=ea-briefing&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-ea-briefing.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "ea-load",
+      "url": "http://localhost:5173/?demo=true&tab=ops&tool=ea-load&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-ea-load.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "survival-packet",
+      "url": "http://localhost:5173/?demo=true&tab=ops&tool=survival-packet&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-survival-packet.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "family-message",
+      "url": "http://localhost:5173/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-family-message.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Scroll roster right",
+            "width": 30,
+            "height": 30
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Dismiss hint",
+            "width": 24,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 3
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "support-patterns",
+      "url": "http://localhost:5173/?demo=true&tab=review&tool=support-patterns&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-support-patterns.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Scroll roster right",
+            "width": 30,
+            "height": 30
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Dismiss hint",
+            "width": 24,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 3
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "usage-insights",
+      "url": "http://localhost:5173/?demo=true&tab=review&tool=usage-insights&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/desktop-usage-insights.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nCollapse\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\n⌄\nToday\nDo this now\nClassroom\nRoom view\nTomorrow\nPlan tomorrow\nWeek\nWeek map\nPrep\nAdapt lesson\nOps\nLog note\nReview\nMessage family\n15\n",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 1440,
+        "scrollWidth": 1440,
+        "bodyScrollWidth": 1440,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Collapse navigation rail",
+            "width": 26,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 1
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "today",
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/tablet-today.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nToday\n\n10:00–10:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Farid\n\nMorning tri",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "classroom",
+      "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/tablet-classroom.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing needs attention. Start wit",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 1: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 2: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 3: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 4: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 5: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 6: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 7: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 8: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 9: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 10: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 11: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 12: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 13: Low",
+            "width": 36,
+            "height": 16
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Day 14: Critical",
+            "width": 36,
+            "height": 16
+          }
+        ],
+        "verySmallTargetCount": 14
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "tomorrow-plan",
+      "url": "http://localhost:5173/?demo=true&tab=tomorrow&tool=tomorrow-plan&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/tablet-tomorrow-plan.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nTOMORROW COMMAND\nPlan, forecast, and carry-forward queue\n\nStart with the support plan, confirm block risk, then f",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "differentiate",
+      "url": "http://localhost:5173/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/tablet-differentiate.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep ",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "ea-load",
+      "url": "http://localhost:5173/?demo=true&tab=ops&tool=ea-load&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/tablet-ea-load.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the r",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "family-message",
+      "url": "http://localhost:5173/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/tablet-family-message.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nGrade 3-4 cross curricular\n⌄\nROLE\nTeacher\n⌄\nSEARCH OR ASK PRAIRIE\n⌘K\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring pa",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 768,
+        "scrollWidth": 768,
+        "bodyScrollWidth": 768,
+        "activeTabCount": 2,
+        "verySmallTargets": [
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Scroll roster right",
+            "width": 30,
+            "height": 30
+          },
+          {
+            "tag": "BUTTON",
+            "inputType": "",
+            "text": "Dismiss hint",
+            "width": 24,
+            "height": 36
+          }
+        ],
+        "verySmallTargetCount": 2
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "today",
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/mobile-today.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nToday\n\n10:00–10:45 is today's real test.\n\nDO THIS NOW\nMorning triage\nStart morning triage with Farid\n\nMorning triag",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "classroom",
+      "url": "http://localhost:5173/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/mobile-classroom.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nCLASSROOM COMMAND\nRoom view\nRead the room, then choose the lens.\n\nGrade 3-4 is showing needs attention. Start with ",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "differentiate",
+      "url": "http://localhost:5173/?demo=true&tab=prep&tool=differentiate&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/mobile-differentiate.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nPREP COMMAND\nPrepare the material before it reaches the room.\n\nStart with artifact, context, and readiness. Keep th",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "log-intervention",
+      "url": "http://localhost:5173/?demo=true&tab=ops&tool=log-intervention&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/mobile-log-intervention.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nOPS COMMAND\nCoordinate the adults without losing the thread.\n\nCapture today's evidence, brief the adults in the roo",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "family-message",
+      "url": "http://localhost:5173/?demo=true&tab=review&tool=family-message&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-final-app-e2e-app-only/playwright/screenshots/mobile-family-message.png",
+      "metrics": {
+        "title": "PrairieClassroom OS",
+        "bodySample": "Skip to main content\nPrairieClassroom\nOS\nGrade 3-4 cross curricular\n⌄\nTeacher\nSEARCH OR ASK PRAIRIE\nDARK\nREVIEW COMMAND\nTurn classroom memory into accountable follow-through.\n\nMove from open communication, recurring patt",
+        "hasRouteLabel": true,
+        "frameworkOverlay": false,
+        "innerWidth": 390,
+        "scrollWidth": 390,
+        "bodyScrollWidth": 390,
+        "activeTabCount": 2,
+        "verySmallTargets": [],
+        "verySmallTargetCount": 0
+      }
+    }
+  ],
+  "failures": [],
+  "console": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "badResponses": []
+}

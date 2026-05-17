@@ -1944,6 +1944,11 @@ button.viz-recency__row:focus-visible {
   background: var(--color-warning);
 }
 
+.viz-int-timeline__dot-hit {
+  fill: transparent;
+  pointer-events: all;
+}
+
 /* ── 16. Follow-Up Success Rate ── */
 
 .viz-followup-rate {

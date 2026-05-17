@@ -1,0 +1,144 @@
+{
+  "createdAt": "2026-05-17T13:16:39.178Z",
+  "backend": "iab",
+  "eval": {
+    "activeNav": "TodayDo this now",
+    "demoApi": "prairie-static-demo-api",
+    "hasUndefinedNullNaNText": false,
+    "headings": [
+      "Today",
+      "Today",
+      "Start morning triage with Amira",
+      "What to watch next",
+      "Today's Shape"
+    ],
+    "horizontalOverflowPx": 0,
+    "modalOpen": false,
+    "title": "PrairieClassroom OS",
+    "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+    "visibleButtons": [
+      {
+        "tag": "a",
+        "text": "Skip to main content"
+      },
+      {
+        "tag": "button",
+        "text": "Collapse"
+      },
+      {
+        "tag": "button",
+        "text": "Active classroomGrade 3-4 cross curricular⌄"
+      },
+      {
+        "tag": "button",
+        "text": "RoleTeacher⌄"
+      },
+      {
+        "tag": "button",
+        "text": "TodayDo this now"
+      },
+      {
+        "tag": "button",
+        "text": "ClassroomRoom view"
+      },
+      {
+        "tag": "button",
+        "text": "TomorrowPlan tomorrow"
+      },
+      {
+        "tag": "button",
+        "text": "WeekWeek map"
+      },
+      {
+        "tag": "button",
+        "text": "PrepAdapt lesson"
+      },
+      {
+        "tag": "button",
+        "text": "OpsLog note1"
+      },
+      {
+        "tag": "button",
+        "text": "ReviewMessage family"
+      },
+      {
+        "tag": "button",
+        "text": "Draft Amira message"
+      },
+      {
+        "tag": "button",
+        "text": "1InterventionsOn track"
+      },
+      {
+        "tag": "button",
+        "text": "0AssessmentsNone due today"
+      },
+      {
+        "tag": "button",
+        "text": "1Communications1 urgent"
+      },
+      {
+        "tag": "button",
+        "text": "1Plan adjustmentsThis week"
+      },
+      {
+        "tag": "button",
+        "text": "3Materials prepThis week"
+      },
+      {
+        "tag": "button",
+        "text": "AMAmiraWatchVocabulary preview and family praise"
+      },
+      {
+        "tag": "button",
+        "text": "BRBrodyWatchAfter-lunch transition support"
+      },
+      {
+        "tag": "button",
+        "text": "DADaniyalWatchRoutine and picture-cue support"
+      },
+      {
+        "tag": "button",
+        "text": "IMImaniMonitorVocabulary preview pattern should be converted into a…"
+      },
+      {
+        "tag": "button",
+        "text": "Show day detail+"
+      },
+      {
+        "tag": "button",
+        "text": "All3"
+      },
+      {
+        "tag": "button",
+        "text": "Urgent3"
+      },
+      {
+        "tag": "button",
+        "text": "Stale0"
+      },
+      {
+        "tag": "button",
+        "text": "More▾"
+      },
+      {
+        "tag": "button",
+        "text": "Brody22 threads"
+      },
+      {
+        "tag": "button",
+        "text": "Amira33 threads"
+      },
+      {
+        "tag": "button",
+        "text": "Elena11 thread"
+      },
+      {
+        "tag": "button",
+        "text": "Jump to Tomorrow Plan"
+      }
+    ]
+  },
+  "consoleWarningsOrErrors": [],
+  "screenshot": "capture failed: Timed out running CDP command \"Page.captureScreenshot\" for tab 1"
+}

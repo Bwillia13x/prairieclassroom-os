@@ -395,6 +395,17 @@
     align-items: flex-start;
     padding: var(--space-3);
   }
+
+  .health-bar .viz-complexity-cal__grid {
+    grid-template-columns: repeat(7, minmax(2rem, 1fr));
+  }
+
+  .health-bar .viz-complexity-cal__cell,
+  .health-bar .viz-complexity-cal__cell--clickable {
+    min-width: 2rem;
+    height: 2rem;
+    min-height: 2rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

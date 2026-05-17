@@ -185,7 +185,7 @@ Update [docs/eval-baseline.md](../eval-baseline.md) Ollama section. Update [docs
 ### Backup
 Always export the 2:40 tight cut as a parallel deliverable. The 3:00 cut is preferred; the tight cut is insurance.
 
-**Update 2026-05-17:** the local submission MP4 `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` passes QA at 120.043 seconds, 1920x1080, 30 fps. The public YouTube URL is still pending and remains a publication blocker.
+**Update 2026-05-17:** the local submission MP4 `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4` passes QA at 120.043 seconds, 1920x1080, 30 fps. The narration-ready `qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11-voiceover.mp4` also passes QA at 120.021 seconds, 1920x1080, 30 fps; see [../evidence/2026-05-17-video-upload-candidates.md](../evidence/2026-05-17-video-upload-candidates.md). The public YouTube URL is still pending and remains a publication blocker.
 
 ---
 

@@ -1,0 +1,215 @@
+{
+  "createdAt": "2026-05-17T13:28:18.114Z",
+  "backend": "chrome-extension",
+  "profile": "Person 1",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "routes": [
+    {
+      "activeNav": "TodayDo this now",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [
+        "Today",
+        "Today",
+        "Start morning triage with Amira",
+        "What to watch next",
+        "Today's Shape"
+      ],
+      "horizontalOverflowPx": 0,
+      "label": "today",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-today.png"
+    },
+    {
+      "activeNav": "ClassroomRoom view",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [],
+      "horizontalOverflowPx": 0,
+      "label": "classroom",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-classroom.png"
+    },
+    {
+      "activeNav": "TomorrowPlan tomorrow",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [],
+      "horizontalOverflowPx": 0,
+      "label": "tomorrow-plan",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-tomorrow-plan.png"
+    },
+    {
+      "activeNav": "WeekWeek map",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [],
+      "horizontalOverflowPx": 0,
+      "label": "week",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-week.png"
+    },
+    {
+      "activeNav": "PrepAdapt lesson",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [],
+      "horizontalOverflowPx": 0,
+      "label": "prep-differentiate",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-prep-differentiate.png"
+    },
+    {
+      "activeNav": "OpsLog note1",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [],
+      "horizontalOverflowPx": 0,
+      "label": "ops-ea-briefing",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-briefing",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-ops-ea-briefing.png"
+    },
+    {
+      "activeNav": "ReviewMessage family",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [],
+      "horizontalOverflowPx": 0,
+      "label": "review-family-message",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-review-family-message.png"
+    }
+  ],
+  "workflows": {
+    "differentiate": {
+      "activeNav": "PrepAdapt lesson",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [
+        "Prepare the material before it reaches the room.",
+        "Prep lane",
+        "Build Lesson Variants",
+        "Start with what you have",
+        "Four ways in. One learning goal."
+      ],
+      "horizontalOverflowPx": 0,
+      "label": "workflow-differentiate-generated",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-workflow-differentiate-generated.png"
+    },
+    "familyMessageApproval": {
+      "activeNav": "ReviewMessage family",
+      "clippedText": [],
+      "demoApi": "prairie-static-demo-api",
+      "hasUndefinedNullNaNText": false,
+      "headings": [
+        "Turn classroom memory into accountable follow-through.",
+        "Review lane",
+        "Draft Family Messages",
+        "Compose family message",
+        "Draft Message",
+        "Review approval"
+      ],
+      "horizontalOverflowPx": 0,
+      "label": "workflow-family-message-approval-dialog",
+      "modalOpen": false,
+      "title": "PrairieClassroom OS",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+      "screenshot": "/Users/benjaminwilliams/Prairie_Complexity/prairieclassroom-predev/qa/final-release/2026-05-17-chrome-plugin-bugcheck/screenshots/chrome-workflow-family-message-approval-dialog.png"
+    }
+  },
+  "consoleWarningsOrErrors": [
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T13:27:23.134Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T13:27:23.138Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T13:27:23.138Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T13:27:23.138Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    {
+      "level": "error",
+      "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+      "timestamp": "2026-05-17T13:27:23.138Z",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    }
+  ],
+  "failures": [
+    {
+      "type": "console-warning-or-error",
+      "issues": [
+        {
+          "level": "error",
+          "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+          "timestamp": "2026-05-17T13:27:23.134Z",
+          "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+        },
+        {
+          "level": "error",
+          "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+          "timestamp": "2026-05-17T13:27:23.138Z",
+          "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+        },
+        {
+          "level": "error",
+          "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+          "timestamp": "2026-05-17T13:27:23.138Z",
+          "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+        },
+        {
+          "level": "error",
+          "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+          "timestamp": "2026-05-17T13:27:23.138Z",
+          "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+        },
+        {
+          "level": "error",
+          "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+          "timestamp": "2026-05-17T13:27:23.138Z",
+          "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+        }
+      ]
+    }
+  ]
+}
