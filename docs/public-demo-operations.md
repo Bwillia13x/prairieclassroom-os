@@ -27,6 +27,8 @@ The submission window for this work is Phase F of [plans/2026-05-18-submission-p
 
 `npm run submission:final-check -- --skip-release-gate` currently remains blocked by the missing public YouTube and Kaggle writeup/submission URLs. The full no-skip submission gate must remain blocked until all final public links are real and reachable.
 
+Use [cellular-smoke-checklist.md](./cellular-smoke-checklist.md) to close the physical cellular-browser smoke item without confusing it with desktop HTTP reachability or emulated mobile checks.
+
 ## Hosting Findings (2026-05-12 to 2026-05-17)
 
 - Render deployment was completed through the authenticated Render dashboard, then verified through the Render CLI after the dashboard device login completed.

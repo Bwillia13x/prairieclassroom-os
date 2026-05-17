@@ -99,7 +99,7 @@ These are required for an actual competition submission but cannot be completed 
 **Phase F — live demo deploy (target window 2026-05-11 → 2026-05-12):**
 
 13. Run `npm run submission:publish-preflight`; the orchestrator + inference Render services and Vercel `VITE_API_URL` production build now exist, but preflight remains blocked until the public video and Kaggle URLs are real.
-14. Run `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo`, then smoke from cellular. External HTTP reachability was confirmed on 2026-05-14; use cellular to catch mobile-carrier/device issues that HTTP reachability cannot prove.
+14. Run `PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app npm run smoke:public-demo`, then smoke from cellular using [cellular-smoke-checklist.md](./cellular-smoke-checklist.md). External HTTP reachability was confirmed on 2026-05-14; use cellular to catch mobile-carrier/device issues that HTTP reachability cannot prove.
 15. Verify `/?demo=true` lands directly on Today and at least one generation completes end-to-end.
 
 **Phase G — verification (target window 2026-05-14 → 2026-05-16):**
