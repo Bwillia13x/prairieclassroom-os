@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-05-17T07:04:13.166Z",
+  "createdAt": "2026-05-17T10:10:55.825Z",
   "baseUrl": "https://prairieclassroom-os.vercel.app",
   "checks": {
     "rootLanding": {
@@ -50,20 +50,20 @@
       "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
       "timing": {
         "type": "navigate",
-        "domContentLoadedEventEnd": 102,
-        "loadEventEnd": 103,
-        "duration": 103,
+        "domContentLoadedEventEnd": 111,
+        "loadEventEnd": 112,
+        "duration": 112,
         "transferSize": 300,
         "decodedBodySize": 1991
       },
       "paint": [
         {
           "name": "first-paint",
-          "startTime": 116
+          "startTime": 128
         },
         {
           "name": "first-contentful-paint",
-          "startTime": 116
+          "startTime": 128
         }
       ],
       "resourceCount": 22
@@ -73,20 +73,20 @@
       "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
       "timing": {
         "type": "navigate",
-        "domContentLoadedEventEnd": 105,
-        "loadEventEnd": 106,
-        "duration": 106,
-        "transferSize": 1093,
+        "domContentLoadedEventEnd": 101,
+        "loadEventEnd": 102,
+        "duration": 102,
+        "transferSize": 1096,
         "decodedBodySize": 1991
       },
       "paint": [
         {
           "name": "first-paint",
-          "startTime": 128
+          "startTime": 116
         },
         {
           "name": "first-contentful-paint",
-          "startTime": 128
+          "startTime": 116
         }
       ],
       "resourceCount": 26

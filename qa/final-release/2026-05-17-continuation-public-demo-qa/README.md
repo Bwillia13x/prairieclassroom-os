@@ -5,7 +5,7 @@ Focused live Vercel browser QA for the active submission-readiness goal.
 ## Command
 
 ```bash
-source ~/.nvm/nvm.sh && nvm use >/dev/null && PRAIRIE_QA_OUT_DIR=qa/final-release/2026-05-17-continuation-public-demo-qa node qa/final-release/2026-05-16-pre-submit-e2e/public-demo-check.mjs
+source ~/.nvm/nvm.sh && nvm use >/dev/null && PRAIRIE_QA_OUT_DIR=qa/final-release/2026-05-17-continuation-public-demo-qa PRAIRIE_PUBLIC_DEMO_URL=https://prairieclassroom-os.vercel.app node qa/final-release/2026-05-16-pre-submit-e2e/public-demo-check.mjs
 ```
 
 ## Result
@@ -24,7 +24,7 @@ Evidence:
 
 Covered checks:
 
-- public root renders the first-entry PrairieClassroom OS landing page
+- public root renders the first-entry PrairieClassroom OS landing page with the classroom hero image loaded
 - root CTA enters `?demo=true&tab=today&classroom=demo-okafor-grade34`
 - canonical Today route exposes `documentElement.dataset.demoApi === "prairie-static-demo-api"`
 - static Differentiate generation completes with the static-demo fallback label
