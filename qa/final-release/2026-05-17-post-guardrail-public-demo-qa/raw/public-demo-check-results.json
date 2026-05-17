@@ -1,0 +1,122 @@
+{
+  "createdAt": "2026-05-17T10:45:20.012Z",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "checks": {
+    "rootLanding": {
+      "title": "PrairieClassroom OS",
+      "ctaText": "Enter PrairieClassroom",
+      "hero": {
+        "currentSrc": "https://prairieclassroom-os.vercel.app/brand/landing/prairieclassroom-landing-hero-1672.webp",
+        "naturalWidth": 1440,
+        "naturalHeight": 810
+      }
+    },
+    "rootCta": {
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    "staticFirst": {
+      "marker": "prairie-static-demo-api"
+    },
+    "staticGeneratedLabel": {
+      "marker": "prairie-static-demo-api",
+      "labelPresent": true
+    },
+    "rootLandingMobile": {
+      "hero": {
+        "currentSrc": "https://prairieclassroom-os.vercel.app/brand/landing/prairieclassroom-landing-hero-800.webp",
+        "naturalWidth": 393,
+        "naturalHeight": 221
+      }
+    }
+  },
+  "layout": [
+    {
+      "label": "public-root-desktop",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-canonical-today-desktop",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-static-differentiate-generated",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-root-mobile",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "public-canonical-today-mobile",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    }
+  ],
+  "performance": [
+    {
+      "label": "public-canonical-today",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+      "timing": {
+        "type": "navigate",
+        "domContentLoadedEventEnd": 103,
+        "loadEventEnd": 104,
+        "duration": 104,
+        "transferSize": 300,
+        "decodedBodySize": 1991
+      },
+      "paint": [
+        {
+          "name": "first-paint",
+          "startTime": 120
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 120
+        }
+      ],
+      "resourceCount": 22
+    },
+    {
+      "label": "public-static-differentiate-generated",
+      "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+      "timing": {
+        "type": "navigate",
+        "domContentLoadedEventEnd": 106,
+        "loadEventEnd": 106,
+        "duration": 106,
+        "transferSize": 1098,
+        "decodedBodySize": 1991
+      },
+      "paint": [
+        {
+          "name": "first-paint",
+          "startTime": 124
+        },
+        {
+          "name": "first-contentful-paint",
+          "startTime": 124
+        }
+      ],
+      "resourceCount": 26
+    }
+  ],
+  "logs": {
+    "desktop": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": []
+    },
+    "mobile": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": []
+    }
+  },
+  "layoutFailures": []
+}
