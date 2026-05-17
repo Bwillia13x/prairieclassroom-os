@@ -70,15 +70,17 @@ export function PlanStreakCalendar({ plans14d, onSegmentClick }: PlanStreakCalen
             const dayIndex = idx - dataOffset;
             const isPlanned = val === 1;
             const ariaLabel = `Day ${dayIndex + 1}: ${isPlanned ? "Planned" : "Missed"}`;
+            const hitSize = 44;
+            const hitOffset = (hitSize - cellSize) / 2;
             return (
               <g key={idx}>
                 {baseRect}
                 <rect
-                  x={x}
-                  y={y}
-                  width={cellSize}
-                  height={cellSize}
-                  rx={3}
+                  x={x - hitOffset}
+                  y={y - hitOffset}
+                  width={hitSize}
+                  height={hitSize}
+                  rx={8}
                   fill="transparent"
                   className="viz-plan-streak__cell--clickable"
                   role="button"

@@ -485,7 +485,7 @@ export default function DayArc({
                 i === ridge.length - 1
                   ? VIEW_W - PAD_X
                   : (p.x + ridge[i + 1].x) / 2;
-              const hitW = Math.max(96, hitRight - hitLeft);
+              const hitW = Math.max(124, hitRight - hitLeft);
               const hitX = p.x - hitW / 2;
               // Audit #10: compose a rich SVG-native tooltip so a hover
               // reveals time, activity, level, and mitigation on the
@@ -623,7 +623,7 @@ export default function DayArc({
                     className="day-arc__star-hit"
                     cx={s.x}
                     cy={s.y}
-                    r={Math.max(44, s.radius + 7)}
+                    r={Math.max(64, s.radius + 7)}
                     fill="transparent"
                   />
                 )}

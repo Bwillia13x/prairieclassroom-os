@@ -286,7 +286,7 @@
 
 .operating-summary-card__header button,
 .operating-summary-card__header > span {
-  min-height: var(--control-h-xs);
+  min-height: var(--control-h-md);
   padding: 0 var(--space-2-5);
   border: 0;
   border-radius: var(--radius-pill);

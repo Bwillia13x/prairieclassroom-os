@@ -2818,6 +2818,18 @@ button.viz-recency__row:focus-visible {
     min-width: var(--control-h-md);
     min-height: var(--control-h-md);
   }
+
+  .health-bar .viz-complexity-cal__grid {
+    grid-template-columns: repeat(14, var(--control-h-md));
+    overflow-x: auto;
+    padding-bottom: var(--space-1);
+  }
+
+  .health-bar .viz-complexity-cal__cell--clickable {
+    width: var(--control-h-md);
+    min-width: var(--control-h-md);
+    height: var(--control-h-md);
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {
