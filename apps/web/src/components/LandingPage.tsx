@@ -8,14 +8,27 @@ interface LandingPageProps {
 export default function LandingPage({ demoRoute }: LandingPageProps) {
   return (
     <main className="landing-page" aria-labelledby="landing-title">
-      <img
-        className="landing-page__image"
-        src="/brand/landing/prairieclassroom-landing-hero.png"
-        alt=""
-        aria-hidden="true"
-        decoding="async"
-        loading="eager"
-      />
+      <picture aria-hidden="true">
+        <source
+          type="image/webp"
+          srcSet={[
+            "/brand/landing/prairieclassroom-landing-hero-800.webp 800w",
+            "/brand/landing/prairieclassroom-landing-hero-1200.webp 1200w",
+            "/brand/landing/prairieclassroom-landing-hero-1672.webp 1672w",
+          ].join(", ")}
+          sizes="100vw"
+        />
+        <img
+          className="landing-page__image"
+          src="/brand/landing/prairieclassroom-landing-hero.png"
+          alt=""
+          width={1672}
+          height={941}
+          decoding="async"
+          fetchPriority="high"
+          loading="eager"
+        />
+      </picture>
       <div className="landing-page__scrim" aria-hidden="true" />
       <div className="landing-page__shell">
         <header className="landing-page__header" aria-label="PrairieClassroom OS">

@@ -52,6 +52,18 @@ async function waitForLandingHero(page) {
       && Number.isFinite(zIndex)
       && zIndex >= 0;
   }, null, { timeout: 20_000 });
+  const hero = await page.evaluate(() => {
+    const image = document.querySelector(".landing-page__image");
+    if (!(image instanceof HTMLImageElement)) return null;
+    return {
+      currentSrc: image.currentSrc || image.src,
+      naturalWidth: image.naturalWidth,
+      naturalHeight: image.naturalHeight,
+    };
+  });
+  assert.ok(hero, "Landing hero image should be present");
+  assert.match(hero.currentSrc, /\.webp(?:$|\?)/, "Chromium public QA should load the optimized WebP hero");
+  return hero;
 }
 
 async function auditLayout(page, label) {
@@ -132,12 +144,13 @@ async function main() {
     await desktopPage.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await desktopPage.getByRole("heading", { name: "PrairieClassroom OS" }).waitFor({ timeout: 20_000 });
     await desktopPage.getByRole("link", { name: "Enter PrairieClassroom" }).waitFor({ timeout: 10_000 });
-    await waitForLandingHero(desktopPage);
+    const desktopHero = await waitForLandingHero(desktopPage);
     await desktopPage.screenshot({ path: path.join(SHOTS, "public-root-desktop.png"), fullPage: true, animations: "disabled" });
     results.layout.push(await auditLayout(desktopPage, "public-root-desktop"));
     results.checks.rootLanding = {
       title: await desktopPage.title(),
       ctaText: "Enter PrairieClassroom",
+      hero: desktopHero,
     };
 
     await desktopPage.getByRole("link", { name: "Enter PrairieClassroom" }).click();
@@ -178,9 +191,12 @@ async function main() {
 
     await mobilePage.goto(BASE_URL, { waitUntil: "domcontentloaded", timeout: 60_000 });
     await mobilePage.getByRole("heading", { name: "PrairieClassroom OS" }).waitFor({ timeout: 20_000 });
-    await waitForLandingHero(mobilePage);
+    const mobileHero = await waitForLandingHero(mobilePage);
     await mobilePage.screenshot({ path: path.join(SHOTS, "public-root-mobile.png"), fullPage: true, animations: "disabled" });
     results.layout.push(await auditLayout(mobilePage, "public-root-mobile"));
+    results.checks.rootLandingMobile = {
+      hero: mobileHero,
+    };
 
     await mobilePage.goto(demoUrl("today"), { waitUntil: "domcontentloaded", timeout: 60_000 });
     await waitForApp(mobilePage, "today");
