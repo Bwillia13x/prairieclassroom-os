@@ -18,8 +18,8 @@ const DOC_UPDATES = [
     pattern: /^-\s*Publication gate:/i,
     buildLine: () => [
       "- Publication gate: final public links are recorded; rerun ",
-      "`npm run submission:final-check -- --skip-release-gate` to verify public-link health ",
-      "and public demo smoke before publishing.",
+      "`npm run submission:final-check -- --skip-release-gate` to verify public-link health, ",
+      "cellular smoke evidence, and public demo smoke before publishing.",
     ].join(""),
   },
   {
@@ -54,10 +54,8 @@ const DOC_UPDATES = [
   {
     relPath: "docs/hackathon-submission-checklist.md",
     pattern: /^-\s*Live demo deploy:/i,
-    buildLine: ({ previousLine }) => replaceExpectedText({
+    buildLine: ({ previousLine }) => replaceSubmissionUrlStatus({
       previousLine,
-      expectedPattern: /Public video and Kaggle submission URLs are still missing; true cellular-browser smoke is still pending\./,
-      replacement: "Public video and Kaggle submission URLs are recorded; true cellular-browser smoke is still pending.",
       relPath: "docs/hackathon-submission-checklist.md",
     }),
   },
@@ -71,20 +69,19 @@ const DOC_UPDATES = [
   },
   {
     relPath: "docs/public-demo-operations.md",
-    pattern: /^-\s*\*\*Not yet complete:\*\*/i,
-    buildLine: ({ videoUrl, kaggleUrl }) => [
-      "- **Not yet complete:** true cellular-browser smoke remains pending. ",
-      `Public video URL recorded: ${videoUrl}; Kaggle URL recorded: ${kaggleUrl}. `,
-      "Vercel production stores the server-side `PRAIRIE_GEMINI_API_KEY` and ",
-      "`PRAIRIE_ENABLE_GEMINI_RUNS` values as encrypted env vars, but those values are not browser-exposed.",
-    ].join(""),
+    pattern: /^-\s*\*\*(Not yet complete|Verified):\*\*.*(public video URL|Kaggle URL|true cellular-browser smoke)/i,
+    buildLine: ({ videoUrl, kaggleUrl, previousLine }) => buildPublicDemoOperationsLine({
+      previousLine,
+      videoUrl,
+      kaggleUrl,
+    }),
   },
   {
     relPath: "docs/public-demo-operations.md",
     pattern: /^`npm run submission:final-check -- --skip-release-gate`/i,
     buildLine: () => [
       "`npm run submission:final-check -- --skip-release-gate` verifies publication placeholders, ",
-      "public-link health, and public demo smoke after final public links are applied. ",
+      "public-link health, cellular smoke evidence, and public demo smoke after final public links are applied. ",
       "Run the full no-skip submission gate once the release-gate artifact should also be refreshed.",
     ].join(""),
   },
@@ -95,7 +92,7 @@ const DOC_UPDATES = [
       "- After final links are applied, ",
       "`source ~/.nvm/nvm.sh && nvm use --silent 25.8.2 && set -a && source .env && set +a && npm run submission:publish-preflight` ",
       "is the compact publication preflight for local, GitHub, Vercel, Render, hosted-Gemma-env, live-demo, ",
-      "public video, and Kaggle writeup checks.",
+      "public video, and Kaggle writeup checks. The full final gate still checks cellular smoke evidence.",
     ].join(""),
   },
   {
@@ -106,7 +103,7 @@ const DOC_UPDATES = [
       "`render.yaml`, `apps/web/vercel.json`, final MP4, upstream configuration, Vercel CLI availability, ",
       "Vercel project link, Render availability, hosted Gemma env checks when `.env` is exported, ",
       "public live demo URL, public video URL, and Kaggle writeup URL. The no-skip publication gate ",
-      "must be rerun after final links are real.",
+      "must be rerun after final links are real and cellular smoke evidence is recorded.",
     ].join(""),
   },
 ];
@@ -156,6 +153,54 @@ function replaceExpectedText({ previousLine, expectedPattern, replacement, relPa
     throw new Error(`${relPath}: matching line did not contain expected stale publication text`);
   }
   return nextLine;
+}
+
+const CELLULAR_SMOKE_VERIFIED_PATTERN = /true cellular-browser smoke verified[^.]*\./i;
+
+function sentenceCase(value) {
+  return value ? value[0].toUpperCase() + value.slice(1) : value;
+}
+
+function extractCellularSmokeEvidence(line) {
+  const match = line.match(CELLULAR_SMOKE_VERIFIED_PATTERN);
+  return match ? sentenceCase(match[0]) : "";
+}
+
+function replaceSubmissionUrlStatus({ previousLine, relPath }) {
+  if (/Public video and Kaggle submission URLs are recorded/i.test(previousLine)) {
+    return previousLine;
+  }
+
+  return replaceExpectedText({
+    previousLine,
+    expectedPattern: /Public video and Kaggle submission URLs are still missing;/i,
+    replacement: "Public video and Kaggle submission URLs are recorded;",
+    relPath,
+  });
+}
+
+function buildPublicDemoOperationsLine({ previousLine, videoUrl, kaggleUrl }) {
+  const cellularEvidence = extractCellularSmokeEvidence(previousLine);
+  const credentialSentence = [
+    "Vercel production stores the server-side `PRAIRIE_GEMINI_API_KEY` and ",
+    "`PRAIRIE_ENABLE_GEMINI_RUNS` values as encrypted env vars, but those values are not browser-exposed.",
+  ].join("");
+
+  if (cellularEvidence) {
+    return [
+      "- **Verified:** public video URL, Kaggle URL, and true cellular-browser smoke are recorded. ",
+      `Public video URL recorded: ${videoUrl}; Kaggle URL recorded: ${kaggleUrl}. `,
+      cellularEvidence,
+      " ",
+      credentialSentence,
+    ].join("");
+  }
+
+  return [
+    "- **Not yet complete:** true cellular-browser smoke remains pending. ",
+    `Public video URL recorded: ${videoUrl}; Kaggle URL recorded: ${kaggleUrl}. `,
+    credentialSentence,
+  ].join("");
 }
 
 export async function applySubmissionLinks({

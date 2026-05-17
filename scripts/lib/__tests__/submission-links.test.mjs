@@ -88,7 +88,7 @@ describe("submission link application", () => {
       assert.match(operations, /Public video URL recorded: https:\/\/www\.youtube\.com\/watch\?v=example/);
       assert.match(operations, /Kaggle URL recorded: https:\/\/www\.kaggle\.com\/competitions\/gemma-4-good\/discussion\/example/);
       assert.match(operations, /true cellular-browser smoke remains pending/);
-      assert.match(operations, /verifies publication placeholders, public-link health, and public demo smoke/);
+      assert.match(operations, /verifies publication placeholders, public-link health, cellular smoke evidence, and public demo smoke/);
 
       const validation = validatePublicationPlaceholders({ rootDir });
       assert.equal(validation.ok, false);

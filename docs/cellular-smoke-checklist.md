@@ -43,12 +43,20 @@ Save these details in the final submission closeout note:
 
 ## After It Passes
 
-Do not remove the public-video or Kaggle URL blockers unless those links are also real. After cellular smoke passes, update the relevant status lines in:
+Do not remove the public-video or Kaggle URL blockers unless those links are also real. After cellular smoke passes, record the evidence with the guarded helper instead of hand-editing status lines:
 
-- `docs/hackathon-submission-checklist.md`
-- `docs/public-demo-operations.md`
+```bash
+npm run submission:record-cellular-smoke -- \
+  --result pass \
+  --checked-at '<date/time with timezone>' \
+  --device '<phone model>' \
+  --browser '<browser>' \
+  --carrier '<carrier/network>' \
+  --screenshots '<paths or screenshot note>' \
+  --notes '<brief observation>'
+```
 
-Then run:
+Then rerun the public demo smoke:
 
 ```bash
 source ~/.nvm/nvm.sh && nvm use --silent 25.8.2
