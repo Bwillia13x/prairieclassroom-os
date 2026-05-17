@@ -92,6 +92,39 @@ describe("submission link application", () => {
     }
   });
 
+  it("does not partially update docs when a later required line is missing", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-links-no-partial-"));
+    try {
+      await seedSubmissionDocs(rootDir);
+      await seedFile(
+        rootDir,
+        "docs/hackathon-submission-checklist.md",
+        [
+          "# Hackathon Submission Checklist",
+          "- Different line: missing the public-video script marker",
+        ].join("\n"),
+      );
+      const copyPackPath = path.join(rootDir, "docs/submission-copy-pack.md");
+      const pasteBlockPath = path.join(rootDir, "docs/kaggle-paste-block.md");
+      const copyPackBefore = await readFile(copyPackPath, "utf8");
+      const pasteBlockBefore = await readFile(pasteBlockPath, "utf8");
+
+      await assert.rejects(
+        () => applySubmissionLinks({
+          rootDir,
+          videoUrl: "https://youtu.be/example",
+          kaggleUrl: "https://www.kaggle.com/competitions/gemma-4-good/discussion/example",
+        }),
+        /docs\/hackathon-submission-checklist\.md: expected exactly one matching line, found 0/,
+      );
+
+      assert.equal(await readFile(copyPackPath, "utf8"), copyPackBefore);
+      assert.equal(await readFile(pasteBlockPath, "utf8"), pasteBlockBefore);
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
   it("rejects missing or wrong-domain final links", () => {
     assert.deepEqual(validateSubmissionLinks({}), [
       "Missing --video-url",

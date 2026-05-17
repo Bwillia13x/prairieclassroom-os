@@ -74,7 +74,7 @@ export async function applySubmissionLinks({
     throw new Error(issues.join("\n"));
   }
 
-  const changes = [];
+  const pendingWrites = [];
   for (const update of DOC_UPDATES) {
     const absolutePath = path.join(rootDir, update.relPath);
     const content = await readFile(absolutePath, "utf8");
@@ -87,16 +87,27 @@ export async function applySubmissionLinks({
     });
 
     if (result.previousLine !== result.nextLine) {
-      changes.push({
+      pendingWrites.push({
         relPath: update.relPath,
+        absolutePath,
+        content: result.content,
         previousLine: result.previousLine,
         nextLine: result.nextLine,
       });
-      if (!dryRun) {
-        await writeFile(absolutePath, result.content, "utf8");
-      }
     }
   }
+
+  if (!dryRun) {
+    for (const pending of pendingWrites) {
+      await writeFile(pending.absolutePath, pending.content, "utf8");
+    }
+  }
+
+  const changes = pendingWrites.map(({ relPath, previousLine, nextLine }) => ({
+    relPath,
+    previousLine,
+    nextLine,
+  }));
 
   return { dryRun, changes };
 }
