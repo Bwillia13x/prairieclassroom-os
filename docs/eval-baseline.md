@@ -5,10 +5,10 @@ Provider-specific baseline status for the local, hosted, and paid proof lanes.
 ## Mock Baseline
 
 **Status:** Passing structural gate with no paid services.
-**Run date:** 2026-05-17T00:20:51.950Z
+**Run date:** 2026-05-17T01:42:25.032Z
 **Backend:** `mock`
 **What it proves:** Typecheck, lint, Python tests, TS tests, claims check, harness smoke, API smoke, and browser smoke all pass without paid services.
-**Raw artifacts:** `output/release-gate/2026-05-17T00-18-46-562Z-13425`
+**Raw artifacts:** `output/release-gate/2026-05-17T01-40-42-582Z-66292`
 
 ### Commands
 
@@ -50,8 +50,8 @@ npm run release:gate:ollama
 **Hosted run guard:** enabled
 **Eval suite:** Hosted Gemini proof suite (13/134 cases from the full corpus).
 **Usage scope:** Synthetic/demo evaluation only.
+**Current hosted attempt:** The current hosted refresh at `output/release-gate/2026-05-17T00-36-24-280Z-35954` passed and is the current hosted synthetic/demo proof baseline.
 **Model identifiers observed:** `gemma-4-26b-a4b-it`, `gemma-4-31b-it`
-**Current hosted attempt:** latest attempted hosted Gemini gate passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; this is the current passing baseline.
 **Raw artifacts:** `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 
 ### Commands

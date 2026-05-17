@@ -6,12 +6,12 @@ The submission window is owned by [plans/2026-05-18-submission-plan.md](./plans/
 
 ## Current status
 
-Checked against the repo on 2026-05-16 after final local pre-submit, local teacher-workflow browser QA, Vercel public root/canonical demo inspection, public-demo smoke, release-gate validation, and proof/doc synchronization.
+Checked against the repo on 2026-05-17 after continued local teacher-workflow browser QA, protected-classroom fixture regression testing, Vercel public root/canonical demo inspection, public-demo smoke, release-gate validation, and proof/doc synchronization.
 
-- Mock structural gate: passing at `output/release-gate/2026-05-17T00-18-46-562Z-13425`
-- Local browser QA: `qa/final-release/2026-05-16-pre-submit-e2e/` passed cleanly after restarting the local stack with the repo-documented screenshot-proof rate-limit bypass; routes, core workflows, command palette, legacy deep links, protected negative paths with a synthetic protected fixture, and the recent-run chip source fix were exercised.
+- Mock structural gate: passing at `output/release-gate/2026-05-17T01-40-42-582Z-66292`
+- Local browser QA: `qa/final-release/2026-05-17-continued-bug-sweep/` passed after a continued bug sweep across desktop, tablet, and mobile routes; generated-output flows; command palette; focus; legacy deep links; invalid demo classroom recovery; and the protected-classroom fixture prompt, wrong-code rejection, and valid-code recovery path after the stale auth-prompt fix.
 - Public demo QA: public `smoke:public-demo` passed after the prebuilt Vercel redeploy, and `qa/final-release/2026-05-16-pre-submit-e2e/` reconfirmed root CTA, canonical static-first demo loading, `prairie-static-demo-api`, static-fallback output labels, clean console/page errors, mobile capture, route timing evidence, and zero layout failures after static Differentiate generation.
-- Local pre-submit gate: `npm run submission:final-check -- --skip-publication-check` passed 7/7 on 2026-05-16, including the mock release gate at `output/release-gate/2026-05-17T00-18-46-562Z-13425`.
+- Local pre-submit gate: `npm run submission:final-check -- --skip-publication-check --skip-release-gate` passed 6/6 on 2026-05-17 after the separate mock release gate passed at `output/release-gate/2026-05-17T01-40-42-582Z-66292`.
 - Publication gate: `npm run submission:final-check -- --skip-release-gate` still fails on publication placeholders and required URL validation until the public YouTube URL and Kaggle writeup URL are filled in. The live demo URL is now real and the gate runs `npm run smoke:public-demo` against it unless explicitly skipped.
 - Hosted Gemma 4 proof lane: current May 16 hosted refresh passed and produced a clean full hosted gate. Latest attempted hosted gate: `output/release-gate/2026-05-17T00-36-24-280Z-35954`.
 - Hosted Gemma 4 current passing baseline: passing on synthetic/demo data at `output/release-gate/2026-05-17T00-36-24-280Z-35954`.

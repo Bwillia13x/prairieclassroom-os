@@ -1,0 +1,19 @@
+{
+  "createdAt": "2026-05-17T01:36:40.809Z",
+  "baseUrl": "http://localhost:5174",
+  "apiBase": "http://localhost:3110/api",
+  "protectedClassroom": {
+    "classroom_id": "alpha-grade4",
+    "grade_band": "4",
+    "subject_focus": "literacy_and_social_studies",
+    "requires_access_code": true,
+    "is_demo": false,
+    "classroom_notes": [],
+    "students": []
+  },
+  "promptShown": true,
+  "invalidCodeRejected": true,
+  "validCodeAccepted": true,
+  "consoleErrors": [],
+  "pageErrors": []
+}

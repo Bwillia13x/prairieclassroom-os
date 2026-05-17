@@ -566,6 +566,7 @@ describe("auth challenge flow", () => {
       // Teacher-friendly copy; raw server text ("Provide X-Classroom-Code header")
       // is intentionally hidden from the UI dialog.
       message: "This classroom is protected. Enter its access code to keep going.",
+      attemptedCode: undefined,
     });
     expect(result.student_count).toBe(5);
     // Retry should include the new code
@@ -603,6 +604,12 @@ describe("auth challenge flow", () => {
     const result = await fetchTodaySnapshot("c1");
 
     expect(requestClassroomCode).toHaveBeenCalledOnce();
+    expect(requestClassroomCode).toHaveBeenCalledWith({
+      classroomId: "c1",
+      status: 403,
+      message: "That access code didn't match. Check with your lead teacher, then try again.",
+      attemptedCode: "wrong-code",
+    });
     expect(result.student_count).toBe(3);
   });
 

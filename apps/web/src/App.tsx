@@ -365,8 +365,14 @@ export default function App() {
     });
   }, [openAuthPrompt]);
 
-  const requestClassroomCode = useCallback((challenge: { classroomId: string; status: number; message: string }) => (
+  const requestClassroomCode = useCallback((challenge: { classroomId: string; status: number; message: string; attemptedCode?: string }) => (
     new Promise<string | null>((resolve) => {
+      const savedCode = classroomCodesRef.current[challenge.classroomId];
+      if (savedCode && savedCode !== challenge.attemptedCode) {
+        resolve(savedCode);
+        return;
+      }
+
       openAuthPrompt({
         classroomId: challenge.classroomId,
         message: challenge.message,

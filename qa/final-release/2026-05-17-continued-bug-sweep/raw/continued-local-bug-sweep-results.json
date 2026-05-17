@@ -1,0 +1,744 @@
+{
+  "createdAt": "2026-05-17T01:37:26.559Z",
+  "baseUrl": "http://localhost:5173",
+  "apiBase": "http://localhost:3100/api",
+  "layout": [
+    {
+      "label": "desktop-today",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-classroom",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-prep-differentiate",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-prep-language-tools",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-tomorrow-plan",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-tomorrow-forecast",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-week",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-ops-log-intervention",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-ops-ea-briefing",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-review-family-message",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-review-support-patterns",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "desktop-review-usage-insights",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-today",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-classroom",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-prep-differentiate",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-prep-language-tools",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-tomorrow-plan",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-tomorrow-forecast",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-week",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-ops-log-intervention",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-ops-ea-briefing",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-review-family-message",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-review-support-patterns",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "mobile-review-usage-insights",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-today",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-classroom",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-prep-differentiate",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-prep-language-tools",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-tomorrow-plan",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-tomorrow-forecast",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-week",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-ops-log-intervention",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-ops-ea-briefing",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-review-family-message",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-review-support-patterns",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    },
+    {
+      "label": "tablet-review-usage-insights",
+      "horizontalOverflowPx": 0,
+      "clippedText": []
+    }
+  ],
+  "interactions": {
+    "landing": {
+      "url": "http://localhost:5173/?demo=true&tab=today&classroom=demo-okafor-grade34"
+    },
+    "commandPalette": {
+      "url": "http://localhost:5173/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns"
+    },
+    "focus": {
+      "tag": "button",
+      "text": "Collapse",
+      "outlineWidth": "2px",
+      "outlineStyle": "solid",
+      "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+      "rect": {
+        "x": 222,
+        "y": 457,
+        "width": 26,
+        "height": 36
+      }
+    },
+    "differentiate": "passed",
+    "languageTools": "passed",
+    "tomorrowPlan": "passed",
+    "forecast": "passed",
+    "ops": "passed",
+    "review": "passed",
+    "deepLinks": [
+      {
+        "legacy": "tomorrow-plan",
+        "url": "http://localhost:5173/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan"
+      },
+      {
+        "legacy": "log-intervention",
+        "url": "http://localhost:5173/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention"
+      },
+      {
+        "legacy": "differentiate",
+        "url": "http://localhost:5173/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate"
+      }
+    ],
+    "invalidClassroomRecovery": {
+      "active": "demo-okafor-grade34"
+    },
+    "protectedNegative": {
+      "skipped": true,
+      "reason": "No protected classroom is exposed by the current local data directory."
+    }
+  },
+  "logs": {
+    "desktop": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/student-summary",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/plans?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/interventions?limit=20",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/messages?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/feedback/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/sessions/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/ResultBanner.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/buildModelMetaItems.ts",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/MessageComposer.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/ContextualHint.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/DraftRestoreChip.tsx",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/MessageDraft.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/PrintButton.tsx",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/RoleReadOnlyBanner.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/MockModeBanner.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/PatternReport.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/RetrievalTraceCard.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/OutputMetaRow.tsx",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/hooks/useFormPersistence.ts",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/messageLanguage.ts",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/HistoryDrawer.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/StreamingIndicator.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/src/components/MessageApprovalDialog.css",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/sessions/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/plans?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/interventions?limit=20",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/messages?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/feedback/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/sessions/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/plans?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/interventions?limit=20",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    "mobile": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/plans?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/interventions?limit=20",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/messages?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/feedback/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/sessions/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    },
+    "tablet": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": [
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/plans?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/interventions?limit=20",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/classrooms/demo-okafor-grade34/messages?limit=10",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/feedback/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/sessions/summary/demo-okafor-grade34",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        },
+        {
+          "url": "http://localhost:5173/api/health",
+          "method": "GET",
+          "failure": "net::ERR_ABORTED"
+        }
+      ]
+    }
+  },
+  "layoutFailures": []
+}

@@ -61,6 +61,7 @@ interface AuthChallenge {
   classroomId: string;
   status: number;
   message: string;
+  attemptedCode?: string;
 }
 
 interface ApiClientConfig {
@@ -253,6 +254,7 @@ async function requestJson<T>(path: string, options: RequestOptions = {}): Promi
         classroomId,
         status: res.status,
         message: teacherFriendlyAuthMessage(payload),
+        attemptedCode: classroomCode,
       });
       if (code) {
         return requestJson<T>(path, {
