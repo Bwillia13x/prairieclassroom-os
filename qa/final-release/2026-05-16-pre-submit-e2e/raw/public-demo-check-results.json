@@ -1,5 +1,5 @@
 {
-  "createdAt": "2026-05-17T00:10:00.726Z",
+  "createdAt": "2026-05-17T01:18:41.872Z",
   "baseUrl": "https://prairieclassroom-os.vercel.app",
   "checks": {
     "rootLanding": {
@@ -31,17 +31,7 @@
     {
       "label": "public-static-differentiate-generated",
       "horizontalOverflowPx": 0,
-      "clippedText": [
-        {
-          "label": "public-static-differentiate-generated",
-          "tag": "button",
-          "text": "Plant Needs Reading Passage",
-          "width": 171.0625,
-          "height": 28.59375,
-          "scrollWidth": 190,
-          "clientWidth": 169
-        }
-      ]
+      "clippedText": []
     },
     {
       "label": "public-root-mobile",
@@ -60,20 +50,20 @@
       "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
       "timing": {
         "type": "navigate",
-        "domContentLoadedEventEnd": 169,
-        "loadEventEnd": 170,
-        "duration": 170,
+        "domContentLoadedEventEnd": 121,
+        "loadEventEnd": 122,
+        "duration": 122,
         "transferSize": 300,
         "decodedBodySize": 1991
       },
       "paint": [
         {
           "name": "first-paint",
-          "startTime": 184
+          "startTime": 136
         },
         {
           "name": "first-contentful-paint",
-          "startTime": 184
+          "startTime": 136
         }
       ],
       "resourceCount": 22
@@ -83,20 +73,20 @@
       "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
       "timing": {
         "type": "navigate",
-        "domContentLoadedEventEnd": 178,
-        "loadEventEnd": 179,
-        "duration": 179,
-        "transferSize": 1093,
+        "domContentLoadedEventEnd": 99,
+        "loadEventEnd": 99,
+        "duration": 99,
+        "transferSize": 1095,
         "decodedBodySize": 1991
       },
       "paint": [
         {
           "name": "first-paint",
-          "startTime": 188
+          "startTime": 96
         },
         {
           "name": "first-contentful-paint",
-          "startTime": 188
+          "startTime": 116
         }
       ],
       "resourceCount": 26
@@ -105,7 +95,10 @@
   "logs": {
     "desktop": {
       "consoleErrors": [],
-      "consoleWarnings": [],
+      "consoleWarnings": [
+        "The resource https://prairieclassroom-os.vercel.app/fonts/atkinson-hyperlegible-400.ttf was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally.",
+        "The resource https://prairieclassroom-os.vercel.app/fonts/atkinson-hyperlegible-700.ttf was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally."
+      ],
       "pageErrors": [],
       "requestFailures": []
     },
@@ -116,22 +109,5 @@
       "requestFailures": []
     }
   },
-  "layoutFailures": [
-    {
-      "label": "public-static-differentiate-generated",
-      "horizontalOverflowPx": 0,
-      "clippedText": [
-        {
-          "label": "public-static-differentiate-generated",
-          "tag": "button",
-          "text": "Plant Needs Reading Passage",
-          "width": 171.0625,
-          "height": 28.59375,
-          "scrollWidth": 190,
-          "clientWidth": 169
-        }
-      ]
-    }
-  ],
-  "error": "Public layout findings: [\n  {\n    \"label\": \"public-static-differentiate-generated\",\n    \"horizontalOverflowPx\": 0,\n    \"clippedText\": [\n      {\n        \"label\": \"public-static-differentiate-generated\",\n        \"tag\": \"button\",\n        \"text\": \"Plant Needs Reading Passage\",\n        \"width\": 171.0625,\n        \"height\": 28.59375,\n        \"scrollWidth\": 190,\n        \"clientWidth\": 169\n      }\n    ]\n  }\n]\n\n1 !== 0\n"
+  "layoutFailures": []
 }
