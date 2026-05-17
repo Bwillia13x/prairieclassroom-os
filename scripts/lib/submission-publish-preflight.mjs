@@ -2,7 +2,10 @@ import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { validatePublicationPlaceholders } from "./submission-final-check.mjs";
+import {
+  findCellularSmokeEvidenceIssues,
+  validatePublicationPlaceholders,
+} from "./submission-final-check.mjs";
 
 export const SUBMISSION_VIDEO = {
   relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
@@ -255,6 +258,17 @@ function publicLinkChecks(rootDir) {
   ];
 }
 
+function cellularSmokeEvidenceCheck(rootDir) {
+  const issues = findCellularSmokeEvidenceIssues({ rootDir });
+  return [
+    result(
+      "cellular smoke evidence",
+      issues.length === 0,
+      issues.length === 0 ? "recorded" : issues[0],
+    ),
+  ];
+}
+
 function publicationStaticChecks(rootDir, linkResults) {
   if (!linkResults.every((item) => item.ok)) return [];
 
@@ -318,6 +332,7 @@ export function collectSubmissionPublishPreflight({
     ...renderChecks(rootDir, env, commandResolver),
     ...hostedGemmaChecks(env),
     ...linkResults,
+    ...cellularSmokeEvidenceCheck(rootDir),
     ...publicationStaticChecks(rootDir, linkResults),
   ];
 }

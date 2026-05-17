@@ -197,6 +197,7 @@ describe("submission publish preflight", () => {
       assert.ok(failedLabels.includes("public live demo url"));
       assert.ok(failedLabels.includes("public video url"));
       assert.ok(failedLabels.includes("kaggle writeup url"));
+      assert.ok(failedLabels.includes("cellular smoke evidence"));
       assert.match(formatSubmissionPublishPreflight(results), /blockers remain before public publishing/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
@@ -458,6 +459,60 @@ describe("submission publish preflight", () => {
       assert.equal(kaggle.ok, false);
       assert.equal(video.detail, "https://vimeo.com/example");
       assert.equal(kaggle.detail, "https://example.com/not-kaggle");
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
+  it("reports missing cellular smoke evidence even when public links are present", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-publish-cellular-missing-"));
+    try {
+      await seedRequiredFiles(rootDir);
+      await seedPublishDocs(rootDir, { finalLinks: true });
+      await seedFile(
+        rootDir,
+        "docs/hackathon-submission-checklist.md",
+        [
+          "# Hackathon Submission Checklist",
+          "- Publication gate: final public links are recorded; rerun `npm run submission:final-check -- --skip-release-gate` before publishing.",
+          "- Live demo deploy: deployed and externally reachable.",
+        ].join("\n"),
+      );
+      await seedFile(
+        rootDir,
+        "docs/public-demo-operations.md",
+        [
+          "# Public Demo Operations",
+          "- **Verified:** public video, Kaggle writeup, and public demo checks are recorded.",
+        ].join("\n"),
+      );
+
+      const results = collectSubmissionPublishPreflight({
+        rootDir,
+        env: {
+          PRAIRIE_GEMINI_API_KEY: "test-key",
+          PRAIRIE_ENABLE_GEMINI_RUNS: "true",
+          RENDER_API_TOKEN: "render-token",
+        },
+        commandResolver: (command) => `/usr/local/bin/${command}`,
+        commandRunner: cleanGitRunner,
+        nodeVersion: "v25.8.2",
+        submissionVideo: {
+          relPath: "qa/demo-script/videos/prairieclassroom-submission-final-2026-05-11.mp4",
+          sha256: TEST_VIDEO_SHA256,
+        },
+        kaggleWriteup: {
+          relPath: "docs/kaggle-writeup.md",
+          maxWords: 3,
+        },
+      });
+
+      const cellular = results.find((item) => item.label === "cellular smoke evidence");
+      const staticDocs = results.find((item) => item.label === "publication static docs");
+      assert.equal(cellular.ok, false);
+      assert.match(cellular.detail, /Cellular browser smoke evidence is missing/);
+      assert.equal(staticDocs.ok, false);
+      assert.match(staticDocs.detail, /Cellular browser smoke evidence is missing/);
     } finally {
       await rm(rootDir, { recursive: true, force: true });
     }
