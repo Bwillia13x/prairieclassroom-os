@@ -54,16 +54,16 @@ const DOC_UPDATES = [
   {
     relPath: "docs/hackathon-submission-checklist.md",
     pattern: /^-\s*Live demo deploy:/i,
-    buildLine: ({ previousLine }) => replaceExpectedText(
+    buildLine: ({ previousLine }) => replaceExpectedText({
       previousLine,
-      /Public video and Kaggle submission URLs are still missing; true cellular-browser smoke is still pending\./,
-      "Public video and Kaggle submission URLs are recorded; true cellular-browser smoke is still pending.",
-      "docs/hackathon-submission-checklist.md",
-    ),
+      expectedPattern: /Public video and Kaggle submission URLs are still missing; true cellular-browser smoke is still pending\./,
+      replacement: "Public video and Kaggle submission URLs are recorded; true cellular-browser smoke is still pending.",
+      relPath: "docs/hackathon-submission-checklist.md",
+    }),
   },
   {
     relPath: "docs/hackathon-submission-checklist.md",
-    pattern: /^13\.\s*Run `npm run submission:publish-preflight`;/i,
+    pattern: /^13\.\s*Run `npm run submission:publish-preflight`/i,
     buildLine: () => [
       "13. Run `npm run submission:publish-preflight` after the public video and Kaggle URLs are applied; ",
       "it should pass only when URL shape, branch sync, hosted Gemma env, Vercel, and Render checks are current.",
@@ -81,7 +81,7 @@ const DOC_UPDATES = [
   },
   {
     relPath: "docs/public-demo-operations.md",
-    pattern: /^`npm run submission:final-check -- --skip-release-gate` currently remains blocked/i,
+    pattern: /^`npm run submission:final-check -- --skip-release-gate`/i,
     buildLine: () => [
       "`npm run submission:final-check -- --skip-release-gate` verifies publication placeholders, ",
       "public-link health, and public demo smoke after final public links are applied. ",
@@ -90,7 +90,7 @@ const DOC_UPDATES = [
   },
   {
     relPath: "docs/public-demo-operations.md",
-    pattern: /^-\s*In the remaining-work closeout,/i,
+    pattern: /^-\s*(In the remaining-work closeout,|After final links are applied,)/i,
     buildLine: () => [
       "- After final links are applied, ",
       "`source ~/.nvm/nvm.sh && nvm use --silent 25.8.2 && set -a && source .env && set +a && npm run submission:publish-preflight` ",
@@ -149,7 +149,8 @@ function replaceMatchingLine({ content, pattern, buildReplacement, relPath }) {
   };
 }
 
-function replaceExpectedText(previousLine, expectedPattern, replacement, relPath) {
+function replaceExpectedText({ previousLine, expectedPattern, replacement, relPath }) {
+  if (previousLine.includes(replacement)) return previousLine;
   const nextLine = previousLine.replace(expectedPattern, replacement);
   if (nextLine === previousLine) {
     throw new Error(`${relPath}: matching line did not contain expected stale publication text`);

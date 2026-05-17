@@ -116,6 +116,36 @@ describe("submission link application", () => {
     }
   });
 
+  it("can rerun after links are already applied to correct a URL", async () => {
+    const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-links-rerun-"));
+    try {
+      await seedSubmissionDocs(rootDir);
+      await applySubmissionLinks({
+        rootDir,
+        videoUrl: "https://www.youtube.com/watch?v=first",
+        kaggleUrl: "https://www.kaggle.com/competitions/gemma-4-good/discussion/example",
+      });
+
+      const result = await applySubmissionLinks({
+        rootDir,
+        videoUrl: "https://youtu.be/corrected",
+        kaggleUrl: "https://www.kaggle.com/competitions/gemma-4-good/discussion/example",
+      });
+
+      const pasteBlock = await readFile(path.join(rootDir, "docs/kaggle-paste-block.md"), "utf8");
+      const checklist = await readFile(path.join(rootDir, "docs/hackathon-submission-checklist.md"), "utf8");
+      const operations = await readFile(path.join(rootDir, "docs/public-demo-operations.md"), "utf8");
+
+      assert.ok(result.changes.length > 0);
+      assert.match(pasteBlock, /Public video: https:\/\/youtu\.be\/corrected/);
+      assert.match(checklist, /\*\*Video:\*\* https:\/\/youtu\.be\/corrected/);
+      assert.match(operations, /Public video URL recorded: https:\/\/youtu\.be\/corrected/);
+      assert.equal(validatePublicationPlaceholders({ rootDir }).ok, true);
+    } finally {
+      await rm(rootDir, { recursive: true, force: true });
+    }
+  });
+
   it("does not partially update docs when a later required line is missing", async () => {
     const rootDir = await mkdtemp(path.join(os.tmpdir(), "submission-links-no-partial-"));
     try {
