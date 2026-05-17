@@ -1,10 +1,15 @@
 {
-  "createdAt": "2026-05-17T10:10:55.825Z",
+  "createdAt": "2026-05-17T10:30:21.691Z",
   "baseUrl": "https://prairieclassroom-os.vercel.app",
   "checks": {
     "rootLanding": {
       "title": "PrairieClassroom OS",
-      "ctaText": "Enter PrairieClassroom"
+      "ctaText": "Enter PrairieClassroom",
+      "hero": {
+        "currentSrc": "https://prairieclassroom-os.vercel.app/brand/landing/prairieclassroom-landing-hero-1672.webp",
+        "naturalWidth": 1440,
+        "naturalHeight": 810
+      }
     },
     "rootCta": {
       "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
@@ -15,6 +20,13 @@
     "staticGeneratedLabel": {
       "marker": "prairie-static-demo-api",
       "labelPresent": true
+    },
+    "rootLandingMobile": {
+      "hero": {
+        "currentSrc": "https://prairieclassroom-os.vercel.app/brand/landing/prairieclassroom-landing-hero-800.webp",
+        "naturalWidth": 393,
+        "naturalHeight": 221
+      }
     }
   },
   "layout": [
@@ -50,20 +62,20 @@
       "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
       "timing": {
         "type": "navigate",
-        "domContentLoadedEventEnd": 111,
-        "loadEventEnd": 112,
-        "duration": 112,
+        "domContentLoadedEventEnd": 122,
+        "loadEventEnd": 122,
+        "duration": 122,
         "transferSize": 300,
         "decodedBodySize": 1991
       },
       "paint": [
         {
           "name": "first-paint",
-          "startTime": 128
+          "startTime": 144
         },
         {
           "name": "first-contentful-paint",
-          "startTime": 128
+          "startTime": 144
         }
       ],
       "resourceCount": 22
@@ -73,10 +85,10 @@
       "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
       "timing": {
         "type": "navigate",
-        "domContentLoadedEventEnd": 101,
-        "loadEventEnd": 102,
-        "duration": 102,
-        "transferSize": 1096,
+        "domContentLoadedEventEnd": 89,
+        "loadEventEnd": 90,
+        "duration": 90,
+        "transferSize": 1098,
         "decodedBodySize": 1991
       },
       "paint": [

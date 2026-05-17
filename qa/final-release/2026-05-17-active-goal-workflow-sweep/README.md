@@ -10,7 +10,7 @@ source ~/.nvm/nvm.sh && nvm use >/dev/null && PRAIRIE_PUBLIC_DEMO_URL=https://pr
 
 ## Result
 
-Passed on 2026-05-17 against production deployment `dpl_7tzxdLn6Dv1AvCyEdLXWdSVmoDbY`.
+Passed on 2026-05-17 against production deployment `dpl_997YuiBiEqzrv3KWxU45HMFxoAgT`.
 
 Evidence:
 

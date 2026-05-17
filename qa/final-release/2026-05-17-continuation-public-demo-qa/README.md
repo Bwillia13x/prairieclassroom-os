@@ -10,7 +10,7 @@ source ~/.nvm/nvm.sh && nvm use >/dev/null && PRAIRIE_QA_OUT_DIR=qa/final-releas
 
 ## Result
 
-Passed on 2026-05-17.
+Passed on 2026-05-17 against production deployment `dpl_997YuiBiEqzrv3KWxU45HMFxoAgT`.
 
 Evidence:
 
@@ -24,7 +24,7 @@ Evidence:
 
 Covered checks:
 
-- public root renders the first-entry PrairieClassroom OS landing page with the classroom hero image loaded
+- public root renders the first-entry PrairieClassroom OS landing page with the optimized WebP classroom hero image loaded
 - root CTA enters `?demo=true&tab=today&classroom=demo-okafor-grade34`
 - canonical Today route exposes `documentElement.dataset.demoApi === "prairie-static-demo-api"`
 - static Differentiate generation completes with the static-demo fallback label

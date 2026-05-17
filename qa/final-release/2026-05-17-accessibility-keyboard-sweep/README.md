@@ -10,7 +10,7 @@ source ~/.nvm/nvm.sh && nvm use >/dev/null && PRAIRIE_PUBLIC_DEMO_URL=https://pr
 
 ## Result
 
-Passed on 2026-05-17 against `https://prairieclassroom-os.vercel.app` after production deployment `dpl_7tzxdLn6Dv1AvCyEdLXWdSVmoDbY` was aliased to the canonical public URL.
+Passed on 2026-05-17 against `https://prairieclassroom-os.vercel.app` after production deployment `dpl_997YuiBiEqzrv3KWxU45HMFxoAgT` was aliased to the canonical public URL.
 
 Evidence:
 
