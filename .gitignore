@@ -106,7 +106,21 @@ video-assets/prairieclassroom-kaggle-2026-branded-imagegen-assets.zip
 # Environment and credential files (defensive — `.env` already covered above)
 .env.*
 *.env
+.envrc
+.env.vault
+.npmrc
+.netrc
 credentials.json
+*credentials*.json
+service-account*.json
+*service-account*.json
+application_default_credentials.json
 *.pem
 *.key
+*.p8
+*.p12
+*.pfx
 .credentials
+secrets/
+.vercel
+.vercel/

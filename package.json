@@ -47,6 +47,7 @@
     "eval:regression": "node scripts/eval-regression.mjs",
     "feedback:harvest": "node scripts/feedback-harvest.mjs",
     "audit:log": "node scripts/audit-log.mjs",
+    "security:secrets": "node scripts/secret-scan.mjs",
     "check:contrast": "node scripts/check-contrast.mjs",
     "release:gate": "node scripts/release-gate.mjs --inference-mode mock --update-baseline",
     "release:gate:ollama": "node scripts/release-gate.mjs --inference-mode ollama --update-baseline",
