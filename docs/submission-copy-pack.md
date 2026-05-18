@@ -16,7 +16,7 @@ Do not paste bracketed placeholders into any external field. The public video us
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-17T10-51-35-351Z-42560`
+- Mock structural gate: `output/release-gate/2026-05-17T14-11-36-166Z-99074`
 - Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
 - Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
 - Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
@@ -34,7 +34,7 @@ PrairieClassroom OS | Gemma 4 for Inclusive Classroom Coordination
 
 For the initial YouTube upload, paste this description and omit the `Kaggle writeup` bullet under Project links until the Kaggle URL exists. After `submission:apply-links` records both final public links, paste the complete Project links block including the real Kaggle URL.
 
-PrairieClassroom OS is a Gemma-4-native operating layer for high-complexity inclusive classrooms.
+PrairieClassroom OS is a Gemma-4-native operating layer for Alberta's inclusive classrooms.
 
 Instead of acting like a generic tutor, it helps teachers and educational assistants handle four adult jobs: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families using the same classroom context.
 
@@ -69,7 +69,7 @@ PrairieClassroom OS hackathon demo video
 
 ### Cover Image
 
-PrairieClassroom OS differentiates one classroom artifact into learner-specific supports for a synthetic high-complexity inclusive classroom.
+PrairieClassroom OS differentiates one classroom artifact into learner-specific supports for a synthetic Alberta inclusive classroom.
 
 ### Today / Shell Screenshot
 

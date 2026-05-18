@@ -2,9 +2,9 @@
 
 ## Project identity
 
-PrairieClassroom OS is a local-first, teacher- and EA-facing classroom complexity copilot for Alberta K–6 settings. The product is designed around multimodal lesson differentiation, next-day support planning, multilingual family communication, intervention logging, and classroom memory.
+PrairieClassroom OS is a Gemma-4-native operating layer for Alberta's inclusive classrooms. It is teacher- and EA-facing, not student-facing, and is designed around multimodal lesson differentiation, next-day support planning, family communication with teacher approval, intervention logging, and classroom memory.
 
-This repository should evolve toward a hackathon-grade MVP that is visibly **Gemma-4-native** rather than a generic education app with an LLM attached.
+This repository is now in submission-readiness mode for the Gemma 4 Good Hackathon. Preserve the proof split: the public Vercel demo is static-first on synthetic/demo data for judge reliability, the hosted Gemma 4 lane is the artifact-backed synthetic/demo proof path, and the Ollama lane is the intended privacy-first local/self-hosted deployment path, not a claimed passing result on this host.
 
 ## Core outcome
 
@@ -70,6 +70,7 @@ Default assumptions:
 - Is there at least one eval or manual test case?
 - Are safety boundaries preserved?
 - Are docs updated enough that another agent can pick up the work?
+- If the change is public-facing, did you keep `README.md`, `docs/kaggle-writeup.md`, `docs/hackathon-proof-brief.md`, `docs/hackathon-submission-checklist.md`, and `docs/submission-copy-pack.md` aligned with the claims ledger?
 
 ## Communication style
 

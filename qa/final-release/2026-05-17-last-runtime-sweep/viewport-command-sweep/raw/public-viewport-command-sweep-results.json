@@ -1,0 +1,1709 @@
+{
+  "createdAt": "2026-05-18T00:49:10.551Z",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "viewports": [
+    {
+      "id": "mobile",
+      "width": 393,
+      "height": 852,
+      "isMobile": true
+    },
+    {
+      "id": "tablet",
+      "width": 768,
+      "height": 1024,
+      "isMobile": false
+    },
+    {
+      "id": "desktop",
+      "width": 1440,
+      "height": 900,
+      "isMobile": false
+    },
+    {
+      "id": "wide",
+      "width": 1920,
+      "height": 1080,
+      "isMobile": false
+    }
+  ],
+  "routes": [
+    "root",
+    "today",
+    "classroom",
+    "tomorrow-plan",
+    "week",
+    "prep-differentiate",
+    "prep-language-tools",
+    "ops-log-intervention",
+    "ops-ea-load",
+    "ops-ea-briefing",
+    "review-family-message",
+    "review-support-patterns"
+  ],
+  "pages": [
+    {
+      "viewport": "mobile",
+      "route": "root",
+      "screenshot": "mobile-root.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/",
+        "demoApi": null,
+        "activeNav": null,
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": null,
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "today",
+      "screenshot": "mobile-today.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TodayDo this now",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "classroom",
+      "screenshot": "mobile-classroom.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ClassroomRoom view",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "tomorrow-plan",
+      "screenshot": "mobile-tomorrow-plan.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TomorrowPlan tomorrow",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "week",
+      "screenshot": "mobile-week.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "WeekWeek map",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "prep-differentiate",
+      "screenshot": "mobile-prep-differentiate.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "prep-language-tools",
+      "screenshot": "mobile-prep-language-tools.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=language-tools",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "ops-log-intervention",
+      "screenshot": "mobile-ops-log-intervention.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "ops-ea-load",
+      "screenshot": "mobile-ops-ea-load.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-load",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "ops-ea-briefing",
+      "screenshot": "mobile-ops-ea-briefing.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-briefing",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "review-family-message",
+      "screenshot": "mobile-review-family-message.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "mobile",
+      "route": "review-support-patterns",
+      "screenshot": "mobile-review-support-patterns.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "root",
+      "screenshot": "tablet-root.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/",
+        "demoApi": null,
+        "activeNav": null,
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": null,
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "today",
+      "screenshot": "tablet-today.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TodayDo this now",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "classroom",
+      "screenshot": "tablet-classroom.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ClassroomRoom view",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "tomorrow-plan",
+      "screenshot": "tablet-tomorrow-plan.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TomorrowPlan tomorrow",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "week",
+      "screenshot": "tablet-week.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "WeekWeek map",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "prep-differentiate",
+      "screenshot": "tablet-prep-differentiate.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "prep-language-tools",
+      "screenshot": "tablet-prep-language-tools.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=language-tools",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "ops-log-intervention",
+      "screenshot": "tablet-ops-log-intervention.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "ops-ea-load",
+      "screenshot": "tablet-ops-ea-load.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-load",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "ops-ea-briefing",
+      "screenshot": "tablet-ops-ea-briefing.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-briefing",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "review-family-message",
+      "screenshot": "tablet-review-family-message.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "tablet",
+      "route": "review-support-patterns",
+      "screenshot": "tablet-review-support-patterns.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": "shell-classroom-trigger",
+        "text": "Active classroomGrade 3-4 cross curricular⌄",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "none",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "root",
+      "screenshot": "desktop-root.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/",
+        "demoApi": null,
+        "activeNav": null,
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": null,
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "today",
+      "screenshot": "desktop-today.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TodayDo this now",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "classroom",
+      "screenshot": "desktop-classroom.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ClassroomRoom view",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "tomorrow-plan",
+      "screenshot": "desktop-tomorrow-plan.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TomorrowPlan tomorrow",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "week",
+      "screenshot": "desktop-week.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "WeekWeek map",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "prep-differentiate",
+      "screenshot": "desktop-prep-differentiate.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "prep-language-tools",
+      "screenshot": "desktop-prep-language-tools.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=language-tools",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "ops-log-intervention",
+      "screenshot": "desktop-ops-log-intervention.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "ops-ea-load",
+      "screenshot": "desktop-ops-ea-load.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-load",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "ops-ea-briefing",
+      "screenshot": "desktop-ops-ea-briefing.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-briefing",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "review-family-message",
+      "screenshot": "desktop-review-family-message.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "desktop",
+      "route": "review-support-patterns",
+      "screenshot": "desktop-review-support-patterns.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "root",
+      "screenshot": "wide-root.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/",
+        "demoApi": null,
+        "activeNav": null,
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": null,
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "today",
+      "screenshot": "wide-today.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TodayDo this now",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "classroom",
+      "screenshot": "wide-classroom.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ClassroomRoom view",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "tomorrow-plan",
+      "screenshot": "wide-tomorrow-plan.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TomorrowPlan tomorrow",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "week",
+      "screenshot": "wide-week.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "WeekWeek map",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "prep-differentiate",
+      "screenshot": "wide-prep-differentiate.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "prep-language-tools",
+      "screenshot": "wide-prep-language-tools.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=language-tools",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "ops-log-intervention",
+      "screenshot": "wide-ops-log-intervention.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "ops-ea-load",
+      "screenshot": "wide-ops-ea-load.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-load",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "ops-ea-briefing",
+      "screenshot": "wide-ops-ea-briefing.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-briefing",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "OpsLog note1",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "review-family-message",
+      "screenshot": "wide-review-family-message.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    },
+    {
+      "viewport": "wide",
+      "route": "review-support-patterns",
+      "screenshot": "wide-review-support-patterns.png",
+      "state": {
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "title": "PrairieClassroom OS"
+      },
+      "layout": {
+        "horizontalOverflowPx": 0,
+        "clippedText": [],
+        "modalOpen": false,
+        "brokenImages": []
+      },
+      "focus": {
+        "tag": "button",
+        "id": null,
+        "text": "Collapse",
+        "outlineWidth": "2px",
+        "outlineStyle": "solid",
+        "boxShadow": "color(srgb 1 1 1 / 0.34) 0px 1px 0px 0px inset, color(srgb 0.0352941 0.145098 0.258824 / 0.48) 0px 12px 24px -22px",
+        "visible": true,
+        "focusVisible": true
+      },
+      "logs": {
+        "consoleErrors": [],
+        "consoleWarnings": [],
+        "pageErrors": [],
+        "requestFailures": [],
+        "badResponses": []
+      }
+    }
+  ],
+  "navigation": {
+    "clicked": [
+      {
+        "tab": "classroom",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34"
+      },
+      {
+        "tab": "tomorrow",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan"
+      },
+      {
+        "tab": "week",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34"
+      },
+      {
+        "tab": "prep",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate"
+      },
+      {
+        "tab": "ops",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention"
+      },
+      {
+        "tab": "review",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message"
+      },
+      {
+        "tab": "today",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+      }
+    ],
+    "commandPaletteUrl": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+    "logs": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "badResponses": []
+    }
+  },
+  "mobileNavigation": {
+    "clicked": [
+      {
+        "tab": "ops",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention"
+      },
+      {
+        "tab": "week",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34"
+      },
+      {
+        "tab": "review",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message"
+      },
+      {
+        "tab": "today",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34"
+      }
+    ],
+    "logs": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "badResponses": []
+    }
+  }
+}

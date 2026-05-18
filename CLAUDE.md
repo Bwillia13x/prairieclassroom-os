@@ -2,7 +2,7 @@
 
 ## Project Identity
 
-PrairieClassroom OS is a teacher- and EA-facing classroom complexity copilot for Alberta K-6 classrooms.
+PrairieClassroom OS is a Gemma-4-native operating layer for Alberta's inclusive classrooms. It is teacher- and EA-facing, not student-facing.
 
 This repo is no longer just a pre-dev concept stub. It is a working monorepo with:
 
@@ -13,22 +13,23 @@ This repo is no longer just a pre-dev concept stub. It is a working monorepo wit
 - shared Zod schemas in `packages/shared`
 - an eval harness plus smoke and release-gate scripts at the repo root
 
-The product is still not a student chatbot. It is a classroom operations copilot.
+The product is still not a student chatbot. It is a classroom operations layer for turning classroom signals into coordinated adult action.
 
 ## Current State Of Development
 
-As of 2026-05-05, the practical state of the repo is:
+As of 2026-05-17, the practical state of the repo is:
 
-- `npm run release:gate` passes in mock mode and is the default no-cost structural validation lane.
-- The hosted Gemini hackathon proof lane passes on synthetic/demo data via `npm run release:gate:gemini`.
+- `npm run release:gate` passes in mock mode and is the default no-cost structural validation lane. The current no-cost mock gate is `output/release-gate/2026-05-17T14-11-36-166Z-99074`.
+- The hosted Gemma 4 hackathon proof lane passes on synthetic/demo data via `npm run release:gate:gemini`. The current passing baseline is `output/release-gate/2026-05-17T00-36-24-280Z-35954` with 13/13 curated hosted proof cases passing.
+- The public Vercel demo is live at `https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34`. That route is static-first for judge reliability; do not describe static demo output as live hosted-Gemma generation.
 - The Ollama privacy-first live-model lane is implemented, but this host is **structurally blocked** for the full dual-speed lane: the latest 2026-04-29 `host:preflight:ollama` artifact records an 8.00 GiB Apple M1 host with no Ollama CLI, no required models, 0.09 GiB free RAM, and 8.95 GiB free disk. The full lane still needs a separate host with at least 16 GiB RAM and enough disk for `gemma4:4b` plus `gemma4:27b`. The `gemma4:4b` live-tier model may still be feasible on this host. See `docs/development-gaps.md` G-02 and `docs/pilot/claims-ledger.md`.
 - The paid Vertex lane exists, but it is intentionally gated behind `PRAIRIE_ALLOW_PAID_SERVICES=true` and is not part of the default no-cost proof story.
-- The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 134 eval cases, and broad unit coverage (2,086 vitest + 76 pytest in the latest mock gate) across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
+- The repo has 13 model-routed prompt classes, a real web UI with 12 teacher-facing panels, 12 workflow tools, 53 exact API endpoints, 134 eval cases, and broad unit coverage (2,142 Vitest + 76 Python tests in the latest mock gate) across schema validation, prompt builders, orchestrator routes, memory retrieval, inference backends, and the web API client.
 - The web shell exposes a flat seven-view navigation (`today / classroom / tomorrow / week / prep / ops / review`) with URL-backed `tab` + optional `tool` state and a classroom-code prompt that retries protected reads and writes from the UI.
 - Protected classroom APIs now support `X-Classroom-Code` plus optional `X-Classroom-Role`; the role defaults to `teacher`, and generated `docs/api-surface.md` records current teacher-only and teacher/EA scopes.
 - Security hardened: classroomId path traversal validation, rate limiting (global + per-classroom auth), security headers, safe JSON deserialization, atomic schedule writes, prompt injection detection.
 - Documentation current: generated system/API inventory, pilot-readiness gates, memory lifecycle controls, database schema, classroom profiles, and eval inventory.
-- Final submission packaging is guarded by `npm run submission:final-check`, which now fails while public demo, public video, Kaggle writeup, or public repo verification placeholders remain. Use `--skip-publication-check` only for local-only validation before external links exist.
+- Final submission packaging is guarded by `npm run submission:final-check`, which now fails while public video, Kaggle writeup, or true cellular-browser smoke evidence remain missing. Use `--skip-publication-check` only for local-only validation before external links exist.
 
 Do not treat this repository like a blank-slate MVP. Treat it like a production-hardened classroom operating system that needs careful incremental changes, regression protection, and documentation hygiene.
 
@@ -245,7 +246,7 @@ Then pull in the specialized docs that match your task:
 - current backlog and posture: `docs/development-gaps.md`
 - code-derived surface inventory: `docs/system-inventory.md`, `docs/api-surface.md`
 - pilot and real-data readiness: `docs/pilot-readiness.md`, `docs/safety-governance.md`
-- product proof and submission framing: `docs/hackathon-proof-brief.md`, `docs/kaggle-writeup.md`, `docs/demo-script.md`
+- product proof and submission framing: `docs/hackathon-proof-brief.md`, `docs/hackathon-submission-checklist.md`, `docs/kaggle-writeup.md`, `docs/kaggle-paste-block.md`, `docs/submission-copy-pack.md`, `docs/demo-script.md`
 
 Do not write against stale assumptions from older sprint docs if README, release docs, and current code disagree.
 
@@ -268,7 +269,7 @@ Canonical project truth now lives across both `README.md` and `docs/`.
 When you change:
 
 - runtime commands or setup: update `README.md` and `docs/release-checklist.md`
-- proof-lane behavior or artifacts: update `docs/eval-baseline.md`, `docs/hackathon-hosted-operations.md`, and related proof docs
+- proof-lane behavior or artifacts: update `docs/eval-baseline.md`, `docs/hackathon-hosted-operations.md`, `docs/hackathon-proof-brief.md`, `docs/hackathon-submission-checklist.md`, and related proof docs
 - route inventory or prompt routing: update `docs/prompt-contracts.md`, then run `npm run system:inventory` so `docs/system-inventory.md` and `docs/api-surface.md` stay generated from code
 - eval case changes: run `npm run eval:inventory` so `docs/eval-inventory.md` stays generated from `evals/cases/*.json`
 - classroom memory lifecycle behavior: update `docs/database-schema.md`, `docs/pilot-readiness.md`, and `docs/safety-governance.md`

@@ -1,0 +1,273 @@
+{
+  "createdAt": "2026-05-18T00:50:37.613Z",
+  "baseUrl": "https://prairieclassroom-os.vercel.app",
+  "desktop": {
+    "prefix": "desktop",
+    "viewport": {
+      "width": 1440,
+      "height": 900
+    },
+    "pages": [
+      {
+        "label": "desktop-root",
+        "url": "https://prairieclassroom-os.vercel.app/",
+        "title": "PrairieClassroom OS",
+        "h1": "PrairieClassroom OS",
+        "demoApi": null,
+        "layout": {
+          "label": "desktop-root",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-today",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+        "title": "PrairieClassroom OS",
+        "h1": "Today",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Today\nDo this now",
+        "layout": {
+          "label": "desktop-today",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-classroom",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=classroom&classroom=demo-okafor-grade34",
+        "title": "PrairieClassroom OS",
+        "h1": "Read the room, then choose the lens.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Classroom\nRoom view",
+        "layout": {
+          "label": "desktop-classroom",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-tomorrow-plan",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=tomorrow-plan",
+        "title": "PrairieClassroom OS",
+        "h1": "Plan, forecast, and carry-forward queue",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Tomorrow\nPlan tomorrow",
+        "layout": {
+          "label": "desktop-tomorrow-plan",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-tomorrow-forecast",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=tomorrow&classroom=demo-okafor-grade34&tool=complexity-forecast",
+        "title": "PrairieClassroom OS",
+        "h1": "Plan, forecast, and carry-forward queue",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Tomorrow\nPlan tomorrow",
+        "layout": {
+          "label": "desktop-tomorrow-forecast",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-week",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=week&classroom=demo-okafor-grade34",
+        "title": "PrairieClassroom OS",
+        "h1": "Shape the week before it shapes tomorrow",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Week\nWeek map",
+        "layout": {
+          "label": "desktop-week",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-prep-differentiate",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+        "title": "PrairieClassroom OS",
+        "h1": "Prepare the material before it reaches the room.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Prep\nAdapt lesson",
+        "layout": {
+          "label": "desktop-prep-differentiate",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-prep-language-tools",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=language-tools",
+        "title": "PrairieClassroom OS",
+        "h1": "Prepare the material before it reaches the room.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Prep\nAdapt lesson",
+        "layout": {
+          "label": "desktop-prep-language-tools",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-ops-log-intervention",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=log-intervention",
+        "title": "PrairieClassroom OS",
+        "h1": "Coordinate the adults without losing the thread.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Ops\nLog note\n1",
+        "layout": {
+          "label": "desktop-ops-log-intervention",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-ops-ea-load",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=ops&classroom=demo-okafor-grade34&tool=ea-load",
+        "title": "PrairieClassroom OS",
+        "h1": "Coordinate the adults without losing the thread.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Ops\nLog note\n1",
+        "layout": {
+          "label": "desktop-ops-ea-load",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-review-family-message",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+        "title": "PrairieClassroom OS",
+        "h1": "Turn classroom memory into accountable follow-through.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Review\nMessage family",
+        "layout": {
+          "label": "desktop-review-family-message",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-review-support-patterns",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=support-patterns",
+        "title": "PrairieClassroom OS",
+        "h1": "Turn classroom memory into accountable follow-through.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Review\nMessage family",
+        "layout": {
+          "label": "desktop-review-support-patterns",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "desktop-review-usage-insights",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=usage-insights",
+        "title": "PrairieClassroom OS",
+        "h1": "Turn classroom memory into accountable follow-through.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "Review\nMessage family",
+        "layout": {
+          "label": "desktop-review-usage-insights",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      }
+    ],
+    "logs": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "badResponses": []
+    }
+  },
+  "mobile": {
+    "prefix": "mobile",
+    "viewport": {
+      "width": 393,
+      "height": 852
+    },
+    "pages": [
+      {
+        "label": "mobile-root",
+        "url": "https://prairieclassroom-os.vercel.app/",
+        "title": "PrairieClassroom OS",
+        "h1": "PrairieClassroom OS",
+        "demoApi": null,
+        "layout": {
+          "label": "mobile-root",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "mobile-today",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34",
+        "title": "PrairieClassroom OS",
+        "h1": "Today",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "TodayDo this now",
+        "layout": {
+          "label": "mobile-today",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "mobile-prep-differentiate",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=prep&classroom=demo-okafor-grade34&tool=differentiate",
+        "title": "PrairieClassroom OS",
+        "h1": "Prepare the material before it reaches the room.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "PrepAdapt lesson",
+        "layout": {
+          "label": "mobile-prep-differentiate",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      },
+      {
+        "label": "mobile-review-family-message",
+        "url": "https://prairieclassroom-os.vercel.app/?demo=true&tab=review&classroom=demo-okafor-grade34&tool=family-message",
+        "title": "PrairieClassroom OS",
+        "h1": "Turn classroom memory into accountable follow-through.",
+        "demoApi": "prairie-static-demo-api",
+        "activeNav": "ReviewMessage family",
+        "layout": {
+          "label": "mobile-review-family-message",
+          "horizontalOverflowPx": 0,
+          "clippedText": [],
+          "modalOpen": false
+        }
+      }
+    ],
+    "logs": {
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "requestFailures": [],
+      "badResponses": []
+    }
+  },
+  "failures": []
+}

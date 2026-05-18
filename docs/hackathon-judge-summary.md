@@ -4,13 +4,14 @@ Short, judge-facing copy for PrairieClassroom OS. This is the one-page narrative
 
 ## Paste-Ready Submission Blurb
 
-PrairieClassroom OS is a Gemma-4-native classroom operating layer for Alberta K-6 teachers and educational assistants managing mixed-readiness, high-complexity classrooms. It is organized around four daily adult jobs — open the day, adapt instruction, prepare tomorrow, coordinate with adults or families — wired together by a closed feedback loop where today's classroom signal becomes tomorrow's planning context. For the hackathon proof lane, we verified real hosted Gemma 4 execution on synthetic/demo classroom data. The current May 16 hosted release gate passed 13/13 curated hosted proof cases, API smoke, and browser smoke. The intended school deployment path remains privacy-first local or self-hosted Gemma 4 via Ollama.
+PrairieClassroom OS is a Gemma-4-native operating layer for Alberta's inclusive classrooms. It helps teachers and educational assistants manage mixed-readiness, high-complexity classrooms through four daily adult jobs: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families. Those jobs are wired together by a closed feedback loop where today's classroom signal becomes tomorrow's planning context. For the hackathon proof lane, we verified real hosted Gemma 4 execution on synthetic/demo classroom data. The current hosted refresh is a passing baseline: 13/13 curated hosted proof cases, API smoke, and browser smoke passed. The public demo is static-first for judge reliability, while the intended school deployment path remains privacy-first local or self-hosted Gemma 4 via Ollama.
 
 ## What Judges Can Safely Credit
 
 - Real hosted Gemma 4 execution was proven on the synthetic/demo lane.
 - The current passing hosted baseline includes curated evals, API smoke, and browser smoke.
 - The current hosted refresh passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; present it only as synthetic/demo hosted proof, not real classroom validation.
+- The public Vercel demo is static-first on synthetic/demo data; do not describe static demo output as live hosted-Gemma generation.
 - Multimodal worksheet image extraction (`extract_worksheet`) is wired through Gemini-API `inline_data` parts, not stub code.
 - Roster-checked function calling rejects unknown student aliases, preventing the model from confirming a hallucinated student.
 - Tool results round-trip through provider-native `tool_interactions[]`, not prompt injection.

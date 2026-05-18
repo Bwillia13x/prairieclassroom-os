@@ -1,14 +1,14 @@
 # PrairieClassroom OS
 
-**A Gemma-4-native operating layer for high-complexity inclusive classrooms.**
+**A Gemma-4-native operating layer for Alberta's inclusive classrooms.**
 
-PrairieClassroom OS is built for the adult coordination work behind inclusive teaching, not the student. It is a teacher command center with 12 primary panels, organized around **four daily teacher jobs** — open the day, adapt instruction, prepare tomorrow, coordinate with adults or families — wired together by a closed feedback loop where today's classroom signal becomes tomorrow's planning context.
+PrairieClassroom OS is built for the adult coordination work behind inclusive teaching, not the student. It is a teacher command center with 12 primary panels and 12 workflow tools, organized around **four daily adult jobs** — open the day, adapt instruction, prepare tomorrow, coordinate with adults or families — wired together by a closed feedback loop where today's classroom signal becomes tomorrow's planning context.
 
 The repo ships **12 workflow tools**, **13 model-routed prompt classes**, and **134 eval cases**, validated end-to-end on real hosted Gemma 4 (`gemma-4-26b-a4b-it` + `gemma-4-31b-it`) against synthetic Alberta K-6 classroom data.
 
 > **Submission target:** [Gemma 4 Good Hackathon](https://kaggle.com/competitions/gemma-4-good-hackathon) — Future of Education track.
 > **Judges, start here:** [Kaggle writeup](docs/kaggle-writeup.md) · [Judge summary](docs/hackathon-judge-summary.md) · [Proof brief](docs/hackathon-proof-brief.md) · [Submission plan](docs/plans/2026-05-18-submission-plan.md)
-> **Live demo:** [PrairieClassroom OS public synthetic demo](https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34). Public YouTube and Kaggle submission URLs are intentionally left out until those external artifacts exist.
+> **Live demo:** [PrairieClassroom OS public synthetic demo](https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34). This public `?demo=true` route is static-first for judge reliability; hosted Gemma 4 proof is a separate synthetic/demo artifact lane. Public YouTube and Kaggle submission URLs are intentionally left out until those external artifacts exist.
 
 ## Why Gemma 4
 
@@ -196,7 +196,7 @@ npm run release:gate
 
 If the gate fails because a port is already in use, stop the existing local processes and re-run the command. The gate expects to own `:3200`, `:3100`, and `:5173`.
 
-For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present. The current May 16 hosted refresh passed: the latest attempted hosted gate is `output/release-gate/2026-05-17T00-36-24-280Z-35954`, where the full hosted release gate completed on synthetic/demo data.
+For hosted hackathon/demo validation against Gemma 4, use the Gemini gate. Hosted runs fail fast unless both an API key and `PRAIRIE_ENABLE_GEMINI_RUNS=true` are present. Current hosted refresh: passing baseline. The latest attempted hosted gate is `output/release-gate/2026-05-17T00-36-24-280Z-35954`, where the full hosted release gate completed on synthetic/demo data.
 
 After a future successful hosted refresh, update the `Latest passing hosted gate:` and `Latest attempted hosted gate:` lines in `docs/hackathon-proof-brief.md`. `npm run proof:check` derives the canonical proof artifacts from that file and verifies every proof surface references the same current attempt and last passing baseline.
 
@@ -341,7 +341,7 @@ Flask Inference :3200
 
 134 checked-in eval case files cover schema reliability, content quality, safety boundaries, latency suitability, retrieval fidelity, prompt injection resistance, persistence round-trip, degraded-path handling, and cross-feature synthesis. The current mock release gate passes with 2,142 TypeScript / Vitest tests and 76 Python tests covering shared schemas, prompt builders and parsers, orchestrator routes, memory retrieval with migrations, inference backends, and the web API client.
 
-The current hosted Gemma 4 refresh passed: `output/release-gate/2026-05-17T00-36-24-280Z-35954` completed the full hosted release gate, including 13/13 curated proof eval cases, API smoke, and browser smoke on synthetic/demo data with `gemma-4-26b-a4b-it` and `gemma-4-31b-it`. The latest completed hosted eval summary is `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`, with cost rollup at `output/cost-rollups/2026-05-17-rollup.json`. Hosted proof is synthetic/demo only; the privacy-first school deployment path remains local/self-hosted Gemma 4 via Ollama.
+Current hosted refresh: passing baseline. `output/release-gate/2026-05-17T00-36-24-280Z-35954` completed the full hosted release gate, including 13/13 curated proof eval cases, API smoke, and browser smoke on synthetic/demo data with `gemma-4-26b-a4b-it` and `gemma-4-31b-it`. The latest completed hosted eval summary is `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`, with cost rollup at `output/cost-rollups/2026-05-17-rollup.json`. Hosted proof is synthetic/demo only; the privacy-first school deployment path remains local/self-hosted Gemma 4 via Ollama.
 
 ```bash
 # Run evals (requires orchestrator + inference running)

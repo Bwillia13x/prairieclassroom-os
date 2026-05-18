@@ -1,0 +1,92 @@
+{
+  "createdAt": "2026-05-18T00:57:28.607Z",
+  "baseUrl": "http://localhost:5173",
+  "apiBase": "http://localhost:3100/api",
+  "checks": {
+    "promptShown": true,
+    "wrongCodeRejected": true,
+    "validCodeRecovered": true,
+    "savedCodeReused": true,
+    "demoClassroomNoCodePrompt": true
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "requestFailures": [],
+  "benignAborts": [
+    {
+      "url": "http://localhost:5173/api/sessions/summary/alpha-grade4",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5173/api/health",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5173/api/sessions",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5173/api/health",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5173/api/sessions",
+      "failure": "net::ERR_ABORTED"
+    },
+    {
+      "url": "http://localhost:5173/api/health",
+      "failure": "net::ERR_ABORTED"
+    }
+  ],
+  "authResponses": [
+    {
+      "url": "http://localhost:5173/api/classrooms/alpha-grade4/health",
+      "status": 401
+    },
+    {
+      "url": "http://localhost:5173/api/sessions/summary/alpha-grade4",
+      "status": 401
+    },
+    {
+      "url": "http://localhost:5173/api/classrooms/alpha-grade4/student-summary",
+      "status": 401
+    },
+    {
+      "url": "http://localhost:5173/api/classrooms/alpha-grade4/profile",
+      "status": 403
+    },
+    {
+      "url": "http://localhost:5173/api/today/alpha-grade4",
+      "status": 403
+    },
+    {
+      "url": "http://localhost:5173/api/classrooms/alpha-grade4/health",
+      "status": 403
+    },
+    {
+      "url": "http://localhost:5173/api/classrooms/alpha-grade4/student-summary",
+      "status": 403
+    },
+    {
+      "url": "http://localhost:5173/api/sessions/summary/alpha-grade4",
+      "status": 403
+    },
+    {
+      "url": "http://localhost:5173/api/classrooms/alpha-grade4/health",
+      "status": 403
+    },
+    {
+      "url": "http://localhost:5173/api/classrooms/alpha-grade4/student-summary",
+      "status": 403
+    }
+  ],
+  "protectedClassroom": {
+    "classroom_id": "alpha-grade4",
+    "grade_band": "4",
+    "subject_focus": "literacy_and_social_studies",
+    "requires_access_code": true,
+    "is_demo": true,
+    "classroom_notes": [],
+    "students": []
+  }
+}

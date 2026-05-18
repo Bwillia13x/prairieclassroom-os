@@ -4,8 +4,8 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 
 ## Current State
 
-- **Mock gate:** green at `output/release-gate/2026-05-17T09-01-46-073Z-40058`
-- **Hosted Gemini proof lane:** current clean full hosted gate passed on May 16 using synthetic/demo data.
+- **Mock gate:** green at `output/release-gate/2026-05-17T14-11-36-166Z-99074`
+- **Hosted Gemini proof lane:** current hosted refresh is a passing baseline on synthetic/demo data.
 - **Ollama privacy-first lane:** blocked on host capability on the current machine
 - **Paid Vertex lane:** intentionally not run in the zero-cost sprint
 
@@ -13,7 +13,7 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 
 - **Models used:** `gemma-4-26b-a4b-it` (live), `gemma-4-31b-it` (planning)
 - **Hosted readycheck:** passed on 2026-05-16 with the supplied AI Studio key and explicit run guard after sourcing `.env`.
-- **May 16 hosted refresh:** passed. The latest attempted hosted gate is `output/release-gate/2026-05-17T00-36-24-280Z-35954`; the full `release:gate:gemini` run completed typecheck, lint, Python tests, TS tests, claims check, harness smoke, hosted evals, API smoke, and browser smoke.
+- **Current hosted refresh:** passed. The latest attempted hosted gate is `output/release-gate/2026-05-17T00-36-24-280Z-35954`; the full `npm run release:gate:gemini` run completed typecheck, lint, Python tests, TS tests, claims check, harness smoke, hosted evals, API smoke, and browser smoke.
 - **Latest completed hosted eval summary:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` recorded `13/13` curated hosted proof cases passing, including `diff-015-tool-calling-curriculum`, `plan-010-prompt-injection`, `msg-lang-pa-praise`, `surv-001-schema`, and `extract-001-schema`.
 - **Latest hosted eval failure summary:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json`
 - **Latest hosted cost rollup:** `output/cost-rollups/2026-05-17-rollup.json`
@@ -26,8 +26,8 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 ## Artifact Trail
 
 - **Provider truth source:** `docs/eval-baseline.md`
-- **Latest passing mock gate:** `output/release-gate/2026-05-17T09-01-46-073Z-40058`
-- **Latest mock gate summary:** `output/release-gate/2026-05-17T09-01-46-073Z-40058/summary.json`
+- **Latest passing mock gate:** `output/release-gate/2026-05-17T14-11-36-166Z-99074`
+- **Latest mock gate summary:** `output/release-gate/2026-05-17T14-11-36-166Z-99074/summary.json`
 - **Latest attempted hosted gate:** `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 - **Latest attempted hosted summary:** `output/release-gate/2026-05-17T00-36-24-280Z-35954/summary.json`
 - **Latest attempted hosted eval log:** `output/release-gate/2026-05-17T00-36-24-280Z-35954/75-gemini-evals.log`
@@ -56,4 +56,4 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 5. Run `npm run eval:summary`.
 6. Run `npm run logs:summary`.
 
-The May 16 proof refresh used the latest approved full hosted rerun. Do not run another full hosted gate without explicit approval.
+The current proof refresh used the latest approved full hosted rerun. Do not run another full hosted gate without explicit approval.

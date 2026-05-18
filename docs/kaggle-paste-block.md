@@ -8,64 +8,64 @@ PrairieClassroom OS
 
 ## Subtitle
 
-A Gemma-4-native operating layer for high-complexity inclusive classrooms
+A Gemma-4-native operating layer for Alberta's inclusive classrooms
 
 ## Body
 
-The hardest part of teaching an inclusive classroom is usually not writing the lesson. It is coordinating everything around it.
+At 8:12 in the morning, a classroom can already be full.
 
-PrairieClassroom OS is built for that coordination problem. It is a classroom operations copilot for teachers and educational assistants, not a tutor and not a replacement for teacher judgment.
+Not just full of students. Full of reading levels, home languages, sensory needs, missed sleep, behaviour plans, substitute notes, family messages, and an educational assistant who may be available in the morning but gone by the afternoon.
+
+PrairieClassroom OS is built for that coordination problem. It is not a student chatbot. It is a teacher and educational-assistant operating layer for turning classroom signals into coordinated adult action.
+
+The demo classroom is a synthetic Alberta Grade 3/4 split led by "Mrs. Okafor": 26 students, mixed readiness levels, EAL needs, support routines, two weeks of seeded classroom memory, and morning-only EA coverage.
 
 The product is organized around four daily adult jobs:
 
-1. open the day and decide where to start
-2. adapt instruction for different learners
-3. prepare tomorrow from what happened today
-4. coordinate with adults or families using the same classroom context
+1. Open the day - triage what changed and where coverage risk exists.
+2. Adapt instruction - turn one artifact into readiness-aligned variants.
+3. Prepare tomorrow - synthesize recent interventions, plans, patterns, and schedules into next-day action.
+4. Coordinate with adults and families - produce EA briefings, substitute packets, and family-message drafts that remain under teacher control.
 
-These four jobs are wired together by a closed feedback loop: a note logged today becomes structured memory, that memory feeds tomorrow's plan, the plan informs the EA briefing, and the resulting interventions feed the next pattern report. The system gets more useful the longer a classroom uses it.
+All four jobs run through the same loop:
 
-Behind the four-job framing the repo ships 12 workflow tools and 13 model-routed prompt classes across differentiation, worksheet extraction, tomorrow planning, family-message drafting with approval gates, intervention logging, language supports, support-pattern detection, EA briefings, complexity forecasting, scaffold-decay review, substitute packets, and EA load balancing.
+`classroom signal -> Gemma 4 synthesis -> teacher / EA action -> classroom memory -> next planning context`
 
-Estimated time-back-to-teaching against the synthetic demo classroom (not pilot-validated): differentiating one worksheet for five readiness levels (~30 min by hand → ~30 sec); preparing an EA briefing (~15 min verbal → ~30 sec structured read); surfacing a recurring support pattern across two weeks of records (impractical → ~5 sec).
+A note logged today becomes structured memory. That memory informs tomorrow's plan. Tomorrow's plan becomes an EA briefing. The briefing becomes action. The action becomes the next signal.
 
-The product thesis is simple: classroom complexity is a coordination problem. A useful AI system in this setting needs memory, retrieval, safety boundaries, and role-specific workflows, not just text generation.
+Gemma 4 is central in four ways.
 
-Technically, PrairieClassroom OS uses a three-service architecture:
+First, PrairieClassroom OS uses Gemma 4 for multimodal classroom artifacts. Teachers can upload a worksheet photo; the `extract_worksheet` route sends the image through the hosted Gemma lane as a Gemini-API `inline_data` part, letting the system turn a paper artifact into structured input for differentiation.
 
-- Vite + React UI for the teacher and EA shell
-- Express orchestrator for prompt construction, retrieval, validation, and approval boundaries
-- Flask inference service for provider-specific model execution
+Second, the app uses dual-tier routing. Fast classroom transformations route to a live tier; deeper cross-record synthesis routes to a planning tier. The hosted hackathon proof lane uses `gemma-4-26b-a4b-it` for live workflows and `gemma-4-31b-it` for planning workflows.
 
-Classroom memory lives in SQLite. Retrieval is SQL-based because the data is bounded, structured, and relational: students, interventions, plans, messages, and pattern reports. For this use case, SQL is more transparent and controllable than approximate vector retrieval.
+Third, the app uses selective thinking. Thinking is enabled for planning-tier tasks such as tomorrow planning, support-pattern detection, forecasting, scaffold review, substitute packets, and EA load balancing. It is not turned on for every quick classroom action.
 
-Gemma 4 is central to the design in four ways.
+Fourth, Gemma 4 can call bounded local tools for Alberta curriculum lookup and classroom intervention history. The intervention-history tool checks the active roster and rejects unknown student aliases, preventing the model from silently confirming a hallucinated student.
 
-1. Multimodal worksheet handling: teachers submit a worksheet image directly to the Differentiate workflow; the `extract_worksheet` route base64-encodes the image into a Gemini-API `inline_data` part so Gemma 4 reads the paper artifact without manual retyping.
-2. Dual-tier routing: fast transformation tasks stay on the live tier, while planning and pattern synthesis route to the larger planning tier.
-3. Selective thinking mode: thinking is enabled only for tomorrow planning and support-pattern detection, where cross-record reasoning matters.
-4. Roster-checked function calling: Gemma 4 can call two bounded local tools (Alberta curriculum lookup, classroom intervention history); the intervention-history tool rejects unknown student aliases so the model cannot silently confirm a hallucinated student. Tool results round-trip through provider-native `tool_interactions[]`, not prompt injection.
+Technically, PrairieClassroom OS is a working monorepo: Vite + React teacher shell, Express orchestrator, Flask inference service, SQLite classroom memory, shared Zod schemas, request logging, role scopes, retrieval, persistence, and auditability.
 
-For the hackathon submission, the artifact-backed proof lane is hosted Gemma 4 through the Gemini API on synthetic/demo classroom data:
+The implemented system includes 12 workflow tools, 13 model-routed prompt classes, 53 exact API endpoints, 7 retrieval-backed prompt classes, 134 checked-in eval case files, and two model tiers.
 
-- live tier: `gemma-4-26b-a4b-it`
-- planning tier: `gemma-4-31b-it`
+The public Vercel demo is static-first on the `?demo=true` route so reviewers are not blocked by hosted cold starts. The hosted Gemma 4 proof lane is separate and artifact-backed on synthetic/demo data.
 
-The repo also includes a separate local/self-hosted Ollama lane for the intended privacy-preserving school deployment path:
+Current hosted refresh: passing baseline. The full hosted release gate passed on synthetic/demo classroom data at `output/release-gate/2026-05-17T00-36-24-280Z-35954`, with 13/13 curated proof cases passing. The current no-cost structural gate also passes in mock mode at `output/release-gate/2026-05-17T14-11-36-166Z-99074`.
 
-- live tier: `gemma4:4b`
-- planning tier: `gemma4:27b`
+Education AI should not diagnose, surveil, or replace professional judgment. PrairieClassroom OS does not diagnose students, does not generate discipline scores, does not send family messages autonomously, requires teacher approval for family-message drafts, and limits hosted Gemma runs to synthetic/demo data. The repo includes a public claims ledger so unsupported claims do not creep into the demo.
 
-That distinction is intentional. The hosted lane is the proof path used for the submission artifacts. The Ollama lane is the future local-first deployment path for school environments.
+We do not claim real teacher validation, measured workload reduction, real classroom deployment, no-cloud operation, or a passing Ollama proof on the current maintenance host. The local/Ollama lane is the intended privacy-first deployment path, not an overclaimed result.
 
-Safety is built into the product design. PrairieClassroom OS uses observational language instead of diagnostic claims, excludes clinical and stigmatizing terms from relevant prompt classes, and keeps a permanent teacher-approval boundary on family messaging.
+In the synthetic demo classroom, adapting one worksheet for five readiness levels moves from an estimated thirty-minute manual task to a short teacher-reviewed workflow. Preparing an EA briefing moves from an ad hoc verbal handoff to a structured artifact. Surfacing a recurring support pattern across two weeks of records becomes a planning-tier synthesis task instead of an impossible memory burden.
 
-The checked-in repo currently includes two current proof anchors:
+Those are synthetic-demo estimates, not measured classroom outcome claims.
 
-- the no-cost structural gate passes on the current branch
-- the current hosted Gemma 4 baseline passed `13/13` on synthetic/demo data at `output/release-gate/2026-05-17T00-36-24-280Z-35954`
+PrairieClassroom OS does not route around the teacher. It strengthens the teacher's coordination layer. It turns scattered classroom signals into visible memory, planning context, adult handoffs, and safer family communication.
 
-The system is therefore not just a demo concept. It is a working Gemma-4-native operating layer for differentiated instruction, classroom memory, family communication, and next-day planning.
+Inclusive classrooms do not need another generic chatbot.
+
+They need memory, coordination, safety, and intelligence close enough to the classroom to be useful.
+
+That is what Gemma 4 makes possible.
 
 ## Project Links To Attach
 

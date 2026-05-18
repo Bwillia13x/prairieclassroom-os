@@ -106,7 +106,7 @@ The 20-second clip captured during Phase C of the submission plan. Use only what
 **Final on-screen**
 
 - `PrairieClassroom OS`
-- `A Gemma-4-native operating layer for inclusive classrooms`
+- `A Gemma-4-native operating layer for Alberta's inclusive classrooms`
 
 ---
 

@@ -208,7 +208,7 @@ Open **Review -> Usage Insights** if populated, or reference the proof docs dire
 
 **Say clearly:**
 
-> "The proof lane is hosted Gemma 4 on synthetic/demo data. The current May 16 hosted baseline passed 13/13 curated proof cases, API smoke, and browser smoke. The current generated inventory records 12 panels, 13 prompt classes, 53 endpoints, and 134 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
+> "The proof lane is hosted Gemma 4 on synthetic/demo data. The current hosted refresh is a passing baseline: 13/13 curated proof cases, API smoke, and browser smoke passed. The current generated inventory records 12 workflow tools, 13 prompt classes, 53 endpoints, and 134 eval cases. Real classroom validation is not claimed yet; the pilot materials are ready, but the first real teacher/EA walkthrough must still be captured before outcome claims are made."
 
 ---
 
