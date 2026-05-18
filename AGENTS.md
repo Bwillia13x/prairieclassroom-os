@@ -4,7 +4,7 @@
 
 PrairieClassroom OS is a Gemma-4-native operating layer for Alberta's inclusive classrooms. It is teacher- and EA-facing, not student-facing, and is designed around multimodal lesson differentiation, next-day support planning, family communication with teacher approval, intervention logging, and classroom memory.
 
-This repository is now in submission-readiness mode for the Gemma 4 Good Hackathon. Preserve the proof split: the public Vercel demo is static-first on synthetic/demo data for judge reliability, the hosted Gemma 4 lane is the artifact-backed synthetic/demo proof path, and the Ollama lane is the intended privacy-first local/self-hosted deployment path, not a claimed passing result on this host.
+This repository is now in submission-readiness mode for the Gemma 4 Good Hackathon. Preserve the proof split: the public Vercel demo is static-first on synthetic/demo data for judge reliability, the hosted Gemma 4 lane is the documented synthetic/demo proof path with public summaries under `docs/evidence/`, and the Ollama lane is the intended privacy-first local/self-hosted deployment path, not a claimed passing result on this host.
 
 ## Core outcome
 

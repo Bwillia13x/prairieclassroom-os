@@ -1,0 +1,24 @@
+{
+  "evidence_type": "mock_release_gate_summary",
+  "generated_at": "2026-05-18T00:41:09.240Z",
+  "completed_at": "2026-05-18T00:42:51.803Z",
+  "source_run_dir": "output/release-gate/2026-05-18T00-41-08-849Z-35043",
+  "source_summary": "output/release-gate/2026-05-18T00-41-08-849Z-35043/summary.json",
+  "inference_mode": "mock",
+  "command": "npm run release:gate",
+  "status": "passed",
+  "scope": "no-cost structural validation without paid services",
+  "zero_cost_enforced": true,
+  "completed_checks": [
+    "typecheck",
+    "lint",
+    "Python tests",
+    "TypeScript/Vitest tests",
+    "claims check",
+    "system inventory",
+    "fixture validation",
+    "API smoke",
+    "browser smoke"
+  ],
+  "limits": "Mock mode validates contracts, routing, parsing, safety checks, and UI/API behavior; it does not validate live Gemma output quality."
+}

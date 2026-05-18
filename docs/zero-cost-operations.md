@@ -1,7 +1,7 @@
 # Zero-Cost Operations
 
 This document is the operator source of truth for the no-spend lane.
-The current artifact-backed host status is tracked in `docs/live-model-proof-status.md`.
+The current host status is tracked in `docs/live-model-proof-status.md`; public release-gate summaries are tracked in `docs/evidence/`.
 
 ## Allowed Modes
 

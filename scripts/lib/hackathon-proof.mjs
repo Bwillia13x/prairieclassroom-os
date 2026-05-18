@@ -36,6 +36,8 @@ export const APPROVED_RERUN_ORDER = [
   "npm run logs:summary",
 ];
 const HOSTED_PROOF_RUN_DIR_PATTERN = /output\/release-gate\/\d{4}-\d{2}-\d{2}T[0-9A-Z-]+-\d+/g;
+const PUBLIC_PROOF_SUMMARY_DOCS = new Set(["docs/kaggle-writeup.md"]);
+const PUBLIC_PROOF_SUMMARY_PATTERN = /docs\/evidence\/2026-05-\d{2}-hosted-gemini-(release|eval)-summary\.json/;
 
 const FORBIDDEN_OVERCLAIMS = [
   /first approved live rerun step:\s*PRAIRIE_INFERENCE_PROVIDER=gemini PRAIRIE_SMOKE_CASES=ea-briefing npm run smoke:api/i,
@@ -109,8 +111,15 @@ export function validateProofSurfaces(surfaces) {
     }
 
     const content = surfaces[docPath];
-    requireSubstring(issues, docPath, content, canonicalArtifact, "hosted proof artifact path");
-    if (currentAttemptArtifact) {
+    const usesPublicProofSummary = PUBLIC_PROOF_SUMMARY_DOCS.has(docPath);
+    if (usesPublicProofSummary) {
+      requirePattern(issues, docPath, content, PUBLIC_PROOF_SUMMARY_PATTERN, "public hosted proof summary path");
+      requireSubstring(issues, docPath, content, "docs/eval-baseline.md", "provider proof ledger");
+      requireSubstring(issues, docPath, content, "docs/hackathon-proof-brief.md", "proof brief ledger");
+    } else {
+      requireSubstring(issues, docPath, content, canonicalArtifact, "hosted proof artifact path");
+    }
+    if (currentAttemptArtifact && !usesPublicProofSummary) {
       requireSubstring(issues, docPath, content, currentAttemptArtifact, "current hosted attempt artifact path");
       requirePattern(
         issues,
@@ -152,7 +161,7 @@ export function validateProofSurfaces(surfaces) {
       issues,
       docPath,
       content,
-      /(passing baseline|full hosted release gate completed|full hosted release gate passed|Hosted Gemini proof lane:\*{0,2}\s*passing)/i,
+      /(passing baseline|proof baseline:\s*passing|full hosted release gate completed|full hosted release gate passed|Hosted Gemini proof lane:\*{0,2}\s*passing)/i,
       "passing hosted-proof language",
     );
 

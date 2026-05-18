@@ -1,10 +1,10 @@
 # Hackathon Proof Brief
 
-Concise, artifact-backed proof summary for judges and collaborators. This document is derived from [eval-baseline.md](./eval-baseline.md), which remains the provider-level source of truth.
+Concise proof summary for judges and collaborators. This document is derived from [eval-baseline.md](./eval-baseline.md), which remains the provider-level source of truth. Public proof summaries are also available under [docs/evidence/](./evidence/).
 
 ## Current State
 
-- **Mock gate:** green at `output/release-gate/2026-05-17T14-11-36-166Z-99074`
+- **Mock gate:** green at `output/release-gate/2026-05-18T00-41-08-849Z-35043`
 - **Hosted Gemini proof lane:** current hosted refresh is a passing baseline on synthetic/demo data.
 - **Ollama privacy-first lane:** blocked on host capability on the current machine
 - **Paid Vertex lane:** intentionally not run in the zero-cost sprint
@@ -21,13 +21,14 @@ Concise, artifact-backed proof summary for judges and collaborators. This docume
 - **Gemma-native coverage:** the hosted proof suite includes worksheet image extraction, route-scoped tool calling, and multilingual family-message generation on synthetic/demo data
 - **Full hosted release gate passed:** current passing baseline at `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 - **Hosted eval failure ledger:** `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json` contains only the separate Ollama host-preflight block; hosted Gemini validation, transport, timeout, parse, schema, and retrieval failure groups are empty.
-- **What this proves now:** real hosted Gemma 4 execution is artifact-backed on synthetic/demo classroom data, including route-scoped tool calling, prompt-injection resistance, multilingual family-message coverage, worksheet extraction, API smoke, and browser smoke.
+- **What this proves now:** real hosted Gemma 4 execution is documented on synthetic/demo classroom data, including route-scoped tool calling, prompt-injection resistance, multilingual family-message coverage, worksheet extraction, API smoke, and browser smoke.
 
 ## Artifact Trail
 
 - **Provider truth source:** `docs/eval-baseline.md`
-- **Latest passing mock gate:** `output/release-gate/2026-05-17T14-11-36-166Z-99074`
-- **Latest mock gate summary:** `output/release-gate/2026-05-17T14-11-36-166Z-99074/summary.json`
+- **Public proof summaries:** `docs/evidence/2026-05-17-hosted-gemini-release-summary.json`, `docs/evidence/2026-05-17-hosted-gemini-eval-summary.json`, `docs/evidence/2026-05-17-hosted-gemini-failure-summary.json`, `docs/evidence/2026-05-18-mock-gate-summary.json`
+- **Latest passing mock gate:** `output/release-gate/2026-05-18T00-41-08-849Z-35043`
+- **Latest mock gate summary:** `output/release-gate/2026-05-18T00-41-08-849Z-35043/summary.json`
 - **Latest attempted hosted gate:** `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 - **Latest attempted hosted summary:** `output/release-gate/2026-05-17T00-36-24-280Z-35954/summary.json`
 - **Latest attempted hosted eval log:** `output/release-gate/2026-05-17T00-36-24-280Z-35954/75-gemini-evals.log`

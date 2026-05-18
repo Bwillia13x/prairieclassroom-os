@@ -16,7 +16,7 @@ This document separates demo proof from real classroom readiness. PrairieClassro
 | Mode | Data allowed | Model lane | Purpose |
 |---|---|---|---|
 | `demo` | seeded synthetic classrooms only | mock or hosted Gemini | demos, walkthroughs, judging |
-| `synthetic-proof` | synthetic eval and fixture data | mock, Ollama, or hosted Gemini | artifact-backed proof and regression checks |
+| `synthetic-proof` | synthetic eval and fixture data | mock, Ollama, or hosted Gemini | documented proof and regression checks |
 | `local-pilot-rehearsal` | fake or manually de-identified classroom notes | mock or Ollama | teacher/EA workflow rehearsal without sensitive records |
 | `local-pilot-real-data` | real records only after readiness blockers close | Ollama/local only | bounded school pilot on controlled hardware |
 | `hosted-real-data` | none | none | explicitly unsupported |

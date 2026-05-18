@@ -90,8 +90,11 @@ http://localhost:5173/?demo=true
 
 > "This is a Gemma-4-native app, not a generic education shell. The live tier handles fast classroom transformations. The planning tier handles deeper synthesis across classroom memory. The competition proof lane is hosted Gemma 4 on synthetic data only."
 
-**Point to artifact-backed proof if needed:**
+**Point to documented public proof if needed:**
 
+- Public hosted release summary: `docs/evidence/2026-05-17-hosted-gemini-release-summary.json`
+- Public hosted eval summary: `docs/evidence/2026-05-17-hosted-gemini-eval-summary.json` (`13/13`)
+- Public mock gate summary: `docs/evidence/2026-05-18-mock-gate-summary.json`
 - Current hosted refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
 - Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
 - Latest passing hosted gate: `output/release-gate/2026-05-17T00-36-24-280Z-35954`

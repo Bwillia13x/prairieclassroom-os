@@ -2,6 +2,8 @@
 
 **A Gemma-4-native operating layer for Alberta's inclusive classrooms**
 
+**Track:** Future of Education
+
 **Public demo:** https://prairieclassroom-os.vercel.app/?demo=true&tab=today&classroom=demo-okafor-grade34
 
 **Code:** https://github.com/Bwillia13x/prairieclassroom-os
@@ -55,7 +57,7 @@ Gemma 4 is not a decorative chatbot layer. It is the reasoning substrate.
 
 **Bounded tool calling.** Gemma 4 can call local tools for Alberta curriculum lookup and classroom intervention history. The intervention-history tool checks the active roster and rejects unknown student aliases, which prevents the model from silently confirming a hallucinated student.
 
-This matches Gemma 4's strengths: agentic workflows with function calling, multimodal reasoning, multilingual support, and efficient deployment paths across hosted and local environments. [3]
+This matches Gemma 4's strengths: agentic workflows with function calling, multimodal reasoning, multilingual support, and efficient architecture, while letting PrairieClassroom OS separate the hosted synthetic proof lane from the intended local/self-hosted deployment path. [3]
 
 ## 4. Architecture
 
@@ -72,9 +74,9 @@ The implemented system includes:
 - 134 checked-in eval case files
 - 2 model tiers: live and planning
 
-The public Vercel demo is a judge-safe synthetic demo path designed to load reliably. It is static-first on the `?demo=true` route so reviewers are not blocked by hosted cold starts. The hosted Gemma 4 proof lane is separate and artifact-backed on synthetic/demo data.
+The public Vercel demo is a judge-safe synthetic demo path designed to load reliably. It is static-first on the `?demo=true` route so reviewers are not blocked by hosted cold starts. The hosted Gemma 4 proof lane is separate and documented through public proof summaries on synthetic/demo data.
 
-## 5. Safety And Trust
+## 5. Safety and Trust
 
 Education AI should not diagnose, surveil, or replace professional judgment.
 
@@ -91,21 +93,23 @@ PrairieClassroom OS keeps those boundaries explicit:
 
 The repo also includes a public claims ledger so unsupported claims do not creep into the demo. We do not claim real teacher validation, measured workload reduction, real classroom deployment, no-cloud operation, or a passing Ollama proof on the current maintenance host. The local/Ollama lane is the intended privacy-first deployment path, not an overclaimed result.
 
-## 6. Proof Of Work
+## 6. Proof of Work
 
-Current hosted refresh: passing baseline. The full hosted release gate passed via `npm run release:gate:gemini` on synthetic/demo classroom data at `output/release-gate/2026-05-17T00-36-24-280Z-35954`, with 13/13 curated proof cases passing.
+Hosted Gemma 4 proof baseline: passing. The full hosted release gate completed via `npm run release:gate:gemini` on synthetic/demo classroom data, with 13/13 curated proof cases passing.
 
 Those cases cover differentiation, worksheet extraction, tomorrow planning, EA briefing, family-message drafting, complexity debt, substitute packet generation, forecasting, prompt-injection resistance, route-scoped tool calling, and a Punjabi family-message equity case. The full hosted gate completed typecheck, lint, Python tests, TypeScript/Vitest tests, claims check, harness smoke, hosted evals, API smoke, and browser smoke.
 
-The current no-cost structural gate also passes in mock mode at `output/release-gate/2026-05-17T14-11-36-166Z-99074`. The latest mock gate includes 2,142 TypeScript/Vitest tests and 76 Python tests.
+A current no-cost structural gate also passes in mock mode, validating the app without paid services. The mock lane validates contracts, routing, parsing, safety checks, and UI/API behavior; the hosted lane validates real Gemma 4 execution on synthetic/demo data.
+
+The public proof summaries include `docs/evidence/2026-05-17-hosted-gemini-release-summary.json`, `docs/evidence/2026-05-17-hosted-gemini-eval-summary.json`, and `docs/evidence/2026-05-18-mock-gate-summary.json`, while the provider-level source of truth is summarized in `docs/eval-baseline.md` and `docs/hackathon-proof-brief.md`.
 
 The result is not a concept video. It is a route-complete, test-covered, synthetic-data proof of a classroom operating layer built around Gemma 4.
 
 ## 7. Impact
 
-The immediate value is time back to teaching.
+The immediate potential value is time back to teaching.
 
-In the synthetic demo classroom, adapting one worksheet for five readiness levels moves from an estimated thirty-minute manual task to a short teacher-reviewed workflow. Preparing an EA briefing moves from an ad hoc verbal handoff to a structured, reviewable artifact. Surfacing a recurring support pattern across two weeks of records becomes a planning-tier synthesis task instead of an impossible memory burden.
+In the synthetic demo classroom, adapting one worksheet for five readiness levels moves from an estimated thirty-minute manual task to a short teacher-reviewed workflow. Preparing an EA briefing moves from an ad hoc verbal handoff to a structured, reviewable artifact. Surfacing a recurring support pattern across two weeks of records becomes a planning-tier synthesis task instead of a fragile working-memory burden.
 
 Those are synthetic-demo estimates, not measured classroom outcome claims.
 

@@ -47,7 +47,7 @@ npm run rebuild:memory
 Mock mode and Ollama are the zero-cost defaults. Hosted Gemini API is the hackathon/demo lane for real Gemma 4 validation without local 27B hardware, but hosted runs are disabled by default until you explicitly export `PRAIRIE_ENABLE_GEMINI_RUNS=true`. Any Vertex-backed path is blocked unless you explicitly export `PRAIRIE_ALLOW_PAID_SERVICES=true`.
 The operator source of truth for the no-spend local lane is [docs/zero-cost-operations.md](docs/zero-cost-operations.md).
 The operator source of truth for the hosted hackathon lane is [docs/hackathon-hosted-operations.md](docs/hackathon-hosted-operations.md).
-The artifact-backed proof registry lives in [docs/live-model-proof-status.md](docs/live-model-proof-status.md) for Ollama-host evidence, while provider comparisons live in [docs/eval-baseline.md](docs/eval-baseline.md).
+The proof registry lives in [docs/live-model-proof-status.md](docs/live-model-proof-status.md) for Ollama-host evidence, provider comparisons live in [docs/eval-baseline.md](docs/eval-baseline.md), and public release-gate summaries live in [docs/evidence/](docs/evidence/).
 
 ### Reset demo data
 
@@ -362,7 +362,7 @@ For public claims, `npm run claims:check` blocks unsupported statements like inv
 - [Pilot readiness](docs/pilot-readiness.md) — real-data blockers, evidence artifacts, and pilot modes
 - [Decision log](docs/decision-log.md) — architecture decision records
 - [Kaggle writeup](docs/kaggle-writeup.md) — competition submission document
-- [Hackathon proof brief](docs/hackathon-proof-brief.md) — concise artifact-backed proof summary for judges
+- [Hackathon proof brief](docs/hackathon-proof-brief.md) — concise proof summary for judges
 - [Demo script](docs/demo-script.md) — 15-minute walkthrough with narration cues
 - [Video shot list](docs/video-shot-list.md) — 3-minute public-video outline aligned to the hosted proof lane
 - [Hackathon submission checklist](docs/hackathon-submission-checklist.md) — repo-complete items, external publish steps, and claims to avoid

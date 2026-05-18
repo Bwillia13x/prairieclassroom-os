@@ -10,6 +10,7 @@ import {
 import { DEFAULT_GEMINI_MODEL_IDS } from "../gemini-api-preflight.mjs";
 
 const FAILED_HOSTED_ATTEMPT_RUN_DIR = "output/release-gate/2026-05-16T19-20-45-520Z-14783";
+const PUBLIC_HOSTED_PROOF_SUMMARY = "docs/evidence/2026-05-17-hosted-gemini-release-summary.json";
 
 function consistentSurfaces({
   artifact = HOSTED_PROOF_RUN_DIR,
@@ -50,11 +51,20 @@ function consistentSurfaces({
 
   const sharedContent = sharedClauses.join("\n");
   const proofBriefContent = proofBriefLines.join("\n");
+  const publicKaggleContent = [
+    sharedContent,
+    `Public proof summary: ${PUBLIC_HOSTED_PROOF_SUMMARY}`,
+    `Provider proof ledger: docs/eval-baseline.md and docs/hackathon-proof-brief.md`,
+  ].join("\n");
 
   const surfaces = {};
   for (const docPath of PROOF_DOC_PATHS) {
     surfaces[docPath] =
-      docPath === "docs/hackathon-proof-brief.md" ? proofBriefContent : sharedContent;
+      docPath === "docs/hackathon-proof-brief.md"
+        ? proofBriefContent
+        : docPath === "docs/kaggle-writeup.md"
+          ? publicKaggleContent
+          : sharedContent;
   }
   return surfaces;
 }
@@ -129,6 +139,22 @@ describe("validateProofSurfaces — derives canonical artifact from proof-brief"
     const result = validateProofSurfaces(surfaces);
     assert.equal(result.ok, false);
     assert.match(result.issues.join("\n"), /README\.md: missing current hosted attempt artifact path/);
+  });
+
+  it("allows the public Kaggle writeup to cite docs/evidence instead of ignored raw output paths", () => {
+    const surfaces = consistentSurfaces({ attemptArtifact: HOSTED_PROOF_RUN_DIR, attemptStatus: "passed" });
+    surfaces["docs/kaggle-writeup.md"] = [
+      `Hosted Gemma 4 proof baseline: passing.`,
+      `Models: ${DEFAULT_GEMINI_MODEL_IDS.live} and ${DEFAULT_GEMINI_MODEL_IDS.planning}`,
+      `Primary rerun command: npm run release:gate:gemini`,
+      `Use the hosted lane for synthetic/demo data only.`,
+      `The privacy-first future deployment path remains local/self-hosted Gemma 4 via Ollama.`,
+      `Public proof summary: ${PUBLIC_HOSTED_PROOF_SUMMARY}`,
+      `Provider proof ledger: docs/eval-baseline.md and docs/hackathon-proof-brief.md`,
+    ].join("\n");
+
+    const result = validateProofSurfaces(surfaces);
+    assert.deepEqual(result, { ok: true, issues: [] });
   });
 });
 

@@ -73,6 +73,8 @@ function makeConsistentProofSurfaces() {
     `Use the hosted lane for synthetic/demo data only.`,
     `The privacy-first future deployment path remains local/self-hosted Gemma 4 via Ollama.`,
     `Primary rerun command: npm run release:gate:gemini`,
+    `Public proof summary: docs/evidence/2026-05-17-hosted-gemini-release-summary.json`,
+    `Provider proof ledger: docs/eval-baseline.md and docs/hackathon-proof-brief.md`,
   ].join("\n");
 
   return Object.fromEntries(PROOF_DOC_PATHS.map((docPath: string) => [docPath, content]));

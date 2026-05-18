@@ -1,0 +1,21 @@
+{
+  "evidence_type": "hosted_gemma_failure_summary",
+  "generated_at": "2026-05-17T01:02:18.144Z",
+  "source_failure_summary": "output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-failure-summary.json",
+  "hosted_gemini_failures": {
+    "validation": [],
+    "transport": [],
+    "timeout": [],
+    "parse": [],
+    "schema": [],
+    "retrieval": []
+  },
+  "separate_blockers": [
+    {
+      "lane": "Ollama host preflight",
+      "status": "blocked",
+      "summary": "Ollama CLI is not available or `ollama list` failed on the current maintenance host."
+    }
+  ],
+  "claim_boundary": "The hosted Gemma lane passed on synthetic/demo data. The local/Ollama privacy-first lane remains architected but not proven on the current host."
+}

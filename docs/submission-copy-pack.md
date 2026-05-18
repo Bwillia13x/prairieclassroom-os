@@ -16,13 +16,14 @@ Do not paste bracketed placeholders into any external field. The public video us
 
 Current proof anchors to keep in external copy:
 
-- Mock structural gate: `output/release-gate/2026-05-17T14-11-36-166Z-99074`
+- Public proof summaries: `docs/evidence/2026-05-17-hosted-gemini-release-summary.json`, `docs/evidence/2026-05-17-hosted-gemini-eval-summary.json`, `docs/evidence/2026-05-17-hosted-gemini-failure-summary.json`, `docs/evidence/2026-05-18-mock-gate-summary.json`
+- Mock structural gate: `output/release-gate/2026-05-18T00-41-08-849Z-35043`
 - Current hosted Gemma 4 refresh: passed at `output/release-gate/2026-05-17T00-36-24-280Z-35954`; claim it only as synthetic/demo hosted proof.
 - Latest completed hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json` (`13/13`)
 - Latest passing hosted Gemma 4 baseline: `output/release-gate/2026-05-17T00-36-24-280Z-35954`
 - Latest passing hosted eval summary: `output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json`
 - Latest hosted cost rollup: `output/cost-rollups/2026-05-17-rollup.json`
-- Current test count: 2,142 Vitest + 76 Python in the latest mock gate
+- Current test count: use `docs/eval-baseline.md` and the current mock gate summary; avoid pasting stale numeric counts into external copy unless reverified.
 
 Do not add claims about real teacher validation, local Ollama proof, no-cloud operation, or measured classroom outcomes unless new artifacts are added and the claims ledger is advanced.
 
@@ -38,7 +39,7 @@ PrairieClassroom OS is a Gemma-4-native operating layer for Alberta's inclusive 
 
 Instead of acting like a generic tutor, it helps teachers and educational assistants handle four adult jobs: open the day, adapt instruction, prepare tomorrow, and coordinate with adults or families using the same classroom context.
 
-For this hackathon submission, the artifact-backed proof lane is hosted Gemma 4 on synthetic/demo classroom data:
+For this hackathon submission, the documented proof lane is hosted Gemma 4 on synthetic/demo classroom data:
 
 - live tier: `gemma-4-26b-a4b-it`
 - planning tier: `gemma-4-31b-it`

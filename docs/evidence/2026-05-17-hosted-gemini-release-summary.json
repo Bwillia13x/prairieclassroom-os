@@ -1,0 +1,30 @@
+{
+  "evidence_type": "hosted_gemma_release_gate_summary",
+  "generated_at": "2026-05-17T00:36:24.411Z",
+  "completed_at": "2026-05-17T01:01:36.643Z",
+  "source_run_dir": "output/release-gate/2026-05-17T00-36-24-280Z-35954",
+  "source_summary": "output/release-gate/2026-05-17T00-36-24-280Z-35954/summary.json",
+  "inference_mode": "gemini",
+  "command": "npm run release:gate:gemini",
+  "status": "passed",
+  "scope": "synthetic/demo classroom data only",
+  "zero_cost_enforced": true,
+  "gemini_auth_present": true,
+  "gemini_run_guard_enabled": true,
+  "gemini_model_ids": {
+    "live": "gemma-4-26b-a4b-it",
+    "planning": "gemma-4-31b-it"
+  },
+  "completed_checks": [
+    "typecheck",
+    "lint",
+    "Python tests",
+    "TypeScript/Vitest tests",
+    "claims check",
+    "harness smoke",
+    "hosted evals",
+    "API smoke",
+    "browser smoke"
+  ],
+  "provider_truth_source": "docs/eval-baseline.md"
+}

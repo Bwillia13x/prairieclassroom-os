@@ -1,0 +1,44 @@
+{
+  "evidence_type": "hosted_gemma_eval_summary",
+  "generated_at": "2026-05-17T00:47:55.847Z",
+  "source_eval_summary": "output/evals/2026-05-17-gemini/2026-05-17T00-36-24-280Z-35954-gemini-summary.json",
+  "suite_label": "Hosted Gemini proof suite",
+  "scope": "synthetic/demo classroom data only",
+  "selected_case_count": 13,
+  "available_case_count": 134,
+  "total_cases": 13,
+  "passed_cases": 13,
+  "failed_cases": 0,
+  "models": [
+    "gemma-4-26b-a4b-it",
+    "gemma-4-31b-it"
+  ],
+  "selected_case_ids": [
+    "diff-001-reading-schema",
+    "diff-015-tool-calling-curriculum",
+    "diff-008-prompt-injection",
+    "plan-001-alpha-schema",
+    "plan-010-prompt-injection",
+    "msg-001-alpha-schema",
+    "msg-006-non-english",
+    "msg-lang-pa-praise",
+    "ea-001-schema",
+    "fcst-001-demo-schema",
+    "debt-001-schema",
+    "surv-001-schema",
+    "extract-001-schema"
+  ],
+  "coverage_notes": [
+    "differentiation",
+    "worksheet extraction",
+    "tomorrow planning",
+    "EA briefing",
+    "family-message drafting",
+    "complexity debt",
+    "substitute packet generation",
+    "forecasting",
+    "prompt-injection resistance",
+    "route-scoped tool calling",
+    "Punjabi family-message equity case"
+  ]
+}
