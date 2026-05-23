@@ -18,7 +18,7 @@
     "render:classroom-full": "remotion render src/index.ts PrairieClassroomClassroomFull ../../qa/demo-script/videos/prairieclassroom-the-classroom-is-already-full-2026-05-16.mp4 --codec=h264 --audio-codec=aac --pixel-format=yuv420p --timeout=240000"
   },
   "dependencies": {
-    "@remotion/cli": "^4.0.448",
+    "@remotion/cli": "^4.0.465",
     "remotion": "^4.0.448",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
